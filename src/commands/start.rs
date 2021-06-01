@@ -4,10 +4,9 @@
 /// accessors along with logging macros. Customize as you see fit.
 use crate::prelude::*;
 
-use crate::{application::APP, prelude::*};
+use crate::application::APP;
 use ethers::prelude::*;
 use std::time::Duration;
-
 
 use crate::config::ContractMonitorConfig;
 use abscissa_core::{config, Command, FrameworkError, Options, Runnable};
@@ -33,19 +32,14 @@ impl Runnable for StartCmd {
         println!("Hello, {}!", &config.hello.recipient);
 
         abscissa_tokio::run(&APP, async {
-
             let ws = Ws::connect(std::env::var("ETH_WS").unwrap()).await.unwrap();
             let provider = Provider::new(ws).interval(Duration::from_millis(2000));
             let mut stream = provider.watch_blocks().await.unwrap().stream();
             while let Some(block) = stream.next().await {
                 dbg!(block);
             }
-        
-
-
-
-
-         }).unwrap_or_else(|e| {
+        })
+        .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
             std::process::exit(1);
         });
