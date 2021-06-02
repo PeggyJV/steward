@@ -1,5 +1,6 @@
 //! `transfer` subcommand - this subcommand transfers ethereum from one account to another
 use crate::application::APP;
+use std::env;
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::prelude::*;
@@ -23,7 +24,12 @@ impl Runnable for TransferCmd {
     /// Transfer ETH from one account to another with Ganache blockchain emulator.
     fn run(&self) {
         abscissa_tokio::run(&APP, async {
-            let provider = Provider::<Http>::try_from("http://localhost:8545").unwrap();
+            // Pass command line arguement
+            let link = &self.recipient[0];
+            // Clone command line arguement because `&self` is `struct` and `provider` expects `String`
+            let link_clone = link.clone();
+            // Pass provider as command line arguement
+            let provider = Provider::<Http>::try_from(link_clone).unwrap();
             let accounts = provider.get_accounts().await.unwrap();
             let from = accounts[1];
             let to = accounts[2];
