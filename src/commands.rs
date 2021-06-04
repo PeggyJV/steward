@@ -12,9 +12,10 @@
 
 mod start;
 mod transfer;
+mod cellarcontract;
 mod version;
 
-use self::{start::StartCmd, transfer::TransferCmd, version::VersionCmd};
+use self::{start::StartCmd, transfer::TransferCmd, cellarcontract::CellarcontractCmd, version::VersionCmd};
 use crate::config::ContractMonitorConfig;
 use abscissa_core::{
     config::Override, Command, Configurable, FrameworkError, Help, Options, Runnable,
@@ -38,6 +39,10 @@ pub enum ContractMonitorCmd {
     /// The `transfer` subcommand
     #[options(help = "transfer ETH")]
     Transfer(TransferCmd),
+
+    /// The `contract` subcommand
+    #[options(help = "Cellar contract")]
+    Cellarcontract(CellarcontractCmd),
 
     /// The `version` subcommand
     #[options(help = "display version information")]

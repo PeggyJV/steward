@@ -1,6 +1,5 @@
 //! `transfer` subcommand - this subcommand transfers ethereum from one account to another
 use crate::application::APP;
-use std::env;
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::prelude::*;
