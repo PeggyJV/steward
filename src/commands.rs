@@ -14,7 +14,9 @@ mod start;
 mod transfer;
 mod version;
 
-use self::{start::StartCmd, transfer::TransferCmd, version::VersionCmd};
+mod prices;
+
+use self::{start::StartCmd, transfer::TransferCmd, version::VersionCmd, prices::PricesCmd};
 use crate::config::ContractMonitorConfig;
 use abscissa_core::{
     config::Override, Command, Configurable, FrameworkError, Help, Options, Runnable,
@@ -38,6 +40,10 @@ pub enum ContractMonitorCmd {
     /// The `transfer` subcommand
     #[options(help = "transfer ETH")]
     Transfer(TransferCmd),
+
+    /// The `prices` subcommand
+    #[options(help = "get prices")]
+    Prices(PricesCmd),
 
     /// The `version` subcommand
     #[options(help = "display version information")]

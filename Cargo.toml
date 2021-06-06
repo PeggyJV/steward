@@ -6,10 +6,15 @@ edition = "2018"
 
 [dependencies]
 gumdrop = "0.7"
-serde = { version = "1", features = ["serde_derive"] }
+serde = { version = "1.0.126", features = ["serde_derive"] }
 thiserror = "1"
 ethers = "0.2"
 abscissa_tokio = "0.6.0-pre.1"
+iqhttp = "0.1.0"
+reqwest = "0.11.3"
+graphql_client = "0.9.0"
+bigdecimal = "0.2.0"
+num-bigint = "0.4.0"
 
 [dependencies.abscissa_core]
 version = "0.6.0-pre.1"

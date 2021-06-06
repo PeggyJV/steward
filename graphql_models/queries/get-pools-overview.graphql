@@ -1,0 +1,35 @@
+query getPoolsOverview(
+    $first: Int!
+    $orderBy: String!
+    $orderDirection: String!
+) {
+    pools(first: $first, orderDirection: $orderDirection, orderBy: $orderBy) {
+        id
+        createdAtTimestamp
+        feeTier
+        liquidity
+        sqrtPrice
+        token0Price
+        token1Price
+        tick
+        volumeToken0
+        volumeToken1
+        volumeUSD
+        totalValueLockedToken0
+        totalValueLockedToken1
+        totalValueLockedETH
+        totalValueLockedUSD
+        token0 {
+            id
+            name
+            symbol
+            decimals
+        }
+        token1 {
+            id
+            name
+            symbol
+            decimals
+        }
+    }
+}

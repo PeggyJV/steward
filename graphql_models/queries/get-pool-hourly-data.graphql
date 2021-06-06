@@ -1,0 +1,32 @@
+query getPoolHourlyData(
+    $id: ID!
+    $orderBy: String!
+    $orderDirection: String!
+    $startTime: Int!
+    $endTime: Int!
+) {
+    poolHourDatas(
+        orderBy: $orderBy
+        orderDirection: $orderDirection
+        where: {
+            id: $id
+            periodStartUnix_gt: $startTime
+            periodStartUnix_lt: $endTime
+        }
+    ) {
+        pool {
+            id
+        }
+        liquidity
+        sqrtPrice
+        open
+        high
+        low
+        close
+        periodStartUnix
+        volumeToken0
+        volumeToken1
+        volumeUSD
+        tvlUSD
+    }
+}

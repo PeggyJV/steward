@@ -1,0 +1,31 @@
+query getPoolOverview($id: ID!, $blockNumber: Int) {
+    pool(id: $id, block: $blockNumber) {
+        id
+        createdAtTimestamp
+        feeTier
+        liquidity
+        sqrtPrice
+        token0Price
+        token1Price
+        tick
+        volumeToken0
+        volumeToken1
+        volumeUSD
+        totalValueLockedToken0
+        totalValueLockedToken1
+        totalValueLockedETH
+        totalValueLockedUSD
+        token0 {
+            id
+            name
+            symbol
+            decimals
+        }
+        token1 {
+            id
+            name
+            symbol
+            decimals
+        }
+    }
+}
