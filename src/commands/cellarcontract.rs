@@ -35,7 +35,8 @@ impl Runnable for CellarcontractCmd {
     fn run(&self) {
         abscissa_tokio::run(&APP, async {
             // This is the address of the deployed contract.
-            let address = "0x418e92330F03bd11b78bdd43f508Af83517c56eb".parse::<Address>().unwrap();
+            let address = "0x44692093E7A78447D8Ddbc477192934520928A5B
+            ".parse::<Address>().unwrap();
             
             // Connect to the network provider (example below is for my Ganache-cli fork)
             let client = Provider::<Http>::try_from("http://localhost:7545").unwrap();
@@ -44,18 +45,16 @@ impl Runnable for CellarcontractCmd {
             let client = Arc::new(client);
 
             // Use ethers_rs `get_accounts` method to get client accounts
-            let _accounts = client.get_accounts().await.unwrap();
+            let accounts = client.get_accounts().await.unwrap();
+                let from = accounts[0];
+                let to = accounts[1];
+                let value = U256::from(0);
 
             // Create the contract object at the address with the provider
             let contract = MyContract::new(address, client);
             
             // Test that contract creation was successful by printing contract address
             let addr = contract.address();
-
-            // Get owner's address with cellars `owner` method 
-            let get_addr = contract.method::<_, Address>("owner", ()).unwrap(); 
-            let addrs: Address = get_addr.call().await.unwrap(); 
-            println!("{:?}", addrs);
 
             // Get name of Contract with cellars `name` method
             let get_name = contract.method::<_, String>("name", ()).unwrap();
@@ -75,7 +74,12 @@ impl Runnable for CellarcontractCmd {
             // Get balance of Address with cellars `balanceOf` method
             let get_balance = contract.method::<_, U256>("balanceOf", addr).unwrap();
             let balance: U256 = get_balance.call().await.unwrap();
-            println!("{:?}", balance);
+            println!("{:?}", balance); 
+            
+            //make transaction.
+            let make_transfer = contract.transfer_from( from, to, value).from(from);
+            let transfer = make_transfer.send().await.unwrap();
+            println!("{:?}", transfer);
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
