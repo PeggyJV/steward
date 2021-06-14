@@ -14,11 +14,46 @@ use std::{convert::TryFrom, sync::Arc};
 
 //use abigen macro to fetch and incorporate contract ABI
 abigen!(
-    MyContract,
+    Cellar,
     "./contract_abi.json",
     event_derives(serde::Deserialize, serde::Serialize)
 );
 
+
+pub struct CellarWrapper<T>{
+    pub contract:Cellar<T>
+}
+
+impl<T:Middleware > CellarWrapper<T>{
+    pub fn new(address: H160, client:Arc<T>)-> Self{
+        CellarWrapper{contract: Cellar::new(address,client)}
+    }
+
+    pub async fn rebalance(&mut self, cellar_tick_info:Vec<CellarTickInfo>){
+        self.contract.rebalance(cellar_tick_info.iter().map(|x|x.to_tuple()).collect());
+    }
+}
+
+pub struct CellarTickInfo{
+    token_id:U256, 
+    tick_upper:i32,
+    tick_lower:i32,
+    weight:i32,
+
+}
+
+
+impl CellarTickInfo{
+
+    pub fn new(token_id: U256, tick_upper:i32, tick_lower:i32, weight:u32){
+        todo!();
+    }
+
+    pub fn to_tuple(&self)->(U256, i32, i32, u32){
+        todo!();
+
+    }
+}
 /// The `Options` proc macro generates an option parser based on the struct
 /// definition, and is defined in the `gumdrop` crate. See their documentation
 /// for a more comprehensive example:
@@ -51,7 +86,7 @@ impl Runnable for CellarcontractCmd {
                 let value = U256::from(0);
 
             // Create the contract object at the address with the provider
-            let contract = MyContract::new(address, client);
+            let contract = Cellar::new(address, client);
             
             // Test that contract creation was successful by printing contract address
             let addr = contract.address();
