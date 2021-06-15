@@ -19,11 +19,12 @@ abigen!(
     event_derives(serde::Deserialize, serde::Serialize)
 );
 
-
+// Use generic data types for CellarWrapper struct since contract will have different data types.
 pub struct CellarWrapper<T>{
     pub contract:Cellar<T>
 }
 
+// Implementation for CellarWrapper. initiate new CellarWrapper and other methods.
 impl<T:Middleware > CellarWrapper<T>{
     pub fn new(address: H160, client:Arc<T>)-> Self{
         CellarWrapper{contract: Cellar::new(address,client)}
@@ -42,16 +43,14 @@ pub struct CellarTickInfo{
 
 }
 
-
+// Implement CellarTickInfo. Initiate to_tuple method, to convert Vec<CellarTickInfo> to Tuples.
 impl CellarTickInfo{
-
     pub fn new(token_id: U256, tick_upper:i32, tick_lower:i32, weight:u32){
-        todo!();
+        CellarTickInfo{contract: Cellar::new(token_id, tick_upper, tick_lower, weight)}
     }
 
     pub fn to_tuple(&self)->(U256, i32, i32, u32){
-        todo!();
-
+        format!("{:?}", self)
     }
 }
 /// The `Options` proc macro generates an option parser based on the struct
