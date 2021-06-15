@@ -31,7 +31,7 @@ impl<T:Middleware > CellarWrapper<T>{
     }
 
     pub async fn rebalance(&mut self, cellar_tick_info:Vec<CellarTickInfo>){
-        self.contract.rebalance(cellar_tick_info.iter().map(|x|x.to_tuple()).collect());
+        self.contract.rebalance(cellar_tick_info.into_iter().map(|x|x.to_tuple()).collect());
     }
 }
 
@@ -50,8 +50,7 @@ impl CellarTickInfo{
     }
 
     pub fn to_tuple(self)->(U256, i32, i32, u32){
-        let now_tuple = (self.token_id, self.tick_upper, self.tick_lower, self.weight);
-        return now_tuple;
+       (self.token_id, self.tick_upper, self.tick_lower, self.weight)
     }
 }
 /// The `Options` proc macro generates an option parser based on the struct
