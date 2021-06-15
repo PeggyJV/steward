@@ -39,19 +39,18 @@ pub struct CellarTickInfo{
     token_id:U256, 
     tick_upper:i32,
     tick_lower:i32,
-    weight:i32,
+    weight:u32,
 
 }
 
 // Implement CellarTickInfo. Initiate to_tuple method, to convert Vec<CellarTickInfo> to Tuples.
 impl CellarTickInfo{
-    pub fn new(token_id: U256, tick_upper:i32, tick_lower:i32, weight:u32){
-        CellarTickInfo{contract: Cellar::new(token_id, tick_upper, tick_lower, weight)}
+    pub fn new(token_id: U256, tick_upper:i32, tick_lower:i32, weight:u32)-> Self{
+        CellarTickInfo{token_id, tick_upper, tick_lower, weight}
     }
 
-    pub fn to_tuple(&self)->(U256, i32, i32, i32){
-        let cellarTickInfo:CellarTickInfo = CellarTickInfo{ token_id:U256, tick_upper:i32, tick_lower:i32, weight:i32};
-        let now_tuple = (cellarTickInfo.token_id, cellarTickInfo.tick_upper, cellarTickInfo.tick_lower, cellarTickInfo.weight);
+    pub fn to_tuple(&self)->(U256, i32, i32, u32){
+        let now_tuple = (self.token_id, self.tick_upper, self.tick_lower, self.weight);
         return now_tuple;
     }
 }
