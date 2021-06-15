@@ -49,7 +49,7 @@ impl CellarTickInfo{
         CellarTickInfo{token_id, tick_upper, tick_lower, weight}
     }
 
-    pub fn to_tuple(&self)->(U256, i32, i32, u32){
+    pub fn to_tuple(self)->(U256, i32, i32, u32){
         let now_tuple = (self.token_id, self.tick_upper, self.tick_lower, self.weight);
         return now_tuple;
     }
