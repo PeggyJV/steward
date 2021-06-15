@@ -49,9 +49,10 @@ impl CellarTickInfo{
         CellarTickInfo{contract: Cellar::new(token_id, tick_upper, tick_lower, weight)}
     }
 
-    pub fn to_tuple(&self)->(U256, i32, i32, u32){
+    pub fn to_tuple(&self)->(U256, i32, i32, i32){
         let cellarTickInfo:CellarTickInfo = CellarTickInfo{ token_id:U256, tick_upper:i32, tick_lower:i32, weight:i32};
         let now_tuple = (cellarTickInfo.token_id, cellarTickInfo.tick_upper, cellarTickInfo.tick_lower, cellarTickInfo.weight);
+        return now_tuple;
     }
 }
 /// The `Options` proc macro generates an option parser based on the struct
