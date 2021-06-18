@@ -11,13 +11,15 @@ use ethers::{
     providers::{Provider, Http},
 };
 use std::{convert::TryFrom, sync::Arc};
-
+use crate::cellar_wrapper;
+use crate::time_range;
 //use abigen macro to fetch and incorporate contract ABI
 abigen!(
-    MyContract,
+    Cellar,
     "./contract_abi.json",
     event_derives(serde::Deserialize, serde::Serialize)
 );
+
 
 /// The `Options` proc macro generates an option parser based on the struct
 /// definition, and is defined in the `gumdrop` crate. See their documentation
@@ -51,7 +53,7 @@ impl Runnable for CellarcontractCmd {
                 let value = U256::from(0);
 
             // Create the contract object at the address with the provider
-            let contract = MyContract::new(address, client);
+            let contract = Cellar::new(address, client);
             
             // Test that contract creation was successful by printing contract address
             let addr = contract.address();
@@ -74,7 +76,7 @@ impl Runnable for CellarcontractCmd {
             // Get balance of Address with cellars `balanceOf` method
             let get_balance = contract.method::<_, U256>("balanceOf", addr).unwrap();
             let balance: U256 = get_balance.call().await.unwrap();
-            println!("{:?}", balance); 
+            println!("{:?}", balance);
             
             //make transaction.
             let make_transfer = contract.transfer_from( from, to, value).from(from);
