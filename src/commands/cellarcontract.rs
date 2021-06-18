@@ -12,6 +12,7 @@ use ethers::{
 };
 use std::{convert::TryFrom, sync::Arc};
 use crate::cellar_wrapper;
+use crate::time_range;
 //use abigen macro to fetch and incorporate contract ABI
 abigen!(
     Cellar,
