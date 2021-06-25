@@ -12,14 +12,18 @@ abigen!(
 );
 
 // Use generic data types for CellarWrapper struct since contract will have different data types.
-pub struct CellarWrapper<T>{
-    pub contract:Cellar<T>
+pub struct ContractState<T>{
+    contract:Cellar<T>
+}
+
+pub struct ContractStateUpdate{
+
 }
 
 // Implementation for CellarWrapper. initiate new CellarWrapper and other methods.
-impl<T:Middleware > CellarWrapper<T>{
+impl<T:Middleware > ContractState<T>{
     pub fn new(address: H160, client:Arc<T>)-> Self{
-        CellarWrapper{contract: Cellar::new(address,client)}
+        ContractState{contract: Cellar::new(address,client)}
     }
 
     pub async fn rebalance(&mut self, cellar_tick_info:Vec<CellarTickInfo>){
