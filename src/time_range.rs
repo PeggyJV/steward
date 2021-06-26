@@ -1,7 +1,6 @@
 use abscissa_core::error::BoxError;
 /// This is a Rust type for the JSON data from time independent bollinger ranges.
 use ethers::prelude::*;
-
 use crate::error::Error;
 
 use crate::{collector, config, prelude::*};

@@ -1,7 +1,7 @@
+use crate::error::Error;
 use ethers::contract::abigen;
 use ethers::prelude::*;
 use std::sync::Arc;
-use crate::error::Error;
 
 //use abigen macro to fetch and incorporate contract ABI
 abigen!(
@@ -18,39 +18,63 @@ pub struct ContractState<T> {
 pub struct ContractStateUpdate {}
 
 // Implementation for CellarWrapper. initiate new CellarWrapper and other methods.
-impl<T:'static+ Middleware> ContractState<T> {
+impl<T: 'static + Middleware> ContractState<T> {
     pub fn new(address: H160, client: Arc<T>) -> Self {
         ContractState {
             contract: Cellar::new(address, client),
         }
     }
 
-    pub async fn rebalance(&mut self, cellar_tick_info: Vec<CellarTickInfo>) {
+    pub async fn rebalance(&mut self, cellar_tick_info: Vec<CellarTickInfo>) -> Result<(), Error> {
         self.contract
-            .rebalance(cellar_tick_info.into_iter().map(|x| x.to_tuple()).collect());
+            .rebalance(cellar_tick_info.into_iter().map(|x| x.to_tuple()).collect())
+            .call()
+            .await
+            .map_err(|e| e.into())
     }
 
-    pub async fn add_liquidity_for_uni_v3(&mut self, cellar_add_params: CellarAddParams) {
+    pub async fn add_liquidity_for_uni_v3(
+        &mut self,
+        cellar_add_params: CellarAddParams,
+    ) -> Result<(), Error> {
         self.contract
-            .add_liquidity_for_uni_v3(cellar_add_params.to_tuple());
+            .add_liquidity_for_uni_v3(cellar_add_params.to_tuple())
+            .call()
+            .await
+            .map_err(|e| e.into())
     }
 
-    pub async fn add_liquidity_eth_for_uni_v3(&mut self, cellar_add_params: CellarAddParams) {
+    pub async fn add_liquidity_eth_for_uni_v3(
+        &mut self,
+        cellar_add_params: CellarAddParams,
+    ) -> Result<(), Error> {
         self.contract
-            .add_liquidity_eth_for_uni_v3(cellar_add_params.to_tuple());
+            .add_liquidity_eth_for_uni_v3(cellar_add_params.to_tuple())
+            .call()
+            .await
+            .map_err(|e| e.into())
     }
 
     pub async fn remove_liquidity_eth_from_uni_v3(
         &mut self,
         cellar_remove_params: CellarRemoveParams,
-    )-> Result<(), Error> {
+    ) -> Result<(), Error> {
         self.contract
-            .remove_liquidity_eth_from_uni_v3(cellar_remove_params.to_tuple()).call().await.map_err(|e| e.into())
+            .remove_liquidity_eth_from_uni_v3(cellar_remove_params.to_tuple())
+            .call()
+            .await
+            .map_err(|e| e.into())
     }
 
-    pub async fn remove_liquidity_from_uni_v3(&mut self, cellar_remove_params: CellarRemoveParams) {
+    pub async fn remove_liquidity_from_uni_v3(
+        &mut self,
+        cellar_remove_params: CellarRemoveParams,
+    ) -> Result<(), Error> {
         self.contract
-            .remove_liquidity_from_uni_v3(cellar_remove_params.to_tuple());
+            .remove_liquidity_from_uni_v3(cellar_remove_params.to_tuple())
+            .call()
+            .await
+            .map_err(|e| e.into())
     }
 }
 

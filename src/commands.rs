@@ -10,13 +10,12 @@
 //! See the `impl Configurable` below for how to specify the path to the
 //! application's configuration file.
 
-mod cellarcontract;
 mod start;
 mod transfer;
 mod version;
 
 use self::{
-    cellarcontract::CellarcontractCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd,
+    start::StartCmd, transfer::TransferCmd, version::VersionCmd,
 };
 use crate::config::ContractMonitorConfig;
 use abscissa_core::{
@@ -41,10 +40,6 @@ pub enum ContractMonitorCmd {
     /// The `transfer` subcommand
     #[options(help = "transfer ETH")]
     Transfer(TransferCmd),
-
-    /// The `contract` subcommand
-    #[options(help = "Cellar contract")]
-    Cellarcontract(CellarcontractCmd),
 
     /// The `version` subcommand
     #[options(help = "display version information")]
