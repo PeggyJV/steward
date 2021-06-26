@@ -7,6 +7,14 @@ use std::{
     ops::Deref,
 };
 use thiserror::Error;
+use ethers::prelude::*;
+
+
+use ethers::middleware::gas_oracle::GasOracleError;
+
+use ethers::contract::ContractError;
+
+
 
 /// Kinds of errors
 #[derive(Copy, Clone, Debug, Eq, Error, PartialEq)]
@@ -18,6 +26,18 @@ pub enum ErrorKind {
     /// Input/output error
     #[error("I/O error")]
     Io,
+
+    /// Input/output error
+    #[error("http error")]
+    Http,
+
+    /// Gas Oracle error
+    #[error("gas error")]
+    GasOracle,
+
+    /// Contract error
+    #[error("contract error")]
+    ContractError,
 }
 
 impl ErrorKind {
@@ -66,5 +86,28 @@ impl From<Context<ErrorKind>> for Error {
 impl From<io::Error> for Error {
     fn from(err: io::Error) -> Self {
         ErrorKind::Io.context(err).into()
+    }
+
+}
+
+impl From<iqhttp::Error> for Error {
+    fn from(err: iqhttp::Error) -> Self {
+        ErrorKind::Http.context(err).into()
+
+    }
+}
+
+impl From<GasOracleError> for Error {
+    fn from(err: GasOracleError) -> Self {
+        ErrorKind::GasOracle.context(err).into()
+
+    }
+}
+
+impl<T: 'static + Middleware> From<ContractError<T>> for Error {
+    fn from(err: ContractError<T>) -> Self {
+        let err:BoxError = err.into();
+        ErrorKind::ContractError.context(err).into()
+
     }
 }

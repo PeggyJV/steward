@@ -1,43 +1,47 @@
+use abscissa_core::error::BoxError;
 /// This is a Rust type for the JSON data from time independent bollinger ranges.
-use ethers::{
-    prelude::*};
-use abscissa_core::error::{BoxError};
+use ethers::prelude::*;
 
 use crate::error::Error;
 
 use crate::{collector, config, prelude::*};
-use tower::{util::ServiceExt, Service};
 use chrono::DateTime;
-
+use iqhttp::{HttpsClient, Result};
+use serde::{Deserialize, Serialize};
+use tower::{util::ServiceExt, Service};
 
 /// Struct TimeRange for time independent bollinger ranges
+#[derive(Serialize, Deserialize)]
 pub struct TimeRange {
-    time: DateTime<chrono::Utc>,// i don't know what data types to use for time
+    time: DateTime<chrono::Utc>, // i don't know what data types to use for time
     previous_update: DateTime<chrono::Utc>, // i don't know what data types to use for time
     pair_id: U256,
     tick_weights: Vec<TickWeights>,
-    data_url:String,
+}
+
+impl TimeRange {
+    pub async fn fetch(host: impl Into<String>) -> Result<TimeRange> {
+        let client = HttpsClient::new(host);
+        client.get_json("/tickdata", &Default::default()).await
+    }
 }
 
 impl std::fmt::Debug for TimeRange {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut fields =f.debug_struct("TimeRange");
+        let mut fields = f.debug_struct("TimeRange");
         fields
-        .field("time", &self.time)
-        .field("previous_update", &self.previous_update)
-        .field("pair_id",&self.pair_id);
-        for (i,tick) in self.tick_weights.iter().enumerate(){
-            fields.field(&format!("tick_weight #:{}",i),tick);
+            .field("time", &self.time)
+            .field("previous_update", &self.previous_update)
+            .field("pair_id", &self.pair_id);
+        for (i, tick) in self.tick_weights.iter().enumerate() {
+            fields.field(&format!("tick_weight #:{}", i), tick);
         }
-        fields.field("data_url",&self.data_url).finish()
-
-
+        fields.finish()
     }
 }
 
-
 /// Struct TickWeights for time independent bollinger ranges
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct TickWeights {
     upper_bound: i32,
     lower_bound: i32,
@@ -45,10 +49,20 @@ pub struct TickWeights {
 }
 
 // Implement TimeRange for time independent bollinger ranges
-impl TimeRange{
+impl TimeRange {
     // Instantiate TimeRange for time independent bollinger ranges with fn new.
-    pub fn new(time: DateTime<chrono::Utc>, previous_update: DateTime<chrono::Utc>, pair_id: U256, tick_weights: TickWeights) -> Self {
-        TimeRange{time, previous_update, pair_id,tick_weights: Vec::new(), data_url:"".to_owned() }  
+    pub fn new(
+        time: DateTime<chrono::Utc>,
+        previous_update: DateTime<chrono::Utc>,
+        pair_id: U256,
+        tick_weights: TickWeights,
+    ) -> Self {
+        TimeRange {
+            time,
+            previous_update,
+            pair_id,
+            tick_weights: Vec::new(),
+        }
     }
 
     pub async fn poll<S>(&self, mut collector: S)

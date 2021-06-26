@@ -10,12 +10,14 @@
 //! See the `impl Configurable` below for how to specify the path to the
 //! application's configuration file.
 
+mod cellarcontract;
 mod start;
 mod transfer;
-mod cellarcontract;
 mod version;
 
-use self::{start::StartCmd, transfer::TransferCmd, cellarcontract::CellarcontractCmd, version::VersionCmd};
+use self::{
+    cellarcontract::CellarcontractCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd,
+};
 use crate::config::ContractMonitorConfig;
 use abscissa_core::{
     config::Override, Command, Configurable, FrameworkError, Help, Options, Runnable,

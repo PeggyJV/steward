@@ -1,28 +1,27 @@
 //! `cellarcontract` subcommand
 use crate::application::APP;
+use crate::cellar_wrapper;
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::prelude::*;
+use crate::time_range;
 use abscissa_core::{Command, Options, Runnable};
 use ethers::contract::abigen;
 use ethers::{
-    prelude::*,
-    types::{Address},
-    providers::{Provider, Http},
-    middleware::{
-        gas_oracle::{GasCategory, GasNow, Etherscan, GasOracle, Etherchain, GasOracleError}
+    middleware::gas_oracle::{
+        Etherchain, Etherscan, GasCategory, GasNow, GasOracle, GasOracleError,
     },
+    prelude::*,
+    providers::{Http, Provider},
+    types::Address,
 };
 use std::{convert::TryFrom, sync::Arc};
-use crate::cellar_wrapper;
-use crate::time_range;
 //use abigen macro to fetch and incorporate contract ABI
 abigen!(
     Cellar,
     "./contract_abi.json",
     event_derives(serde::Deserialize, serde::Serialize)
 );
-
 
 async fn etherscan_standard() -> Result<U256, GasOracleError> {
     let api_key = std::env::var("ETHERSCAN_API_KEY").unwrap();
@@ -105,8 +104,10 @@ impl Runnable for CellarcontractCmd {
         abscissa_tokio::run(&APP, async {
             // This is the address of the deployed contract.
             let address = "0x44692093E7A78447D8Ddbc477192934520928A5B
-            ".parse::<Address>().unwrap();
-            
+            "
+            .parse::<Address>()
+            .unwrap();
+
             // Connect to the network provider (example below is for my Ganache-cli fork)
             let client = Provider::<Http>::try_from("http://localhost:7545").unwrap();
 
@@ -115,13 +116,13 @@ impl Runnable for CellarcontractCmd {
 
             // Use ethers_rs `get_accounts` method to get client accounts
             let accounts = client.get_accounts().await.unwrap();
-                let from = accounts[0];
-                let to = accounts[1];
-                let value = U256::from(0);
+            let from = accounts[0];
+            let to = accounts[1];
+            let value = U256::from(0);
 
             // Create the contract object at the address with the provider
             let contract = Cellar::new(address, client);
-            
+
             // Test that contract creation was successful by printing contract address
             let addr = contract.address();
 
@@ -144,9 +145,9 @@ impl Runnable for CellarcontractCmd {
             let get_balance = contract.method::<_, U256>("balanceOf", addr).unwrap();
             let balance: U256 = get_balance.call().await.unwrap();
             println!("{:?}", balance);
-            
+
             //make transaction.
-            let make_transfer = contract.transfer_from( from, to, value).from(from);
+            let make_transfer = contract.transfer_from(from, to, value).from(from);
             let transfer = make_transfer.send().await.unwrap();
             println!("{:?}", transfer);
         })

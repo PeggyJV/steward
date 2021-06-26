@@ -3,18 +3,23 @@
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::prelude::*;
-use abscissa_core::error::{BoxError};
+use abscissa_core::error::BoxError;
 
 use crate::application::APP;
-use ethers::{prelude::*,    providers::{Provider, Http}};
+use ethers::{
+    prelude::*,
+    providers::{Http, Provider},
+};
 use std::time::Duration;
 
-use crate::{config::ContractMonitorConfig,collector::{Collector,Poller,Response,Request}};
+use crate::{
+    collector::{Collector, Poller, Request, Response},
+    config::ContractMonitorConfig,
+};
 use abscissa_core::{config, Command, FrameworkError, Options, Runnable};
+use std::{convert::TryFrom, sync::Arc};
 use tokio::task::JoinHandle;
 use tower::{Service, ServiceBuilder};
-use std::{convert::TryFrom, sync::Arc};
-
 
 /// `start` subcommand
 ///
@@ -31,40 +36,36 @@ pub struct StartCmd {
 }
 
 impl StartCmd {
-        /// Initialize collector poller (if configured/needed)
-        async fn init_collector_poller<S>(
-            &self,
-            config: ContractMonitorConfig,
-            collector: S,
-        ) -> JoinHandle<()>
-        where
-            S: Service<Request, Response = Response, Error = BoxError>
-                + Send
-                + Sync
-                + Clone
-                + 'static,
-            S::Future: Send,
-        {
-            tokio::spawn(async move {
+    /// Initialize collector poller (if configured/needed)
+    async fn init_collector_poller<S>(
+        &self,
+        config: ContractMonitorConfig,
+        collector: S,
+    ) -> JoinHandle<()>
+    where
+        S: Service<Request, Response = Response, Error = BoxError> + Send + Sync + Clone + 'static,
+        S::Future: Send,
+    {
+        tokio::spawn(async move {
+            let address = "0x44692093E7A78447D8Ddbc477192934520928A5B
+                "
+            .parse::<Address>()
+            .unwrap();
 
-                let address = "0x44692093E7A78447D8Ddbc477192934520928A5B
-                ".parse::<Address>().unwrap();
-                
-                // Connect to the network provider (example below is for my Ganache-cli fork)
-                let client = Provider::<Http>::try_from("http://localhost:7545").unwrap();
-    
-                // MyContract expects Arc, create with client
-                let client = Arc::new(client);
-    
+            // Connect to the network provider (example below is for my Ganache-cli fork)
+            let client = Provider::<Http>::try_from("http://localhost:7545").unwrap();
 
-                let poller = Poller::new(&config,client).unwrap_or_else(|e| {
-                    status_err!("couldn't initialize collector poller: {}", e);
-                    std::process::exit(1);
-                });
-    
-                poller.run(collector).await;
-            })
-        }
+            // MyContract expects Arc, create with client
+            let client = Arc::new(client);
+
+            let poller = Poller::new(&config, client).unwrap_or_else(|e| {
+                status_err!("couldn't initialize collector poller: {}", e);
+                std::process::exit(1);
+            });
+
+            poller.run(collector).await;
+        })
+    }
 }
 
 impl Runnable for StartCmd {
@@ -74,21 +75,21 @@ impl Runnable for StartCmd {
         println!("Hello, {}!", &config.hello.recipient);
 
         abscissa_tokio::run(&APP, async {
-
             let mut tasks = vec![];
 
-            if let config = APP.config().clone(){
-                let collector =
-                ServiceBuilder::new()
-                    .buffer(20)
-                    .service(Collector::new(&config).unwrap_or_else(|e| {
+            if let config = APP.config().clone() {
+                let collector = ServiceBuilder::new().buffer(20).service(
+                    Collector::new(&config).unwrap_or_else(|e| {
                         status_err!("couldn't initialize collector service: {}", e);
                         std::process::exit(1);
-                    }));
+                    }),
+                );
 
-                tasks.push(self.init_collector_poller(config.as_ref().clone(), collector.clone()).await)
-
-            } 
+                tasks.push(
+                    self.init_collector_poller(config.as_ref().clone(), collector.clone())
+                        .await,
+                )
+            }
             tasks
         })
         .unwrap_or_else(|e| {

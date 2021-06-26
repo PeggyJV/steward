@@ -16,11 +16,11 @@
 )]
 
 pub mod application;
+pub mod cellar_wrapper;
+pub mod collector;
 pub mod commands;
 pub mod config;
 pub mod error;
-pub mod prelude;
-pub mod cellar_wrapper;
-pub mod time_range;
 pub mod gas;
-pub mod collector;
+pub mod prelude;
+pub mod time_range;

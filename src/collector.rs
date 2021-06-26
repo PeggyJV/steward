@@ -6,12 +6,11 @@ use std::{
     task::{Context, Poll},
 };
 
-use crate::{config,error::Error,time_range::TimeRange,gas::CellarGas,cellar_wrapper::ContractState};
-use ethers::{
-    prelude::*,
+use crate::{
+    cellar_wrapper::ContractState, config, error::Error, gas::CellarGas, time_range::TimeRange,
 };
+use ethers::prelude::*;
 use tower::{util::ServiceExt, Service};
-
 
 pub use self::{poller::Poller, request::Request, response::Response};
 
@@ -19,17 +18,12 @@ mod poller;
 mod request;
 mod response;
 
-pub struct Collector{
-}
+pub struct Collector {}
 
-impl  Collector {
-
-    pub fn new(config: &config::ContractMonitorConfig) -> Result<Self,Error> {
-        Ok(Collector{})
-
+impl Collector {
+    pub fn new(config: &config::ContractMonitorConfig) -> Result<Self, Error> {
+        Ok(Collector {})
     }
-
-
 }
 
 impl Service<Request> for Collector {
