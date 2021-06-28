@@ -20,12 +20,14 @@ mod response;
 
 pub struct Collector {}
 
+// Instantiate collector with `new` function
 impl Collector {
     pub fn new(config: &config::ContractMonitorConfig) -> Result<Self, Error> {
         Ok(Collector {})
     }
 }
 
+// Implement service request for collector for response, error and future
 impl Service<Request> for Collector {
     type Response = Response;
     type Error = Error;
@@ -35,6 +37,7 @@ impl Service<Request> for Collector {
         Poll::Ready(Ok(()))
     }
 
+    // Call collector for gas price, tickdata and contract state
     fn call(&mut self, req: Request) -> Self::Future {
         let result = match req {
             Request::Gas(event) => todo!(),

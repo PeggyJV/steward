@@ -17,29 +17,35 @@ use tokio::time;
 use tokio::try_join;
 use tower::Service;
 
+// Struct poller to collect poll_interval etc. from external sources which aren't capable of pushing data
 pub struct Poller<T: Middleware> {
-    /// Interval at which to poll
     poll_interval: Duration,
-    time_range_host:String,
+    time_range_host: String,
     time_range: TimeRange,
     cellar_gas: CellarGas,
     contract_state: ContractState<T>,
 }
 
+// Implement poller middleware
 impl<T: Middleware> Poller<T> {
-    /// Fetch Time Range data 
+    // Retrieve poll time range
     pub async fn poll_time_range(&self) -> Result<TimeRange, Error> {
-        TimeRange::fetch(self.time_range_host.clone()).await.map_err(|e| e.into())
+        TimeRange::fetch(self.time_range_host.clone())
+            .await
+            .map_err(|e| e.into())
     }
 
+    // Retrieve current standard gas price from etherscan
     pub async fn poll_cellar_gas(&self) -> Result<U256, Error> {
         CellarGas::etherscan_standard().await.map_err(|e| e.into())
     }
 
+    // Retrieve the current contract state
     pub async fn poll_contract_state(&self) -> Result<ContractStateUpdate, Error> {
-        Ok(ContractStateUpdate{})
+        Ok(ContractStateUpdate {})
     }
 
+    // Update poller with time_range, gas price and contract_state
     pub fn update_poller(
         &mut self,
         time_range: TimeRange,
@@ -57,7 +63,7 @@ impl<T: Middleware> Poller<T> {
         todo!()
     }
 
-    /// Route incoming requests.
+    // Route incoming requests.
     pub async fn run<S>(mut self, collector: S)
     where
         S: Service<collector::Request, Response = collector::Response, Error = BoxError>

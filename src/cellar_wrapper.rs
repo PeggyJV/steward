@@ -1,3 +1,5 @@
+//! Rust Wrapper for cellar functions
+/// This will convert cellar functions from tuples to Rust types
 use crate::error::Error;
 use ethers::contract::abigen;
 use ethers::prelude::*;
@@ -17,14 +19,16 @@ pub struct ContractState<T> {
 
 pub struct ContractStateUpdate {}
 
-// Implementation for CellarWrapper. initiate new CellarWrapper and other methods.
+// Implementation for ContractState.
 impl<T: 'static + Middleware> ContractState<T> {
+    // Instantiate `new` ContractState
     pub fn new(address: H160, client: Arc<T>) -> Self {
         ContractState {
             contract: Cellar::new(address, client),
         }
     }
 
+    // Rebalance portfolio with cellar tick info
     pub async fn rebalance(&mut self, cellar_tick_info: Vec<CellarTickInfo>) -> Result<(), Error> {
         self.contract
             .rebalance(cellar_tick_info.into_iter().map(|x| x.to_tuple()).collect())
@@ -33,6 +37,7 @@ impl<T: 'static + Middleware> ContractState<T> {
             .map_err(|e| e.into())
     }
 
+    // Add liquidity for uniswap version 3 with values form struct `CellarAddParams`
     pub async fn add_liquidity_for_uni_v3(
         &mut self,
         cellar_add_params: CellarAddParams,
@@ -44,6 +49,7 @@ impl<T: 'static + Middleware> ContractState<T> {
             .map_err(|e| e.into())
     }
 
+    // Add ethereum liquidity for uniswap version 3 with values form struct `CellarAddParams`
     pub async fn add_liquidity_eth_for_uni_v3(
         &mut self,
         cellar_add_params: CellarAddParams,
@@ -55,6 +61,7 @@ impl<T: 'static + Middleware> ContractState<T> {
             .map_err(|e| e.into())
     }
 
+    // Remove ethereum liquidity from uniswap version 3 with values form struct `CellarAddParams`
     pub async fn remove_liquidity_eth_from_uni_v3(
         &mut self,
         cellar_remove_params: CellarRemoveParams,
@@ -66,6 +73,7 @@ impl<T: 'static + Middleware> ContractState<T> {
             .map_err(|e| e.into())
     }
 
+    // Remove liquidity from uniswap version 3 with values form struct `CellarAddParams`
     pub async fn remove_liquidity_from_uni_v3(
         &mut self,
         cellar_remove_params: CellarRemoveParams,
@@ -102,7 +110,7 @@ impl CellarTickInfo {
     }
 }
 
-// For struct CellarAddParams
+// Struct for CellarAddParams
 pub struct CellarAddParams {
     amount0_desired: U256,
     amount1_desired: U256,
@@ -112,7 +120,9 @@ pub struct CellarAddParams {
     deadline: U256,
 }
 
+// Implement CellarAddParams 
 impl CellarAddParams {
+    // Instantiate `new` CellarAddParams
     pub fn new(
         amount0_desired: U256,
         amount1_desired: U256,
@@ -131,6 +141,7 @@ impl CellarAddParams {
         }
     }
 
+    // Convert CellarAddParams fields to tuple
     pub fn to_tuple(self) -> (U256, U256, U256, U256, H160, U256) {
         (
             self.amount0_desired,
@@ -143,6 +154,7 @@ impl CellarAddParams {
     }
 }
 
+// Struct for CellarRemoveParams
 pub struct CellarRemoveParams {
     token_amount: U256,
     amount0_min: U256,
@@ -151,7 +163,9 @@ pub struct CellarRemoveParams {
     deadline: U256,
 }
 
+// Implement CellarRemoveParams
 impl CellarRemoveParams {
+    // Instantiate `new` CellarRemoveParams
     pub fn new(
         token_amount: U256,
         amount0_min: U256,
@@ -168,6 +182,7 @@ impl CellarRemoveParams {
         }
     }
 
+    // Convert CellarRemoveParams fields to tuple
     pub fn to_tuple(self) -> (U256, U256, U256, H160, U256) {
         (
             self.token_amount,

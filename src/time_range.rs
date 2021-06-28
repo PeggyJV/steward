@@ -1,5 +1,6 @@
+//! Time independent bollinger ranges
+/// This is a Rust type for the JSON data from time independent bollinger ranges. 
 use abscissa_core::error::BoxError;
-/// This is a Rust type for the JSON data from time independent bollinger ranges.
 use ethers::prelude::*;
 use crate::error::Error;
 
@@ -9,23 +10,27 @@ use iqhttp::{HttpsClient, Result};
 use serde::{Deserialize, Serialize};
 use tower::{util::ServiceExt, Service};
 
-/// Struct TimeRange for time independent bollinger ranges
+// Struct TimeRange for time independent bollinger ranges
 #[derive(Serialize, Deserialize)]
 pub struct TimeRange {
-    time: DateTime<chrono::Utc>, // i don't know what data types to use for time
-    previous_update: DateTime<chrono::Utc>, // i don't know what data types to use for time
+    time: DateTime<chrono::Utc>, 
+    previous_update: DateTime<chrono::Utc>, 
     pair_id: U256,
     tick_weights: Vec<TickWeights>,
 }
 
+/// Implement TimeRange for time independent bollinger ranges
 impl TimeRange {
+    // Fetch timerange from JSON file "tickdata"
     pub async fn fetch(host: impl Into<String>) -> Result<TimeRange> {
         let client = HttpsClient::new(host);
         client.get_json("/tickdata", &Default::default()).await
     }
 }
 
+/// Implementation for TimeRange field format
 impl std::fmt::Debug for TimeRange {
+    // Implement TimeRange field format for time, previous_update, pair_id and tick_weight
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut fields = f.debug_struct("TimeRange");
         fields
