@@ -15,7 +15,7 @@ use tower::{util::ServiceExt, Service};
 pub use self::{poller::Poller, request::Request, response::Response};
 
 mod poller;
-mod request;
+pub(crate) mod request;
 mod response;
 
 pub struct Collector {}

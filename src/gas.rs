@@ -88,13 +88,21 @@ impl CellarGas {
     }
 
     #[allow(unused_mut)]
-    pub async fn poll<S>(&self, mut _collector: S)
+    pub async fn poll<S>(&self, mut collector: S)
     where
         S: Service<collector::Request, Response = collector::Response, Error = BoxError>
             + Send
             + Clone
             + 'static,
     {
-        todo!()
+        let gas = match CellarGas::etherscan_standard().await{
+            Ok(gas) => gas,
+            Err(err) => {
+                warn!("Gas collection error:{}",err);
+                return;
+            },
+        };
+        collector.call(collector::Request::Gas(collector::request::GasPollEvent{current_gas_price: gas }));
+
     }
 }

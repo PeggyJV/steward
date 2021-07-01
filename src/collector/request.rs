@@ -1,5 +1,6 @@
+use ethers::prelude::*;
+use crate::time_range::TimeRange;
 
-#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Request {
     /// Handle an incoming message from an agent.
     Gas(GasPollEvent),
@@ -11,9 +12,10 @@ pub enum Request {
     ContractState(ContractStatePollEvent),
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub struct GasPollEvent {}
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub struct TickDataPollEvent {}
-#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct GasPollEvent {
+    pub current_gas_price:U256,
+}
+pub struct TickDataPollEvent {
+    pub current_tick_data:TimeRange,
+}
 pub struct ContractStatePollEvent {}
