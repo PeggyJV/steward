@@ -14,9 +14,7 @@ mod start;
 mod transfer;
 mod version;
 
-use self::{
-    start::StartCmd, transfer::TransferCmd, version::VersionCmd,
-};
+use self::{start::StartCmd, transfer::TransferCmd, version::VersionCmd};
 use crate::config::ContractMonitorConfig;
 use abscissa_core::{
     config::Override, Command, Configurable, FrameworkError, Help, Options, Runnable,

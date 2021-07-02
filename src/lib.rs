@@ -7,10 +7,7 @@
 // Tip: Deny warnings with `RUSTFLAGS="-D warnings"` environment variable in CI
 
 #![forbid(unsafe_code)]
-#![warn(
-    rust_2018_idioms,
-    trivial_casts
-)]
+#![warn(rust_2018_idioms, trivial_casts)]
 
 pub mod application;
 pub mod cellar_wrapper;

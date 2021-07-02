@@ -1,8 +1,8 @@
 //! Time independent bollinger ranges
-/// This is a Rust type for the JSON data from time independent bollinger ranges. 
+use crate::error::Error;
+/// This is a Rust type for the JSON data from time independent bollinger ranges.
 use abscissa_core::error::BoxError;
 use ethers::prelude::*;
-use crate::error::Error;
 
 use crate::{collector, config, prelude::*};
 use chrono::DateTime;
@@ -13,8 +13,8 @@ use tower::{util::ServiceExt, Service};
 // Struct TimeRange for time independent bollinger ranges
 #[derive(Serialize, Deserialize)]
 pub struct TimeRange {
-    time: DateTime<chrono::Utc>, 
-    previous_update: DateTime<chrono::Utc>, 
+    time: DateTime<chrono::Utc>,
+    previous_update: DateTime<chrono::Utc>,
     pair_id: U256,
     tick_weights: Vec<TickWeights>,
 }
@@ -25,6 +25,17 @@ impl TimeRange {
     pub async fn fetch(host: impl Into<String>) -> Result<TimeRange> {
         let client = HttpsClient::new(host);
         client.get_json("/tickdata", &Default::default()).await
+    }
+}
+
+impl Default for TimeRange {
+    fn default() -> Self {
+        TimeRange {
+            time: chrono::Utc::now(),
+            previous_update: chrono::Utc::now(),
+            pair_id: U256::zero(),
+            tick_weights: Vec::new(),
+        }
     }
 }
 

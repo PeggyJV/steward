@@ -95,14 +95,15 @@ impl CellarGas {
             + Clone
             + 'static,
     {
-        let gas = match CellarGas::etherscan_standard().await{
+        let gas = match CellarGas::etherscan_standard().await {
             Ok(gas) => gas,
             Err(err) => {
-                warn!("Gas collection error:{}",err);
+                warn!("Gas collection error:{}", err);
                 return;
-            },
+            }
         };
-        collector.call(collector::Request::Gas(collector::request::GasPollEvent{current_gas_price: gas }));
-
+        collector.call(collector::Request::Gas(collector::request::GasPollEvent {
+            current_gas_price: gas,
+        }));
     }
 }

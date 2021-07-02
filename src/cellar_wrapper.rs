@@ -120,7 +120,7 @@ pub struct CellarAddParams {
     deadline: U256,
 }
 
-// Implement CellarAddParams 
+// Implement CellarAddParams
 impl CellarAddParams {
     // Instantiate `new` CellarAddParams
     pub fn new(
