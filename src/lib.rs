@@ -16,5 +16,6 @@ pub mod commands;
 pub mod config;
 pub mod error;
 pub mod gas;
+pub mod position_manager;
 pub mod prelude;
 pub mod time_range;

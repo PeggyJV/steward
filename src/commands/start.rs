@@ -72,7 +72,6 @@ impl Runnable for StartCmd {
     /// Start the application.
     fn run(&self) {
         let config = APP.config();
-        println!("Hello, {}!", &config.hello.recipient);
 
         abscissa_tokio::run(&APP, async {
             let mut tasks = vec![];
@@ -107,10 +106,6 @@ impl config::Override<ContractMonitorConfig> for StartCmd {
         &self,
         mut config: ContractMonitorConfig,
     ) -> Result<ContractMonitorConfig, FrameworkError> {
-        if !self.recipient.is_empty() {
-            config.hello.recipient = self.recipient.join(" ");
-        }
-
         Ok(config)
     }
 }

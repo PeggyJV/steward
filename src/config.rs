@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 #[serde(deny_unknown_fields)]
 pub struct ContractMonitorConfig {
     /// An example configuration section
-    pub hello: ExampleSection,
+    pub cellar: CellarConfig,
 }
 
 /// Default configuration settings.
@@ -21,7 +21,7 @@ pub struct ContractMonitorConfig {
 impl Default for ContractMonitorConfig {
     fn default() -> Self {
         Self {
-            hello: ExampleSection::default(),
+            cellar: CellarConfig::default(),
         }
     }
 }
@@ -31,15 +31,28 @@ impl Default for ContractMonitorConfig {
 /// Delete this and replace it with your actual configuration structs.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
-pub struct ExampleSection {
+pub struct CellarConfig {
     /// Example configuration value
-    pub recipient: String,
+    pub pair_id: ethers::types::U256,
+    positions: Vec<PositionConfig>,
 }
 
-impl Default for ExampleSection {
+impl Default for CellarConfig {
     fn default() -> Self {
-        Self {
-            recipient: "world".to_owned(),
-        }
+        todo!()
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct PositionConfig {
+    pub id: u32,
+    pub upper: i32,
+    pub lower: i32,
+}
+
+impl Default for PositionConfig {
+    fn default() -> Self {
+        todo!()
     }
 }

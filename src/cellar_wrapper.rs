@@ -88,10 +88,10 @@ impl<T: 'static + Middleware> ContractState<T> {
 
 // Struct for CellarTickInfo
 pub struct CellarTickInfo {
-    token_id: U256,
-    tick_upper: i32,
-    tick_lower: i32,
-    weight: u32,
+    pub(crate) token_id: U256,
+    pub(crate) tick_upper: i32,
+    pub(crate) tick_lower: i32,
+    pub(crate) weight: u32,
 }
 
 // Implement CellarTickInfo. Initiate to_tuple method, to convert Vec<CellarTickInfo> to Tuples.

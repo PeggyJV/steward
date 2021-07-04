@@ -13,10 +13,10 @@ use tower::{util::ServiceExt, Service};
 // Struct TimeRange for time independent bollinger ranges
 #[derive(Serialize, Deserialize)]
 pub struct TimeRange {
-    time: DateTime<chrono::Utc>,
-    previous_update: DateTime<chrono::Utc>,
-    pair_id: U256,
-    tick_weights: Vec<TickWeights>,
+    pub time: DateTime<chrono::Utc>,
+    pub previous_update: DateTime<chrono::Utc>,
+    pub pair_id: U256,
+    pub tick_weights: Vec<TickWeight>,
 }
 
 /// Implement TimeRange for time independent bollinger ranges
@@ -57,10 +57,10 @@ impl std::fmt::Debug for TimeRange {
 
 /// Struct TickWeights for time independent bollinger ranges
 #[derive(Serialize, Deserialize, Debug)]
-pub struct TickWeights {
-    upper_bound: i32,
-    lower_bound: i32,
-    weight: f32,
+pub struct TickWeight {
+    pub upper_bound: i32,
+    pub lower_bound: i32,
+    pub weight: u32,
 }
 
 // Implement TimeRange for time independent bollinger ranges
@@ -70,7 +70,7 @@ impl TimeRange {
         time: DateTime<chrono::Utc>,
         previous_update: DateTime<chrono::Utc>,
         pair_id: U256,
-        tick_weights: TickWeights,
+        tick_weights: TickWeight,
     ) -> Self {
         TimeRange {
             time,
