@@ -37,21 +37,14 @@ impl Runnable for PredictionsCmd {
             // Get a handle to the deployment.
             let client = Client::with_options(options).unwrap();
 
-            // List the names of the databases in that deployment.
-            for db_name in client.list_database_names(None, None).await.unwrap() {
-                println!("{}", db_name);
-            }
+        
             let db = client.database("predictions");
-            info!("Got database");
 
-            for coll_name in db.list_collection_names(None).await.unwrap() {
-                println!("collection: {}", coll_name);
-            }
+
 
             // Get a handle to a collection in the database.
             let collection = db.collection::<MongoData>(
-                "tick_range_predictions
-        ",
+                "tick_range_predictions",
             );
 
             let find_options = FindOptions::builder()
