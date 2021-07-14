@@ -73,7 +73,7 @@ pub struct TickWeight {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct MongoData {
     pub _id: mongodb::bson::Bson,
-    pub created_timestap: mongodb::bson::Bson,
+    pub created_timestamp: mongodb::bson::Bson,
     pub pair_id: ethers::prelude::U256,
     pub symbol: String,
     pub tick_weights: Vec<MongoTickWeights>,
