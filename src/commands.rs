@@ -10,11 +10,14 @@
 //! See the `impl Configurable` below for how to specify the path to the
 //! application's configuration file.
 
+mod predictions;
 mod start;
 mod transfer;
 mod version;
 
-use self::{start::StartCmd, transfer::TransferCmd, version::VersionCmd};
+use self::{
+    predictions::PredictionsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd,
+};
 use crate::config::ContractMonitorConfig;
 use abscissa_core::{
     config::Override, Command, Configurable, FrameworkError, Help, Options, Runnable,
@@ -42,6 +45,10 @@ pub enum ContractMonitorCmd {
     /// The `version` subcommand
     #[options(help = "display version information")]
     Version(VersionCmd),
+
+    /// The `prediction` subcommand
+    #[options(help = "display lastest prediction")]
+    Prediction(PredictionsCmd),
 }
 
 /// This trait allows you to define how application configuration is loaded.

@@ -3,10 +3,17 @@ use crate::error::Error;
 /// This is a Rust type for the JSON data from time independent bollinger ranges.
 use abscissa_core::error::BoxError;
 use ethers::prelude::*;
+use futures::TryStreamExt;
 
 use crate::{collector, config, prelude::*};
 use chrono::DateTime;
 use iqhttp::{HttpsClient, Result};
+use mongodb::{
+    bson::{bson, doc},
+    options::ClientOptions,
+    options::FindOptions,
+    Client,
+};
 use serde::{Deserialize, Serialize};
 use tower::{util::ServiceExt, Service};
 
@@ -63,6 +70,21 @@ pub struct TickWeight {
     pub weight: u32,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct MongoData {
+    pub _id: mongodb::bson::Bson,
+    pub created_timestap: mongodb::bson::Bson,
+    pub pair_id: ethers::prelude::U256,
+    pub symbol: String,
+    pub tick_weights: Vec<MongoTickWeights>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+pub struct MongoTickWeights {
+    lower: mongodb::bson::Bson,
+    upper: mongodb::bson::Bson,
+    weight: mongodb::bson::Bson,
+}
+
 // Implement TimeRange for time independent bollinger ranges
 impl TimeRange {
     // Instantiate TimeRange for time independent bollinger ranges with fn new.
@@ -87,6 +109,26 @@ impl TimeRange {
             + Clone
             + 'static,
     {
-        todo!()
+        let client = Client::with_uri_str("mongodb://10.32.0.224:27017/")
+            .await
+            .unwrap();
+
+        let db = client.database("predictions");
+
+        // Get a handle to a collection in the database.
+        let collection = db.collection::<MongoData>(
+            "tick_range_predictions
+        ",
+        );
+
+        let find_options = FindOptions::builder()
+            .sort(doc! { "created_timestamp": -1 })
+            .build();
+
+        let mut sorted_predictions = collection.find(None, find_options).await.unwrap();
+
+        if let Some(_latest_prediction) = sorted_predictions.try_next().await.unwrap() {
+            todo!()
+        }
     }
 }

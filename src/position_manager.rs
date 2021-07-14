@@ -37,7 +37,7 @@ impl PositionManager {
 
             for tick in &time_range.tick_weights {
                 let allocation = pos.within(tick);
-                 cellar_tick.weight = cellar_tick.weight+ allocation;
+                cellar_tick.weight = cellar_tick.weight + allocation;
             }
             cellars.push(cellar_tick);
         }
