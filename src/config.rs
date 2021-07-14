@@ -34,12 +34,15 @@ impl Default for ContractMonitorConfig {
 pub struct CellarConfig {
     /// Example configuration value
     pub pair_id: ethers::types::U256,
-    positions: Vec<PositionConfig>,
+    pub positions: Vec<PositionConfig>,
 }
 
 impl Default for CellarConfig {
     fn default() -> Self {
-        todo!()
+        CellarConfig {
+            pair_id: ethers::types::U256::zero(),
+            positions: Vec::new(),
+        }
     }
 }
 

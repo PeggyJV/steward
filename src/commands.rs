@@ -48,7 +48,7 @@ pub enum ContractMonitorCmd {
 
     /// The `prediction` subcommand
     #[options(help = "display lastest prediction")]
-    Prediction(PredictionsCmd),
+    Predictions(PredictionsCmd),
 }
 
 /// This trait allows you to define how application configuration is loaded.
