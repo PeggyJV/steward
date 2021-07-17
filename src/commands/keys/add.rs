@@ -15,7 +15,7 @@ pub struct AddKeyCmd {
     pub overwrite: bool,
 }
 
-// `gorc keys cosmos add [name]`
+// `contract monitor keys add [name]`
 // - [name] required; key name
 impl Runnable for AddKeyCmd {
     fn run(&self) {
@@ -38,7 +38,7 @@ impl Runnable for AddKeyCmd {
 
         let seed = mnemonic.to_seed("");
 
-        let path = config.cosmos.key_derivation_path.clone();
+        let path = config.ethereum.key_derivation_path.clone();
         let path = path
             .parse::<bip32::DerivationPath>()
             .expect("Could not parse derivation path");
