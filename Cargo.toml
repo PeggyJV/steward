@@ -11,12 +11,18 @@ thiserror = "1"
 ethers = {version = "0.2", features=["abigen"]}
 abscissa_tokio = "0.6.0-pre.1"
 serde_json = "1.0.64"
+bip32 = "0.2"
+k256 = { version = "0.9", features = ["pem"] }
+pkcs8 = { version = "0.7", features = ["pem"] }
+signatory = "0.23.0-pre"
+rand_core = { version = "0.6", features = ["std"] }
 
 [dependencies.abscissa_core]
 version = "0.6.0-pre.1"
 # optional: use `gimli` to capture backtraces
 # see https://github.com/rust-lang/backtrace-rs/issues/189
 # features = ["gimli-backtrace"]
+
 
 [dev-dependencies]
 abscissa_core = { version = "0.6.0-pre.1", features = ["testing"] }
