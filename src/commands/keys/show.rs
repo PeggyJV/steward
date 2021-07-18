@@ -31,6 +31,6 @@ impl Runnable for ShowKeyCmd {
 
         let address = wallet.address();
 
-        println!("{}\t{:?}", name, address);
+        println!("{}\t{:#x}", name, address);
     }
 }
