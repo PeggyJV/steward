@@ -29,6 +29,8 @@ impl Runnable for ShowKeyCmd {
 
         let wallet: LocalWallet = Wallet::from(key);
 
-        println!("{}\t{:?}", name, wallet);
+        let address = wallet.address();
+
+        println!("{}\t{:?}", name, address);
     }
 }
