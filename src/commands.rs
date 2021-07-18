@@ -14,8 +14,9 @@ mod start;
 mod transfer;
 mod cellarcontract;
 mod version;
+mod keys;
 
-use self::{start::StartCmd, transfer::TransferCmd, cellarcontract::CellarcontractCmd, version::VersionCmd};
+use self::{start::StartCmd, transfer::TransferCmd, cellarcontract::CellarcontractCmd, version::VersionCmd, keys::KeysCmd};
 use crate::config::ContractMonitorConfig;
 use abscissa_core::{
     config::Override, Command, Configurable, FrameworkError, Help, Options, Runnable,
@@ -47,6 +48,10 @@ pub enum ContractMonitorCmd {
     /// The `version` subcommand
     #[options(help = "display version information")]
     Version(VersionCmd),
+
+    /// The `keys` subcommand
+    #[options(help = "key management commands")]
+    Keys(KeysCmd),
 }
 
 /// This trait allows you to define how application configuration is loaded.
