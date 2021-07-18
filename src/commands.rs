@@ -49,6 +49,7 @@ pub enum ContractMonitorCmd {
     #[options(help = "display version information")]
     Version(VersionCmd),
 
+    /// The `keys` subcommand
     #[options(help = "key management commands")]
     Keys(KeysCmd),
 }
