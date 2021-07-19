@@ -14,10 +14,12 @@ mod predictions;
 mod start;
 mod transfer;
 mod version;
+mod keys;
 
 use self::{
-    predictions::PredictionsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd,
+    predictions::PredictionsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd,keys::KeysCmd,
 };
+
 use crate::config::ContractMonitorConfig;
 use abscissa_core::{
     config::Override, Command, Configurable, FrameworkError, Help, Options, Runnable,
@@ -49,6 +51,9 @@ pub enum ContractMonitorCmd {
     /// The `prediction` subcommand
     #[options(help = "display lastest prediction")]
     Predictions(PredictionsCmd),
+    /// The `keys` subcommand
+    #[options(help = "key management commands")]
+    Keys(KeysCmd),
 }
 
 /// This trait allows you to define how application configuration is loaded.
