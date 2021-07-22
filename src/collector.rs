@@ -49,7 +49,7 @@ fn u256_sqrt(y: Option<U256>) -> Option<U256> {
 
     // Instantiate collector with `new` function
     impl Collector {
-        pub fn new(config: &config::ContractMonitorConfig) -> Result<Self, Error> {
+        pub fn new(config: &config::CellarRebalancerConfig) -> Result<Self, Error> {
             Ok(Collector {
                 recent_gas_prices: Vec::new(),
                 last_rebalance_time: chrono::Utc::now(),

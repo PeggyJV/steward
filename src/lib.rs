@@ -1,4 +1,4 @@
-//! ContractMonitor
+//! CellarRebalancer
 //!
 //! Application based on the [Abscissa] framework.
 //!

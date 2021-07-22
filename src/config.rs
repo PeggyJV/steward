@@ -1,4 +1,4 @@
-//! ContractMonitor Config
+//! CellarRebalancer Config
 //!
 //! See instructions in `commands.rs` to specify the path to your
 //! application's configuration file and/or command-line options
@@ -7,10 +7,10 @@
 use ethers::prelude::H160;
 use serde::{Deserialize, Serialize};
 
-/// ContractMonitor Configuration
+/// CellarRebalancer Configuration
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
-pub struct ContractMonitorConfig {
+pub struct CellarRebalancerConfig {
     /// An example configuration section
     pub cellar: CellarConfig,
     /// An example configuration for keystore
@@ -22,8 +22,8 @@ pub struct ContractMonitorConfig {
 /// Default configuration settings.
 ///
 /// Note: if your needs are as simple as below, you can
-/// use `#[derive(Default)]` on ContractMonitorConfig instead.
-impl Default for ContractMonitorConfig {
+/// use `#[derive(Default)]` on CellarRebalancerConfig instead.
+impl Default for CellarRebalancerConfig {
     fn default() -> Self {
         Self {
             cellar: CellarConfig::default(),

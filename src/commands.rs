@@ -1,4 +1,4 @@
-//! ContractMonitor Subcommands
+//! CellarRebalancer Subcommands
 //!
 //! This is where you specify the subcommands of your application.
 //!
@@ -20,18 +20,18 @@ use self::{
     predictions::PredictionsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd,keys::KeysCmd,
 };
 
-use crate::config::ContractMonitorConfig;
+use crate::config::CellarRebalancerConfig;
 use abscissa_core::{
     config::Override, Command, Configurable, FrameworkError, Help, Options, Runnable,
 };
 use std::path::PathBuf;
 
-/// ContractMonitor Configuration Filename
+/// CellarRebalancer Configuration Filename
 pub const CONFIG_FILE: &str = "contract_monitor.toml";
 
-/// ContractMonitor Subcommands
+/// CellarRebalancer Subcommands
 #[derive(Command, Debug, Options, Runnable)]
-pub enum ContractMonitorCmd {
+pub enum CellarRebalancerCmd {
     /// The `help` subcommand
     #[options(help = "get usage information")]
     Help(Help<Self>),
@@ -57,7 +57,7 @@ pub enum ContractMonitorCmd {
 }
 
 /// This trait allows you to define how application configuration is loaded.
-impl Configurable<ContractMonitorConfig> for ContractMonitorCmd {
+impl Configurable<CellarRebalancerConfig> for CellarRebalancerCmd {
     /// Location of the configuration file
     fn config_path(&self) -> Option<PathBuf> {
         // Check if the config file exists, and if it does not, ignore it.
@@ -79,10 +79,10 @@ impl Configurable<ContractMonitorConfig> for ContractMonitorCmd {
     /// settings from command-line options.
     fn process_config(
         &self,
-        config: ContractMonitorConfig,
-    ) -> Result<ContractMonitorConfig, FrameworkError> {
+        config: CellarRebalancerConfig,
+    ) -> Result<CellarRebalancerConfig, FrameworkError> {
         match self {
-            ContractMonitorCmd::Start(cmd) => cmd.override_config(config),
+            CellarRebalancerCmd::Start(cmd) => cmd.override_config(config),
             _ => Ok(config),
         }
     }

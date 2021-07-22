@@ -1,6 +1,6 @@
-//! ContractMonitor Abscissa Application
+//! CellarRebalancer Abscissa Application
 
-use crate::{commands::ContractMonitorCmd, config::ContractMonitorConfig};
+use crate::{commands::CellarRebalancerCmd, config::CellarRebalancerConfig};
 use abscissa_core::{
     application::{self, AppCell},
     config::{self, CfgCell},
@@ -8,13 +8,13 @@ use abscissa_core::{
 };
 
 /// Application state
-pub static APP: AppCell<ContractMonitorApp> = AppCell::new();
+pub static APP: AppCell<CellarRebalancerApp> = AppCell::new();
 
-/// ContractMonitor Application
+/// CellarRebalancer Application
 #[derive(Debug)]
-pub struct ContractMonitorApp {
+pub struct CellarRebalancerApp {
     /// Application configuration.
-    config: CfgCell<ContractMonitorConfig>,
+    config: CfgCell<CellarRebalancerConfig>,
 
     /// Application state.
     state: application::State<Self>,
@@ -24,7 +24,7 @@ pub struct ContractMonitorApp {
 ///
 /// By default no configuration is loaded, and the framework state is
 /// initialized to a default, empty state (no components, threads, etc).
-impl Default for ContractMonitorApp {
+impl Default for CellarRebalancerApp {
     fn default() -> Self {
         Self {
             config: CfgCell::default(),
@@ -33,18 +33,18 @@ impl Default for ContractMonitorApp {
     }
 }
 
-impl Application for ContractMonitorApp {
+impl Application for CellarRebalancerApp {
     /// Entrypoint command for this application.
-    type Cmd = EntryPoint<ContractMonitorCmd>;
+    type Cmd = EntryPoint<CellarRebalancerCmd>;
 
     /// Application configuration.
-    type Cfg = ContractMonitorConfig;
+    type Cfg = CellarRebalancerConfig;
 
     /// Paths to resources within the application.
     type Paths = StandardPaths;
 
     /// Accessor for application configuration.
-    fn config(&self) -> config::Reader<ContractMonitorConfig> {
+    fn config(&self) -> config::Reader<CellarRebalancerConfig> {
         self.config.read()
     }
 
@@ -79,7 +79,7 @@ impl Application for ContractMonitorApp {
     }
 
     /// Get tracing configuration from command-line options
-    fn tracing_config(&self, command: &EntryPoint<ContractMonitorCmd>) -> trace::Config {
+    fn tracing_config(&self, command: &EntryPoint<CellarRebalancerCmd>) -> trace::Config {
         if command.verbose {
             trace::Config::verbose()
         } else {

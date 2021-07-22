@@ -2,7 +2,7 @@
 
 #![allow(clippy::never_loop)]
 
-use super::ContractMonitorCmd;
+use super::CellarRebalancerCmd;
 use abscissa_core::{Command, Options, Runnable};
 
 /// `version` subcommand
@@ -14,8 +14,8 @@ impl Runnable for VersionCmd {
     fn run(&self) {
         println!(
             "{} {}",
-            ContractMonitorCmd::name(),
-            ContractMonitorCmd::version()
+            CellarRebalancerCmd::name(),
+            CellarRebalancerCmd::version()
         );
     }
 }

@@ -14,7 +14,7 @@ use std::time::Duration;
 
 use crate::{
     collector::{Collector, Poller, Request, Response},
-    config::ContractMonitorConfig,
+    config::CellarRebalancerConfig,
 };
 use abscissa_core::{config, Command, FrameworkError, Options, Runnable};
 use std::{convert::TryFrom, sync::Arc};
@@ -39,7 +39,7 @@ impl StartCmd {
     /// Initialize collector poller (if configured/needed)
     async fn init_collector_poller<S>(
         &self,
-        config: ContractMonitorConfig,
+        config: CellarRebalancerConfig,
         collector: S,
     ) -> JoinHandle<()>
     where
@@ -98,14 +98,14 @@ impl Runnable for StartCmd {
     }
 }
 
-impl config::Override<ContractMonitorConfig> for StartCmd {
+impl config::Override<CellarRebalancerConfig> for StartCmd {
     // Process the given command line options, overriding settings from
     // a configuration file using explicit flags taken from command-line
     // arguments.
     fn override_config(
         &self,
-        mut config: ContractMonitorConfig,
-    ) -> Result<ContractMonitorConfig, FrameworkError> {
+        mut config: CellarRebalancerConfig,
+    ) -> Result<CellarRebalancerConfig, FrameworkError> {
         Ok(config)
     }
 }

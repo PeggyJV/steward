@@ -399,6 +399,36 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e70cc2f62c6ce1868963827bd677764c62d07c3d9a3e1fb1177ee1a9ab199eb2"
 
 [[package]]
+name = "cellar_rebalancer"
+version = "0.1.0"
+dependencies = [
+ "abscissa_core",
+ "abscissa_tokio",
+ "bip32",
+ "bson",
+ "chrono",
+ "ethers",
+ "futures",
+ "gumdrop",
+ "iqhttp",
+ "k256",
+ "mongodb",
+ "num-bigint",
+ "num-traits",
+ "once_cell",
+ "pkcs8",
+ "rand_core 0.6.3",
+ "rpassword",
+ "serde",
+ "serde_json",
+ "signatory",
+ "thiserror",
+ "tokio",
+ "tower",
+ "uniswap_v3_sdk",
+]
+
+[[package]]
 name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -501,36 +531,6 @@ name = "const-oid"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "44c32f031ea41b4291d695026c023b95d59db2d8a2c7640800ed56bc8f510f22"
-
-[[package]]
-name = "contract_monitor"
-version = "0.1.0"
-dependencies = [
- "abscissa_core",
- "abscissa_tokio",
- "bip32",
- "bson",
- "chrono",
- "ethers",
- "futures",
- "gumdrop",
- "iqhttp",
- "k256",
- "mongodb",
- "num-bigint",
- "num-traits",
- "once_cell",
- "pkcs8",
- "rand_core 0.6.3",
- "rpassword",
- "serde",
- "serde_json",
- "signatory",
- "thiserror",
- "tokio",
- "tower",
- "uniswap_v3_sdk",
-]
 
 [[package]]
 name = "core-foundation"

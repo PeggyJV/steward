@@ -59,7 +59,7 @@ impl<T: Middleware> Poller<T> {
         todo!()
     }
 
-    pub fn new(config: &config::ContractMonitorConfig, client: T) -> Result<Self, Error> {
+    pub fn new(config: &config::CellarRebalancerConfig, client: T) -> Result<Self, Error> {
         todo!()
     }
 

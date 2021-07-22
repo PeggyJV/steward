@@ -19,7 +19,7 @@
 )]
 
 use abscissa_core::testing::prelude::*;
-use contract_monitor::config::ContractMonitorConfig;
+use cellar_rebalancer::config::CellarRebalancerConfig;
 use once_cell::sync::Lazy;
 
 /// Executes your application binary via `cargo run`.
@@ -30,7 +30,7 @@ use once_cell::sync::Lazy;
 /// invocations as `cargo test` executes tests in parallel by default.
 pub static RUNNER: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
 
-/// Use `ContractMonitorConfig::default()` value if no config or args
+/// Use `CellarRebalancerConfig::default()` value if no config or args
 #[test]
 fn start_no_args() {
     let mut runner = RUNNER.clone();
@@ -55,7 +55,7 @@ fn start_with_args() {
 /// Use configured value
 // #[test]
 // fn start_with_config_no_args() {
-//     let mut config = ContractMonitorConfig::default();
+//     let mut config = CellarRebalancerConfig::default();
 //     config.hello.recipient = "configured recipient".to_owned();
 //     let expected_line = format!("Hello, {}!", &config.hello.recipient);
 
@@ -68,7 +68,7 @@ fn start_with_args() {
 /// Override configured value with command-line argument
 #[test]
 fn start_with_config_and_args() {
-    let mut config = ContractMonitorConfig::default();
+    let mut config = CellarRebalancerConfig::default();
     // config.hello.recipient = "configured recipient".to_owned();
 
     let mut runner = RUNNER.clone();
