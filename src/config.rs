@@ -4,6 +4,7 @@
 //! application's configuration file and/or command-line options
 //! for specifying it.
 
+use ethers::prelude::H160;
 use serde::{Deserialize, Serialize};
 
 /// ContractMonitor Configuration
@@ -32,6 +33,7 @@ impl Default for ContractMonitorConfig {
     }
 }
 
+
 /// Example configuration section.
 ///
 /// Delete this and replace it with your actual configuration structs.
@@ -40,31 +42,38 @@ impl Default for ContractMonitorConfig {
 pub struct CellarConfig {
     /// Example configuration value
     pub pair_id: ethers::types::U256,
-    pub positions: Vec<PositionConfig>,
+    pub token_0: TokenInfo,
+    pub token_1: TokenInfo,
+
 }
 
 impl Default for CellarConfig {
     fn default() -> Self {
         CellarConfig {
             pair_id: ethers::types::U256::zero(),
-            positions: Vec::new(),
+            token_0: TokenInfo::default(),
+            token_1: TokenInfo::default(),
+        }
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct TokenInfo{
+   pub decimals: u8,
+   pub  symbol: String,
+   pub address: H160,
+}
+
+impl Default for TokenInfo {
+    fn default() -> Self {
+        TokenInfo {
+            decimals: 18,
+            symbol: "NA".to_string(),
+            address: H160::zero(),
         }
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(deny_unknown_fields)]
-pub struct PositionConfig {
-    pub id: u32,
-    pub upper: i32,
-    pub lower: i32,
-}
-
-impl Default for PositionConfig {
-    fn default() -> Self {
-        todo!()
-    }
-}
 
 /// EthereumSection for ethereum rpc and derivation path
 #[derive(Clone, Debug, Deserialize, Serialize)]

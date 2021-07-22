@@ -509,6 +509,7 @@ dependencies = [
  "abscissa_core",
  "abscissa_tokio",
  "bip32",
+ "bson",
  "chrono",
  "ethers",
  "futures",
@@ -516,6 +517,8 @@ dependencies = [
  "iqhttp",
  "k256",
  "mongodb",
+ "num-bigint",
+ "num-traits",
  "once_cell",
  "pkcs8",
  "rand_core 0.6.3",
@@ -526,6 +529,7 @@ dependencies = [
  "thiserror",
  "tokio",
  "tower",
+ "uniswap_v3_sdk",
 ]
 
 [[package]]
@@ -1803,6 +1807,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3f6bb902e437b6d86e03cce10a7e2af662292c5dfef23b65899ea3ac9354ad44"
 dependencies = [
  "winapi",
+]
+
+[[package]]
+name = "num-bigint"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4e0d047c1062aa51e256408c560894e5251f08925980e53cf1aa5bd00eec6512"
+dependencies = [
+ "autocfg",
+ "num-integer",
+ "num-traits",
 ]
 
 [[package]]
@@ -3209,6 +3224,15 @@ name = "unicode-xid"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ccb82d61f80a663efe1f787a51b16b5a51e3314d6ac365b08639f52387b33f3"
+
+[[package]]
+name = "uniswap_v3_sdk"
+version = "0.1.0"
+source = "git+https://github.com/PeggyJV/uniswap_sdk_rs?branch=main#7d2c9382941ff68205f5a5c79720c83561c266a9"
+dependencies = [
+ "num-bigint",
+ "num-traits",
+]
 
 [[package]]
 name = "untrusted"

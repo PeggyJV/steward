@@ -17,7 +17,10 @@ futures = "0.3"
 chrono = "0.4"
 iqhttp = { version = "0.1", features = ["json"] }
 mongodb = "2.0.0-beta.2"
-
+bson = {version = "2.0.0-beta.2", features = ["chrono-0_4"]}
+uniswap_v3_sdk ={git ="https://github.com/PeggyJV/uniswap_sdk_rs",branch = "main"}
+num-bigint = "0.4"
+num-traits = "0.2"
 
 bip32 = "0.2"
 k256 = { version = "0.9", features = ["pem"] }

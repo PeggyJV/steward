@@ -1,6 +1,5 @@
 use crate::{
     cellar_wrapper::CellarTickInfo,
-    config::PositionConfig,
     time_range::{TickWeight, TimeRange},
 };
 
@@ -10,20 +9,8 @@ pub struct PositionManager {
 }
 
 impl PositionManager {
-    pub fn new(position_config: &Vec<PositionConfig>) -> PositionManager {
-        let mut position_manager = PositionManager {
-            pair_id: ethers::types::U256::zero(),
-            positions: Vec::new(),
-        };
-
-        for pos in position_config {
-            position_manager.positions.push(Position {
-                upper_tick: pos.upper,
-                lower_tick: pos.lower,
-                weight: 0u32,
-            })
-        }
-        position_manager
+    pub fn new() -> PositionManager {
+     todo!()
     }
     pub fn compute_rebalance(&self, time_range: TimeRange) -> Vec<CellarTickInfo> {
         let mut cellars: Vec<CellarTickInfo> = Vec::new();
