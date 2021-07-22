@@ -10,13 +10,16 @@
 //! See the `impl Configurable` below for how to specify the path to the
 //! application's configuration file.
 
+mod predictions;
 mod start;
 mod transfer;
-mod cellarcontract;
 mod version;
 mod keys;
 
-use self::{start::StartCmd, transfer::TransferCmd, cellarcontract::CellarcontractCmd, version::VersionCmd, keys::KeysCmd};
+use self::{
+    predictions::PredictionsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd,keys::KeysCmd,
+};
+
 use crate::config::ContractMonitorConfig;
 use abscissa_core::{
     config::Override, Command, Configurable, FrameworkError, Help, Options, Runnable,
@@ -41,14 +44,13 @@ pub enum ContractMonitorCmd {
     #[options(help = "transfer ETH")]
     Transfer(TransferCmd),
 
-    /// The `contract` subcommand
-    #[options(help = "Cellar contract")]
-    Cellarcontract(CellarcontractCmd),
-
     /// The `version` subcommand
     #[options(help = "display version information")]
     Version(VersionCmd),
 
+    /// The `prediction` subcommand
+    #[options(help = "display lastest prediction")]
+    Predictions(PredictionsCmd),
     /// The `keys` subcommand
     #[options(help = "key management commands")]
     Keys(KeysCmd),
