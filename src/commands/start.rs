@@ -4,13 +4,14 @@
 /// accessors along with logging macros. Customize as you see fit.
 use crate::prelude::*;
 use abscissa_core::error::BoxError;
+use signatory::FsKeyStore;
 
 use crate::application::APP;
 use ethers::{
     prelude::*,
     providers::{Http, Provider},
 };
-use std::time::Duration;
+use std::{path, time::Duration};
 
 use crate::{
     collector::{Collector, Poller, Request, Response},
@@ -46,14 +47,30 @@ impl StartCmd {
         S: Service<Request, Response = Response, Error = BoxError> + Send + Sync + Clone + 'static,
         S::Future: Send,
     {
+        let config = APP.config();
+
+        let keystore = path::Path::new(&config.key.keystore);
+        let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
+
+        let name = &config.key.rebalancer_key.parse().expect("Could not parse name");
+        let key = keystore.load(name).expect("Could not load key");
+
+        let key = key
+        .to_pem()
+        .parse::<k256::elliptic_curve::SecretKey<k256::Secp256k1>>()
+        .expect("Could not parse key");
+
+        let wallet: LocalWallet = Wallet::from(key);
+
+        let address = wallet.address();
+
         tokio::spawn(async move {
-            let address = "0x44692093E7A78447D8Ddbc477192934520928A5B
-                "
-            .parse::<Address>()
-            .unwrap();
+
 
             // Connect to the network provider (example below is for my Ganache-cli fork)
             let client = Provider::<Http>::try_from("http://localhost:7545").unwrap();
+            let client = SignerMiddleware::new(client, wallet);
+
 
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
