@@ -11,10 +11,10 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct CellarRebalancerConfig {
+    pub key: KeyConfig,
     /// An example configuration section
     pub cellar: CellarConfig,
     /// An example configuration for keystore
-    pub keystore: String,
     /// An example configuration for ethereum
     pub ethereum: EthereumSection,
 }
@@ -27,12 +27,26 @@ impl Default for CellarRebalancerConfig {
     fn default() -> Self {
         Self {
             cellar: CellarConfig::default(),
-            keystore: "/tmp/keystore".to_owned(),
+            key: KeyConfig::default(),
             ethereum: EthereumSection::default(),
         }
     }
 }
 
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct KeyConfig{
+    pub keystore: String,
+    pub rebalancer_key:String,
+}
+
+impl Default for KeyConfig {
+    fn default() -> Self {
+        Self {
+            keystore: "/tmp/keystore".to_owned(),
+            rebalancer_key: "".to_owned(),
+        }
+    }
+}
 
 /// Example configuration section.
 ///
@@ -41,7 +55,8 @@ impl Default for CellarRebalancerConfig {
 #[serde(deny_unknown_fields)]
 pub struct CellarConfig {
     /// Example configuration value
-    pub pair_id: ethers::types::U256,
+    pub pair_id: ethers::types::H160,
+    pub cellar_addresses: ethers::types::H160,
     pub token_0: TokenInfo,
     pub token_1: TokenInfo,
 
@@ -50,7 +65,8 @@ pub struct CellarConfig {
 impl Default for CellarConfig {
     fn default() -> Self {
         CellarConfig {
-            pair_id: ethers::types::U256::zero(),
+            pair_id: ethers::types::H160::zero(),
+            cellar_addresses: ethers::types::H160::zero(),
             token_0: TokenInfo::default(),
             token_1: TokenInfo::default(),
         }

@@ -15,9 +15,10 @@ mod start;
 mod transfer;
 mod version;
 mod keys;
+mod config_cmd;
 
 use self::{
-    predictions::PredictionsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd,keys::KeysCmd,
+    predictions::PredictionsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd,keys::KeysCmd,config_cmd::ConfigCmd,
 };
 
 use crate::config::CellarRebalancerConfig;
@@ -54,6 +55,9 @@ pub enum CellarRebalancerCmd {
     /// The `keys` subcommand
     #[options(help = "key management commands")]
     Keys(KeysCmd),
+
+    #[options(help = "print default config")]
+    PrintConfig(ConfigCmd),
 }
 
 /// This trait allows you to define how application configuration is loaded.

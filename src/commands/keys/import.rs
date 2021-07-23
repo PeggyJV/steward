@@ -20,7 +20,7 @@ pub struct ImportEthKeyCmd {
 impl Runnable for ImportEthKeyCmd {
     fn run(&self) {
         let config = APP.config();
-        let keystore = path::Path::new(&config.keystore);
+        let keystore = path::Path::new(&config.key.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
 
         let name = self.args.get(0).expect("name is required");

@@ -424,6 +424,7 @@ dependencies = [
  "signatory",
  "thiserror",
  "tokio",
+ "toml",
  "tower",
  "uniswap_v3_sdk",
 ]
