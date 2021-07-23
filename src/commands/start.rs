@@ -64,6 +64,8 @@ impl StartCmd {
 
         let address = wallet.address();
 
+        let cellar_contract_address = config.cellar.cellar_addresses;
+
         tokio::spawn(async move {
 
 

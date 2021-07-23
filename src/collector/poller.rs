@@ -12,7 +12,7 @@ use crate::{
 use abscissa_core::error::BoxError;
 use ethers::prelude::*;
 use futures::future;
-use std::time::Duration;
+use std::{sync::Arc, time::Duration};
 use tokio::time;
 use tokio::try_join;
 use tower::Service;
@@ -20,17 +20,34 @@ use tower::Service;
 // Struct poller to collect poll_interval etc. from external sources which aren't capable of pushing data
 pub struct Poller<T: Middleware> {
     poll_interval: Duration,
-    time_range_host: String,
-    time_range: TimeRange,
+    mongo_host: String,
+    time_range: Option<TimeRange>,
     cellar_gas: CellarGas,
     contract_state: ContractState<T>,
 }
 
 // Implement poller middleware
-impl<T: Middleware> Poller<T> {
+impl<T: 'static + Middleware> Poller<T> {
+
+
+    pub fn new(config: &config::CellarRebalancerConfig, client: Arc<T>) -> Result<Self, Error> {
+        Ok(
+            Poller {
+                poll_interval: config.cellar.duration,
+                mongo_host: config.mongo.host.clone(),
+                time_range: None,
+                cellar_gas: CellarGas {},
+                contract_state: ContractState::new(config.cellar.cellar_addresses, client),
+
+
+            }
+        )
+        
+    }
+
     // Retrieve poll time range
     pub async fn poll_time_range(&self) -> Result<TimeRange, Error> {
-        TimeRange::fetch(self.time_range_host.clone())
+        TimeRange::fetch(self.mongo_host.clone())
             .await
             .map_err(|e| e.into())
     }
@@ -42,7 +59,9 @@ impl<T: Middleware> Poller<T> {
 
     // Retrieve the current contract state
     pub async fn poll_contract_state(&self) -> Result<ContractStateUpdate, Error> {
-        Ok(ContractStateUpdate {})
+        Ok(ContractStateUpdate{
+
+        })
     }
 
     // Update poller with time_range, gas price and contract_state
@@ -59,9 +78,7 @@ impl<T: Middleware> Poller<T> {
         todo!()
     }
 
-    pub fn new(config: &config::CellarRebalancerConfig, client: T) -> Result<Self, Error> {
-        todo!()
-    }
+
 
     // Route incoming requests.
     pub async fn run<S>(mut self, collector: S)

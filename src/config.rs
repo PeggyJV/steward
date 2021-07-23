@@ -4,6 +4,8 @@
 //! application's configuration file and/or command-line options
 //! for specifying it.
 
+use std::time::Duration;
+
 use ethers::prelude::H160;
 use serde::{Deserialize, Serialize};
 
@@ -17,6 +19,7 @@ pub struct CellarRebalancerConfig {
     /// An example configuration for keystore
     /// An example configuration for ethereum
     pub ethereum: EthereumSection,
+    pub mongo: MongoSection,
 }
 
 /// Default configuration settings.
@@ -29,8 +32,21 @@ impl Default for CellarRebalancerConfig {
             cellar: CellarConfig::default(),
             key: KeyConfig::default(),
             ethereum: EthereumSection::default(),
+            mongo: MongoSection::default(),
         }
     }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct MongoSection{
+    pub host: String,
+}
+
+impl Default for MongoSection {
+  fn default() -> Self {
+      Self{
+          host:"mongodb://localhost:27017/".to_string(),
+      }
+  }  
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -59,6 +75,7 @@ pub struct CellarConfig {
     pub cellar_addresses: ethers::types::H160,
     pub token_0: TokenInfo,
     pub token_1: TokenInfo,
+    pub duration: Duration,
 
 }
 
@@ -69,6 +86,7 @@ impl Default for CellarConfig {
             cellar_addresses: ethers::types::H160::zero(),
             token_0: TokenInfo::default(),
             token_1: TokenInfo::default(),
+            duration: Duration::from_secs(60),
         }
     }
 }
