@@ -19,4 +19,7 @@ pub enum KeysCmd {
 
     #[options(help = "list")]
     List(list::ListKeyCmd),
+
+    #[options(help = "import")]
+    Import(import::ImportEthKeyCmd),
 }

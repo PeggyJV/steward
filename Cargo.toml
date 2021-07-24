@@ -22,7 +22,7 @@ uniswap_v3_sdk ={git ="https://github.com/PeggyJV/uniswap_sdk_rs",branch = "main
 num-bigint = "0.4"
 num-traits = "0.2"
 toml = { version = "0.5" }
-
+bytes = "1.0"
 
 bip32 = "0.2"
 k256 = { version = "0.9", features = ["pem"] }

@@ -3,6 +3,7 @@ use crate::application::APP;
 use abscissa_core::{Application, Command, Options, Runnable};
 use k256::pkcs8::ToPrivateKey;
 use signatory::FsKeyStore;
+use serde::{Deserialize,Deserializer};
 use std::path;
 
 #[derive(Command, Debug, Default, Options)]
@@ -38,9 +39,9 @@ impl Runnable for ImportEthKeyCmd {
                 .expect("Could not read mnemonic"),
         };
 
-        let mnemonic = bip32::Mnemonic::new(mnemonic.trim(), Default::default())
-            .expect("Could not parse mnemonic");
-
+        let key = match bip32::Mnemonic::new(mnemonic.trim(), Default::default()){
+            Ok(mnemonic) => {
+                
         let seed = mnemonic.to_seed("");
 
         let path = config.ethereum.key_derivation_path.trim();
@@ -50,9 +51,25 @@ impl Runnable for ImportEthKeyCmd {
 
         let key = bip32::XPrv::derive_from_path(seed, &path).expect("Could not derive key");
         let key = k256::SecretKey::from(key.private_key());
-        let key = key
+         key
             .to_pkcs8_der()
-            .expect("Could not PKCS8 encod private key");
+            .expect("Could not PKCS8 encod private key")
+
+            },
+            Err(_) =>{
+            let key = rpassword::read_password_from_tty(Some("> Enter your private-key:\n"))
+                .expect("Could not read private-key");
+
+            let key:ethers::types::H256 = key.parse().expect("Could not parse private-key");
+
+            let key = k256::SecretKey::from_bytes(key).expect("Could not make private key");
+            key
+            .to_pkcs8_der()
+            .expect("Could not PKCS8 encod private key")
+            } 
+            
+            ,
+        };
 
         keystore.store(&name, &key).expect("Could not store key");
 
