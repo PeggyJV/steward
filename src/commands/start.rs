@@ -4,6 +4,7 @@
 /// accessors along with logging macros. Customize as you see fit.
 use crate::prelude::*;
 use abscissa_core::error::BoxError;
+use futures::future;
 use signatory::FsKeyStore;
 
 use crate::application::APP;
@@ -19,7 +20,7 @@ use crate::{
 };
 use abscissa_core::{config, Command, FrameworkError, Options, Runnable};
 use std::{convert::TryFrom, sync::Arc};
-use tokio::task::JoinHandle;
+use tokio::{join, task::JoinHandle};
 use tower::{Service, ServiceBuilder};
 
 /// `start` subcommand
@@ -52,13 +53,17 @@ impl StartCmd {
         let keystore = path::Path::new(&config.key.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
 
-        let name = &config.key.rebalancer_key.parse().expect("Could not parse name");
+        let name = &config
+            .key
+            .rebalancer_key
+            .parse()
+            .expect("Could not parse name");
         let key = keystore.load(name).expect("Could not load key");
 
         let key = key
-        .to_pem()
-        .parse::<k256::elliptic_curve::SecretKey<k256::Secp256k1>>()
-        .expect("Could not parse key");
+            .to_pem()
+            .parse::<k256::elliptic_curve::SecretKey<k256::Secp256k1>>()
+            .expect("Could not parse key");
 
         let wallet: LocalWallet = Wallet::from(key);
 
@@ -67,12 +72,9 @@ impl StartCmd {
         let cellar_contract_address = config.cellar.cellar_addresses;
 
         tokio::spawn(async move {
-
-
             // Connect to the network provider (example below is for my Ganache-cli fork)
             let client = Provider::<Http>::try_from("http://localhost:7545").unwrap();
             let client = SignerMiddleware::new(client, wallet);
-
 
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
@@ -90,25 +92,26 @@ impl StartCmd {
 impl Runnable for StartCmd {
     /// Start the application.
     fn run(&self) {
-        let config = APP.config();
+        info!("Starting application");
 
+        let config = APP.config();
         abscissa_tokio::run(&APP, async {
             let mut tasks = vec![];
 
-            if let config = APP.config().clone() {
-                let collector = ServiceBuilder::new().buffer(20).service(
-                    Collector::new(&config).unwrap_or_else(|e| {
+            let collector =
+                ServiceBuilder::new()
+                    .buffer(20)
+                    .service(Collector::new(&config).unwrap_or_else(|e| {
                         status_err!("couldn't initialize collector service: {}", e);
                         std::process::exit(1);
-                    }),
-                );
+                    }));
 
-                tasks.push(
-                    self.init_collector_poller(config.as_ref().clone(), collector.clone())
-                        .await,
-                )
-            }
-            tasks
+            tasks.push(
+                self.init_collector_poller(config.as_ref().clone(), collector.clone())
+                    .await,
+            );
+
+            future::join_all(tasks).await;
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

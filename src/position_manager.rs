@@ -10,7 +10,7 @@ pub struct PositionManager {
 
 impl PositionManager {
     pub fn new() -> PositionManager {
-     todo!()
+        todo!()
     }
     pub fn compute_rebalance(&self, time_range: TimeRange) -> Vec<CellarTickInfo> {
         let mut cellars: Vec<CellarTickInfo> = Vec::new();

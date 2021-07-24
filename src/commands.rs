@@ -10,15 +10,16 @@
 //! See the `impl Configurable` below for how to specify the path to the
 //! application's configuration file.
 
+mod config_cmd;
+mod keys;
 mod predictions;
 mod start;
 mod transfer;
 mod version;
-mod keys;
-mod config_cmd;
 
 use self::{
-    predictions::PredictionsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd,keys::KeysCmd,config_cmd::ConfigCmd,
+    config_cmd::ConfigCmd, keys::KeysCmd, predictions::PredictionsCmd, start::StartCmd,
+    transfer::TransferCmd, version::VersionCmd,
 };
 
 use crate::config::CellarRebalancerConfig;

@@ -1,4 +1,4 @@
-use abscissa_core::{Runnable, Command,Options};
+use abscissa_core::{Command, Options, Runnable};
 
 #[derive(Command, Debug, Default, Options)]
 pub struct ConfigCmd {}

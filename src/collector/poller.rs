@@ -10,6 +10,7 @@ use crate::{
     time_range::TimeRange,
 };
 use abscissa_core::error::BoxError;
+use chrono::DateTime;
 use ethers::prelude::*;
 use futures::future;
 use std::{sync::Arc, time::Duration};
@@ -21,35 +22,38 @@ use tower::Service;
 pub struct Poller<T: Middleware> {
     poll_interval: Duration,
     mongo_host: String,
-    time_range: Option<TimeRange>,
+    time_range: TimeRange,
     cellar_gas: CellarGas,
     contract_state: ContractState<T>,
 }
 
 // Implement poller middleware
 impl<T: 'static + Middleware> Poller<T> {
-
-
     pub fn new(config: &config::CellarRebalancerConfig, client: Arc<T>) -> Result<Self, Error> {
-        Ok(
-            Poller {
-                poll_interval: config.cellar.duration,
-                mongo_host: config.mongo.host.clone(),
-                time_range: None,
-                cellar_gas: CellarGas {},
-                contract_state: ContractState::new(config.cellar.cellar_addresses, client),
-
-
-            }
-        )
-        
+        Ok(Poller {
+            poll_interval: config.cellar.duration,
+            mongo_host: config.mongo.host.clone(),
+            time_range: TimeRange {
+                time: None,
+                previous_update: None,
+                pair_id: config.cellar.pair_id,
+                token_info: (config.cellar.token_0.clone(), config.cellar.token_1.clone()),
+                weight_factor: config.cellar.weight_factor,
+                tick_weights: vec![],
+            },
+            cellar_gas: CellarGas {},
+            contract_state: ContractState::new(config.cellar.cellar_addresses, client),
+        })
     }
 
     // Retrieve poll time range
     pub async fn poll_time_range(&self) -> Result<TimeRange, Error> {
-        TimeRange::fetch(self.mongo_host.clone())
-            .await
-            .map_err(|e| e.into())
+        info!("Polling time range");
+
+        let mut time_range = self.time_range.clone();
+
+        time_range.poll().await;
+        Ok(time_range)
     }
 
     // Retrieve current standard gas price from etherscan
@@ -59,9 +63,7 @@ impl<T: 'static + Middleware> Poller<T> {
 
     // Retrieve the current contract state
     pub async fn poll_contract_state(&self) -> Result<ContractStateUpdate, Error> {
-        Ok(ContractStateUpdate{
-
-        })
+        Ok(ContractStateUpdate {})
     }
 
     // Update poller with time_range, gas price and contract_state
@@ -77,8 +79,6 @@ impl<T: 'static + Middleware> Poller<T> {
     pub async fn decide_rebalance(&self) -> Result<(), Error> {
         todo!()
     }
-
-
 
     // Route incoming requests.
     pub async fn run<S>(mut self, collector: S)

@@ -25,27 +25,22 @@ impl Runnable for PredictionsCmd {
         abscissa_tokio::run(&APP, async {
             // Parse a connection string into an options struct.
             let options = ClientOptions::builder()
-            .hosts(vec![
-                ServerAddress::Tcp {
-                    host: "10.32.0.224".into(),
+                .hosts(vec![ServerAddress::Tcp {
+                    host: "127.0.0.1".into(),
                     port: Some(27017),
-                }
-            ])
-            .build();
-
+                }])
+                .direct_connection(true)
+                .build();
 
             // Get a handle to the deployment.
-            let client = Client::with_options(options).unwrap();
+            let client = Client::with_uri_str("mongodb://localhost:27017/?directconnection=true")
+                .await
+                .unwrap();
 
-        
             let db = client.database("predictions");
 
-
-
             // Get a handle to a collection in the database.
-            let collection = db.collection::<MongoData>(
-                "tick_range_predictions",
-            );
+            let collection = db.collection::<MongoData>("tick_range_predictions");
 
             let find_options = FindOptions::builder()
                 .sort(doc! { "created_timestamp": -1 })

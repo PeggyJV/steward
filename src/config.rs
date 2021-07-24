@@ -37,22 +37,22 @@ impl Default for CellarRebalancerConfig {
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct MongoSection{
+pub struct MongoSection {
     pub host: String,
 }
 
 impl Default for MongoSection {
-  fn default() -> Self {
-      Self{
-          host:"mongodb://localhost:27017/".to_string(),
-      }
-  }  
+    fn default() -> Self {
+        Self {
+            host: "mongodb://localhost:27017/".to_string(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct KeyConfig{
+pub struct KeyConfig {
     pub keystore: String,
-    pub rebalancer_key:String,
+    pub rebalancer_key: String,
 }
 
 impl Default for KeyConfig {
@@ -76,7 +76,7 @@ pub struct CellarConfig {
     pub token_0: TokenInfo,
     pub token_1: TokenInfo,
     pub duration: Duration,
-
+    pub weight_factor: u32,
 }
 
 impl Default for CellarConfig {
@@ -87,15 +87,16 @@ impl Default for CellarConfig {
             token_0: TokenInfo::default(),
             token_1: TokenInfo::default(),
             duration: Duration::from_secs(60),
+            weight_factor: 100,
         }
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
-pub struct TokenInfo{
-   pub decimals: u8,
-   pub  symbol: String,
-   pub address: H160,
+pub struct TokenInfo {
+    pub decimals: u8,
+    pub symbol: String,
+    pub address: H160,
 }
 
 impl Default for TokenInfo {
@@ -107,7 +108,6 @@ impl Default for TokenInfo {
         }
     }
 }
-
 
 /// EthereumSection for ethereum rpc and derivation path
 #[derive(Clone, Debug, Deserialize, Serialize)]

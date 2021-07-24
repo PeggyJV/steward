@@ -1,6 +1,6 @@
 use crate::application::APP;
 use abscissa_core::{Application, Command, Options, Runnable};
-use ethers::{prelude::*};
+use ethers::prelude::*;
 use signatory::FsKeyStore;
 use std::path;
 
@@ -21,7 +21,7 @@ impl Runnable for ShowKeyCmd {
         let name = name.parse().expect("Could not parse name");
 
         let key = keystore.load(&name).expect("Could not load key");
-        
+
         let key = key
             .to_pem()
             .parse::<k256::elliptic_curve::SecretKey<k256::Secp256k1>>()
