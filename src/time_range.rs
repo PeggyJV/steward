@@ -28,6 +28,7 @@ pub struct TimeRange {
     pub token_info: (TokenInfo, TokenInfo),
     pub weight_factor: u32,
     pub tick_weights: Vec<TickWeight>,
+    pub monogo_uri: String,
 }
 
 impl Default for TimeRange {
@@ -39,6 +40,7 @@ impl Default for TimeRange {
             tick_weights: Vec::new(),
             weight_factor: 100,
             token_info: (TokenInfo::default(), TokenInfo::default()),
+            monogo_uri: "mongodb://localhost:27017/?directconnection=true".to_string(),
         }
     }
 }
@@ -51,7 +53,9 @@ impl std::fmt::Debug for TimeRange {
         fields
             .field("time", &self.time)
             .field("previous_update", &self.previous_update)
-            .field("pair_id", &self.pair_id);
+            .field("pair_id", &self.pair_id)
+            .field("token_info_0", &self.token_info.0)
+            .field("token_info_1", &self.token_info.1);
         for (i, tick) in self.tick_weights.iter().enumerate() {
             fields.field(&format!("tick_weight #:{}", i), tick);
         }
@@ -93,6 +97,7 @@ impl TimeRange {
         tick_weights: TickWeight,
         token_0_info: TokenInfo,
         token_1_info: TokenInfo,
+        monogo_uri: String,
     ) -> Self {
         TimeRange {
             time,
@@ -101,11 +106,12 @@ impl TimeRange {
             weight_factor,
             tick_weights: Vec::new(),
             token_info: (token_0_info, token_1_info),
+            monogo_uri,
         }
     }
 
     pub async fn poll(&mut self) {
-        let client = Client::with_uri_str("mongodb://10.32.0.224:27017/")
+        let client = Client::with_uri_str(self.monogo_uri.clone())
             .await
             .unwrap();
 
@@ -113,8 +119,7 @@ impl TimeRange {
 
         // Get a handle to a collection in the database.
         let collection = db.collection::<MongoData>(
-            "tick_range_predictions
-        ",
+            "tick_range_predictions",
         );
 
         let find_options = FindOptions::builder()
@@ -124,6 +129,7 @@ impl TimeRange {
         let mut sorted_predictions = collection.find(None, find_options).await.unwrap();
 
         if let Some(latest_prediction) = sorted_predictions.try_next().await.unwrap() {
+            info!("Latest prediction: {:?}", latest_prediction);
             self.previous_update = self.time;
             self.time = Some(
                 latest_prediction

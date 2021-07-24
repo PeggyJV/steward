@@ -40,6 +40,7 @@ impl<T: 'static + Middleware> Poller<T> {
                 token_info: (config.cellar.token_0.clone(), config.cellar.token_1.clone()),
                 weight_factor: config.cellar.weight_factor,
                 tick_weights: vec![],
+                monogo_uri: config.mongo.host.clone(),
             },
             cellar_gas: CellarGas {},
             contract_state: ContractState::new(config.cellar.cellar_addresses, client),
