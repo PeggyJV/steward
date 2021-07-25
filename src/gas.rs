@@ -12,7 +12,10 @@ use abscissa_core::error::BoxError;
 #[allow(unused_imports)]
 use tower::{util::ServiceExt, Service};
 
-pub struct CellarGas {}
+pub struct CellarGas {
+    pub max_gas_price: U256,
+    pub current_gas: Option<U256>,
+}
 
 impl CellarGas {
     pub async fn etherscan_standard() -> Result<U256, GasOracleError> {

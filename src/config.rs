@@ -73,10 +73,12 @@ pub struct CellarConfig {
     /// Example configuration value
     pub pair_id: ethers::types::H160,
     pub cellar_addresses: ethers::types::H160,
+    pub weight_factor: u32,
+    pub max_gas_price_gwei:u32,
     pub token_0: TokenInfo,
     pub token_1: TokenInfo,
     pub duration: Duration,
-    pub weight_factor: u32,
+
 }
 
 impl Default for CellarConfig {
@@ -84,10 +86,12 @@ impl Default for CellarConfig {
         CellarConfig {
             pair_id: ethers::types::H160::zero(),
             cellar_addresses: ethers::types::H160::zero(),
+            weight_factor: 100,
+            max_gas_price_gwei: 100,
+            duration: Duration::from_secs(60),
             token_0: TokenInfo::default(),
             token_1: TokenInfo::default(),
-            duration: Duration::from_secs(60),
-            weight_factor: 100,
+
         }
     }
 }

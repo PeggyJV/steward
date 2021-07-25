@@ -42,7 +42,10 @@ impl<T: 'static + Middleware> Poller<T> {
                 tick_weights: vec![],
                 monogo_uri: config.mongo.host.clone(),
             },
-            cellar_gas: CellarGas {},
+            cellar_gas: CellarGas {
+                max_gas_price: ethers::utils::parse_units(config.cellar.max_gas_price_gwei, "gwei").unwrap(),
+                current_gas: None   ,
+            },
             contract_state: ContractState::new(config.cellar.cellar_addresses, client),
         })
     }
@@ -72,13 +75,14 @@ impl<T: 'static + Middleware> Poller<T> {
         &mut self,
         time_range: TimeRange,
         gas: U256,
-        contract_state: ContractStateUpdate,
+        _contract_state: ContractStateUpdate,
     ) {
-        todo!()
+    self.cellar_gas.current_gas = Some(gas);
+    self.time_range = time_range;
     }
 
     pub async fn decide_rebalance(&self) -> Result<(), Error> {
-        todo!()
+        Ok(())
     }
 
     // Route incoming requests.
