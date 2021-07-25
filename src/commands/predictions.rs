@@ -23,15 +23,6 @@ impl Runnable for PredictionsCmd {
         let config = APP.config();
 
         abscissa_tokio::run(&APP, async {
-            // Parse a connection string into an options struct.
-            let options = ClientOptions::builder()
-                .hosts(vec![ServerAddress::Tcp {
-                    host: "127.0.0.1".into(),
-                    port: Some(27017),
-                }])
-                .direct_connection(true)
-                .build();
-
             // Get a handle to the deployment.
             let client = Client::with_uri_str("mongodb://localhost:27017/?directconnection=true")
                 .await

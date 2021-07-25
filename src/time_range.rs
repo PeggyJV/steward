@@ -111,16 +111,12 @@ impl TimeRange {
     }
 
     pub async fn poll(&mut self) {
-        let client = Client::with_uri_str(self.monogo_uri.clone())
-            .await
-            .unwrap();
+        let client = Client::with_uri_str(self.monogo_uri.clone()).await.unwrap();
 
         let db = client.database("predictions");
 
         // Get a handle to a collection in the database.
-        let collection = db.collection::<MongoData>(
-            "tick_range_predictions",
-        );
+        let collection = db.collection::<MongoData>("tick_range_predictions");
 
         let find_options = FindOptions::builder()
             .sort(doc! { "created_timestamp": -1 })
@@ -149,7 +145,8 @@ impl TimeRange {
                     f64_unit_to_price(lower_float, &self.token_info.0, &self.token_info.1);
                 let upper_tick = uniswap_v3_sdk::priceToTick(upper_price);
                 let lower_tick = uniswap_v3_sdk::priceToTick(lower_price);
-                let weight: u32 = self.weight_factor * tick_weight.weight.as_f64().unwrap() as u32;
+                let weight: u32 =
+                    (self.weight_factor as f64 * tick_weight.weight.as_f64().unwrap()) as u32;
                 self.tick_weights.push(TickWeight {
                     upper_bound: upper_tick,
                     lower_bound: lower_tick,
