@@ -1,13 +1,12 @@
 use crate::prelude::*;
-use abscissa_core::{config, Command, FrameworkError, Options, Runnable};
+use abscissa_core::{Command, Options, Runnable};
 use mongodb::{
-    bson::{bson, doc},
+    bson::doc,
     options::FindOptions,
-    options::{ClientOptions, ServerAddress, StreamAddress},
     Client,
 };
 
-use crate::time_range::{MongoData, MongoTickWeights};
+use crate::time_range::MongoData;
 
 use futures::TryStreamExt;
 
@@ -20,7 +19,6 @@ pub struct PredictionsCmd {
 
 impl Runnable for PredictionsCmd {
     fn run(&self) {
-        let config = APP.config();
 
         abscissa_tokio::run(&APP, async {
             // Get a handle to the deployment.

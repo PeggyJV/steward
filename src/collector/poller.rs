@@ -2,7 +2,7 @@
 /// The collector's [`Poller`] collects information from external sources
 /// which aren't capable of pushing data.
 use crate::{
-    cellar_wrapper::{ContractState, ContractStateUpdate},
+    cellar_wrapper::{ContractState, ContractStateUpdate,CellarTickInfo},
     collector, config,
     error::Error,
     gas::CellarGas,
@@ -10,9 +10,7 @@ use crate::{
     time_range::TimeRange,
 };
 use abscissa_core::error::BoxError;
-use chrono::DateTime;
 use ethers::prelude::*;
-use futures::future;
 use std::{sync::Arc, time::Duration};
 use tokio::time;
 use tokio::try_join;
@@ -21,7 +19,6 @@ use tower::Service;
 // Struct poller to collect poll_interval etc. from external sources which aren't capable of pushing data
 pub struct Poller<T: Middleware> {
     poll_interval: Duration,
-    mongo_host: String,
     time_range: TimeRange,
     cellar_gas: CellarGas,
     contract_state: ContractState<T>,
@@ -32,7 +29,6 @@ impl<T: 'static + Middleware> Poller<T> {
     pub fn new(config: &config::CellarRebalancerConfig, client: Arc<T>) -> Result<Self, Error> {
         Ok(Poller {
             poll_interval: config.cellar.duration,
-            mongo_host: config.mongo.host.clone(),
             time_range: TimeRange {
                 time: None,
                 previous_update: None,
@@ -81,8 +77,14 @@ impl<T: 'static + Middleware> Poller<T> {
     self.time_range = time_range;
     }
 
-    pub async fn decide_rebalance(&self) -> Result<(), Error> {
-        Ok(())
+    pub async fn decide_rebalance(&mut self) -> Result<(), Error> {
+        
+        let mut tick_info:Vec<CellarTickInfo> = Vec::new();
+        for ref tick_weight in self.time_range.tick_weights.clone() {
+            tick_info.push(CellarTickInfo::from_tick_weight(self.time_range.pair_id, tick_weight))
+        }
+        self.contract_state.rebalance(tick_info).await
+
     }
 
     // Route incoming requests.
@@ -118,7 +120,7 @@ impl<T: 'static + Middleware> Poller<T> {
         match res {
             Ok((time_range, gas, contract_state_update)) => {
                 self.update_poller(time_range, gas, contract_state_update);
-                self.decide_rebalance().await;
+                self.decide_rebalance().await.unwrap();
             }
             Err(e) => error!("Error fetching data {}", e),
         }

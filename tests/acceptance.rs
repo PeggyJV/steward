@@ -68,7 +68,7 @@ fn start_with_args() {
 /// Override configured value with command-line argument
 #[test]
 fn start_with_config_and_args() {
-    let mut config = CellarRebalancerConfig::default();
+    let config = CellarRebalancerConfig::default();
     // config.hello.recipient = "configured recipient".to_owned();
 
     let mut runner = RUNNER.clone();

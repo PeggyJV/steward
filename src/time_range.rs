@@ -1,30 +1,26 @@
 //! Time independent bollinger ranges
-use crate::{config::TokenInfo, error::Error};
+use crate::config::TokenInfo;
 /// This is a Rust type for the JSON data from time independent bollinger ranges.
-use abscissa_core::error::BoxError;
 use ethers::prelude::*;
 use futures::TryStreamExt;
 use num_bigint::ToBigInt;
 use uniswap_v3_sdk::{Price, Token};
 
-use crate::{collector, config, prelude::*};
+use crate::prelude::*;
 use chrono::DateTime;
-use iqhttp::{HttpsClient, Result};
 use mongodb::{
-    bson::{bson, doc},
-    options::ClientOptions,
+    bson::{doc},
     options::FindOptions,
     Client,
 };
 use serde::{Deserialize, Serialize};
-use tower::{util::ServiceExt, Service};
 
 // Struct TimeRange for time independent bollinger ranges
 #[derive(Serialize, Deserialize, Clone)]
 pub struct TimeRange {
     pub time: Option<DateTime<chrono::Utc>>,
     pub previous_update: Option<DateTime<chrono::Utc>>,
-    pub pair_id: H160,
+    pub pair_id: U256,
     pub token_info: (TokenInfo, TokenInfo),
     pub weight_factor: u32,
     pub tick_weights: Vec<TickWeight>,
@@ -36,7 +32,7 @@ impl Default for TimeRange {
         TimeRange {
             time: None,
             previous_update: None,
-            pair_id: H160::zero(),
+            pair_id: U256::zero(),
             tick_weights: Vec::new(),
             weight_factor: 100,
             token_info: (TokenInfo::default(), TokenInfo::default()),
@@ -75,7 +71,7 @@ pub struct TickWeight {
 pub struct MongoData {
     pub _id: mongodb::bson::Bson,
     pub created_timestamp: mongodb::bson::Bson,
-    pub pair_id: ethers::prelude::H160,
+    pub pair_id: ethers::prelude::U256,
     pub symbol: String,
     pub tick_weights: Vec<MongoTickWeights>,
 }
@@ -92,9 +88,9 @@ impl TimeRange {
     pub fn new(
         time: Option<DateTime<chrono::Utc>>,
         previous_update: Option<DateTime<chrono::Utc>>,
-        pair_id: H160,
+        pair_id: U256,
         weight_factor: u32,
-        tick_weights: TickWeight,
+        tick_weights: Vec<TickWeight>,
         token_0_info: TokenInfo,
         token_1_info: TokenInfo,
         monogo_uri: String,
@@ -104,7 +100,7 @@ impl TimeRange {
             previous_update,
             pair_id,
             weight_factor,
-            tick_weights: Vec::new(),
+            tick_weights: tick_weights,
             token_info: (token_0_info, token_1_info),
             monogo_uri,
         }

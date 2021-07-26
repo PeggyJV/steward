@@ -71,7 +71,7 @@ impl Default for KeyConfig {
 #[serde(deny_unknown_fields)]
 pub struct CellarConfig {
     /// Example configuration value
-    pub pair_id: ethers::types::H160,
+    pub pair_id: ethers::types::U256,
     pub cellar_addresses: ethers::types::H160,
     pub weight_factor: u32,
     pub max_gas_price_gwei:u32,
@@ -84,7 +84,7 @@ pub struct CellarConfig {
 impl Default for CellarConfig {
     fn default() -> Self {
         CellarConfig {
-            pair_id: ethers::types::H160::zero(),
+            pair_id: ethers::types::U256::zero(),
             cellar_addresses: ethers::types::H160::zero(),
             weight_factor: 100,
             max_gas_price_gwei: 100,

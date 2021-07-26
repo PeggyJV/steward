@@ -2,15 +2,14 @@
 use std::{
     future::Future,
     pin::Pin,
-    process,
     task::{Context, Poll},
 };
 
 use crate::{
-    cellar_wrapper::ContractState, config, error::Error, gas::CellarGas, time_range::TimeRange,
+    config, error::Error, time_range::TimeRange,
 };
 use ethers::prelude::*;
-use tower::{util::ServiceExt, Service};
+use tower::{Service};
 
 pub use self::{poller::Poller, request::Request, response::Response};
 
@@ -18,6 +17,10 @@ mod poller;
 pub(crate) mod request;
 mod response;
 
+
+// The Collector currently doesn't do very much but that is expected to change.
+// If the appliction requires concurrent access to the prediction data from multiple
+// loops then state data needs to be passed from the poller to the collector.
 pub struct Collector {
     recent_gas_prices: Vec<U256>,
     last_rebalance_time: chrono::DateTime<chrono::Utc>,
@@ -49,7 +52,7 @@ fn u256_sqrt(y: Option<U256>) -> Option<U256> {
 
     // Instantiate collector with `new` function
     impl Collector {
-        pub fn new(config: &config::CellarRebalancerConfig) -> Result<Self, Error> {
+        pub fn new(_config: &config::CellarRebalancerConfig) -> Result<Self, Error> {
             Ok(Collector {
                 recent_gas_prices: Vec::new(),
                 last_rebalance_time: chrono::Utc::now(),
@@ -110,9 +113,9 @@ fn u256_sqrt(y: Option<U256>) -> Option<U256> {
                     self.time_range = event.current_tick_data;
                     Ok(Response::AccummulateResponse)
                 }
-                Request::ContractState(event) => todo!(),
+                Request::ContractState(_event) => todo!(),
                 Request::ReblanceRequest => {
-                    let current_gas = self.recent_gas_prices.last();
+                    let _current_gas = self.recent_gas_prices.last();
                     todo!()
                 }
             };

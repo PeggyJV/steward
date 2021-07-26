@@ -2,7 +2,6 @@ use super::show::ShowKeyCmd;
 use crate::application::APP;
 use abscissa_core::{Application, Command, Options, Runnable};
 use k256::pkcs8::ToPrivateKey;
-use serde::{Deserialize, Deserializer};
 use signatory::FsKeyStore;
 use std::path;
 

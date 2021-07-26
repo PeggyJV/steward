@@ -12,15 +12,14 @@ use ethers::{
     prelude::*,
     providers::{Http, Provider},
 };
-use std::{path, time::Duration};
 
 use crate::{
     collector::{Collector, Poller, Request, Response},
     config::CellarRebalancerConfig,
 };
 use abscissa_core::{config, Command, FrameworkError, Options, Runnable};
-use std::{convert::TryFrom, sync::Arc};
-use tokio::{join, task::JoinHandle};
+use std::{path,convert::TryFrom, sync::Arc};
+use tokio::task::JoinHandle;
 use tower::{Service, ServiceBuilder};
 
 /// `start` subcommand
@@ -41,7 +40,7 @@ impl StartCmd {
     /// Initialize collector poller (if configured/needed)
     async fn init_collector_poller<S>(
         &self,
-        config: CellarRebalancerConfig,
+        _config: CellarRebalancerConfig,
         collector: S,
     ) -> JoinHandle<()>
     where
@@ -67,9 +66,7 @@ impl StartCmd {
 
         let wallet: LocalWallet = Wallet::from(key);
 
-        let address = wallet.address();
 
-        let cellar_contract_address = config.cellar.cellar_addresses;
 
         tokio::spawn(async move {
             // Connect to the network provider (example below is for my Ganache-cli fork)
@@ -126,7 +123,7 @@ impl config::Override<CellarRebalancerConfig> for StartCmd {
     // arguments.
     fn override_config(
         &self,
-        mut config: CellarRebalancerConfig,
+        config: CellarRebalancerConfig,
     ) -> Result<CellarRebalancerConfig, FrameworkError> {
         Ok(config)
     }
