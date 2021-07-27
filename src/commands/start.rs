@@ -66,11 +66,13 @@ impl StartCmd {
 
         let wallet: LocalWallet = Wallet::from(key);
 
+        let eth_host = config.ethereum.rpc.clone();
+
 
 
         tokio::spawn(async move {
             // Connect to the network provider (example below is for my Ganache-cli fork)
-            let client = Provider::<Http>::try_from("http://localhost:7545").unwrap();
+            let client = Provider::<Http>::try_from(eth_host).unwrap();
             let client = SignerMiddleware::new(client, wallet);
 
             // MyContract expects Arc, create with client
