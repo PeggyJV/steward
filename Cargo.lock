@@ -1835,6 +1835,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "num-rational"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d41702bd167c2df5520b384281bc111a4b5efcf7fbc4c9c222c815b07e0a6a6a"
+dependencies = [
+ "autocfg",
+ "num-bigint",
+ "num-integer",
+ "num-traits",
+]
+
+[[package]]
 name = "num-traits"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3232,9 +3244,10 @@ checksum = "8ccb82d61f80a663efe1f787a51b16b5a51e3314d6ac365b08639f52387b33f3"
 [[package]]
 name = "uniswap_v3_sdk"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/uniswap_sdk_rs?branch=main#7d2c9382941ff68205f5a5c79720c83561c266a9"
+source = "git+https://github.com/PeggyJV/uniswap_sdk_rs?branch=main#ed6c8273911abaecf29163b568346fa182949775"
 dependencies = [
  "num-bigint",
+ "num-rational",
  "num-traits",
 ]
 

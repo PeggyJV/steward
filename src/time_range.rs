@@ -136,9 +136,9 @@ impl TimeRange {
                 let upper_float = tick_weight.upper.as_f64().unwrap();
                 let lower_float = tick_weight.lower.as_f64().unwrap();
                 let upper_price =
-                    f64_unit_to_price(upper_float, &self.token_info.0, &self.token_info.1);
+                    f64_unit_to_price_for_stables(upper_float, &self.token_info.0, &self.token_info.1);
                 let lower_price =
-                    f64_unit_to_price(lower_float, &self.token_info.0, &self.token_info.1);
+                    f64_unit_to_price_for_stables(lower_float, &self.token_info.0, &self.token_info.1);
                 let upper_tick = uniswap_v3_sdk::priceToTick(upper_price);
                 let lower_tick = uniswap_v3_sdk::priceToTick(lower_price);
                 let weight: u32 =
@@ -154,7 +154,7 @@ impl TimeRange {
     }
 }
 
-fn f64_unit_to_price(f64: f64, token_0: &TokenInfo, token_1: &TokenInfo) -> Price {
+fn f64_unit_to_price_for_stables(price: f64, token_0: &TokenInfo, token_1: &TokenInfo) -> Price {
     Price {
         token_0: Token {
             symbol: token_0.symbol.clone(),
@@ -164,8 +164,29 @@ fn f64_unit_to_price(f64: f64, token_0: &TokenInfo, token_1: &TokenInfo) -> Pric
             symbol: token_1.symbol.clone(),
             address: token_1.address.to_string(),
         },
-        amount_0: f64.to_bigint().unwrap()
+        amount_0: (1.to_bigint().unwrap()/price.to_bigint().unwrap())
             * (10i32.to_bigint().unwrap().pow(token_0.decimals.into())),
         amount_1: (1 * (10i32.to_bigint().unwrap().pow(token_1.decimals.into()))),
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use uniswap_v3_sdk::priceToTick;
+    #[test]
+    fn test_64_to_price_for_stables() {
+        let mut token_0 = TokenInfo::default();
+        let mut token_1 = TokenInfo::default();
+        token_0.decimals =6;
+        token_1.decimals =18;
+
+
+        let price = f64_unit_to_price_for_stables(2000.0,&token_0 , &token_1);
+
+        let tick = priceToTick(price);
+
+        assert_eq!(tick, 1);
+
     }
 }
