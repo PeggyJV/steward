@@ -4,7 +4,7 @@ use abscissa_core::{Application, Command, Options, Runnable};
 use ethers::prelude::*;
 use signatory::FsKeyStore;
 
-use crate::{cellar_wrapper::{CellarAddParams, ContractState}, prelude::*};
+use crate::{cellar_wrapper::{CellarAddParams, CellarState}, prelude::*};
 
 
 #[derive(Command, Debug, Options)]
@@ -42,7 +42,7 @@ impl Runnable for FundCellarCmd{
 
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
-            let contract_state =ContractState::new(config.cellar.cellar_addresses, client);
+            let contract_state =CellarState::new(config.cellar.cellar_addresses, client);
 
             // contract_state.add_liquidity_eth_for_uni_v3(CellarAddParams::new(
             //     amount0_desired: (),

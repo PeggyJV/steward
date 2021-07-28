@@ -11,6 +11,7 @@
 
 pub mod application;
 pub mod cellar_wrapper;
+pub mod uniswap_router;
 pub mod collector;
 pub mod commands;
 pub mod config;
@@ -19,3 +20,4 @@ pub mod gas;
 pub mod position_manager;
 pub mod prelude;
 pub mod time_range;
+pub mod erc20;

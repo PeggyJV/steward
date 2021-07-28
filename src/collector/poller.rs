@@ -2,7 +2,7 @@
 /// The collector's [`Poller`] collects information from external sources
 /// which aren't capable of pushing data.
 use crate::{
-    cellar_wrapper::{ContractState, ContractStateUpdate,CellarTickInfo},
+    cellar_wrapper::{CellarState, ContractStateUpdate,CellarTickInfo},
     collector, config,
     error::Error,
     gas::CellarGas,
@@ -21,7 +21,7 @@ pub struct Poller<T: Middleware> {
     poll_interval: Duration,
     time_range: TimeRange,
     cellar_gas: CellarGas,
-    contract_state: ContractState<T>,
+    contract_state: CellarState<T>,
 }
 
 // Implement poller middleware
@@ -42,7 +42,7 @@ impl<T: 'static + Middleware> Poller<T> {
                 max_gas_price: ethers::utils::parse_units(config.cellar.max_gas_price_gwei, "gwei").unwrap(),
                 current_gas: None   ,
             },
-            contract_state: ContractState::new(config.cellar.cellar_addresses, client),
+            contract_state: CellarState::new(config.cellar.cellar_addresses, client),
         })
     }
 

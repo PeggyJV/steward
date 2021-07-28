@@ -13,17 +13,17 @@ abigen!(
 );
 
 // Use generic data types for CellarWrapper struct since contract will have different data types.
-pub struct ContractState<T> {
+pub struct CellarState<T> {
     contract: Cellar<T>,
 }
 
 pub struct ContractStateUpdate {}
 
 // Implementation for ContractState.
-impl<T: 'static + Middleware> ContractState<T> {
+impl<T: 'static + Middleware> CellarState<T> {
     // Instantiate `new` ContractState
     pub fn new(address: H160, client: Arc<T>) -> Self {
-        ContractState {
+        CellarState {
             contract: Cellar::new(address, client),
         }
     }
