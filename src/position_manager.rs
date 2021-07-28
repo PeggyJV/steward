@@ -2,6 +2,7 @@ use crate::{
     cellar_wrapper::CellarTickInfo,
     time_range::{TickWeight, TimeRange},
 };
+use ethers::prelude::*;
 
 pub struct PositionManager {
     pub pair_id: ethers::types::U256,
@@ -16,7 +17,7 @@ impl PositionManager {
         let mut cellars: Vec<CellarTickInfo> = Vec::new();
         for pos in &self.positions {
             let mut cellar_tick = CellarTickInfo {
-                token_id: self.pair_id,
+                token_id: U256::zero(),
                 tick_upper: pos.upper_tick,
                 tick_lower: pos.lower_tick,
                 weight: 0,

@@ -8,7 +8,7 @@ use std::sync::Arc;
 //use abigen macro to fetch and incorporate contract ABI
 abigen!(
     Cellar,
-    "./contract_abi.json",
+    "./cellar_abi.json",
     event_derives(serde::Deserialize, serde::Serialize)
 );
 

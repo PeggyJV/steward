@@ -16,10 +16,11 @@ mod predictions;
 mod start;
 mod transfer;
 mod version;
+mod fund_cellar;
 
 use self::{
     config_cmd::ConfigCmd, keys::KeysCmd, predictions::PredictionsCmd, start::StartCmd,
-    transfer::TransferCmd, version::VersionCmd,
+    transfer::TransferCmd, version::VersionCmd,fund_cellar::FundCellarCmd
 };
 
 use crate::config::CellarRebalancerConfig;
@@ -59,6 +60,9 @@ pub enum CellarRebalancerCmd {
 
     #[options(help = "print default config")]
     PrintConfig(ConfigCmd),
+
+    #[options(help = "fund cellar")]
+    FundCellar(FundCellarCmd),
 }
 
 /// This trait allows you to define how application configuration is loaded.
