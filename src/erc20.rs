@@ -12,6 +12,19 @@ abigen!(
     event_derives(serde::Deserialize, serde::Serialize)
 );
 
+//use abigen macro to fetch and incorporate contract ABI
+abigen!(
+    Weth,
+    "./weth_abi.json",
+    event_derives(serde::Deserialize, serde::Serialize)
+);
+
 pub struct Erc20State<T> {
     contract: Erc20<T>,
 }
+
+
+pub struct WethState<T> {
+    contract: Weth<T>,
+}
+
