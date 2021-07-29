@@ -216,7 +216,7 @@ impl TimeRange {
                 if !tick_weight.valid() {
                     status_err!("Invalid tick {:?}", tick_weight);
                 } else {
-                    self.merge_or_push(tick_weight);
+                    self.align_then_push(tick_weight);
                 }
             }
         }
@@ -225,7 +225,7 @@ impl TimeRange {
         info!("TimeRange: {:?}", self);
     }
 
-    fn merge_or_push(&mut self, mut tick_weight: TickWeight) {
+    fn align_then_push(&mut self, mut tick_weight: TickWeight) {
         for t in self.tick_weights.iter() {
             
             if tick_weight.upper_bound < t.upper_bound && tick_weight.upper_bound >= t.lower_bound {
