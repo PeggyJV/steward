@@ -103,8 +103,13 @@ impl<T: 'static + Middleware> Poller<T> {
                 ))
             }
         }
-        Ok(())
-        // self.contract_state.rebalance(tick_info).await
+
+        if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
+            Ok(())
+        } else {
+            todo!();
+            self.contract_state.rebalance(tick_info).await
+        }
     }
 
     // Route incoming requests.

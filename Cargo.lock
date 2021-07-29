@@ -417,6 +417,7 @@ dependencies = [
  "k256",
  "mongodb",
  "num-bigint",
+ "num-rational",
  "num-traits",
  "once_cell",
  "pkcs8",
