@@ -4,6 +4,7 @@ use crate::config::TokenInfo;
 use ethers::prelude::*;
 use futures::TryStreamExt;
 use num_bigint::ToBigInt;
+use num_rational::BigRational;
 use uniswap_v3_sdk::{Price, Token};
 
 use crate::prelude::*;
@@ -63,6 +64,61 @@ pub struct TickWeight {
     pub upper_bound: i32,
     pub lower_bound: i32,
     pub weight: u32,
+}
+
+impl TickWeight {
+    pub fn valid(&self) -> bool {
+
+        if self.upper_bound > self.lower_bound {
+            true
+        } else {
+            false
+        }
+    }
+}
+
+impl std::cmp::PartialOrd for TickWeight {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        if self.lower_bound > other.upper_bound {
+            Some(std::cmp::Ordering::Greater)
+        } else if self.upper_bound < other.lower_bound {
+            Some(std::cmp::Ordering::Less)
+        } else if self.upper_bound == other.upper_bound
+            && self.lower_bound == other.lower_bound
+            && self.weight == other.weight
+        {
+            Some(std::cmp::Ordering::Equal)
+        } else {
+            None
+        }
+    }
+}
+
+impl std::cmp::Ord for TickWeight {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        if self.lower_bound > other.upper_bound {
+            std::cmp::Ordering::Greater
+        } else if self.upper_bound < other.lower_bound {
+            std::cmp::Ordering::Less
+        } else {
+            std::cmp::Ordering::Equal
+        }
+    }
+}
+
+impl std::cmp::Eq for TickWeight {}
+
+impl std::cmp::PartialEq for TickWeight {
+    fn eq(&self, other: &Self) -> bool {
+        if self.lower_bound == other.lower_bound
+            && self.upper_bound == other.upper_bound
+            && self.weight == other.weight
+        {
+            true
+        } else {
+            false
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -146,20 +202,44 @@ impl TimeRange {
                     &self.token_info.1,
                 );
 
-                let upper_tick = uniswap_v3_sdk::priceToTick(upper_price) ;
+                let upper_tick = uniswap_v3_sdk::priceToTick(upper_price);
                 let upper_tick = self.tick_spacing - (upper_tick % self.tick_spacing) + upper_tick; //Normalize tick to tick_spacing
                 let lower_tick = uniswap_v3_sdk::priceToTick(lower_price);
                 let lower_tick = lower_tick - (lower_tick % self.tick_spacing); //Normalize tick to tick_spacing
                 let weight: u32 =
                     (self.weight_factor as f64 * tick_weight.weight.as_f64().unwrap()) as u32;
-                self.tick_weights.push(TickWeight {
+                let tick_weight = TickWeight {
                     upper_bound: upper_tick,
                     lower_bound: lower_tick,
                     weight: weight,
-                });
+                };
+                if !tick_weight.valid() {
+                    status_err!("Invalid tick {:?}", tick_weight);
+                } else {
+                    self.validate_push(tick_weight);
+                }
             }
         }
+        self.tick_weights.sort();
+        self.tick_weights.reverse();
         info!("TimeRange: {:?}", self);
+    }
+
+    fn validate_push(&mut self, tick_weight: TickWeight) {
+        let mut valid = true;
+        for t in self.tick_weights.iter() {
+            if tick_weight.upper_bound < t.upper_bound && tick_weight.upper_bound >= t.lower_bound {
+                valid = false;
+                break;
+            }
+            if tick_weight.lower_bound > t.lower_bound && tick_weight.lower_bound <= t.upper_bound {
+                valid = false;
+                break;
+            }
+        }
+        if valid {
+            self.tick_weights.push(tick_weight);
+        }
     }
 }
 
@@ -173,9 +253,10 @@ fn f64_unit_to_price_for_stables(price: f64, token_0: &TokenInfo, token_1: &Toke
             symbol: token_1.symbol.clone(),
             address: token_1.address.to_string(),
         },
-        amount_0: (1.to_bigint().unwrap() * price.to_bigint().unwrap())
-            * (10i32.to_bigint().unwrap().pow(token_0.decimals.into())),
-        amount_1: (1 * (10i32.to_bigint().unwrap().pow(token_1.decimals.into()))),
+        amount_0: (1 * (10i32.to_bigint().unwrap().pow(token_1.decimals.into()))),
+        amount_1: (BigRational::from_float(price).unwrap()
+            * (BigRational::from_integer(10.to_bigint().unwrap()).pow(token_0.decimals.into()))).to_integer(),
+
     }
 }
 
@@ -194,6 +275,6 @@ mod test {
 
         let tick = priceToTick(price);
 
-        assert_eq!(tick, 1);
+        assert_eq!(tick, -200312);
     }
 }
