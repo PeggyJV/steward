@@ -14,7 +14,7 @@ abigen!(
 
 // Use generic data types for CellarWrapper struct since contract will have different data types.
 pub struct CellarState<T> {
-    contract: Cellar<T>,
+    pub contract: Cellar<T>,
 }
 
 pub struct ContractStateUpdate {}

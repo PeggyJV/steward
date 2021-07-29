@@ -4,10 +4,7 @@ use abscissa_core::{Application, Command, Options, Runnable};
 use ethers::prelude::*;
 use signatory::FsKeyStore;
 
-use crate::{
-    cellar_wrapper::{CellarAddParams, CellarState},
-    prelude::*,
-};
+use crate::{cellar_wrapper::{CellarAddParams, CellarState, CellarTickInfo}, prelude::*, uniswap_pool::PoolState};
 
 #[derive(Command, Debug, Options)]
 pub struct FundCellarCmd {}
@@ -41,7 +38,25 @@ impl Runnable for FundCellarCmd {
 
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
-            let contract_state = CellarState::new(config.cellar.cellar_address, client);
+            let contract_state = CellarState::new(config.cellar.cellar_address, client.clone());
+            let pool_state= PoolState::new(config.cellar.pool_address, client);
+
+            let (sqrtPriceX96,tick,_,_,_,_,_) = pool_state.contract.slot_0().call().await.unwrap();
+
+            let mut ticks = Vec::new();
+            
+            let mut i = U256::zero();
+            loop{
+                let (token_id,tick_upper,tick_lower,weight) = contract_state.contract.cellar_tick_info(i).call().await.unwrap();
+                let tick_info  = CellarTickInfo{
+                    token_id: token_id,
+                    tick_upper: tick_upper,
+                    tick_lower: tick_lower,
+                    weight: weight,
+                };
+                ticks.push(tick_info);
+
+            }
 
             // contract_state.add_liquidity_eth_for_uni_v3(CellarAddParams::new(
             //     amount0_desired: (),
