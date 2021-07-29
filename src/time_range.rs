@@ -8,11 +8,7 @@ use uniswap_v3_sdk::{Price, Token};
 
 use crate::prelude::*;
 use chrono::DateTime;
-use mongodb::{
-    bson::{doc},
-    options::FindOptions,
-    Client,
-};
+use mongodb::{bson::doc, options::FindOptions, Client};
 use serde::{Deserialize, Serialize};
 
 // Struct TimeRange for time independent bollinger ranges
@@ -25,6 +21,7 @@ pub struct TimeRange {
     pub weight_factor: u32,
     pub tick_weights: Vec<TickWeight>,
     pub monogo_uri: String,
+    pub tick_spacing: i32,
 }
 
 impl Default for TimeRange {
@@ -37,6 +34,7 @@ impl Default for TimeRange {
             weight_factor: 100,
             token_info: (TokenInfo::default(), TokenInfo::default()),
             monogo_uri: "mongodb://localhost:27017/?directconnection=true".to_string(),
+            tick_spacing: 10,
         }
     }
 }
@@ -94,6 +92,7 @@ impl TimeRange {
         token_0_info: TokenInfo,
         token_1_info: TokenInfo,
         monogo_uri: String,
+        tick_spacings: i32,
     ) -> Self {
         TimeRange {
             time,
@@ -103,6 +102,7 @@ impl TimeRange {
             tick_weights: tick_weights,
             token_info: (token_0_info, token_1_info),
             monogo_uri,
+            tick_spacing: tick_spacings,
         }
     }
 
@@ -135,12 +135,21 @@ impl TimeRange {
             for tick_weight in latest_prediction.tick_weights {
                 let upper_float = tick_weight.upper.as_f64().unwrap();
                 let lower_float = tick_weight.lower.as_f64().unwrap();
-                let upper_price =
-                    f64_unit_to_price_for_stables(upper_float, &self.token_info.0, &self.token_info.1);
-                let lower_price =
-                    f64_unit_to_price_for_stables(lower_float, &self.token_info.0, &self.token_info.1);
-                let upper_tick = uniswap_v3_sdk::priceToTick(upper_price);
+                let upper_price = f64_unit_to_price_for_stables(
+                    upper_float,
+                    &self.token_info.0,
+                    &self.token_info.1,
+                );
+                let lower_price = f64_unit_to_price_for_stables(
+                    lower_float,
+                    &self.token_info.0,
+                    &self.token_info.1,
+                );
+
+                let upper_tick = uniswap_v3_sdk::priceToTick(upper_price) ;
+                let upper_tick = self.tick_spacing - (upper_tick % self.tick_spacing) + upper_tick; //Normalize tick to tick_spacing
                 let lower_tick = uniswap_v3_sdk::priceToTick(lower_price);
+                let lower_tick = lower_tick - (lower_tick % self.tick_spacing); //Normalize tick to tick_spacing
                 let weight: u32 =
                     (self.weight_factor as f64 * tick_weight.weight.as_f64().unwrap()) as u32;
                 self.tick_weights.push(TickWeight {
@@ -164,7 +173,7 @@ fn f64_unit_to_price_for_stables(price: f64, token_0: &TokenInfo, token_1: &Toke
             symbol: token_1.symbol.clone(),
             address: token_1.address.to_string(),
         },
-        amount_0: (1.to_bigint().unwrap()/price.to_bigint().unwrap())
+        amount_0: (1.to_bigint().unwrap() * price.to_bigint().unwrap())
             * (10i32.to_bigint().unwrap().pow(token_0.decimals.into())),
         amount_1: (1 * (10i32.to_bigint().unwrap().pow(token_1.decimals.into()))),
     }
@@ -178,15 +187,13 @@ mod test {
     fn test_64_to_price_for_stables() {
         let mut token_0 = TokenInfo::default();
         let mut token_1 = TokenInfo::default();
-        token_0.decimals =6;
-        token_1.decimals =18;
+        token_0.decimals = 6;
+        token_1.decimals = 18;
 
-
-        let price = f64_unit_to_price_for_stables(2000.0,&token_0 , &token_1);
+        let price = f64_unit_to_price_for_stables(2000.0, &token_0, &token_1);
 
         let tick = priceToTick(price);
 
         assert_eq!(tick, 1);
-
     }
 }

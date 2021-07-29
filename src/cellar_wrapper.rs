@@ -109,12 +109,15 @@ impl CellarTickInfo {
         (self.token_id, self.tick_upper, self.tick_lower, self.weight)
     }
 
-    pub fn from_tick_weight(token_id:U256,tick_weight: &crate::time_range::TickWeight) -> CellarTickInfo {
+    pub fn from_tick_weight(
+        token_id: U256,
+        tick_weight: &crate::time_range::TickWeight,
+    ) -> CellarTickInfo {
         CellarTickInfo {
             token_id,
-            tick_upper:tick_weight.upper_bound,
-            tick_lower:tick_weight.lower_bound,
-            weight:tick_weight.weight,
+            tick_upper: tick_weight.upper_bound,
+            tick_lower: tick_weight.lower_bound,
+            weight: tick_weight.weight,
         }
     }
 }

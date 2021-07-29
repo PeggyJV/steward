@@ -5,18 +5,15 @@ use std::{
     task::{Context, Poll},
 };
 
-use crate::{
-    config, error::Error, time_range::TimeRange,
-};
+use crate::{config, error::Error, time_range::TimeRange};
 use ethers::prelude::*;
-use tower::{Service};
+use tower::Service;
 
 pub use self::{poller::Poller, request::Request, response::Response};
 
 mod poller;
 pub(crate) mod request;
 mod response;
-
 
 // The Collector currently doesn't do very much but that is expected to change.
 // If the appliction requires concurrent access to the prediction data from multiple

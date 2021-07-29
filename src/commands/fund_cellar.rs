@@ -4,15 +4,15 @@ use abscissa_core::{Application, Command, Options, Runnable};
 use ethers::prelude::*;
 use signatory::FsKeyStore;
 
-use crate::{cellar_wrapper::{CellarAddParams, CellarState}, prelude::*};
-
+use crate::{
+    cellar_wrapper::{CellarAddParams, CellarState},
+    prelude::*,
+};
 
 #[derive(Command, Debug, Options)]
-pub struct FundCellarCmd{
+pub struct FundCellarCmd {}
 
-}
-
-impl Runnable for FundCellarCmd{
+impl Runnable for FundCellarCmd {
     fn run(&self) {
         let config = APP.config();
 
@@ -36,13 +36,12 @@ impl Runnable for FundCellarCmd{
         let eth_host = config.ethereum.rpc.clone();
 
         abscissa_tokio::run(&APP, async {
-
             let client = Provider::<Http>::try_from(eth_host).unwrap();
             let client = SignerMiddleware::new(client, wallet);
 
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
-            let contract_state =CellarState::new(config.cellar.cellar_addresses, client);
+            let contract_state = CellarState::new(config.cellar.cellar_address, client);
 
             // contract_state.add_liquidity_eth_for_uni_v3(CellarAddParams::new(
             //     amount0_desired: (),
@@ -52,7 +51,6 @@ impl Runnable for FundCellarCmd{
             //     recipient: (),
             //     deadline: (),
             // ))
-
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

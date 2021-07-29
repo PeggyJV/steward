@@ -2,12 +2,13 @@
 /// The collector's [`Poller`] collects information from external sources
 /// which aren't capable of pushing data.
 use crate::{
-    cellar_wrapper::{CellarState, ContractStateUpdate,CellarTickInfo},
+    cellar_wrapper::{CellarState, CellarTickInfo, ContractStateUpdate},
     collector, config,
     error::Error,
     gas::CellarGas,
     prelude::*,
     time_range::TimeRange,
+    uniswap_pool::PoolState,
 };
 use abscissa_core::error::BoxError;
 use ethers::prelude::*;
@@ -22,11 +23,23 @@ pub struct Poller<T: Middleware> {
     time_range: TimeRange,
     cellar_gas: CellarGas,
     contract_state: CellarState<T>,
+    pool: PoolState<T>,
 }
 
 // Implement poller middleware
 impl<T: 'static + Middleware> Poller<T> {
-    pub fn new(config: &config::CellarRebalancerConfig, client: Arc<T>) -> Result<Self, Error> {
+    pub async fn new(
+        config: &config::CellarRebalancerConfig,
+        client: Arc<T>,
+    ) -> Result<Self, Error> {
+        let mut pool = PoolState::new(config.cellar.pool_address, client.clone());
+        let spacing = pool
+            .contract
+            .tick_spacing()
+            .call()
+            .await
+            .expect("Could not get spacing by querying contract");
+
         Ok(Poller {
             poll_interval: config.cellar.duration,
             time_range: TimeRange {
@@ -37,12 +50,15 @@ impl<T: 'static + Middleware> Poller<T> {
                 weight_factor: config.cellar.weight_factor,
                 tick_weights: vec![],
                 monogo_uri: config.mongo.host.clone(),
+                tick_spacing: spacing,
             },
             cellar_gas: CellarGas {
-                max_gas_price: ethers::utils::parse_units(config.cellar.max_gas_price_gwei, "gwei").unwrap(),
-                current_gas: None   ,
+                max_gas_price: ethers::utils::parse_units(config.cellar.max_gas_price_gwei, "gwei")
+                    .unwrap(),
+                current_gas: None,
             },
-            contract_state: CellarState::new(config.cellar.cellar_addresses, client),
+            contract_state: CellarState::new(config.cellar.cellar_address, client),
+            pool: pool,
         })
     }
 
@@ -73,18 +89,22 @@ impl<T: 'static + Middleware> Poller<T> {
         gas: U256,
         _contract_state: ContractStateUpdate,
     ) {
-    self.cellar_gas.current_gas = Some(gas);
-    self.time_range = time_range;
+        self.cellar_gas.current_gas = Some(gas);
+        self.time_range = time_range;
     }
 
     pub async fn decide_rebalance(&mut self) -> Result<(), Error> {
-        
-        let mut tick_info:Vec<CellarTickInfo> = Vec::new();
+        let mut tick_info: Vec<CellarTickInfo> = Vec::new();
         for ref tick_weight in self.time_range.tick_weights.clone() {
-            tick_info.push(CellarTickInfo::from_tick_weight(self.time_range.pair_id, tick_weight))
+            if tick_weight.weight > 0 {
+                tick_info.push(CellarTickInfo::from_tick_weight(
+                    self.time_range.pair_id,
+                    tick_weight,
+                ))
+            }
         }
-        self.contract_state.rebalance(tick_info).await
-
+        Ok(())
+        // self.contract_state.rebalance(tick_info).await
     }
 
     // Route incoming requests.

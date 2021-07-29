@@ -18,7 +18,7 @@ use crate::{
     config::CellarRebalancerConfig,
 };
 use abscissa_core::{config, Command, FrameworkError, Options, Runnable};
-use std::{path,convert::TryFrom, sync::Arc};
+use std::{convert::TryFrom, path, sync::Arc};
 use tokio::task::JoinHandle;
 use tower::{Service, ServiceBuilder};
 
@@ -68,8 +68,6 @@ impl StartCmd {
 
         let eth_host = config.ethereum.rpc.clone();
 
-
-
         tokio::spawn(async move {
             // Connect to the network provider (example below is for my Ganache-cli fork)
             let client = Provider::<Http>::try_from(eth_host).unwrap();
@@ -78,7 +76,7 @@ impl StartCmd {
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
 
-            let poller = Poller::new(&config, client).unwrap_or_else(|e| {
+            let poller = Poller::new(&config, client).await.unwrap_or_else(|e| {
                 status_err!("couldn't initialize collector poller: {}", e);
                 std::process::exit(1);
             });

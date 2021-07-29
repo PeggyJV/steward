@@ -13,8 +13,31 @@ abigen!(
 );
 
 pub struct RouterState<T> {
-    contract: UniswapRouter<T>,
+    pub contract: UniswapRouter<T>,
 }
 
-impl<T: 'static + Middleware> RouterState<T>{
+impl<T: 'static + Middleware> RouterState<T> {
+    pub fn new(address: H160, client: Arc<T>) -> Self {
+        RouterState {
+            contract: UniswapRouter::new(address, client),
+        }
+    }
+}
+
+abigen!(
+    UniswapPool,
+    "./uniswapv3pool_abi.json",
+    event_derives(serde::Deserialize, serde::Serialize)
+);
+
+pub struct PoolState<T> {
+    pub contract: UniswapPool<T>,
+}
+
+impl<T: 'static + Middleware> PoolState<T> {
+    pub fn new(address: H160, client: Arc<T>) -> Self {
+        PoolState {
+            contract: UniswapPool::new(address, client),
+        }
+    }
 }

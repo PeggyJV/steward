@@ -11,16 +11,16 @@
 //! application's configuration file.
 
 mod config_cmd;
+mod fund_cellar;
 mod keys;
 mod predictions;
 mod start;
 mod transfer;
 mod version;
-mod fund_cellar;
 
 use self::{
-    config_cmd::ConfigCmd, keys::KeysCmd, predictions::PredictionsCmd, start::StartCmd,
-    transfer::TransferCmd, version::VersionCmd,fund_cellar::FundCellarCmd
+    config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd,
+    start::StartCmd, transfer::TransferCmd, version::VersionCmd,
 };
 
 use crate::config::CellarRebalancerConfig;

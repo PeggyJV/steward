@@ -23,8 +23,6 @@ pub struct Erc20State<T> {
     contract: Erc20<T>,
 }
 
-
 pub struct WethState<T> {
     contract: Weth<T>,
 }
-

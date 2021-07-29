@@ -1,10 +1,6 @@
 use crate::prelude::*;
 use abscissa_core::{Command, Options, Runnable};
-use mongodb::{
-    bson::doc,
-    options::FindOptions,
-    Client,
-};
+use mongodb::{bson::doc, options::FindOptions, Client};
 
 use crate::time_range::MongoData;
 
@@ -19,7 +15,6 @@ pub struct PredictionsCmd {
 
 impl Runnable for PredictionsCmd {
     fn run(&self) {
-
         abscissa_tokio::run(&APP, async {
             // Get a handle to the deployment.
             let client = Client::with_uri_str("mongodb://localhost:27017/?directconnection=true")
