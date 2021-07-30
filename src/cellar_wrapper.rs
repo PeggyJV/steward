@@ -87,6 +87,7 @@ impl<T: 'static + Middleware> CellarState<T> {
 }
 
 // Struct for CellarTickInfo
+#[derive(Clone)]
 pub struct CellarTickInfo {
     pub(crate) token_id: U256,
     pub(crate) tick_upper: i32,

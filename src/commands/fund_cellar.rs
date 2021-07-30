@@ -2,6 +2,7 @@ use std::{convert::TryFrom, ops::Add, path, sync::Arc};
 
 use abscissa_core::{Application, Command, Options, Runnable};
 use ethers::prelude::*;
+use num_bigint::ToBigInt;
 use signatory::FsKeyStore;
 
 use crate::{
@@ -81,6 +82,7 @@ impl Runnable for FundCellarCmd {
             let mut weight_above_spot = 0u32;
             let mut spot_weight = 0u32;
             let mut total_weight = 0u32;
+            let mut spot_tick_info = CellarTickInfo::new(U256::zero(), 0, 0,0);
 
             for tick in ticks {
                 if tick > spot_tick {
@@ -88,6 +90,7 @@ impl Runnable for FundCellarCmd {
                 } else if tick < spot_tick {
                     weight_above_spot += tick.weight;
                 } else if tick == spot_tick {
+                    spot_tick_info = tick.clone();
                     spot_weight += tick.weight;
                 }
                 total_weight += tick.weight;
@@ -95,6 +98,10 @@ impl Runnable for FundCellarCmd {
 
             info!("Weight below spot:{} Weight above spot: {} Spot Weight:{}",weight_above_spot as f64 / total_weight as f64 , weight_below_spot as f64 / total_weight as f64, spot_weight as f64 / total_weight as f64); 
 
+            let sqrtRatioAX96 = uniswap_v3_sdk::getSqrtRatioAtTick(spot_tick_info.tick_lower.to_bigint().unwrap());
+            let sqrtRatioBX96 = uniswap_v3_sdk::getSqrtRatioAtTick(spot_tick_info.tick_upper.to_bigint().unwrap());
+
+            let liquidity =uniswap_v3_sdk::maxLiquidityForAmounts(sqrtPriceX96, sqrtRatioAX96, sqrtRatioBX96, 0, 0);
             // contract_state.add_liquidity_eth_for_uni_v3(CellarAddParams::new(
             //     amount0_desired: (),
             //     amount1_desired: (),

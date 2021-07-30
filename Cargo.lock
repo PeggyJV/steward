@@ -3245,7 +3245,7 @@ checksum = "8ccb82d61f80a663efe1f787a51b16b5a51e3314d6ac365b08639f52387b33f3"
 [[package]]
 name = "uniswap_v3_sdk"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/uniswap_sdk_rs?branch=main#ed6c8273911abaecf29163b568346fa182949775"
+source = "git+https://github.com/PeggyJV/uniswap_sdk_rs?branch=main#d80fadda0526eded4e93fc9860d9529e2ddba1be"
 dependencies = [
  "num-bigint",
  "num-rational",
