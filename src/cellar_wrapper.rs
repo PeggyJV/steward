@@ -120,6 +120,40 @@ impl CellarTickInfo {
             weight: tick_weight.weight,
         }
     }
+
+    pub fn valid(&self) -> bool {
+        if self.tick_upper > self.tick_lower {
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn within(&self, tick: &i32) -> bool {
+        if &self.tick_lower <= tick && tick <= &self.tick_upper {
+            return true;
+        }
+        return false;
+    }
+}
+
+impl std::cmp::PartialOrd<i32> for CellarTickInfo {
+    fn partial_cmp(&self, other: &i32) -> Option<std::cmp::Ordering> {
+        if other < &self.tick_lower {
+            Some(std::cmp::Ordering::Less)
+        } else if other > &self.tick_upper {
+            Some(std::cmp::Ordering::Greater)
+        } else if self.within(other) {
+            Some(std::cmp::Ordering::Equal)
+        } else {
+            None
+        }
+    }
+}
+impl std::cmp::PartialEq<i32> for CellarTickInfo {
+    fn eq(&self, other: &i32) -> bool {
+        self.within(other)
+    }
 }
 
 // Struct for CellarAddParams

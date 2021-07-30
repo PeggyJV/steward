@@ -1,10 +1,14 @@
-use std::{convert::TryFrom, path, sync::Arc};
+use std::{convert::TryFrom, ops::Add, path, sync::Arc};
 
 use abscissa_core::{Application, Command, Options, Runnable};
 use ethers::prelude::*;
 use signatory::FsKeyStore;
 
-use crate::{cellar_wrapper::{CellarAddParams, CellarState, CellarTickInfo}, prelude::*, uniswap_pool::PoolState};
+use crate::{
+    cellar_wrapper::{CellarAddParams, CellarState, CellarTickInfo},
+    prelude::*,
+    uniswap_pool::PoolState,
+};
 
 #[derive(Command, Debug, Options)]
 pub struct FundCellarCmd {}
@@ -39,24 +43,57 @@ impl Runnable for FundCellarCmd {
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
             let contract_state = CellarState::new(config.cellar.cellar_address, client.clone());
-            let pool_state= PoolState::new(config.cellar.pool_address, client);
+            let pool_state = PoolState::new(config.cellar.pool_address, client);
 
-            let (sqrtPriceX96,tick,_,_,_,_,_) = pool_state.contract.slot_0().call().await.unwrap();
+            let (sqrtPriceX96, spot_tick, _, _, _, _, _) =
+                pool_state.contract.slot_0().call().await.unwrap();
+
+            info!(
+                "Current sqrtPriceX96 {} tick {}",
+                sqrtPriceX96.to_string(),
+                spot_tick
+            );
 
             let mut ticks = Vec::new();
-            
-            let mut i = U256::zero();
-            loop{
-                let (token_id,tick_upper,tick_lower,weight) = contract_state.contract.cellar_tick_info(i).call().await.unwrap();
-                let tick_info  = CellarTickInfo{
-                    token_id: token_id,
-                    tick_upper: tick_upper,
-                    tick_lower: tick_lower,
-                    weight: weight,
-                };
-                ticks.push(tick_info);
 
+            let mut i = U256::zero();
+            loop {
+                match contract_state.contract.cellar_tick_info(i).call().await {
+                    Ok((token_id, tick_upper, tick_lower, weight)) => {
+                        let tick_info = CellarTickInfo {
+                            token_id: token_id,
+                            tick_upper: tick_upper,
+                            tick_lower: tick_lower,
+                            weight: weight,
+                        };
+                        ticks.push(tick_info);
+                        i = i.add(U256::one());
+                    }
+                    Err(e) => {
+                        break;
+                    }
+                }
             }
+
+            info!("{} ticks", ticks.len());
+
+            let mut weight_below_spot = 0u32;
+            let mut weight_above_spot = 0u32;
+            let mut spot_weight = 0u32;
+            let mut total_weight = 0u32;
+
+            for tick in ticks {
+                if tick > spot_tick {
+                    weight_below_spot += tick.weight;
+                } else if tick < spot_tick {
+                    weight_above_spot += tick.weight;
+                } else if tick == spot_tick {
+                    spot_weight += tick.weight;
+                }
+                total_weight += tick.weight;
+            }
+
+            info!("Weight below spot:{} Weight above spot: {} Spot Weight:{}",weight_above_spot as f64 / total_weight as f64 , weight_below_spot as f64 / total_weight as f64, spot_weight as f64 / total_weight as f64); 
 
             // contract_state.add_liquidity_eth_for_uni_v3(CellarAddParams::new(
             //     amount0_desired: (),

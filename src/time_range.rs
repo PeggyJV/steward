@@ -68,12 +68,37 @@ pub struct TickWeight {
 
 impl TickWeight {
     pub fn valid(&self) -> bool {
-
         if self.upper_bound > self.lower_bound {
             true
         } else {
             false
         }
+    }
+
+    pub fn within(&self, tick: &i32) -> bool {
+        if &self.lower_bound <= tick && tick <= &self.upper_bound {
+            return true;
+        }
+        return false;
+    }
+}
+
+impl std::cmp::PartialOrd<i32> for TickWeight {
+    fn partial_cmp(&self, other: &i32) -> Option<std::cmp::Ordering> {
+        if other < &self.lower_bound {
+            Some(std::cmp::Ordering::Less)
+        } else if other > &self.upper_bound {
+            Some(std::cmp::Ordering::Greater)
+        } else if self.within(other) {
+            Some(std::cmp::Ordering::Equal)
+        } else {
+            None
+        }
+    }
+}
+impl std::cmp::PartialEq<i32> for TickWeight {
+    fn eq(&self, other: &i32) -> bool {
+        self.within(other)
     }
 }
 
@@ -227,7 +252,6 @@ impl TimeRange {
 
     fn align_then_push(&mut self, mut tick_weight: TickWeight) {
         for t in self.tick_weights.iter() {
-            
             if tick_weight.upper_bound < t.upper_bound && tick_weight.upper_bound >= t.lower_bound {
                 tick_weight.upper_bound = t.lower_bound;
             }
@@ -235,8 +259,7 @@ impl TimeRange {
                 tick_weight.lower_bound = t.upper_bound;
             }
         }
-            self.tick_weights.push(tick_weight);
-
+        self.tick_weights.push(tick_weight);
     }
 }
 
@@ -252,8 +275,8 @@ fn f64_unit_to_price_for_stables(price: f64, token_0: &TokenInfo, token_1: &Toke
         },
         amount_0: (1 * (10i32.to_bigint().unwrap().pow(token_1.decimals.into()))),
         amount_1: (BigRational::from_float(price).unwrap()
-            * (BigRational::from_integer(10.to_bigint().unwrap()).pow(token_0.decimals.into()))).to_integer(),
-
+            * (BigRational::from_integer(10.to_bigint().unwrap()).pow(token_0.decimals.into())))
+        .to_integer(),
     }
 }
 
