@@ -68,8 +68,8 @@ impl<T: 'static + Middleware> CellarState<T> {
     ) -> Result<(), Error> {
         let call =self.contract
         .add_liquidity_eth_for_uni_v3(cellar_add_params.to_tuple());
-        let _ =call
-            .call()
+        let pending =call
+            .send()
             .await?;
 
         let receipt = pending.confirmations(6).await?;
