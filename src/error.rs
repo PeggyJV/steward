@@ -35,6 +35,10 @@ pub enum ErrorKind {
     /// Contract error
     #[error("contract error")]
     ContractError,
+
+    /// Provider error
+    #[error("provider error")]
+    ProviderError,
 }
 
 impl ErrorKind {
@@ -100,6 +104,13 @@ impl From<GasOracleError> for Error {
 
 impl<T: 'static + Middleware> From<ContractError<T>> for Error {
     fn from(err: ContractError<T>) -> Self {
+        let err: BoxError = err.into();
+        ErrorKind::ContractError.context(err).into()
+    }
+}
+
+impl From<ProviderError> for Error {
+    fn from(err: ProviderError) -> Self {
         let err: BoxError = err.into();
         ErrorKind::ContractError.context(err).into()
     }

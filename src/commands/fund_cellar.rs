@@ -36,6 +36,8 @@ impl Runnable for FundCellarCmd {
         let wallet: LocalWallet = Wallet::from(key);
 
         let eth_host = config.ethereum.rpc.clone();
+        let address = wallet.address();
+
 
         abscissa_tokio::run(&APP, async {
             let client = Provider::<Http>::try_from(eth_host).unwrap();
@@ -43,7 +45,7 @@ impl Runnable for FundCellarCmd {
 
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
-            let contract_state = CellarState::new(config.cellar.cellar_address, client.clone());
+            let mut contract_state = CellarState::new(config.cellar.cellar_address, client.clone());
             let pool_state = PoolState::new(config.cellar.pool_address, client);
 
             let (sqrtPriceX96, spot_tick, _, _, _, _, _) =
@@ -98,18 +100,16 @@ impl Runnable for FundCellarCmd {
 
             info!("Weight below spot:{} Weight above spot: {} Spot Weight:{}",weight_above_spot as f64 / total_weight as f64 , weight_below_spot as f64 / total_weight as f64, spot_weight as f64 / total_weight as f64); 
 
-            let sqrtRatioAX96 = uniswap_v3_sdk::getSqrtRatioAtTick(spot_tick_info.tick_lower.to_bigint().unwrap());
-            let sqrtRatioBX96 = uniswap_v3_sdk::getSqrtRatioAtTick(spot_tick_info.tick_upper.to_bigint().unwrap());
+            // let sqrtRatioAX96 = uniswap_v3_sdk::getSqrtRatioAtTick(spot_tick_info.tick_lower.to_bigint().unwrap());
+            // let sqrtRatioBX96 = uniswap_v3_sdk::getSqrtRatioAtTick(spot_tick_info.tick_upper.to_bigint().unwrap());
 
-            let liquidity =uniswap_v3_sdk::maxLiquidityForAmounts(sqrtPriceX96, sqrtRatioAX96, sqrtRatioBX96, 0, 0);
-            // contract_state.add_liquidity_eth_for_uni_v3(CellarAddParams::new(
-            //     amount0_desired: (),
-            //     amount1_desired: (),
-            //     amount0_min: (),
-            //     amount1_min: (),
-            //     recipient: (),
-            //     deadline: (),
-            // ))
+            // let liquidity =uniswap_v3_sdk::maxLiquidityForAmounts(sqrtPriceX96.to_string().parse().unwrap(), sqrtRatioAX96, sqrtRatioBX96, 100.to_bigint().unwrap(),100.to_bigint().unwrap());
+            
+            let params = CellarAddParams::new(0.into(), (1000 * (config.cellar.token_1.decimals as u32)).into(), 0.into(), 0.into(), address, 0.into());
+            
+
+            contract_state.add_liquidity_eth_for_uni_v3(params).await.unwrap();
+
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

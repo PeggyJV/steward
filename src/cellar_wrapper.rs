@@ -4,6 +4,8 @@ use crate::error::Error;
 use ethers::contract::abigen;
 use ethers::prelude::*;
 use std::sync::Arc;
+use std::convert::TryFrom;
+use crate::prelude::*;
 
 //use abigen macro to fetch and incorporate contract ABI
 abigen!(
@@ -42,11 +44,21 @@ impl<T: 'static + Middleware> CellarState<T> {
         &mut self,
         cellar_add_params: CellarAddParams,
     ) -> Result<(), Error> {
-        self.contract
-            .add_liquidity_for_uni_v3(cellar_add_params.to_tuple())
-            .call()
-            .await
-            .map_err(|e| e.into())
+
+        let call =self.contract
+        .add_liquidity_for_uni_v3(cellar_add_params.to_tuple());
+        let pending =call
+            .send()
+            .await?;
+
+        let receipt = pending.confirmations(6).await?;
+        match receipt{
+            Some(receipt) => info!("Added liquidity for uniswap version 3, {:?}",receipt),
+            None => info!("No pending transaction for add liquidity"),
+        }
+        
+        Ok(())
+
     }
 
     // Add ethereum liquidity for uniswap version 3 with values form struct `CellarAddParams`
@@ -54,11 +66,19 @@ impl<T: 'static + Middleware> CellarState<T> {
         &mut self,
         cellar_add_params: CellarAddParams,
     ) -> Result<(), Error> {
-        self.contract
-            .add_liquidity_eth_for_uni_v3(cellar_add_params.to_tuple())
+        let call =self.contract
+        .add_liquidity_eth_for_uni_v3(cellar_add_params.to_tuple());
+        let _ =call
             .call()
-            .await
-            .map_err(|e| e.into())
+            .await?;
+
+        let receipt = pending.confirmations(6).await?;
+        match receipt{
+            Some(receipt) => info!("Added liquidity for uniswap version 3, {:?}",receipt),
+            None => info!("No pending transaction for add liquidity"),
+        }
+        
+        Ok(())
     }
 
     // Remove ethereum liquidity from uniswap version 3 with values form struct `CellarAddParams`
