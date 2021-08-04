@@ -96,18 +96,19 @@ impl<T: 'static + Middleware> Poller<T> {
     pub async fn decide_rebalance(&mut self) -> Result<(), Error> {
         let mut tick_info: Vec<CellarTickInfo> = Vec::new();
         for ref tick_weight in self.time_range.tick_weights.clone() {
+            dbg!(tick_weight);
             if tick_weight.weight > 0 {
-                tick_info.push(CellarTickInfo::from_tick_weight(
-                    self.time_range.pair_id,
-                    tick_weight,
-                ))
+                tick_info.push(CellarTickInfo::from_tick_weight(tick_weight))
             }
         }
 
         if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
             Ok(())
         } else {
-            todo!();
+            for tick in tick_info.clone() {
+                dbg!(&tick);
+            }
+            tick_info.reverse();
             self.contract_state.rebalance(tick_info).await
         }
     }

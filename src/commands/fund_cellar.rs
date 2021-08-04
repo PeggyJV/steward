@@ -1,6 +1,7 @@
-use std::{convert::TryFrom, ops::Add, path, sync::Arc};
+use std::{convert::TryFrom, ops::Add, path, sync::Arc, time::Duration};
 
 use abscissa_core::{Application, Command, Options, Runnable};
+use chrono::Utc;
 use ethers::prelude::*;
 use num_bigint::ToBigInt;
 use signatory::FsKeyStore;
@@ -38,9 +39,10 @@ impl Runnable for FundCellarCmd {
         let eth_host = config.ethereum.rpc.clone();
         let address = wallet.address();
 
-
         abscissa_tokio::run(&APP, async {
-            let client = Provider::<Http>::try_from(eth_host).unwrap();
+            let client = Provider::<Http>::try_from(eth_host)
+                .unwrap()
+                .interval(Duration::from_secs(3000u64));
             let client = SignerMiddleware::new(client, wallet);
 
             // MyContract expects Arc, create with client
@@ -84,7 +86,7 @@ impl Runnable for FundCellarCmd {
             let mut weight_above_spot = 0u32;
             let mut spot_weight = 0u32;
             let mut total_weight = 0u32;
-            let mut spot_tick_info = CellarTickInfo::new(U256::zero(), 0, 0,0);
+            let mut spot_tick_info = CellarTickInfo::new(U256::zero(), 0, 0, 0);
 
             for tick in ticks {
                 if tick > spot_tick {
@@ -98,18 +100,31 @@ impl Runnable for FundCellarCmd {
                 total_weight += tick.weight;
             }
 
-            info!("Weight below spot:{} Weight above spot: {} Spot Weight:{}",weight_above_spot as f64 / total_weight as f64 , weight_below_spot as f64 / total_weight as f64, spot_weight as f64 / total_weight as f64); 
+            info!(
+                "Weight below spot:{} Weight above spot: {} Spot Weight:{}",
+                weight_above_spot as f64 / total_weight as f64,
+                weight_below_spot as f64 / total_weight as f64,
+                spot_weight as f64 / total_weight as f64
+            );
 
             // let sqrtRatioAX96 = uniswap_v3_sdk::getSqrtRatioAtTick(spot_tick_info.tick_lower.to_bigint().unwrap());
             // let sqrtRatioBX96 = uniswap_v3_sdk::getSqrtRatioAtTick(spot_tick_info.tick_upper.to_bigint().unwrap());
 
             // let liquidity =uniswap_v3_sdk::maxLiquidityForAmounts(sqrtPriceX96.to_string().parse().unwrap(), sqrtRatioAX96, sqrtRatioBX96, 100.to_bigint().unwrap(),100.to_bigint().unwrap());
-            
-            let params = CellarAddParams::new(0.into(), (1000 * (config.cellar.token_1.decimals as u32)).into(), 0.into(), 0.into(), address, 0.into());
-            
 
-            contract_state.add_liquidity_eth_for_uni_v3(params).await.unwrap();
+            let params = CellarAddParams::new(
+                0.into(),
+                (7000u64 * (10u64.pow(config.cellar.token_1.decimals as u32))).into(),
+                0.into(),
+                0.into(),
+                address,
+                (Utc::now().timestamp() + 60 * 60).into(),
+            );
 
+            contract_state
+                .add_liquidity_for_uni_v3(params)
+                .await
+                .unwrap();
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

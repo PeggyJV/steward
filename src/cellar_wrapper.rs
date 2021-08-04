@@ -1,11 +1,11 @@
 //! Rust Wrapper for cellar functions
 /// This will convert cellar functions from tuples to Rust types
 use crate::error::Error;
+use crate::prelude::*;
 use ethers::contract::abigen;
 use ethers::prelude::*;
-use std::sync::Arc;
 use std::convert::TryFrom;
-use crate::prelude::*;
+use std::sync::Arc;
 
 //use abigen macro to fetch and incorporate contract ABI
 abigen!(
@@ -32,11 +32,30 @@ impl<T: 'static + Middleware> CellarState<T> {
 
     // Rebalance portfolio with cellar tick info
     pub async fn rebalance(&mut self, cellar_tick_info: Vec<CellarTickInfo>) -> Result<(), Error> {
-        self.contract
-            .rebalance(cellar_tick_info.into_iter().map(|x| x.to_tuple()).collect())
-            .call()
-            .await
-            .map_err(|e| e.into())
+        let mut ticks: Vec<(U256, i32, i32, u32)> =
+            cellar_tick_info.into_iter().map(|x| x.to_tuple()).collect();
+        ticks.reverse();
+        for tick in ticks.iter() {
+            dbg!(tick);
+        }
+
+        let mut call = self.contract.rebalance(ticks);
+
+        // let gas = call.estimate_gas().await.unwrap();
+        let gased =call.gas(5_000_000);
+        // dbg!(gas);
+        // todo!();
+
+        let pending =  gased.send()
+            .await?;
+        dbg!(&pending);
+        let receipt = pending.confirmations(6).await?;
+        match receipt{
+            Some(receipt) => info!("Rebalanced, {:?}",receipt),
+            None => info!("No pending transaction for rebalanced"),
+        }
+
+        Ok(())
     }
 
     // Add liquidity for uniswap version 3 with values form struct `CellarAddParams`
@@ -44,21 +63,20 @@ impl<T: 'static + Middleware> CellarState<T> {
         &mut self,
         cellar_add_params: CellarAddParams,
     ) -> Result<(), Error> {
+        let call = self
+            .contract
+            .add_liquidity_for_uni_v3(cellar_add_params.to_tuple());
+        let pending = call.send().await?;
 
-        let call =self.contract
-        .add_liquidity_for_uni_v3(cellar_add_params.to_tuple());
-        let pending =call
-            .send()
-            .await?;
+        info!("Pending: {:?}", pending);
 
         let receipt = pending.confirmations(6).await?;
-        match receipt{
-            Some(receipt) => info!("Added liquidity for uniswap version 3, {:?}",receipt),
+        match receipt {
+            Some(receipt) => info!("Added liquidity for uniswap version 3, {:?}", receipt),
             None => info!("No pending transaction for add liquidity"),
         }
-        
-        Ok(())
 
+        Ok(())
     }
 
     // Add ethereum liquidity for uniswap version 3 with values form struct `CellarAddParams`
@@ -66,18 +84,17 @@ impl<T: 'static + Middleware> CellarState<T> {
         &mut self,
         cellar_add_params: CellarAddParams,
     ) -> Result<(), Error> {
-        let call =self.contract
-        .add_liquidity_eth_for_uni_v3(cellar_add_params.to_tuple());
-        let pending =call
-            .send()
-            .await?;
+        let call = self
+            .contract
+            .add_liquidity_eth_for_uni_v3(cellar_add_params.to_tuple());
+        let pending = call.send().await?;
 
         let receipt = pending.confirmations(6).await?;
-        match receipt{
-            Some(receipt) => info!("Added liquidity for uniswap version 3, {:?}",receipt),
+        match receipt {
+            Some(receipt) => info!("Added liquidity for uniswap version 3, {:?}", receipt),
             None => info!("No pending transaction for add liquidity"),
         }
-        
+
         Ok(())
     }
 
@@ -86,11 +103,18 @@ impl<T: 'static + Middleware> CellarState<T> {
         &mut self,
         cellar_remove_params: CellarRemoveParams,
     ) -> Result<(), Error> {
-        self.contract
-            .remove_liquidity_eth_from_uni_v3(cellar_remove_params.to_tuple())
-            .call()
-            .await
-            .map_err(|e| e.into())
+        let call = self
+            .contract
+            .remove_liquidity_eth_from_uni_v3(cellar_remove_params.to_tuple());
+        let pending = call.send().await?;
+
+        let receipt = pending.confirmations(6).await?;
+        match receipt {
+            Some(receipt) => info!("Added liquidity for uniswap version 3, {:?}", receipt),
+            None => info!("No pending transaction for add liquidity"),
+        }
+
+        Ok(())
     }
 
     // Remove liquidity from uniswap version 3 with values form struct `CellarAddParams`
@@ -98,16 +122,23 @@ impl<T: 'static + Middleware> CellarState<T> {
         &mut self,
         cellar_remove_params: CellarRemoveParams,
     ) -> Result<(), Error> {
-        self.contract
-            .remove_liquidity_from_uni_v3(cellar_remove_params.to_tuple())
-            .call()
-            .await
-            .map_err(|e| e.into())
+        let call = self
+            .contract
+            .remove_liquidity_from_uni_v3(cellar_remove_params.to_tuple());
+        let pending = call.send().await?;
+
+        let receipt = pending.confirmations(6).await?;
+        match receipt {
+            Some(receipt) => info!("Added liquidity for uniswap version 3, {:?}", receipt),
+            None => info!("No pending transaction for add liquidity"),
+        }
+
+        Ok(())
     }
 }
 
 // Struct for CellarTickInfo
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct CellarTickInfo {
     pub(crate) token_id: U256,
     pub(crate) tick_upper: i32,
@@ -130,12 +161,9 @@ impl CellarTickInfo {
         (self.token_id, self.tick_upper, self.tick_lower, self.weight)
     }
 
-    pub fn from_tick_weight(
-        token_id: U256,
-        tick_weight: &crate::time_range::TickWeight,
-    ) -> CellarTickInfo {
+    pub fn from_tick_weight(tick_weight: &crate::time_range::TickWeight) -> CellarTickInfo {
         CellarTickInfo {
-            token_id,
+            token_id: U256::zero(),
             tick_upper: tick_weight.upper_bound,
             tick_lower: tick_weight.lower_bound,
             weight: tick_weight.weight,

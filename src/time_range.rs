@@ -104,9 +104,9 @@ impl std::cmp::PartialEq<i32> for TickWeight {
 
 impl std::cmp::PartialOrd for TickWeight {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        if self.lower_bound > other.upper_bound {
+        if self.lower_bound >= other.upper_bound {
             Some(std::cmp::Ordering::Greater)
-        } else if self.upper_bound < other.lower_bound {
+        } else if self.upper_bound <= other.lower_bound {
             Some(std::cmp::Ordering::Less)
         } else if self.upper_bound == other.upper_bound
             && self.lower_bound == other.lower_bound
@@ -121,9 +121,9 @@ impl std::cmp::PartialOrd for TickWeight {
 
 impl std::cmp::Ord for TickWeight {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        if self.lower_bound > other.upper_bound {
+        if self.lower_bound >= other.upper_bound {
             std::cmp::Ordering::Greater
-        } else if self.upper_bound < other.lower_bound {
+        } else if self.upper_bound <= other.lower_bound {
             std::cmp::Ordering::Less
         } else {
             std::cmp::Ordering::Equal
@@ -245,8 +245,20 @@ impl TimeRange {
                 }
             }
         }
+        self.tick_weights.sort_by(|a, b| a.weight.cmp(&b.weight));
+        self.tick_weights.reverse();
+
+        if self.tick_weights.len() > 7 {
+            self.tick_weights.sort_by(|a, b| a.weight.cmp(&b.weight));
+            self.tick_weights.reverse();
+            let largest_weights: Vec<TickWeight> =
+                self.tick_weights.iter().cloned().take(7).collect();
+            self.tick_weights = largest_weights;
+        }
+
         self.tick_weights.sort();
         self.tick_weights.reverse();
+
         info!("TimeRange: {:?}", self);
     }
 
@@ -264,6 +276,10 @@ impl TimeRange {
 }
 
 fn f64_unit_to_price_for_stables(price: f64, token_0: &TokenInfo, token_1: &TokenInfo) -> Price {
+    
+    dbg!(price);
+    dbg!(token_0);
+    dbg!(token_1);
     Price {
         token_0: Token {
             symbol: token_0.symbol.clone(),
@@ -273,10 +289,10 @@ fn f64_unit_to_price_for_stables(price: f64, token_0: &TokenInfo, token_1: &Toke
             symbol: token_1.symbol.clone(),
             address: token_1.address.to_string(),
         },
-        amount_0: (1 * (10i32.to_bigint().unwrap().pow(token_1.decimals.into()))),
-        amount_1: (BigRational::from_float(price).unwrap()
-            * (BigRational::from_integer(10.to_bigint().unwrap()).pow(token_0.decimals.into())))
-        .to_integer(),
+        amount_0: (BigRational::from_float(price).unwrap()
+            * (BigRational::from_integer(10.to_bigint().unwrap()).pow(token_1.decimals.into())))
+        .to_integer(), //TODO this is providing correct tick bounds but doesn't make sense. We should be putting in token_0 decimals here.
+        amount_1: (1 * (10i32.to_bigint().unwrap().pow(token_0.decimals.into()))),
     }
 }
 
@@ -288,8 +304,12 @@ mod test {
     fn test_64_to_price_for_stables() {
         let mut token_0 = TokenInfo::default();
         let mut token_1 = TokenInfo::default();
-        token_0.decimals = 6;
-        token_1.decimals = 18;
+        token_0.symbol = "ETH".to_owned();
+        token_0.address = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2".parse().unwrap();
+        token_1.symbol = "USDT".to_owned();
+        token_1.address = "0xdAC17F958D2ee523a2206206994597C13D831ec7".parse().unwrap();
+        token_0.decimals = 18;
+        token_1.decimals = 6;
 
         let price = f64_unit_to_price_for_stables(2000.0, &token_0, &token_1);
 
