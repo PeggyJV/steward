@@ -3,7 +3,8 @@ use std::{convert::TryFrom, ops::Add, path, sync::Arc, time::Duration};
 use abscissa_core::{Application, Command, Options, Runnable};
 use chrono::Utc;
 use ethers::prelude::*;
-use num_bigint::ToBigInt;
+use num_bigint::{BigInt, ToBigInt};
+use num_traits::Zero;
 use signatory::FsKeyStore;
 
 use crate::{
@@ -13,7 +14,10 @@ use crate::{
 };
 
 #[derive(Command, Debug, Options)]
-pub struct FundCellarCmd {}
+pub struct FundCellarCmd {
+
+
+}
 
 impl Runnable for FundCellarCmd {
     fn run(&self) {
@@ -82,35 +86,33 @@ impl Runnable for FundCellarCmd {
 
             info!("{} ticks", ticks.len());
 
-            let mut weight_below_spot = 0u32;
-            let mut weight_above_spot = 0u32;
-            let mut spot_weight = 0u32;
-            let mut total_weight = 0u32;
-            let mut spot_tick_info = CellarTickInfo::new(U256::zero(), 0, 0, 0);
+            let currentPrice = uniswap_v3_sdk::getSqrtRatioAtTick(spot_tick.to_bigint().unwrap());
+
+            let mut amount_0=BigInt::zero();
+            let mut amount_1=BigInt::zero();
+
+
 
             for tick in ticks {
-                if tick > spot_tick {
-                    weight_below_spot += tick.weight;
-                } else if tick < spot_tick {
-                    weight_above_spot += tick.weight;
-                } else if tick == spot_tick {
-                    spot_tick_info = tick.clone();
-                    spot_weight += tick.weight;
+                let Q96 = 2.to_bigint().unwrap().pow(96);
+                let Q192 = Q96.pow(2);
+                let priceCurrentRangeUpper = uniswap_v3_sdk::getSqrtRatioAtTick(tick.tick_upper.to_bigint().unwrap());
+                let priceCurrentRangeLower = uniswap_v3_sdk::getSqrtRatioAtTick(tick.tick_lower.to_bigint().unwrap());
+
+                if spot_tick <=tick.tick_lower{
+                    amount_0 += tick.weight * (priceCurrentRangeUpper.clone() - priceCurrentRangeLower.clone()) * Q192.clone() / priceCurrentRangeUpper.clone() / priceCurrentRangeLower.clone();
+                } else if spot_tick >= tick.tick_upper {
+                    amount_1 += tick.weight * (priceCurrentRangeUpper.clone() - priceCurrentRangeLower.clone())
+                } else {
+                    amount_0 += tick.weight * (priceCurrentRangeUpper.clone() - currentPrice.clone()) * Q192 / priceCurrentRangeUpper.clone() / currentPrice.clone();
+                    amount_1 += tick.weight * (currentPrice.clone() - priceCurrentRangeLower.clone());
                 }
-                total_weight += tick.weight;
+
             }
 
             info!(
-                "Weight below spot:{} Weight above spot: {} Spot Weight:{}",
-                weight_above_spot as f64 / total_weight as f64,
-                weight_below_spot as f64 / total_weight as f64,
-                spot_weight as f64 / total_weight as f64
+                "amount_0 {} amount_1 {}",amount_0,amount_1
             );
-
-            // let sqrtRatioAX96 = uniswap_v3_sdk::getSqrtRatioAtTick(spot_tick_info.tick_lower.to_bigint().unwrap());
-            // let sqrtRatioBX96 = uniswap_v3_sdk::getSqrtRatioAtTick(spot_tick_info.tick_upper.to_bigint().unwrap());
-
-            // let liquidity =uniswap_v3_sdk::maxLiquidityForAmounts(sqrtPriceX96.to_string().parse().unwrap(), sqrtRatioAX96, sqrtRatioBX96, 100.to_bigint().unwrap(),100.to_bigint().unwrap());
 
             let params = CellarAddParams::new(
                 0.into(),
