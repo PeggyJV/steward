@@ -5,6 +5,7 @@ use ethers::prelude::*;
 use futures::TryStreamExt;
 use num_bigint::ToBigInt;
 use num_rational::BigRational;
+use num_traits::ToPrimitive;
 use uniswap_v3_sdk::{Price, Token};
 
 use crate::prelude::*;
@@ -216,20 +217,11 @@ impl TimeRange {
             for tick_weight in latest_prediction.tick_weights {
                 let upper_float = tick_weight.upper.as_f64().unwrap();
                 let lower_float = tick_weight.lower.as_f64().unwrap();
-                let upper_price = f64_unit_to_price_for_stables(
-                    upper_float,
-                    &self.token_info.0,
-                    &self.token_info.1,
-                );
-                let lower_price = f64_unit_to_price_for_stables(
-                    lower_float,
-                    &self.token_info.0,
-                    &self.token_info.1,
-                );
 
-                let upper_tick = uniswap_v3_sdk::priceToTick(upper_price);
+
+                let upper_tick = upper_float.to_i32().unwrap();
                 let upper_tick = self.tick_spacing - (upper_tick % self.tick_spacing) + upper_tick; //Normalize tick to tick_spacing
-                let lower_tick = uniswap_v3_sdk::priceToTick(lower_price);
+                let lower_tick = lower_float.to_i32().unwrap();
                 let lower_tick = lower_tick - (lower_tick % self.tick_spacing); //Normalize tick to tick_spacing
                 let weight: u32 =
                     (self.weight_factor as f64 * tick_weight.weight.as_f64().unwrap()) as u32;
@@ -277,9 +269,6 @@ impl TimeRange {
 
 fn f64_unit_to_price_for_stables(price: f64, token_0: &TokenInfo, token_1: &TokenInfo) -> Price {
     
-    dbg!(price);
-    dbg!(token_0);
-    dbg!(token_1);
     Price {
         token_0: Token {
             symbol: token_0.symbol.clone(),

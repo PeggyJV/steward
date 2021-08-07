@@ -35,9 +35,7 @@ impl<T: 'static + Middleware> CellarState<T> {
         let mut ticks: Vec<(U256, i32, i32, u32)> =
             cellar_tick_info.into_iter().map(|x| x.to_tuple()).collect();
         ticks.reverse();
-        for tick in ticks.iter() {
-            dbg!(tick);
-        }
+
 
         let mut call = self.contract.rebalance(ticks);
 
