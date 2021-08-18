@@ -890,7 +890,8 @@ dependencies = [
 [[package]]
 name = "ethers"
 version = "0.4.0"
-source = "git+https://github.com/gakonst/ethers-rs#d911e38c1f65a169fba97a4352d3dae99c0496b5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5f5a9d0b1503cceac3d434c671c8fe3294e5faf6e876958114fb80b91fdf2cea"
 dependencies = [
  "ethers-contract",
  "ethers-core",
@@ -901,8 +902,9 @@ dependencies = [
 
 [[package]]
 name = "ethers-contract"
-version = "0.4.0"
-source = "git+https://github.com/gakonst/ethers-rs#d911e38c1f65a169fba97a4352d3dae99c0496b5"
+version = "0.4.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "35c23c87c5e7f17fc13a9c6adcee9c72ef1cba5774b63fecba20f5c35d71b068"
 dependencies = [
  "ethers-contract-abigen",
  "ethers-contract-derive",
@@ -919,8 +921,9 @@ dependencies = [
 
 [[package]]
 name = "ethers-contract-abigen"
-version = "0.4.0"
-source = "git+https://github.com/gakonst/ethers-rs#d911e38c1f65a169fba97a4352d3dae99c0496b5"
+version = "0.4.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a160438706fe5ef2958191fda7ff6f673adca6ab7dfa50c25ff05d137f4aec75"
 dependencies = [
  "Inflector",
  "anyhow",
@@ -938,8 +941,9 @@ dependencies = [
 
 [[package]]
 name = "ethers-contract-derive"
-version = "0.4.0"
-source = "git+https://github.com/gakonst/ethers-rs#d911e38c1f65a169fba97a4352d3dae99c0496b5"
+version = "0.4.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b0e03d88273a14077459c78688b10309dbcef2b32266879257e31d6dc60f37ab"
 dependencies = [
  "ethers-contract-abigen",
  "ethers-core",
@@ -952,8 +956,9 @@ dependencies = [
 
 [[package]]
 name = "ethers-core"
-version = "0.4.0"
-source = "git+https://github.com/gakonst/ethers-rs#d911e38c1f65a169fba97a4352d3dae99c0496b5"
+version = "0.4.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9fc7b11fda2cf12f76e8fb5200a93d2d2986cc3d481fe20dbb0016a80ebc88c3"
 dependencies = [
  "arrayvec",
  "bytes",
@@ -977,8 +982,9 @@ dependencies = [
 
 [[package]]
 name = "ethers-middleware"
-version = "0.4.0"
-source = "git+https://github.com/gakonst/ethers-rs#d911e38c1f65a169fba97a4352d3dae99c0496b5"
+version = "0.4.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c984060b18db8e1a696605aa719380e04a76a6abc722da635edf742c5d65c648"
 dependencies = [
  "async-trait",
  "ethers-contract",
@@ -999,8 +1005,9 @@ dependencies = [
 
 [[package]]
 name = "ethers-providers"
-version = "0.4.0"
-source = "git+https://github.com/gakonst/ethers-rs#d911e38c1f65a169fba97a4352d3dae99c0496b5"
+version = "0.4.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8a2328dc9e332ea0cbfd8f9ef70a4391197fa0667a840f5f3a4ac539bb7ee6b2"
 dependencies = [
  "async-trait",
  "auto_impl",
@@ -1026,8 +1033,9 @@ dependencies = [
 
 [[package]]
 name = "ethers-signers"
-version = "0.4.0"
-source = "git+https://github.com/gakonst/ethers-rs#d911e38c1f65a169fba97a4352d3dae99c0496b5"
+version = "0.4.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d45877a49c3b33040647199c52e2e33b33fca0c24394eb64064aa9157077eb2f"
 dependencies = [
  "async-trait",
  "coins-bip32",
