@@ -14,14 +14,12 @@ mod config_cmd;
 mod fund_cellar;
 mod keys;
 mod predictions;
+mod remove_funds;
 mod start;
 mod transfer;
 mod version;
 
-use self::{
-    config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd,
-    start::StartCmd, transfer::TransferCmd, version::VersionCmd,
-};
+use self::{config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd, remove_funds::RemoveFundsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd};
 
 use crate::config::CellarRebalancerConfig;
 use abscissa_core::{
@@ -63,6 +61,9 @@ pub enum CellarRebalancerCmd {
 
     #[options(help = "fund cellar")]
     FundCellar(FundCellarCmd),
+
+    #[options(help = "remove_funds")]
+    RemoveFunds(RemoveFundsCmd),
 }
 
 /// This trait allows you to define how application configuration is loaded.

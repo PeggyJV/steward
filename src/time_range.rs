@@ -191,7 +191,7 @@ impl TimeRange {
     pub async fn poll(&mut self) {
         let client = Client::with_uri_str(self.monogo_uri.clone()).await.unwrap();
 
-        let db = client.database("predictions");
+        let db = client.database("WETH_USDT");
 
         // Get a handle to a collection in the database.
         let collection = db.collection::<MongoData>("tick_range_predictions");
@@ -215,13 +215,9 @@ impl TimeRange {
             self.pair_id = latest_prediction.pair_id;
             self.tick_weights.clear();
             for tick_weight in latest_prediction.tick_weights {
-                let upper_float = tick_weight.upper.as_f64().unwrap();
-                let lower_float = tick_weight.lower.as_f64().unwrap();
-
-
-                let upper_tick = upper_float.to_i32().unwrap();
+                let upper_tick = tick_weight.upper.as_i32().unwrap();
                 let upper_tick = self.tick_spacing - (upper_tick % self.tick_spacing) + upper_tick; //Normalize tick to tick_spacing
-                let lower_tick = lower_float.to_i32().unwrap();
+                let lower_tick = tick_weight.lower.as_i32().unwrap();
                 let lower_tick = lower_tick - (lower_tick % self.tick_spacing); //Normalize tick to tick_spacing
                 let weight: u32 =
                     (self.weight_factor as f64 * tick_weight.weight.as_f64().unwrap()) as u32;
@@ -268,7 +264,6 @@ impl TimeRange {
 }
 
 fn f64_unit_to_price_for_stables(price: f64, token_0: &TokenInfo, token_1: &TokenInfo) -> Price {
-    
     Price {
         token_0: Token {
             symbol: token_0.symbol.clone(),
@@ -294,9 +289,13 @@ mod test {
         let mut token_0 = TokenInfo::default();
         let mut token_1 = TokenInfo::default();
         token_0.symbol = "ETH".to_owned();
-        token_0.address = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2".parse().unwrap();
+        token_0.address = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+            .parse()
+            .unwrap();
         token_1.symbol = "USDT".to_owned();
-        token_1.address = "0xdAC17F958D2ee523a2206206994597C13D831ec7".parse().unwrap();
+        token_1.address = "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+            .parse()
+            .unwrap();
         token_0.decimals = 18;
         token_1.decimals = 6;
 

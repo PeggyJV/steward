@@ -7,17 +7,10 @@ use num_bigint::{BigInt, ToBigInt};
 use num_traits::Zero;
 use signatory::FsKeyStore;
 
-use crate::{
-    cellar_wrapper::{CellarAddParams, CellarState, CellarTickInfo},
-    prelude::*,
-    uniswap_pool::PoolState,
-};
+use crate::{cellar_wrapper::{CellarAddParams, CellarState, CellarTickInfo}, erc20::Erc20State, gas::CellarGas, prelude::*, uniswap_pool::PoolState};
 
 #[derive(Command, Debug, Options)]
-pub struct FundCellarCmd {
-
-
-}
+pub struct FundCellarCmd {}
 
 impl Runnable for FundCellarCmd {
     fn run(&self) {
@@ -48,11 +41,20 @@ impl Runnable for FundCellarCmd {
                 .unwrap()
                 .interval(Duration::from_secs(3000u64));
             let client = SignerMiddleware::new(client, wallet);
+            let gas = CellarGas::etherscan_standard().await.unwrap();
 
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
             let mut contract_state = CellarState::new(config.cellar.cellar_address, client.clone());
-            let pool_state = PoolState::new(config.cellar.pool_address, client);
+            contract_state.gas_price = Some(gas);
+            let pool_state = PoolState::new(config.cellar.pool_address, client.clone());
+
+            let mut erc20_0 = Erc20State::new(config.cellar.token_0.address,client.clone());
+            erc20_0.gas_price=Some(gas);
+            // erc20_0.approve((10u64 * (10u64.pow(config.cellar.token_0.decimals as u32))).into(), config.cellar.cellar_address).await;
+            let mut erc20_1 = Erc20State::new(config.cellar.token_1.address, client.clone());
+            erc20_1.gas_price = Some(gas);
+            // erc20_1.approve((1000u64 * (10u64.pow(config.cellar.token_1.decimals as u32))).into(), config.cellar.cellar_address).await;
 
             let (sqrtPriceX96, spot_tick, _, _, _, _, _) =
                 pool_state.contract.slot_0().call().await.unwrap();
@@ -88,35 +90,42 @@ impl Runnable for FundCellarCmd {
 
             let currentPrice = uniswap_v3_sdk::getSqrtRatioAtTick(spot_tick.to_bigint().unwrap());
 
-            let mut amount_0=BigInt::zero();
-            let mut amount_1=BigInt::zero();
-
-
+            let mut amount_0 = BigInt::zero();
+            let mut amount_1 = BigInt::zero();
 
             for tick in ticks {
                 let Q96 = 2.to_bigint().unwrap().pow(96);
                 let Q192 = Q96.pow(2);
-                let priceCurrentRangeUpper = uniswap_v3_sdk::getSqrtRatioAtTick(tick.tick_upper.to_bigint().unwrap());
-                let priceCurrentRangeLower = uniswap_v3_sdk::getSqrtRatioAtTick(tick.tick_lower.to_bigint().unwrap());
+                let priceCurrentRangeUpper =
+                    uniswap_v3_sdk::getSqrtRatioAtTick(tick.tick_upper.to_bigint().unwrap());
+                let priceCurrentRangeLower =
+                    uniswap_v3_sdk::getSqrtRatioAtTick(tick.tick_lower.to_bigint().unwrap());
 
-                if spot_tick <=tick.tick_lower{
-                    amount_0 += tick.weight * (priceCurrentRangeUpper.clone() - priceCurrentRangeLower.clone()) * Q192.clone() / priceCurrentRangeUpper.clone() / priceCurrentRangeLower.clone();
+                if spot_tick <= tick.tick_lower {
+                    amount_0 += tick.weight
+                        * (priceCurrentRangeUpper.clone() - priceCurrentRangeLower.clone())
+                        * Q192.clone()
+                        / priceCurrentRangeUpper.clone()
+                        / priceCurrentRangeLower.clone();
                 } else if spot_tick >= tick.tick_upper {
-                    amount_1 += tick.weight * (priceCurrentRangeUpper.clone() - priceCurrentRangeLower.clone())
+                    amount_1 += tick.weight
+                        * (priceCurrentRangeUpper.clone() - priceCurrentRangeLower.clone())
                 } else {
-                    amount_0 += tick.weight * (priceCurrentRangeUpper.clone() - currentPrice.clone()) * Q192 / priceCurrentRangeUpper.clone() / currentPrice.clone();
-                    amount_1 += tick.weight * (currentPrice.clone() - priceCurrentRangeLower.clone());
+                    amount_0 += tick.weight
+                        * (priceCurrentRangeUpper.clone() - currentPrice.clone())
+                        * Q192
+                        / priceCurrentRangeUpper.clone()
+                        / currentPrice.clone();
+                    amount_1 +=
+                        tick.weight * (currentPrice.clone() - priceCurrentRangeLower.clone());
                 }
-
             }
 
-            info!(
-                "amount_0 {} amount_1 {}",amount_0,amount_1
-            );
+            info!("amount_0 {} amount_1 {} ratio {}", amount_0.to_string(), amount_1.to_string(),(amount_0.clone() / amount_1.clone()).to_string());
 
             let params = CellarAddParams::new(
-                0.into(),
-                (7000u64 * (10u64.pow(config.cellar.token_1.decimals as u32))).into(),
+                (1u64 * (10u64.pow(config.cellar.token_0.decimals as u32))).into(),
+                (3500u64 * (10u64.pow(config.cellar.token_1.decimals as u32))).into(),
                 0.into(),
                 0.into(),
                 address,

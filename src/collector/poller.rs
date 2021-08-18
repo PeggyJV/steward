@@ -90,6 +90,7 @@ impl<T: 'static + Middleware> Poller<T> {
         _contract_state: ContractStateUpdate,
     ) {
         self.cellar_gas.current_gas = Some(gas);
+        self.contract_state.gas_price = Some(gas);
         self.time_range = time_range;
     }
 
@@ -101,11 +102,9 @@ impl<T: 'static + Middleware> Poller<T> {
             }
         }
 
-
         if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
             Ok(())
         } else {
-
             tick_info.reverse();
             self.contract_state.rebalance(tick_info).await
         }

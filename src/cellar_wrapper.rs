@@ -17,6 +17,7 @@ abigen!(
 // Use generic data types for CellarWrapper struct since contract will have different data types.
 pub struct CellarState<T> {
     pub contract: Cellar<T>,
+    pub gas_price: Option<U256>,
 }
 
 pub struct ContractStateUpdate {}
@@ -27,6 +28,7 @@ impl<T: 'static + Middleware> CellarState<T> {
     pub fn new(address: H160, client: Arc<T>) -> Self {
         CellarState {
             contract: Cellar::new(address, client),
+            gas_price: None,
         }
     }
 
@@ -36,22 +38,17 @@ impl<T: 'static + Middleware> CellarState<T> {
             cellar_tick_info.into_iter().map(|x| x.to_tuple()).collect();
         ticks.reverse();
 
-
         let mut call = self.contract.rebalance(ticks);
 
-        // let gas = call.estimate_gas().await.unwrap();
-        let gased =call.gas(5_000_000);
-        // dbg!(gas);
-        // todo!();
+        if let Some(gas_price) = self.gas_price{
+            call = call.gas_price(gas_price)
 
-        let pending =  gased.send()
-            .await?;
-        dbg!(&pending);
-        let receipt = pending.confirmations(6).await?;
-        match receipt{
-            Some(receipt) => info!("Rebalanced, {:?}",receipt),
-            None => info!("No pending transaction for rebalanced"),
         }
+
+        let gased = call.gas(5_000_000);
+
+        let pending = gased.send().await?;
+        dbg!(&pending);
 
         Ok(())
     }
@@ -61,18 +58,25 @@ impl<T: 'static + Middleware> CellarState<T> {
         &mut self,
         cellar_add_params: CellarAddParams,
     ) -> Result<(), Error> {
-        let call = self
+        let mut call = self
             .contract
             .add_liquidity_for_uni_v3(cellar_add_params.to_tuple());
-        let pending = call.send().await?;
+
+        if let Some(gas_price) = self.gas_price{
+            call = call.gas_price(gas_price)
+
+        }
+        let gased = call.gas(5_000_000);
+    
+        let pending = gased.send().await?;
 
         info!("Pending: {:?}", pending);
 
-        let receipt = pending.confirmations(6).await?;
-        match receipt {
-            Some(receipt) => info!("Added liquidity for uniswap version 3, {:?}", receipt),
-            None => info!("No pending transaction for add liquidity"),
-        }
+        // let receipt = pending.confirmations(6).await?;
+        // match receipt {
+        //     Some(receipt) => info!("Added liquidity for uniswap version 3, {:?}", receipt),
+        //     None => info!("No pending transaction for add liquidity"),
+        // }
 
         Ok(())
     }
@@ -124,7 +128,7 @@ impl<T: 'static + Middleware> CellarState<T> {
             .contract
             .remove_liquidity_from_uni_v3(cellar_remove_params.to_tuple());
         let pending = call.send().await?;
-
+        dbg!(&pending);
         let receipt = pending.confirmations(6).await?;
         match receipt {
             Some(receipt) => info!("Added liquidity for uniswap version 3, {:?}", receipt),
