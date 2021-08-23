@@ -61,9 +61,6 @@ impl Runnable for FundCellarCmd {
             // erc20_1.approve((10u64 * (10u64.pow(config.cellar.token_1.decimals as u32))).into(), config.cellar.cellar_address).await;
 
             let (sqrtPriceX96, spot_tick, _, _, _, _, _) =
-
-
-                client.call(&pool_state.contract.slot_0().tx,None).await.unwrap();
                 pool_state.contract.slot_0().call().await.unwrap();
 
             info!(
