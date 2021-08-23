@@ -40,23 +40,30 @@ impl Runnable for FundCellarCmd {
             let client = Provider::<Http>::try_from(eth_host)
                 .unwrap()
                 .interval(Duration::from_secs(3000u64));
+
+
             let client = SignerMiddleware::new(client, wallet);
             let gas = CellarGas::etherscan_standard().await.unwrap();
 
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
+
             let mut contract_state = CellarState::new(config.cellar.cellar_address, client.clone());
             contract_state.gas_price = Some(gas);
             let pool_state = PoolState::new(config.cellar.pool_address, client.clone());
 
             let mut erc20_0 = Erc20State::new(config.cellar.token_0.address,client.clone());
             erc20_0.gas_price=Some(gas);
-            // erc20_0.approve((10u64 * (10u64.pow(config.cellar.token_0.decimals as u32))).into(), config.cellar.cellar_address).await;
+            // erc20_0.approve((10000u64 * (10u64.pow(config.cellar.token_0.decimals as u32))).into(), config.cellar.cellar_address).await;
+            // return;
             let mut erc20_1 = Erc20State::new(config.cellar.token_1.address, client.clone());
             erc20_1.gas_price = Some(gas);
-            // erc20_1.approve((1000u64 * (10u64.pow(config.cellar.token_1.decimals as u32))).into(), config.cellar.cellar_address).await;
+            // erc20_1.approve((10u64 * (10u64.pow(config.cellar.token_1.decimals as u32))).into(), config.cellar.cellar_address).await;
 
             let (sqrtPriceX96, spot_tick, _, _, _, _, _) =
+
+
+                client.call(&pool_state.contract.slot_0().tx,None).await.unwrap();
                 pool_state.contract.slot_0().call().await.unwrap();
 
             info!(
@@ -124,8 +131,8 @@ impl Runnable for FundCellarCmd {
             info!("amount_0 {} amount_1 {} ratio {}", amount_0.to_string(), amount_1.to_string(),(amount_0.clone() / amount_1.clone()).to_string());
 
             let params = CellarAddParams::new(
-                (1u64 * (10u64.pow(config.cellar.token_0.decimals as u32))).into(),
-                (3500u64 * (10u64.pow(config.cellar.token_1.decimals as u32))).into(),
+                (4000u64 * (10u64.pow(config.cellar.token_0.decimals as u32))).into(),
+                ((1u64 * (10u64.pow(config.cellar.token_1.decimals as u32)))/4).into(),
                 0.into(),
                 0.into(),
                 address,

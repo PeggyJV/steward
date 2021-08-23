@@ -76,6 +76,7 @@ pub struct CellarConfig {
     pub pool_address: ethers::types::H160,
     pub weight_factor: u32,
     pub max_gas_price_gwei: u32,
+    pub pair_database: String,
     pub token_0: TokenInfo,
     pub token_1: TokenInfo,
     pub duration: Duration,
@@ -92,6 +93,7 @@ impl Default for CellarConfig {
             duration: Duration::from_secs(60),
             token_0: TokenInfo::default(),
             token_1: TokenInfo::default(),
+            pair_database: "MONGODB".to_string(),
         }
     }
 }

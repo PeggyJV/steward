@@ -23,6 +23,7 @@ pub struct TimeRange {
     pub weight_factor: u32,
     pub tick_weights: Vec<TickWeight>,
     pub monogo_uri: String,
+    pub mongo_source_db: String,
     pub tick_spacing: i32,
 }
 
@@ -36,6 +37,7 @@ impl Default for TimeRange {
             weight_factor: 100,
             token_info: (TokenInfo::default(), TokenInfo::default()),
             monogo_uri: "mongodb://localhost:27017/?directconnection=true".to_string(),
+            mongo_source_db: "WETH_USDT".to_string(),
             tick_spacing: 10,
         }
     }
@@ -174,6 +176,7 @@ impl TimeRange {
         token_0_info: TokenInfo,
         token_1_info: TokenInfo,
         monogo_uri: String,
+        mongo_source_db: String,
         tick_spacings: i32,
     ) -> Self {
         TimeRange {
@@ -184,6 +187,7 @@ impl TimeRange {
             tick_weights: tick_weights,
             token_info: (token_0_info, token_1_info),
             monogo_uri,
+            mongo_source_db,
             tick_spacing: tick_spacings,
         }
     }
@@ -191,7 +195,7 @@ impl TimeRange {
     pub async fn poll(&mut self) {
         let client = Client::with_uri_str(self.monogo_uri.clone()).await.unwrap();
 
-        let db = client.database("WETH_USDT");
+        let db = client.database(&self.mongo_source_db);
 
         // Get a handle to a collection in the database.
         let collection = db.collection::<MongoData>("tick_range_predictions");
