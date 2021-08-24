@@ -26,7 +26,7 @@ pub struct CellarRebalancerConfig {
 impl Default for CellarRebalancerConfig {
     fn default() -> Self {
         Self {
-            cellars: vec![CellarConfig::default()],
+            cellars: vec![CellarConfig::default(), CellarConfig::default()],
             keys: KeysConfig::default(),
             ethereum: EthereumSection::default(),
             mongo: MongoSection::default(),
