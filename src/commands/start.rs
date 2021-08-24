@@ -81,10 +81,12 @@ impl StartCmd {
             // TODO(Levi): this is where we need to support multiple pollers; one per config:
             // can I map this to multiple futures we join on??
 
-            let poller = Poller::new(cellar, client).await.unwrap_or_else(|e| {
-                status_err!("couldn't initialize collector poller: {}", e);
-                std::process::exit(1);
-            });
+            let poller = Poller::new(cellar, client, &config.mongo)
+                .await
+                .unwrap_or_else(|e| {
+                    status_err!("couldn't initialize collector poller: {}", e);
+                    std::process::exit(1);
+                });
 
             poller.run(collector).await;
         })

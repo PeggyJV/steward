@@ -31,6 +31,7 @@ impl<T: 'static + Middleware> Poller<T> {
     pub async fn new(
         cellar: &config::CellarConfig,
         client: Arc<T>,
+        mongo: &config::MongoSection,
     ) -> Result<Self, Error> {
         let pool = PoolState::new(cellar.pool_address, client.clone());
         let spacing = pool
@@ -49,7 +50,7 @@ impl<T: 'static + Middleware> Poller<T> {
                 token_info: (cellar.token_0.clone(), cellar.token_1.clone()),
                 weight_factor: cellar.weight_factor,
                 tick_weights: vec![],
-                monogo_uri: config.mongo.host.clone(),
+                monogo_uri: mongo.host.clone(),
                 mongo_source_db: cellar.pair_database.clone(),
                 tick_spacing: spacing,
             },
