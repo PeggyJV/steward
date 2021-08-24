@@ -50,7 +50,7 @@ impl<T: 'static + Middleware> Poller<T> {
                 weight_factor: config.cellar.weight_factor,
                 tick_weights: vec![],
                 monogo_uri: config.mongo.host.clone(),
-                mongo_source_db:config.cellar.pair_database.clone(),
+                mongo_source_db: config.cellar.pair_database.clone(),
                 tick_spacing: spacing,
             },
             cellar_gas: CellarGas {

@@ -6,6 +6,7 @@ use futures::TryStreamExt;
 use num_bigint::ToBigInt;
 use num_rational::BigRational;
 use num_traits::ToPrimitive;
+use somm_proto::somm as proto;
 use uniswap_v3_sdk::{Price, Token};
 
 use crate::prelude::*;
@@ -264,6 +265,34 @@ impl TimeRange {
             }
         }
         self.tick_weights.push(tick_weight);
+    }
+
+    fn to_allocation(&self) -> proto::Allocation {
+        let tick_range: Vec<proto::TickRange> = self
+            .tick_weights
+            .iter()
+            .map(|tick_weight| proto::TickRange {
+                upper: tick_weight.upper_bound as u64,
+                lower: tick_weight.lower_bound as u64,
+                weight: tick_weight.weight as u64,
+            })
+            .collect();
+
+        proto::Allocation {
+            cellar: Some(proto::Cellar {
+                id: self.pair_id.to_string(),
+                tick_ranges: self
+                    .tick_weights
+                    .iter()
+                    .map(|tick_weight| proto::TickRange {
+                        upper: tick_weight.upper_bound as u64,
+                        lower: tick_weight.lower_bound as u64,
+                        weight: tick_weight.weight as u64,
+                    })
+                    .collect(),
+            }),
+            salt: "".to_string(), //TODO: Add salt,
+        }
     }
 }
 

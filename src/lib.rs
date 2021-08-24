@@ -14,6 +14,7 @@ pub mod cellar_wrapper;
 pub mod collector;
 pub mod commands;
 pub mod config;
+pub mod cosmos_somm;
 pub mod erc20;
 pub mod error;
 pub mod gas;

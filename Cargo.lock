@@ -481,6 +481,7 @@ dependencies = [
  "ethers",
  "futures",
  "gumdrop",
+ "hex",
  "iqhttp",
  "k256",
  "mongodb",

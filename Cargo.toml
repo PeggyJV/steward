@@ -36,6 +36,7 @@ pkcs8 = { version = "0.7", features = ["pem"] }
 signatory = "0.23.0-pre"
 rand_core = { version = "0.6", features = ["std"] }
 rpassword = "5"
+hex = "0.4"
 
 [dependencies.abscissa_core]
 version = "0.6.0-pre.1"

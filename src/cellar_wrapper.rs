@@ -34,15 +34,14 @@ impl<T: 'static + Middleware> CellarState<T> {
 
     // Rebalance portfolio with cellar tick info
     pub async fn rebalance(&mut self, cellar_tick_info: Vec<CellarTickInfo>) -> Result<(), Error> {
-        let mut ticks:Vec<(U256, i32, i32, u32)> =cellar_tick_info.into_iter().map(|x| x.to_tuple()).collect();
+        let mut ticks: Vec<(U256, i32, i32, u32)> =
+            cellar_tick_info.into_iter().map(|x| x.to_tuple()).collect();
         ticks.reverse();
-
 
         let mut call = self.contract.rebalance(ticks);
 
-        if let Some(gas_price) = self.gas_price{
+        if let Some(gas_price) = self.gas_price {
             call = call.gas_price(gas_price)
-
         }
 
         let gased = call.gas(5_000_000);
@@ -62,12 +61,11 @@ impl<T: 'static + Middleware> CellarState<T> {
             .contract
             .add_liquidity_for_uni_v3(cellar_add_params.to_tuple());
 
-        if let Some(gas_price) = self.gas_price{
+        if let Some(gas_price) = self.gas_price {
             call = call.gas_price(gas_price)
-
         }
         let gased = call.gas(5_000_000);
-    
+
         let pending = gased.send().await?;
 
         info!("Pending: {:?}", pending);
@@ -318,6 +316,6 @@ impl CellarRemoveParams {
     //         recipient: self.recipient,
     //         deadline: self.deadline,
     //     }
-        
+
     // }to
 }

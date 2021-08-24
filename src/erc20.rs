@@ -1,10 +1,10 @@
 //! Rust Wrapper for cellar functions
 /// This will convert cellar functions from tuples to Rust types
 use crate::error::Error;
+use crate::prelude::*;
 use ethers::contract::abigen;
 use ethers::prelude::*;
 use std::sync::Arc;
-use crate::prelude::*;
 
 //use abigen macro to fetch and incorporate contract ABI
 abigen!(
@@ -34,12 +34,11 @@ impl<T: 'static + Middleware> Erc20State<T> {
         }
     }
 
-    pub async fn approve(&self, amount:U256,cellar_address: H160){
+    pub async fn approve(&self, amount: U256, cellar_address: H160) {
         let call = self.contract.approve(cellar_address, amount);
         let pending = call.send().await.unwrap();
 
         dbg!(&pending);
-
     }
 }
 pub struct WethState<T> {

@@ -19,7 +19,10 @@ mod start;
 mod transfer;
 mod version;
 
-use self::{config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd, remove_funds::RemoveFundsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd};
+use self::{
+    config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd,
+    remove_funds::RemoveFundsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd,
+};
 
 use crate::config::CellarRebalancerConfig;
 use abscissa_core::{
