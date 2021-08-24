@@ -4,7 +4,7 @@
 use crate::{
     cellar_wrapper::{CellarState, CellarTickInfo, ContractStateUpdate},
     collector, config,
-    error::{Error, ErrorKind},
+    error::Error,
     gas::CellarGas,
     prelude::*,
     time_range::TimeRange,
@@ -13,8 +13,7 @@ use crate::{
 use abscissa_core::error::BoxError;
 use ethers::prelude::*;
 use std::{sync::Arc, time::Duration};
-use tokio::time;
-use tokio::try_join;
+use tokio::{time, try_join};
 use tower::Service;
 
 // Struct poller to collect poll_interval etc. from external sources which aren't capable of pushing data
@@ -51,7 +50,7 @@ impl<T: 'static + Middleware> Poller<T> {
                 weight_factor: cellar.weight_factor,
                 tick_weights: vec![],
                 monogo_uri: mongo.host.clone(),
-                mongo_source_db: cellar.pair_database.clone(),
+                pair_database: cellar.pair_database.clone(),
                 tick_spacing: spacing,
             },
             cellar_gas: CellarGas {
@@ -68,7 +67,7 @@ impl<T: 'static + Middleware> Poller<T> {
 
     // Retrieve poll time range
     pub async fn poll_time_range(&self) -> Result<TimeRange, Error> {
-        info!("Polling time range");
+        info!("{} polling time range", self.time_range.pair_database);
 
         let mut time_range = self.time_range.clone();
 
@@ -122,13 +121,19 @@ impl<T: 'static + Middleware> Poller<T> {
             + Clone
             + 'static,
     {
-        info!("polling every {:?}", self.poll_interval);
-        let mut interval = time::interval(self.poll_interval);
+        info!(
+            "{} polling every {:?}",
+            self.time_range.pair_database, self.poll_interval
+        );
 
+        let mut interval = time::interval(self.poll_interval);
         loop {
             interval.tick().await;
             self.poll(&collector).await;
-            info!("waiting for {:?}", self.poll_interval);
+            info!(
+                "{} waiting for {:?}",
+                self.time_range.pair_database, self.poll_interval
+            );
         }
     }
 
