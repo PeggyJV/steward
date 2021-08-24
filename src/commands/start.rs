@@ -70,25 +70,34 @@ impl StartCmd {
 
         tokio::spawn(async move {
             // Connect to the network provider (example below is for my Ganache-cli fork)
-            let client = Provider::<Http>::try_from(eth_host).unwrap();
-            let client = SignerMiddleware::new(client, wallet);
 
-            // MyContract expects Arc, create with client
-            let client = Arc::new(client);
+            // TODO(Levi) make this mutable:
+            let tasks: Vec<JoinHandle<()>> = vec![];
 
-            let cellar = config.cellars.get(0).expect("Could not get cellar config");
+            for cellar in config.cellars.clone().into_iter() {
+                let client = Provider::<Http>::try_from(eth_host.clone()).unwrap();
+                let client = SignerMiddleware::new(client, wallet.clone());
+                let client = Arc::new(client);
 
-            // TODO(Levi): this is where we need to support multiple pollers; one per config:
-            // can I map this to multiple futures we join on??
+                let mongo = config.mongo.clone();
 
-            let poller = Poller::new(cellar, client, &config.mongo)
-                .await
-                .unwrap_or_else(|e| {
-                    status_err!("couldn't initialize collector poller: {}", e);
-                    std::process::exit(1);
-                });
+                let poller = Poller::new(&cellar, client, &mongo)
+                    .await
+                    .unwrap_or_else(|e| {
+                        status_err!("couldn't initialize poller: {}", e);
+                        std::process::exit(1);
+                    });
 
-            poller.run(collector).await;
+                let _ = poller; // TODO(Levi): deleteme
+
+                // TODO(Levi): figure out how a poller becomes service ()
+                // let service = ServiceBuilder::new().buffer(20).service(???);
+
+                // TODO(Levi): figure out how a poller becomes service
+                // tasks.push(service);
+            }
+
+            future::join_all(tasks).await;
         })
     }
 }
