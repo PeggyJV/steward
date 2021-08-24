@@ -4,7 +4,7 @@
 use crate::{
     cellar_wrapper::{CellarState, CellarTickInfo, ContractStateUpdate},
     collector, config,
-    error::Error,
+    error::{Error, ErrorKind},
     gas::CellarGas,
     prelude::*,
     time_range::TimeRange,
@@ -32,7 +32,11 @@ impl<T: 'static + Middleware> Poller<T> {
         config: &config::CellarRebalancerConfig,
         client: Arc<T>,
     ) -> Result<Self, Error> {
-        let mut pool = PoolState::new(config.cellar.pool_address, client.clone());
+        let cellar = config.cellars.get(0).ok_or_else(|| ErrorKind::Config)?;
+
+        // TODO(Levi): this is where we need to support polling multiple cellars
+
+        let pool = PoolState::new(cellar.pool_address, client.clone());
         let spacing = pool
             .contract
             .tick_spacing()
@@ -40,27 +44,29 @@ impl<T: 'static + Middleware> Poller<T> {
             .await
             .expect("Could not get spacing by querying contract");
 
-        Ok(Poller {
-            poll_interval: config.cellar.duration,
+        let poller = Poller {
+            poll_interval: cellar.duration,
             time_range: TimeRange {
                 time: None,
                 previous_update: None,
-                pair_id: config.cellar.pair_id,
-                token_info: (config.cellar.token_0.clone(), config.cellar.token_1.clone()),
-                weight_factor: config.cellar.weight_factor,
+                pair_id: cellar.pair_id,
+                token_info: (cellar.token_0.clone(), cellar.token_1.clone()),
+                weight_factor: cellar.weight_factor,
                 tick_weights: vec![],
                 monogo_uri: config.mongo.host.clone(),
-                mongo_source_db:config.cellar.pair_database.clone(),
+                mongo_source_db: cellar.pair_database.clone(),
                 tick_spacing: spacing,
             },
             cellar_gas: CellarGas {
-                max_gas_price: ethers::utils::parse_units(config.cellar.max_gas_price_gwei, "gwei")
+                max_gas_price: ethers::utils::parse_units(cellar.max_gas_price_gwei, "gwei")
                     .unwrap(),
                 current_gas: None,
             },
-            contract_state: CellarState::new(config.cellar.cellar_address, client),
+            contract_state: CellarState::new(cellar.cellar_address, client),
             pool: pool,
-        })
+        };
+
+        Ok(poller)
     }
 
     // Retrieve poll time range

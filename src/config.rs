@@ -13,12 +13,9 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct CellarRebalancerConfig {
-    pub key: KeyConfig,
-    /// An example configuration section
-    pub cellar: CellarConfig,
-    /// An example configuration for keystore
-    /// An example configuration for ethereum
+    pub cellars: Vec<CellarConfig>,
     pub ethereum: EthereumSection,
+    pub keys: KeysConfig,
     pub mongo: MongoSection,
 }
 
@@ -29,8 +26,8 @@ pub struct CellarRebalancerConfig {
 impl Default for CellarRebalancerConfig {
     fn default() -> Self {
         Self {
-            cellar: CellarConfig::default(),
-            key: KeyConfig::default(),
+            cellars: vec![CellarConfig::default()],
+            keys: KeysConfig::default(),
             ethereum: EthereumSection::default(),
             mongo: MongoSection::default(),
         }
@@ -50,12 +47,12 @@ impl Default for MongoSection {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct KeyConfig {
+pub struct KeysConfig {
     pub keystore: String,
     pub rebalancer_key: String,
 }
 
-impl Default for KeyConfig {
+impl Default for KeysConfig {
     fn default() -> Self {
         Self {
             keystore: "/tmp/keystore".to_owned(),
