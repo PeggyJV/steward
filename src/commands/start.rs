@@ -76,7 +76,12 @@ impl StartCmd {
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
 
-            let poller = Poller::new(&config, client).await.unwrap_or_else(|e| {
+            let cellar = config.cellars.get(0).expect("Could not get cellar config");
+
+            // TODO(Levi): this is where we need to support multiple pollers; one per config:
+            // can I map this to multiple futures we join on??
+
+            let poller = Poller::new(cellar, client).await.unwrap_or_else(|e| {
                 status_err!("couldn't initialize collector poller: {}", e);
                 std::process::exit(1);
             });

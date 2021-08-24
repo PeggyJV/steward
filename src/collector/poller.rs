@@ -29,13 +29,9 @@ pub struct Poller<T: Middleware> {
 // Implement poller middleware
 impl<T: 'static + Middleware> Poller<T> {
     pub async fn new(
-        config: &config::CellarRebalancerConfig,
+        cellar: &config::CellarConfig,
         client: Arc<T>,
     ) -> Result<Self, Error> {
-        let cellar = config.cellars.get(0).ok_or_else(|| ErrorKind::Config)?;
-
-        // TODO(Levi): this is where we need to support polling multiple cellars
-
         let pool = PoolState::new(cellar.pool_address, client.clone());
         let spacing = pool
             .contract
@@ -63,7 +59,7 @@ impl<T: 'static + Middleware> Poller<T> {
                 current_gas: None,
             },
             contract_state: CellarState::new(cellar.cellar_address, client),
-            pool: pool,
+            pool,
         };
 
         Ok(poller)
