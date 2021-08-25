@@ -5,7 +5,6 @@ use ethers::prelude::*;
 use futures::TryStreamExt;
 use num_bigint::ToBigInt;
 use num_rational::BigRational;
-use num_traits::ToPrimitive;
 use uniswap_v3_sdk::{Price, Token};
 
 use crate::prelude::*;
@@ -23,7 +22,7 @@ pub struct TimeRange {
     pub weight_factor: u32,
     pub tick_weights: Vec<TickWeight>,
     pub monogo_uri: String,
-    pub mongo_source_db: String,
+    pub pair_database: String,
     pub tick_spacing: i32,
 }
 
@@ -37,7 +36,7 @@ impl Default for TimeRange {
             weight_factor: 100,
             token_info: (TokenInfo::default(), TokenInfo::default()),
             monogo_uri: "mongodb://localhost:27017/?directconnection=true".to_string(),
-            mongo_source_db: "WETH_USDT".to_string(),
+            pair_database: "WETH_USDT".to_string(),
             tick_spacing: 10,
         }
     }
@@ -187,7 +186,7 @@ impl TimeRange {
             tick_weights: tick_weights,
             token_info: (token_0_info, token_1_info),
             monogo_uri,
-            mongo_source_db,
+            pair_database: mongo_source_db,
             tick_spacing: tick_spacings,
         }
     }
@@ -195,7 +194,7 @@ impl TimeRange {
     pub async fn poll(&mut self) {
         let client = Client::with_uri_str(self.monogo_uri.clone()).await.unwrap();
 
-        let db = client.database(&self.mongo_source_db);
+        let db = client.database(&self.pair_database);
 
         // Get a handle to a collection in the database.
         let collection = db.collection::<MongoData>("tick_range_predictions");

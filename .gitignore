@@ -1,4 +1,4 @@
 /target
 **/*.rs.bk
 expanded.rs
-cellar_rebalancer.toml
+cellar_rebalancer*.toml

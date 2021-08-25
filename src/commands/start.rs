@@ -38,22 +38,15 @@ pub struct StartCmd {
 
 impl StartCmd {
     /// Initialize collector poller (if configured/needed)
-    async fn init_collector_poller<S>(
+    async fn build_pollers(
         &self,
-        _config: CellarRebalancerConfig,
-        collector: S,
-    ) -> JoinHandle<()>
-    where
-        S: Service<Request, Response = Response, Error = BoxError> + Send + Sync + Clone + 'static,
-        S::Future: Send,
-    {
-        let config = APP.config();
-
-        let keystore = path::Path::new(&config.key.keystore);
+        config: CellarRebalancerConfig,
+    ) -> Vec<Poller<SignerMiddleware<Provider<Http>, Wallet<k256::ecdsa::SigningKey>>>> {
+        let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
 
         let name = &config
-            .key
+            .keys
             .rebalancer_key
             .parse()
             .expect("Could not parse name");
@@ -68,21 +61,25 @@ impl StartCmd {
 
         let eth_host = config.ethereum.rpc.clone();
 
-        tokio::spawn(async move {
-            // Connect to the network provider (example below is for my Ganache-cli fork)
-            let client = Provider::<Http>::try_from(eth_host).unwrap();
-            let client = SignerMiddleware::new(client, wallet);
+        let mut pollers = vec![];
 
-            // MyContract expects Arc, create with client
+        for cellar in config.cellars.clone().into_iter() {
+            let client = Provider::<Http>::try_from(eth_host.clone()).unwrap();
+            let client = SignerMiddleware::new(client, wallet.clone());
             let client = Arc::new(client);
+            let mongo = config.mongo.clone();
 
-            let poller = Poller::new(&config, client).await.unwrap_or_else(|e| {
-                status_err!("couldn't initialize collector poller: {}", e);
-                std::process::exit(1);
-            });
+            let poller = Poller::new(&cellar, client, &mongo)
+                .await
+                .unwrap_or_else(|e| {
+                    status_err!("couldn't initialize poller: {}", e);
+                    std::process::exit(1);
+                });
 
-            poller.run(collector).await;
-        })
+            pollers.push(poller);
+        }
+
+        pollers
     }
 }
 
@@ -93,8 +90,6 @@ impl Runnable for StartCmd {
 
         let config = APP.config();
         abscissa_tokio::run(&APP, async {
-            let mut tasks = vec![];
-
             let collector =
                 ServiceBuilder::new()
                     .buffer(20)
@@ -103,11 +98,14 @@ impl Runnable for StartCmd {
                         std::process::exit(1);
                     }));
 
-            tasks.push(
-                self.init_collector_poller(config.as_ref().clone(), collector.clone())
-                    .await,
-            );
+            let pollers = self.build_pollers(config.as_ref().clone()).await;
 
+            let mut tasks = vec![];
+            for poller in pollers {
+                let collector = collector.clone();
+                let task = tokio::spawn(async move { poller.run(collector).await });
+                tasks.push(task);
+            }
             future::join_all(tasks).await;
         })
         .unwrap_or_else(|e| {

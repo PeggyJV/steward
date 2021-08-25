@@ -13,8 +13,7 @@ use crate::{
 use abscissa_core::error::BoxError;
 use ethers::prelude::*;
 use std::{sync::Arc, time::Duration};
-use tokio::time;
-use tokio::try_join;
+use tokio::{time, try_join};
 use tower::Service;
 
 // Struct poller to collect poll_interval etc. from external sources which aren't capable of pushing data
@@ -29,10 +28,11 @@ pub struct Poller<T: Middleware> {
 // Implement poller middleware
 impl<T: 'static + Middleware> Poller<T> {
     pub async fn new(
-        config: &config::CellarRebalancerConfig,
+        cellar: &config::CellarConfig,
         client: Arc<T>,
+        mongo: &config::MongoSection,
     ) -> Result<Self, Error> {
-        let mut pool = PoolState::new(config.cellar.pool_address, client.clone());
+        let pool = PoolState::new(cellar.pool_address, client.clone());
         let spacing = pool
             .contract
             .tick_spacing()
@@ -40,32 +40,34 @@ impl<T: 'static + Middleware> Poller<T> {
             .await
             .expect("Could not get spacing by querying contract");
 
-        Ok(Poller {
-            poll_interval: config.cellar.duration,
+        let poller = Poller {
+            poll_interval: cellar.duration,
             time_range: TimeRange {
                 time: None,
                 previous_update: None,
-                pair_id: config.cellar.pair_id,
-                token_info: (config.cellar.token_0.clone(), config.cellar.token_1.clone()),
-                weight_factor: config.cellar.weight_factor,
+                pair_id: cellar.pair_id,
+                token_info: (cellar.token_0.clone(), cellar.token_1.clone()),
+                weight_factor: cellar.weight_factor,
                 tick_weights: vec![],
-                monogo_uri: config.mongo.host.clone(),
-                mongo_source_db:config.cellar.pair_database.clone(),
+                monogo_uri: mongo.host.clone(),
+                pair_database: cellar.pair_database.clone(),
                 tick_spacing: spacing,
             },
             cellar_gas: CellarGas {
-                max_gas_price: ethers::utils::parse_units(config.cellar.max_gas_price_gwei, "gwei")
+                max_gas_price: ethers::utils::parse_units(cellar.max_gas_price_gwei, "gwei")
                     .unwrap(),
                 current_gas: None,
             },
-            contract_state: CellarState::new(config.cellar.cellar_address, client),
-            pool: pool,
-        })
+            contract_state: CellarState::new(cellar.cellar_address, client),
+            pool,
+        };
+
+        Ok(poller)
     }
 
     // Retrieve poll time range
     pub async fn poll_time_range(&self) -> Result<TimeRange, Error> {
-        info!("Polling time range");
+        info!("{} polling time range", self.time_range.pair_database);
 
         let mut time_range = self.time_range.clone();
 
@@ -119,13 +121,19 @@ impl<T: 'static + Middleware> Poller<T> {
             + Clone
             + 'static,
     {
-        info!("polling every {:?}", self.poll_interval);
-        let mut interval = time::interval(self.poll_interval);
+        info!(
+            "{} polling every {:?}",
+            self.time_range.pair_database, self.poll_interval
+        );
 
+        let mut interval = time::interval(self.poll_interval);
         loop {
             interval.tick().await;
             self.poll(&collector).await;
-            info!("waiting for {:?}", self.poll_interval);
+            info!(
+                "{} waiting for {:?}",
+                self.time_range.pair_database, self.poll_interval
+            );
         }
     }
 
