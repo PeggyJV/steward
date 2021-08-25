@@ -1,17 +1,17 @@
 //! Time independent bollinger ranges
-use crate::config::TokenInfo;
 /// This is a Rust type for the JSON data from time independent bollinger ranges.
-use ethers::prelude::*;
-use futures::TryStreamExt;
-use num_bigint::ToBigInt;
-use num_rational::BigRational;
-use somm_proto::somm as proto;
-use uniswap_v3_sdk::{Price, Token};
-
+use crate::config::TokenInfo;
 use crate::prelude::*;
 use chrono::DateTime;
+use deep_space::Contact;
+use ethers::prelude::*;
+use futures::TryStreamExt;
 use mongodb::{bson::doc, options::FindOptions, Client};
+use num_bigint::ToBigInt;
+use num_rational::BigRational;
 use serde::{Deserialize, Serialize};
+use somm_proto::somm as proto;
+use uniswap_v3_sdk::{Price, Token};
 
 // Struct TimeRange for time independent bollinger ranges
 #[derive(Serialize, Deserialize, Clone)]
@@ -194,7 +194,6 @@ impl TimeRange {
 
     pub async fn poll(&mut self) {
         let client = Client::with_uri_str(self.monogo_uri.clone()).await.unwrap();
-
         let db = client.database(&self.pair_database);
 
         // Get a handle to a collection in the database.
@@ -251,7 +250,15 @@ impl TimeRange {
         self.tick_weights.sort();
         self.tick_weights.reverse();
 
-        info!("TimeRange: {:?}", self);
+        let allocation = self.to_allocation();
+        let _ = allocation; // TODO(levi): send (or collect and send?)
+
+        // let contact = Contact::new()
+
+        // let contact: &Contact;
+        // send::send_allocation(
+        //     contact,
+        //     self.to_allocation())
     }
 
     fn align_then_push(&mut self, mut tick_weight: TickWeight) {
