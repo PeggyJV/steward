@@ -4,7 +4,6 @@ use crate::error::Error;
 use crate::prelude::*;
 use ethers::contract::abigen;
 use ethers::prelude::*;
-use std::convert::TryFrom;
 use std::sync::Arc;
 
 //use abigen macro to fetch and incorporate contract ABI

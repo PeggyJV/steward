@@ -19,12 +19,13 @@ pub struct RemoveFundsCmd {}
 impl Runnable for RemoveFundsCmd {
     fn run(&self) {
         let config = APP.config();
+        let cellar = config.cellars.get(0).expect("Could not get cellar config");
 
-        let keystore = path::Path::new(&config.key.keystore);
+        let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
 
         let name = &config
-            .key
+            .keys
             .rebalancer_key
             .parse()
             .expect("Could not parse name");
@@ -48,7 +49,7 @@ impl Runnable for RemoveFundsCmd {
 
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
-            let mut contract_state = CellarState::new(config.cellar.cellar_address, client.clone());
+            let mut contract_state = CellarState::new(cellar.cellar_address, client.clone());
 
             let balance = contract_state
                 .contract

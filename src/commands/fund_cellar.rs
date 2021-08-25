@@ -21,12 +21,13 @@ pub struct FundCellarCmd {}
 impl Runnable for FundCellarCmd {
     fn run(&self) {
         let config = APP.config();
+        let cellar = config.cellars.get(0).expect("Could not get cellar config");
 
-        let keystore = path::Path::new(&config.key.keystore);
+        let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
 
         let name = &config
-            .key
+            .keys
             .rebalancer_key
             .parse()
             .expect("Could not parse name");
@@ -53,15 +54,15 @@ impl Runnable for FundCellarCmd {
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
 
-            let mut contract_state = CellarState::new(config.cellar.cellar_address, client.clone());
+            let mut contract_state = CellarState::new(cellar.cellar_address, client.clone());
             contract_state.gas_price = Some(gas);
-            let pool_state = PoolState::new(config.cellar.pool_address, client.clone());
+            let pool_state = PoolState::new(cellar.pool_address, client.clone());
 
-            let mut erc20_0 = Erc20State::new(config.cellar.token_0.address, client.clone());
-            erc20_0.gas_price = Some(gas);
+            let mut erc20_0 = Erc20State::new(cellar.token_0.address,client.clone());
+            erc20_0.gas_price=Some(gas);
             // erc20_0.approve((10000u64 * (10u64.pow(config.cellar.token_0.decimals as u32))).into(), config.cellar.cellar_address).await;
             // return;
-            let mut erc20_1 = Erc20State::new(config.cellar.token_1.address, client.clone());
+            let mut erc20_1 = Erc20State::new(cellar.token_1.address, client.clone());
             erc20_1.gas_price = Some(gas);
             // erc20_1.approve((10u64 * (10u64.pow(config.cellar.token_1.decimals as u32))).into(), config.cellar.cellar_address).await;
 
@@ -138,8 +139,8 @@ impl Runnable for FundCellarCmd {
             );
 
             let params = CellarAddParams::new(
-                (4000u64 * (10u64.pow(config.cellar.token_0.decimals as u32))).into(),
-                ((1u64 * (10u64.pow(config.cellar.token_1.decimals as u32))) / 4).into(),
+                (4000u64 * (10u64.pow(cellar.token_0.decimals as u32))).into(),
+                ((1u64 * (10u64.pow(cellar.token_1.decimals as u32)))/4).into(),
                 0.into(),
                 0.into(),
                 address,
