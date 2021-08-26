@@ -14,6 +14,7 @@ use serde::{Deserialize, Serialize};
 #[serde(deny_unknown_fields)]
 pub struct CellarRebalancerConfig {
     pub cellars: Vec<CellarConfig>,
+    pub cosmos: CosmosSection,
     pub ethereum: EthereumSection,
     pub keys: KeysConfig,
     pub mongo: MongoSection,
@@ -27,6 +28,7 @@ impl Default for CellarRebalancerConfig {
     fn default() -> Self {
         Self {
             cellars: vec![CellarConfig::default(), CellarConfig::default()],
+            cosmos: CosmosSection::default(),
             keys: KeysConfig::default(),
             ethereum: EthereumSection::default(),
             mongo: MongoSection::default(),
@@ -73,7 +75,7 @@ pub struct CellarConfig {
     pub pool_address: ethers::types::H160,
     pub weight_factor: u32,
     pub max_gas_price_gwei: u32,
-    pub pair_database: String,
+    pub mongo_database: String, // NOTE I think we could consider adding mongo_host here & dropping the mongo section entirely
     pub token_0: TokenInfo,
     pub token_1: TokenInfo,
     pub duration: Duration,
@@ -90,7 +92,7 @@ impl Default for CellarConfig {
             duration: Duration::from_secs(60),
             token_0: TokenInfo::default(),
             token_1: TokenInfo::default(),
-            pair_database: "MONGODB".to_string(),
+            mongo_database: "WETH_USDT".to_string(),
         }
     }
 }
@@ -112,6 +114,26 @@ impl Default for TokenInfo {
     }
 }
 
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct CosmosSection {
+    pub key_derivation_path: String,
+    pub grpc: String,
+    pub prefix: String,
+    pub gas_price: GasPrice,
+}
+
+impl Default for CosmosSection {
+    fn default() -> Self {
+        Self {
+            key_derivation_path: "m/44'/118'/0'/0/0".to_owned(),
+            grpc: "http://localhost:9090".to_owned(),
+            prefix: "cosmos".to_owned(),
+            gas_price: GasPrice::default(),
+        }
+    }
+}
+
 /// EthereumSection for ethereum rpc and derivation path
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct EthereumSection {
@@ -126,6 +148,22 @@ impl Default for EthereumSection {
         Self {
             key_derivation_path: "m/44'/60'/0'/0/0".to_owned(),
             rpc: "http://localhost:8545".to_owned(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct GasPrice {
+    pub amount: f64,
+    pub denom: String,
+}
+
+impl Default for GasPrice {
+    fn default() -> Self {
+        Self {
+            amount: 0.001,
+            denom: "stake".to_owned(),
         }
     }
 }

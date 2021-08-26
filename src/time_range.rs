@@ -1,12 +1,14 @@
 //! Time independent bollinger ranges
 /// This is a Rust type for the JSON data from time independent bollinger ranges.
-use crate::config::TokenInfo;
 use crate::prelude::*;
+use crate::{config::TokenInfo, cosmos_somm::send};
 use chrono::DateTime;
-use deep_space::Contact;
+use deep_space::address::Address;
+use deep_space::private_key::PrivateKey as CosmosPrivateKey;
+use deep_space::{Coin, Contact};
 use ethers::prelude::*;
 use futures::TryStreamExt;
-use mongodb::{bson::doc, options::FindOptions, Client};
+use mongodb::{bson::doc, options::FindOptions};
 use num_bigint::ToBigInt;
 use num_rational::BigRational;
 use serde::{Deserialize, Serialize};
@@ -22,8 +24,6 @@ pub struct TimeRange {
     pub token_info: (TokenInfo, TokenInfo),
     pub weight_factor: u32,
     pub tick_weights: Vec<TickWeight>,
-    pub monogo_uri: String,
-    pub pair_database: String,
     pub tick_spacing: i32,
 }
 
@@ -36,8 +36,6 @@ impl Default for TimeRange {
             tick_weights: Vec::new(),
             weight_factor: 100,
             token_info: (TokenInfo::default(), TokenInfo::default()),
-            monogo_uri: "mongodb://localhost:27017/?directconnection=true".to_string(),
-            pair_database: "WETH_USDT".to_string(),
             tick_spacing: 10,
         }
     }
@@ -175,29 +173,22 @@ impl TimeRange {
         tick_weights: Vec<TickWeight>,
         token_0_info: TokenInfo,
         token_1_info: TokenInfo,
-        monogo_uri: String,
-        mongo_source_db: String,
-        tick_spacings: i32,
+        tick_spacing: i32,
     ) -> Self {
         TimeRange {
             time,
             previous_update,
             pair_id,
             weight_factor,
-            tick_weights: tick_weights,
+            tick_weights,
             token_info: (token_0_info, token_1_info),
-            monogo_uri,
-            pair_database: mongo_source_db,
-            tick_spacing: tick_spacings,
+            tick_spacing,
         }
     }
 
-    pub async fn poll(&mut self) {
-        let client = Client::with_uri_str(self.monogo_uri.clone()).await.unwrap();
-        let db = client.database(&self.pair_database);
-
+    pub async fn poll(&mut self, contact: &Contact, database: &mongodb::Database) {
         // Get a handle to a collection in the database.
-        let collection = db.collection::<MongoData>("tick_range_predictions");
+        let collection = database.collection::<MongoData>("tick_range_predictions");
 
         let find_options = FindOptions::builder()
             .sort(doc! { "created_timestamp": -1 })
@@ -250,15 +241,30 @@ impl TimeRange {
         self.tick_weights.sort();
         self.tick_weights.reverse();
 
-        let allocation = self.to_allocation();
-        let _ = allocation; // TODO(levi): send (or collect and send?)
+        // TODO(Levi) needs to be initialized (should it be derived from the cosmos_key??)
+        let delegate_cosmos_address =
+            Address::from_bech32("cosmos1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrql8a".to_string())
+                .unwrap();
 
-        // let contact = Contact::new()
+        // TODO(Levi) needs to be initialized:
+        let cosmos_key = CosmosPrivateKey::from_phrase("purse sure leg gap above pull rescue glass circle attract erupt can sail gasp shy clarify inflict anger sketch hobby scare mad reject where", "").unwrap();
 
-        // let contact: &Contact;
-        // send::send_allocation(
-        //     contact,
-        //     self.to_allocation())
+        // TODO(Levi) needs to be initialized
+        let fee = "100footoken".parse().unwrap();
+
+        // TODO(Levi) needs to be initialized
+        let cellar_id = "TODO".to_owned();
+
+        send::send_allocation(
+            contact,
+            delegate_cosmos_address,
+            cosmos_key,
+            fee,
+            cellar_id,
+            vec![self.to_allocation()],
+        )
+        .await
+        .unwrap();
     }
 
     fn align_then_push(&mut self, mut tick_weight: TickWeight) {

@@ -4,7 +4,9 @@
 /// accessors along with logging macros. Customize as you see fit.
 use crate::prelude::*;
 use abscissa_core::error::BoxError;
+use deep_space::Contact;
 use futures::future;
+use mongodb::Client;
 use signatory::FsKeyStore;
 
 use crate::application::APP;
@@ -18,7 +20,7 @@ use crate::{
     config::CellarRebalancerConfig,
 };
 use abscissa_core::{config, Command, FrameworkError, Options, Runnable};
-use std::{convert::TryFrom, path, sync::Arc};
+use std::{convert::TryFrom, path, sync::Arc, time::Duration};
 use tokio::task::JoinHandle;
 use tower::{Service, ServiceBuilder};
 
@@ -67,9 +69,10 @@ impl StartCmd {
             let client = Provider::<Http>::try_from(eth_host.clone()).unwrap();
             let client = SignerMiddleware::new(client, wallet.clone());
             let client = Arc::new(client);
+            let cosmos = config.cosmos.clone();
             let mongo = config.mongo.clone();
 
-            let poller = Poller::new(&cellar, client, &mongo)
+            let poller = Poller::new(&cellar, client, &cosmos, &mongo)
                 .await
                 .unwrap_or_else(|e| {
                     status_err!("couldn't initialize poller: {}", e);
@@ -89,7 +92,17 @@ impl Runnable for StartCmd {
         info!("Starting application");
 
         let config = APP.config();
+
         abscissa_tokio::run(&APP, async {
+            let mongo = Client::with_uri_str(config.mongo.host.clone())
+                .await
+                .unwrap();
+
+            let timeout = Duration::from_secs(30);
+            let chain_prefix = &config.cosmos.prefix;
+            let contact = Contact::new(&config.cosmos.grpc, timeout, chain_prefix)
+                .expect("Could not create contact");
+
             let collector =
                 ServiceBuilder::new()
                     .buffer(20)
@@ -102,9 +115,19 @@ impl Runnable for StartCmd {
 
             let mut tasks = vec![];
             for poller in pollers {
+                let contact = contact.clone();
                 let collector = collector.clone();
-                let task = tokio::spawn(async move { poller.run(collector).await });
-                tasks.push(task);
+
+                let cellar = config
+                    .cellars
+                    .get(tasks.len())
+                    .expect("Could not fetch cellar");
+
+                let database = mongo.database(&cellar.mongo_database);
+
+                tasks.push(tokio::spawn(async move {
+                    poller.run(collector, contact, database).await
+                }));
             }
             future::join_all(tasks).await;
         })

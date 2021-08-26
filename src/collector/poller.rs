@@ -11,6 +11,7 @@ use crate::{
     uniswap_pool::PoolState,
 };
 use abscissa_core::error::BoxError;
+use deep_space::Contact;
 use ethers::prelude::*;
 use std::{sync::Arc, time::Duration};
 use tokio::{time, try_join};
@@ -30,6 +31,7 @@ impl<T: 'static + Middleware> Poller<T> {
     pub async fn new(
         cellar: &config::CellarConfig,
         client: Arc<T>,
+        cosmos: &config::CosmosSection,
         mongo: &config::MongoSection,
     ) -> Result<Self, Error> {
         let pool = PoolState::new(cellar.pool_address, client.clone());
@@ -40,6 +42,8 @@ impl<T: 'static + Middleware> Poller<T> {
             .await
             .expect("Could not get spacing by querying contract");
 
+        let timeout = Duration::from_secs(30);
+
         let poller = Poller {
             poll_interval: cellar.duration,
             time_range: TimeRange {
@@ -49,8 +53,6 @@ impl<T: 'static + Middleware> Poller<T> {
                 token_info: (cellar.token_0.clone(), cellar.token_1.clone()),
                 weight_factor: cellar.weight_factor,
                 tick_weights: vec![],
-                monogo_uri: mongo.host.clone(),
-                pair_database: cellar.pair_database.clone(),
                 tick_spacing: spacing,
             },
             cellar_gas: CellarGas {
@@ -66,12 +68,14 @@ impl<T: 'static + Middleware> Poller<T> {
     }
 
     // Retrieve poll time range
-    pub async fn poll_time_range(&self) -> Result<TimeRange, Error> {
-        info!("{} polling time range", self.time_range.pair_database);
-
+    pub async fn poll_time_range(
+        &self,
+        contact: &Contact,
+        database: &mongodb::Database,
+    ) -> Result<TimeRange, Error> {
+        info!("{} polling time range", database.name());
         let mut time_range = self.time_range.clone();
-
-        time_range.poll().await;
+        time_range.poll(contact, database).await;
         Ok(time_range)
     }
 
@@ -114,30 +118,24 @@ impl<T: 'static + Middleware> Poller<T> {
     }
 
     // Route incoming requests.
-    pub async fn run<S>(mut self, collector: S)
+    pub async fn run<S>(mut self, collector: S, contact: Contact, database: mongodb::Database)
     where
         S: Service<collector::Request, Response = collector::Response, Error = BoxError>
             + Send
             + Clone
             + 'static,
     {
-        info!(
-            "{} polling every {:?}",
-            self.time_range.pair_database, self.poll_interval
-        );
+        info!("{} polling every {:?}", database.name(), self.poll_interval);
 
         let mut interval = time::interval(self.poll_interval);
         loop {
             interval.tick().await;
-            self.poll(&collector).await;
-            info!(
-                "{} waiting for {:?}",
-                self.time_range.pair_database, self.poll_interval
-            );
+            self.poll(&collector, &contact, &database).await;
+            info!("{} waiting for {:?}", database.name(), self.poll_interval);
         }
     }
 
-    async fn poll<S>(&mut self, collector: &S)
+    async fn poll<S>(&mut self, collector: &S, contact: &Contact, database: &mongodb::Database)
     where
         S: Service<collector::Request, Response = collector::Response, Error = BoxError>
             + Send
@@ -145,7 +143,7 @@ impl<T: 'static + Middleware> Poller<T> {
             + 'static,
     {
         let res = try_join!(
-            self.poll_time_range(),
+            self.poll_time_range(contact, database),
             self.poll_cellar_gas(),
             self.poll_contract_state(),
         );
