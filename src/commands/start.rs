@@ -1,28 +1,23 @@
 //! `start` subcommand - example of how to write a subcommand
-
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
-use crate::prelude::*;
-use abscissa_core::error::BoxError;
-use deep_space::Contact;
-use futures::future;
-use mongodb::Client;
-use signatory::FsKeyStore;
-
 use crate::application::APP;
+use crate::prelude::*;
+use crate::{
+    collector::{Collector, Poller},
+    config::CellarRebalancerConfig,
+};
+use abscissa_core::{FrameworkError, Options, Runnable};
+use deep_space::Contact;
 use ethers::{
     prelude::*,
     providers::{Http, Provider},
 };
-
-use crate::{
-    collector::{Collector, Poller, Request, Response},
-    config::CellarRebalancerConfig,
-};
-use abscissa_core::{config, Command, FrameworkError, Options, Runnable};
+use futures::future;
+use mongodb::Client;
+use signatory::FsKeyStore;
 use std::{convert::TryFrom, path, sync::Arc, time::Duration};
-use tokio::task::JoinHandle;
-use tower::{Service, ServiceBuilder};
+use tower::ServiceBuilder;
 
 /// `start` subcommand
 ///
@@ -69,6 +64,7 @@ impl StartCmd {
             let client = Provider::<Http>::try_from(eth_host.clone()).unwrap();
             let client = SignerMiddleware::new(client, wallet.clone());
             let client = Arc::new(client);
+            let mongo = config.mongo.clone();
 
             let poller = Poller::new(&cellar, client).await.unwrap_or_else(|e| {
                 status_err!("couldn't initialize poller: {}", e);
@@ -134,7 +130,7 @@ impl Runnable for StartCmd {
     }
 }
 
-impl config::Override<CellarRebalancerConfig> for StartCmd {
+impl abscissa_core::config::Override<CellarRebalancerConfig> for StartCmd {
     // Process the given command line options, overriding settings from
     // a configuration file using explicit flags taken from command-line
     // arguments.
