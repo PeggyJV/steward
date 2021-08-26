@@ -28,12 +28,7 @@ pub struct Poller<T: Middleware> {
 
 // Implement poller middleware
 impl<T: 'static + Middleware> Poller<T> {
-    pub async fn new(
-        cellar: &config::CellarConfig,
-        client: Arc<T>,
-        cosmos: &config::CosmosSection,
-        mongo: &config::MongoSection,
-    ) -> Result<Self, Error> {
+    pub async fn new(cellar: &config::CellarConfig, client: Arc<T>) -> Result<Self, Error> {
         let pool = PoolState::new(cellar.pool_address, client.clone());
         let spacing = pool
             .contract
@@ -41,8 +36,6 @@ impl<T: 'static + Middleware> Poller<T> {
             .call()
             .await
             .expect("Could not get spacing by querying contract");
-
-        let timeout = Duration::from_secs(30);
 
         let poller = Poller {
             poll_interval: cellar.duration,

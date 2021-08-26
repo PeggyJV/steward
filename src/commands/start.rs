@@ -69,15 +69,11 @@ impl StartCmd {
             let client = Provider::<Http>::try_from(eth_host.clone()).unwrap();
             let client = SignerMiddleware::new(client, wallet.clone());
             let client = Arc::new(client);
-            let cosmos = config.cosmos.clone();
-            let mongo = config.mongo.clone();
 
-            let poller = Poller::new(&cellar, client, &cosmos, &mongo)
-                .await
-                .unwrap_or_else(|e| {
-                    status_err!("couldn't initialize poller: {}", e);
-                    std::process::exit(1);
-                });
+            let poller = Poller::new(&cellar, client).await.unwrap_or_else(|e| {
+                status_err!("couldn't initialize poller: {}", e);
+                std::process::exit(1);
+            });
 
             pollers.push(poller);
         }
