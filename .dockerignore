@@ -1,0 +1,6 @@
+*/target/*
+.DS_Store
+.dockerignore
+.git
+.gitignore
+tests/
