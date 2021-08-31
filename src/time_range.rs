@@ -155,6 +155,7 @@ pub struct MongoData {
     pub pair_id: ethers::prelude::U256,
     pub symbol: String,
     pub tick_weights: Vec<MongoTickWeights>,
+    pub model_name: String,
 }
 #[derive(Serialize, Deserialize, Debug)]
 pub struct MongoTickWeights {
