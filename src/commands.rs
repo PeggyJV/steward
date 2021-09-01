@@ -27,7 +27,7 @@ use abscissa_core::{
 };
 use std::path::PathBuf;
 
-use somm_gorc::commands::GorcCmd as GorcCmd;
+use gorc::commands::orchestrator::OrchestratorCmd as OrchestratorCmd;
 
 /// CellarRebalancer Configuration Filename
 pub const CONFIG_FILE: &str = "contract_monitor.toml";
@@ -69,7 +69,7 @@ pub enum CellarRebalancerCmd {
 
     // Gorc subcommand from gravity-bridge
     #[options(help = "gorc sub-commands")]
-    Gorc(GorcCmd),
+    Orchestrator(OrchestratorCmd),
 }
 
 /// This trait allows you to define how application configuration is loaded.

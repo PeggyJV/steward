@@ -29,7 +29,7 @@ deep_space ={git="https://github.com/iqlusioninc/deep_space/", branch="zaki/tend
 prost = "0.7"
 prost-types = "0.7"
 sha2 = "0.9"
-orchestrator = {git="https://github.com/PeggyJV/gravity-bridge", branch="main"}
+gorc = {git="https://github.com/PeggyJV/gravity-bridge", branch="ukpai/pub_module"}
 somm_gorc = "0.1.1"
 hyper = "0.14.12"
 

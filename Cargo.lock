@@ -680,6 +680,7 @@ dependencies = [
  "deep_space 2.4.3 (git+https://github.com/iqlusioninc/deep_space/?branch=zaki/tendermint_0_21)",
  "ethers",
  "futures",
+ "gorc",
  "gumdrop",
  "hyper",
  "iqhttp",
@@ -689,7 +690,6 @@ dependencies = [
  "num-rational 0.4.0",
  "num-traits",
  "once_cell",
- "orchestrator",
  "pkcs8",
  "prost",
  "prost-types",
@@ -872,17 +872,6 @@ dependencies = [
 
 [[package]]
 name = "cosmos-sdk-proto"
-version = "0.6.1"
-source = "git+http://github.com/cosmos/cosmos-rust?branch=main#05584eadeb4dbc1e3f26ffac953dbf28a8dd9182"
-dependencies = [
- "prost",
- "prost-types",
- "tendermint-proto 0.21.0",
- "tonic",
-]
-
-[[package]]
-name = "cosmos-sdk-proto"
 version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7115eae4b8518967b8e737a3ef76025f2d007de7906d88c18f00b8bbfc70f51e"
@@ -894,13 +883,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "cosmos-sdk-proto"
+version = "0.6.3"
+source = "git+http://github.com/cosmos/cosmos-rust?branch=main#f32e051c84b0c9f4f6e5b629e6e41f35b4a6a4d1"
+dependencies = [
+ "prost",
+ "prost-types",
+ "tendermint-proto 0.21.0",
+ "tonic",
+]
+
+[[package]]
 name = "cosmos_gravity"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#45ea15a27100c55af3e8914e99c931dda1d7e6e0"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module#377994fb9dbf1e21282c421be37b5dd5068fce14"
 dependencies = [
  "bytes",
  "clarity",
- "cosmos-sdk-proto 0.6.1",
+ "cosmos-sdk-proto 0.6.3 (git+http://github.com/cosmos/cosmos-rust?branch=main)",
  "deep_space 2.4.3 (git+https://github.com/iqlusioninc/deep_space/?branch=zaki/tendermint_0_21)",
  "ethereum_gravity",
  "gravity_proto",
@@ -1116,7 +1116,7 @@ dependencies = [
  "base64 0.13.0",
  "bech32 0.8.1",
  "bytes",
- "cosmos-sdk-proto 0.6.1",
+ "cosmos-sdk-proto 0.6.3 (git+http://github.com/cosmos/cosmos-rust?branch=main)",
  "hmac 0.11.0",
  "log",
  "num-bigint 0.4.0",
@@ -1354,7 +1354,7 @@ dependencies = [
 [[package]]
 name = "ethereum_gravity"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#45ea15a27100c55af3e8914e99c931dda1d7e6e0"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module#377994fb9dbf1e21282c421be37b5dd5068fce14"
 dependencies = [
  "clarity",
  "deep_space 2.4.3 (git+https://github.com/iqlusioninc/deep_space/?branch=zaki/tendermint_0_21)",
@@ -1778,12 +1778,46 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9b919933a397b79c37e33b77bb2aa3dc8eb6e165ad809e58ff75bc7db2e34574"
 
 [[package]]
+name = "gorc"
+version = "0.1.0"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module#0f48c0bb9e6bccc83061588a01b888290bace9ae"
+dependencies = [
+ "abscissa_core",
+ "abscissa_tokio",
+ "actix-rt",
+ "bip32",
+ "bytes",
+ "clarity",
+ "cosmos_gravity",
+ "deep_space 2.4.3 (git+https://github.com/iqlusioninc/deep_space/?branch=zaki/tendermint_0_21)",
+ "ethereum_gravity",
+ "gravity_proto",
+ "gravity_utils",
+ "gumdrop",
+ "k256",
+ "orchestrator",
+ "pkcs8",
+ "prost",
+ "rand_core 0.6.3",
+ "regex",
+ "relayer",
+ "rpassword",
+ "serde",
+ "signatory",
+ "thiserror",
+ "tokio",
+ "toml",
+ "tonic",
+ "web30",
+]
+
+[[package]]
 name = "gravity_proto"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#45ea15a27100c55af3e8914e99c931dda1d7e6e0"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module#377994fb9dbf1e21282c421be37b5dd5068fce14"
 dependencies = [
  "bytes",
- "cosmos-sdk-proto 0.6.1",
+ "cosmos-sdk-proto 0.6.3 (git+http://github.com/cosmos/cosmos-rust?branch=main)",
  "prost",
  "prost-types",
  "tonic",
@@ -1792,10 +1826,10 @@ dependencies = [
 [[package]]
 name = "gravity_utils"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#45ea15a27100c55af3e8914e99c931dda1d7e6e0"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module#377994fb9dbf1e21282c421be37b5dd5068fce14"
 dependencies = [
  "clarity",
- "cosmos-sdk-proto 0.6.1",
+ "cosmos-sdk-proto 0.6.3 (git+http://github.com/cosmos/cosmos-rust?branch=main)",
  "deep_space 2.4.3 (git+https://github.com/iqlusioninc/deep_space/?branch=zaki/tendermint_0_21)",
  "gravity_proto",
  "log",
@@ -2643,7 +2677,7 @@ dependencies = [
 [[package]]
 name = "orchestrator"
 version = "0.4.1"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#45ea15a27100c55af3e8914e99c931dda1d7e6e0"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module#377994fb9dbf1e21282c421be37b5dd5068fce14"
 dependencies = [
  "actix-rt",
  "axum",
@@ -3118,7 +3152,7 @@ checksum = "f497285884f3fcff424ffc933e56d7cbca511def0c9831a7f9b5f6153e3cc89b"
 [[package]]
 name = "relayer"
 version = "0.4.1"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#45ea15a27100c55af3e8914e99c931dda1d7e6e0"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module#377994fb9dbf1e21282c421be37b5dd5068fce14"
 dependencies = [
  "actix-rt",
  "clarity",
@@ -3806,7 +3840,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "29055b3c21dcdf9855667f2bef7a0a0ae6173709aeb0a3427e1440cc530452d6"
 dependencies = [
  "clarity",
- "cosmos-sdk-proto 0.6.3",
+ "cosmos-sdk-proto 0.6.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "deep_space 2.4.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "log",
  "num-bigint 0.4.0",
@@ -3861,7 +3895,7 @@ version = "0.1.0"
 source = "git+https://github.com/PeggyJV/sommelier#2b7b525c5bd4744a6af5e308ccb5a6e2ce3d7304"
 dependencies = [
  "bytes",
- "cosmos-sdk-proto 0.6.1",
+ "cosmos-sdk-proto 0.6.3 (git+http://github.com/cosmos/cosmos-rust?branch=main)",
  "prost",
  "prost-types",
  "tonic",
