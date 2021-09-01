@@ -29,6 +29,8 @@ deep_space ={git="https://github.com/iqlusioninc/deep_space/", branch="zaki/tend
 prost = "0.7"
 prost-types = "0.7"
 sha2 = "0.9"
+orchestrator = {git="https://github.com/PeggyJV/gravity-bridge", branch="main"}
+hyper = "0.14.12"
 
 bip32 = "0.2"
 k256 = { version = "0.9", features = ["pem"] }
