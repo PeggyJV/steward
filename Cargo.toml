@@ -30,6 +30,7 @@ prost = "0.7"
 prost-types = "0.7"
 sha2 = "0.9"
 orchestrator = {git="https://github.com/PeggyJV/gravity-bridge", branch="main"}
+somm_gorc = "0.1.1"
 hyper = "0.14.12"
 
 bip32 = "0.2"

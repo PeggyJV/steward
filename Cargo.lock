@@ -55,11 +55,12 @@ dependencies = [
 
 [[package]]
 name = "abscissa_tokio"
-version = "0.6.0-pre.1"
+version = "0.6.0-pre.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5483def0ba1533f8040c0288451373a3522f13be7386426bb81cf7605a806a50"
+checksum = "80063fd5884d9a4220c4de14287b19c6aaf4a8f30a7dafb84cb757ff202edbff"
 dependencies = [
  "abscissa_core",
+ "actix-rt",
  "tokio",
 ]
 
@@ -676,7 +677,7 @@ dependencies = [
  "bson",
  "bytes",
  "chrono",
- "deep_space",
+ "deep_space 2.4.3 (git+https://github.com/iqlusioninc/deep_space/?branch=zaki/tendermint_0_21)",
  "ethers",
  "futures",
  "gumdrop",
@@ -698,6 +699,7 @@ dependencies = [
  "serde_json",
  "sha2 0.9.5",
  "signatory",
+ "somm_gorc",
  "somm_proto",
  "thiserror",
  "tokio",
@@ -858,12 +860,36 @@ checksum = "ea221b5284a47e40033bf9b66f35f984ec0ea2931eb03505246cd27a963f981b"
 
 [[package]]
 name = "cosmos-sdk-proto"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "78f4841c74e806ccb9198968db8312355830751a3e9849789c328692a65e4c6a"
+dependencies = [
+ "prost",
+ "prost-types",
+ "tendermint-proto 0.19.0",
+ "tonic",
+]
+
+[[package]]
+name = "cosmos-sdk-proto"
 version = "0.6.1"
 source = "git+http://github.com/cosmos/cosmos-rust?branch=main#05584eadeb4dbc1e3f26ffac953dbf28a8dd9182"
 dependencies = [
  "prost",
  "prost-types",
- "tendermint-proto",
+ "tendermint-proto 0.21.0",
+ "tonic",
+]
+
+[[package]]
+name = "cosmos-sdk-proto"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7115eae4b8518967b8e737a3ef76025f2d007de7906d88c18f00b8bbfc70f51e"
+dependencies = [
+ "prost",
+ "prost-types",
+ "tendermint-proto 0.21.0",
  "tonic",
 ]
 
@@ -874,8 +900,8 @@ source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#45ea15a27100
 dependencies = [
  "bytes",
  "clarity",
- "cosmos-sdk-proto",
- "deep_space",
+ "cosmos-sdk-proto 0.6.1",
+ "deep_space 2.4.3 (git+https://github.com/iqlusioninc/deep_space/?branch=zaki/tendermint_0_21)",
  "ethereum_gravity",
  "gravity_proto",
  "gravity_utils",
@@ -1053,12 +1079,13 @@ checksum = "3ee2393c4a91429dffb4bedf19f4d6abf27d8a732c8ce4980305d782e5426d57"
 [[package]]
 name = "deep_space"
 version = "2.4.3"
-source = "git+https://github.com/iqlusioninc/deep_space/?branch=zaki/tendermint_0_21#3aaf866c5c2bed69beda86d46d0f4a9465806e70"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ea6a81d9084ce357c7f6b07c2819f257846839fa76b209a3c89e9022c65be19b"
 dependencies = [
  "base64 0.13.0",
  "bech32 0.8.1",
  "bytes",
- "cosmos-sdk-proto",
+ "cosmos-sdk-proto 0.5.0",
  "hmac 0.11.0",
  "log",
  "num-bigint 0.4.0",
@@ -1075,7 +1102,38 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "sha2 0.9.5",
- "tendermint-proto",
+ "tendermint-proto 0.19.0",
+ "tokio",
+ "tonic",
+ "unicode-normalization",
+]
+
+[[package]]
+name = "deep_space"
+version = "2.4.3"
+source = "git+https://github.com/iqlusioninc/deep_space/?branch=zaki/tendermint_0_21#3aaf866c5c2bed69beda86d46d0f4a9465806e70"
+dependencies = [
+ "base64 0.13.0",
+ "bech32 0.8.1",
+ "bytes",
+ "cosmos-sdk-proto 0.6.1",
+ "hmac 0.11.0",
+ "log",
+ "num-bigint 0.4.0",
+ "num-traits",
+ "num256",
+ "pbkdf2 0.8.0",
+ "prost",
+ "prost-types",
+ "rand 0.8.4",
+ "ripemd160",
+ "rust_decimal",
+ "secp256k1",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "sha2 0.9.5",
+ "tendermint-proto 0.21.0",
  "tokio",
  "tonic",
  "unicode-normalization",
@@ -1299,7 +1357,7 @@ version = "0.1.0"
 source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#45ea15a27100c55af3e8914e99c931dda1d7e6e0"
 dependencies = [
  "clarity",
- "deep_space",
+ "deep_space 2.4.3 (git+https://github.com/iqlusioninc/deep_space/?branch=zaki/tendermint_0_21)",
  "gravity_utils",
  "log",
  "num256",
@@ -1725,7 +1783,7 @@ version = "0.1.0"
 source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#45ea15a27100c55af3e8914e99c931dda1d7e6e0"
 dependencies = [
  "bytes",
- "cosmos-sdk-proto",
+ "cosmos-sdk-proto 0.6.1",
  "prost",
  "prost-types",
  "tonic",
@@ -1737,8 +1795,8 @@ version = "0.1.0"
 source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#45ea15a27100c55af3e8914e99c931dda1d7e6e0"
 dependencies = [
  "clarity",
- "cosmos-sdk-proto",
- "deep_space",
+ "cosmos-sdk-proto 0.6.1",
+ "deep_space 2.4.3 (git+https://github.com/iqlusioninc/deep_space/?branch=zaki/tendermint_0_21)",
  "gravity_proto",
  "log",
  "num-bigint 0.4.0",
@@ -2591,7 +2649,7 @@ dependencies = [
  "axum",
  "clarity",
  "cosmos_gravity",
- "deep_space",
+ "deep_space 2.4.3 (git+https://github.com/iqlusioninc/deep_space/?branch=zaki/tendermint_0_21)",
  "docopt",
  "env_logger",
  "ethereum_gravity",
@@ -3065,7 +3123,7 @@ dependencies = [
  "actix-rt",
  "clarity",
  "cosmos_gravity",
- "deep_space",
+ "deep_space 2.4.3 (git+https://github.com/iqlusioninc/deep_space/?branch=zaki/tendermint_0_21)",
  "docopt",
  "env_logger",
  "ethereum_gravity",
@@ -3655,15 +3713,184 @@ dependencies = [
 ]
 
 [[package]]
+name = "somm_cosmos_gravity"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "990a648f6cfb902a92e5f72d80967e72ba570ba2c3a6dbc61c8eb416f83585e3"
+dependencies = [
+ "bytes",
+ "clarity",
+ "cosmos-sdk-proto 0.5.0",
+ "deep_space 2.4.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "log",
+ "num256",
+ "prost",
+ "prost-types",
+ "serde",
+ "sha3",
+ "somm_ethereum_gravity",
+ "somm_gravity_proto",
+ "somm_gravity_utils",
+ "tokio",
+ "tonic",
+ "web30",
+]
+
+[[package]]
+name = "somm_ethereum_gravity"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bb1e7888482f1dd427cfced8544e252713d3ee48cb019fc441ddc93beeb3fad5"
+dependencies = [
+ "clarity",
+ "deep_space 2.4.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "log",
+ "num256",
+ "sha3",
+ "somm_gravity_utils",
+ "web30",
+]
+
+[[package]]
+name = "somm_gorc"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eb5b3d8d24b9935e5fd7e3bcfcf2e24c14a94ede4fed5a632576437ae2269f46"
+dependencies = [
+ "abscissa_core",
+ "abscissa_tokio",
+ "actix-rt",
+ "bip32",
+ "bytes",
+ "clarity",
+ "deep_space 2.4.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gumdrop",
+ "k256",
+ "pkcs8",
+ "prost",
+ "rand_core 0.6.3",
+ "regex",
+ "rpassword",
+ "serde",
+ "signatory",
+ "somm_cosmos_gravity",
+ "somm_ethereum_gravity",
+ "somm_gravity_proto",
+ "somm_gravity_utils",
+ "somm_orchestrator",
+ "somm_relayer",
+ "thiserror",
+ "tokio",
+ "toml",
+ "tonic",
+ "web30",
+]
+
+[[package]]
+name = "somm_gravity_proto"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eb0a18f0e6dca54100f2616b1cbb05f2243c1d2479b00ae9ecf8380a467d358d"
+dependencies = [
+ "bytes",
+ "cosmos-sdk-proto 0.5.0",
+ "prost",
+ "prost-types",
+ "tonic",
+]
+
+[[package]]
+name = "somm_gravity_utils"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "29055b3c21dcdf9855667f2bef7a0a0ae6173709aeb0a3427e1440cc530452d6"
+dependencies = [
+ "clarity",
+ "cosmos-sdk-proto 0.6.3",
+ "deep_space 2.4.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "log",
+ "num-bigint 0.4.0",
+ "num256",
+ "serde",
+ "serde_derive",
+ "sha3",
+ "somm_gravity_proto",
+ "tokio",
+ "tonic",
+ "url",
+ "web30",
+]
+
+[[package]]
+name = "somm_orchestrator"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bf51065a8664a09a9c5790e2b81cc1820e70d32f4538907b8a781a7875e74f00"
+dependencies = [
+ "actix-rt",
+ "axum",
+ "clarity",
+ "deep_space 2.4.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "docopt",
+ "env_logger",
+ "futures",
+ "hyper",
+ "lazy_static",
+ "log",
+ "num256",
+ "openssl",
+ "openssl-probe",
+ "prometheus",
+ "rand 0.8.4",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "somm_cosmos_gravity",
+ "somm_ethereum_gravity",
+ "somm_gravity_proto",
+ "somm_gravity_utils",
+ "somm_relayer",
+ "tokio",
+ "tonic",
+ "web30",
+]
+
+[[package]]
 name = "somm_proto"
 version = "0.1.0"
 source = "git+https://github.com/PeggyJV/sommelier#2b7b525c5bd4744a6af5e308ccb5a6e2ce3d7304"
 dependencies = [
  "bytes",
- "cosmos-sdk-proto",
+ "cosmos-sdk-proto 0.6.1",
  "prost",
  "prost-types",
  "tonic",
+]
+
+[[package]]
+name = "somm_relayer"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "66f291efc8eb4e29568c1f1831870e9cad9d30c6c04dbadad26e9afab56f4e2d"
+dependencies = [
+ "actix-rt",
+ "clarity",
+ "deep_space 2.4.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "docopt",
+ "env_logger",
+ "lazy_static",
+ "log",
+ "num256",
+ "openssl-probe",
+ "serde",
+ "serde_derive",
+ "somm_cosmos_gravity",
+ "somm_ethereum_gravity",
+ "somm_gravity_proto",
+ "somm_gravity_utils",
+ "tokio",
+ "tonic",
+ "web30",
 ]
 
 [[package]]
@@ -3829,6 +4056,25 @@ dependencies = [
  "redox_syscall",
  "remove_dir_all",
  "winapi",
+]
+
+[[package]]
+name = "tendermint-proto"
+version = "0.19.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "32bbc1bc55f09de4d00b5d69aa6b60392ba37c5e4761d869f76065d352bd3360"
+dependencies = [
+ "anomaly",
+ "bytes",
+ "chrono",
+ "num-derive",
+ "num-traits",
+ "prost",
+ "prost-types",
+ "serde",
+ "serde_bytes",
+ "subtle-encoding",
+ "thiserror",
 ]
 
 [[package]]
