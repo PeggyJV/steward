@@ -18,6 +18,13 @@ mod remove_funds;
 mod start;
 mod transfer;
 mod version;
+mod cosmos_to_eth;
+mod deploy;
+mod eth_to_cosmos;
+mod orchestrator;
+mod query;
+mod sign_delegate_keys;
+mod tx;
 
 use self::{config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd, remove_funds::RemoveFundsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd};
 
@@ -26,8 +33,6 @@ use abscissa_core::{
     config::Override, Command, Configurable, FrameworkError, Help, Options, Runnable,
 };
 use std::path::PathBuf;
-
-use gorc::commands::orchestrator::OrchestratorCmd as OrchestratorCmd;
 
 /// CellarRebalancer Configuration Filename
 pub const CONFIG_FILE: &str = "contract_monitor.toml";
@@ -67,9 +72,26 @@ pub enum CellarRebalancerCmd {
     #[options(help = "remove_funds")]
     RemoveFunds(RemoveFundsCmd),
 
-    // Gorc subcommand from gravity-bridge
-    #[options(help = "gorc sub-commands")]
-    Orchestrator(OrchestratorCmd),
+    #[options(help = "Send Cosmos to Ethereum")]
+    CosmosToEth(cosmos_to_eth::CosmosToEthCmd),
+
+    #[options(help = "tools for contract deployment")]
+    Deploy(deploy::DeployCmd),
+
+    #[options(help = "Send Ethereum to Cosmos")]
+    EthToCosmos(eth_to_cosmos::EthToCosmosCmd),
+
+    #[options(help = "orchestrator management commands")]
+    Orchestrator(orchestrator::OrchestratorCmd),
+
+    #[options(help = "query state on either ethereum or cosmos chains")]
+    Query(query::QueryCmd),
+
+    #[options(help = "sign delegate keys")]
+    SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
+
+    #[options(help = "create transactions on either ethereum or cosmos chains")]
+    Tx(tx::TxCmd),
 }
 
 /// This trait allows you to define how application configuration is loaded.
