@@ -24,14 +24,13 @@ num-traits = "0.2"
 num-rational = "0.4"
 toml = { version = "0.5" }
 bytes = "1.0"
-gravity_bridge = {git="https://github.com/PeggyJV/gravity-bridge", branch="ukpai/orchestrator_config"}
+gravity_bridge = {git="https://github.com/PeggyJV/gravity-bridge", branch="main"}
 regex = "1.5.4"
 clarity = "0.4.12"
 deep_space ={git="https://github.com/iqlusioninc/deep_space/", branch="zaki/tendermint_0_21"}
 prost = "0.7"
 prost-types = "0.7"
 sha2 = "0.9"
-gorc = {git="https://github.com/PeggyJV/gravity-bridge", branch="ukpai/pub_module"}
 hyper = "0.14.12"
 
 bip32 = "0.2"

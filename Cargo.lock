@@ -1034,7 +1034,6 @@ dependencies = [
  "deep_space 2.4.3",
  "ethers",
  "futures",
- "gorc 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
  "gravity_bridge",
  "gumdrop",
  "hyper",
@@ -1118,17 +1117,17 @@ dependencies = [
 [[package]]
 name = "client"
 version = "0.4.1"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config#3167a23f3553f64a28355cf2b36e6b3117cfee6f"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#3372ca1f49c523452d8dd4176f4f3abbfcaa5719"
 dependencies = [
  "actix-rt 2.2.0",
  "clarity",
- "cosmos_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "cosmos_gravity",
  "deep_space 2.4.3",
  "docopt",
  "env_logger",
- "ethereum_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "gravity_proto 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "gravity_utils 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "ethereum_gravity",
+ "gravity_proto",
+ "gravity_utils",
  "lazy_static",
  "openssl-probe",
  "serde",
@@ -1288,38 +1287,15 @@ dependencies = [
 [[package]]
 name = "cosmos_gravity"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config#3167a23f3553f64a28355cf2b36e6b3117cfee6f"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#3372ca1f49c523452d8dd4176f4f3abbfcaa5719"
 dependencies = [
  "bytes 1.0.1",
  "clarity",
  "cosmos-sdk-proto",
  "deep_space 2.4.3",
- "ethereum_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "gravity_proto 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "gravity_utils 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "log",
- "num256",
- "prost",
- "prost-types",
- "serde",
- "sha3",
- "tokio 1.8.1",
- "tonic",
- "web30",
-]
-
-[[package]]
-name = "cosmos_gravity"
-version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module#377994fb9dbf1e21282c421be37b5dd5068fce14"
-dependencies = [
- "bytes 1.0.1",
- "clarity",
- "cosmos-sdk-proto",
- "deep_space 2.4.3",
- "ethereum_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
- "gravity_proto 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
- "gravity_utils 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
+ "ethereum_gravity",
+ "gravity_proto",
+ "gravity_utils",
  "log",
  "num256",
  "prost",
@@ -1780,25 +1756,11 @@ dependencies = [
 [[package]]
 name = "ethereum_gravity"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config#3167a23f3553f64a28355cf2b36e6b3117cfee6f"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#3372ca1f49c523452d8dd4176f4f3abbfcaa5719"
 dependencies = [
  "clarity",
  "deep_space 2.4.3",
- "gravity_utils 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "log",
- "num256",
- "sha3",
- "web30",
-]
-
-[[package]]
-name = "ethereum_gravity"
-version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module#377994fb9dbf1e21282c421be37b5dd5068fce14"
-dependencies = [
- "clarity",
- "deep_space 2.4.3",
- "gravity_utils 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
+ "gravity_utils",
  "log",
  "num256",
  "sha3",
@@ -2257,7 +2219,7 @@ checksum = "9b919933a397b79c37e33b77bb2aa3dc8eb6e165ad809e58ff75bc7db2e34574"
 [[package]]
 name = "gorc"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config#3167a23f3553f64a28355cf2b36e6b3117cfee6f"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#3372ca1f49c523452d8dd4176f4f3abbfcaa5719"
 dependencies = [
  "abscissa_core",
  "abscissa_tokio",
@@ -2265,53 +2227,19 @@ dependencies = [
  "bip32",
  "bytes 1.0.1",
  "clarity",
- "cosmos_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "cosmos_gravity",
  "deep_space 2.4.3",
- "ethereum_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "gravity_proto 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "gravity_utils 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "ethereum_gravity",
+ "gravity_proto",
+ "gravity_utils",
  "gumdrop",
  "k256",
- "orchestrator 0.4.1 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "orchestrator",
  "pkcs8",
  "prost",
  "rand_core 0.6.3",
  "regex",
- "relayer 0.4.1 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "rpassword",
- "serde",
- "signatory",
- "thiserror",
- "tokio 1.8.1",
- "toml",
- "tonic",
- "web30",
-]
-
-[[package]]
-name = "gorc"
-version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module#0f48c0bb9e6bccc83061588a01b888290bace9ae"
-dependencies = [
- "abscissa_core",
- "abscissa_tokio",
- "actix-rt 2.2.0",
- "bip32",
- "bytes 1.0.1",
- "clarity",
- "cosmos_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
- "deep_space 2.4.3",
- "ethereum_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
- "gravity_proto 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
- "gravity_utils 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
- "gumdrop",
- "k256",
- "orchestrator 0.4.1 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
- "pkcs8",
- "prost",
- "rand_core 0.6.3",
- "regex",
- "relayer 0.4.1 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
+ "relayer",
  "rpassword",
  "serde",
  "signatory",
@@ -2325,37 +2253,25 @@ dependencies = [
 [[package]]
 name = "gravity_bridge"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config#3167a23f3553f64a28355cf2b36e6b3117cfee6f"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#3372ca1f49c523452d8dd4176f4f3abbfcaa5719"
 dependencies = [
  "client",
- "cosmos_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "ethereum_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "gorc 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "gravity_proto 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "gravity_utils 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "orchestrator 0.4.1 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "cosmos_gravity",
+ "ethereum_gravity",
+ "gorc",
+ "gravity_proto",
+ "gravity_utils",
+ "orchestrator",
  "proto_build",
  "register_delegate_keys",
- "relayer 0.4.1 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "relayer",
  "test_runner",
 ]
 
 [[package]]
 name = "gravity_proto"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config#3167a23f3553f64a28355cf2b36e6b3117cfee6f"
-dependencies = [
- "bytes 1.0.1",
- "cosmos-sdk-proto",
- "prost",
- "prost-types",
- "tonic",
-]
-
-[[package]]
-name = "gravity_proto"
-version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module#377994fb9dbf1e21282c421be37b5dd5068fce14"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#3372ca1f49c523452d8dd4176f4f3abbfcaa5719"
 dependencies = [
  "bytes 1.0.1",
  "cosmos-sdk-proto",
@@ -2367,33 +2283,12 @@ dependencies = [
 [[package]]
 name = "gravity_utils"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config#3167a23f3553f64a28355cf2b36e6b3117cfee6f"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#3372ca1f49c523452d8dd4176f4f3abbfcaa5719"
 dependencies = [
  "clarity",
  "cosmos-sdk-proto",
  "deep_space 2.4.3",
- "gravity_proto 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "log",
- "num-bigint 0.4.0",
- "num256",
- "serde",
- "serde_derive",
- "sha3",
- "tokio 1.8.1",
- "tonic",
- "url",
- "web30",
-]
-
-[[package]]
-name = "gravity_utils"
-version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module#377994fb9dbf1e21282c421be37b5dd5068fce14"
-dependencies = [
- "clarity",
- "cosmos-sdk-proto",
- "deep_space 2.4.3",
- "gravity_proto 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
+ "gravity_proto",
  "log",
  "num-bigint 0.4.0",
  "num256",
@@ -3354,19 +3249,19 @@ dependencies = [
 [[package]]
 name = "orchestrator"
 version = "0.4.1"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config#3167a23f3553f64a28355cf2b36e6b3117cfee6f"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#3372ca1f49c523452d8dd4176f4f3abbfcaa5719"
 dependencies = [
  "actix-rt 2.2.0",
  "axum",
  "clarity",
- "cosmos_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "cosmos_gravity",
  "deep_space 2.4.3",
  "docopt",
  "env_logger",
- "ethereum_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "ethereum_gravity",
  "futures",
- "gravity_proto 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "gravity_utils 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "gravity_proto",
+ "gravity_utils",
  "hyper",
  "lazy_static",
  "log",
@@ -3375,40 +3270,7 @@ dependencies = [
  "openssl-probe",
  "prometheus",
  "rand 0.8.4",
- "relayer 0.4.1 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "serde",
- "serde_derive",
- "serde_json",
- "tokio 1.8.1",
- "tonic",
- "web30",
-]
-
-[[package]]
-name = "orchestrator"
-version = "0.4.1"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module#377994fb9dbf1e21282c421be37b5dd5068fce14"
-dependencies = [
- "actix-rt 2.2.0",
- "axum",
- "clarity",
- "cosmos_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
- "deep_space 2.4.3",
- "docopt",
- "env_logger",
- "ethereum_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
- "futures",
- "gravity_proto 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
- "gravity_utils 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
- "hyper",
- "lazy_static",
- "log",
- "num256",
- "openssl",
- "openssl-probe",
- "prometheus",
- "rand 0.8.4",
- "relayer 0.4.1 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
+ "relayer",
  "serde",
  "serde_derive",
  "serde_json",
@@ -3782,7 +3644,7 @@ dependencies = [
 [[package]]
 name = "proto_build"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config#3167a23f3553f64a28355cf2b36e6b3117cfee6f"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#3372ca1f49c523452d8dd4176f4f3abbfcaa5719"
 dependencies = [
  "prost",
  "prost-build",
@@ -3982,23 +3844,23 @@ checksum = "f497285884f3fcff424ffc933e56d7cbca511def0c9831a7f9b5f6153e3cc89b"
 [[package]]
 name = "register_delegate_keys"
 version = "0.4.1"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config#3167a23f3553f64a28355cf2b36e6b3117cfee6f"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#3372ca1f49c523452d8dd4176f4f3abbfcaa5719"
 dependencies = [
  "actix-rt 2.2.0",
  "clarity",
  "contact",
- "cosmos_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "cosmos_gravity",
  "deep_space 2.4.3",
  "docopt",
  "env_logger",
- "ethereum_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "gravity_proto 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "gravity_utils 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "ethereum_gravity",
+ "gravity_proto",
+ "gravity_utils",
  "lazy_static",
  "log",
  "openssl-probe",
  "rand 0.8.4",
- "relayer 0.4.1 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "relayer",
  "serde",
  "serde_derive",
  "web30",
@@ -4007,42 +3869,17 @@ dependencies = [
 [[package]]
 name = "relayer"
 version = "0.4.1"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config#3167a23f3553f64a28355cf2b36e6b3117cfee6f"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#3372ca1f49c523452d8dd4176f4f3abbfcaa5719"
 dependencies = [
  "actix-rt 2.2.0",
  "clarity",
- "cosmos_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "cosmos_gravity",
  "deep_space 2.4.3",
  "docopt",
  "env_logger",
- "ethereum_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "gravity_proto 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "gravity_utils 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "lazy_static",
- "log",
- "num256",
- "openssl-probe",
- "serde",
- "serde_derive",
- "tokio 1.8.1",
- "tonic",
- "web30",
-]
-
-[[package]]
-name = "relayer"
-version = "0.4.1"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module#377994fb9dbf1e21282c421be37b5dd5068fce14"
-dependencies = [
- "actix-rt 2.2.0",
- "clarity",
- "cosmos_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
- "deep_space 2.4.3",
- "docopt",
- "env_logger",
- "ethereum_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
- "gravity_proto 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
- "gravity_utils 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/pub_module)",
+ "ethereum_gravity",
+ "gravity_proto",
+ "gravity_utils",
  "lazy_static",
  "log",
  "num256",
@@ -4859,24 +4696,24 @@ dependencies = [
 [[package]]
 name = "test_runner"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config#3167a23f3553f64a28355cf2b36e6b3117cfee6f"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#3372ca1f49c523452d8dd4176f4f3abbfcaa5719"
 dependencies = [
  "actix",
  "actix-rt 2.2.0",
  "actix-web",
  "clarity",
- "cosmos_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "cosmos_gravity",
  "deep_space 2.4.3",
  "docopt",
  "env_logger",
- "ethereum_gravity 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "ethereum_gravity",
  "futures",
- "gravity_proto 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
- "gravity_utils 0.1.0 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "gravity_proto",
+ "gravity_utils",
  "lazy_static",
  "log",
  "num256",
- "orchestrator 0.4.1 (git+https://github.com/PeggyJV/gravity-bridge?branch=ukpai/orchestrator_config)",
+ "orchestrator",
  "rand 0.8.4",
  "serde",
  "serde_derive",
