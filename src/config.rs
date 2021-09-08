@@ -16,14 +16,14 @@ use std::path::Path;
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields)]
 pub struct CellarRebalancerConfig {
-    pub cellars: Vec<CellarConfig>,
-    pub ethereum: EthereumSection,
-    pub keys: KeysConfig,
-    pub mongo: MongoSection,
     pub keystore: String,
     pub gravity: GravitySection,
+    pub ethereum: EthereumSection,
     pub cosmos: CosmosSection,
     pub metrics: MetricsSection,
+    pub cellars: Vec<CellarConfig>,
+    pub keys: KeysConfig,
+    pub mongo: MongoSection,
 }
 
 impl CellarRebalancerConfig {
@@ -54,14 +54,14 @@ impl CellarRebalancerConfig {
 impl Default for CellarRebalancerConfig {
     fn default() -> Self {
         Self {
-            cellars: vec![CellarConfig::default(), CellarConfig::default()],
-            keys: KeysConfig::default(),
-            ethereum: EthereumSection::default(),
-            mongo: MongoSection::default(),
             keystore: "/tmp/keystore".to_owned(),
             gravity: GravitySection::default(),
+            ethereum: EthereumSection::default(),
             cosmos: CosmosSection::default(),
             metrics: MetricsSection::default(),
+            cellars: vec![CellarConfig::default(), CellarConfig::default()],
+            keys: KeysConfig::default(),
+            mongo: MongoSection::default(),
         }
     }
 }
