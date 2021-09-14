@@ -1,25 +1,16 @@
-mod add;
-mod delete;
-mod import;
-mod list;
-mod show;
+mod cosmos;
+mod eth;
 
 use abscissa_core::{Command, Options, Runnable};
 
+use crate::commands::keys::cosmos::CosmosKeysCmd;
+use crate::commands::keys::eth::EthKeysCmd;
+
 #[derive(Command, Debug, Options, Runnable)]
 pub enum KeysCmd {
-    #[options(help = "add [name] (password)")]
-    Add(add::AddKeyCmd),
+    #[options(name = "eth")]
+    EthKeysCmd(EthKeysCmd),
 
-    #[options(help = "show [name]")]
-    Show(show::ShowKeyCmd),
-
-    #[options(help = "delete [name]")]
-    Delete(delete::DeleteKeyCmd),
-
-    #[options(help = "list")]
-    List(list::ListKeyCmd),
-
-    #[options(help = "import")]
-    Import(import::ImportEthKeyCmd),
+    #[options(name = "cosmos")]
+    CosmosKeysCmd(CosmosKeysCmd),
 }
