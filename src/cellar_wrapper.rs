@@ -34,8 +34,8 @@ impl<T: 'static + Middleware> CellarState<T> {
 
     // Rebalance portfolio with cellar tick info
     pub async fn rebalance(&mut self, cellar_tick_info: Vec<CellarTickInfo>) -> Result<(), Error> {
-        let mut ticks: Vec<(U256, i32, i32, u32)> =
-            cellar_tick_info.into_iter().map(|x| x.to_tuple()).collect();
+        let mut ticks: Vec<cellar_mod::CellarTickInfo> =
+            cellar_tick_info.into_iter().map(|x| x.to_abi()).collect();
         ticks.reverse();
 
         let mut call = self.contract.rebalance(ticks);
@@ -59,7 +59,7 @@ impl<T: 'static + Middleware> CellarState<T> {
     ) -> Result<(), Error> {
         let mut call = self
             .contract
-            .add_liquidity_for_uni_v3(cellar_add_params.to_tuple());
+            .add_liquidity_for_uni_v3(cellar_add_params.to_abi());
 
         if let Some(gas_price) = self.gas_price {
             call = call.gas_price(gas_price)
@@ -86,7 +86,7 @@ impl<T: 'static + Middleware> CellarState<T> {
     ) -> Result<(), Error> {
         let call = self
             .contract
-            .add_liquidity_eth_for_uni_v3(cellar_add_params.to_tuple());
+            .add_liquidity_eth_for_uni_v3(cellar_add_params.to_abi());
         let pending = call.send().await?;
 
         let receipt = pending.confirmations(6).await?;
@@ -105,7 +105,7 @@ impl<T: 'static + Middleware> CellarState<T> {
     ) -> Result<(), Error> {
         let call = self
             .contract
-            .remove_liquidity_eth_from_uni_v3(cellar_remove_params.to_tuple());
+            .remove_liquidity_eth_from_uni_v3(cellar_remove_params.to_abi());
         let pending = call.send().await?;
 
         let receipt = pending.confirmations(6).await?;
@@ -124,7 +124,7 @@ impl<T: 'static + Middleware> CellarState<T> {
     ) -> Result<(), Error> {
         let call = self
             .contract
-            .remove_liquidity_from_uni_v3(cellar_remove_params.to_tuple());
+            .remove_liquidity_from_uni_v3(cellar_remove_params.to_abi());
         let pending = call.send().await?;
         dbg!(&pending);
         let receipt = pending.confirmations(6).await?;
@@ -161,14 +161,14 @@ impl CellarTickInfo {
         (self.token_id, self.tick_upper, self.tick_lower, self.weight)
     }
 
-    // pub fn to_abi(self)->cellar_mod::CellarTickInfo{
-    //     cellar_mod::CellarTickInfo {
-    //         token_id: self.token_id,
-    //         tick_upper: self.tick_upper,
-    //         tick_lower: self.tick_lower,
-    //         weight: self.weight,
-    //     }
-    // }
+    pub fn to_abi(self)->cellar_mod::CellarTickInfo{
+        cellar_mod::CellarTickInfo {
+            token_id: self.token_id,
+            tick_upper: self.tick_upper,
+            tick_lower: self.tick_lower,
+            weight: self.weight,
+        }
+    }
 
     pub fn from_tick_weight(tick_weight: &crate::time_range::TickWeight) -> CellarTickInfo {
         CellarTickInfo {
@@ -257,16 +257,16 @@ impl CellarAddParams {
         )
     }
 
-    // pub fn to_abi(self) -> cellar_mod::CellarAddParams {
-    //     cellar_mod::CellarAddParams{
-    //         amount_0_desired: self.amount0_desired,
-    //         amount_1_desired: self.amount1_desired,
-    //         amount_0_min:self.amount0_min,
-    //         amount_1_min:self.amount1_min,
-    //         recipient: self.recipient,
-    //         deadline: self.deadline,
-    //     }
-    // }
+    pub fn to_abi(self) -> cellar_mod::CellarAddParams {
+        cellar_mod::CellarAddParams{
+            amount_0_desired: self.amount0_desired,
+            amount_1_desired: self.amount1_desired,
+            amount_0_min:self.amount0_min,
+            amount_1_min:self.amount1_min,
+            recipient: self.recipient,
+            deadline: self.deadline,
+        }
+    }
 }
 
 // Struct for CellarRemoveParams
@@ -308,14 +308,14 @@ impl CellarRemoveParams {
         )
     }
 
-    // pub fn to_abi(self) -> cellar_mod::CellarRemoveParams {
-    //     cellar_mod::CellarRemoveParams {
-    //         token_amount: self.token_amount,
-    //         amount_0_min: self.amount0_min,
-    //         amount_1_min: self.amount1_min,
-    //         recipient: self.recipient,
-    //         deadline: self.deadline,
-    //     }
+    pub fn to_abi(self) -> cellar_mod::CellarRemoveParams {
+        cellar_mod::CellarRemoveParams {
+            token_amount: self.token_amount,
+            amount_0_min: self.amount0_min,
+            amount_1_min: self.amount1_min,
+            recipient: self.recipient,
+            deadline: self.deadline,
+        }
 
-    // }to
+    }
 }
