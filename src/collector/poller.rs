@@ -31,7 +31,7 @@ impl<T: 'static + Middleware> Poller<T> {
         cellar: &config::CellarConfig,
         client: Arc<T>,
         mongo: &config::MongoSection,
-        cosmos: &config::CosmosSection,
+        cosmos_key: &deep_space::private_key::PrivateKey,
     ) -> Result<Self, Error> {
         let pool = PoolState::new(cellar.pool_address, client.clone());
         let spacing = pool
