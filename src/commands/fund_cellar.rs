@@ -64,7 +64,7 @@ impl Runnable for FundCellarCmd {
             let mut erc20_1 = Erc20State::new(config.cellar.token_1.address, client.clone());
             erc20_1.gas_price = Some(gas);
             // erc20_1.approve((10u64 * (10u64.pow(config.cellar.token_1.decimals as u32))).into(), config.cellar.cellar_address).await;
-
+            // return;
             let (sqrtPriceX96, spot_tick, _, _, _, _, _) =
                 pool_state.contract.slot_0().call().await.unwrap();
 
@@ -138,7 +138,7 @@ impl Runnable for FundCellarCmd {
             );
 
             let params = CellarAddParams::new(
-                (4000u64 * (10u64.pow(config.cellar.token_0.decimals as u32))).into(),
+                (2000u64 * (10u64.pow(config.cellar.token_0.decimals as u32))).into(),
                 ((1u64 * (10u64.pow(config.cellar.token_1.decimals as u32))) / 4).into(),
                 0.into(),
                 0.into(),
