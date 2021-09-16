@@ -25,8 +25,9 @@ mod orchestrator;
 mod query;
 mod sign_delegate_keys;
 mod tx;
+mod cosmos_mode;
 
-use self::{config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd, remove_funds::RemoveFundsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd};
+use self::{config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd, remove_funds::RemoveFundsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd, cosmos_mode::CosmosSignerCmd};
 
 use crate::config::CellarRebalancerConfig;
 use abscissa_core::{
@@ -92,6 +93,10 @@ pub enum CellarRebalancerCmd {
 
     #[options(help = "create transactions on either ethereum or cosmos chains")]
     Tx(tx::TxCmd),
+
+    /// The `start` subcommand
+    #[options(help = "start the application")]
+    CosmosSigner(CosmosSignerCmd),
 }
 
 /// This trait allows you to define how application configuration is loaded.
