@@ -15,7 +15,7 @@ mod fund_cellar;
 mod keys;
 mod predictions;
 mod remove_funds;
-mod start;
+mod single_signer;
 mod transfer;
 mod version;
 mod cosmos_to_eth;
@@ -27,7 +27,7 @@ mod sign_delegate_keys;
 mod tx;
 mod cosmos_mode;
 
-use self::{config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd, remove_funds::RemoveFundsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd, cosmos_mode::CosmosSignerCmd};
+use self::{config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd, remove_funds::RemoveFundsCmd, single_signer::SingleSignerCmd, transfer::TransferCmd, version::VersionCmd, cosmos_mode::CosmosSignerCmd};
 
 use crate::config::CellarRebalancerConfig;
 use abscissa_core::{
@@ -47,7 +47,7 @@ pub enum CellarRebalancerCmd {
 
     /// The `start` subcommand
     #[options(help = "start the application")]
-    Start(StartCmd),
+    SingleSigner(SingleSignerCmd),
 
     /// The `transfer` subcommand
     #[options(help = "transfer ETH")]
@@ -125,7 +125,7 @@ impl Configurable<CellarRebalancerConfig> for CellarRebalancerCmd {
         config: CellarRebalancerConfig,
     ) -> Result<CellarRebalancerConfig, FrameworkError> {
         match self {
-            CellarRebalancerCmd::Start(cmd) => cmd.override_config(config),
+            CellarRebalancerCmd::SingleSigner(cmd) => cmd.override_config(config),
             _ => Ok(config),
         }
     }

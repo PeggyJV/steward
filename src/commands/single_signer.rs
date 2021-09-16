@@ -30,13 +30,13 @@ use tower::{Service, ServiceBuilder};
 ///
 /// <https://docs.rs/gumdrop/>
 #[derive(Command, Debug, Options)]
-pub struct StartCmd {
+pub struct SingleSignerCmd {
     /// To whom are we saying hello?
     #[options(free)]
     recipient: Vec<String>,
 }
 
-impl StartCmd {
+impl SingleSignerCmd {
     /// Initialize collector poller (if configured/needed)
     async fn build_pollers(
         &self,
@@ -88,7 +88,7 @@ impl StartCmd {
     }
 }
 
-impl Runnable for StartCmd {
+impl Runnable for SingleSignerCmd {
     /// Start the application.
     fn run(&self) {
         info!("Starting application");
@@ -120,7 +120,7 @@ impl Runnable for StartCmd {
     }
 }
 
-impl config::Override<CellarRebalancerConfig> for StartCmd {
+impl config::Override<CellarRebalancerConfig> for SingleSignerCmd {
     // Process the given command line options, overriding settings from
     // a configuration file using explicit flags taken from command-line
     // arguments.
