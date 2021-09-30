@@ -63,6 +63,7 @@ impl Runnable for AllowERC20 {
             let mut erc20_0 = Erc20State::new(self.address,client.clone());
             let decimals = erc20_0.contract.decimals().call().await.unwrap();
             erc20_0.gas_price=Some(gas);
+
             erc20_0.approve((self.amount * (10u64.pow(decimals as u32))).into(), self.cellar_address).await;
         })
         .unwrap_or_else(|e| {

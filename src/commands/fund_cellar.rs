@@ -14,9 +14,9 @@ pub struct FundCellarCmd {
     #[options(help = "Cellar Id")]
     pub cellar_id: u32,
     #[options(help = "Amount Token 0")]
-    pub amount_0: u64,
+    pub amount_0: f64,
     #[options(help = "Amount Token 1")]
-    pub amount_1: u64,
+    pub amount_1: f64,
 
 }
 
@@ -99,8 +99,8 @@ impl Runnable for FundCellarCmd {
 
 
             let params = CellarAddParams::new(
-                (self.amount_0 * (10u64.pow(cellar.token_0.decimals as u32))).into(),
-                (self.amount_1 * (10u64.pow(cellar.token_1.decimals as u32))).into(),
+                ((self.amount_0 * (10u64.pow(cellar.token_0.decimals as u32)) as f64) as u128).into(),
+                ((self.amount_1 * (10u64.pow(cellar.token_1.decimals as u32)) as f64) as u128).into(),
                 0.into(),
                 0.into(),
                 address,

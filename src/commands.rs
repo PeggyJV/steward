@@ -95,7 +95,7 @@ pub enum CellarRebalancerCmd {
     Tx(tx::TxCmd),
 
     #[options(help = "Allow Erc20 Token to interact with cellar contract")]
-    AllowERC20(allow_erc20::AllowERC20),
+    AllowErc20(allow_erc20::AllowERC20),
 
 }
 

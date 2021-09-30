@@ -36,7 +36,8 @@ impl<T: 'static + Middleware> Erc20State<T> {
 
     pub async fn approve(&self, amount:U256,cellar_address: H160){
         let call = self.contract.approve(cellar_address, amount);
-        let pending = call.send().await.unwrap();
+        let gas_increase = call.gas(80_000);
+        let pending = gas_increase.send().await.unwrap();
         info!("Approve transaction {:?}", pending);
         return;
 
