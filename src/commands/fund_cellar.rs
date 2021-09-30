@@ -10,7 +10,15 @@ use signatory::FsKeyStore;
 use crate::{cellar_wrapper::{CellarAddParams, CellarState, CellarTickInfo}, erc20::Erc20State, gas::CellarGas, prelude::*, uniswap_pool::PoolState};
 
 #[derive(Command, Debug, Options)]
-pub struct FundCellarCmd {}
+pub struct FundCellarCmd {
+    #[options(help = "Cellar Id")]
+    pub cellar_id: u32,
+    #[options(help = "Amount Token 0")]
+    pub amount_0: u64,
+    #[options(help = "Amount Token 1")]
+    pub amount_1: u64,
+
+}
 
 impl Runnable for FundCellarCmd {
     fn run(&self) {
@@ -53,13 +61,6 @@ impl Runnable for FundCellarCmd {
             contract_state.gas_price = Some(gas);
             let pool_state = PoolState::new(cellar.pool_address, client.clone());
 
-            let mut erc20_0 = Erc20State::new(cellar.token_0.address,client.clone());
-            erc20_0.gas_price=Some(gas);
-            // erc20_0.approve((10000u64 * (10u64.pow(config.cellar.token_0.decimals as u32))).into(), config.cellar.cellar_address).await;
-            // return;
-            let mut erc20_1 = Erc20State::new(cellar.token_1.address, client.clone());
-            erc20_1.gas_price = Some(gas);
-            // erc20_1.approve((10u64 * (10u64.pow(config.cellar.token_1.decimals as u32))).into(), config.cellar.cellar_address).await;
 
             let (sqrtPriceX96, spot_tick, _, _, _, _, _) =
                 pool_state.contract.slot_0().call().await.unwrap();
@@ -92,45 +93,14 @@ impl Runnable for FundCellarCmd {
             }
 
             info!("{} ticks", ticks.len());
-
-            let currentPrice = uniswap_v3_sdk::getSqrtRatioAtTick(spot_tick.to_bigint().unwrap());
-
-            let mut amount_0 = BigInt::zero();
-            let mut amount_1 = BigInt::zero();
-
             for tick in ticks {
-                let Q96 = 2.to_bigint().unwrap().pow(96);
-                let Q192 = Q96.pow(2);
-                let priceCurrentRangeUpper =
-                    uniswap_v3_sdk::getSqrtRatioAtTick(tick.tick_upper.to_bigint().unwrap());
-                let priceCurrentRangeLower =
-                    uniswap_v3_sdk::getSqrtRatioAtTick(tick.tick_lower.to_bigint().unwrap());
-
-                if spot_tick <= tick.tick_lower {
-                    amount_0 += tick.weight
-                        * (priceCurrentRangeUpper.clone() - priceCurrentRangeLower.clone())
-                        * Q192.clone()
-                        / priceCurrentRangeUpper.clone()
-                        / priceCurrentRangeLower.clone();
-                } else if spot_tick >= tick.tick_upper {
-                    amount_1 += tick.weight
-                        * (priceCurrentRangeUpper.clone() - priceCurrentRangeLower.clone())
-                } else {
-                    amount_0 += tick.weight
-                        * (priceCurrentRangeUpper.clone() - currentPrice.clone())
-                        * Q192
-                        / priceCurrentRangeUpper.clone()
-                        / currentPrice.clone();
-                    amount_1 +=
-                        tick.weight * (currentPrice.clone() - priceCurrentRangeLower.clone());
-                }
+                info!("{:?}", tick);
             }
 
-            info!("amount_0 {} amount_1 {} ratio {}", amount_0.to_string(), amount_1.to_string(),(amount_0.clone() / amount_1.clone()).to_string());
 
             let params = CellarAddParams::new(
-                (4000u64 * (10u64.pow(cellar.token_0.decimals as u32))).into(),
-                ((1u64 * (10u64.pow(cellar.token_1.decimals as u32)))/4).into(),
+                (self.amount_0 * (10u64.pow(cellar.token_0.decimals as u32))).into(),
+                (self.amount_1 * (10u64.pow(cellar.token_1.decimals as u32))).into(),
                 0.into(),
                 0.into(),
                 address,

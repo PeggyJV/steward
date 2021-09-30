@@ -11,6 +11,7 @@
 //! application's configuration file.
 
 mod config_cmd;
+mod allow_erc20;
 mod fund_cellar;
 mod keys;
 mod predictions;
@@ -92,6 +93,10 @@ pub enum CellarRebalancerCmd {
 
     #[options(help = "create transactions on either ethereum or cosmos chains")]
     Tx(tx::TxCmd),
+
+    #[options(help = "Allow Erc20 Token to interact with cellar contract")]
+    AllowERC20(allow_erc20::AllowERC20),
+
 }
 
 /// This trait allows you to define how application configuration is loaded.
