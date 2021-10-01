@@ -7,9 +7,13 @@ use num_bigint::{BigInt, ToBigInt};
 use num_traits::Zero;
 use signatory::FsKeyStore;
 
-use crate::{cellar_wrapper::{CellarAddParams, CellarState, CellarTickInfo}, erc20::Erc20State, gas::CellarGas, prelude::*, uniswap_pool::PoolState};
-
-
+use crate::{
+    cellar_wrapper::{CellarAddParams, CellarState, CellarTickInfo},
+    erc20::Erc20State,
+    gas::CellarGas,
+    prelude::*,
+    uniswap_pool::PoolState,
+};
 
 #[derive(Command, Debug, Default, Options)]
 pub struct AllowERC20 {
@@ -19,7 +23,6 @@ pub struct AllowERC20 {
     address: H160,
     #[options(help = "Amount")]
     amount: u64,
-
 }
 
 impl Runnable for AllowERC20 {
@@ -46,13 +49,10 @@ impl Runnable for AllowERC20 {
 
         let eth_host = config.ethereum.rpc.clone();
 
-
         abscissa_tokio::run(&APP, async {
-
             let client = Provider::<Http>::try_from(eth_host)
                 .unwrap()
                 .interval(Duration::from_secs(3000u64));
-
 
             let client = SignerMiddleware::new(client, wallet);
             let gas = CellarGas::etherscan_standard().await.unwrap();
@@ -60,17 +60,20 @@ impl Runnable for AllowERC20 {
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
 
-            let mut erc20_0 = Erc20State::new(self.address,client.clone());
+            let mut erc20_0 = Erc20State::new(self.address, client.clone());
             let decimals = erc20_0.contract.decimals().call().await.unwrap();
-            erc20_0.gas_price=Some(gas);
+            erc20_0.gas_price = Some(gas);
 
-            erc20_0.approve((self.amount * (10u64.pow(decimals as u32))).into(), self.cellar_address).await;
+            erc20_0
+                .approve(
+                    (self.amount * (10u64.pow(decimals as u32))).into(),
+                    self.cellar_address,
+                )
+                .await;
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
             std::process::exit(1);
         });
-
-
     }
 }

@@ -10,24 +10,27 @@
 //! See the `impl Configurable` below for how to specify the path to the
 //! application's configuration file.
 
-mod config_cmd;
 mod allow_erc20;
-mod fund_cellar;
-mod keys;
-mod predictions;
-mod remove_funds;
-mod start;
-mod transfer;
-mod version;
+mod config_cmd;
 mod cosmos_to_eth;
 mod deploy;
 mod eth_to_cosmos;
+mod fund_cellar;
+mod keys;
 mod orchestrator;
+mod predictions;
 mod query;
+mod remove_funds;
 mod sign_delegate_keys;
+mod start;
+mod transfer;
 mod tx;
+mod version;
 
-use self::{config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd, remove_funds::RemoveFundsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd};
+use self::{
+    config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd,
+    remove_funds::RemoveFundsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd,
+};
 
 use crate::config::CellarRebalancerConfig;
 use abscissa_core::{
@@ -96,7 +99,6 @@ pub enum CellarRebalancerCmd {
 
     #[options(help = "Allow Erc20 Token to interact with cellar contract")]
     AllowErc20(allow_erc20::AllowERC20),
-
 }
 
 /// This trait allows you to define how application configuration is loaded.

@@ -7,7 +7,13 @@ use num_bigint::{BigInt, ToBigInt};
 use num_traits::Zero;
 use signatory::FsKeyStore;
 
-use crate::{cellar_wrapper::{CellarAddParams, CellarState, CellarTickInfo}, erc20::Erc20State, gas::CellarGas, prelude::*, uniswap_pool::PoolState};
+use crate::{
+    cellar_wrapper::{CellarAddParams, CellarState, CellarTickInfo},
+    erc20::Erc20State,
+    gas::CellarGas,
+    prelude::*,
+    uniswap_pool::PoolState,
+};
 
 #[derive(Command, Debug, Options)]
 pub struct FundCellarCmd {
@@ -17,7 +23,6 @@ pub struct FundCellarCmd {
     pub amount_0: f64,
     #[options(help = "Amount Token 1")]
     pub amount_1: f64,
-
 }
 
 impl Runnable for FundCellarCmd {
@@ -50,7 +55,6 @@ impl Runnable for FundCellarCmd {
                 .unwrap()
                 .interval(Duration::from_secs(3000u64));
 
-
             let client = SignerMiddleware::new(client, wallet);
             let gas = CellarGas::etherscan_standard().await.unwrap();
 
@@ -60,7 +64,6 @@ impl Runnable for FundCellarCmd {
             let mut contract_state = CellarState::new(cellar.cellar_address, client.clone());
             contract_state.gas_price = Some(gas);
             let pool_state = PoolState::new(cellar.pool_address, client.clone());
-
 
             let (sqrtPriceX96, spot_tick, _, _, _, _, _) =
                 pool_state.contract.slot_0().call().await.unwrap();
@@ -97,10 +100,11 @@ impl Runnable for FundCellarCmd {
                 info!("{:?}", tick);
             }
 
-
             let params = CellarAddParams::new(
-                ((self.amount_0 * (10u64.pow(cellar.token_0.decimals as u32)) as f64) as u128).into(),
-                ((self.amount_1 * (10u64.pow(cellar.token_1.decimals as u32)) as f64) as u128).into(),
+                ((self.amount_0 * (10u64.pow(cellar.token_0.decimals as u32)) as f64) as u128)
+                    .into(),
+                ((self.amount_1 * (10u64.pow(cellar.token_1.decimals as u32)) as f64) as u128)
+                    .into(),
                 0.into(),
                 0.into(),
                 address,
