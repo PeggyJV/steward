@@ -1036,6 +1036,7 @@ dependencies = [
  "futures",
  "gravity_bridge",
  "gumdrop",
+ "hex",
  "hyper",
  "iqhttp",
  "k256",
@@ -1054,6 +1055,7 @@ dependencies = [
  "serde_json",
  "sha2 0.9.5",
  "signatory",
+ "somm_proto",
  "thiserror",
  "tokio 1.8.1",
  "toml",
@@ -4488,6 +4490,18 @@ checksum = "9e3dfc207c526015c632472a77be09cf1b6e46866581aecae5cc38fb4235dea2"
 dependencies = [
  "libc",
  "winapi 0.3.9",
+]
+
+[[package]]
+name = "somm_proto"
+version = "0.1.0"
+source = "git+https://github.com/PeggyJV/sommelier#6df8023e324f9272d3033a2e7e756e0a4c06e9a1"
+dependencies = [
+ "bytes 1.0.1",
+ "cosmos-sdk-proto",
+ "prost",
+ "prost-types",
+ "tonic",
 ]
 
 [[package]]

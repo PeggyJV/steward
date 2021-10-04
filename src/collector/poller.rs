@@ -9,7 +9,9 @@ use crate::{
     prelude::*,
     time_range::TimeRange,
     uniswap_pool::PoolState,
+    somm_send,
 };
+
 use abscissa_core::error::BoxError;
 use ethers::prelude::*;
 use std::{sync::Arc, time::Duration};
@@ -98,13 +100,39 @@ impl<T: 'static + Middleware> Poller<T> {
         self.time_range = time_range;
     }
 
-    pub async fn decide_rebalance(&mut self) -> Result<(), Error> {
+    pub async fn decide_rebalance(
+        &mut self,
+        config: config::CellarRebalancerConfig,
+    ) -> Result<(), Error> {
         let mut tick_info: Vec<CellarTickInfo> = Vec::new();
         for ref tick_weight in self.time_range.tick_weights.clone() {
             if tick_weight.weight > 0 {
                 tick_info.push(CellarTickInfo::from_tick_weight(tick_weight))
             }
         }
+
+        // TODO(Levi) needs to be initialized (should it be derived from the cosmos_key??)
+        let delegate_cosmos_address =
+            Address::from_bech32("cosmos1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrql8a".to_string())
+                .unwrap();
+
+        let name = &config.keys.rebalancer_key;
+        let cosmos_key = config.load_deep_space_key(name.clone());
+        let fee = "100footoken".parse().unwrap();
+
+        // TODO(Levi) needs to be initialized
+        let cellar_id = "TODO".to_owned();
+
+        somm_send::send_allocation(
+            contact,
+            delegate_cosmos_address,
+            cosmos_key,
+            fee,
+            cellar_id,
+            vec![self.to_allocation()],
+        )
+        .await
+        .unwrap();
 
         if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
             Ok(())

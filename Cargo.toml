@@ -32,6 +32,7 @@ prost = "0.7"
 prost-types = "0.7"
 sha2 = "0.9"
 hyper = "0.14.12"
+somm_proto = { git = "https://github.com/PeggyJV/sommelier" }
 
 bip32 = "0.2"
 k256 = { version = "0.9", features = ["pem"] }
@@ -39,6 +40,7 @@ pkcs8 = { version = "0.7", features = ["pem"] }
 signatory = "0.23.0-pre"
 rand_core = { version = "0.6", features = ["std"] }
 rpassword = "5"
+hex = "0.4"
 
 [dependencies.abscissa_core]
 version = "0.6.0-pre.1"
