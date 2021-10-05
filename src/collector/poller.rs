@@ -7,17 +7,19 @@ use crate::{
     error::Error,
     gas::CellarGas,
     prelude::*,
+    somm_send,
     time_range::TimeRange,
     uniswap_pool::PoolState,
-    somm_send,
 };
 
 use abscissa_core::error::BoxError;
+use deep_space::address::Address;
+use deep_space::Contact;
 use ethers::prelude::*;
+use somm_proto::somm as proto;
 use std::{sync::Arc, time::Duration};
 use tokio::{time, try_join};
 use tower::Service;
-use deep_space::Contact;
 
 // Struct poller to collect poll_interval etc. from external sources which aren't capable of pushing data
 pub struct Poller<T: Middleware> {
@@ -69,6 +71,36 @@ impl<T: 'static + Middleware> Poller<T> {
         Ok(poller)
     }
 
+    fn to_allocation(&self) -> proto::Allocation {
+        let tick_range: Vec<proto::TickRange> = self
+            .time_range
+            .tick_weights
+            .iter()
+            .map(|tick_weight| proto::TickRange {
+                upper: tick_weight.upper_bound as u64,
+                lower: tick_weight.lower_bound as u64,
+                weight: tick_weight.weight as u64,
+            })
+            .collect();
+
+        proto::Allocation {
+            cellar: Some(proto::Cellar {
+                id: self.time_range.pair_id.to_string(),
+                tick_ranges: self
+                    .time_range
+                    .tick_weights
+                    .iter()
+                    .map(|tick_weight| proto::TickRange {
+                        upper: tick_weight.upper_bound as u64,
+                        lower: tick_weight.lower_bound as u64,
+                        weight: tick_weight.weight as u64,
+                    })
+                    .collect(),
+            }),
+            salt: "".to_string(), //TODO: Add salt,
+        }
+    }
+
     // Retrieve poll time range
     pub async fn poll_time_range(&self) -> Result<TimeRange, Error> {
         info!("{} polling time range", self.time_range.pair_database);
@@ -103,7 +135,8 @@ impl<T: 'static + Middleware> Poller<T> {
 
     pub async fn decide_rebalance(
         &mut self,
-        config: config::CellarRebalancerConfig,contact: &Contact,
+        config: config::CellarRebalancerConfig,
+        contact: &Contact,
     ) -> Result<(), Error> {
         let mut tick_info: Vec<CellarTickInfo> = Vec::new();
         for ref tick_weight in self.time_range.tick_weights.clone() {
@@ -112,33 +145,32 @@ impl<T: 'static + Middleware> Poller<T> {
             }
         }
 
-        // TODO(Levi) needs to be initialized (should it be derived from the cosmos_key??)
-        let delegate_cosmos_address =
-            Address::from_bech32("cosmos1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrql8a".to_string())
-                .unwrap();
-
-        let name = &config.keys.rebalancer_key;
-        let cosmos_key = config.load_deep_space_key(name.clone());
-        let fee = "100footoken".parse().unwrap();
-
-        // TODO(Levi) needs to be initialized
-        let cellar_id = "TODO".to_owned();
-
-        somm_send::send_allocation(
-            contact,
-            delegate_cosmos_address,
-            cosmos_key,
-            fee,
-            cellar_id,
-            vec![self.to_allocation()],
-        )
-        .await
-        .unwrap();
-
         if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
             Ok(())
         } else {
             tick_info.reverse();
+            // TODO(Levi) needs to be initialized (should it be derived from the cosmos_key??)
+            let delegate_cosmos_address =
+                Address::from_bech32("cosmos1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrql8a".to_string())
+                    .unwrap();
+
+            let name = &config.keys.rebalancer_key;
+            let cosmos_key = config.load_deep_space_key(name.clone());
+            let fee = "100footoken".parse().unwrap();
+
+            // TODO(Levi) needs to be initialized
+            let cellar_id = "TODO".to_owned();
+
+            somm_send::send_allocation(
+                contact,
+                delegate_cosmos_address,
+                cosmos_key,
+                fee,
+                cellar_id,
+                vec![self.to_allocation()],
+            )
+            .await
+            .unwrap();
             self.contract_state.rebalance(tick_info).await
         }
     }
