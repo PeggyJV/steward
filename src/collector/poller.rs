@@ -17,6 +17,7 @@ use ethers::prelude::*;
 use std::{sync::Arc, time::Duration};
 use tokio::{time, try_join};
 use tower::Service;
+use deep_space::Contact;
 
 // Struct poller to collect poll_interval etc. from external sources which aren't capable of pushing data
 pub struct Poller<T: Middleware> {
@@ -102,7 +103,7 @@ impl<T: 'static + Middleware> Poller<T> {
 
     pub async fn decide_rebalance(
         &mut self,
-        config: config::CellarRebalancerConfig,
+        config: config::CellarRebalancerConfig,contact: &Contact,
     ) -> Result<(), Error> {
         let mut tick_info: Vec<CellarTickInfo> = Vec::new();
         for ref tick_weight in self.time_range.tick_weights.clone() {
