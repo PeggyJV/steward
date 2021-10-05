@@ -8,6 +8,26 @@ It integrates the full functionality of gorc for operating as an orchestator and
 
 ## Getting Started
 
+### Testing mode
+
+1. These instructions assume that the cellar has been deployed to the target ethereum blockchain.
+
+1. The first step is to setup your configuration file.
+
+To generate a configuation file template, run the command below in your terminal:
+
+```
+cargo run -- print-config
+```
+
+Next, create a `toml` file in the root of the application, replacing the default keys in the template displayed in your terminal with your configuration. 
+
+Run the `print-config` command again, to ensure that the configurations are a great fit.
+
+Now, run the command below to allow `erc20` to interact with cellar contract.
+
+### Cellar Rebalancer Subcommands
+
 Below is a list of the Cellar rebalancer's subcommands:
 
 | Subcommand        | Description                                                 |
@@ -28,13 +48,3 @@ Below is a list of the Cellar rebalancer's subcommands:
 | sign-delegate-key | This command is to sign delegate keys                       |
 | tx                | Create transactions on either ethereum or cosmos chains     |
 | allow-erc-2-0     | Allow Erc20 Token to interact with cellar contract          |
-
-### Testing mode
-
-1. These instructions assume that the cellar has been deployed to the target ethereum blockchain.
-
-1. The first step is to setup your configuration file.
-
-You can generate an example configuation file from
-
-`cargo run -- print-config`
