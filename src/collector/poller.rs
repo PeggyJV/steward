@@ -13,7 +13,6 @@ use crate::{
 };
 
 use abscissa_core::error::BoxError;
-use deep_space::address::Address;
 use deep_space::Contact;
 use ethers::prelude::*;
 use somm_proto::somm as proto;
@@ -28,6 +27,7 @@ pub struct Poller<T: Middleware> {
     cellar_gas: CellarGas,
     contract_state: CellarState<T>,
     pool: PoolState<T>,
+    cosmos_key: deep_space::private_key::PrivateKey,
 }
 
 // Implement poller middleware
@@ -37,6 +37,7 @@ impl<T: 'static + Middleware> Poller<T> {
         client: Arc<T>,
         mongo: &config::MongoSection,
         cosmos_key: &deep_space::private_key::PrivateKey,
+        rebalancer_config: config::CellarRebalancerConfig,
     ) -> Result<Self, Error> {
         let pool = PoolState::new(cellar.pool_address, client.clone());
         let spacing = pool
@@ -45,6 +46,8 @@ impl<T: 'static + Middleware> Poller<T> {
             .call()
             .await
             .expect("Could not get spacing by querying contract");
+        
+        let name = &rebalancer_config.keys.rebalancer_key;
 
         let poller = Poller {
             poll_interval: cellar.duration,
@@ -66,6 +69,7 @@ impl<T: 'static + Middleware> Poller<T> {
             },
             contract_state: CellarState::new(cellar.cellar_address, client),
             pool,
+            cosmos_key: rebalancer_config.load_deep_space_key(name.clone()),
         };
 
         Ok(poller)
@@ -149,11 +153,7 @@ impl<T: 'static + Middleware> Poller<T> {
             Ok(())
         } else {
             tick_info.reverse();
-            // TODO(Levi) needs to be initialized (should it be derived from the cosmos_key??)
-            let delegate_cosmos_address =
-                Address::from_bech32("cosmos1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrql8a".to_string())
-                    .unwrap();
-
+            let delegate_cosmos_address = self.cosmos_key.to_address(&contact.get_prefix()).unwrap();
             let name = &config.keys.rebalancer_key;
             let cosmos_key = config.load_deep_space_key(name.clone());
             let fee = "100footoken".parse().unwrap();

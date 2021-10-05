@@ -74,7 +74,7 @@ impl SingleSignerCmd {
             .rebalancer_key;
             let cosmos_key = config.load_deep_space_key(name.clone());
 
-            let poller = Poller::new(&cellar, client, &mongo, &cosmos_key)
+            let poller = Poller::new(&cellar, client, &mongo, &cosmos_key, config.clone())
                 .await
                 .unwrap_or_else(|e| {
                     status_err!("couldn't initialize poller: {}", e);
