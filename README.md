@@ -52,6 +52,11 @@ cargo run -- -c [your_config_file_name.toml] fund-cellar --cellar-id[cellar_id] 
 ```
 
 #### Rebalance Cellars
+To start automatic rebalancing with the Cellars rebalancer, run the start command in your terminal. Note that the `poller` requires the standard environment variable `CELLAR_DRY_RUN` to be false in order to decide rebalance. Therefore, to start the application follow the command below:
+
+```
+CELLAR_DRY_RUN=false cargo run -- -c [your_config_file_name.toml] start
+```
 
 ### Cellar Rebalancer Subcommands
 
@@ -76,3 +81,4 @@ Below is a list of the Cellar rebalancer's subcommands:
 | tx                | Create transactions on either ethereum or cosmos chains     |
 | allow-erc-2-0     | Allow Erc20 Token to interact with cellar contract          |
 
+If you have any questions, you can ask the community in our [Telegram](https://t.me/getsomm) and [Discord](https://discord.com/invite/ZcAYgSBxvY) group.
