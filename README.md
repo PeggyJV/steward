@@ -12,7 +12,7 @@ The rebalancer has two modes; the single signer mode(testing mode) and the cosmo
 
 ### Testing mode
 
-1. These instructions assume that the cellar has been deployed to the target ethereum blockchain.
+These instructions assume that the cellar has been deployed to the target ethereum blockchain.
 
 #### Setup Configuration File
 The first step is to setup your configuration file.
@@ -23,7 +23,7 @@ To generate a configuation file template, run the command below in your terminal
 cargo run -- print-config
 ```
 
-Next, create a `toml` file in the root of the application, replacing the default keys in the template displayed in your terminal with your configuration. Make sure to confirm that the token info in your configuration file matches the deployed [cellar contract](https://etherscan.io/token/0x08c0a0B8D2eDB1d040d4f2C00A1d2f9d9b9F2677#readContract).
+Next, create a `toml` file in the root of the application, replacing the default keys in the template displayed in your terminal with your configuration. Make sure to confirm that the token info in your configuration file matches the deployed cellar contract.
 
 You can create keys or import keys. To create keys, run the command below:
 
@@ -45,6 +45,13 @@ cargo run -- -c your_config_file_name.toml allow-erc-2-0 --cellar-address=0x08c0
 ```
 
 #### Fund Cellars
+Before rebalancing Cellars, it has to be funded. follow the command below, to fund Cellars.
+
+```
+cargo run -- -c [your_config_file_name.toml] fund-cellar --cellar-id[cellar_id] --amount-0[amount] --amount-1[amount]
+```
+
+#### Rebalance Cellars
 
 ### Cellar Rebalancer Subcommands
 
