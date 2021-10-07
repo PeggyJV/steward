@@ -59,7 +59,7 @@ impl Default for CellarRebalancerConfig {
             ethereum: EthereumSection::default(),
             cosmos: CosmosSection::default(),
             metrics: MetricsSection::default(),
-            cellars: vec![CellarConfig::default(), CellarConfig::default()],
+            cellars: vec![CellarConfig::default()],
             keys: KeysConfig::default(),
             mongo: MongoSection::default(),
         }
