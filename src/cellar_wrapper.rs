@@ -51,6 +51,23 @@ impl<T: 'static + Middleware> CellarState<T> {
         Ok(())
     }
 
+        // Rebalance portfolio with cellar tick info
+        pub async fn reinvest(&mut self) -> Result<(), Error> {
+
+            let mut call = self.contract.reinvest();
+    
+            if let Some(gas_price) = self.gas_price {
+                call = call.gas_price(gas_price)
+            }
+    
+            let gased = call.gas(5_000_000);
+    
+            let pending = gased.send().await?;
+            dbg!(&pending);
+    
+            Ok(())
+        }
+
     // Add liquidity for uniswap version 3 with values form struct `CellarAddParams`
     pub async fn add_liquidity_for_uni_v3(
         &mut self,
