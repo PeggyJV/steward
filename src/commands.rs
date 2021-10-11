@@ -26,6 +26,7 @@ mod start;
 mod transfer;
 mod tx;
 mod version;
+mod reinvest;
 
 use self::{
     config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd,
@@ -99,6 +100,9 @@ pub enum CellarRebalancerCmd {
 
     #[options(help = "Allow Erc20 Token to interact with cellar contract")]
     AllowErc20(allow_erc20::AllowERC20),
+
+    #[options(help = "Reinvest fees on the cellar")]
+    Reinvest(reinvest::ReinvestCommand),
 }
 
 /// This trait allows you to define how application configuration is loaded.
