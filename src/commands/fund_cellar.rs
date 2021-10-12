@@ -1,6 +1,6 @@
 use std::{convert::TryFrom, ops::Add, path, sync::Arc, time::Duration};
 
-use abscissa_core::{Application, Command, Options, Runnable};
+use abscissa_core::{Application, Command, Clap, Runnable};
 use chrono::Utc;
 use ethers::prelude::*;
 use num_bigint::{BigInt, ToBigInt};
@@ -15,13 +15,13 @@ use crate::{
     uniswap_pool::PoolState,
 };
 
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub struct FundCellarCmd {
-    #[options(help = "Cellar Id")]
+    #[clap(short, long)]
     pub cellar_id: u32,
-    #[options(help = "Amount Token 0")]
+    #[clap(short, long)]
     pub amount_0: f64,
-    #[options(help = "Amount Token 1")]
+    #[clap(short, long)]
     pub amount_1: f64,
 }
 

@@ -3,7 +3,7 @@ use crate::application::APP;
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::prelude::*;
-use abscissa_core::{Command, Options, Runnable};
+use abscissa_core::{Command, Clap, Runnable};
 use ethers::prelude::*;
 use std::convert::TryFrom;
 
@@ -13,9 +13,9 @@ use std::convert::TryFrom;
 /// for a more comprehensive example:
 ///
 /// <https://docs.rs/gumdrop/>
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub struct TransferCmd {
-    #[options(free)]
+    #[clap()]
     recipient: Vec<String>,
 }
 

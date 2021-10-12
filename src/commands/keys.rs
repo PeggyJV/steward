@@ -4,22 +4,22 @@ mod import;
 mod list;
 mod show;
 
-use abscissa_core::{Command, Options, Runnable};
+use abscissa_core::{Command, Clap, Runnable};
 
-#[derive(Command, Debug, Options, Runnable)]
+#[derive(Command, Debug, Clap, Runnable)]
 pub enum KeysCmd {
-    #[options(help = "add [name] (password)")]
+    #[clap(short, long)]
     Add(add::AddKeyCmd),
 
-    #[options(help = "show [name]")]
+    #[clap(short, long)]
     Show(show::ShowKeyCmd),
 
-    #[options(help = "delete [name]")]
+    #[clap(short, long)]
     Delete(delete::DeleteKeyCmd),
 
-    #[options(help = "list")]
+    #[clap(short, long)]
     List(list::ListKeyCmd),
 
-    #[options(help = "import")]
+    #[clap(short, long)]
     Import(import::ImportEthKeyCmd),
 }

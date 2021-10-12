@@ -25,12 +25,11 @@ mod sign_delegate_keys;
 mod start;
 mod transfer;
 mod tx;
-mod version;
 mod reinvest;
 
 use self::{
     config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd,
-    remove_funds::RemoveFundsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd,
+    remove_funds::RemoveFundsCmd, start::StartCmd, transfer::TransferCmd,
 };
 
 use crate::config::CellarRebalancerConfig;
@@ -56,10 +55,6 @@ pub enum CellarRebalancerCmd {
     /// The `transfer` subcommand
     #[options(help = "transfer ETH")]
     Transfer(TransferCmd),
-
-    /// The `version` subcommand
-    #[options(help = "display version information")]
-    Version(VersionCmd),
 
     /// The `prediction` subcommand
     #[options(help = "display lastest prediction")]
