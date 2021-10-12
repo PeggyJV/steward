@@ -87,8 +87,30 @@ pub enum CellarRebalancerCmd {
     Reinvest(reinvest::ReinvestCommand),
 }
 
+/// Entry point for the application. It needs to be a struct to allow using subcommands!
+#[derive(Command, Debug, Clap)]
+#[clap(author, about, version)]
+pub struct EntryPoint {
+    #[clap(subcommand)]
+    cmd: CellarRebalancerCmd,
+
+    /// Enable verbose logging
+    #[clap(short, long)]
+    pub verbose: bool,
+
+    /// Use the specified config file
+    #[clap(short, long)]
+    pub config: Option<String>,
+}
+
+impl Runnable for EntryPoint {
+    fn run(&self) {
+        self.cmd.run()
+    }
+}
+
 /// This trait allows you to define how application configuration is loaded.
-impl Configurable<CellarRebalancerConfig> for CellarRebalancerCmd {
+impl Configurable<CellarRebalancerConfig> for EntryPoint {
     /// Location of the configuration file
     fn config_path(&self) -> Option<PathBuf> {
         // Check if the config file exists, and if it does not, ignore it.
@@ -112,8 +134,7 @@ impl Configurable<CellarRebalancerConfig> for CellarRebalancerCmd {
         &self,
         config: CellarRebalancerConfig,
     ) -> Result<CellarRebalancerConfig, FrameworkError> {
-        match self {
-            CellarRebalancerCmd::Start(cmd) => cmd.override_config(config),
+        match self.cmd {
             _ => Ok(config),
         }
     }
