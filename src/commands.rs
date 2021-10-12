@@ -45,8 +45,6 @@ pub const CONFIG_FILE: &str = "contract_monitor.toml";
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum CellarRebalancerCmd {
     /// The `help` subcommand
-    #[clap()]
-    Help(Help<Self>),
 
     /// The `start` subcommand
     Start(StartCmd),
@@ -66,13 +64,11 @@ pub enum CellarRebalancerCmd {
 
     RemoveFunds(RemoveFundsCmd),
 
-    #[clap(subcommand)]
     CosmosToEth(cosmos_to_eth::CosmosToEthCmd),
 
     #[clap(subcommand)]
     Deploy(deploy::DeployCmd),
 
-    #[clap(subcommand)]
     EthToCosmos(eth_to_cosmos::EthToCosmosCmd),
 
     #[clap(subcommand)]
@@ -81,16 +77,13 @@ pub enum CellarRebalancerCmd {
     #[clap(subcommand)]
     Query(query::QueryCmd),
 
-    #[clap(subcommand)]
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
 
     #[clap(subcommand)]
     Tx(tx::TxCmd),
 
-    #[clap(subcommand)]
     AllowErc20(allow_erc20::AllowERC20),
 
-    #[clap(subcommand)]
     Reinvest(reinvest::ReinvestCommand),
 }
 
