@@ -15,7 +15,10 @@ use abscissa_core::{Command, Clap, Runnable};
 /// <https://docs.rs/gumdrop/>
 #[derive(Command, Debug, Clap)]
 pub enum TxCmd {
+    #[clap(subcommand)]
     Cosmos(cosmos::Cosmos),
+
+    #[clap(subcommand)]
     Eth(eth::Eth),
 }
 

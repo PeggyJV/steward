@@ -34,7 +34,7 @@ use self::{
 
 use crate::config::CellarRebalancerConfig;
 use abscissa_core::{
-    config::Override, Command, Configurable, FrameworkError, Help, Options, Runnable,
+    config::Override, Command, Configurable, FrameworkError, Clap, Runnable,
 };
 use std::path::PathBuf;
 
@@ -42,61 +42,55 @@ use std::path::PathBuf;
 pub const CONFIG_FILE: &str = "contract_monitor.toml";
 
 /// CellarRebalancer Subcommands
-#[derive(Command, Debug, Options, Runnable)]
+#[derive(Command, Debug, Clap, Runnable)]
 pub enum CellarRebalancerCmd {
     /// The `help` subcommand
-    #[options(help = "get usage information")]
+    #[clap()]
     Help(Help<Self>),
 
     /// The `start` subcommand
-    #[options(help = "start the application")]
     Start(StartCmd),
 
     /// The `transfer` subcommand
-    #[options(help = "transfer ETH")]
     Transfer(TransferCmd),
 
     /// The `prediction` subcommand
-    #[options(help = "display lastest prediction")]
     Predictions(PredictionsCmd),
     /// The `keys` subcommand
-    #[options(help = "key management commands")]
+    #[clap(subcommand)]
     Keys(KeysCmd),
 
-    #[options(help = "print default config")]
     PrintConfig(ConfigCmd),
 
-    #[options(help = "fund cellar")]
     FundCellar(FundCellarCmd),
 
-    #[options(help = "remove_funds")]
     RemoveFunds(RemoveFundsCmd),
 
-    #[options(help = "Send Cosmos to Ethereum")]
+    #[clap(subcommand)]
     CosmosToEth(cosmos_to_eth::CosmosToEthCmd),
 
-    #[options(help = "tools for contract deployment")]
+    #[clap(subcommand)]
     Deploy(deploy::DeployCmd),
 
-    #[options(help = "Send Ethereum to Cosmos")]
+    #[clap(subcommand)]
     EthToCosmos(eth_to_cosmos::EthToCosmosCmd),
 
-    #[options(help = "orchestrator management commands")]
+    #[clap(subcommand)]
     Orchestrator(orchestrator::OrchestratorCmd),
 
-    #[options(help = "query state on either ethereum or cosmos chains")]
+    #[clap(subcommand)]
     Query(query::QueryCmd),
 
-    #[options(help = "sign delegate keys")]
+    #[clap(subcommand)]
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
 
-    #[options(help = "create transactions on either ethereum or cosmos chains")]
+    #[clap(subcommand)]
     Tx(tx::TxCmd),
 
-    #[options(help = "Allow Erc20 Token to interact with cellar contract")]
+    #[clap(subcommand)]
     AllowErc20(allow_erc20::AllowERC20),
 
-    #[options(help = "Reinvest fees on the cellar")]
+    #[clap(subcommand)]
     Reinvest(reinvest::ReinvestCommand),
 }
 
