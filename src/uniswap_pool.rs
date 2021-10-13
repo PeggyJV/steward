@@ -26,7 +26,6 @@ impl<T: 'static + Middleware> PoolState<T> {
             .call()
             .await
             .expect("Failed to get token0 address")
-        
     }
 
     pub async fn token_1(&self) -> Address {
