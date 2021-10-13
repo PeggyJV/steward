@@ -1,5 +1,5 @@
 use crate::application::APP;
-use abscissa_core::{status_err, Application, Command, Options, Runnable};
+use abscissa_core::{status_err, Application, Command, Clap, Runnable};
 use clarity::Address as EthAddress;
 use clarity::Uint256;
 use deep_space::coin::Coin;
@@ -10,15 +10,12 @@ use std::{process::exit, time::Duration};
 
 const TIMEOUT: Duration = Duration::from_secs(60);
 
-#[derive(Command, Debug, Default, Options)]
+#[derive(Command, Debug, Default, Clap)]
 pub struct CosmosToEthCmd {
-    #[options(
-        free,
-        help = "cosmos-to-eth [gravity_denom] [amount] [cosmos_key] [eth_dest] [times]"
-    )]
+    #[clap(short, long)]
     pub args: Vec<String>,
 
-    #[options(help = "don't batch, send request to be sent immediately")]
+    #[clap(short, long)]
     pub flag_no_batch: bool,
 }
 
@@ -48,6 +45,9 @@ impl Runnable for CosmosToEthCmd {
         let gravity_denom = self.args.get(0).expect("denom is required");
         let gravity_denom = gravity_denom.to_string();
         let is_cosmos_originated = !gravity_denom.starts_with("gravity");
+
+        // TODO Ugochi: Replace this with making gas_limit configurable
+        let gas_limit = 500_000;
 
         let amount = self.args.get(1).expect("amount is required");
         let amount: Uint256 = amount.parse().expect("cannot parse amount");
@@ -141,12 +141,14 @@ impl Runnable for CosmosToEthCmd {
                 amount.clone(),
                 gravity_denom
             );
+
             let res = send_to_eth(
                 cosmos_key,
                 eth_dest,
                 amount.clone(),
                 bridge_fee.clone(),
                 &contact,
+                gas_limit,
             )
             .await;
             match res {
@@ -157,7 +159,7 @@ impl Runnable for CosmosToEthCmd {
 
         if !self.flag_no_batch {
             println!("Requesting a batch to push transaction along immediately");
-            send_request_batch_tx(cosmos_key, gravity_denom, bridge_fee, &contact)
+            send_request_batch_tx(cosmos_key, gravity_denom, bridge_fee, &contact, gas_limit)
                 .await
                 .expect("Failed to request batch");
         } else {
