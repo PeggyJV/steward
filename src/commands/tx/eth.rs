@@ -1,20 +1,17 @@
 //! `eth subcommands` subcommand
 
 use crate::{application::APP, prelude::*, utils::*};
-use abscissa_core::{Command, Options, Runnable};
+use abscissa_core::{Command, Clap, Runnable};
 use clarity::Address as EthAddress;
 use clarity::{PrivateKey as EthPrivateKey, Uint256};
 use deep_space::address::Address as CosmosAddress;
 use gravity_bridge::ethereum_gravity::send_to_cosmos::send_to_cosmos;
 use gravity_bridge::gravity_utils::connection_prep::{check_for_eth, create_rpc_connections};
 
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub enum Eth {
-    #[options(
-        help = "send-to-cosmos [from-eth-key][to-cosmos-addr] [erc20 conract] [erc20 amount] [[--times=int]]"
-    )]
     SendToCosmos(SendToCosmos),
-    #[options(help = "send [from-key] [to-addr] [amount] [token-contract]")]
+
     Send(Send),
 }
 
@@ -22,12 +19,12 @@ impl Runnable for Eth {
     fn run(&self) {}
 }
 
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub struct SendToCosmos {
-    #[options(free)]
+    #[clap()]
     free: Vec<String>,
 
-    #[options(help = "print help message")]
+    #[clap(short, long)]
     help: bool,
 }
 
@@ -116,12 +113,12 @@ impl Runnable for SendToCosmos {
     }
 }
 
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub struct Send {
-    #[options(free)]
+    #[clap()]
     free: Vec<String>,
 
-    #[options(help = "print help message")]
+    #[clap(short, long)]
     help: bool,
 }
 
