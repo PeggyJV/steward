@@ -45,9 +45,8 @@ impl Runnable for CosmosToEthCmd {
         let gravity_denom = self.args.get(0).expect("denom is required");
         let gravity_denom = gravity_denom.to_string();
         let is_cosmos_originated = !gravity_denom.starts_with("gravity");
-
-        // TODO Ugochi: Replace this with making gas_limit configurable
-        let gas_limit = 500_000;
+        
+        let gas_limit = config.cosmos.gas_limit;
 
         let amount = self.args.get(1).expect("amount is required");
         let amount: Uint256 = amount.parse().expect("cannot parse amount");
