@@ -2,7 +2,7 @@
 /// The collector's [`Poller`] collects information from external sources
 /// which aren't capable of pushing data.
 use crate::{
-    cellar_wrapper::{CellarState, CellarTickInfo, ContractStateUpdate},
+    cellar_uniswap_wrapper::{CellarState, CellarTickInfo, ContractStateUpdate},
     collector, config,
     error::Error,
     gas::CellarGas,

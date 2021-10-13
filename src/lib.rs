@@ -11,7 +11,7 @@
 
 pub mod application;
 pub mod cellar_aave_wrapper;
-pub mod cellar_wrapper;
+pub mod cellar_uniswap_wrapper;
 pub mod collector;
 pub mod commands;
 pub mod config;

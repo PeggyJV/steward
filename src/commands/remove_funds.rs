@@ -8,7 +8,7 @@ use num_traits::Zero;
 use signatory::FsKeyStore;
 
 use crate::{
-    cellar_wrapper::{CellarRemoveParams, CellarState, CellarTickInfo},
+    cellar_uniswap_wrapper::{CellarRemoveParams, CellarState, CellarTickInfo},
     prelude::*,
     uniswap_pool::PoolState,
 };
