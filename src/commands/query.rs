@@ -13,7 +13,7 @@ use abscissa_core::{Command, Options, Runnable};
 /// for a more comprehensive example:
 ///
 /// <https://docs.rs/gumdrop/>
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Options, Runnable)]
 pub enum QueryCmd {
     Cosmos(cosmos::Cosmos),
     Eth(eth::Eth),
@@ -28,11 +28,4 @@ pub enum QueryCmd {
     // "free" arguments don't have an associated flag
     // #[options(free)]
     // free_args: Vec<String>,
-}
-
-impl Runnable for QueryCmd {
-    /// Start the application.
-    fn run(&self) {
-        // Your code goes here
-    }
 }
