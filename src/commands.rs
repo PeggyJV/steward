@@ -44,17 +44,13 @@ pub const CONFIG_FILE: &str = "contract_monitor.toml";
 /// CellarRebalancer Subcommands
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum CellarRebalancerCmd {
-    /// The `help` subcommand
 
-    /// The `start` subcommand
     Start(StartCmd),
 
-    /// The `transfer` subcommand
     Transfer(TransferCmd),
 
-    /// The `prediction` subcommand
     Predictions(PredictionsCmd),
-    /// The `keys` subcommand
+
     #[clap(subcommand)]
     Keys(KeysCmd),
 

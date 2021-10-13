@@ -5,9 +5,9 @@ use k256::pkcs8::ToPrivateKey;
 use signatory::FsKeyStore;
 use std::path;
 
+/// Import Key
 #[derive(Command, Debug, Default, Clap)]
 pub struct ImportEthKeyCmd {
-    #[clap()]
     pub args: Vec<String>,
 
     #[clap(short, long)]

@@ -13,6 +13,7 @@ use crate::{
     uniswap_pool::PoolState,
 };
 
+/// Remove funds from Cellars
 #[derive(Command, Debug, Clap)]
 pub struct RemoveFundsCmd {}
 

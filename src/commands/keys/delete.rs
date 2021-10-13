@@ -3,9 +3,9 @@ use abscissa_core::{Application, Command, Clap, Runnable};
 use signatory::FsKeyStore;
 use std::path;
 
+/// Delete Key
 #[derive(Command, Debug, Default, Clap)]
 pub struct DeleteKeyCmd {
-    #[clap()]
     pub args: Vec<String>,
 }
 

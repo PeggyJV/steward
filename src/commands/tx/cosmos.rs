@@ -10,6 +10,7 @@ use gravity_bridge::gravity_utils::connection_prep::{check_for_fee_denom, create
 use regex::Regex;
 use std::process::exit;
 
+/// Create Tx on Cosmos chain
 #[derive(Command, Debug, Clap)]
 pub enum Cosmos {
     SendToEth(SendToEth),
@@ -26,7 +27,6 @@ impl Runnable for Cosmos {
 
 #[derive(Command, Debug, Clap)]
 pub struct SendToEth {
-    #[clap()]
     free: Vec<String>,
 
     #[clap(short, long)]
@@ -149,7 +149,6 @@ impl Runnable for SendToEth {
 
 #[derive(Command, Debug, Clap)]
 pub struct Send {
-    #[clap()]
     free: Vec<String>,
 
     #[clap(short, long)]

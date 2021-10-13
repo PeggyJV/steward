@@ -4,9 +4,9 @@ use ethers::prelude::*;
 use signatory::FsKeyStore;
 use std::path;
 
+/// Show Keys
 #[derive(Command, Debug, Default, Clap)]
 pub struct ShowKeyCmd {
-    #[clap()]
     pub args: Vec<String>,
 }
 

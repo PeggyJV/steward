@@ -10,6 +10,7 @@ use std::{process::exit, time::Duration};
 
 const TIMEOUT: Duration = Duration::from_secs(60);
 
+/// Send Cosmos to the Eth chain
 #[derive(Command, Debug, Default, Clap)]
 pub struct CosmosToEthCmd {
     #[clap(short, long)]

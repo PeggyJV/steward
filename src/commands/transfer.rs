@@ -7,15 +7,10 @@ use abscissa_core::{Command, Clap, Runnable};
 use ethers::prelude::*;
 use std::convert::TryFrom;
 
-///
-/// The `Options` proc macro generates an option parser based on the struct
-/// definition, and is defined in the `gumdrop` crate. See their documentation
-/// for a more comprehensive example:
-///
-/// <https://docs.rs/gumdrop/>
+/// Command to transfer ETH
+
 #[derive(Command, Debug, Clap)]
 pub struct TransferCmd {
-    #[clap()]
     recipient: Vec<String>,
 }
 

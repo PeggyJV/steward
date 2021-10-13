@@ -12,6 +12,7 @@ use gravity_bridge::orchestrator::main_loop::{
 use gravity_bridge::relayer::main_loop::LOOP_SPEED as RELAYER_LOOP_SPEED;
 use std::cmp::min;
 
+/// Start Orchestrator
 #[derive(Command, Debug, Clap)]
 pub struct StartCommand {
     #[clap(short, long)]

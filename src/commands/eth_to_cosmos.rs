@@ -9,9 +9,9 @@ use std::time::Duration;
 
 const TIMEOUT: Duration = Duration::from_secs(60);
 
+/// Send Ethereum to Cosmos
 #[derive(Command, Debug, Default, Clap)]
 pub struct EthToCosmosCmd {
-    #[clap()]
     pub args: Vec<String>,
 }
 

@@ -6,9 +6,9 @@ use rand_core::OsRng;
 use signatory::FsKeyStore;
 use std::path;
 
+/// Create a new Key
 #[derive(Command, Debug, Default, Clap)]
 pub struct AddKeyCmd {
-    #[clap()]
     pub args: Vec<String>,
 
     #[clap(short, long)]

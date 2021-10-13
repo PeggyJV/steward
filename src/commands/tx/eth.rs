@@ -8,6 +8,7 @@ use deep_space::address::Address as CosmosAddress;
 use gravity_bridge::ethereum_gravity::send_to_cosmos::send_to_cosmos;
 use gravity_bridge::gravity_utils::connection_prep::{check_for_eth, create_rpc_connections};
 
+/// Create Tx on Eth chain
 #[derive(Command, Debug, Clap)]
 pub enum Eth {
     SendToCosmos(SendToCosmos),
@@ -21,7 +22,6 @@ impl Runnable for Eth {
 
 #[derive(Command, Debug, Clap)]
 pub struct SendToCosmos {
-    #[clap()]
     free: Vec<String>,
 
     #[clap(short, long)]
@@ -115,7 +115,6 @@ impl Runnable for SendToCosmos {
 
 #[derive(Command, Debug, Clap)]
 pub struct Send {
-    #[clap()]
     free: Vec<String>,
 
     #[clap(short, long)]

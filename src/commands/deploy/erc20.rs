@@ -8,9 +8,9 @@ use std::process::exit;
 use std::time::{Duration, Instant};
 use tokio::time::sleep as delay_for;
 
+/// Deploy erc20
 #[derive(Command, Debug, Clap)]
 pub struct Erc20 {
-    #[clap()]
     args: Vec<String>,
 
     #[clap(short, long)]

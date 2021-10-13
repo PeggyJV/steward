@@ -15,6 +15,7 @@ use crate::{
     uniswap_pool::PoolState,
 };
 
+/// Allow Erc20 Token to interact with cellar contract  
 #[derive(Command, Debug, Default, Clap)]
 pub struct AllowERC20 {
     #[clap(short, long)]

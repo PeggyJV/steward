@@ -3,6 +3,7 @@
 use crate::{application::APP, prelude::*};
 use abscissa_core::{Command, Clap, Runnable};
 
+/// Query Eth chain
 #[derive(Command, Debug, Clap)]
 pub enum Eth {
     Balance(Balance),
@@ -19,7 +20,6 @@ impl Runnable for Eth {
 
 #[derive(Command, Debug, Clap)]
 pub struct Balance {
-    #[clap()]
     free: Vec<String>,
 
     #[clap(short, long)]

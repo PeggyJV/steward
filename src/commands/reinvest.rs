@@ -15,6 +15,7 @@ use crate::{
     uniswap_pool::PoolState,
 };
 
+/// Cellars reinvest command
 #[derive(Command, Debug, Clap)]
 pub struct ReinvestCommand {
     #[clap(short, long)]

@@ -6,10 +6,10 @@ use crate::time_range::MongoData;
 
 use futures::TryStreamExt;
 
+/// Display lastest prediction in the application
 #[derive(Command, Debug, Clap)]
 pub struct PredictionsCmd {
     /// To whom are we saying hello?
-    #[clap()]
     recipient: Vec<String>,
 }
 

@@ -15,6 +15,7 @@ use crate::{
     uniswap_pool::PoolState,
 };
 
+/// Command to fund Cellars
 #[derive(Command, Debug, Clap)]
 pub struct FundCellarCmd {
     #[clap(short, long)]

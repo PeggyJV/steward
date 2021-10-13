@@ -6,6 +6,7 @@ mod show;
 
 use abscissa_core::{Command, Clap, Runnable};
 
+/// Key management commands for the rebalancer 
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum KeysCmd {
     Add(add::AddKeyCmd),
