@@ -1,6 +1,6 @@
 use std::{convert::TryFrom, ops::Add, path, sync::Arc, time::Duration};
 
-use abscissa_core::{Application, Command, Options, Runnable};
+use abscissa_core::{Application, Command, Clap, Runnable};
 use chrono::Utc;
 use ethers::prelude::*;
 use num_bigint::{BigInt, ToBigInt};
@@ -15,9 +15,9 @@ use crate::{
     uniswap_pool::PoolState,
 };
 
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub struct ReinvestCommand {
-    #[options(help = "Cellar Id")]
+    #[clap(short, long)]
     pub cellar_id: u32,
 }
 
