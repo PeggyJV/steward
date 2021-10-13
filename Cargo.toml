@@ -25,7 +25,7 @@ num-traits = "0.2"
 num-rational = "0.4"
 toml = { version = "0.5" }
 bytes = "1.0"
-gravity_bridge = {git="https://github.com/PeggyJV/gravity-bridge", branch="ukpai/gorc_clapv3"}
+gravity_bridge = {git="https://github.com/PeggyJV/gravity-bridge"}
 regex = "1.5.4"
 clarity = "0.4.12"
 deep_space ={git="https://github.com/iqlusioninc/deep_space/", branch="master"}
