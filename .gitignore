@@ -1,4 +1,14 @@
 /target
 **/*.rs.bk
 expanded.rs
+
+# personal config files
 cellar_rebalancer*.toml
+*_config.toml
+
+# js
+node_modules
+package-lock.json
+
+# editors
+.vscode
