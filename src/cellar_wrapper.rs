@@ -150,6 +150,24 @@ impl<T: 'static + Middleware> CellarState<T> {
         }
 
         Ok(())
+    }    
+
+    pub async fn set_validator(
+            &mut self, validator: H160,
+            value: bool
+    ) -> Result<(), Error> {
+        let mut call = self.contract.set_validator(validator, value);
+
+        if let Some(gas_price) = self.gas_price {
+            call = call.gas_price(gas_price)
+        }
+
+        let gased = call.gas(5_000_000);
+
+        let pending = gased.send().await?;
+        dbg!(&pending);
+
+        Ok(())
     }
 }
 

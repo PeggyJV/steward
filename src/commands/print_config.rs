@@ -2,7 +2,6 @@ use crate::config::CellarRebalancerConfig;
 use crate::{application::APP, prelude::*};
 use abscissa_core::{Command, Clap, Runnable};
 
-/// Print default configurations
 #[derive(Command, Debug, Default, Clap)]
 pub struct PrintConfigCmd {
     #[clap(short, long)]

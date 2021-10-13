@@ -21,6 +21,7 @@ mod orchestrator;
 mod predictions;
 mod query;
 mod remove_funds;
+mod set_validator;
 mod sign_delegate_keys;
 mod start;
 mod transfer;
@@ -29,7 +30,7 @@ mod reinvest;
 
 use self::{
     config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd,
-    remove_funds::RemoveFundsCmd, start::StartCmd, transfer::TransferCmd,
+    remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, start::StartCmd, transfer::TransferCmd,
 };
 
 use crate::config::CellarRebalancerConfig;
@@ -54,6 +55,7 @@ pub enum CellarRebalancerCmd {
     #[clap(subcommand)]
     Keys(KeysCmd),
 
+    /// Print default configurations
     PrintConfig(ConfigCmd),
 
     FundCellar(FundCellarCmd),
@@ -72,6 +74,8 @@ pub enum CellarRebalancerCmd {
 
     #[clap(subcommand)]
     Query(query::QueryCmd),
+
+    SetValidator(SetValidatorCmd),
 
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
 
