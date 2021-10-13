@@ -17,7 +17,7 @@ use crate::{
     collector::{Collector, Poller, Request, Response},
     config::CellarRebalancerConfig,
 };
-use abscissa_core::{config, Command, FrameworkError, Options, Runnable};
+use abscissa_core::{config, Command, FrameworkError, Clap, Runnable};
 use std::{convert::TryFrom, path, sync::Arc};
 use tokio::task::JoinHandle;
 use tower::{Service, ServiceBuilder};
@@ -29,10 +29,10 @@ use tower::{Service, ServiceBuilder};
 /// for a more comprehensive example:
 ///
 /// <https://docs.rs/gumdrop/>
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub struct StartCmd {
     /// To whom are we saying hello?
-    #[options(free)]
+    #[clap()]
     recipient: Vec<String>,
 }
 
