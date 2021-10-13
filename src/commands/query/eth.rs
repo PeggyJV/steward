@@ -1,14 +1,12 @@
 //! `eth subcommands` subcommand
 
 use crate::{application::APP, prelude::*};
-use abscissa_core::{Command, Options, Runnable};
+use abscissa_core::{Command, Clap, Runnable};
 
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub enum Eth {
-    #[options(help = "balance [key-name]")]
     Balance(Balance),
 
-    #[options(help = "contract")]
     Contract(Contract),
 }
 
@@ -19,12 +17,12 @@ impl Runnable for Eth {
     }
 }
 
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub struct Balance {
-    #[options(free)]
+    #[clap()]
     free: Vec<String>,
 
-    #[options(help = "print help message")]
+    #[clap(short, long)]
     help: bool,
 }
 
@@ -40,9 +38,9 @@ impl Runnable for Balance {
     }
 }
 
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub struct Contract {
-    #[options(help = "print help message")]
+    #[clap(short, long)]
     help: bool,
 }
 
