@@ -21,6 +21,7 @@ mod orchestrator;
 mod predictions;
 mod query;
 mod remove_funds;
+mod set_validator;
 mod sign_delegate_keys;
 mod start;
 mod transfer;
@@ -30,7 +31,7 @@ mod reinvest;
 
 use self::{
     config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd,
-    remove_funds::RemoveFundsCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd,
+    remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd,
 };
 
 use crate::config::CellarRebalancerConfig;
@@ -91,6 +92,9 @@ pub enum CellarRebalancerCmd {
 
     #[options(help = "query state on either ethereum or cosmos chains")]
     Query(query::QueryCmd),
+
+    #[options(help = "set validator permissions for an address")]
+    SetValidator(SetValidatorCmd),
 
     #[options(help = "sign delegate keys")]
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
