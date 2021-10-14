@@ -2,7 +2,7 @@
 /// The collector's [`Poller`] collects information from external sources
 /// which aren't capable of pushing data.
 use crate::{
-    cellar_uniswap_wrapper::{CellarState, CellarTickInfo, ContractStateUpdate},
+    cellar_uniswap_wrapper::{UniswapV3CellarState, UniswapV3CellarTickInfo, ContractStateUpdate},
     collector, config,
     error::Error,
     gas::CellarGas,
@@ -21,7 +21,7 @@ pub struct Poller<T: Middleware> {
     poll_interval: Duration,
     time_range: TimeRange,
     cellar_gas: CellarGas,
-    contract_state: CellarState<T>,
+    contract_state: UniswapV3CellarState<T>,
     pool: PoolState<T>,
 }
 
@@ -58,7 +58,7 @@ impl<T: 'static + Middleware> Poller<T> {
                     .unwrap(),
                 current_gas: None,
             },
-            contract_state: CellarState::new(cellar.cellar_address, client),
+            contract_state: UniswapV3CellarState::new(cellar.cellar_address, client),
             pool,
         };
 
@@ -98,10 +98,10 @@ impl<T: 'static + Middleware> Poller<T> {
     }
 
     pub async fn decide_rebalance(&mut self) -> Result<(), Error> {
-        let mut tick_info: Vec<CellarTickInfo> = Vec::new();
+        let mut tick_info: Vec<UniswapV3CellarTickInfo> = Vec::new();
         for ref tick_weight in self.time_range.tick_weights.clone() {
             if tick_weight.weight > 0 {
-                tick_info.push(CellarTickInfo::from_tick_weight(tick_weight))
+                tick_info.push(UniswapV3CellarTickInfo::from_tick_weight(tick_weight))
             }
         }
 

@@ -5,7 +5,7 @@ use ethers::prelude::*;
 use signatory::FsKeyStore;
 
 use crate::{
-    cellar_uniswap_wrapper::CellarState,
+    cellar_uniswap_wrapper::UniswapV3CellarState,
     erc20::Erc20State,
     gas::CellarGas,
     prelude::*,
@@ -58,7 +58,7 @@ impl Runnable for SetValidatorCmd {
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
 
-            let mut contract_state = CellarState::new(cellar.cellar_address, client.clone());
+            let mut contract_state = UniswapV3CellarState::new(cellar.cellar_address, client.clone());
             contract_state.gas_price = Some(gas);
    
             contract_state

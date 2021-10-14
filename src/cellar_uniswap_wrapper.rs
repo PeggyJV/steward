@@ -8,31 +8,31 @@ use std::sync::Arc;
 
 //use abigen macro to fetch and incorporate contract ABI
 abigen!(
-    Cellar,
+    UniswapV3Cellar,
     "./abi/cellars/cellar_uniswap_abi.json",
     event_derives(serde::Deserialize, serde::Serialize)
 );
 
 // Use generic data types for CellarWrapper struct since contract will have different data types.
-pub struct CellarState<T> {
-    pub contract: Cellar<T>,
+pub struct UniswapV3CellarState<T> {
+    pub contract: UniswapV3Cellar<T>,
     pub gas_price: Option<U256>,
 }
 
 pub struct ContractStateUpdate {}
 
 // Implementation for ContractState.
-impl<T: 'static + Middleware> CellarState<T> {
+impl<T: 'static + Middleware> UniswapV3CellarState<T> {
     // Instantiate `new` ContractState
     pub fn new(address: H160, client: Arc<T>) -> Self {
-        CellarState {
-            contract: Cellar::new(address, client),
+        UniswapV3CellarState {
+            contract: UniswapV3Cellar::new(address, client),
             gas_price: None,
         }
     }
 
     // Rebalance portfolio with cellar tick info
-    pub async fn rebalance(&mut self, cellar_tick_info: Vec<CellarTickInfo>) -> Result<(), Error> {
+    pub async fn rebalance(&mut self, cellar_tick_info: Vec<UniswapV3CellarTickInfo>) -> Result<(), Error> {
         let mut ticks: Vec<(U256, i32, i32, u32)> =
             cellar_tick_info.into_iter().map(|x| x.to_tuple()).collect();
         ticks.reverse();
@@ -71,7 +71,7 @@ impl<T: 'static + Middleware> CellarState<T> {
     // Add liquidity for uniswap version 3 with values form struct `CellarAddParams`
     pub async fn add_liquidity_for_uni_v3(
         &mut self,
-        cellar_add_params: CellarAddParams,
+        cellar_add_params: UniswapV3CellarAddParams,
     ) -> Result<(), Error> {
         let mut call = self
             .contract
@@ -98,7 +98,7 @@ impl<T: 'static + Middleware> CellarState<T> {
     // Add ethereum liquidity for uniswap version 3 with values form struct `CellarAddParams`
     pub async fn add_liquidity_eth_for_uni_v3(
         &mut self,
-        cellar_add_params: CellarAddParams,
+        cellar_add_params: UniswapV3CellarAddParams,
     ) -> Result<(), Error> {
         let call = self
             .contract
@@ -117,7 +117,7 @@ impl<T: 'static + Middleware> CellarState<T> {
     // Remove ethereum liquidity from uniswap version 3 with values form struct `CellarAddParams`
     pub async fn remove_liquidity_eth_from_uni_v3(
         &mut self,
-        cellar_remove_params: CellarRemoveParams,
+        cellar_remove_params: UniswapV3CellarRemoveParams,
     ) -> Result<(), Error> {
         let call = self
             .contract
@@ -136,7 +136,7 @@ impl<T: 'static + Middleware> CellarState<T> {
     // Remove liquidity from uniswap version 3 with values form struct `CellarAddParams`
     pub async fn remove_liquidity_from_uni_v3(
         &mut self,
-        cellar_remove_params: CellarRemoveParams,
+        cellar_remove_params: UniswapV3CellarRemoveParams,
     ) -> Result<(), Error> {
         let call = self
             .contract
@@ -171,19 +171,19 @@ impl<T: 'static + Middleware> CellarState<T> {
     }
 }
 
-// Struct for CellarTickInfo
+// Struct for UniswapV3CellarTickInfo
 #[derive(Clone, Debug)]
-pub struct CellarTickInfo {
+pub struct UniswapV3CellarTickInfo {
     pub(crate) token_id: U256,
     pub(crate) tick_upper: i32,
     pub(crate) tick_lower: i32,
     pub(crate) weight: u32,
 }
 
-// Implement CellarTickInfo. Initiate to_tuple method, to convert Vec<CellarTickInfo> to Tuples.
-impl CellarTickInfo {
+// Implement UniswapV3CellarTickInfo. Initiate to_tuple method, to convert Vec<UniswapV3CellarTickInfo> to Tuples.
+impl UniswapV3CellarTickInfo {
     pub fn new(token_id: U256, tick_upper: i32, tick_lower: i32, weight: u32) -> Self {
-        CellarTickInfo {
+        UniswapV3CellarTickInfo {
             token_id,
             tick_upper,
             tick_lower,
@@ -195,8 +195,8 @@ impl CellarTickInfo {
         (self.token_id, self.tick_upper, self.tick_lower, self.weight)
     }
 
-    // pub fn to_abi(self)->cellar_mod::CellarTickInfo{
-    //     cellar_mod::CellarTickInfo {
+    // pub fn to_abi(self)->cellar_mod::UniswapV3CellarTickInfo{
+    //     cellar_mod::UniswapV3CellarTickInfo {
     //         token_id: self.token_id,
     //         tick_upper: self.tick_upper,
     //         tick_lower: self.tick_lower,
@@ -204,8 +204,8 @@ impl CellarTickInfo {
     //     }
     // }
 
-    pub fn from_tick_weight(tick_weight: &crate::time_range::TickWeight) -> CellarTickInfo {
-        CellarTickInfo {
+    pub fn from_tick_weight(tick_weight: &crate::time_range::TickWeight) -> UniswapV3CellarTickInfo {
+        UniswapV3CellarTickInfo {
             token_id: U256::zero(),
             tick_upper: tick_weight.upper_bound,
             tick_lower: tick_weight.lower_bound,
@@ -229,7 +229,7 @@ impl CellarTickInfo {
     }
 }
 
-impl std::cmp::PartialOrd<i32> for CellarTickInfo {
+impl std::cmp::PartialOrd<i32> for UniswapV3CellarTickInfo {
     fn partial_cmp(&self, other: &i32) -> Option<std::cmp::Ordering> {
         if other < &self.tick_lower {
             Some(std::cmp::Ordering::Less)
@@ -242,14 +242,14 @@ impl std::cmp::PartialOrd<i32> for CellarTickInfo {
         }
     }
 }
-impl std::cmp::PartialEq<i32> for CellarTickInfo {
+impl std::cmp::PartialEq<i32> for UniswapV3CellarTickInfo {
     fn eq(&self, other: &i32) -> bool {
         self.within(other)
     }
 }
 
 // Struct for CellarAddParams
-pub struct CellarAddParams {
+pub struct UniswapV3CellarAddParams {
     amount0_desired: U256,
     amount1_desired: U256,
     amount0_min: U256,
@@ -259,7 +259,7 @@ pub struct CellarAddParams {
 }
 
 // Implement CellarAddParams
-impl CellarAddParams {
+impl UniswapV3CellarAddParams {
     // Instantiate `new` CellarAddParams
     pub fn new(
         amount0_desired: U256,
@@ -269,7 +269,7 @@ impl CellarAddParams {
         recipient: H160,
         deadline: U256,
     ) -> Self {
-        CellarAddParams {
+        UniswapV3CellarAddParams {
             amount0_desired,
             amount1_desired,
             amount0_min,
@@ -304,7 +304,7 @@ impl CellarAddParams {
 }
 
 // Struct for CellarRemoveParams
-pub struct CellarRemoveParams {
+pub struct UniswapV3CellarRemoveParams {
     token_amount: U256,
     amount0_min: U256,
     amount1_min: U256,
@@ -313,7 +313,7 @@ pub struct CellarRemoveParams {
 }
 
 // Implement CellarRemoveParams
-impl CellarRemoveParams {
+impl UniswapV3CellarRemoveParams {
     // Instantiate `new` CellarRemoveParams
     pub fn new(
         token_amount: U256,
@@ -322,7 +322,7 @@ impl CellarRemoveParams {
         recipient: H160,
         deadline: U256,
     ) -> Self {
-        CellarRemoveParams {
+        UniswapV3CellarRemoveParams {
             token_amount,
             amount0_min,
             amount1_min,

@@ -8,7 +8,7 @@ use num_traits::Zero;
 use signatory::FsKeyStore;
 
 use crate::{
-    cellar_uniswap_wrapper::{CellarAddParams, CellarState, CellarTickInfo},
+    cellar_uniswap_wrapper::{UniswapV3CellarAddParams, UniswapV3CellarState, UniswapV3CellarTickInfo},
     erc20::Erc20State,
     gas::CellarGas,
     prelude::*,
@@ -62,7 +62,7 @@ impl Runnable for FundCellarCmd {
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
 
-            let mut contract_state = CellarState::new(cellar.cellar_address, client.clone());
+            let mut contract_state = UniswapV3CellarState::new(cellar.cellar_address, client.clone());
             contract_state.gas_price = Some(gas);
             let pool_state = PoolState::new(cellar.pool_address, client.clone());
 
@@ -81,7 +81,7 @@ impl Runnable for FundCellarCmd {
             loop {
                 match contract_state.contract.cellar_tick_info(i).call().await {
                     Ok((token_id, tick_upper, tick_lower, weight)) => {
-                        let tick_info = CellarTickInfo {
+                        let tick_info = UniswapV3CellarTickInfo {
                             token_id: token_id,
                             tick_upper: tick_upper,
                             tick_lower: tick_lower,
@@ -101,7 +101,7 @@ impl Runnable for FundCellarCmd {
                 info!("{:?}", tick);
             }
 
-            let params = CellarAddParams::new(
+            let params = UniswapV3CellarAddParams::new(
                 ((self.amount_0 * (10u64.pow(cellar.token_0.decimals as u32)) as f64) as u128)
                     .into(),
                 ((self.amount_1 * (10u64.pow(cellar.token_1.decimals as u32)) as f64) as u128)
