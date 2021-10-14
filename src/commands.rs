@@ -35,7 +35,7 @@ use self::{
 
 use crate::config::CellarRebalancerConfig;
 use abscissa_core::{
-    config::Override, Command, Configurable, FrameworkError, Clap, Runnable,
+    Application, Clap, Command, Configurable, FrameworkError, Runnable
 };
 use std::path::PathBuf;
 
@@ -116,7 +116,11 @@ impl Configurable<CellarRebalancerConfig> for EntryPoint {
         // Check if the config file exists, and if it does not, ignore it.
         // If you'd like for a missing configuration file to be a hard error
         // instead, always return `Some(CONFIG_FILE)` here.
-        let filename = PathBuf::from(CONFIG_FILE);
+        let filename = self
+        .config
+        .as_ref()
+        .map(PathBuf::from)
+        .unwrap_or_else(|| CONFIG_FILE.into());
 
         if filename.exists() {
             Some(filename)
@@ -134,7 +138,7 @@ impl Configurable<CellarRebalancerConfig> for EntryPoint {
         &self,
         config: CellarRebalancerConfig,
     ) -> Result<CellarRebalancerConfig, FrameworkError> {
-        match self.cmd {
+        match &self.cmd {
             _ => Ok(config),
         }
     }
