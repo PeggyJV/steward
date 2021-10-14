@@ -1,17 +1,17 @@
 use crate::application::APP;
-use abscissa_core::{Application, Command, Options, Runnable};
+use abscissa_core::{Application, Command, Clap, Runnable};
 use bip32;
 use k256::pkcs8::ToPrivateKey;
 use rand_core::OsRng;
 use signatory::FsKeyStore;
 use std::path;
 
-#[derive(Command, Debug, Default, Options)]
+/// Create a new Key
+#[derive(Command, Debug, Default, Clap)]
 pub struct AddKeyCmd {
-    #[options(free, help = "add [name]")]
     pub args: Vec<String>,
 
-    #[options(help = "overwrite existing key")]
+    #[clap(short, long)]
     pub overwrite: bool,
 }
 

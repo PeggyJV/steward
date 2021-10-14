@@ -1,15 +1,15 @@
 use crate::prelude::*;
-use abscissa_core::{Command, Options, Runnable};
+use abscissa_core::{Command, Clap, Runnable};
 use mongodb::{bson::doc, options::FindOptions, Client};
 
 use crate::time_range::MongoData;
 
 use futures::TryStreamExt;
 
-#[derive(Command, Debug, Options)]
+/// Display lastest prediction in the application
+#[derive(Command, Debug, Clap)]
 pub struct PredictionsCmd {
     /// To whom are we saying hello?
-    #[options(free)]
     recipient: Vec<String>,
 }
 

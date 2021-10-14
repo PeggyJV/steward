@@ -1,7 +1,7 @@
 //! `cosmos subcommands` subcommand
 
 use crate::{application::APP, prelude::*, utils::*};
-use abscissa_core::{Command, Options, Runnable};
+use abscissa_core::{Command, Clap, Runnable};
 use clarity::{Address as EthAddress, Uint256};
 use deep_space::{coin::Coin, private_key::PrivateKey as CosmosPrivateKey};
 use gravity_bridge::cosmos_gravity::send::send_to_eth;
@@ -10,11 +10,11 @@ use gravity_bridge::gravity_utils::connection_prep::{check_for_fee_denom, create
 use regex::Regex;
 use std::process::exit;
 
-#[derive(Command, Debug, Options)]
+/// Create Tx on Cosmos chain
+#[derive(Command, Debug, Clap)]
 pub enum Cosmos {
-    #[options(help = "send-to-eth [from-cosmos-key] [to-eth-addr] [erc20-coin] [[--times=int]]")]
     SendToEth(SendToEth),
-    #[options(help = "send [from-key] [to-addr] [coin-amount]")]
+    
     Send(Send),
 }
 
@@ -25,12 +25,11 @@ impl Runnable for Cosmos {
     }
 }
 
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub struct SendToEth {
-    #[options(free)]
     free: Vec<String>,
 
-    #[options(help = "print help message")]
+    #[clap(short, long)]
     help: bool,
 }
 
@@ -125,12 +124,15 @@ impl Runnable for SendToEth {
                 amount,
                 denom
             );
+            // TODO Ugochi: Replace this with making gas_limit configurable
+            let gas_limit = config.cosmos.gas_limit;
             let res = send_to_eth(
                 cosmos_key,
                 eth_dest,
                 amount.clone(),
                 bridge_fee.clone(),
                 &contact,
+                gas_limit,
             )
             .await;
             match res {
@@ -145,12 +147,11 @@ impl Runnable for SendToEth {
     }
 }
 
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub struct Send {
-    #[options(free)]
     free: Vec<String>,
 
-    #[options(help = "print help message")]
+    #[clap(short, long)]
     help: bool,
 }
 

@@ -1,6 +1,6 @@
 use std::{convert::TryFrom, path, sync::Arc, time::Duration};
 
-use abscissa_core::{Command, Options, Runnable};
+use abscissa_core::{Command, Clap, Runnable};
 use ethers::prelude::*;
 use signatory::FsKeyStore;
 
@@ -12,12 +12,12 @@ use crate::{
 };
 
 /// `set-validator` subcommand
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub struct SetValidatorCmd {
-    #[options(help = "target address to configure", required)]
+    #[clap(short, long)]
     validator: H160,
 
-    #[options(help = "A value of `true` means address is authorized as a validator. `false` removes authorization.", required)]
+    #[clap(short, long)]
     value: bool
 }
 

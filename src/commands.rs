@@ -26,17 +26,16 @@ mod sign_delegate_keys;
 mod start;
 mod transfer;
 mod tx;
-mod version;
 mod reinvest;
 
 use self::{
     config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd,
-    remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, start::StartCmd, transfer::TransferCmd, version::VersionCmd,
+    remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, start::StartCmd, transfer::TransferCmd,
 };
 
 use crate::config::CellarRebalancerConfig;
 use abscissa_core::{
-    config::Override, Command, Configurable, FrameworkError, Help, Options, Runnable,
+    Application, Clap, Command, Configurable, FrameworkError, Runnable
 };
 use std::path::PathBuf;
 
@@ -44,79 +43,84 @@ use std::path::PathBuf;
 pub const CONFIG_FILE: &str = "contract_monitor.toml";
 
 /// CellarRebalancer Subcommands
-#[derive(Command, Debug, Options, Runnable)]
+#[derive(Command, Debug, Clap, Runnable)]
 pub enum CellarRebalancerCmd {
-    /// The `help` subcommand
-    #[options(help = "get usage information")]
-    Help(Help<Self>),
 
-    /// The `start` subcommand
-    #[options(help = "start the application")]
     Start(StartCmd),
 
-    /// The `transfer` subcommand
-    #[options(help = "transfer ETH")]
     Transfer(TransferCmd),
 
-    /// The `version` subcommand
-    #[options(help = "display version information")]
-    Version(VersionCmd),
-
-    /// The `prediction` subcommand
-    #[options(help = "display lastest prediction")]
     Predictions(PredictionsCmd),
-    /// The `keys` subcommand
-    #[options(help = "key management commands")]
+
+    #[clap(subcommand)]
     Keys(KeysCmd),
 
-    #[options(help = "print default config")]
+    /// Print default configurations
     PrintConfig(ConfigCmd),
 
-    #[options(help = "fund cellar")]
     FundCellar(FundCellarCmd),
 
-    #[options(help = "remove_funds")]
     RemoveFunds(RemoveFundsCmd),
 
-    #[options(help = "Send Cosmos to Ethereum")]
     CosmosToEth(cosmos_to_eth::CosmosToEthCmd),
 
-    #[options(help = "tools for contract deployment")]
+    #[clap(subcommand)]
     Deploy(deploy::DeployCmd),
 
-    #[options(help = "Send Ethereum to Cosmos")]
     EthToCosmos(eth_to_cosmos::EthToCosmosCmd),
 
-    #[options(help = "orchestrator management commands")]
+    #[clap(subcommand)]
     Orchestrator(orchestrator::OrchestratorCmd),
 
-    #[options(help = "query state on either ethereum or cosmos chains")]
+    #[clap(subcommand)]
     Query(query::QueryCmd),
 
-    #[options(help = "set validator permissions for an address")]
     SetValidator(SetValidatorCmd),
 
-    #[options(help = "sign delegate keys")]
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
 
-    #[options(help = "create transactions on either ethereum or cosmos chains")]
+    #[clap(subcommand)]
     Tx(tx::TxCmd),
 
-    #[options(help = "Allow Erc20 Token to interact with cellar contract")]
     AllowErc20(allow_erc20::AllowERC20),
 
-    #[options(help = "Reinvest fees on the cellar")]
     Reinvest(reinvest::ReinvestCommand),
 }
 
+/// Entry point for the application. It needs to be a struct to allow using subcommands!
+#[derive(Command, Debug, Clap)]
+#[clap(author, about, version)]
+pub struct EntryPoint {
+    #[clap(subcommand)]
+    cmd: CellarRebalancerCmd,
+
+    /// Enable verbose logging
+    #[clap(short, long)]
+    pub verbose: bool,
+
+    /// Use the specified config file
+    #[clap(short, long)]
+    pub config: Option<String>,
+}
+
+impl Runnable for EntryPoint {
+    fn run(&self) {
+        self.cmd.run()
+    }
+}
+
 /// This trait allows you to define how application configuration is loaded.
-impl Configurable<CellarRebalancerConfig> for CellarRebalancerCmd {
+impl Configurable<CellarRebalancerConfig> for EntryPoint {
     /// Location of the configuration file
     fn config_path(&self) -> Option<PathBuf> {
         // Check if the config file exists, and if it does not, ignore it.
         // If you'd like for a missing configuration file to be a hard error
         // instead, always return `Some(CONFIG_FILE)` here.
-        let filename = PathBuf::from(CONFIG_FILE);
+        let filename = self
+        .config
+        .as_ref()
+        .map(PathBuf::from)
+        .unwrap_or_else(|| CONFIG_FILE.into());
 
         if filename.exists() {
             Some(filename)
@@ -134,8 +138,7 @@ impl Configurable<CellarRebalancerConfig> for CellarRebalancerCmd {
         &self,
         config: CellarRebalancerConfig,
     ) -> Result<CellarRebalancerConfig, FrameworkError> {
-        match self {
-            CellarRebalancerCmd::Start(cmd) => cmd.override_config(config),
+        match &self.cmd {
             _ => Ok(config),
         }
     }
