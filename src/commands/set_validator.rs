@@ -5,7 +5,7 @@ use ethers::prelude::*;
 use signatory::FsKeyStore;
 
 use crate::{
-    cellar_wrapper::CellarState,
+    cellar_uniswap_wrapper::CellarState,
     erc20::Erc20State,
     gas::CellarGas,
     prelude::*,
