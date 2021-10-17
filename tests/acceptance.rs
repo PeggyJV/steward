@@ -31,26 +31,26 @@ use once_cell::sync::Lazy;
 pub static RUNNER: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
 
 /// Use `CellarRebalancerConfig::default()` value if no config or args
-#[test]
-fn start_no_args() {
-    let mut runner = RUNNER.clone();
-    let mut cmd = runner.arg("start").capture_stdout().run();
-    cmd.stdout().expect_line("Hello, world!");
-    cmd.wait().unwrap().expect_success();
-}
+//#[test]
+//fn start_no_args() {
+    //let mut runner = RUNNER.clone();
+    //let mut cmd = runner.arg("start").capture_stdout().run();
+    //cmd.stdout().expect_line("Hello, world!");
+    //cmd.wait().unwrap().expect_success();
+//}
 
 /// Use command-line argument value
-#[test]
-fn start_with_args() {
-    let mut runner = RUNNER.clone();
-    let mut cmd = runner
-        .args(&["start", "acceptance", "test"])
-        .capture_stdout()
-        .run();
+//#[test]
+//fn start_with_args() {
+    //let mut runner = RUNNER.clone();
+    //let mut cmd = runner
+        //.args(&["start", "acceptance", "test"])
+        //.capture_stdout()
+        //.run();
 
-    cmd.stdout().expect_line("Hello, acceptance test!");
-    cmd.wait().unwrap().expect_success();
-}
+    //cmd.stdout().expect_line("Hello, acceptance test!");
+    //cmd.wait().unwrap().expect_success();
+//}
 
 /// Use configured value
 // #[test]
@@ -66,26 +66,26 @@ fn start_with_args() {
 // }
 
 /// Override configured value with command-line argument
-#[test]
-fn start_with_config_and_args() {
-    let config = CellarRebalancerConfig::default();
+//#[test]
+//fn start_with_config_and_args() {
+    //let config = CellarRebalancerConfig::default();
     // config.hello.recipient = "configured recipient".to_owned();
 
-    let mut runner = RUNNER.clone();
-    let mut cmd = runner
-        .config(&config)
-        .args(&["start", "acceptance", "test"])
-        .capture_stdout()
-        .run();
+    //let mut runner = RUNNER.clone();
+    //let mut cmd = runner
+        //.config(&config)
+        //.args(&["start", "acceptance", "test"])
+        //.capture_stdout()
+       // .run();
 
-    cmd.stdout().expect_line("Hello, acceptance test!");
-    cmd.wait().unwrap().expect_success();
-}
+    //cmd.stdout().expect_line("Hello, acceptance test!");
+    //cmd.wait().unwrap().expect_success();
+//}
 
 /// Example of a test which matches a regular expression
 #[test]
 fn version_no_args() {
     let mut runner = RUNNER.clone();
-    let mut cmd = runner.arg("version").capture_stdout().run();
+    let mut cmd = runner.arg("--version").capture_stdout().run();
     cmd.stdout().expect_regex(r"\A\w+ [\d\.\-]+\z");
 }
