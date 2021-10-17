@@ -26,3 +26,5 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+      - name: Run Cellar_Rebalance unit tests
+        run: cargo test --all --verbose
