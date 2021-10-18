@@ -4,7 +4,6 @@ RUN apk update
 RUN apk add --no-cache git
 
 COPY package.json package.json
-COPY yarn.lock yarn.lock
 
 RUN yarn install --production=false
 RUN npm config set user 0
