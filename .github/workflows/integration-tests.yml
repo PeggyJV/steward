@@ -95,7 +95,7 @@ jobs:
       - name: build-and-push
         uses: docker/build-push-action@v2
         with:
-          context: integration_tests/ethereum
+          context: test-runner/hardhat
           file: test-runner/hardhat/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
