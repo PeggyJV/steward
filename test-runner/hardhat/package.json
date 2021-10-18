@@ -1,0 +1,34 @@
+{
+  "name": "rebalancer_hardhat",
+  "version": "1.0.0",
+  "description": "Integration tests for Cellars Rebalancer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx accounts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PeggyJV/cellar_rebalancer_rs.git"
+  },
+  "keywords": [
+    "Cellars",
+    "Rebalancer",
+    "Pools"
+  ],
+  "author": "Ukpai Ugochi, PeggyJV",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PeggyJV/cellar_rebalancer_rs/issues"
+  },
+  "homepage": "https://github.com/PeggyJV/cellar_rebalancer_rs#readme",
+
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "chai": "^4.3.4",
+    "ethereum-waffle": "^3.4.0",
+    "ethers": "^5.4.7",
+    "hardhat": "^2.6.4"
+  }
+}
