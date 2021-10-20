@@ -23,6 +23,8 @@ task("integration_test_setup", 'Sets up contracts for the integration test', asy
   const cellar = await Cellar;
   console.log(cellar)
 
+  await hre.run('node');
+
 });
 
 
