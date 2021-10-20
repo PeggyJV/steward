@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx accounts"
+    "start": "npx hardhat integration_test_setup --verbose"
   },
   "repository": {
     "type": "git",
@@ -22,13 +22,17 @@
     "url": "https://github.com/PeggyJV/cellar_rebalancer_rs/issues"
   },
   "homepage": "https://github.com/PeggyJV/cellar_rebalancer_rs#readme",
-
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
-    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@types/node": "^16.11.1",
     "chai": "^4.3.4",
     "ethereum-waffle": "^3.4.0",
-    "ethers": "^5.4.7",
-    "hardhat": "^2.6.4"
+    "ethers": "^5.5.1",
+    "hardhat": "^2.6.6",
+    "ts-node": "^10.3.0",
+    "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "@nomiclabs/hardhat-waffle": "^2.0.1"
   }
 }
