@@ -16,7 +16,7 @@ pub struct CosmosToEthCmd {
     #[clap(short, long)]
     pub args: Vec<String>,
 
-    #[clap(short, long)]
+    #[clap(short = 'f', long)]
     pub flag_no_batch: bool,
 }
 

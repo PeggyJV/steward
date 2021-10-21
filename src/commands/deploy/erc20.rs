@@ -13,7 +13,7 @@ use tokio::time::sleep as delay_for;
 pub struct Erc20 {
     args: Vec<String>,
 
-    #[clap(short, long)]
+    #[clap(short = 'e', long)]
     ethereum_key: String,
 }
 
