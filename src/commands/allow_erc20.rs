@@ -20,9 +20,9 @@ use crate::{
 pub struct AllowERC20 {
     #[clap(short, long)]
     cellar_address: H160,
-    #[clap(short = 'A', long)]
+    #[clap(short, long)]
     address: H160,
-    #[clap(short = 'a', long)]
+    #[clap(short, long)]
     amount: u64,
 }
 
