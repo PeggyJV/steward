@@ -18,7 +18,7 @@ use crate::{
 /// Cellars reinvest command
 #[derive(Command, Debug, Clap)]
 pub struct ReinvestCommand {
-    #[clap(short, long)]
+    #[clap(short = 'i', long)]
     pub cellar_id: u32,
 }
 
