@@ -15,10 +15,10 @@ use std::cmp::min;
 /// Start Orchestrator
 #[derive(Command, Debug, Clap)]
 pub struct StartCommand {
-    #[clap(short, long)]
+    #[clap(short = 'c', long)]
     cosmos_key: String,
 
-    #[clap(short, long)]
+    #[clap(short = 'e', long)]
     ethereum_key: String,
 }
 

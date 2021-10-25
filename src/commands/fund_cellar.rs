@@ -18,11 +18,11 @@ use crate::{
 /// Command to fund Cellars
 #[derive(Command, Debug, Clap)]
 pub struct FundCellarCmd {
-    #[clap(short, long)]
+    #[clap(short = 'i', long)]
     pub cellar_id: u32,
-    #[clap(short = 'A', long)]
+    #[clap(short = 'm', long)]
     pub amount_0: f64,
-    #[clap(short = 'a', long)]
+    #[clap(short = 'o', long)]
     pub amount_1: f64,
 }
 

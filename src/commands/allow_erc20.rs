@@ -18,11 +18,11 @@ use crate::{
 /// Allow Erc20 Token to interact with cellar contract  
 #[derive(Command, Debug, Default, Clap)]
 pub struct AllowERC20 {
-    #[clap(short, long)]
+    #[clap(short = 'C', long)]
     cellar_address: H160,
-    #[clap(short = 'a', long)]
-    address: H160,
     #[clap(short = 'A', long)]
+    address: H160,
+    #[clap(short = 'a', long)]
     amount: u64,
 }
 

@@ -14,10 +14,10 @@ use crate::{
 /// `set-validator` subcommand
 #[derive(Command, Debug, Clap)]
 pub struct SetValidatorCmd {
-    #[clap(short = 'l', long)]
+    #[clap(short = 'v', long)]
     validator: H160,
 
-    #[clap(short = 'v', long)]
+    #[clap(short = 'u', long)]
     value: bool
 }
 
