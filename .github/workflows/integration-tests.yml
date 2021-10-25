@@ -136,6 +136,6 @@ jobs:
       - name: rename rust image
         run: docker tag ${{ steps.meta-rust.outputs.tags }} rust:prebuilt
       - name: Run end to end test
-        run: cd/tests/keys.rs cargo test --all --verbose
+        run: cd tests cargo test --all --verbose
 
   
