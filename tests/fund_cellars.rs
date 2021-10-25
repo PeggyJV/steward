@@ -15,16 +15,15 @@ pub static RUNNER: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
 
 
 #[test]
-fn allow_erc20() {
+fn fund_cellar() {
     let mut runner = RUNNER.clone();
     runner
         .args(&[
             "tests/meconfig.toml",
-            "allow-erc20",
-            "--cellar-address=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-            "--address=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-            "--amount",
-            "50"
+            "fund-cellar",
+            "--cellar-id 0",
+            "--amount-0 10",
+            "--amount-1 10",
         ])
         .capture_stdout()
         .status()

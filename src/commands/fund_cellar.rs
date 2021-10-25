@@ -20,9 +20,9 @@ use crate::{
 pub struct FundCellarCmd {
     #[clap(short, long)]
     pub cellar_id: u32,
-    #[clap(short, long)]
+    #[clap(short = 'A', long)]
     pub amount_0: f64,
-    #[clap(short, long)]
+    #[clap(short = 'a', long)]
     pub amount_1: f64,
 }
 
@@ -47,6 +47,7 @@ impl Runnable for FundCellarCmd {
             .expect("Could not parse key");
 
         let wallet: LocalWallet = Wallet::from(key);
+        let wallet = wallet.with_chain_id(1337u64);
 
         let eth_host = config.ethereum.rpc.clone();
         let address = wallet.address();

@@ -20,9 +20,9 @@ use crate::{
 pub struct AllowERC20 {
     #[clap(short, long)]
     cellar_address: H160,
-    #[clap(short, long)]
+    #[clap(short = 'a', long)]
     address: H160,
-    #[clap(short, long)]
+    #[clap(short = 'A', long)]
     amount: u64,
 }
 
@@ -47,6 +47,8 @@ impl Runnable for AllowERC20 {
             .expect("Could not parse key");
 
         let wallet: LocalWallet = Wallet::from(key);
+
+        let wallet = wallet.with_chain_id(1337u64);
 
         let eth_host = config.ethereum.rpc.clone();
 

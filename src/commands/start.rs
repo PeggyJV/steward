@@ -58,6 +58,8 @@ impl StartCmd {
 
         let wallet: LocalWallet = Wallet::from(key);
 
+        let wallet = wallet.with_chain_id(1337u64);
+
         let eth_host = config.ethereum.rpc.clone();
 
         let mut pollers = vec![];
