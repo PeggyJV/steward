@@ -25,13 +25,15 @@ jobs:
         uses: docker/setup-buildx-action@v1
       - name: Cache Docker layers
         uses: actions/cache@v2
-        id: docker-cache
+        id: rust-cache
         with:
-          path: /tmp/.buildx-cache
-          # Key is named differently to avoid collision
-          key: ${{ runner.os }}-multi-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-multi-buildx
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
       - name: Container service login
         uses: docker/login-action@v1
         with:
