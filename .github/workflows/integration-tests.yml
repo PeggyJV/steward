@@ -137,7 +137,8 @@ jobs:
         run: docker pull ${{ steps.meta-rust.outputs.tags }}
       - name: rename rust image
         run: docker tag ${{ steps.meta-rust.outputs.tags }} rust:prebuilt
-      - name: Run end to end test
+      - name: Navigate to test folder
+        run: cd tests
+      - name: Run tests
         run: cargo test --all --verbose
-
   
