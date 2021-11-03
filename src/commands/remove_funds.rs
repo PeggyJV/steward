@@ -8,7 +8,7 @@ use num_traits::Zero;
 use signatory::FsKeyStore;
 
 use crate::{
-    cellar_wrapper::{CellarRemoveParams, CellarState, CellarTickInfo},
+    cellar_uniswap_wrapper::{UniswapV3CellarRemoveParams, UniswapV3CellarState, UniswapV3CellarTickInfo},
     prelude::*,
     uniswap_pool::PoolState,
 };
@@ -50,7 +50,7 @@ impl Runnable for RemoveFundsCmd {
 
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
-            let mut contract_state = CellarState::new(cellar.cellar_address, client.clone());
+            let mut contract_state = UniswapV3CellarState::new(cellar.cellar_address, client.clone());
 
             let balance = contract_state
                 .contract
@@ -60,7 +60,7 @@ impl Runnable for RemoveFundsCmd {
                 .unwrap();
             dbg!(balance.to_string());
 
-            let params = CellarRemoveParams::new(
+            let params = UniswapV3CellarRemoveParams::new(
                 balance,
                 U256::zero(),
                 U256::zero(),
