@@ -1,5 +1,5 @@
 use crate::application::APP;
-use abscissa_core::{status_err, Application, Command, Clap, Runnable};
+use abscissa_core::{status_err, Application, Clap, Command, Runnable};
 use clarity::Address as EthAddress;
 use clarity::Uint256;
 use deep_space::coin::Coin;
@@ -46,8 +46,12 @@ impl Runnable for CosmosToEthCmd {
         let gravity_denom = self.args.get(0).expect("denom is required");
         let gravity_denom = gravity_denom.to_string();
         let is_cosmos_originated = !gravity_denom.starts_with("gravity");
-        
+
         let gas_limit = config.cosmos.gas_limit;
+
+        let gas_price = config.cosmos.gas_price.as_tuple();
+
+        let gas_adjustment = config.cosmos.gas_adjustment;
 
         let amount = self.args.get(1).expect("amount is required");
         let amount: Uint256 = amount.parse().expect("cannot parse amount");
@@ -147,8 +151,9 @@ impl Runnable for CosmosToEthCmd {
                 eth_dest,
                 amount.clone(),
                 bridge_fee.clone(),
+                gas_price.clone(),
                 &contact,
-                gas_limit,
+                gas_adjustment
             )
             .await;
             match res {
@@ -159,7 +164,7 @@ impl Runnable for CosmosToEthCmd {
 
         if !self.flag_no_batch {
             println!("Requesting a batch to push transaction along immediately");
-            send_request_batch_tx(cosmos_key, gravity_denom, bridge_fee, &contact, gas_limit)
+            send_request_batch_tx(cosmos_key, gravity_denom, gas_price, &contact, gas_limit)
                 .await
                 .expect("Failed to request batch");
         } else {

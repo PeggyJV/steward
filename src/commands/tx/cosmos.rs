@@ -53,11 +53,15 @@ fn get_cosmos_key(_key_name: &str) -> CosmosPrivateKey {
 
 impl Runnable for SendToEth {
     fn run(&self) {
+        let config = APP.config();
         assert!(self.free.len() == 3);
         let from_cosmos_key = self.free[0].clone();
         let to_eth_addr = self.free[1].clone(); //TODO parse this to an Eth Address
         let erc_20_coin = self.free[2].clone(); // 1231234uatom
         let (amount, denom) = parse_denom(&erc_20_coin);
+
+        let gas_adjustment = config.cosmos.gas_adjustment;
+        let gas_price = config.cosmos.gas_price.as_tuple();
 
         let amount: Uint256 = amount.parse().expect("Could not parse amount");
 
@@ -131,8 +135,9 @@ impl Runnable for SendToEth {
                 eth_dest,
                 amount.clone(),
                 bridge_fee.clone(),
+                gas_price,
                 &contact,
-                gas_limit,
+                gas_adjustment
             )
             .await;
             match res {
