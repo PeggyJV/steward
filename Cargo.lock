@@ -14,15 +14,14 @@ dependencies = [
 
 [[package]]
 name = "abscissa_core"
-version = "0.6.0-pre.2"
+version = "0.6.0-beta.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7586ed2c98e5727cecb6c36ab8af370ad48505719e004d0ae9bd85f1416b76fa"
+checksum = "1f5cf2609df76c3c3f00c710b0f60330aa5f48ae3fd4a9d3a0515c4e282045f1"
 dependencies = [
  "abscissa_derive",
  "arc-swap",
  "backtrace",
  "canonical-path",
- "chrono",
  "clap",
  "color-eyre",
  "fs-err",
@@ -41,9 +40,9 @@ dependencies = [
 
 [[package]]
 name = "abscissa_derive"
-version = "0.6.0-pre.2"
+version = "0.6.0-beta.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "105766c2cc2671f5ad1542922ee315f26de7e1b4d1a7500438929575136d9c7e"
+checksum = "a7ce86f8f9c77ef2fb491c86aff9f0b89f99dbdf3915e4317478744062e72613"
 dependencies = [
  "darling",
  "ident_case",
@@ -55,12 +54,12 @@ dependencies = [
 
 [[package]]
 name = "abscissa_tokio"
-version = "0.6.0-pre.3"
+version = "0.6.0-beta.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e61e91dc9c4e23856a7339f22570670dfa3ddf3511c2ac1e119c500a5ae2d1fd"
+checksum = "4f38df9084daf34a7822ccc39e85598f23fd80e8451003ea41441ed5123fc012"
 dependencies = [
  "abscissa_core",
- "actix-rt 2.2.0",
+ "actix-rt 2.4.0",
  "tokio 1.8.1",
 ]
 
@@ -70,7 +69,7 @@ version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "543c47e7827f8fcc9d1445bd98ba402137bfce80ee2187429de49c52b5131bd3"
 dependencies = [
- "actix-rt 2.2.0",
+ "actix-rt 2.4.0",
  "actix_derive",
  "bitflags",
  "bytes 1.0.1",
@@ -106,15 +105,16 @@ dependencies = [
 
 [[package]]
 name = "actix-codec"
-version = "0.4.0"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1d5dbeb2d9e51344cb83ca7cc170f1217f9fe25bfc50160e6e200b5c31c1019a"
+checksum = "13895df506faee81e423febbae3a33b27fca71831b96bb3d60adf16ebcfea952"
 dependencies = [
  "bitflags",
  "bytes 1.0.1",
  "futures-core",
  "futures-sink",
  "log",
+ "memchr",
  "pin-project-lite 0.2.7",
  "tokio 1.8.1",
  "tokio-util 0.6.7",
@@ -191,14 +191,14 @@ dependencies = [
 
 [[package]]
 name = "actix-http"
-version = "3.0.0-beta.10"
+version = "3.0.0-beta.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd38a862fa7fead2b47ee55e550982aba583ebc7365ccf0155b49934ad6f16f9"
+checksum = "c9b510d35f13987537289f38bf136e7e702a5c87cc28760310cc459544f40afd"
 dependencies = [
- "actix-codec 0.4.0",
- "actix-rt 2.2.0",
- "actix-service 2.0.0",
- "actix-tls 3.0.0-beta.5",
+ "actix-codec 0.4.1",
+ "actix-rt 2.4.0",
+ "actix-service 2.0.1",
+ "actix-tls 3.0.0-beta.7",
  "actix-utils 3.0.0",
  "ahash",
  "base64 0.13.0",
@@ -213,6 +213,7 @@ dependencies = [
  "h2 0.3.3",
  "http",
  "httparse",
+ "httpdate",
  "itoa",
  "language-tags 0.3.2",
  "local-channel",
@@ -223,11 +224,8 @@ dependencies = [
  "pin-project 1.0.7",
  "pin-project-lite 0.2.7",
  "rand 0.8.4",
- "regex",
- "serde",
  "sha-1",
  "smallvec",
- "time 0.2.27",
  "tokio 1.8.1",
  "zstd",
 ]
@@ -244,9 +242,9 @@ dependencies = [
 
 [[package]]
 name = "actix-macros"
-version = "0.2.1"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c2f86cd6857c135e6e9fe57b1619a88d1f94a7df34c00e11fe13e64fd3438837"
+checksum = "465a6172cf69b960917811022d8f29bc0b7fa1398bc4f78b3c466673db1213b6"
 dependencies = [
  "quote",
  "syn",
@@ -282,11 +280,11 @@ dependencies = [
 
 [[package]]
 name = "actix-rt"
-version = "2.2.0"
+version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bc7d7cd957c9ed92288a7c3c96af81fa5291f65247a76a34dac7b6af74e52ba0"
+checksum = "4a0c218d0a17c120f10ee0c69c9f0c45d87319e8f66b1f065e8412b612fc3e24"
 dependencies = [
- "actix-macros 0.2.1",
+ "actix-macros 0.2.3",
  "futures-core",
  "tokio 1.8.1",
 ]
@@ -323,9 +321,9 @@ dependencies = [
 
 [[package]]
 name = "actix-service"
-version = "2.0.0"
+version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "77f5f9d66a8730d0fae62c26f3424f5751e5518086628a40b7ab6fca4a705034"
+checksum = "8d3dc6a618b082974a08d7a4781d24d4691cba51500059bfebe6656a61ebfe1e"
 dependencies = [
  "futures-core",
  "paste",
@@ -377,20 +375,20 @@ dependencies = [
 
 [[package]]
 name = "actix-tls"
-version = "3.0.0-beta.5"
+version = "3.0.0-beta.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "65b7bb60840962ef0332f7ea01a57d73a24d2cb663708511ff800250bbfef569"
+checksum = "e4af84e13e4600829858a3e68079be710d1ada461431e1e4c5ae663479ea0a3c"
 dependencies = [
- "actix-codec 0.4.0",
- "actix-rt 2.2.0",
- "actix-service 2.0.0",
+ "actix-codec 0.4.1",
+ "actix-rt 2.4.0",
+ "actix-service 2.0.1",
  "actix-utils 3.0.0",
  "derive_more",
  "futures-core",
  "http",
  "log",
  "openssl",
- "tokio-openssl 0.6.2",
+ "tokio-openssl 0.6.3",
  "tokio-util 0.6.7",
 ]
 
@@ -663,14 +661,14 @@ dependencies = [
 
 [[package]]
 name = "awc"
-version = "3.0.0-beta.8"
+version = "3.0.0-beta.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5b276021b5aa1df71969acc8adc03973e4fc7d00bba0cbb6338e6f8ad0d7a3c2"
+checksum = "774d647a23d085bf35c83b6da5a6bd966fdc4af92ffce865befa9f3a8cf73015"
 dependencies = [
- "actix-codec 0.4.0",
- "actix-http 3.0.0-beta.10",
- "actix-rt 2.2.0",
- "actix-service 2.0.0",
+ "actix-codec 0.4.1",
+ "actix-http 3.0.0-beta.11",
+ "actix-rt 2.4.0",
+ "actix-service 2.0.1",
  "base64 0.13.0",
  "bytes 1.0.1",
  "cfg-if 1.0.0",
@@ -1032,7 +1030,7 @@ dependencies = [
  "chrono",
  "clap",
  "clarity",
- "deep_space 2.4.3",
+ "deep_space 2.4.7",
  "ethers",
  "futures",
  "gravity_bridge",
@@ -1099,9 +1097,9 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "3.0.0-beta.4"
+version = "3.0.0-beta.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fcd70aa5597dbc42f7217a543f9ef2768b2ef823ba29036072d30e1d88e98406"
+checksum = "feff3878564edb93745d58cf63e17b63f24142506e7a20c87a5521ed7bfb1d63"
 dependencies = [
  "atty",
  "bitflags",
@@ -1112,14 +1110,14 @@ dependencies = [
  "strsim",
  "termcolor",
  "textwrap",
- "vec_map",
+ "unicase",
 ]
 
 [[package]]
 name = "clap_derive"
-version = "3.0.0-beta.4"
+version = "3.0.0-beta.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0b5bb0d655624a0b8770d1c178fb8ffcb1f91cc722cb08f451e3dc72465421ac"
+checksum = "8b15c6b4f786ffb6192ffe65a36855bc1fc2444bcd0945ae16748dcd6ed7d0d3"
 dependencies = [
  "heck",
  "proc-macro-error",
@@ -1297,12 +1295,12 @@ dependencies = [
 [[package]]
 name = "cosmos_gravity"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge#4545abf9779494fbbaa58ed41950ad897a4861b8"
+source = "git+https://github.com/PeggyJV/gravity-bridge#d2abe0b5fa9a70a51233d2ffab77d7aa1fcb5c3c"
 dependencies = [
  "bytes 1.0.1",
  "clarity",
  "cosmos-sdk-proto",
- "deep_space 2.4.3",
+ "deep_space 2.4.7",
  "ethereum_gravity",
  "gravity_proto",
  "gravity_utils",
@@ -1487,8 +1485,8 @@ dependencies = [
 
 [[package]]
 name = "deep_space"
-version = "2.4.3"
-source = "git+https://github.com/iqlusioninc/deep_space/?branch=master#2c4621774ec70d15b4af8085902b2fff752497a5"
+version = "2.4.7"
+source = "git+https://github.com/iqlusioninc/deep_space/?branch=master#1f5645bf0c25cebbf6a1f81647e2ee5e4550d0ca"
 dependencies = [
  "base64 0.13.0",
  "bech32 0.8.1",
@@ -1499,7 +1497,7 @@ dependencies = [
  "num-bigint 0.4.0",
  "num-traits",
  "num256",
- "pbkdf2 0.8.0",
+ "pbkdf2 0.9.0",
  "prost",
  "prost-types",
  "rand 0.8.4",
@@ -1731,10 +1729,10 @@ dependencies = [
 [[package]]
 name = "ethereum_gravity"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge#4545abf9779494fbbaa58ed41950ad897a4861b8"
+source = "git+https://github.com/PeggyJV/gravity-bridge#d2abe0b5fa9a70a51233d2ffab77d7aa1fcb5c3c"
 dependencies = [
  "clarity",
- "deep_space 2.4.3",
+ "deep_space 2.4.7",
  "gravity_utils",
  "log",
  "num256",
@@ -1952,9 +1950,9 @@ checksum = "37ab347416e802de484e4d03c7316c48f1ecb56574dfd4a46a80f173ce1de04d"
 
 [[package]]
 name = "flate2"
-version = "1.0.21"
+version = "1.0.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "80edafed416a46fb378521624fab1cfa2eb514784fd8921adbe8a8d8321da811"
+checksum = "1e6988e897c1c9c485f43b47a529cef42fde0547f9d8d41a7062518f1d8fc53f"
 dependencies = [
  "cfg-if 1.0.0",
  "crc32fast",
@@ -2193,18 +2191,18 @@ checksum = "9b919933a397b79c37e33b77bb2aa3dc8eb6e165ad809e58ff75bc7db2e34574"
 
 [[package]]
 name = "gorc"
-version = "0.2.20"
-source = "git+https://github.com/PeggyJV/gravity-bridge#4545abf9779494fbbaa58ed41950ad897a4861b8"
+version = "0.2.23"
+source = "git+https://github.com/PeggyJV/gravity-bridge#d2abe0b5fa9a70a51233d2ffab77d7aa1fcb5c3c"
 dependencies = [
  "abscissa_core",
  "abscissa_tokio",
- "actix-rt 2.2.0",
+ "actix-rt 2.4.0",
  "bip32",
  "bytes 1.0.1",
  "clap",
  "clarity",
  "cosmos_gravity",
- "deep_space 2.4.3",
+ "deep_space 2.4.7",
  "env_logger",
  "ethereum_gravity",
  "gravity_proto",
@@ -2232,7 +2230,7 @@ dependencies = [
 [[package]]
 name = "gravity_bridge"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge#4545abf9779494fbbaa58ed41950ad897a4861b8"
+source = "git+https://github.com/PeggyJV/gravity-bridge#d2abe0b5fa9a70a51233d2ffab77d7aa1fcb5c3c"
 dependencies = [
  "cosmos_gravity",
  "ethereum_gravity",
@@ -2249,7 +2247,7 @@ dependencies = [
 [[package]]
 name = "gravity_proto"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge#4545abf9779494fbbaa58ed41950ad897a4861b8"
+source = "git+https://github.com/PeggyJV/gravity-bridge#d2abe0b5fa9a70a51233d2ffab77d7aa1fcb5c3c"
 dependencies = [
  "bytes 1.0.1",
  "cosmos-sdk-proto",
@@ -2261,11 +2259,11 @@ dependencies = [
 [[package]]
 name = "gravity_utils"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge#4545abf9779494fbbaa58ed41950ad897a4861b8"
+source = "git+https://github.com/PeggyJV/gravity-bridge#d2abe0b5fa9a70a51233d2ffab77d7aa1fcb5c3c"
 dependencies = [
  "clarity",
  "cosmos-sdk-proto",
- "deep_space 2.4.3",
+ "deep_space 2.4.7",
  "gravity_proto",
  "log",
  "num-bigint 0.4.0",
@@ -3227,13 +3225,13 @@ dependencies = [
 [[package]]
 name = "orchestrator"
 version = "0.4.1"
-source = "git+https://github.com/PeggyJV/gravity-bridge#4545abf9779494fbbaa58ed41950ad897a4861b8"
+source = "git+https://github.com/PeggyJV/gravity-bridge#d2abe0b5fa9a70a51233d2ffab77d7aa1fcb5c3c"
 dependencies = [
- "actix-rt 2.2.0",
+ "actix-rt 2.4.0",
  "axum",
  "clarity",
  "cosmos_gravity",
- "deep_space 2.4.3",
+ "deep_space 2.4.7",
  "docopt",
  "env_logger",
  "ethereum_gravity",
@@ -3269,9 +3267,12 @@ dependencies = [
 
 [[package]]
 name = "os_str_bytes"
-version = "3.1.0"
+version = "4.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6acbef58a60fe69ab50510a55bc8cdd4d6cf2283d27ad338f54cb52747a9cf2d"
+checksum = "addaa943333a514159c80c97ff4a93306530d965d27e139188283cd13e06a799"
+dependencies = [
+ "memchr",
+]
 
 [[package]]
 name = "owo-colors"
@@ -3342,10 +3343,21 @@ dependencies = [
 ]
 
 [[package]]
-name = "paste"
-version = "1.0.5"
+name = "password-hash"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "acbf547ad0c65e31259204bd90935776d1c693cec2f4ff7abb7a1bbbd40dfe58"
+checksum = "1d791538a6dcc1e7cb7fe6f6b58aca40e7f79403c45b2bc274008b5e647af1d8"
+dependencies = [
+ "base64ct",
+ "rand_core 0.6.3",
+ "subtle",
+]
+
+[[package]]
+name = "paste"
+version = "1.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0744126afe1a6dd7f394cb50a716dbe086cb06e255e53d8d0185d82828358fb5"
 
 [[package]]
 name = "pbkdf2"
@@ -3380,7 +3392,19 @@ dependencies = [
  "base64ct",
  "crypto-mac 0.11.0",
  "hmac 0.11.0",
- "password-hash",
+ "password-hash 0.2.1",
+ "sha2 0.9.5",
+]
+
+[[package]]
+name = "pbkdf2"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f05894bce6a1ba4be299d0c5f29563e08af2bc18bb7d48313113bed71e904739"
+dependencies = [
+ "crypto-mac 0.11.0",
+ "hmac 0.11.0",
+ "password-hash 0.3.2",
  "sha2 0.9.5",
 ]
 
@@ -3628,7 +3652,7 @@ dependencies = [
 [[package]]
 name = "proto_build"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge#4545abf9779494fbbaa58ed41950ad897a4861b8"
+source = "git+https://github.com/PeggyJV/gravity-bridge#d2abe0b5fa9a70a51233d2ffab77d7aa1fcb5c3c"
 dependencies = [
  "prost",
  "prost-build",
@@ -3641,9 +3665,9 @@ dependencies = [
 
 [[package]]
 name = "protobuf"
-version = "2.25.1"
+version = "2.25.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23129d50f2c9355ced935fce8a08bd706ee2e7ce2b3b33bf61dace0e379ac63a"
+checksum = "47c327e191621a2158159df97cdbc2e7074bb4e940275e35abf38eb3d2595754"
 
 [[package]]
 name = "quick-error"
@@ -3828,13 +3852,13 @@ checksum = "f497285884f3fcff424ffc933e56d7cbca511def0c9831a7f9b5f6153e3cc89b"
 [[package]]
 name = "register_delegate_keys"
 version = "0.4.1"
-source = "git+https://github.com/PeggyJV/gravity-bridge#4545abf9779494fbbaa58ed41950ad897a4861b8"
+source = "git+https://github.com/PeggyJV/gravity-bridge#d2abe0b5fa9a70a51233d2ffab77d7aa1fcb5c3c"
 dependencies = [
- "actix-rt 2.2.0",
+ "actix-rt 2.4.0",
  "clarity",
  "contact",
  "cosmos_gravity",
- "deep_space 2.4.3",
+ "deep_space 2.4.7",
  "docopt",
  "env_logger",
  "ethereum_gravity",
@@ -3853,12 +3877,12 @@ dependencies = [
 [[package]]
 name = "relayer"
 version = "0.4.1"
-source = "git+https://github.com/PeggyJV/gravity-bridge#4545abf9779494fbbaa58ed41950ad897a4861b8"
+source = "git+https://github.com/PeggyJV/gravity-bridge#d2abe0b5fa9a70a51233d2ffab77d7aa1fcb5c3c"
 dependencies = [
- "actix-rt 2.2.0",
+ "actix-rt 2.4.0",
  "clarity",
  "cosmos_gravity",
- "deep_space 2.4.3",
+ "deep_space 2.4.7",
  "docopt",
  "env_logger",
  "ethereum_gravity",
@@ -4110,7 +4134,7 @@ checksum = "879588d8f90906e73302547e20fffefdd240eb3e0e744e142321f5d49dea0518"
 dependencies = [
  "base64ct",
  "hmac 0.11.0",
- "password-hash",
+ "password-hash 0.2.1",
  "pbkdf2 0.8.0",
  "salsa20",
  "sha2 0.9.5",
@@ -4664,14 +4688,14 @@ dependencies = [
 [[package]]
 name = "test_runner"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge#4545abf9779494fbbaa58ed41950ad897a4861b8"
+source = "git+https://github.com/PeggyJV/gravity-bridge#d2abe0b5fa9a70a51233d2ffab77d7aa1fcb5c3c"
 dependencies = [
  "actix",
- "actix-rt 2.2.0",
+ "actix-rt 2.4.0",
  "actix-web",
  "clarity",
  "cosmos_gravity",
- "deep_space 2.4.3",
+ "deep_space 2.4.7",
  "docopt",
  "env_logger",
  "ethereum_gravity",
@@ -4883,11 +4907,11 @@ dependencies = [
 
 [[package]]
 name = "tokio-openssl"
-version = "0.6.2"
+version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f24cddc8445a4dc8359cdd9e91c19d544fc95f672e32afe8945852b9381a09fe"
+checksum = "c08f9ffb7809f1b20c1b398d92acf4cc719874b3b2b2d9ea2f09b4a80350878a"
 dependencies = [
- "futures",
+ "futures-util",
  "openssl",
  "openssl-sys",
  "tokio 1.8.1",
@@ -5290,6 +5314,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "unicase"
+version = "2.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "50f37be617794602aabbeee0be4f259dc1778fabe05e2d67ee8f79326d5cb4f6"
+dependencies = [
+ "version_check",
+]
+
+[[package]]
 name = "unicode-bidi"
 version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5374,12 +5407,6 @@ name = "vcpkg"
 version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
-
-[[package]]
-name = "vec_map"
-version = "0.8.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f1bddf1187be692e79c5ffeab891132dfb0f236ed36a43c7ed39f1165ee20191"
 
 [[package]]
 name = "version_check"
@@ -5513,7 +5540,7 @@ version = "0.15.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e2560569747f3bdfe0011ccd2a5a52fd5e3d455de0578a4d6d50ec41ecbb5235"
 dependencies = [
- "awc 3.0.0-beta.8",
+ "awc 3.0.0-beta.9",
  "clarity",
  "futures",
  "lazy_static",
