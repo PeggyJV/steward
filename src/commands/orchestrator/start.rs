@@ -94,7 +94,7 @@ impl Runnable for StartCommand {
                 &config.metrics.listen_addr,
                 config.ethereum.gas_price_multiplier,
                 config.ethereum.blocks_to_search.into(),
-                config.cosmos.gas_limit,
+                config.cosmos.gas_adjustment,
                 // TODO: Zaki please confirm that the relayer_opt_out value below is correct.
                 true,
                 config.cosmos.msg_batch_size,

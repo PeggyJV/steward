@@ -128,8 +128,6 @@ impl Runnable for SendToEth {
                 amount,
                 denom
             );
-            // TODO Ugochi: Replace this with making gas_limit configurable
-            let gas_limit = config.cosmos.gas_limit;
             let res = send_to_eth(
                 cosmos_key,
                 eth_dest,
