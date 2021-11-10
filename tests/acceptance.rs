@@ -32,6 +32,7 @@ pub static RUNNER: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
 
 /// Use `CellarRebalancerConfig::default()` value if no config or args
 #[test]
+#[ignore]
 fn start_no_args() {
     let mut runner = RUNNER.clone();
     let mut cmd = runner.arg("start").capture_stdout().run();
@@ -41,6 +42,7 @@ fn start_no_args() {
 
 /// Use command-line argument value
 #[test]
+#[ignore]
 fn start_with_args() {
     let mut runner = RUNNER.clone();
     let mut cmd = runner
@@ -67,6 +69,7 @@ fn start_with_args() {
 
 /// Override configured value with command-line argument
 #[test]
+#[ignore]
 fn start_with_config_and_args() {
     let config = CellarRebalancerConfig::default();
     // config.hello.recipient = "configured recipient".to_owned();
@@ -86,6 +89,6 @@ fn start_with_config_and_args() {
 #[test]
 fn version_no_args() {
     let mut runner = RUNNER.clone();
-    let mut cmd = runner.arg("version").capture_stdout().run();
+    let mut cmd = runner.arg("--version").capture_stdout().run();
     cmd.stdout().expect_regex(r"\A\w+ [\d\.\-]+\z");
 }

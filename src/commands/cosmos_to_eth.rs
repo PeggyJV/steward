@@ -47,8 +47,6 @@ impl Runnable for CosmosToEthCmd {
         let gravity_denom = gravity_denom.to_string();
         let is_cosmos_originated = !gravity_denom.starts_with("gravity");
 
-        let gas_limit = config.cosmos.gas_limit;
-
         let gas_price = config.cosmos.gas_price.as_tuple();
 
         let gas_adjustment = config.cosmos.gas_adjustment;
@@ -164,7 +162,7 @@ impl Runnable for CosmosToEthCmd {
 
         if !self.flag_no_batch {
             println!("Requesting a batch to push transaction along immediately");
-            send_request_batch_tx(cosmos_key, gravity_denom, gas_price, &contact, gas_limit)
+            send_request_batch_tx(cosmos_key, gravity_denom, gas_price, &contact, gas_adjustment)
                 .await
                 .expect("Failed to request batch");
         } else {
