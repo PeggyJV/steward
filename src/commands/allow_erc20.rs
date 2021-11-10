@@ -1,6 +1,6 @@
 use std::{convert::TryFrom, ops::Add, path, sync::Arc, time::Duration};
 
-use abscissa_core::{Application, Command, Options, Runnable};
+use abscissa_core::{Application, Command, Clap, Runnable};
 use chrono::Utc;
 use ethers::prelude::*;
 use num_bigint::{BigInt, ToBigInt};
@@ -8,20 +8,21 @@ use num_traits::Zero;
 use signatory::FsKeyStore;
 
 use crate::{
-    cellar_wrapper::{CellarAddParams, CellarState, CellarTickInfo},
+    cellar_uniswap_wrapper::{UniswapV3CellarAddParams, UniswapV3CellarState, UniswapV3CellarTickInfo},
     erc20::Erc20State,
     gas::CellarGas,
     prelude::*,
     uniswap_pool::PoolState,
 };
 
-#[derive(Command, Debug, Default, Options)]
+/// Allow Erc20 Token to interact with cellar contract  
+#[derive(Command, Debug, Default, Clap)]
 pub struct AllowERC20 {
-    #[options(help = "Cellar Address")]
+    #[clap(short = 'C', long)]
     cellar_address: H160,
-    #[options(help = "ERC20 contract address")]
+    #[clap(short = 'A', long)]
     address: H160,
-    #[options(help = "Amount")]
+    #[clap(short = 'a', long)]
     amount: u64,
 }
 

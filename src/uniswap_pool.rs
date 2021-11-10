@@ -5,7 +5,7 @@ use std::sync::Arc;
 
 abigen!(
     UPool,
-    "./uniswapv3pool_abi.json",
+    "./abi/uniswapv3pool_abi.json",
     event_derives(serde::Deserialize, serde::Serialize)
 );
 

@@ -9,14 +9,14 @@ use std::sync::Arc;
 //use abigen macro to fetch and incorporate contract ABI
 abigen!(
     Erc20,
-    "./erc20_abi.json",
+    "./abi/erc20_abi.json",
     event_derives(serde::Deserialize, serde::Serialize)
 );
 
 //use abigen macro to fetch and incorporate contract ABI
 abigen!(
     Weth,
-    "./weth_abi.json",
+    "./abi/weth_abi.json",
     event_derives(serde::Deserialize, serde::Serialize)
 );
 

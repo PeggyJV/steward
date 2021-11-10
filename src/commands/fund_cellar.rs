@@ -1,6 +1,6 @@
 use std::{convert::TryFrom, ops::Add, path, sync::Arc, time::Duration};
 
-use abscissa_core::{Application, Command, Options, Runnable};
+use abscissa_core::{Application, Command, Clap, Runnable};
 use chrono::Utc;
 use ethers::prelude::*;
 use num_bigint::{BigInt, ToBigInt};
@@ -8,20 +8,21 @@ use num_traits::Zero;
 use signatory::FsKeyStore;
 
 use crate::{
-    cellar_wrapper::{CellarAddParams, CellarState, CellarTickInfo},
+    cellar_uniswap_wrapper::{UniswapV3CellarAddParams, UniswapV3CellarState, UniswapV3CellarTickInfo},
     erc20::Erc20State,
     gas::CellarGas,
     prelude::*,
     uniswap_pool::PoolState,
 };
 
-#[derive(Command, Debug, Options)]
+/// Command to fund Cellars
+#[derive(Command, Debug, Clap)]
 pub struct FundCellarCmd {
-    #[options(help = "Cellar Id")]
+    #[clap(short = 'i', long)]
     pub cellar_id: u32,
-    #[options(help = "Amount Token 0")]
+    #[clap(short = 'm', long)]
     pub amount_0: f64,
-    #[options(help = "Amount Token 1")]
+    #[clap(short = 'o', long)]
     pub amount_1: f64,
 }
 
@@ -61,7 +62,7 @@ impl Runnable for FundCellarCmd {
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
 
-            let mut contract_state = CellarState::new(cellar.cellar_address, client.clone());
+            let mut contract_state = UniswapV3CellarState::new(cellar.cellar_address, client.clone());
             contract_state.gas_price = Some(gas);
             let pool_state = PoolState::new(cellar.pool_address, client.clone());
 
@@ -80,7 +81,7 @@ impl Runnable for FundCellarCmd {
             loop {
                 match contract_state.contract.cellar_tick_info(i).call().await {
                     Ok((token_id, tick_upper, tick_lower, weight)) => {
-                        let tick_info = CellarTickInfo {
+                        let tick_info = UniswapV3CellarTickInfo {
                             token_id: token_id,
                             tick_upper: tick_upper,
                             tick_lower: tick_lower,
@@ -100,7 +101,7 @@ impl Runnable for FundCellarCmd {
                 info!("{:?}", tick);
             }
 
-            let params = CellarAddParams::new(
+            let params = UniswapV3CellarAddParams::new(
                 ((self.amount_0 * (10u64.pow(cellar.token_0.decimals as u32)) as f64) as u128)
                     .into(),
                 ((self.amount_1 * (10u64.pow(cellar.token_1.decimals as u32)) as f64) as u128)

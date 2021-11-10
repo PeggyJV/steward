@@ -2,28 +2,32 @@
 
 use crate::uniswap_pool::PoolState;
 use crate::{application::APP, prelude::*};
+<<<<<<< HEAD
 use abscissa_core::{Command, Options, Runnable};
 use ethers::prelude::*;
 use std::{convert::TryFrom, sync::Arc, time::Duration};
 
 #[derive(Command, Debug, Options, Runnable)]
+=======
+use abscissa_core::{Command, Clap, Runnable};
+
+/// Query Eth chain
+#[derive(Command, Debug, Clap)]
+>>>>>>> main
 pub enum Eth {
-    #[options(help = "balance [key-name]")]
     Balance(Balance),
 
-    #[options(help = "contract")]
     Contract(Contract),
 
     #[options(help = "print liquidity pool pair information")]
     Pair(Pair),
 }
 
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub struct Balance {
-    #[options(free)]
     free: Vec<String>,
 
-    #[options(help = "print help message")]
+    #[clap(short, long)]
     help: bool,
 }
 
@@ -39,15 +43,16 @@ impl Runnable for Balance {
     }
 }
 
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub struct Contract {
-    #[options(help = "print help message")]
+    #[clap(short, long)]
     help: bool,
 }
 
 impl Runnable for Contract {
     /// Start the application.
     fn run(&self) {}
+<<<<<<< HEAD
 }
 
 #[derive(Command, Debug, Options)]
@@ -82,3 +87,6 @@ impl Runnable for Pair {
         });
     }
 }
+=======
+}
+>>>>>>> main

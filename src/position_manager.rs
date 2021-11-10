@@ -1,5 +1,5 @@
 use crate::{
-    cellar_wrapper::CellarTickInfo,
+    cellar_uniswap_wrapper::UniswapV3CellarTickInfo,
     time_range::{TickWeight, TimeRange},
 };
 use ethers::prelude::*;
@@ -13,10 +13,10 @@ impl PositionManager {
     pub fn new() -> PositionManager {
         todo!()
     }
-    pub fn compute_rebalance(&self, time_range: TimeRange) -> Vec<CellarTickInfo> {
-        let mut cellars: Vec<CellarTickInfo> = Vec::new();
+    pub fn compute_rebalance(&self, time_range: TimeRange) -> Vec<UniswapV3CellarTickInfo> {
+        let mut cellars: Vec<UniswapV3CellarTickInfo> = Vec::new();
         for pos in &self.positions {
-            let mut cellar_tick = CellarTickInfo {
+            let mut cellar_tick = UniswapV3CellarTickInfo {
                 token_id: U256::zero(),
                 tick_upper: pos.upper_tick,
                 tick_lower: pos.lower_tick,

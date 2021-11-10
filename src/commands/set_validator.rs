@@ -1,28 +1,28 @@
-use std::{convert::TryFrom, ops::Add, path, sync::Arc, time::Duration};
+use std::{convert::TryFrom, path, sync::Arc, time::Duration};
 
-use abscissa_core::{Application, Command, Clap, Runnable};
-use chrono::Utc;
+use abscissa_core::{Command, Clap, Runnable};
 use ethers::prelude::*;
-use num_bigint::{BigInt, ToBigInt};
-use num_traits::Zero;
 use signatory::FsKeyStore;
 
 use crate::{
-    cellar_uniswap_wrapper::{UniswapV3CellarAddParams, UniswapV3CellarState, UniswapV3CellarTickInfo},
+    cellar_uniswap_wrapper::UniswapV3CellarState,
     erc20::Erc20State,
     gas::CellarGas,
     prelude::*,
-    uniswap_pool::PoolState,
 };
 
-/// Cellars reinvest command
+/// `set-validator` subcommand
 #[derive(Command, Debug, Clap)]
-pub struct ReinvestCommand {
-    #[clap(short = 'i', long)]
-    pub cellar_id: u32,
+pub struct SetValidatorCmd {
+    #[clap(short = 'v', long)]
+    validator: H160,
+
+    #[clap(short = 'u', long)]
+    value: bool
 }
 
-impl Runnable for ReinvestCommand {
+
+impl Runnable for SetValidatorCmd {
     fn run(&self) {
         let config = APP.config();
         let cellar = config.cellars.get(0).expect("Could not get cellar config");
@@ -61,9 +61,8 @@ impl Runnable for ReinvestCommand {
             let mut contract_state = UniswapV3CellarState::new(cellar.cellar_address, client.clone());
             contract_state.gas_price = Some(gas);
    
-
             contract_state
-                .reinvest()
+                .set_validator(self.validator, self.value)
                 .await
                 .unwrap();
         })
