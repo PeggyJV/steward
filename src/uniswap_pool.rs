@@ -19,4 +19,20 @@ impl<T: 'static + Middleware> PoolState<T> {
             contract: UPool::new(address, client),
         }
     }
+
+    pub async fn token_0(&self) -> Address {
+        self.contract
+            .token_0()
+            .call()
+            .await
+            .expect("Failed to get token0 address")
+    }
+
+    pub async fn token_1(&self) -> Address {
+        self.contract
+            .token_1()
+            .call()
+            .await
+            .expect("Failed to get token0 address")
+    }
 }

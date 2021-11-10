@@ -8,7 +8,7 @@ use abscissa_core::{Command, Clap, Runnable};
 
 /// Query state on either ethereum or cosmos chains
 
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Clap, Runnable)]
 pub enum QueryCmd {
     #[clap(subcommand)]
     Cosmos(cosmos::Cosmos),
@@ -25,11 +25,4 @@ pub enum QueryCmd {
     // "free" arguments don't have an associated flag
     // #[options(free)]
     // free_args: Vec<String>,
-}
-
-impl Runnable for QueryCmd {
-    /// Start the application.
-    fn run(&self) {
-        // Your code goes here
-    }
 }
