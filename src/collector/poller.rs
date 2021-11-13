@@ -137,17 +137,11 @@ impl<T: 'static + Middleware> Poller<T> {
         self.time_range = time_range;
     }
 
-<<<<<<< HEAD
     pub async fn decide_rebalance(
         &mut self,
         config: config::CellarRebalancerConfig,
-        contact: &Contact,
-    ) -> Result<(), Error> {
-        let mut tick_info: Vec<CellarTickInfo> = Vec::new();
-=======
-    pub async fn decide_rebalance(&mut self) -> Result<(), Error> {
+        contact: &Contact,) -> Result<(), Error> {
         let mut tick_info: Vec<UniswapV3CellarTickInfo> = Vec::new();
->>>>>>> main
         for ref tick_weight in self.time_range.tick_weights.clone() {
             if tick_weight.weight > 0 {
                 tick_info.push(UniswapV3CellarTickInfo::from_tick_weight(tick_weight))

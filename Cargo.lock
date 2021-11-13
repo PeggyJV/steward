@@ -1036,6 +1036,7 @@ dependencies = [
  "gravity_bridge",
  "gumdrop",
  "hex",
+ "http-body",
  "hyper",
  "iqhttp",
  "k256",
@@ -1045,8 +1046,8 @@ dependencies = [
  "num-traits",
  "once_cell",
  "pkcs8",
- "prost",
- "prost-types",
+ "prost 0.7.0",
+ "prost-types 0.7.0",
  "rand_core 0.6.3",
  "regex",
  "rpassword",
@@ -1288,10 +1289,21 @@ version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7115eae4b8518967b8e737a3ef76025f2d007de7906d88c18f00b8bbfc70f51e"
 dependencies = [
- "prost",
- "prost-types",
- "tendermint-proto",
- "tonic",
+ "prost 0.7.0",
+ "prost-types 0.7.0",
+ "tendermint-proto 0.21.0",
+ "tonic 0.4.3",
+]
+
+[[package]]
+name = "cosmos-sdk-proto"
+version = "0.8.0"
+source = "git+http://github.com/cosmos/cosmos-rust?branch=main#7b08d23e1290dbb3a42776330f74ae5f121c8314"
+dependencies = [
+ "prost 0.9.0",
+ "prost-types 0.9.0",
+ "tendermint-proto 0.23.0",
+ "tonic 0.6.1",
 ]
 
 [[package]]
@@ -1301,19 +1313,19 @@ source = "git+https://github.com/PeggyJV/gravity-bridge#d2abe0b5fa9a70a51233d2ff
 dependencies = [
  "bytes 1.0.1",
  "clarity",
- "cosmos-sdk-proto",
+ "cosmos-sdk-proto 0.6.3",
  "deep_space 2.4.7",
  "ethereum_gravity",
  "gravity_proto",
  "gravity_utils",
  "log",
  "num256",
- "prost",
- "prost-types",
+ "prost 0.7.0",
+ "prost-types 0.7.0",
  "serde",
  "sha3",
  "tokio 1.8.1",
- "tonic",
+ "tonic 0.4.3",
  "web30",
 ]
 
@@ -1493,15 +1505,15 @@ dependencies = [
  "base64 0.13.0",
  "bech32 0.8.1",
  "bytes 1.0.1",
- "cosmos-sdk-proto",
+ "cosmos-sdk-proto 0.6.3",
  "hmac 0.11.0",
  "log",
  "num-bigint 0.4.0",
  "num-traits",
  "num256",
  "pbkdf2 0.9.0",
- "prost",
- "prost-types",
+ "prost 0.7.0",
+ "prost-types 0.7.0",
  "rand 0.8.4",
  "ripemd160",
  "rust_decimal",
@@ -1510,9 +1522,9 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "sha2 0.9.5",
- "tendermint-proto",
+ "tendermint-proto 0.21.0",
  "tokio 1.8.1",
- "tonic",
+ "tonic 0.4.3",
  "unicode-normalization",
 ]
 
@@ -1963,6 +1975,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "flex-error"
+version = "0.4.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c606d892c9de11507fa0dcffc116434f94e105d0bbdc4e405b61519464c49d7b"
+dependencies = [
+ "paste",
+]
+
+[[package]]
 name = "fnv"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2215,7 +2236,7 @@ dependencies = [
  "orchestrator",
  "pkcs8",
  "proc-macro2",
- "prost",
+ "prost 0.7.0",
  "rand_core 0.6.3",
  "regex",
  "relayer",
@@ -2225,7 +2246,7 @@ dependencies = [
  "thiserror",
  "tokio 1.8.1",
  "toml",
- "tonic",
+ "tonic 0.4.3",
  "web30",
 ]
 
@@ -2252,10 +2273,10 @@ version = "0.1.0"
 source = "git+https://github.com/PeggyJV/gravity-bridge#d2abe0b5fa9a70a51233d2ffab77d7aa1fcb5c3c"
 dependencies = [
  "bytes 1.0.1",
- "cosmos-sdk-proto",
- "prost",
- "prost-types",
- "tonic",
+ "cosmos-sdk-proto 0.6.3",
+ "prost 0.7.0",
+ "prost-types 0.7.0",
+ "tonic 0.4.3",
 ]
 
 [[package]]
@@ -2264,7 +2285,7 @@ version = "0.1.0"
 source = "git+https://github.com/PeggyJV/gravity-bridge#d2abe0b5fa9a70a51233d2ffab77d7aa1fcb5c3c"
 dependencies = [
  "clarity",
- "cosmos-sdk-proto",
+ "cosmos-sdk-proto 0.6.3",
  "deep_space 2.4.7",
  "gravity_proto",
  "log",
@@ -2274,7 +2295,7 @@ dependencies = [
  "serde_derive",
  "sha3",
  "tokio 1.8.1",
- "tonic",
+ "tonic 0.4.3",
  "url",
  "web30",
 ]
@@ -2437,9 +2458,9 @@ dependencies = [
 
 [[package]]
 name = "http-body"
-version = "0.4.2"
+version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "60daa14be0e0786db0f03a9e57cb404c9d756eed2b6c62b9ea98ec5743ec75a9"
+checksum = "1ff4f84919677303da5f147645dbea6b1881f368d03ac84e1dc09031ebd7b2c6"
 dependencies = [
  "bytes 1.0.1",
  "http",
@@ -2466,9 +2487,9 @@ checksum = "9a3a5bfb195931eeb336b2a7b4d761daec841b97f947d34394601737a7bba5e4"
 
 [[package]]
 name = "hyper"
-version = "0.14.12"
+version = "0.14.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "13f67199e765030fa08fe0bd581af683f0d5bc04ea09c2b1102012c5fb90e7fd"
+checksum = "2b91bb1f221b6ea1f1e4371216b70f40748774c2fb5971b450c07773fb92d26b"
 dependencies = [
  "bytes 1.0.1",
  "futures-channel",
@@ -2503,6 +2524,18 @@ dependencies = [
  "tokio 1.8.1",
  "tokio-rustls",
  "webpki",
+]
+
+[[package]]
+name = "hyper-timeout"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bbb958482e8c7be4bc3cf272a766a2b0bf1a6755e7a6ae777f017a31d11b13b1"
+dependencies = [
+ "hyper",
+ "pin-project-lite 0.2.7",
+ "tokio 1.8.1",
+ "tokio-io-timeout",
 ]
 
 [[package]]
@@ -2642,6 +2675,15 @@ name = "itertools"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "284f18f85651fe11e8a991b2adb42cb078325c996ed026d994719efcfca1d54b"
+dependencies = [
+ "either",
+]
+
+[[package]]
+name = "itertools"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "69ddb889f9d0d08a67338271fa9b62996bc788c7796a5c18cf057420aaed5eaf"
 dependencies = [
  "either",
 ]
@@ -3253,7 +3295,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "tokio 1.8.1",
- "tonic",
+ "tonic 0.4.3",
  "web30",
 ]
 
@@ -3607,7 +3649,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9e6984d2f1a23009bd270b8bb56d0926810a3d483f59c987d77969e9d8e840b2"
 dependencies = [
  "bytes 1.0.1",
- "prost-derive",
+ "prost-derive 0.7.0",
+]
+
+[[package]]
+name = "prost"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "444879275cb4fd84958b1a1d5420d15e6fcf7c235fe47f053c9c2a80aceb6001"
+dependencies = [
+ "bytes 1.0.1",
+ "prost-derive 0.9.0",
 ]
 
 [[package]]
@@ -3618,12 +3670,12 @@ checksum = "32d3ebd75ac2679c2af3a92246639f9fcc8a442ee420719cc4fe195b98dd5fa3"
 dependencies = [
  "bytes 1.0.1",
  "heck",
- "itertools",
+ "itertools 0.9.0",
  "log",
  "multimap",
  "petgraph",
- "prost",
- "prost-types",
+ "prost 0.7.0",
+ "prost-types 0.7.0",
  "tempfile",
  "which",
 ]
@@ -3635,7 +3687,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "169a15f3008ecb5160cba7d37bcd690a7601b6d30cfb87a117d45e59d52af5d4"
 dependencies = [
  "anyhow",
- "itertools",
+ "itertools 0.9.0",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "prost-derive"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f9cc1a3263e07e0bf68e96268f37665207b49560d98739662cdfaae215c720fe"
+dependencies = [
+ "anyhow",
+ "itertools 0.10.1",
  "proc-macro2",
  "quote",
  "syn",
@@ -3648,7 +3713,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b518d7cdd93dab1d1122cf07fa9a60771836c668dde9d9e2a139f957f0d9f1bb"
 dependencies = [
  "bytes 1.0.1",
- "prost",
+ "prost 0.7.0",
+]
+
+[[package]]
+name = "prost-types"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "534b7a0e836e3c482d2693070f982e39e7611da9695d4d1f5a4b186b51faef0a"
+dependencies = [
+ "bytes 1.0.1",
+ "prost 0.9.0",
 ]
 
 [[package]]
@@ -3656,11 +3731,11 @@ name = "proto_build"
 version = "0.1.0"
 source = "git+https://github.com/PeggyJV/gravity-bridge#d2abe0b5fa9a70a51233d2ffab77d7aa1fcb5c3c"
 dependencies = [
- "prost",
+ "prost 0.7.0",
  "prost-build",
  "regex",
  "tempdir",
- "tonic",
+ "tonic 0.4.3",
  "tonic-build",
  "walkdir",
 ]
@@ -3897,7 +3972,7 @@ dependencies = [
  "serde",
  "serde_derive",
  "tokio 1.8.1",
- "tonic",
+ "tonic 0.4.3",
  "web30",
 ]
 
@@ -4496,10 +4571,10 @@ version = "0.1.0"
 source = "git+https://github.com/PeggyJV/sommelier#6df8023e324f9272d3033a2e7e756e0a4c06e9a1"
 dependencies = [
  "bytes 1.0.1",
- "cosmos-sdk-proto",
- "prost",
- "prost-types",
- "tonic",
+ "cosmos-sdk-proto 0.8.0",
+ "prost 0.7.0",
+ "prost-types 0.7.0",
+ "tonic 0.4.3",
 ]
 
 [[package]]
@@ -4682,12 +4757,30 @@ dependencies = [
  "chrono",
  "num-derive",
  "num-traits",
- "prost",
- "prost-types",
+ "prost 0.7.0",
+ "prost-types 0.7.0",
  "serde",
  "serde_bytes",
  "subtle-encoding",
  "thiserror",
+]
+
+[[package]]
+name = "tendermint-proto"
+version = "0.23.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ff16a7b42bdbcf31c8cd10a4cffc7631f2a301360ba3a3f71dde48eabfa5bced"
+dependencies = [
+ "bytes 1.0.1",
+ "chrono",
+ "flex-error",
+ "num-derive",
+ "num-traits",
+ "prost 0.9.0",
+ "prost-types 0.9.0",
+ "serde",
+ "serde_bytes",
+ "subtle-encoding",
 ]
 
 [[package]]
@@ -4724,7 +4817,7 @@ dependencies = [
  "serde",
  "serde_derive",
  "tokio 1.8.1",
- "tonic",
+ "tonic 0.4.3",
  "url",
  "web30",
 ]
@@ -4889,6 +4982,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tokio-io-timeout"
+version = "1.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "90c49f106be240de154571dd31fbe48acb10ba6c6dd6f6517ad603abffa42de9"
+dependencies = [
+ "pin-project-lite 0.2.7",
+ "tokio 1.8.1",
+]
+
+[[package]]
 name = "tokio-macros"
 version = "1.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5025,12 +5128,43 @@ dependencies = [
  "hyper",
  "percent-encoding",
  "pin-project 1.0.7",
- "prost",
- "prost-derive",
+ "prost 0.7.0",
+ "prost-derive 0.7.0",
  "tokio 1.8.1",
  "tokio-stream",
  "tokio-util 0.6.7",
  "tower",
+ "tower-service",
+ "tracing",
+ "tracing-futures",
+]
+
+[[package]]
+name = "tonic"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "24203b79cf2d68909da91178db3026e77054effba0c5d93deb870d3ca7b35afa"
+dependencies = [
+ "async-stream",
+ "async-trait",
+ "base64 0.13.0",
+ "bytes 1.0.1",
+ "futures-core",
+ "futures-util",
+ "h2 0.3.3",
+ "http",
+ "http-body",
+ "hyper",
+ "hyper-timeout",
+ "percent-encoding",
+ "pin-project 1.0.7",
+ "prost 0.9.0",
+ "prost-derive 0.9.0",
+ "tokio 1.8.1",
+ "tokio-stream",
+ "tokio-util 0.6.7",
+ "tower",
+ "tower-layer",
  "tower-service",
  "tracing",
  "tracing-futures",
