@@ -34,6 +34,7 @@ prost-types = "0.7"
 sha2 = "0.9"
 hyper = "0.14.12"
 somm_proto = { git = "https://github.com/PeggyJV/sommelier" }
+http-body = "0.4.4"
 
 bip32 = "0.2"
 k256 = { version = "0.9", features = ["pem"] }
