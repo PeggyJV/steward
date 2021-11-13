@@ -10,28 +10,34 @@
 //! See the `impl Configurable` below for how to specify the path to the
 //! application's configuration file.
 
+mod allow_erc20;
 mod config_cmd;
-mod fund_cellar;
-mod keys;
-mod predictions;
-mod remove_funds;
-mod single_signer;
-mod transfer;
-mod version;
 mod cosmos_to_eth;
 mod deploy;
 mod eth_to_cosmos;
+mod fund_cellar;
+mod keys;
 mod orchestrator;
+mod predictions;
 mod query;
+mod remove_funds;
+mod set_validator;
 mod sign_delegate_keys;
+mod single_signer;
+mod transfer;
 mod tx;
+mod reinvest;
 mod cosmos_mode;
 
-use self::{config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd, remove_funds::RemoveFundsCmd, single_signer::SingleSignerCmd, transfer::TransferCmd, version::VersionCmd, cosmos_mode::CosmosSignerCmd};
+use self::{
+    config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd,
+    remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, single_signer::SingleSignerCmd, transfer::TransferCmd,
+    cosmos_mode::CosmosSignerCmd,
+};
 
 use crate::config::CellarRebalancerConfig;
 use abscissa_core::{
-    config::Override, Command, Configurable, FrameworkError, Help, Options, Runnable,
+    Application, Clap, Command, Configurable, FrameworkError, Runnable
 };
 use std::path::PathBuf;
 
@@ -39,74 +45,88 @@ use std::path::PathBuf;
 pub const CONFIG_FILE: &str = "contract_monitor.toml";
 
 /// CellarRebalancer Subcommands
-#[derive(Command, Debug, Options, Runnable)]
+#[derive(Command, Debug, Clap, Runnable)]
 pub enum CellarRebalancerCmd {
-    /// The `help` subcommand
-    #[options(help = "get usage information")]
-    Help(Help<Self>),
 
     /// The `start` subcommand
     #[options(help = "start the application")]
     SingleSigner(SingleSignerCmd),
 
-    /// The `transfer` subcommand
-    #[options(help = "transfer ETH")]
     Transfer(TransferCmd),
 
-    /// The `version` subcommand
-    #[options(help = "display version information")]
-    Version(VersionCmd),
-
-    /// The `prediction` subcommand
-    #[options(help = "display lastest prediction")]
     Predictions(PredictionsCmd),
-    /// The `keys` subcommand
-    #[options(help = "key management commands")]
+
+    #[clap(subcommand)]
     Keys(KeysCmd),
 
-    #[options(help = "print default config")]
+    /// Print default configurations
     PrintConfig(ConfigCmd),
 
-    #[options(help = "fund cellar")]
     FundCellar(FundCellarCmd),
 
-    #[options(help = "remove_funds")]
     RemoveFunds(RemoveFundsCmd),
 
-    #[options(help = "Send Cosmos to Ethereum")]
     CosmosToEth(cosmos_to_eth::CosmosToEthCmd),
 
-    #[options(help = "tools for contract deployment")]
+    #[clap(subcommand)]
     Deploy(deploy::DeployCmd),
 
-    #[options(help = "Send Ethereum to Cosmos")]
     EthToCosmos(eth_to_cosmos::EthToCosmosCmd),
 
-    #[options(help = "orchestrator management commands")]
+    #[clap(subcommand)]
     Orchestrator(orchestrator::OrchestratorCmd),
 
-    #[options(help = "query state on either ethereum or cosmos chains")]
+    #[clap(subcommand)]
     Query(query::QueryCmd),
 
-    #[options(help = "sign delegate keys")]
+    SetValidator(SetValidatorCmd),
+
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
 
-    #[options(help = "create transactions on either ethereum or cosmos chains")]
+    #[clap(subcommand)]
     Tx(tx::TxCmd),
 
-    /// The `start` subcommand
-    #[options(help = "start the application")]
     CosmosSigner(CosmosSignerCmd),
+
+    AllowErc20(allow_erc20::AllowERC20),
+
+    Reinvest(reinvest::ReinvestCommand),
+}
+
+/// Entry point for the application. It needs to be a struct to allow using subcommands!
+#[derive(Command, Debug, Clap)]
+#[clap(author, about, version)]
+pub struct EntryPoint {
+    #[clap(subcommand)]
+    cmd: CellarRebalancerCmd,
+
+    /// Enable verbose logging
+    #[clap(short, long)]
+    pub verbose: bool,
+
+    /// Use the specified config file
+    #[clap(short, long)]
+    pub config: Option<String>,
+}
+
+impl Runnable for EntryPoint {
+    fn run(&self) {
+        self.cmd.run()
+    }
 }
 
 /// This trait allows you to define how application configuration is loaded.
-impl Configurable<CellarRebalancerConfig> for CellarRebalancerCmd {
+impl Configurable<CellarRebalancerConfig> for EntryPoint {
     /// Location of the configuration file
     fn config_path(&self) -> Option<PathBuf> {
         // Check if the config file exists, and if it does not, ignore it.
         // If you'd like for a missing configuration file to be a hard error
         // instead, always return `Some(CONFIG_FILE)` here.
-        let filename = PathBuf::from(CONFIG_FILE);
+        let filename = self
+        .config
+        .as_ref()
+        .map(PathBuf::from)
+        .unwrap_or_else(|| CONFIG_FILE.into());
 
         if filename.exists() {
             Some(filename)
@@ -124,8 +144,7 @@ impl Configurable<CellarRebalancerConfig> for CellarRebalancerCmd {
         &self,
         config: CellarRebalancerConfig,
     ) -> Result<CellarRebalancerConfig, FrameworkError> {
-        match self {
-            CellarRebalancerCmd::SingleSigner(cmd) => cmd.override_config(config),
+        match &self.cmd {
             _ => Ok(config),
         }
     }

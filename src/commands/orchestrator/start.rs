@@ -1,5 +1,5 @@
 use crate::{application::APP, prelude::*};
-use abscissa_core::{Command, Options, Runnable};
+use abscissa_core::{Command, Clap, Runnable};
 use clarity::address::Address as EthAddress;
 use gravity_bridge::gravity_utils::connection_prep::{
     check_delegate_addresses, check_for_eth, check_for_fee_denom, create_rpc_connections,
@@ -12,12 +12,13 @@ use gravity_bridge::orchestrator::main_loop::{
 use gravity_bridge::relayer::main_loop::LOOP_SPEED as RELAYER_LOOP_SPEED;
 use std::cmp::min;
 
-#[derive(Command, Debug, Options)]
+/// Start Orchestrator
+#[derive(Command, Debug, Clap)]
 pub struct StartCommand {
-    #[options(help = "cosmos key name")]
+    #[clap(short = 'c', long)]
     cosmos_key: String,
 
-    #[options(help = "ethereum key name")]
+    #[clap(short = 'e', long)]
     ethereum_key: String,
 }
 
@@ -91,6 +92,12 @@ impl Runnable for StartCommand {
                 contract_address,
                 gas_price,
                 &config.metrics.listen_addr,
+                config.ethereum.gas_price_multiplier,
+                config.ethereum.blocks_to_search.into(),
+                config.cosmos.gas_adjustment,
+                // TODO: Zaki please confirm that the relayer_opt_out value below is correct.
+                true,
+                config.cosmos.msg_batch_size,
             )
             .await;
         })

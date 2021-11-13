@@ -1,10 +1,10 @@
 //! CellarRebalancer Abscissa Application
 
-use crate::{commands::CellarRebalancerCmd, config::CellarRebalancerConfig};
+use crate::{commands::EntryPoint, config::CellarRebalancerConfig};
 use abscissa_core::{
     application::{self, AppCell},
     config::{self, CfgCell},
-    trace, Application, EntryPoint, FrameworkError, StandardPaths,
+    trace, Application, FrameworkError, StandardPaths,
 };
 
 /// Application state
@@ -35,7 +35,7 @@ impl Default for CellarRebalancerApp {
 
 impl Application for CellarRebalancerApp {
     /// Entrypoint command for this application.
-    type Cmd = EntryPoint<CellarRebalancerCmd>;
+    type Cmd = EntryPoint;
 
     /// Application configuration.
     type Cfg = CellarRebalancerConfig;
@@ -79,11 +79,20 @@ impl Application for CellarRebalancerApp {
     }
 
     /// Get tracing configuration from command-line options
-    fn tracing_config(&self, command: &EntryPoint<CellarRebalancerCmd>) -> trace::Config {
+    fn tracing_config(&self, command: &EntryPoint) -> trace::Config {
         if command.verbose {
             trace::Config::verbose()
         } else {
-            trace::Config::default()
+            match std::env::var("RUST_LOG") {
+                Ok(val) => {
+                    if val != "" {
+                        val.into()
+                    } else {
+                        trace::Config::default()
+                    }
+                }
+                Err(_) => trace::Config::default(),
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-//! `start` subcommand - example of how to write a subcommand
+//! Start subcommand - example of how to write a subcommand
 
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
@@ -17,7 +17,7 @@ use crate::{
     collector::{Collector, Poller, Request, Response},
     config::CellarRebalancerConfig,
 };
-use abscissa_core::{config, Command, FrameworkError, Options, Runnable};
+use abscissa_core::{config, Command, FrameworkError, Clap, Runnable};
 use std::{convert::TryFrom, path, sync::Arc};
 use tokio::task::JoinHandle;
 use tower::{Service, ServiceBuilder};
@@ -29,10 +29,9 @@ use tower::{Service, ServiceBuilder};
 /// for a more comprehensive example:
 ///
 /// <https://docs.rs/gumdrop/>
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub struct SingleSignerCmd {
     /// To whom are we saying hello?
-    #[options(free)]
     recipient: Vec<String>,
 }
 

@@ -1,24 +1,22 @@
 use crate::application::APP;
-use abscissa_core::{status_err, Application, Command, Options, Runnable};
+use abscissa_core::{status_err, Application, Clap, Command, Runnable};
 use clarity::Address as EthAddress;
 use clarity::Uint256;
-use gravity_bridge::cosmos_gravity::send::{send_request_batch_tx, send_to_eth};
 use deep_space::coin::Coin;
+use gravity_bridge::cosmos_gravity::send::{send_request_batch_tx, send_to_eth};
 use gravity_bridge::gravity_proto::gravity::DenomToErc20Request;
 use gravity_bridge::gravity_utils::connection_prep::{check_for_fee_denom, create_rpc_connections};
 use std::{process::exit, time::Duration};
 
 const TIMEOUT: Duration = Duration::from_secs(60);
 
-#[derive(Command, Debug, Default, Options)]
+/// Send Cosmos to the Eth chain
+#[derive(Command, Debug, Default, Clap)]
 pub struct CosmosToEthCmd {
-    #[options(
-        free,
-        help = "cosmos-to-eth [gravity_denom] [amount] [cosmos_key] [eth_dest] [times]"
-    )]
+    #[clap(short, long)]
     pub args: Vec<String>,
 
-    #[options(help = "don't batch, send request to be sent immediately")]
+    #[clap(short = 'f', long)]
     pub flag_no_batch: bool,
 }
 
@@ -48,6 +46,10 @@ impl Runnable for CosmosToEthCmd {
         let gravity_denom = self.args.get(0).expect("denom is required");
         let gravity_denom = gravity_denom.to_string();
         let is_cosmos_originated = !gravity_denom.starts_with("gravity");
+
+        let gas_price = config.cosmos.gas_price.as_tuple();
+
+        let gas_adjustment = config.cosmos.gas_adjustment;
 
         let amount = self.args.get(1).expect("amount is required");
         let amount: Uint256 = amount.parse().expect("cannot parse amount");
@@ -141,12 +143,15 @@ impl Runnable for CosmosToEthCmd {
                 amount.clone(),
                 gravity_denom
             );
+
             let res = send_to_eth(
                 cosmos_key,
                 eth_dest,
                 amount.clone(),
                 bridge_fee.clone(),
+                gas_price.clone(),
                 &contact,
+                gas_adjustment
             )
             .await;
             match res {
@@ -157,7 +162,7 @@ impl Runnable for CosmosToEthCmd {
 
         if !self.flag_no_batch {
             println!("Requesting a batch to push transaction along immediately");
-            send_request_batch_tx(cosmos_key, gravity_denom, bridge_fee, &contact)
+            send_request_batch_tx(cosmos_key, gravity_denom, gas_price, &contact, gas_adjustment)
                 .await
                 .expect("Failed to request batch");
         } else {

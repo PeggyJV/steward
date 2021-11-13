@@ -1,20 +1,20 @@
 //! `cosmos subcommands` subcommand
 
 use crate::{application::APP, prelude::*, utils::*};
-use abscissa_core::{Command, Options, Runnable};
+use abscissa_core::{Command, Clap, Runnable};
 use clarity::{Address as EthAddress, Uint256};
-use gravity_bridge::cosmos_gravity::send::{send_to_eth};
 use deep_space::{coin::Coin, private_key::PrivateKey as CosmosPrivateKey};
+use gravity_bridge::cosmos_gravity::send::send_to_eth;
 use gravity_bridge::gravity_proto::gravity::DenomToErc20Request;
 use gravity_bridge::gravity_utils::connection_prep::{check_for_fee_denom, create_rpc_connections};
 use regex::Regex;
 use std::process::exit;
 
-#[derive(Command, Debug, Options)]
+/// Create Tx on Cosmos chain
+#[derive(Command, Debug, Clap)]
 pub enum Cosmos {
-    #[options(help = "send-to-eth [from-cosmos-key] [to-eth-addr] [erc20-coin] [[--times=int]]")]
     SendToEth(SendToEth),
-    #[options(help = "send [from-key] [to-addr] [coin-amount]")]
+    
     Send(Send),
 }
 
@@ -25,12 +25,11 @@ impl Runnable for Cosmos {
     }
 }
 
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub struct SendToEth {
-    #[options(free)]
     free: Vec<String>,
 
-    #[options(help = "print help message")]
+    #[clap(short, long)]
     help: bool,
 }
 
@@ -54,11 +53,15 @@ fn get_cosmos_key(_key_name: &str) -> CosmosPrivateKey {
 
 impl Runnable for SendToEth {
     fn run(&self) {
+        let config = APP.config();
         assert!(self.free.len() == 3);
         let from_cosmos_key = self.free[0].clone();
         let to_eth_addr = self.free[1].clone(); //TODO parse this to an Eth Address
         let erc_20_coin = self.free[2].clone(); // 1231234uatom
         let (amount, denom) = parse_denom(&erc_20_coin);
+
+        let gas_adjustment = config.cosmos.gas_adjustment;
+        let gas_price = config.cosmos.gas_price.as_tuple();
 
         let amount: Uint256 = amount.parse().expect("Could not parse amount");
 
@@ -130,7 +133,9 @@ impl Runnable for SendToEth {
                 eth_dest,
                 amount.clone(),
                 bridge_fee.clone(),
+                gas_price,
                 &contact,
+                gas_adjustment
             )
             .await;
             match res {
@@ -145,12 +150,11 @@ impl Runnable for SendToEth {
     }
 }
 
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Clap)]
 pub struct Send {
-    #[options(free)]
     free: Vec<String>,
 
-    #[options(help = "print help message")]
+    #[clap(short, long)]
     help: bool,
 }
 

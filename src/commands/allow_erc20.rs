@@ -8,16 +8,25 @@ use num_traits::Zero;
 use signatory::FsKeyStore;
 
 use crate::{
-    cellar_uniswap_wrapper::{UniswapV3CellarRemoveParams, UniswapV3CellarState, UniswapV3CellarTickInfo},
+    cellar_uniswap_wrapper::{UniswapV3CellarAddParams, UniswapV3CellarState, UniswapV3CellarTickInfo},
+    erc20::Erc20State,
+    gas::CellarGas,
     prelude::*,
     uniswap_pool::PoolState,
 };
 
-/// Remove funds from Cellars
-#[derive(Command, Debug, Clap)]
-pub struct RemoveFundsCmd {}
+/// Allow Erc20 Token to interact with cellar contract  
+#[derive(Command, Debug, Default, Clap)]
+pub struct AllowERC20 {
+    #[clap(short = 'C', long)]
+    cellar_address: H160,
+    #[clap(short = 'A', long)]
+    address: H160,
+    #[clap(short = 'a', long)]
+    amount: u64,
+}
 
-impl Runnable for RemoveFundsCmd {
+impl Runnable for AllowERC20 {
     fn run(&self) {
         let config = APP.config();
         let cellar = config.cellars.get(0).expect("Could not get cellar config");
@@ -40,52 +49,28 @@ impl Runnable for RemoveFundsCmd {
         let wallet: LocalWallet = Wallet::from(key);
 
         let eth_host = config.ethereum.rpc.clone();
-        let address = wallet.address();
 
         abscissa_tokio::run(&APP, async {
             let client = Provider::<Http>::try_from(eth_host)
                 .unwrap()
                 .interval(Duration::from_secs(3000u64));
+
             let client = SignerMiddleware::new(client, wallet);
+            let gas = CellarGas::etherscan_standard().await.unwrap();
 
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
-            let mut contract_state = UniswapV3CellarState::new(cellar.cellar_address, client.clone());
 
-            let balance = contract_state
-                .contract
-                .balance_of(address)
-                .call()
-                .await
-                .unwrap();
-            dbg!(balance.to_string());
+            let mut erc20_0 = Erc20State::new(self.address, client.clone());
+            let decimals = erc20_0.contract.decimals().call().await.unwrap();
+            erc20_0.gas_price = Some(gas);
 
-            let params = UniswapV3CellarRemoveParams::new(
-                balance,
-                U256::zero(),
-                U256::zero(),
-                address,
-                (Utc::now().timestamp() + 60 * 60).into(),
-            );
-
-            contract_state
-                .remove_liquidity_from_uni_v3(params)
-                .await
-                .unwrap();
-
-            // let params = CellarAddParams::new(
-            //     0.into(),
-            //     (7000u64 * (10u64.pow(config.cellar.token_1.decimals as u32))).into(),
-            //     0.into(),
-            //     0.into(),
-            //     address,
-            //     (Utc::now().timestamp() + 60 * 60).into(),
-            // );
-
-            // contract_state
-            //     .add_liquidity_for_uni_v3(params)
-            //     .await
-            //     .unwrap();
+            erc20_0
+                .approve(
+                    (self.amount * (10u64.pow(decimals as u32))).into(),
+                    self.cellar_address,
+                )
+                .await;
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

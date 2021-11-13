@@ -5,7 +5,7 @@ use std::sync::Arc;
 
 abigen!(
     UPool,
-    "./uniswapv3pool_abi.json",
+    "./abi/uniswapv3pool_abi.json",
     event_derives(serde::Deserialize, serde::Serialize)
 );
 
@@ -18,5 +18,21 @@ impl<T: 'static + Middleware> PoolState<T> {
         PoolState {
             contract: UPool::new(address, client),
         }
+    }
+
+    pub async fn token_0(&self) -> Address {
+        self.contract
+            .token_0()
+            .call()
+            .await
+            .expect("Failed to get token0 address")
+    }
+
+    pub async fn token_1(&self) -> Address {
+        self.contract
+            .token_1()
+            .call()
+            .await
+            .expect("Failed to get token0 address")
     }
 }

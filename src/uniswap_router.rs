@@ -8,7 +8,7 @@ use std::sync::Arc;
 //use abigen macro to fetch and incorporate contract ABI
 abigen!(
     UniswapRouter,
-    "./uniswap_router_abi.json",
+    "./abi/uniswap_router_abi.json",
     event_derives(serde::Deserialize, serde::Serialize)
 );
 
@@ -26,7 +26,7 @@ impl<T: 'static + Middleware> RouterState<T> {
 
 abigen!(
     UniswapPool,
-    "./uniswapv3pool_abi.json",
+    "./abi/uniswapv3pool_abi.json",
     event_derives(serde::Deserialize, serde::Serialize)
 );
 
