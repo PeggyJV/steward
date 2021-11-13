@@ -48,8 +48,6 @@ pub const CONFIG_FILE: &str = "contract_monitor.toml";
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum CellarRebalancerCmd {
 
-    /// The `start` subcommand
-    #[options(help = "start the application")]
     SingleSigner(SingleSignerCmd),
 
     Transfer(TransferCmd),

@@ -8,9 +8,9 @@ use crate::commands::keys::eth::EthKeysCmd;
 
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum KeysCmd {
-    #[options(name = "eth")]
+    #[clap(subcommand)]
     EthKeysCmd(EthKeysCmd),
 
-    #[options(name = "cosmos")]
+    #[clap(subcommand)]
     CosmosKeysCmd(CosmosKeysCmd),
 }
