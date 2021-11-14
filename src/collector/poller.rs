@@ -14,6 +14,7 @@ use crate::{
 use abscissa_core::{Application, Command, Clap, Runnable, error::BoxError};
 use crate::application::APP;
 use deep_space::Contact;
+use deep_space::coin::Coin;
 use ethers::prelude::*;
 use somm_proto::somm as proto;
 use std::{sync::Arc, time::Duration};
@@ -153,6 +154,7 @@ impl<T: 'static + Middleware> Poller<T> {
         &mut self,
         contact: &Contact) -> Result<(), Error> {
         let config = APP.config();
+        let gas_price = config.cosmos.gas_price.as_tuple();
         let mut tick_info: Vec<UniswapV3CellarTickInfo> = Vec::new();
         for ref tick_weight in self.time_range.tick_weights.clone() {
             if tick_weight.weight > 0 {
@@ -167,7 +169,11 @@ impl<T: 'static + Middleware> Poller<T> {
             let delegate_cosmos_address = self.cosmos_key.to_address(&contact.get_prefix()).unwrap();
             let name = &config.keys.rebalancer_key;
             let cosmos_key = config.load_deep_space_key(name.clone());
-            let fee = "100footoken".parse().unwrap();
+
+            let fee = Coin {
+                denom: gas_price.1,
+                amount: 0u32.into(),
+            };
 
             // TODO(Levi) needs to be initialized
             let cellar_id = "TODO".to_owned();
