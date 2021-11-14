@@ -11,8 +11,8 @@ use crate::{
     time_range::TimeRange,
     uniswap_pool::PoolState,
 };
-
-use abscissa_core::error::BoxError;
+use abscissa_core::{Application, Command, Clap, Runnable, error::BoxError};
+use crate::application::APP;
 use deep_space::Contact;
 use ethers::prelude::*;
 use somm_proto::somm as proto;
@@ -125,6 +125,18 @@ impl<T: 'static + Middleware> Poller<T> {
         Ok(ContractStateUpdate {})
     }
 
+    pub async fn cellar_contact(&self) -> Result<Contact, Error> {
+        let config = APP.config();
+        let timeout = Duration::from_secs(10);
+        let contact = Contact::new(
+            &config.cosmos.grpc,
+            timeout,
+            &config.cosmos.prefix,
+        )
+        .expect("Could not create contact");
+        Ok(contact)
+    }
+
     // Update poller with time_range, gas price and contract_state
     pub fn update_poller(
         &mut self,
@@ -139,8 +151,8 @@ impl<T: 'static + Middleware> Poller<T> {
 
     pub async fn decide_rebalance(
         &mut self,
-        config: config::CellarRebalancerConfig,
-        contact: &Contact,) -> Result<(), Error> {
+        contact: &Contact) -> Result<(), Error> {
+        let config = APP.config();
         let mut tick_info: Vec<UniswapV3CellarTickInfo> = Vec::new();
         for ref tick_weight in self.time_range.tick_weights.clone() {
             if tick_weight.weight > 0 {
@@ -209,11 +221,12 @@ impl<T: 'static + Middleware> Poller<T> {
             self.poll_time_range(),
             self.poll_cellar_gas(),
             self.poll_contract_state(),
+            self.cellar_contact(),
         );
         match res {
-            Ok((time_range, gas, contract_state_update)) => {
+            Ok((time_range, gas, contract_state_update, contact)) => {
                 self.update_poller(time_range, gas, contract_state_update);
-                self.decide_rebalance().await.unwrap();
+                self.decide_rebalance(&contact).await.unwrap();
             }
             Err(e) => error!("Error fetching data {}", e),
         }
