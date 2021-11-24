@@ -82,7 +82,30 @@ fn main() {
     }
 
     // Uniswapv3 Pool
+    let abigen = match Abigen::new("Erc20", "../rebalancer_abi/uniswapv3pool_abi.json") {
+        Ok(abigen) => abigen,
+        Err(e) => {
+            println!("Could not open uniswapv3pool_abi.json: {}", e);
+            process::exit(1);
+        }
+    };
 
+    let abi = match abigen
+        .add_event_derive("serde::Deserialize")
+        .add_event_derive("serde::Serialize")
+        .generate()
+    {
+        Ok(abi) => abi,
+        Err(e) => {
+            println!("Could not generate abi from uniswapv3pool_abi.json: {}", e);
+            process::exit(1);
+        }
+    };
+
+    match abi.write_to_file("../rebalancer_abi/src/uniswapv3pool.rs") {
+        Ok(_) => (),
+        Err(e) => println!("Error writing uniswapv3pool.rs: {}", e),
+    }
     // Weth
 }
 
