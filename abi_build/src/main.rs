@@ -131,5 +131,33 @@ fn main() {
         Ok(_) => (),
         Err(e) => println!("Error writing weth.rs: {}", e),
     }
+
+    // Cellar Aave
+    let abigen = match Abigen::new("Erc20", "../rebalancer_abi/cellar_aave_abi.json") {
+        Ok(abigen) => abigen,
+        Err(e) => {
+            println!("Could not open cellar_aave_abi.json: {}", e);
+            process::exit(1);
+        }
+    };
+
+    let abi = match abigen
+        .add_event_derive("serde::Deserialize")
+        .add_event_derive("serde::Serialize")
+        .generate()
+    {
+        Ok(abi) => abi,
+        Err(e) => {
+            println!("Could not generate abi from cellar_aave_abi.json: {}", e);
+            process::exit(1);
+        }
+    };
+
+    match abi.write_to_file("../rebalancer_abi/src/cellar_aave.rs") {
+        Ok(_) => (),
+        Err(e) => println!("Error writing cellar_aave.rs: {}", e),
+    }
+
+    // Cellar Uniswap
 }
 
