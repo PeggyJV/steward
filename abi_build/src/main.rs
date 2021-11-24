@@ -55,7 +55,7 @@ fn main() {
     }
 
     // Uniswap Router
-    let abigen = match Abigen::new("Erc20", "../rebalancer_abi/uniswap_router_abi.json") {
+    let abigen = match Abigen::new("UniswapRouter", "../rebalancer_abi/uniswap_router_abi.json") {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open uniswap_router_abi.json: {}", e);
@@ -81,7 +81,7 @@ fn main() {
     }
 
     // Uniswapv3 Pool
-    let abigen = match Abigen::new("Erc20", "../rebalancer_abi/uniswapv3pool_abi.json") {
+    let abigen = match Abigen::new("UniswapV3", "../rebalancer_abi/uniswapv3pool_abi.json") {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open uniswapv3pool_abi.json: {}", e);
@@ -107,7 +107,7 @@ fn main() {
     }
 
     // Weth
-    let abigen = match Abigen::new("Erc20", "../rebalancer_abi/weth_abi.json") {
+    let abigen = match Abigen::new("Weth", "../rebalancer_abi/weth_abi.json") {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open weth_abi.json: {}", e);
@@ -133,7 +133,7 @@ fn main() {
     }
 
     // Cellar Aave
-    let abigen = match Abigen::new("Erc20", "../rebalancer_abi/cellar_aave_abi.json") {
+    let abigen = match Abigen::new("AaveCellar", "../rebalancer_abi/cellar_aave_abi.json") {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open cellar_aave_abi.json: {}", e);
@@ -159,7 +159,7 @@ fn main() {
     }
 
     // Cellar Uniswap
-    let abigen = match Abigen::new("Erc20", "../rebalancer_abi/cellar_uniswap_abi.json") {
+    let abigen = match Abigen::new("UniswapV3Cellar", "../rebalancer_abi/cellar_uniswap_abi.json") {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open cellar_uniswap_abi.json: {}", e);
