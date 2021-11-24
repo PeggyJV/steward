@@ -29,7 +29,6 @@ fn main() {
     }
 
     // Erc20
-
     let abigen = match Abigen::new("Erc20", "../rebalancer_abi/erc20_abi.json") {
         Ok(abigen) => abigen,
         Err(e) => {
@@ -106,6 +105,31 @@ fn main() {
         Ok(_) => (),
         Err(e) => println!("Error writing uniswapv3pool.rs: {}", e),
     }
+
     // Weth
+    let abigen = match Abigen::new("Erc20", "../rebalancer_abi/weth_abi.json") {
+        Ok(abigen) => abigen,
+        Err(e) => {
+            println!("Could not open weth_abi.json: {}", e);
+            process::exit(1);
+        }
+    };
+
+    let abi = match abigen
+        .add_event_derive("serde::Deserialize")
+        .add_event_derive("serde::Serialize")
+        .generate()
+    {
+        Ok(abi) => abi,
+        Err(e) => {
+            println!("Could not generate abi from weth_abi.json: {}", e);
+            process::exit(1);
+        }
+    };
+
+    match abi.write_to_file("../rebalancer_abi/src/weth.rs") {
+        Ok(_) => (),
+        Err(e) => println!("Error writing weth.rs: {}", e),
+    }
 }
 
