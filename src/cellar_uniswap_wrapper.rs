@@ -5,6 +5,8 @@ use crate::prelude::*;
 use ethers::{providers as ethers_providers, prelude::*};
 use std::sync::Arc;
 use rebalancer_abi::cellar_uniswap::UniswapV3Cellar;
+use std::result::Result;
+
 
 
 // Use generic data types for CellarWrapper struct since contract will have different data types.
@@ -26,7 +28,7 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
     }
 
     // Rebalance portfolio with cellar tick info
-    pub async fn rebalance(&mut self, cellar_tick_info: Vec<UniswapV3CellarTickInfo>) -> Result<()> {
+    pub async fn rebalance(&mut self, cellar_tick_info: Vec<UniswapV3CellarTickInfo>) -> Result<(), Error> {
         let mut ticks: Vec<(U256, i32, i32, u32)> =
             cellar_tick_info.into_iter().map(|x| x.to_tuple()).collect();
         ticks.reverse();

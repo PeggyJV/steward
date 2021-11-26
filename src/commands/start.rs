@@ -6,7 +6,7 @@ use crate::prelude::*;
 use abscissa_core::error::BoxError;
 use futures::future;
 use signatory::FsKeyStore;
-
+use std::result::Result;
 use crate::application::APP;
 use ethers::{
     prelude::*,

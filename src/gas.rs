@@ -5,7 +5,7 @@ use ethers::{
     },
     prelude::*,
 };
-
+use std::result::Result;
 #[allow(unused_imports)]
 use crate::{collector, config, prelude::*};
 use abscissa_core::error::BoxError;
