@@ -12,7 +12,7 @@ use crate::{
 };
 use abscissa_core::error::BoxError;
 use ethers::prelude::*;
-use std::{sync::Arc, time::Duration};
+use std::{sync::Arc, time::Duration, result::Result};
 use tokio::{time, try_join};
 use tower::Service;
 
