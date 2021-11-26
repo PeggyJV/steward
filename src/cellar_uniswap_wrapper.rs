@@ -2,23 +2,23 @@
 /// This will convert cellar functions from tuples to Rust types
 use crate::error::Error;
 use crate::prelude::*;
-use ethers::prelude::*;
+use ethers::{providers as ethers_providers, prelude::*};
 use std::sync::Arc;
 use rebalancer_abi::cellar_uniswap::UniswapV3Cellar;
 
 
 // Use generic data types for CellarWrapper struct since contract will have different data types.
-pub struct UniswapV3CellarState<M> {
-    pub contract: UniswapV3Cellar<M>,
+pub struct UniswapV3CellarState<T> {
+    pub contract: UniswapV3Cellar<T>,
     pub gas_price: Option<U256>,
 }
 
 pub struct ContractStateUpdate {}
 
 // Implementation for ContractState.
-impl<M: 'static + Middleware> UniswapV3CellarState<M> {
+impl<T: 'static + Middleware> UniswapV3CellarState<T> {
     // Instantiate `new` ContractState
-    pub fn new(address: H160, client: Arc<M>) -> Self {
+    pub fn new(address: H160, client: Arc<T>) -> Self {
         UniswapV3CellarState {
             contract: UniswapV3Cellar::new(address, client),
             gas_price: None,

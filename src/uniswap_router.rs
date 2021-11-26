@@ -1,7 +1,6 @@
 //! Rust Wrapper for cellar functions
 /// This will convert cellar functions from tuples to Rust types
 use crate::error::Error;
-use ethers::contract::abigen;
 use ethers::prelude::*;
 use std::sync::Arc;
 use rebalancer_abi::uniswap_router::UniswapRouter;
