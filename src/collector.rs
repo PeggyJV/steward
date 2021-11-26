@@ -49,7 +49,7 @@ fn u256_sqrt(y: Option<U256>) -> Option<U256> {
 
     // Instantiate collector with `new` function
     impl Collector {
-        pub fn new(_config: &config::CellarRebalancerConfig) -> Result<Self> {
+        pub fn new(_config: &config::CellarRebalancerConfig) -> Result<Self, Error> {
             Ok(Collector {
                 recent_gas_prices: Vec::new(),
                 last_rebalance_time: chrono::Utc::now(),
@@ -93,9 +93,9 @@ fn u256_sqrt(y: Option<U256>) -> Option<U256> {
     impl Service<Request> for Collector {
         type Response = Response;
         type Error = Error;
-        type Future = Pin<Box<dyn Future<Output = Result<Response>> + Send + 'static>>;
+        type Future = Pin<Box<dyn Future<Output = Result<Response, Error>> + Send + 'static>>;
 
-        fn poll_ready(&mut self, _ctx: &mut Context<'_>) -> Poll<Result<()>> {
+        fn poll_ready(&mut self, _ctx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
             Poll::Ready(Ok(()))
         }
 

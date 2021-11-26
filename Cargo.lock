@@ -1399,9 +1399,9 @@ checksum = "7a81dae078cea95a014a339291cec439d2f232ebe854a9d672b796c6afafa9b7"
 
 [[package]]
 name = "crypto-bigint"
-version = "0.2.2"
+version = "0.2.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b32a398eb1ccfbe7e4f452bc749c44d38dd732e9a253f19da224c416f00ee7f4"
+checksum = "f83bd3bb4314701c568e340cd8cf78c975aa0ca79e03d3f6d1677d5b0c9c0c03"
 dependencies = [
  "generic-array 0.14.4",
  "rand_core 0.6.3",
@@ -1649,7 +1649,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "713c32426287891008edb98f8b5c6abb2130aa043c93a818728fcda78606f274"
 dependencies = [
  "der 0.4.0",
- "elliptic-curve 0.10.5",
+ "elliptic-curve 0.10.6",
  "hmac 0.11.0",
  "signature",
 ]
@@ -1662,11 +1662,11 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
 name = "elliptic-curve"
-version = "0.10.5"
+version = "0.10.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "069397e10739989e400628cbc0556a817a8a64119d7a2315767f4456e1332c23"
+checksum = "beca177dcb8eb540133e7680baff45e7cc4d93bf22002676cec549f82343721b"
 dependencies = [
- "crypto-bigint 0.2.2",
+ "crypto-bigint 0.2.11",
  "ff",
  "generic-array 0.14.4",
  "group",
@@ -2801,7 +2801,7 @@ checksum = "008b0281ca8032567c9711cd48631781c15228301860a39b32deb28d63125e46"
 dependencies = [
  "cfg-if 1.0.0",
  "ecdsa",
- "elliptic-curve 0.10.5",
+ "elliptic-curve 0.10.6",
  "sha2 0.9.8",
  "sha3",
 ]
