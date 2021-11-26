@@ -2,7 +2,7 @@
 /// This will convert cellar functions from tuples to Rust types
 use crate::error::Error;
 use crate::prelude::*;
-use ethers::{prelude::*};
+use ethers::prelude::*;
 use std::sync::Arc;
 use rebalancer_abi::cellar_uniswap::UniswapV3Cellar;
 use std::result::Result;
