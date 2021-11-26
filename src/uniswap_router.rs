@@ -5,6 +5,7 @@ use ethers::contract::abigen;
 use ethers::prelude::*;
 use std::sync::Arc;
 use rebalancer_abi::uniswap_router::UniswapRouter;
+use rebalancer_abi::uniswapv3pool::UniswapV3 as UniswapPool;
 
 pub struct RouterState<T> {
     pub contract: UniswapRouter<T>,
@@ -17,12 +18,6 @@ impl<T: 'static + Middleware> RouterState<T> {
         }
     }
 }
-
-abigen!(
-    UniswapPool,
-    "./abi/uniswapv3pool_abi.json",
-    event_derives(serde::Deserialize, serde::Serialize)
-);
 
 pub struct PoolState<T> {
     pub contract: UniswapPool<T>,

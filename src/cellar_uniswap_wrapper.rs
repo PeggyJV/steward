@@ -8,17 +8,17 @@ use rebalancer_abi::cellar_uniswap::UniswapV3Cellar;
 
 
 // Use generic data types for CellarWrapper struct since contract will have different data types.
-pub struct UniswapV3CellarState<T> {
-    pub contract: UniswapV3Cellar<T>,
+pub struct UniswapV3CellarState<M> {
+    pub contract: UniswapV3Cellar<M>,
     pub gas_price: Option<U256>,
 }
 
 pub struct ContractStateUpdate {}
 
 // Implementation for ContractState.
-impl<T: 'static + Middleware> UniswapV3CellarState<T> {
+impl<M: 'static + Middleware> UniswapV3CellarState<M> {
     // Instantiate `new` ContractState
-    pub fn new(address: H160, client: Arc<T>) -> Self {
+    pub fn new(address: H160, client: Arc<M>) -> Self {
         UniswapV3CellarState {
             contract: UniswapV3Cellar::new(address, client),
             gas_price: None,
