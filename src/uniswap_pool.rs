@@ -1,13 +1,7 @@
 use crate::error::Error;
-use ethers::contract::abigen;
 use ethers::prelude::*;
 use std::sync::Arc;
-
-abigen!(
-    UPool,
-    "./abi/uniswapv3pool_abi.json",
-    event_derives(serde::Deserialize, serde::Serialize)
-);
+use rebalancer_abi::uniswapv3pool::UniswapV3 as UPool;
 
 pub struct PoolState<T> {
     pub contract: UPool<T>,

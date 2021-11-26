@@ -4,13 +4,7 @@ use crate::error::Error;
 use ethers::contract::abigen;
 use ethers::prelude::*;
 use std::sync::Arc;
-
-//use abigen macro to fetch and incorporate contract ABI
-abigen!(
-    UniswapRouter,
-    "./abi/uniswap_router_abi.json",
-    event_derives(serde::Deserialize, serde::Serialize)
-);
+use rebalancer_abi::uniswap_router::UniswapRouter;
 
 pub struct RouterState<T> {
     pub contract: UniswapRouter<T>,
