@@ -8,10 +8,11 @@ use num_traits::Zero;
 use signatory::FsKeyStore;
 
 use crate::{
-    cellar_uniswap_wrapper::{UniswapV3CellarRemoveParams, UniswapV3CellarState, UniswapV3CellarTickInfo},
+    cellar_uniswap_wrapper::{UniswapV3CellarState, UniswapV3CellarTickInfo},
     prelude::*,
     uniswap_pool::PoolState,
 };
+use rebalancer_abi::cellar_uniswap::*;
 
 /// Remove funds from Cellars
 #[derive(Command, Debug, Clap)]
@@ -60,7 +61,7 @@ impl Runnable for RemoveFundsCmd {
                 .unwrap();
             dbg!(balance.to_string());
 
-            let params = UniswapV3CellarRemoveParams::new(
+            let params = CellarRemoveParams::new(
                 balance,
                 U256::zero(),
                 U256::zero(),
