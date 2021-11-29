@@ -1334,25 +1334,6 @@ mod uniswapv3cellar_mod {
         pub recipient: ethers::core::types::Address,
         pub deadline: ethers::core::types::U256,
     }
-    impl CellarAddParams {
-        pub fn new(
-            amount_0_desired: U256,
-            amount_1_desired: U256,
-            amount_0_min: U256,
-            amount_1_min: U256,
-            recipient: H160,
-            deadline: U256,
-        ) -> Self {
-            CellarAddParams {
-                amount_0_desired,
-                amount_1_desired,
-                amount_0_min,
-                amount_1_min,
-                recipient,
-                deadline,
-            }
-        }
-    }
     #[doc = "`CellarRemoveParams(uint256,uint256,uint256,address,uint256)`"]
     #[derive(
         Clone,
@@ -1370,23 +1351,6 @@ mod uniswapv3cellar_mod {
         pub amount_1_min: ethers::core::types::U256,
         pub recipient: ethers::core::types::Address,
         pub deadline: ethers::core::types::U256,
-    }
-    impl CellarRemoveParams {
-        pub fn new(
-            token_amount: U256,
-            amount_0_min: U256,
-            amount_1_min: U256,
-            recipient: H160,
-            deadline: U256,
-        ) -> Self {
-            CellarRemoveParams {
-                token_amount,
-                amount_0_min,
-                amount_1_min,
-                recipient,
-                deadline,
-            }
-        }
     }
     #[doc = "`CellarTickInfo(uint184,int24,int24,uint24)`"]
     #[derive(

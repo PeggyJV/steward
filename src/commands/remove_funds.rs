@@ -18,6 +18,22 @@ use rebalancer_abi::cellar_uniswap::*;
 #[derive(Command, Debug, Clap)]
 pub struct RemoveFundsCmd {}
 
+pub fn cellar_remove_params(
+    token_amount: U256,
+    amount_0_min: U256,
+    amount_1_min: U256,
+    recipient: H160,
+    deadline: U256,
+) -> CellarRemoveParams {
+    CellarRemoveParams {
+        token_amount,
+        amount_0_min,
+        amount_1_min,
+        recipient,
+        deadline,
+    }
+}
+
 impl Runnable for RemoveFundsCmd {
     fn run(&self) {
         let config = APP.config();
@@ -61,7 +77,7 @@ impl Runnable for RemoveFundsCmd {
                 .unwrap();
             dbg!(balance.to_string());
 
-            let params = CellarRemoveParams::new(
+            let params = cellar_remove_params(
                 balance,
                 U256::zero(),
                 U256::zero(),
