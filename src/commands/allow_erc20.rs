@@ -8,7 +8,7 @@ use num_traits::Zero;
 use signatory::FsKeyStore;
 
 use crate::{
-    cellar_uniswap_wrapper::{UniswapV3CellarAddParams, UniswapV3CellarState, UniswapV3CellarTickInfo},
+    cellar_uniswap_wrapper::{UniswapV3CellarState, UniswapV3CellarTickInfo},
     erc20::Erc20State,
     gas::CellarGas,
     prelude::*,
