@@ -26,6 +26,17 @@ pub struct Poller<T: Middleware> {
     pool: PoolState<T>,
 }
 
+pub fn from_tick_weight(
+    tick_weight: &crate::time_range::TickWeight,
+) -> CellarTickInfo {
+    CellarTickInfo {
+        token_id: U256::zero(),
+        tick_upper: tick_weight.upper_bound,
+        tick_lower: tick_weight.lower_bound,
+        weight: tick_weight.weight,
+    }
+}
+
 // Implement poller middleware
 impl<T: 'static + Middleware> Poller<T> {
     pub async fn new(
@@ -102,7 +113,7 @@ impl<T: 'static + Middleware> Poller<T> {
         let mut tick_info: Vec<CellarTickInfo> = Vec::new();
         for ref tick_weight in self.time_range.tick_weights.clone() {
             if tick_weight.weight > 0 {
-                tick_info.push(CellarTickInfo::from_tick_weight(tick_weight))
+                tick_info.push(from_tick_weight(tick_weight))
             }
         }
 

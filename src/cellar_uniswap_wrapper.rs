@@ -203,8 +203,8 @@ impl UniswapV3CellarTickInfo {
 
     pub fn from_tick_weight(
         tick_weight: &crate::time_range::TickWeight,
-    ) -> UniswapV3CellarTickInfo {
-        UniswapV3CellarTickInfo {
+    ) -> CellarTickInfo {
+        CellarTickInfo {
             token_id: U256::zero(),
             tick_upper: tick_weight.upper_bound,
             tick_lower: tick_weight.lower_bound,

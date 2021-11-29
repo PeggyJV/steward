@@ -1405,16 +1405,4 @@ mod uniswapv3cellar_mod {
         pub tick_lower: i32,
         pub weight: u32,
     }
-    impl CellarTickInfo {
-        pub fn from_tick_weight(
-            tick_weight: &crate::time_range::TickWeight,
-        ) -> UniswapV3CellarTickInfo {
-            UniswapV3CellarTickInfo {
-                token_id: U256::zero(),
-                tick_upper: tick_weight.upper_bound,
-                tick_lower: tick_weight.lower_bound,
-                weight: tick_weight.weight,
-            }
-        }
-    }  
 }
