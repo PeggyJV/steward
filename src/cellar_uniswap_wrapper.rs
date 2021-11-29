@@ -3,9 +3,9 @@
 use crate::error::Error;
 use crate::prelude::*;
 use ethers::prelude::*;
-use std::sync::Arc;
-use rebalancer_abi::cellar_uniswap::UniswapV3Cellar;
+use rebalancer_abi::cellar_uniswap::*;
 use std::result::Result;
+use std::sync::Arc;
 
 // Use generic data types for CellarWrapper struct since contract will have different data types.
 pub struct UniswapV3CellarState<T> {
@@ -26,9 +26,16 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
     }
 
     // Rebalance portfolio with cellar tick info
-    pub async fn rebalance(&mut self, cellar_tick_info: Vec<UniswapV3CellarTickInfo>) -> Result<(), Error> {
-        let mut ticks: Vec<(U256, i32, i32, u32)> =
-            cellar_tick_info.into_iter().map(|x| x.to_tuple()).collect();
+    pub async fn rebalance(&mut self, cellar_tick_info: Vec<CellarTickInfo>) -> Result<(), Error> {
+        let mut ticks: Vec<CellarTickInfo> = cellar_tick_info
+            .into_iter()
+            .map(|x| CellarTickInfo {
+                token_id: x.token_id,
+                tick_upper: x.tick_upper,
+                tick_lower: x.tick_lower,
+                weight: x.weight,
+            })
+            .collect();
         ticks.reverse();
 
         let mut call = self.contract.rebalance(ticks);
@@ -45,31 +52,30 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
         Ok(())
     }
 
-        // Rebalance portfolio with cellar tick info
-        pub async fn reinvest(&mut self) -> Result<(), Error> {
+    // Rebalance portfolio with cellar tick info
+    pub async fn reinvest(&mut self) -> Result<(), Error> {
+        let mut call = self.contract.reinvest();
 
-            let mut call = self.contract.reinvest();
-    
-            if let Some(gas_price) = self.gas_price {
-                call = call.gas_price(gas_price)
-            }
-    
-            let gased = call.gas(5_000_000);
-    
-            let pending = gased.send().await?;
-            dbg!(&pending);
-    
-            Ok(())
+        if let Some(gas_price) = self.gas_price {
+            call = call.gas_price(gas_price)
         }
+
+        let gased = call.gas(5_000_000);
+
+        let pending = gased.send().await?;
+        dbg!(&pending);
+
+        Ok(())
+    }
 
     // Add liquidity for uniswap version 3 with values form struct `CellarAddParams`
     pub async fn add_liquidity_for_uni_v3(
         &mut self,
-        cellar_add_params: UniswapV3CellarAddParams,
+        cellar_add_params: CellarAddParams,
     ) -> Result<(), Error> {
         let mut call = self
             .contract
-            .add_liquidity_for_uni_v3(cellar_add_params.to_tuple());
+            .add_liquidity_for_uni_v3(cellar_add_params);
 
         if let Some(gas_price) = self.gas_price {
             call = call.gas_price(gas_price)
@@ -92,11 +98,11 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
     // Add ethereum liquidity for uniswap version 3 with values form struct `CellarAddParams`
     pub async fn add_liquidity_eth_for_uni_v3(
         &mut self,
-        cellar_add_params: UniswapV3CellarAddParams,
+        cellar_add_params: CellarAddParams,
     ) -> Result<(), Error> {
         let call = self
             .contract
-            .add_liquidity_eth_for_uni_v3(cellar_add_params.to_tuple());
+            .add_liquidity_eth_for_uni_v3(cellar_add_params);
         let pending = call.send().await?;
 
         let receipt = pending.confirmations(6).await?;
@@ -111,11 +117,11 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
     // Remove ethereum liquidity from uniswap version 3 with values form struct `CellarAddParams`
     pub async fn remove_liquidity_eth_from_uni_v3(
         &mut self,
-        cellar_remove_params: UniswapV3CellarRemoveParams,
+        cellar_remove_params: CellarRemoveParams,
     ) -> Result<(), Error> {
         let call = self
             .contract
-            .remove_liquidity_eth_from_uni_v3(cellar_remove_params.to_tuple());
+            .remove_liquidity_eth_from_uni_v3(cellar_remove_params);
         let pending = call.send().await?;
 
         let receipt = pending.confirmations(6).await?;
@@ -130,11 +136,11 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
     // Remove liquidity from uniswap version 3 with values form struct `CellarAddParams`
     pub async fn remove_liquidity_from_uni_v3(
         &mut self,
-        cellar_remove_params: UniswapV3CellarRemoveParams,
+        cellar_remove_params: CellarRemoveParams,
     ) -> Result<(), Error> {
         let call = self
             .contract
-            .remove_liquidity_from_uni_v3(cellar_remove_params.to_tuple());
+            .remove_liquidity_from_uni_v3(cellar_remove_params);
         let pending = call.send().await?;
         dbg!(&pending);
         let receipt = pending.confirmations(6).await?;
@@ -144,12 +150,9 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
         }
 
         Ok(())
-    }    
+    }
 
-    pub async fn set_validator(
-            &mut self, validator: H160,
-            value: bool
-    ) -> Result<(), Error> {
+    pub async fn set_validator(&mut self, validator: H160, value: bool) -> Result<(), Error> {
         let mut call = self.contract.set_validator(validator, value);
 
         if let Some(gas_price) = self.gas_price {
@@ -198,7 +201,9 @@ impl UniswapV3CellarTickInfo {
     //     }
     // }
 
-    pub fn from_tick_weight(tick_weight: &crate::time_range::TickWeight) -> UniswapV3CellarTickInfo {
+    pub fn from_tick_weight(
+        tick_weight: &crate::time_range::TickWeight,
+    ) -> UniswapV3CellarTickInfo {
         UniswapV3CellarTickInfo {
             token_id: U256::zero(),
             tick_upper: tick_weight.upper_bound,

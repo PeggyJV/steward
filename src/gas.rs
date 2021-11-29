@@ -1,7 +1,7 @@
 //! Gas models
 use ethers::{
     middleware::gas_oracle::{
-        Etherchain, Etherscan, GasCategory, GasNow, GasOracle, GasOracleError,
+        Etherchain, Etherscan, GasCategory, GasOracle, GasOracleError,
     },
     prelude::*,
 };
@@ -59,34 +59,6 @@ impl CellarGas {
     async fn etherchain_safelow() -> Result<U256, GasOracleError> {
         let etherchain_oracle = Etherchain::new().category(GasCategory::SafeLow);
         let data = etherchain_oracle.fetch().await;
-        data
-    }
-
-    #[allow(dead_code)]
-    async fn sparkpool_fatest() -> Result<U256, GasOracleError> {
-        let gas_now_oracle = GasNow::new().category(GasCategory::Fastest);
-        let data = gas_now_oracle.fetch().await;
-        data
-    }
-
-    #[allow(dead_code)]
-    async fn sparkpool_fast() -> Result<U256, GasOracleError> {
-        let gas_now_oracle = GasNow::new().category(GasCategory::Fast);
-        let data = gas_now_oracle.fetch().await;
-        data
-    }
-
-    #[allow(dead_code)]
-    async fn sparkpool_standard() -> Result<U256, GasOracleError> {
-        let gas_now_oracle = GasNow::new().category(GasCategory::Standard);
-        let data = gas_now_oracle.fetch().await;
-        data
-    }
-
-    #[allow(dead_code)]
-    async fn sparkpool_safelow() -> Result<U256, GasOracleError> {
-        let gas_now_oracle = GasNow::new().category(GasCategory::SafeLow);
-        let data = gas_now_oracle.fetch().await;
         data
     }
 
