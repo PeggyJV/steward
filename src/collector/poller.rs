@@ -2,7 +2,7 @@
 /// The collector's [`Poller`] collects information from external sources
 /// which aren't capable of pushing data.
 use crate::{
-    cellar_uniswap_wrapper::{UniswapV3CellarState, UniswapV3CellarTickInfo, ContractStateUpdate},
+    cellar_uniswap_wrapper::{UniswapV3CellarState, ContractStateUpdate},
     collector, config,
     error::Error,
     gas::CellarGas,
@@ -15,6 +15,7 @@ use ethers::prelude::*;
 use std::{sync::Arc, time::Duration, result::Result};
 use tokio::{time, try_join};
 use tower::Service;
+use rebalancer_abi::cellar_uniswap::*;
 
 // Struct poller to collect poll_interval etc. from external sources which aren't capable of pushing data
 pub struct Poller<T: Middleware> {
@@ -98,10 +99,10 @@ impl<T: 'static + Middleware> Poller<T> {
     }
 
     pub async fn decide_rebalance(&mut self) -> Result<(), Error> {
-        let mut tick_info: Vec<UniswapV3CellarTickInfo> = Vec::new();
+        let mut tick_info: Vec<CellarTickInfo> = Vec::new();
         for ref tick_weight in self.time_range.tick_weights.clone() {
             if tick_weight.weight > 0 {
-                tick_info.push(UniswapV3CellarTickInfo::from_tick_weight(tick_weight))
+                tick_info.push(CellarTickInfo::from_tick_weight(tick_weight))
             }
         }
 

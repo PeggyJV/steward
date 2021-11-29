@@ -1404,5 +1404,5 @@ mod uniswapv3cellar_mod {
         pub tick_upper: i32,
         pub tick_lower: i32,
         pub weight: u32,
-    }
+    }  
 }
