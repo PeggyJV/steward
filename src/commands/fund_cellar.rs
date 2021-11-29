@@ -8,12 +8,13 @@ use num_traits::Zero;
 use signatory::FsKeyStore;
 
 use crate::{
-    cellar_uniswap_wrapper::{UniswapV3CellarAddParams, UniswapV3CellarState, UniswapV3CellarTickInfo},
+    cellar_uniswap_wrapper::{UniswapV3CellarState, UniswapV3CellarTickInfo},
     erc20::Erc20State,
     gas::CellarGas,
     prelude::*,
     uniswap_pool::PoolState,
 };
+use rebalancer_abi::cellar_uniswap::*;
 
 /// Command to fund Cellars
 #[derive(Command, Debug, Clap)]
@@ -101,7 +102,7 @@ impl Runnable for FundCellarCmd {
                 info!("{:?}", tick);
             }
 
-            let params = UniswapV3CellarAddParams::new(
+            let params = CellarAddParams::new(
                 ((self.amount_0 * (10u64.pow(cellar.token_0.decimals as u32)) as f64) as u128)
                     .into(),
                 ((self.amount_1 * (10u64.pow(cellar.token_1.decimals as u32)) as f64) as u128)
