@@ -8,7 +8,7 @@ use num_traits::Zero;
 use signatory::FsKeyStore;
 
 use crate::{
-    cellar_uniswap_wrapper::{UniswapV3CellarState, UniswapV3CellarTickInfo},
+    cellar_uniswap_wrapper::{UniswapV3CellarState},
     prelude::*,
     uniswap_pool::PoolState,
 };
@@ -17,22 +17,6 @@ use rebalancer_abi::cellar_uniswap::*;
 /// Remove funds from Cellars
 #[derive(Command, Debug, Clap)]
 pub struct RemoveFundsCmd {}
-
-pub fn cellar_remove_params(
-    token_amount: U256,
-    amount_0_min: U256,
-    amount_1_min: U256,
-    recipient: H160,
-    deadline: U256,
-) -> CellarRemoveParams {
-    CellarRemoveParams {
-        token_amount,
-        amount_0_min,
-        amount_1_min,
-        recipient,
-        deadline,
-    }
-}
 
 impl Runnable for RemoveFundsCmd {
     fn run(&self) {
@@ -77,13 +61,13 @@ impl Runnable for RemoveFundsCmd {
                 .unwrap();
             dbg!(balance.to_string());
 
-            let params = cellar_remove_params(
-                balance,
-                U256::zero(),
-                U256::zero(),
-                address,
-                (Utc::now().timestamp() + 60 * 60).into(),
-            );
+            let params = CellarRemoveParams {
+                token_amount: balance,
+                amount_0_min: U256::zero(),
+                amount_1_min: U256::zero(),
+                recipient: address,
+                deadline: (Utc::now().timestamp() + 60 * 60).into(),
+            };
 
             contract_state
                 .remove_liquidity_from_uni_v3(params)
