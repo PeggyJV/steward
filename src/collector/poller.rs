@@ -7,7 +7,7 @@ use crate::{
     error::Error,
     gas::CellarGas,
     prelude::*,
-    time_range::TimeRange,
+    time_range::{TimeRange, TickWeight},
     uniswap_pool::PoolState,
 };
 use abscissa_core::error::BoxError;
@@ -27,7 +27,7 @@ pub struct Poller<T: Middleware> {
 }
 
 pub fn from_tick_weight(
-    tick_weight: &crate::time_range::TickWeight,
+    tick_weight: TickWeight,
 ) -> CellarTickInfo {
     CellarTickInfo {
         token_id: U256::zero(),
@@ -113,7 +113,7 @@ impl<T: 'static + Middleware> Poller<T> {
         let mut tick_info: Vec<CellarTickInfo> = Vec::new();
         for ref tick_weight in self.time_range.tick_weights.clone() {
             if tick_weight.weight > 0 {
-                tick_info.push(from_tick_weight(tick_weight))
+                tick_info.push(from_tick_weight(tick_weight.clone()))
             }
         }
 
