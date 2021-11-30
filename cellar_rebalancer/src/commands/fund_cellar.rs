@@ -8,12 +8,13 @@ use num_traits::Zero;
 use signatory::FsKeyStore;
 
 use crate::{
-    cellar_uniswap_wrapper::{UniswapV3CellarAddParams, UniswapV3CellarState, UniswapV3CellarTickInfo},
+    cellar_uniswap_wrapper::{UniswapV3CellarState, UniswapV3CellarTickInfo},
     erc20::Erc20State,
     gas::CellarGas,
     prelude::*,
     uniswap_pool::PoolState,
 };
+use rebalancer_abi::cellar_uniswap::*;
 
 /// Command to fund Cellars
 #[derive(Command, Debug, Clap)]
@@ -101,16 +102,16 @@ impl Runnable for FundCellarCmd {
                 info!("{:?}", tick);
             }
 
-            let params = UniswapV3CellarAddParams::new(
-                ((self.amount_0 * (10u64.pow(cellar.token_0.decimals as u32)) as f64) as u128)
-                    .into(),
-                ((self.amount_1 * (10u64.pow(cellar.token_1.decimals as u32)) as f64) as u128)
-                    .into(),
-                0.into(),
-                0.into(),
-                address,
-                (Utc::now().timestamp() + 60 * 60).into(),
-            );
+            let params = CellarAddParams {
+                amount_0_desired: ((self.amount_0 * (10u64.pow(cellar.token_0.decimals as u32)) as f64) as u128)
+                .into(),
+                amount_1_desired: ((self.amount_1 * (10u64.pow(cellar.token_1.decimals as u32)) as f64) as u128)
+                .into(),
+                amount_0_min: 0.into(),
+                amount_1_min: 0.into(),
+                recipient: address,
+                deadline: (Utc::now().timestamp() + 60 * 60).into(),
+            };
 
             contract_state
                 .add_liquidity_for_uni_v3(params)

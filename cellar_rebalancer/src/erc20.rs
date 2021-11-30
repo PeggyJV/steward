@@ -2,23 +2,10 @@
 /// This will convert cellar functions from tuples to Rust types
 use crate::error::Error;
 use crate::prelude::*;
-use ethers::contract::abigen;
 use ethers::prelude::*;
 use std::sync::Arc;
-
-//use abigen macro to fetch and incorporate contract ABI
-abigen!(
-    Erc20,
-    "./abi/erc20_abi.json",
-    event_derives(serde::Deserialize, serde::Serialize)
-);
-
-//use abigen macro to fetch and incorporate contract ABI
-abigen!(
-    Weth,
-    "./abi/weth_abi.json",
-    event_derives(serde::Deserialize, serde::Serialize)
-);
+use rebalancer_abi::erc20::Erc20;
+use rebalancer_abi::weth::Weth;
 
 pub struct Erc20State<T> {
     pub contract: Erc20<T>,

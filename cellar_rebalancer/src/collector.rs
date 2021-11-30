@@ -8,6 +8,7 @@ use std::{
 use crate::{config, error::Error, time_range::TimeRange};
 use ethers::prelude::*;
 use tower::Service;
+use std::result::Result;
 
 pub use self::{poller::Poller, request::Request, response::Response};
 

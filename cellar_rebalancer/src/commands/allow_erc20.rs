@@ -8,21 +8,25 @@ use num_traits::Zero;
 use signatory::FsKeyStore;
 
 use crate::{
-    cellar_uniswap_wrapper::{UniswapV3CellarAddParams, UniswapV3CellarState, UniswapV3CellarTickInfo},
+    cellar_uniswap_wrapper::{UniswapV3CellarState, UniswapV3CellarTickInfo},
     erc20::Erc20State,
     gas::CellarGas,
     prelude::*,
     uniswap_pool::PoolState,
 };
 
-/// Cellars reinvest command
-#[derive(Command, Debug, Clap)]
-pub struct ReinvestCommand {
-    #[clap(short = 'i', long)]
-    pub cellar_id: u32,
+/// Allow Erc20 Token to interact with cellar contract  
+#[derive(Command, Debug, Default, Clap)]
+pub struct AllowERC20 {
+    #[clap(short = 'C', long)]
+    cellar_address: H160,
+    #[clap(short = 'A', long)]
+    address: H160,
+    #[clap(short = 'a', long)]
+    amount: u64,
 }
 
-impl Runnable for ReinvestCommand {
+impl Runnable for AllowERC20 {
     fn run(&self) {
         let config = APP.config();
         let cellar = config.cellars.get(0).expect("Could not get cellar config");
@@ -45,7 +49,6 @@ impl Runnable for ReinvestCommand {
         let wallet: LocalWallet = Wallet::from(key);
 
         let eth_host = config.ethereum.rpc.clone();
-        let address = wallet.address();
 
         abscissa_tokio::run(&APP, async {
             let client = Provider::<Http>::try_from(eth_host)
@@ -58,14 +61,16 @@ impl Runnable for ReinvestCommand {
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
 
-            let mut contract_state = UniswapV3CellarState::new(cellar.cellar_address, client.clone());
-            contract_state.gas_price = Some(gas);
-   
+            let mut erc20_0 = Erc20State::new(self.address, client.clone());
+            let decimals = erc20_0.contract.decimals().call().await.unwrap();
+            erc20_0.gas_price = Some(gas);
 
-            contract_state
-                .reinvest()
-                .await
-                .unwrap();
+            erc20_0
+                .approve(
+                    (self.amount * (10u64.pow(decimals as u32))).into(),
+                    self.cellar_address,
+                )
+                .await;
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

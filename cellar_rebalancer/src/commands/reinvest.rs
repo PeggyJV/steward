@@ -8,16 +8,21 @@ use num_traits::Zero;
 use signatory::FsKeyStore;
 
 use crate::{
-    cellar_uniswap_wrapper::{UniswapV3CellarRemoveParams, UniswapV3CellarState, UniswapV3CellarTickInfo},
+    cellar_uniswap_wrapper::{UniswapV3CellarState, UniswapV3CellarTickInfo},
+    erc20::Erc20State,
+    gas::CellarGas,
     prelude::*,
     uniswap_pool::PoolState,
 };
 
-/// Remove funds from Cellars
+/// Cellars reinvest command
 #[derive(Command, Debug, Clap)]
-pub struct RemoveFundsCmd {}
+pub struct ReinvestCommand {
+    #[clap(short = 'i', long)]
+    pub cellar_id: u32,
+}
 
-impl Runnable for RemoveFundsCmd {
+impl Runnable for ReinvestCommand {
     fn run(&self) {
         let config = APP.config();
         let cellar = config.cellars.get(0).expect("Could not get cellar config");
@@ -46,46 +51,21 @@ impl Runnable for RemoveFundsCmd {
             let client = Provider::<Http>::try_from(eth_host)
                 .unwrap()
                 .interval(Duration::from_secs(3000u64));
+
             let client = SignerMiddleware::new(client, wallet);
+            let gas = CellarGas::etherscan_standard().await.unwrap();
 
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
+
             let mut contract_state = UniswapV3CellarState::new(cellar.cellar_address, client.clone());
-
-            let balance = contract_state
-                .contract
-                .balance_of(address)
-                .call()
-                .await
-                .unwrap();
-            dbg!(balance.to_string());
-
-            let params = UniswapV3CellarRemoveParams::new(
-                balance,
-                U256::zero(),
-                U256::zero(),
-                address,
-                (Utc::now().timestamp() + 60 * 60).into(),
-            );
+            contract_state.gas_price = Some(gas);
+   
 
             contract_state
-                .remove_liquidity_from_uni_v3(params)
+                .reinvest()
                 .await
                 .unwrap();
-
-            // let params = CellarAddParams::new(
-            //     0.into(),
-            //     (7000u64 * (10u64.pow(config.cellar.token_1.decimals as u32))).into(),
-            //     0.into(),
-            //     0.into(),
-            //     address,
-            //     (Utc::now().timestamp() + 60 * 60).into(),
-            // );
-
-            // contract_state
-            //     .add_liquidity_for_uni_v3(params)
-            //     .await
-            //     .unwrap();
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
