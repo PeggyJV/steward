@@ -19,17 +19,15 @@ pub struct CellarGas {
 
 impl CellarGas {
     pub async fn etherscan_standard() -> Result<U256, GasOracleError> {
-        let api_key = std::env::var("ETHERSCAN_API_KEY").expect("ETHERSCAN_API_KEY must be set");
-        let api_key = Some(api_key.as_str());
-        let etherscan_oracle = Etherscan::new(api_key).category(GasCategory::Standard);
+        let etherscan_client = Client::new_from_env(Chain::Mainnet)?;
+        let etherscan_oracle = Etherscan::new(etherscan_client).category(GasCategory::Standard);
         let data = etherscan_oracle.fetch().await;
         data
     }
 
     pub async fn etherscan_safelow() -> Result<U256, GasOracleError> {
-        let api_key = std::env::var("ETHERSCAN_API_KEY").expect("ETHERSCAN_API_KEY must be set");
-        let api_key = Some(api_key.as_str());
-        let etherscan_oracle = Etherscan::new(api_key).category(GasCategory::SafeLow);
+        let etherscan_client = Client::new_from_env(Chain::Mainnet)?;
+        let etherscan_oracle = Etherscan::new(etherscan_client).category(GasCategory::SafeLow);
         let data = etherscan_oracle.fetch().await;
         data
     }
