@@ -27,15 +27,7 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
 
     // Rebalance portfolio with cellar tick info
     pub async fn rebalance(&mut self, cellar_tick_info: Vec<CellarTickInfo>) -> Result<(), Error> {
-        let mut ticks: Vec<CellarTickInfo> = cellar_tick_info
-            .into_iter()
-            .map(|x| CellarTickInfo {
-                token_id: x.token_id,
-                tick_upper: x.tick_upper,
-                tick_lower: x.tick_lower,
-                weight: x.weight,
-            })
-            .collect();
+        let mut ticks = cellar_tick_info.clone();
         ticks.reverse();
 
         let mut call = self.contract.rebalance(ticks);
