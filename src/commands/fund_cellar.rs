@@ -27,24 +27,6 @@ pub struct FundCellarCmd {
     pub amount_1: f64,
 }
 
-pub fn cellar_add_params(
-    amount_0_desired: U256,
-    amount_1_desired: U256,
-    amount_0_min: U256,
-    amount_1_min: U256,
-    recipient: H160,
-    deadline: U256,
-) -> CellarAddParams {
-    CellarAddParams {
-        amount_0_desired,
-        amount_1_desired,
-        amount_0_min,
-        amount_1_min,
-        recipient,
-        deadline,
-    }
-}
-
 impl Runnable for FundCellarCmd {
     fn run(&self) {
         let config = APP.config();
@@ -120,16 +102,16 @@ impl Runnable for FundCellarCmd {
                 info!("{:?}", tick);
             }
 
-            let params = cellar_add_params(
-                ((self.amount_0 * (10u64.pow(cellar.token_0.decimals as u32)) as f64) as u128)
-                    .into(),
-                ((self.amount_1 * (10u64.pow(cellar.token_1.decimals as u32)) as f64) as u128)
-                    .into(),
-                0.into(),
-                0.into(),
-                address,
-                (Utc::now().timestamp() + 60 * 60).into(),
-            );
+            let params = CellarAddParams {
+                amount_0_desired: ((self.amount_0 * (10u64.pow(cellar.token_0.decimals as u32)) as f64) as u128)
+                .into(),
+                amount_1_desired: ((self.amount_1 * (10u64.pow(cellar.token_1.decimals as u32)) as f64) as u128)
+                .into(),
+                amount_0_min: 0.into(),
+                amount_1_min: 0.into(),
+                recipient: address,
+                deadline: (Utc::now().timestamp() + 60 * 60).into(),
+            };
 
             contract_state
                 .add_liquidity_for_uni_v3(params)
