@@ -146,7 +146,7 @@ mod aavecellar_mod {
         #[doc = "Calls the contract's `reinvest` (0xd200a692) function"]
         pub fn reinvest(
             &self,
-            route: Vec<u8>,
+            route: ethers::core::types::Bytes,
             min_price: ethers::core::types::U256,
         ) -> ethers::contract::builders::ContractCall<M, ()> {
             self.0
@@ -493,7 +493,7 @@ mod aavecellar_mod {
     )]
     #[ethcall(name = "reinvest", abi = "reinvest(bytes,uint256)")]
     pub struct ReinvestCall {
-        pub route: Vec<u8>,
+        pub route: ethers::core::types::Bytes,
         pub min_price: ethers::core::types::U256,
     }
     #[doc = "Container type for all input parameters for the `serviceFee`function with signature `serviceFee()` and selector `[138, 189, 245, 170]`"]

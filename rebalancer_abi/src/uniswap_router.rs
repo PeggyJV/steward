@@ -102,8 +102,8 @@ mod uniswaprouter_mod {
         #[doc = "Calls the contract's `multicall` (0xac9650d8) function"]
         pub fn multicall(
             &self,
-            data: ::std::vec::Vec<Vec<u8>>,
-        ) -> ethers::contract::builders::ContractCall<M, Vec<Vec<u8>>> {
+            data: ::std::vec::Vec<ethers::core::types::Bytes>,
+        ) -> ethers::contract::builders::ContractCall<M, Vec<ethers::core::types::Bytes>> {
             self.0
                 .method_hash([172, 150, 80, 216], data)
                 .expect("method not found (this should never happen)")
@@ -202,7 +202,7 @@ mod uniswaprouter_mod {
             &self,
             amount_0_delta: I256,
             amount_1_delta: I256,
-            data: Vec<u8>,
+            data: ethers::core::types::Bytes,
         ) -> ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([250, 70, 30, 51], (amount_0_delta, amount_1_delta, data))
@@ -352,7 +352,7 @@ mod uniswaprouter_mod {
     )]
     #[ethcall(name = "multicall", abi = "multicall(bytes[])")]
     pub struct MulticallCall {
-        pub data: ::std::vec::Vec<Vec<u8>>,
+        pub data: ::std::vec::Vec<ethers::core::types::Bytes>,
     }
     #[doc = "Container type for all input parameters for the `refundETH`function with signature `refundETH()` and selector `[18, 33, 14, 138]`"]
     #[derive(
@@ -524,7 +524,7 @@ mod uniswaprouter_mod {
     pub struct UniswapV3SwapCallbackCall {
         pub amount_0_delta: I256,
         pub amount_1_delta: I256,
-        pub data: Vec<u8>,
+        pub data: ethers::core::types::Bytes,
     }
     #[doc = "Container type for all input parameters for the `unwrapWETH9`function with signature `unwrapWETH9(uint256,address)` and selector `[73, 64, 75, 124]`"]
     #[derive(
@@ -819,7 +819,7 @@ mod uniswaprouter_mod {
         serde :: Serialize,
     )]
     pub struct ExactInputParams {
-        pub path: Vec<u8>,
+        pub path: ethers::core::types::Bytes,
         pub recipient: ethers::core::types::Address,
         pub deadline: ethers::core::types::U256,
         pub amount_in: ethers::core::types::U256,
@@ -858,7 +858,7 @@ mod uniswaprouter_mod {
         serde :: Serialize,
     )]
     pub struct ExactOutputParams {
-        pub path: Vec<u8>,
+        pub path: ethers::core::types::Bytes,
         pub recipient: ethers::core::types::Address,
         pub deadline: ethers::core::types::U256,
         pub amount_out: ethers::core::types::U256,

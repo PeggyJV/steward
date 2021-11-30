@@ -148,7 +148,7 @@ mod aave_mod {
             amounts: ::std::vec::Vec<ethers::core::types::U256>,
             modes: ::std::vec::Vec<ethers::core::types::U256>,
             on_behalf_of: ethers::core::types::Address,
-            params: Vec<u8>,
+            params: ethers::core::types::Bytes,
             referral_code: u16,
         ) -> ethers::contract::builders::ContractCall<M, ()> {
             self.0
@@ -976,7 +976,7 @@ mod aave_mod {
         pub amounts: ::std::vec::Vec<ethers::core::types::U256>,
         pub modes: ::std::vec::Vec<ethers::core::types::U256>,
         pub on_behalf_of: ethers::core::types::Address,
-        pub params: Vec<u8>,
+        pub params: ethers::core::types::Bytes,
         pub referral_code: u16,
     }
     #[doc = "Container type for all input parameters for the `getAddressesProvider`function with signature `getAddressesProvider()` and selector `[254, 101, 172, 254]`"]

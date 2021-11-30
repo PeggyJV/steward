@@ -133,7 +133,7 @@ mod uniswapv3_mod {
             recipient: ethers::core::types::Address,
             amount_0: ethers::core::types::U256,
             amount_1: ethers::core::types::U256,
-            data: Vec<u8>,
+            data: ethers::core::types::Bytes,
         ) -> ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([73, 14, 108, 188], (recipient, amount_0, amount_1, data))
@@ -176,7 +176,7 @@ mod uniswapv3_mod {
             tick_lower: i32,
             tick_upper: i32,
             amount: u128,
-            data: Vec<u8>,
+            data: ethers::core::types::Bytes,
         ) -> ethers::contract::builders::ContractCall<
             M,
             (ethers::core::types::U256, ethers::core::types::U256),
@@ -271,7 +271,7 @@ mod uniswapv3_mod {
             zero_for_one: bool,
             amount_specified: I256,
             sqrt_price_limit_x96: ethers::core::types::U256,
-            data: Vec<u8>,
+            data: ethers::core::types::Bytes,
         ) -> ethers::contract::builders::ContractCall<M, (I256, I256)> {
             self.0
                 .method_hash(
@@ -793,7 +793,7 @@ mod uniswapv3_mod {
         pub recipient: ethers::core::types::Address,
         pub amount_0: ethers::core::types::U256,
         pub amount_1: ethers::core::types::U256,
-        pub data: Vec<u8>,
+        pub data: ethers::core::types::Bytes,
     }
     #[doc = "Container type for all input parameters for the `increaseObservationCardinalityNext`function with signature `increaseObservationCardinalityNext(uint16)` and selector `[50, 20, 143, 103]`"]
     #[derive(
@@ -876,7 +876,7 @@ mod uniswapv3_mod {
         pub tick_lower: i32,
         pub tick_upper: i32,
         pub amount: u128,
-        pub data: Vec<u8>,
+        pub data: ethers::core::types::Bytes,
     }
     #[doc = "Container type for all input parameters for the `observations`function with signature `observations(uint256)` and selector `[37, 44, 9, 215]`"]
     #[derive(
@@ -1005,7 +1005,7 @@ mod uniswapv3_mod {
         pub zero_for_one: bool,
         pub amount_specified: I256,
         pub sqrt_price_limit_x96: ethers::core::types::U256,
-        pub data: Vec<u8>,
+        pub data: ethers::core::types::Bytes,
     }
     #[doc = "Container type for all input parameters for the `tickBitmap`function with signature `tickBitmap(int16)` and selector `[83, 57, 194, 150]`"]
     #[derive(
