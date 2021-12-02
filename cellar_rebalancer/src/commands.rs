@@ -27,9 +27,10 @@ mod start;
 mod transfer;
 mod tx;
 mod reinvest;
+mod cosmos_mode;
 
 use self::{
-    config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd,
+    config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd, cosmos_mode::CosmosSignerCmd,
     remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, start::StartCmd, transfer::TransferCmd,
 };
 
@@ -85,6 +86,8 @@ pub enum CellarRebalancerCmd {
     AllowErc20(allow_erc20::AllowERC20),
 
     Reinvest(reinvest::ReinvestCommand),
+
+    CosmosSigner(CosmosSignerCmd),
 }
 
 /// Entry point for the application. It needs to be a struct to allow using subcommands!
