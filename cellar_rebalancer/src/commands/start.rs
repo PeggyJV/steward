@@ -67,8 +67,9 @@ impl StartCmd {
             let client = SignerMiddleware::new(client, wallet.clone());
             let client = Arc::new(client);
             let mongo = config.mongo.clone();
-
-            let poller = Poller::new(&cellar, client, &mongo)
+            let cosmos = config.cosmos.clone();
+            
+            let poller = Poller::new(&cellar, client, &mongo, &cosmos)
                 .await
                 .unwrap_or_else(|e| {
                     status_err!("couldn't initialize poller: {}", e);
