@@ -23,7 +23,7 @@ mod query;
 mod remove_funds;
 mod set_validator;
 mod sign_delegate_keys;
-mod start;
+mod single_signer;
 mod transfer;
 mod tx;
 mod reinvest;
@@ -31,7 +31,7 @@ mod cosmos_mode;
 
 use self::{
     config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd, cosmos_mode::CosmosSignerCmd,
-    remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, start::StartCmd, transfer::TransferCmd,
+    remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, single_signer::SingleSignerCmd, transfer::TransferCmd,
 };
 
 use crate::config::CellarRebalancerConfig;
@@ -47,7 +47,7 @@ pub const CONFIG_FILE: &str = "contract_monitor.toml";
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum CellarRebalancerCmd {
 
-    Start(StartCmd),
+    SingleSigner(SingleSignerCmd),
 
     Transfer(TransferCmd),
 

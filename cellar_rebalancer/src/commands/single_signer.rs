@@ -3,7 +3,6 @@
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::prelude::*;
-use abscissa_core::error::BoxError;
 use futures::future;
 use signatory::FsKeyStore;
 use std::result::Result;
@@ -14,13 +13,12 @@ use ethers::{
 };
 
 use crate::{
-    collector::{Collector, Poller, Request, Response},
+    collector::{Collector, Poller},
     config::CellarRebalancerConfig,
 };
 use abscissa_core::{config, Command, FrameworkError, Clap, Runnable};
 use std::{convert::TryFrom, path, sync::Arc};
-use tokio::task::JoinHandle;
-use tower::{Service, ServiceBuilder};
+use tower::{ServiceBuilder};
 
 /// `start` subcommand
 ///
@@ -30,12 +28,12 @@ use tower::{Service, ServiceBuilder};
 ///
 /// <https://docs.rs/gumdrop/>
 #[derive(Command, Debug, Clap)]
-pub struct StartCmd {
+pub struct SingleSignerCmd {
     /// To whom are we saying hello?
     recipient: Vec<String>,
 }
 
-impl StartCmd {
+impl SingleSignerCmd {
     /// Initialize collector poller (if configured/needed)
     async fn build_pollers(
         &self,
@@ -86,7 +84,7 @@ impl StartCmd {
     }
 }
 
-impl Runnable for StartCmd {
+impl Runnable for SingleSignerCmd {
     /// Start the application.
     fn run(&self) {
         info!("Starting application");
@@ -118,7 +116,7 @@ impl Runnable for StartCmd {
     }
 }
 
-impl config::Override<CellarRebalancerConfig> for StartCmd {
+impl config::Override<CellarRebalancerConfig> for SingleSignerCmd {
     // Process the given command line options, overriding settings from
     // a configuration file using explicit flags taken from command-line
     // arguments.
