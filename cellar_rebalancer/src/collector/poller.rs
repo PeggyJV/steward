@@ -9,6 +9,7 @@ use crate::{
     prelude::*,
     time_range::{TimeRange, TickWeight},
     uniswap_pool::PoolState,
+    somm_send,
 };
 use abscissa_core::error::BoxError;
 use ethers::prelude::*;
@@ -16,6 +17,9 @@ use std::{sync::Arc, time::Duration, result::Result};
 use tokio::{time, try_join};
 use tower::Service;
 use rebalancer_abi::cellar_uniswap::*;
+use deep_space::Contact;
+use deep_space::coin::Coin;
+use somm_proto::somm as proto;
 
 // Struct poller to collect poll_interval etc. from external sources which aren't capable of pushing data
 pub struct Poller<T: Middleware> {
@@ -24,6 +28,7 @@ pub struct Poller<T: Middleware> {
     cellar_gas: CellarGas,
     contract_state: UniswapV3CellarState<T>,
     pool: PoolState<T>,
+    cosmos_key: deep_space::private_key::PrivateKey,
 }
 
 pub fn from_tick_weight(
@@ -44,6 +49,7 @@ impl<T: 'static + Middleware> Poller<T> {
         client: Arc<T>,
         mongo: &config::MongoSection,
         cosmos_key: &deep_space::private_key::PrivateKey,
+        rebalancer_config: config::CellarRebalancerConfig,
     ) -> Result<Self, Error> {
         let pool = PoolState::new(cellar.pool_address, client.clone());
         let spacing = pool
@@ -52,6 +58,8 @@ impl<T: 'static + Middleware> Poller<T> {
             .call()
             .await
             .expect("Could not get spacing by querying contract");
+
+        let name = &rebalancer_config.keys.rebalancer_key;
 
         let poller = Poller {
             poll_interval: cellar.duration,
@@ -73,9 +81,40 @@ impl<T: 'static + Middleware> Poller<T> {
             },
             contract_state: UniswapV3CellarState::new(cellar.cellar_address, client),
             pool,
+            cosmos_key: rebalancer_config.load_deep_space_key(name.clone()),
         };
 
         Ok(poller)
+    }
+
+    fn to_allocation(&self) -> proto::Allocation {
+        let tick_range: Vec<proto::TickRange> = self
+            .time_range
+            .tick_weights
+            .iter()
+            .map(|tick_weight| proto::TickRange {
+                upper: tick_weight.upper_bound as u64,
+                lower: tick_weight.lower_bound as u64,
+                weight: tick_weight.weight as u64,
+            })
+            .collect();
+
+        proto::Allocation {
+            cellar: Some(proto::Cellar {
+                id: self.time_range.pair_id.to_string(),
+                tick_ranges: self
+                    .time_range
+                    .tick_weights
+                    .iter()
+                    .map(|tick_weight| proto::TickRange {
+                        upper: tick_weight.upper_bound as u64,
+                        lower: tick_weight.lower_bound as u64,
+                        weight: tick_weight.weight as u64,
+                    })
+                    .collect(),
+            }),
+            salt: "".to_string(), //TODO: Add salt,
+        }
     }
 
     // Retrieve poll time range
@@ -98,6 +137,18 @@ impl<T: 'static + Middleware> Poller<T> {
         Ok(ContractStateUpdate {})
     }
 
+    pub async fn cellar_contact(&self) -> Result<Contact, Error> {
+        let config = APP.config();
+        let timeout = Duration::from_secs(10);
+        let contact = Contact::new(
+            &config.cosmos.grpc,
+            timeout,
+            &config.cosmos.prefix,
+        )
+        .expect("Could not create contact");
+        Ok(contact)
+    }
+
     // Update poller with time_range, gas price and contract_state
     pub fn update_poller(
         &mut self,
@@ -110,7 +161,9 @@ impl<T: 'static + Middleware> Poller<T> {
         self.time_range = time_range;
     }
 
-    pub async fn decide_rebalance(&mut self) -> Result<(), Error> {
+    pub async fn decide_rebalance(&mut self, contact: &Contact) -> Result<(), Error> {
+        let config = APP.config();
+        let gas_price = config.cosmos.gas_price.as_tuple();
         let mut tick_info: Vec<CellarTickInfo> = Vec::new();
         for ref tick_weight in self.time_range.tick_weights.clone() {
             if tick_weight.weight > 0 {
@@ -122,6 +175,28 @@ impl<T: 'static + Middleware> Poller<T> {
             Ok(())
         } else {
             tick_info.reverse();
+            let delegate_cosmos_address = self.cosmos_key.to_address(&contact.get_prefix()).unwrap();
+            let name = &config.keys.rebalancer_key;
+            let cosmos_key = config.load_deep_space_key(name.clone());
+
+            let fee = Coin {
+                denom: gas_price.1,
+                amount: 0u32.into(),
+            };
+
+            // TODO(Levi) needs to be initialized
+            let cellar_id = "TODO".to_owned();
+
+            somm_send::send_allocation(
+                contact,
+                delegate_cosmos_address,
+                cosmos_key,
+                fee,
+                cellar_id,
+                vec![self.to_allocation()],
+            )
+            .await
+            .unwrap();
             self.contract_state.rebalance(tick_info).await
         }
     }
@@ -161,11 +236,12 @@ impl<T: 'static + Middleware> Poller<T> {
             self.poll_time_range(),
             self.poll_cellar_gas(),
             self.poll_contract_state(),
+            self.cellar_contact(),
         );
         match res {
-            Ok((time_range, gas, contract_state_update)) => {
+            Ok((time_range, gas, contract_state_update, contact)) => {
                 self.update_poller(time_range, gas, contract_state_update);
-                self.decide_rebalance().await.unwrap();
+                self.decide_rebalance(&contact).await.unwrap();
             }
             Err(e) => error!("Error fetching data {}", e),
         }
