@@ -1,21 +1,10 @@
-mod add;
-mod delete;
-mod import;
-mod list;
-mod show;
+mod eth;
 
 use abscissa_core::{Command, Clap, Runnable};
+use crate::commands::keys::eth::EthKeysCmd;
 
-/// Key management commands for the rebalancer 
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum KeysCmd {
-    Add(add::AddKeyCmd),
-
-    Show(show::ShowKeyCmd),
-
-    Delete(delete::DeleteKeyCmd),
-
-    List(list::ListKeyCmd),
-
-    Import(import::ImportEthKeyCmd),
+    #[clap(subcommand)]
+    EthKeysCmd(EthKeysCmd),
 }
