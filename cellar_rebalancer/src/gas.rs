@@ -1,14 +1,12 @@
 //! Gas models
-use ethers::{
-    middleware::gas_oracle::{
-        Etherchain, Etherscan, GasCategory, GasOracle, GasOracleError,
-    },
-    prelude::*,
-};
-use std::result::Result;
 #[allow(unused_imports)]
 use crate::{collector, config, prelude::*};
 use abscissa_core::error::BoxError;
+use ethers::{
+    middleware::gas_oracle::{Etherchain, Etherscan, GasCategory, GasOracle, GasOracleError},
+    prelude::*,
+};
+use std::result::Result;
 #[allow(unused_imports)]
 use tower::{util::ServiceExt, Service};
 

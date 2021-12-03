@@ -20,23 +20,22 @@ mod keys;
 mod orchestrator;
 mod predictions;
 mod query;
+mod reinvest;
 mod remove_funds;
 mod set_validator;
 mod sign_delegate_keys;
 mod start;
 mod transfer;
 mod tx;
-mod reinvest;
 
 use self::{
     config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd,
-    remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, start::StartCmd, transfer::TransferCmd,
+    remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, start::StartCmd,
+    transfer::TransferCmd,
 };
 
 use crate::config::CellarRebalancerConfig;
-use abscissa_core::{
-    Application, Clap, Command, Configurable, FrameworkError, Runnable
-};
+use abscissa_core::{Clap, Command, Configurable, FrameworkError, Runnable};
 use std::path::PathBuf;
 
 /// CellarRebalancer Configuration Filename
@@ -45,7 +44,6 @@ pub const CONFIG_FILE: &str = "contract_monitor.toml";
 /// CellarRebalancer Subcommands
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum CellarRebalancerCmd {
-
     Start(StartCmd),
 
     Transfer(TransferCmd),
@@ -117,10 +115,10 @@ impl Configurable<CellarRebalancerConfig> for EntryPoint {
         // If you'd like for a missing configuration file to be a hard error
         // instead, always return `Some(CONFIG_FILE)` here.
         let filename = self
-        .config
-        .as_ref()
-        .map(PathBuf::from)
-        .unwrap_or_else(|| CONFIG_FILE.into());
+            .config
+            .as_ref()
+            .map(PathBuf::from)
+            .unwrap_or_else(|| CONFIG_FILE.into());
 
         if filename.exists() {
             Some(filename)

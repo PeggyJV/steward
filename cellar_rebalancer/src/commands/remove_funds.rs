@@ -1,17 +1,11 @@
-use std::{convert::TryFrom, ops::Add, path, sync::Arc, time::Duration};
+use std::{convert::TryFrom, path, sync::Arc, time::Duration};
 
-use abscissa_core::{Application, Command, Clap, Runnable};
+use abscissa_core::{Application, Clap, Command, Runnable};
 use chrono::Utc;
 use ethers::prelude::*;
-use num_bigint::{BigInt, ToBigInt};
-use num_traits::Zero;
 use signatory::FsKeyStore;
 
-use crate::{
-    cellar_uniswap_wrapper::{UniswapV3CellarState},
-    prelude::*,
-    uniswap_pool::PoolState,
-};
+use crate::{cellar_uniswap_wrapper::UniswapV3CellarState, prelude::*};
 use rebalancer_abi::cellar_uniswap::*;
 
 /// Remove funds from Cellars
@@ -51,7 +45,8 @@ impl Runnable for RemoveFundsCmd {
 
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
-            let mut contract_state = UniswapV3CellarState::new(cellar.cellar_address, client.clone());
+            let mut contract_state =
+                UniswapV3CellarState::new(cellar.cellar_address, client.clone());
 
             let balance = contract_state
                 .contract

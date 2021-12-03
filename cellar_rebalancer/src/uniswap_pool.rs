@@ -1,7 +1,6 @@
-use crate::error::Error;
 use ethers::prelude::*;
-use std::sync::Arc;
 use rebalancer_abi::uniswapv3pool::UniswapV3 as UPool;
+use std::sync::Arc;
 
 pub struct PoolState<T> {
     pub contract: UPool<T>,

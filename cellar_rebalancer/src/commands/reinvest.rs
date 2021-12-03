@@ -1,19 +1,12 @@
-use std::{convert::TryFrom, ops::Add, path, sync::Arc, time::Duration};
+use std::{convert::TryFrom, path, sync::Arc, time::Duration};
 
-use abscissa_core::{Application, Command, Clap, Runnable};
-use chrono::Utc;
+use abscissa_core::{Application, Clap, Command, Runnable};
+
 use ethers::prelude::*;
-use num_bigint::{BigInt, ToBigInt};
-use num_traits::Zero;
+
 use signatory::FsKeyStore;
 
-use crate::{
-    cellar_uniswap_wrapper::{UniswapV3CellarState, UniswapV3CellarTickInfo},
-    erc20::Erc20State,
-    gas::CellarGas,
-    prelude::*,
-    uniswap_pool::PoolState,
-};
+use crate::{cellar_uniswap_wrapper::UniswapV3CellarState, gas::CellarGas, prelude::*};
 
 /// Cellars reinvest command
 #[derive(Command, Debug, Clap)]
@@ -45,7 +38,7 @@ impl Runnable for ReinvestCommand {
         let wallet: LocalWallet = Wallet::from(key);
 
         let eth_host = config.ethereum.rpc.clone();
-        let address = wallet.address();
+        let _address = wallet.address();
 
         abscissa_tokio::run(&APP, async {
             let client = Provider::<Http>::try_from(eth_host)
@@ -58,14 +51,11 @@ impl Runnable for ReinvestCommand {
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
 
-            let mut contract_state = UniswapV3CellarState::new(cellar.cellar_address, client.clone());
+            let mut contract_state =
+                UniswapV3CellarState::new(cellar.cellar_address, client.clone());
             contract_state.gas_price = Some(gas);
-   
 
-            contract_state
-                .reinvest()
-                .await
-                .unwrap();
+            contract_state.reinvest().await.unwrap();
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

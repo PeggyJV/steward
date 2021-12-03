@@ -1,15 +1,11 @@
-use std::{convert::TryFrom, ops::Add, path, sync::Arc, time::Duration};
-
-use abscissa_core::{Application, Command, Clap, Runnable};
+use abscissa_core::{Application, Clap, Command, Runnable};
 use chrono::Utc;
 use ethers::prelude::*;
-use num_bigint::{BigInt, ToBigInt};
-use num_traits::Zero;
 use signatory::FsKeyStore;
+use std::{convert::TryFrom, ops::Add, path, sync::Arc, time::Duration};
 
 use crate::{
     cellar_uniswap_wrapper::{UniswapV3CellarState, UniswapV3CellarTickInfo},
-    erc20::Erc20State,
     gas::CellarGas,
     prelude::*,
     uniswap_pool::PoolState,
@@ -63,16 +59,17 @@ impl Runnable for FundCellarCmd {
             // MyContract expects Arc, create with client
             let client = Arc::new(client);
 
-            let mut contract_state = UniswapV3CellarState::new(cellar.cellar_address, client.clone());
+            let mut contract_state =
+                UniswapV3CellarState::new(cellar.cellar_address, client.clone());
             contract_state.gas_price = Some(gas);
             let pool_state = PoolState::new(cellar.pool_address, client.clone());
 
-            let (sqrtPriceX96, spot_tick, _, _, _, _, _) =
+            let (sqrt_price_x96, spot_tick, _, _, _, _, _) =
                 pool_state.contract.slot_0().call().await.unwrap();
 
             info!(
                 "Current sqrtPriceX96 {} tick {}",
-                sqrtPriceX96.to_string(),
+                sqrt_price_x96.to_string(),
                 spot_tick
             );
 
@@ -91,7 +88,7 @@ impl Runnable for FundCellarCmd {
                         ticks.push(tick_info);
                         i = i.add(U256::one());
                     }
-                    Err(e) => {
+                    Err(_e) => {
                         break;
                     }
                 }
@@ -103,10 +100,14 @@ impl Runnable for FundCellarCmd {
             }
 
             let params = CellarAddParams {
-                amount_0_desired: ((self.amount_0 * (10u64.pow(cellar.token_0.decimals as u32)) as f64) as u128)
-                .into(),
-                amount_1_desired: ((self.amount_1 * (10u64.pow(cellar.token_1.decimals as u32)) as f64) as u128)
-                .into(),
+                amount_0_desired: ((self.amount_0
+                    * (10u64.pow(cellar.token_0.decimals as u32)) as f64)
+                    as u128)
+                    .into(),
+                amount_1_desired: ((self.amount_1
+                    * (10u64.pow(cellar.token_1.decimals as u32)) as f64)
+                    as u128)
+                    .into(),
                 amount_0_min: 0.into(),
                 amount_1_min: 0.into(),
                 recipient: address,

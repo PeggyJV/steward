@@ -3,7 +3,7 @@ use crate::application::APP;
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::prelude::*;
-use abscissa_core::{Command, Clap, Runnable};
+use abscissa_core::{Clap, Command, Runnable};
 use ethers::prelude::*;
 use std::convert::TryFrom;
 

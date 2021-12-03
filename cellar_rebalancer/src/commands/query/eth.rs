@@ -2,9 +2,9 @@
 
 use crate::uniswap_pool::PoolState;
 use crate::{application::APP, prelude::*};
+use abscissa_core::{Clap, Command, Runnable};
 use ethers::prelude::*;
 use std::{convert::TryFrom, sync::Arc, time::Duration};
-use abscissa_core::{Command, Clap, Runnable};
 /// Query Eth chain
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum Eth {
@@ -76,4 +76,3 @@ impl Runnable for Pair {
         });
     }
 }
-

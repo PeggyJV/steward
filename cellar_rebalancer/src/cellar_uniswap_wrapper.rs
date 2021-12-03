@@ -65,9 +65,7 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
         &mut self,
         cellar_add_params: CellarAddParams,
     ) -> Result<(), Error> {
-        let mut call = self
-            .contract
-            .add_liquidity_for_uni_v3(cellar_add_params);
+        let mut call = self.contract.add_liquidity_for_uni_v3(cellar_add_params);
 
         if let Some(gas_price) = self.gas_price {
             call = call.gas_price(gas_price)

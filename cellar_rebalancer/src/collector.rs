@@ -7,8 +7,8 @@ use std::{
 
 use crate::{config, error::Error, time_range::TimeRange};
 use ethers::prelude::*;
-use tower::Service;
 use std::result::Result;
+use tower::Service;
 
 pub use self::{poller::Poller, request::Request, response::Response};
 
@@ -18,7 +18,8 @@ mod response;
 
 // The Collector currently doesn't do very much but that is expected to change.
 // If the appliction requires concurrent access to the prediction data from multiple
-// loops then state data needs to be passed from the poller to the collector.
+// loops then state data needs to be passed from the poller to the collector
+#[allow(dead_code)]
 pub struct Collector {
     recent_gas_prices: Vec<U256>,
     last_rebalance_time: chrono::DateTime<chrono::Utc>,

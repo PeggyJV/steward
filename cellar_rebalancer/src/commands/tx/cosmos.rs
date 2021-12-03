@@ -1,7 +1,7 @@
 //! `cosmos subcommands` subcommand
 
 use crate::{application::APP, prelude::*, utils::*};
-use abscissa_core::{Command, Clap, Runnable};
+use abscissa_core::{Clap, Command, Runnable};
 use clarity::{Address as EthAddress, Uint256};
 use deep_space::{coin::Coin, private_key::PrivateKey as CosmosPrivateKey};
 use gravity_bridge::cosmos_gravity::send::send_to_eth;
@@ -14,7 +14,7 @@ use std::process::exit;
 #[derive(Command, Debug, Clap)]
 pub enum Cosmos {
     SendToEth(SendToEth),
-    
+
     Send(Send),
 }
 

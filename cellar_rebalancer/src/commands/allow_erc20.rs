@@ -1,21 +1,14 @@
-use std::{convert::TryFrom, ops::Add, path, sync::Arc, time::Duration};
+use std::{convert::TryFrom, path, sync::Arc, time::Duration};
 
-use abscissa_core::{Application, Command, Clap, Runnable};
-use chrono::Utc;
+use abscissa_core::{Application, Clap, Command, Runnable};
+
 use ethers::prelude::*;
-use num_bigint::{BigInt, ToBigInt};
-use num_traits::Zero;
+
 use signatory::FsKeyStore;
 
-use crate::{
-    cellar_uniswap_wrapper::{UniswapV3CellarState, UniswapV3CellarTickInfo},
-    erc20::Erc20State,
-    gas::CellarGas,
-    prelude::*,
-    uniswap_pool::PoolState,
-};
+use crate::{erc20::Erc20State, gas::CellarGas, prelude::*};
 
-/// Allow Erc20 Token to interact with cellar contract  
+/// Allow Erc20 Token to interact with cellar contract
 #[derive(Command, Debug, Default, Clap)]
 pub struct AllowERC20 {
     #[clap(short = 'C', long)]
@@ -29,7 +22,7 @@ pub struct AllowERC20 {
 impl Runnable for AllowERC20 {
     fn run(&self) {
         let config = APP.config();
-        let cellar = config.cellars.get(0).expect("Could not get cellar config");
+        let _cellar = config.cellars.get(0).expect("Could not get cellar config");
 
         let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");

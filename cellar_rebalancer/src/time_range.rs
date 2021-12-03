@@ -266,6 +266,7 @@ impl TimeRange {
     }
 }
 
+#[allow(dead_code)]
 fn f64_unit_to_price_for_stables(price: f64, token_0: &TokenInfo, token_1: &TokenInfo) -> Price {
     Price {
         token_0: Token {

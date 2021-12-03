@@ -154,7 +154,7 @@ pub struct EthereumSection {
     /// Declaring EthereumSection gas multiplier
     pub gas_price_multiplier: f32,
     /// Declaring EthereumSection blocks to search
-    pub blocks_to_search:u64,
+    pub blocks_to_search: u64,
 }
 
 impl Default for EthereumSection {
@@ -190,7 +190,7 @@ pub struct CosmosSection {
     pub key_derivation_path: String,
     pub grpc: String,
     pub prefix: String,
-    pub msg_batch_size:u32,
+    pub msg_batch_size: u32,
     pub gas_adjustment: f64,
     pub gas_price: GasPrice,
 }
