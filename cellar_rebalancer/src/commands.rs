@@ -44,45 +44,29 @@ pub const CONFIG_FILE: &str = "contract_monitor.toml";
 /// CellarRebalancer Subcommands
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum CellarRebalancerCmd {
-    Start(StartCmd),
-
-    Transfer(TransferCmd),
-
-    Predictions(PredictionsCmd),
-
-    #[clap(subcommand)]
-    Keys(KeysCmd),
-
-    /// Print default configurations
-    PrintConfig(ConfigCmd),
-
-    FundCellar(FundCellarCmd),
-
-    RemoveFunds(RemoveFundsCmd),
-
+    AllowErc20(allow_erc20::AllowERC20),
     CosmosToEth(cosmos_to_eth::CosmosToEthCmd),
-
     #[clap(subcommand)]
     Deploy(deploy::DeployCmd),
-
     EthToCosmos(eth_to_cosmos::EthToCosmosCmd),
-
+    FundCellar(FundCellarCmd),
+    #[clap(subcommand)]
+    Keys(KeysCmd),
     #[clap(subcommand)]
     Orchestrator(orchestrator::OrchestratorCmd),
-
+    Predictions(PredictionsCmd),
+    /// Print default configurations
+    PrintConfig(ConfigCmd),
     #[clap(subcommand)]
     Query(query::QueryCmd),
-
+    Reinvest(reinvest::ReinvestCommand),
+    RemoveFunds(RemoveFundsCmd),
     SetValidator(SetValidatorCmd),
-
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
-
+    Start(StartCmd),
+    Transfer(TransferCmd),
     #[clap(subcommand)]
     Tx(tx::TxCmd),
-
-    AllowErc20(allow_erc20::AllowERC20),
-
-    Reinvest(reinvest::ReinvestCommand),
 }
 
 /// Entry point for the application. It needs to be a struct to allow using subcommands!
@@ -91,11 +75,9 @@ pub enum CellarRebalancerCmd {
 pub struct EntryPoint {
     #[clap(subcommand)]
     cmd: CellarRebalancerCmd,
-
     /// Enable verbose logging
     #[clap(short, long)]
     pub verbose: bool,
-
     /// Use the specified config file
     #[clap(short, long)]
     pub config: Option<String>,

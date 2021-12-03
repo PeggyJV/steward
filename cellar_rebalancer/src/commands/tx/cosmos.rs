@@ -14,7 +14,6 @@ use std::process::exit;
 #[derive(Command, Debug, Clap)]
 pub enum Cosmos {
     SendToEth(SendToEth),
-
     Send(Send),
 }
 

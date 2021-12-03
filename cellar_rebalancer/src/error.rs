@@ -1,7 +1,7 @@
 //! Error types
 
 use abscissa_core::error::{BoxError, Context};
-use ethers::prelude::*;
+use ethers::{contract::ContractError, middleware::gas_oracle::GasOracleError, prelude::*};
 use std::{
     fmt::{self, Display},
     io,
@@ -9,33 +9,24 @@ use std::{
 };
 use thiserror::Error;
 
-use ethers::middleware::gas_oracle::GasOracleError;
-
-use ethers::contract::ContractError;
-
 /// Kinds of errors
 #[derive(Copy, Clone, Debug, Eq, Error, PartialEq)]
 pub enum ErrorKind {
     /// Error in configuration file
     #[error("config error")]
     Config,
-
-    /// Input/output error
-    #[error("I/O error")]
-    Io,
-
-    /// Input/output error
-    #[error("http error")]
-    Http,
-
-    /// Gas Oracle error
-    #[error("gas error")]
-    GasOracle,
-
     /// Contract error
     #[error("contract error")]
     ContractError,
-
+    /// Input/output error
+    #[error("I/O error")]
+    Io,
+    /// Gas Oracle error
+    #[error("gas error")]
+    GasOracle,
+    /// Input/output error
+    #[error("http error")]
+    Http,
     /// Provider error
     #[error("provider error")]
     ProviderError,

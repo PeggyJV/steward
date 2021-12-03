@@ -10,12 +10,8 @@ use abscissa_core::{Clap, Command, Runnable};
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum KeysCmd {
     Add(add::AddKeyCmd),
-
-    Show(show::ShowKeyCmd),
-
     Delete(delete::DeleteKeyCmd),
-
-    List(list::ListKeyCmd),
-
     Import(import::ImportEthKeyCmd),
+    List(list::ListKeyCmd),
+    Show(show::ShowKeyCmd),
 }

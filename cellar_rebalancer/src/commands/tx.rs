@@ -12,7 +12,6 @@ use abscissa_core::{Clap, Command, Runnable};
 pub enum TxCmd {
     #[clap(subcommand)]
     Cosmos(cosmos::Cosmos),
-
     #[clap(subcommand)]
     Eth(eth::Eth),
 }

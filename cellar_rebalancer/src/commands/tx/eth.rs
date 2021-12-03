@@ -12,7 +12,6 @@ use gravity_bridge::gravity_utils::connection_prep::{check_for_eth, create_rpc_c
 #[derive(Command, Debug, Clap)]
 pub enum Eth {
     SendToCosmos(SendToCosmos),
-
     Send(Send),
 }
 
