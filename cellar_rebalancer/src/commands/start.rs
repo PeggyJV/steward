@@ -2,25 +2,15 @@
 
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
-use crate::prelude::*;
-use abscissa_core::error::BoxError;
+use crate::{application::APP, config::CellarRebalancerConfig, prelude::*};
+use crate::collector::{Collector, Poller};
+use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
+use ethers::prelude::*;
+use ethers::providers::{Http, Provider};
 use futures::future;
 use signatory::FsKeyStore;
-use std::result::Result;
-use crate::application::APP;
-use ethers::{
-    prelude::*,
-    providers::{Http, Provider},
-};
-
-use crate::{
-    collector::{Collector, Poller, Request, Response},
-    config::CellarRebalancerConfig,
-};
-use abscissa_core::{config, Command, FrameworkError, Clap, Runnable};
-use std::{convert::TryFrom, path, sync::Arc};
-use tokio::task::JoinHandle;
-use tower::{Service, ServiceBuilder};
+use std::{convert::TryFrom, path, result::Result, sync::Arc};
+use tower::ServiceBuilder;
 
 /// `start` subcommand
 ///

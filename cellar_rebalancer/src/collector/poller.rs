@@ -2,22 +2,23 @@
 /// The collector's [`Poller`] collects information from external sources
 /// which aren't capable of pushing data.
 use crate::{
-    cellar_uniswap_wrapper::{UniswapV3CellarState, ContractStateUpdate},
+    cellar_uniswap_wrapper::{ContractStateUpdate, UniswapV3CellarState},
     collector, config,
     error::Error,
     gas::CellarGas,
     prelude::*,
-    time_range::{TimeRange, TickWeight},
+    time_range::{TickWeight, TimeRange},
     uniswap_pool::PoolState,
 };
 use abscissa_core::error::BoxError;
 use ethers::prelude::*;
-use std::{sync::Arc, time::Duration, result::Result};
+use rebalancer_abi::cellar_uniswap::*;
+use std::{result::Result, sync::Arc, time::Duration};
 use tokio::{time, try_join};
 use tower::Service;
-use rebalancer_abi::cellar_uniswap::*;
 
 // Struct poller to collect poll_interval etc. from external sources which aren't capable of pushing data
+#[allow(dead_code)]
 pub struct Poller<T: Middleware> {
     poll_interval: Duration,
     time_range: TimeRange,
@@ -26,9 +27,7 @@ pub struct Poller<T: Middleware> {
     pool: PoolState<T>,
 }
 
-pub fn from_tick_weight(
-    tick_weight: TickWeight,
-) -> CellarTickInfo {
+pub fn from_tick_weight(tick_weight: TickWeight) -> CellarTickInfo {
     CellarTickInfo {
         token_id: U256::zero(),
         tick_upper: tick_weight.upper_bound,
@@ -149,7 +148,7 @@ impl<T: 'static + Middleware> Poller<T> {
         }
     }
 
-    async fn poll<S>(&mut self, collector: &S)
+    async fn poll<S>(&mut self, _collector: &S)
     where
         S: Service<collector::Request, Response = collector::Response, Error = BoxError>
             + Send

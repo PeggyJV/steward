@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use abscissa_core::{Command, Clap, Runnable};
+use abscissa_core::{Clap, Command, Runnable};
 use mongodb::{bson::doc, options::FindOptions, Client};
 
 use crate::time_range::MongoData;

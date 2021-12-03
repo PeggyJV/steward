@@ -1,5 +1,5 @@
 use crate::{application::APP, prelude::*};
-use abscissa_core::{Command, Clap, Runnable};
+use abscissa_core::{Clap, Command, Runnable};
 use clarity::address::Address as EthAddress;
 use gravity_bridge::gravity_utils::connection_prep::{
     check_delegate_addresses, check_for_eth, check_for_fee_denom, create_rpc_connections,

@@ -1,10 +1,9 @@
 //! Rust Wrapper for cellar functions
-/// This will convert cellar functions from tuples to Rust types
-use crate::error::Error;
+
 use ethers::prelude::*;
-use std::sync::Arc;
 use rebalancer_abi::uniswap_router::UniswapRouter;
 use rebalancer_abi::uniswapv3pool::UniswapV3 as UniswapPool;
+use std::sync::Arc;
 
 pub struct RouterState<T> {
     pub contract: UniswapRouter<T>,
