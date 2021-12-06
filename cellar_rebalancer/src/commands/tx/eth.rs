@@ -1,7 +1,7 @@
 //! `eth subcommands` subcommand
 
 use crate::{application::APP, prelude::*, utils::*};
-use abscissa_core::{Command, Clap, Runnable};
+use abscissa_core::{Clap, Command, Runnable};
 use clarity::Address as EthAddress;
 use clarity::{PrivateKey as EthPrivateKey, Uint256};
 use deep_space::address::Address as CosmosAddress;
@@ -12,7 +12,6 @@ use gravity_bridge::gravity_utils::connection_prep::{check_for_eth, create_rpc_c
 #[derive(Command, Debug, Clap)]
 pub enum Eth {
     SendToCosmos(SendToCosmos),
-
     Send(Send),
 }
 

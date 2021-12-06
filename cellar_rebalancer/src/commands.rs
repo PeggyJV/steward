@@ -12,6 +12,7 @@
 
 mod allow_erc20;
 mod config_cmd;
+mod cosmos_mode;
 mod cosmos_to_eth;
 mod deploy;
 mod eth_to_cosmos;
@@ -20,24 +21,22 @@ mod keys;
 mod orchestrator;
 mod predictions;
 mod query;
+mod reinvest;
 mod remove_funds;
 mod set_validator;
 mod sign_delegate_keys;
 mod single_signer;
 mod transfer;
 mod tx;
-mod reinvest;
-mod cosmos_mode;
 
 use self::{
-    config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd, cosmos_mode::CosmosSignerCmd,
-    remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, single_signer::SingleSignerCmd, transfer::TransferCmd,
+    config_cmd::ConfigCmd, cosmos_mode::CosmosSignerCmd, fund_cellar::FundCellarCmd, keys::KeysCmd,
+    predictions::PredictionsCmd, remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd,
+    single_signer::SingleSignerCmd, transfer::TransferCmd,
 };
 
 use crate::config::CellarRebalancerConfig;
-use abscissa_core::{
-    Application, Clap, Command, Configurable, FrameworkError, Runnable
-};
+use abscissa_core::{Clap, Command, Configurable, FrameworkError, Runnable};
 use std::path::PathBuf;
 
 /// CellarRebalancer Configuration Filename
@@ -46,47 +45,30 @@ pub const CONFIG_FILE: &str = "contract_monitor.toml";
 /// CellarRebalancer Subcommands
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum CellarRebalancerCmd {
-
     SingleSigner(SingleSignerCmd),
-
     Transfer(TransferCmd),
-
     Predictions(PredictionsCmd),
-
     #[clap(subcommand)]
     Keys(KeysCmd),
-
     /// Print default configurations
     PrintConfig(ConfigCmd),
-
     FundCellar(FundCellarCmd),
-
     RemoveFunds(RemoveFundsCmd),
-
     CosmosToEth(cosmos_to_eth::CosmosToEthCmd),
-
     #[clap(subcommand)]
     Deploy(deploy::DeployCmd),
-
     EthToCosmos(eth_to_cosmos::EthToCosmosCmd),
-
     #[clap(subcommand)]
     Orchestrator(orchestrator::OrchestratorCmd),
-
+    /// Print default configurations
     #[clap(subcommand)]
     Query(query::QueryCmd),
-
+    Reinvest(reinvest::ReinvestCommand),
     SetValidator(SetValidatorCmd),
-
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
-
     #[clap(subcommand)]
     Tx(tx::TxCmd),
-
     AllowErc20(allow_erc20::AllowERC20),
-
-    Reinvest(reinvest::ReinvestCommand),
-
     CosmosSigner(CosmosSignerCmd),
 }
 
@@ -96,11 +78,9 @@ pub enum CellarRebalancerCmd {
 pub struct EntryPoint {
     #[clap(subcommand)]
     cmd: CellarRebalancerCmd,
-
     /// Enable verbose logging
     #[clap(short, long)]
     pub verbose: bool,
-
     /// Use the specified config file
     #[clap(short, long)]
     pub config: Option<String>,
@@ -120,10 +100,10 @@ impl Configurable<CellarRebalancerConfig> for EntryPoint {
         // If you'd like for a missing configuration file to be a hard error
         // instead, always return `Some(CONFIG_FILE)` here.
         let filename = self
-        .config
-        .as_ref()
-        .map(PathBuf::from)
-        .unwrap_or_else(|| CONFIG_FILE.into());
+            .config
+            .as_ref()
+            .map(PathBuf::from)
+            .unwrap_or_else(|| CONFIG_FILE.into());
 
         if filename.exists() {
             Some(filename)

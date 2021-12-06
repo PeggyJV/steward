@@ -1,13 +1,12 @@
 //! `cosmos subcommands` subcommand
 
 use crate::{application::APP, prelude::*};
-use abscissa_core::{Command, Clap, Runnable};
+use abscissa_core::{Clap, Command, Runnable};
 
 /// Query Cosmos chain
 #[derive(Command, Debug, Clap)]
 pub enum Cosmos {
     Balance(Balance),
-    
     GravityKeys(GravityKeys),
 }
 
@@ -36,7 +35,6 @@ impl Runnable for Balance {
 #[derive(Command, Debug, Clap)]
 pub struct GravityKeys {
     free: Vec<String>,
-
     #[clap(short, long)]
     help: bool,
 }

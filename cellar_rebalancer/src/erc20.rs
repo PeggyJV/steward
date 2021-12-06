@@ -1,11 +1,10 @@
 //! Rust Wrapper for cellar functions
-/// This will convert cellar functions from tuples to Rust types
-use crate::error::Error;
+
 use crate::prelude::*;
 use ethers::prelude::*;
-use std::sync::Arc;
 use rebalancer_abi::erc20::Erc20;
 use rebalancer_abi::weth::Weth;
+use std::sync::Arc;
 
 pub struct Erc20State<T> {
     pub contract: Erc20<T>,
@@ -29,6 +28,8 @@ impl<T: 'static + Middleware> Erc20State<T> {
         return;
     }
 }
+
+#[allow(dead_code)]
 pub struct WethState<T> {
     contract: Weth<T>,
 }
