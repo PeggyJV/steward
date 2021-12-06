@@ -185,6 +185,13 @@ impl<T: 'static + Middleware> Poller<T> {
             // TODO(Levi) needs to be initialized
             let cellar_id = "TODO".to_owned();
 
+            // Wait for new vote period to Start
+
+            // Sending Pre-commits
+
+            // Checking Pre-commits for validators
+
+            // Sending Commits
             somm_send::send_allocation(
                 contact,
                 delegate_cosmos_address,
@@ -194,7 +201,15 @@ impl<T: 'static + Middleware> Poller<T> {
                 vec![self.to_allocation()],
             )
             .await
-            .unwrap();
+            .unwrap();   
+
+            // Checking Commits for validators
+
+            // Waiting for end of voting period
+
+            // Checking for updated tick ranges
+
+            // Checking to see if hooks updated Cellars on the chain
             self.contract_state.rebalance(tick_info).await
         }
     }
