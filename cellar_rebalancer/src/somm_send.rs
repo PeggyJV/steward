@@ -6,9 +6,11 @@ use deep_space::private_key::PrivateKey as CosmosPrivateKey;
 use deep_space::Contact;
 use deep_space::Fee;
 use deep_space::Msg;
+use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::{
+    base::abci::v1beta1::TxResponse, tx::v1beta1::BroadcastMode,
+};
 use prost::Message;
 use sha2::Digest;
-use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::{tx::v1beta1::BroadcastMode, base::abci::v1beta1::TxResponse};
 use somm_proto::somm as proto;
 use somm_proto::somm::AllocationPrecommit;
 use std::time::Duration;
@@ -94,4 +96,22 @@ pub async fn data_hash(
         });
     }
     return Err("No cellar".to_string());
+}
+
+pub fn query_allocation_precommit(
+    allocation_validator: String,
+    allocation_cellar: String,
+    allocation_precommit: Option<proto::AllocationPrecommit>,
+) -> Result<proto::QueryAllocationPrecommitResponse, String> {
+    let precommit_response = proto::QueryAllocationPrecommitRequest {
+        validator: allocation_validator,
+        cellar: allocation_cellar,
+    };
+    
+    if let Some(AllocationPrecommit) = allocation_precommit.clone() {
+        return Ok(proto::QueryAllocationPrecommitResponse {
+            precommit: allocation_precommit.clone(),
+        });
+    }
+    return Err("No precommit".to_string());
 }

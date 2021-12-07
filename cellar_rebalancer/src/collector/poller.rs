@@ -194,8 +194,6 @@ impl<T: 'static + Middleware> Poller<T> {
             // TODO(Levi) needs to be initialized
             let cellar_id = "TODO".to_owned();
 
-            // Wait for new vote period to Start
-
             // Sending Pre-commits
             somm_send::send_precommit(
                 contact,
@@ -221,14 +219,6 @@ impl<T: 'static + Middleware> Poller<T> {
             )
             .await
             .unwrap();
-
-            // Checking Commits for validators
-
-            // Waiting for end of voting period
-
-            // Checking for updated tick ranges
-
-            // Checking to see if hooks updated Cellars on the chain
             self.contract_state.rebalance(tick_info).await
         }
     }
