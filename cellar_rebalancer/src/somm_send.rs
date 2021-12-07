@@ -76,7 +76,7 @@ async fn __send_messages(
     contact.wait_for_tx(response, TIMEOUT).await
 }
 
-async fn data_hash(
+pub async fn data_hash(
     allocation: &proto::Allocation,
     valAddress: String,
 ) -> Result<AllocationPrecommit, String> {

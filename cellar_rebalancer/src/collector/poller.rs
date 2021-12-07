@@ -7,18 +7,18 @@ use crate::{
     error::Error,
     gas::CellarGas,
     prelude::*,
+    somm_send,
     time_range::{TickWeight, TimeRange},
     uniswap_pool::PoolState,
-    somm_send,
 };
 use abscissa_core::error::BoxError;
+use deep_space::{coin::Coin, Contact};
 use ethers::prelude::*;
 use rebalancer_abi::cellar_uniswap::*;
+use somm_proto::somm as proto;
 use std::{result::Result, sync::Arc, time::Duration};
 use tokio::{time, try_join};
 use tower::Service;
-use deep_space::{Contact, coin::Coin};
-use somm_proto::somm as proto;
 
 // Struct poller to collect poll_interval etc. from external sources which aren't capable of pushing data
 #[allow(dead_code)]
@@ -115,6 +115,18 @@ impl<T: 'static + Middleware> Poller<T> {
         }
     }
 
+    pub async fn allocation_precommit(&self) -> proto::AllocationPrecommit {
+        // TODO(Ugochi) - Get Valaddress
+        let addres = "me".to_string();
+        let hasher = somm_send::data_hash(&self.to_allocation(), addres)
+            .await
+            .unwrap();
+        proto::AllocationPrecommit {
+            hash: hasher.hash,
+            cellar_id: self.time_range.pair_id.to_string(),
+        }
+    }
+
     // Retrieve poll time range
     pub async fn poll_time_range(&self) -> Result<TimeRange, Error> {
         info!("{} polling time range", self.time_range.pair_database);
@@ -138,12 +150,8 @@ impl<T: 'static + Middleware> Poller<T> {
     pub async fn cellar_contact(&self) -> Result<Contact, Error> {
         let config = APP.config();
         let timeout = Duration::from_secs(10);
-        let contact = Contact::new(
-            &config.cosmos.grpc,
-            timeout,
-            &config.cosmos.prefix,
-        )
-        .expect("Could not create contact");
+        let contact = Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix)
+            .expect("Could not create contact");
         Ok(contact)
     }
 
@@ -173,7 +181,8 @@ impl<T: 'static + Middleware> Poller<T> {
             Ok(())
         } else {
             tick_info.reverse();
-            let delegate_cosmos_address = self.cosmos_key.to_address(&contact.get_prefix()).unwrap();
+            let delegate_cosmos_address =
+                self.cosmos_key.to_address(&contact.get_prefix()).unwrap();
             let name = &config.keys.rebalancer_key;
             let cosmos_key = config.load_deep_space_key(name.clone());
 
@@ -188,6 +197,16 @@ impl<T: 'static + Middleware> Poller<T> {
             // Wait for new vote period to Start
 
             // Sending Pre-commits
+            somm_send::send_precommit(
+                contact,
+                delegate_cosmos_address,
+                cosmos_key,
+                fee.clone(),
+                cellar_id.clone(),
+                vec![self.allocation_precommit().await],
+            )
+            .await
+            .unwrap();
 
             // Checking Pre-commits for validators
 
@@ -201,7 +220,7 @@ impl<T: 'static + Middleware> Poller<T> {
                 vec![self.to_allocation()],
             )
             .await
-            .unwrap();   
+            .unwrap();
 
             // Checking Commits for validators
 
