@@ -116,9 +116,10 @@ impl<T: 'static + Middleware> Poller<T> {
     }
 
     pub async fn allocation_precommit(&self) -> proto::AllocationPrecommit {
-        // TODO(Ugochi) - Get Valaddress
-        let addres = "me".to_string();
-        let hasher = somm_send::data_hash(&self.to_allocation(), addres)
+        let config = APP.config();
+        let delegate_cosmos_address =
+        self.cosmos_key.to_address(&config.cosmos.prefix).unwrap().to_string();
+        let hasher = somm_send::data_hash(&self.to_allocation(), delegate_cosmos_address)
             .await
             .unwrap();
         proto::AllocationPrecommit {
@@ -191,10 +192,10 @@ impl<T: 'static + Middleware> Poller<T> {
                 amount: 0u32.into(),
             };
 
-            let contract_address = self.contract_state.contract.address();
+            let contract_address = self.contract_state.contract.address().to_string();
             let eth_host = config.ethereum.rpc.clone();
             let provider = Provider::<Http>::try_from(eth_host).unwrap();
-            let chain_id = provider.get_chainid().await.unwrap().as_u64();
+            let chain_id = provider.get_chainid().await.unwrap().as_u64().to_string();
             let cellar_id = (contract_address, chain_id);
 
             // Sending Pre-commits
