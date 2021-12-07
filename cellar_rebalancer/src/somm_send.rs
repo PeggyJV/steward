@@ -13,7 +13,8 @@ use prost::Message;
 use sha2::Digest;
 use somm_proto::somm as proto;
 use somm_proto::somm::AllocationPrecommit;
-use std::time::Duration;
+use std::{time::Duration, result::Result};
+use ethers::prelude::*;
 
 pub const TIMEOUT: Duration = Duration::from_secs(60);
 pub const MEMO: &str = "Sent using Somm Orchestrator";
@@ -23,7 +24,7 @@ pub async fn send_precommit(
     delegate_cosmos_address: Address,
     cosmos_key: CosmosPrivateKey,
     fee: Coin,
-    cellar_id: String,
+    cellar_id: (H160, u64),
     allocation_precommit: Vec<proto::AllocationPrecommit>,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let msg = proto::MsgAllocationPrecommit {
@@ -40,7 +41,7 @@ pub async fn send_allocation(
     delegate_cosmos_address: Address,
     cosmos_key: CosmosPrivateKey,
     fee: Coin,
-    cellar_id: String,
+    cellar_id: (H160, u64),
     allocation_commit: Vec<proto::Allocation>,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let msg = proto::MsgAllocationCommit {
@@ -107,7 +108,7 @@ pub fn query_allocation_precommit(
         validator: allocation_validator,
         cellar: allocation_cellar,
     };
-    
+
     if let Some(AllocationPrecommit) = allocation_precommit.clone() {
         return Ok(proto::QueryAllocationPrecommitResponse {
             precommit: allocation_precommit.clone(),

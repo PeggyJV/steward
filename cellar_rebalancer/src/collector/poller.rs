@@ -16,7 +16,7 @@ use deep_space::{coin::Coin, Contact};
 use ethers::prelude::*;
 use rebalancer_abi::cellar_uniswap::*;
 use somm_proto::somm as proto;
-use std::{result::Result, sync::Arc, time::Duration};
+use std::{result::Result, sync::Arc, time::Duration, convert::TryFrom};
 use tokio::{time, try_join};
 use tower::Service;
 
@@ -191,8 +191,11 @@ impl<T: 'static + Middleware> Poller<T> {
                 amount: 0u32.into(),
             };
 
-            // TODO(Levi) needs to be initialized
-            let cellar_id = "TODO".to_owned();
+            let contract_address = self.contract_state.contract.address();
+            let eth_host = config.ethereum.rpc.clone();
+            let provider = Provider::<Http>::try_from(eth_host).unwrap();
+            let chain_id = provider.get_chainid().await.unwrap().as_u64();
+            let cellar_id = (contract_address, chain_id);
 
             // Sending Pre-commits
             somm_send::send_precommit(
