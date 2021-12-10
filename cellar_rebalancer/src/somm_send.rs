@@ -12,9 +12,10 @@ use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::{
 use prost::Message;
 use sha2::Digest;
 use somm_proto::somm as proto;
+use somm_proto::somm::query_client::QueryClient as AllocationQueryClient;
+use tonic::transport::Channel;
 use somm_proto::somm::AllocationPrecommit;
-use std::{time::Duration, result::Result};
-use ethers::prelude::*;
+use std::{result::Result, time::Duration};
 
 pub const TIMEOUT: Duration = Duration::from_secs(60);
 pub const MEMO: &str = "Sent using Somm Orchestrator";
@@ -99,20 +100,16 @@ pub async fn data_hash(
     return Err("No cellar".to_string());
 }
 
-pub fn query_allocation_precommit(
+pub async fn query_allocation_precommit(
     allocation_validator: String,
     allocation_cellar: String,
-    allocation_precommit: Option<proto::AllocationPrecommit>,
-) -> Result<proto::QueryAllocationPrecommitResponse, String> {
-    let precommit_response = proto::QueryAllocationPrecommitRequest {
+    client: &mut AllocationQueryClient<Channel>
+) -> Result<Option<AllocationPrecommit>, String> {
+    let response = client.query_allocation_precommit(proto::QueryAllocationPrecommitRequest{
         validator: allocation_validator,
         cellar: allocation_cellar,
-    };
+    }).await.unwrap();
 
-    if let Some(AllocationPrecommit) = allocation_precommit.clone() {
-        return Ok(proto::QueryAllocationPrecommitResponse {
-            precommit: allocation_precommit.clone(),
-        });
-    }
-    return Err("No precommit".to_string());
+    let precommit = response.into_inner().precommit;
+    Ok(precommit)
 }

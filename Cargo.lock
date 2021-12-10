@@ -1086,6 +1086,7 @@ dependencies = [
  "thiserror",
  "tokio 1.14.0",
  "toml",
+ "tonic 0.4.3",
  "tower",
  "uniswap_v3_sdk",
 ]
