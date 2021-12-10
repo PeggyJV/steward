@@ -16,9 +16,11 @@ use deep_space::{coin::Coin, Contact};
 use ethers::prelude::*;
 use rebalancer_abi::cellar_uniswap::*;
 use somm_proto::somm as proto;
-use std::{result::Result, sync::Arc, time::Duration, convert::TryFrom};
+use somm_proto::somm::query_client::QueryClient as AllocationQueryClient;
+use std::{convert::TryFrom, result::Result, sync::Arc, time::Duration};
 use tokio::{time, try_join};
 use tower::Service;
+use tonic::transport::Channel;
 
 // Struct poller to collect poll_interval etc. from external sources which aren't capable of pushing data
 #[allow(dead_code)]
@@ -117,8 +119,11 @@ impl<T: 'static + Middleware> Poller<T> {
 
     pub async fn allocation_precommit(&self) -> proto::AllocationPrecommit {
         let config = APP.config();
-        let delegate_cosmos_address =
-        self.cosmos_key.to_address(&config.cosmos.prefix).unwrap().to_string();
+        let delegate_cosmos_address = self
+            .cosmos_key
+            .to_address(&config.cosmos.prefix)
+            .unwrap()
+            .to_string();
         let hasher = somm_send::data_hash(&self.to_allocation(), delegate_cosmos_address)
             .await
             .unwrap();
@@ -168,7 +173,11 @@ impl<T: 'static + Middleware> Poller<T> {
         self.time_range = time_range;
     }
 
-    pub async fn decide_rebalance(&mut self, contact: &Contact) -> Result<(), Error> {
+    pub async fn decide_rebalance(
+        &mut self,
+        contact: &Contact,
+        grpc_client: &mut AllocationQueryClient<Channel>,
+    ) -> Result<(), Error> {
         let config = APP.config();
         let gas_price = config.cosmos.gas_price.as_tuple();
         let mut tick_info: Vec<CellarTickInfo> = Vec::new();
@@ -198,6 +207,9 @@ impl<T: 'static + Middleware> Poller<T> {
             let chain_id = provider.get_chainid().await.unwrap().as_u64().to_string();
             let cellar_id = (contract_address, chain_id);
 
+            // Waiting for new vote period
+            somm_send::query_commit_period(grpc_client).await.unwrap();
+
             // Sending Pre-commits
             somm_send::send_precommit(
                 contact,
@@ -211,6 +223,9 @@ impl<T: 'static + Middleware> Poller<T> {
             .unwrap();
 
             // Checking Pre-commits for validators
+            somm_send::query_allocation_precommit(allocation_validator, allocation_cellar, grpc_client)
+                .await
+                .unwrap();
 
             // Sending Commits
             somm_send::send_allocation(
