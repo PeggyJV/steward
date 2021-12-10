@@ -13,9 +13,9 @@ use prost::Message;
 use sha2::Digest;
 use somm_proto::somm as proto;
 use somm_proto::somm::query_client::QueryClient as AllocationQueryClient;
-use tonic::transport::Channel;
 use somm_proto::somm::AllocationPrecommit;
 use std::{result::Result, time::Duration};
+use tonic::transport::Channel;
 
 pub const TIMEOUT: Duration = Duration::from_secs(60);
 pub const MEMO: &str = "Sent using Somm Orchestrator";
@@ -103,13 +103,26 @@ pub async fn data_hash(
 pub async fn query_allocation_precommit(
     allocation_validator: String,
     allocation_cellar: String,
-    client: &mut AllocationQueryClient<Channel>
-) -> Result<Option<AllocationPrecommit>, String> {
-    let response = client.query_allocation_precommit(proto::QueryAllocationPrecommitRequest{
-        validator: allocation_validator,
-        cellar: allocation_cellar,
-    }).await.unwrap();
+    client: &mut AllocationQueryClient<Channel>,
+) -> Result<Option<AllocationPrecommit>, CosmosGrpcError> {
+    let response = client
+        .query_allocation_precommit(proto::QueryAllocationPrecommitRequest {
+            validator: allocation_validator,
+            cellar: allocation_cellar,
+        })
+        .await?;
 
     let precommit = response.into_inner().precommit;
     Ok(precommit)
+}
+
+pub async fn query_commit_period(
+    client: &mut AllocationQueryClient<Channel>,
+) -> Result<proto::QueryCommitPeriodResponse, CosmosGrpcError> {
+    let response = client
+        .query_commit_period(proto::QueryCommitPeriodRequest {})
+        .await?;
+
+    let query_commit_response = response.into_inner();
+    Ok(query_commit_response)
 }
