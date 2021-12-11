@@ -226,7 +226,7 @@ impl<T: 'static + Middleware> Poller<T> {
             .unwrap();
 
             // Checking Pre-commits for validators
-            somm_send::query_allocation_precommit(allocation_validator, allocation_cellar, grpc_client)
+            somm_send::query_allocation_precommits(grpc_client)
                 .await
                 .unwrap();
 

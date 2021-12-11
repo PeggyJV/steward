@@ -100,20 +100,15 @@ pub async fn data_hash(
     return Err("No cellar".to_string());
 }
 
-pub async fn query_allocation_precommit(
-    allocation_validator: String,
-    allocation_cellar: String,
+pub async fn query_allocation_precommits(
     client: &mut AllocationQueryClient<Channel>,
-) -> Result<Option<AllocationPrecommit>, CosmosGrpcError> {
+) -> Result<Vec<AllocationPrecommit>, CosmosGrpcError> {
     let response = client
-        .query_allocation_precommit(proto::QueryAllocationPrecommitRequest {
-            validator: allocation_validator,
-            cellar: allocation_cellar,
+        .query_allocation_precommits(proto::QueryAllocationPrecommitsRequest {
         })
         .await?;
-
-    let precommit = response.into_inner().precommit;
-    Ok(precommit)
+    let precommits = response.into_inner().precommits;
+    Ok(precommits)
 }
 
 pub async fn query_commit_period(
