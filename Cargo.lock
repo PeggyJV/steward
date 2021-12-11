@@ -1352,12 +1352,12 @@ dependencies = [
 [[package]]
 name = "cosmos-sdk-proto"
 version = "0.8.0"
-source = "git+http://github.com/cosmos/cosmos-rust?branch=main#7b08d23e1290dbb3a42776330f74ae5f121c8314"
+source = "git+http://github.com/cosmos/cosmos-rust?branch=main#e5a1872083abb3d88fa62dda966e7f5408deba58"
 dependencies = [
  "prost 0.9.0",
  "prost-types 0.9.0",
  "tendermint-proto 0.23.1",
- "tonic 0.6.1",
+ "tonic 0.6.2",
 ]
 
 [[package]]
@@ -2838,9 +2838,9 @@ dependencies = [
 
 [[package]]
 name = "itertools"
-version = "0.10.1"
+version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "69ddb889f9d0d08a67338271fa9b62996bc788c7796a5c18cf057420aaed5eaf"
+checksum = "a9a9d19fa1e79b6215ff29b9d6880b706147f16e9b1dbb1e4e5947b5b02bc5e3"
 dependencies = [
  "either",
 ]
@@ -3851,7 +3851,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f9cc1a3263e07e0bf68e96268f37665207b49560d98739662cdfaae215c720fe"
 dependencies = [
  "anyhow",
- "itertools 0.10.1",
+ "itertools 0.10.3",
  "proc-macro2",
  "quote",
  "syn",
@@ -4759,7 +4759,7 @@ dependencies = [
 [[package]]
 name = "somm_proto"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/sommelier#722f0a5179b71d3bf2abba3df9ac06318ea1b2d8"
+source = "git+https://github.com/PeggyJV/sommelier#fa1a5e3a441b8ace82aa61350ec23373b6118c7d"
 dependencies = [
  "bytes 1.1.0",
  "cosmos-sdk-proto 0.8.0",
@@ -5326,9 +5326,9 @@ dependencies = [
 
 [[package]]
 name = "tonic"
-version = "0.6.1"
+version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "24203b79cf2d68909da91178db3026e77054effba0c5d93deb870d3ca7b35afa"
+checksum = "ff08f4649d10a70ffa3522ca559031285d8e421d727ac85c60825761818f5d0a"
 dependencies = [
  "async-stream",
  "async-trait",

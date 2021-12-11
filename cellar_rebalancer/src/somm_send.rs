@@ -85,7 +85,7 @@ pub async fn data_hash(
     valAddress: String,
 ) -> Result<AllocationPrecommit, String> {
     let mut hasher = sha2::Sha256::new();
-    if let Some(cellar) = &allocation.cellar {
+    if let Some(cellar) = &allocation.clone().vote.unwrap().cellar {
         let mut buf = BytesMut::new();
         cellar.encode(&mut buf).unwrap();
         let cellar_data = hex::encode(&buf).to_string();

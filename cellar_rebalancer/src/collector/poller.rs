@@ -93,25 +93,28 @@ impl<T: 'static + Middleware> Poller<T> {
             .tick_weights
             .iter()
             .map(|tick_weight| proto::TickRange {
-                upper: tick_weight.upper_bound as u64,
-                lower: tick_weight.lower_bound as u64,
-                weight: tick_weight.weight as u64,
+                upper: tick_weight.upper_bound as i32,
+                lower: tick_weight.lower_bound as i32,
+                weight: tick_weight.weight as u32,
             })
             .collect();
 
         proto::Allocation {
-            cellar: Some(proto::Cellar {
-                id: self.time_range.pair_id.to_string(),
-                tick_ranges: self
-                    .time_range
-                    .tick_weights
-                    .iter()
-                    .map(|tick_weight| proto::TickRange {
-                        upper: tick_weight.upper_bound as u64,
-                        lower: tick_weight.lower_bound as u64,
-                        weight: tick_weight.weight as u64,
-                    })
-                    .collect(),
+            vote: Some(proto::RebalanceVote {
+                cellar: Some(proto::Cellar {
+                    id: self.time_range.pair_id.to_string(),
+                    tick_ranges: self
+                        .time_range
+                        .tick_weights
+                        .iter()
+                        .map(|tick_weight| proto::TickRange {
+                            upper: tick_weight.upper_bound as i32,
+                            lower: tick_weight.lower_bound as i32,
+                            weight: tick_weight.weight as u32,
+                        })
+                        .collect(),
+                }),
+                current_price: self.contract_state.gas_price.unwrap().as_u64(),
             }),
             salt: "".to_string(), //TODO: Add salt,
         }
