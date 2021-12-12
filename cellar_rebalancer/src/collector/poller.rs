@@ -241,28 +241,39 @@ impl<T: 'static + Middleware> Poller<T> {
                     .unwrap();
                 }
                 Err(_) => {
-                    println!(
-                        "Couldn't Send Precommit"
-                    );
+                    println!("Couldn't Send Precommit");
                 }
             }
 
-            // Checking Pre-commits for validators
-            somm_send::query_allocation_precommits(grpc_client)
-                .await
-                .unwrap();
-
-            // Sending Commits
-            somm_send::send_allocation(
-                contact,
-                delegate_cosmos_address,
-                cosmos_key,
-                fee,
-                cellar_id,
-                vec![self.to_allocation()],
-            )
+            match timeout(Duration::from_secs(100), async {
+                loop {
+                    // Checking Pre-commits for validators
+                    let res = somm_send::query_allocation_precommits(grpc_client).await;
+                    if let Ok(val) = res {
+                        break val;
+                    }
+                    sleep(Duration::from_secs(1)).await;
+                }
+            })
             .await
-            .unwrap();
+            {
+                Ok(val) => {
+                    // Sending Commits
+                    somm_send::send_allocation(
+                        contact,
+                        delegate_cosmos_address,
+                        cosmos_key,
+                        fee,
+                        cellar_id,
+                        vec![self.to_allocation()],
+                    )
+                    .await
+                    .unwrap();
+                }
+                Err(_) => {
+                    println!("Couldn't Send Commit");
+                }
+            }
             self.contract_state.rebalance(tick_info).await
         }
     }
