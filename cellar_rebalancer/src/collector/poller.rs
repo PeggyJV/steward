@@ -18,9 +18,12 @@ use rebalancer_abi::cellar_uniswap::*;
 use somm_proto::somm as proto;
 use somm_proto::somm::query_client::QueryClient as AllocationQueryClient;
 use std::{convert::TryFrom, result::Result, sync::Arc, time::Duration};
-use tokio::{time, try_join};
-use tower::Service;
+use tokio::{
+    time::{interval, sleep, timeout},
+    try_join,
+};
 use tonic::transport::Channel;
+use tower::Service;
 
 // Struct poller to collect poll_interval etc. from external sources which aren't capable of pushing data
 #[allow(dead_code)]
@@ -210,20 +213,39 @@ impl<T: 'static + Middleware> Poller<T> {
             let chain_id = provider.get_chainid().await.unwrap().as_u64().to_string();
             let cellar_id = (contract_address, chain_id);
 
-            // Waiting for new vote period
-            somm_send::query_commit_period(grpc_client).await.unwrap();
-
-            // Sending Pre-commits
-            somm_send::send_precommit(
-                contact,
-                delegate_cosmos_address,
-                cosmos_key,
-                fee.clone(),
-                cellar_id.clone(),
-                vec![self.allocation_precommit().await],
-            )
+            match timeout(Duration::from_secs(100), async {
+                loop {
+                    // Waiting for new vote period
+                    let res = somm_send::query_commit_period(grpc_client).await;
+                    if let Ok(val) = res {
+                        if val.vote_period_start == val.current_height {
+                            break val;
+                        }
+                    }
+                    sleep(Duration::from_secs(1)).await;
+                }
+            })
             .await
-            .unwrap();
+            {
+                Ok(val) => {
+                    // Sending Pre-commits
+                    somm_send::send_precommit(
+                        contact,
+                        delegate_cosmos_address,
+                        cosmos_key,
+                        fee.clone(),
+                        cellar_id.clone(),
+                        vec![self.allocation_precommit().await],
+                    )
+                    .await
+                    .unwrap();
+                }
+                Err(_) => {
+                    println!(
+                        "Couldn't Send Precommit"
+                    );
+                }
+            }
 
             // Checking Pre-commits for validators
             somm_send::query_allocation_precommits(grpc_client)
@@ -258,7 +280,7 @@ impl<T: 'static + Middleware> Poller<T> {
             self.time_range.pair_database, self.poll_interval
         );
 
-        let mut interval = time::interval(self.poll_interval);
+        let mut interval = interval(self.poll_interval);
         loop {
             interval.tick().await;
             self.poll(&collector).await;
