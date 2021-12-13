@@ -44,6 +44,10 @@ pub fn from_tick_weight(tick_weight: TickWeight) -> CellarTickInfo {
         weight: tick_weight.weight,
     }
 }
+pub struct Connections {
+    pub grpc: Option<AllocationQueryClient<Channel>>,
+    pub contact: Option<Contact>,
+}
 
 // Implement poller middleware
 impl<T: 'static + Middleware> Poller<T> {
@@ -165,6 +169,31 @@ impl<T: 'static + Middleware> Poller<T> {
         let contact = Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix)
             .expect("Could not create contact");
         Ok(contact)
+    }
+
+    pub async fn cellar_query_client(&self) -> Result<Connections, Error> {
+        let mut grpc = None;
+        let mut contact = None;
+        let config = APP.config();
+        let timeout = Duration::from_secs(10);
+        let try_base = AllocationQueryClient::connect(config.cosmos.grpc.clone()).await;
+        match try_base {
+            Ok(val) => {
+                grpc = Some(val);
+                contact = Some(Contact::new(
+                    &config.cosmos.grpc,
+                    timeout,
+                    &config.cosmos.prefix,
+                ).unwrap())
+            }
+            Err(e) => {
+                warn!(
+                    "Failed to access Cosmos gRPC with {:?} and create connections",
+                    e
+                );
+            }
+        }
+        Ok(Connections { grpc, contact })
     }
 
     // Update poller with time_range, gas price and contract_state
@@ -314,11 +343,12 @@ impl<T: 'static + Middleware> Poller<T> {
             self.poll_cellar_gas(),
             self.poll_contract_state(),
             self.cellar_contact(),
+            self.cellar_query_client(),
         );
         match res {
-            Ok((time_range, gas, contract_state_update, contact)) => {
+            Ok((time_range, gas, contract_state_update, contact, grpc_client)) => {
                 self.update_poller(time_range, gas, contract_state_update);
-                self.decide_rebalance(&contact).await.unwrap();
+                self.decide_rebalance(&contact, &mut grpc_client.grpc.unwrap()).await.unwrap();
             }
             Err(e) => error!("Error fetching data {}", e),
         }
