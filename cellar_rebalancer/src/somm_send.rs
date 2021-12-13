@@ -25,7 +25,6 @@ pub async fn send_precommit(
     delegate_cosmos_address: Address,
     cosmos_key: CosmosPrivateKey,
     fee: Coin,
-    cellar_id: (String, String),
     allocation_precommit: Vec<proto::AllocationPrecommit>,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let msg = proto::MsgAllocationPrecommit {
@@ -42,7 +41,6 @@ pub async fn send_allocation(
     delegate_cosmos_address: Address,
     cosmos_key: CosmosPrivateKey,
     fee: Coin,
-    cellar_id: (String, String),
     allocation_commit: Vec<proto::Allocation>,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let msg = proto::MsgAllocationCommit {

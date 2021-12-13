@@ -236,12 +236,6 @@ impl<T: 'static + Middleware> Poller<T> {
                 amount: 0u32.into(),
             };
 
-            let contract_address = self.contract_state.contract.address().to_string();
-            let eth_host = config.ethereum.rpc.clone();
-            let provider = Provider::<Http>::try_from(eth_host).unwrap();
-            let chain_id = provider.get_chainid().await.unwrap().as_u64().to_string();
-            let cellar_id = (contract_address, chain_id);
-
             match timeout(Duration::from_secs(100), async {
                 loop {
                     // Waiting for new vote period
@@ -263,14 +257,13 @@ impl<T: 'static + Middleware> Poller<T> {
                         delegate_cosmos_address,
                         cosmos_key,
                         fee.clone(),
-                        cellar_id.clone(),
                         vec![self.allocation_precommit().await],
                     )
                     .await
                     .unwrap();
                 }
-                Err(_) => {
-                    println!("Couldn't Send Precommit");
+                Err(e) => {
+                    println!("Couldn't Send Precommit {:?}", e);
                 }
             }
 
@@ -293,14 +286,13 @@ impl<T: 'static + Middleware> Poller<T> {
                         delegate_cosmos_address,
                         cosmos_key,
                         fee,
-                        cellar_id,
                         vec![self.to_allocation()],
                     )
                     .await
                     .unwrap();
                 }
-                Err(_) => {
-                    println!("Couldn't Send Commit");
+                Err(e) => {
+                    println!("Couldn't Send Commit {:?}", e);
                 }
             }
             self.contract_state.rebalance(tick_info).await
