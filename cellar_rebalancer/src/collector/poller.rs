@@ -212,7 +212,7 @@ impl<T: 'static + Middleware> Poller<T> {
         &mut self,
         contact: &Contact,
         grpc_client: &mut AllocationQueryClient<Channel>,
-    ) -> Result<(), Error> {
+    ) {
         let config = APP.config();
         let gas_price = config.cosmos.gas_price.as_tuple();
         let mut tick_info: Vec<CellarTickInfo> = Vec::new();
@@ -223,7 +223,7 @@ impl<T: 'static + Middleware> Poller<T> {
         }
 
         if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
-            Ok(())
+            ()
         } else {
             tick_info.reverse();
             let delegate_cosmos_address =
@@ -295,7 +295,6 @@ impl<T: 'static + Middleware> Poller<T> {
                     println!("Couldn't Send Commit {:?}", e);
                 }
             }
-            self.contract_state.rebalance(tick_info).await
         }
     }
 
@@ -340,7 +339,7 @@ impl<T: 'static + Middleware> Poller<T> {
         match res {
             Ok((time_range, gas, contract_state_update, contact, grpc_client)) => {
                 self.update_poller(time_range, gas, contract_state_update);
-                self.decide_rebalance(&contact, &mut grpc_client.grpc.unwrap()).await.unwrap();
+                self.decide_rebalance(&contact, &mut grpc_client.grpc.unwrap()).await;
             }
             Err(e) => error!("Error fetching data {}", e),
         }
