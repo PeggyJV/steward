@@ -7,14 +7,22 @@ use crate::{
     error::Error,
     gas::CellarGas,
     prelude::*,
+    somm_send,
     time_range::{TickWeight, TimeRange},
     uniswap_pool::PoolState,
 };
 use abscissa_core::error::BoxError;
+use deep_space::{coin::Coin, Contact};
 use ethers::prelude::*;
 use rebalancer_abi::cellar_uniswap::*;
+use somm_proto::somm as proto;
+use somm_proto::somm::query_client::QueryClient as AllocationQueryClient;
 use std::{result::Result, sync::Arc, time::Duration};
-use tokio::{time, try_join};
+use tokio::{
+    time::{interval, sleep, timeout},
+    try_join,
+};
+use tonic::transport::Channel;
 use tower::Service;
 
 // Struct poller to collect poll_interval etc. from external sources which aren't capable of pushing data
@@ -25,6 +33,7 @@ pub struct Poller<T: Middleware> {
     cellar_gas: CellarGas,
     contract_state: UniswapV3CellarState<T>,
     pool: PoolState<T>,
+    cosmos_key: deep_space::private_key::PrivateKey,
 }
 
 pub fn from_tick_weight(tick_weight: TickWeight) -> CellarTickInfo {
@@ -35,6 +44,10 @@ pub fn from_tick_weight(tick_weight: TickWeight) -> CellarTickInfo {
         weight: tick_weight.weight,
     }
 }
+pub struct Connections {
+    pub grpc: Option<AllocationQueryClient<Channel>>,
+    pub contact: Option<Contact>,
+}
 
 // Implement poller middleware
 impl<T: 'static + Middleware> Poller<T> {
@@ -42,6 +55,8 @@ impl<T: 'static + Middleware> Poller<T> {
         cellar: &config::CellarConfig,
         client: Arc<T>,
         mongo: &config::MongoSection,
+        cosmos_key: &deep_space::private_key::PrivateKey,
+        rebalancer_config: config::CellarRebalancerConfig,
     ) -> Result<Self, Error> {
         let pool = PoolState::new(cellar.pool_address, client.clone());
         let spacing = pool
@@ -50,6 +65,8 @@ impl<T: 'static + Middleware> Poller<T> {
             .call()
             .await
             .expect("Could not get spacing by querying contract");
+
+        let name = &rebalancer_config.keys.rebalancer_key;
 
         let poller = Poller {
             poll_interval: cellar.duration,
@@ -71,9 +88,59 @@ impl<T: 'static + Middleware> Poller<T> {
             },
             contract_state: UniswapV3CellarState::new(cellar.cellar_address, client),
             pool,
+            cosmos_key: rebalancer_config.load_deep_space_key(name.clone()),
         };
 
         Ok(poller)
+    }
+
+    fn to_allocation(&self) -> proto::Allocation {
+        let tick_range: Vec<proto::TickRange> = self
+            .time_range
+            .tick_weights
+            .iter()
+            .map(|tick_weight| proto::TickRange {
+                upper: tick_weight.upper_bound as i32,
+                lower: tick_weight.lower_bound as i32,
+                weight: tick_weight.weight as u32,
+            })
+            .collect();
+
+        proto::Allocation {
+            vote: Some(proto::RebalanceVote {
+                cellar: Some(proto::Cellar {
+                    id: self.time_range.pair_id.to_string(),
+                    tick_ranges: self
+                        .time_range
+                        .tick_weights
+                        .iter()
+                        .map(|tick_weight| proto::TickRange {
+                            upper: tick_weight.upper_bound as i32,
+                            lower: tick_weight.lower_bound as i32,
+                            weight: tick_weight.weight as u32,
+                        })
+                        .collect(),
+                }),
+                current_price: self.contract_state.gas_price.unwrap().as_u64(),
+            }),
+            salt: "".to_string(), //TODO: Add salt,
+        }
+    }
+
+    pub async fn allocation_precommit(&self) -> proto::AllocationPrecommit {
+        let config = APP.config();
+        let delegate_cosmos_address = self
+            .cosmos_key
+            .to_address(&config.cosmos.prefix)
+            .unwrap()
+            .to_string();
+        let hasher = somm_send::data_hash(&self.to_allocation(), delegate_cosmos_address)
+            .await
+            .unwrap();
+        proto::AllocationPrecommit {
+            hash: hasher.hash,
+            cellar_id: self.time_range.pair_id.to_string(),
+        }
     }
 
     // Retrieve poll time range
@@ -96,6 +163,28 @@ impl<T: 'static + Middleware> Poller<T> {
         Ok(ContractStateUpdate {})
     }
 
+    pub async fn cellar_query_client(&self) -> Connections {
+        let config = APP.config();
+        let timeout = Duration::from_secs(10);
+        let try_base = AllocationQueryClient::connect(config.cosmos.grpc.clone()).await;
+        let(grpc,contact) = match try_base {
+            Ok(val) => {
+                (Some(val),
+                Some(
+                    Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix).unwrap(),
+                ))
+            }
+            Err(e) => {
+                warn!(
+                    "Failed to access Cosmos gRPC with {:?} and create connections",
+                    e
+                );
+                (None,None)
+            }
+        };
+        Connections { grpc, contact }
+    }
+
     // Update poller with time_range, gas price and contract_state
     pub fn update_poller(
         &mut self,
@@ -108,7 +197,13 @@ impl<T: 'static + Middleware> Poller<T> {
         self.time_range = time_range;
     }
 
-    pub async fn decide_rebalance(&mut self) -> Result<(), Error> {
+    pub async fn decide_rebalance(
+        &mut self,
+        contact: &Contact,
+        grpc_client: &mut AllocationQueryClient<Channel>,
+    ) {
+        let config = APP.config();
+        let gas_price = config.cosmos.gas_price.as_tuple();
         let mut tick_info: Vec<CellarTickInfo> = Vec::new();
         for ref tick_weight in self.time_range.tick_weights.clone() {
             if tick_weight.weight > 0 {
@@ -117,10 +212,78 @@ impl<T: 'static + Middleware> Poller<T> {
         }
 
         if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
-            Ok(())
+            ()
         } else {
             tick_info.reverse();
-            self.contract_state.rebalance(tick_info).await
+            let delegate_cosmos_address =
+                self.cosmos_key.to_address(&contact.get_prefix()).unwrap();
+            let name = &config.keys.rebalancer_key;
+            let cosmos_key = config.load_deep_space_key(name.clone());
+
+            let fee = Coin {
+                denom: gas_price.1,
+                amount: 0u32.into(),
+            };
+
+            match timeout(Duration::from_secs(100), async {
+                loop {
+                    // Waiting for new vote period
+                    let res = somm_send::query_commit_period(grpc_client).await;
+                    if let Ok(val) = res {
+                        if val.vote_period_start == val.current_height {
+                            break val;
+                        }
+                    }
+                    sleep(Duration::from_secs(1)).await;
+                }
+            })
+            .await
+            {
+                Ok(val) => {
+                    // Sending Pre-commits
+                    somm_send::send_precommit(
+                        contact,
+                        delegate_cosmos_address,
+                        cosmos_key,
+                        fee.clone(),
+                        vec![self.allocation_precommit().await],
+                    )
+                    .await
+                    .unwrap();
+                }
+                Err(e) => {
+                    println!("Couldn't Send Precommit {:?}", e);
+                }
+            }
+
+            match timeout(Duration::from_secs(100), async {
+                loop {
+                    // Checking Pre-commits for validators
+                    let res = somm_send::query_allocation_precommits(grpc_client).await;
+                    if let Ok(val) = res {
+                        break val;
+                    }
+                    sleep(Duration::from_secs(1)).await;
+                }
+            })
+            .await
+            {
+                Ok(val) => {
+                    // Sending Commits
+                    somm_send::send_allocation(
+                        contact,
+                        delegate_cosmos_address,
+                        cosmos_key,
+                        fee,
+                        vec![self.to_allocation()],
+                    )
+                    .await
+                    .unwrap();
+                }
+                Err(e) => {
+                    println!("Couldn't Send Commit {:?}", e);
+                }
+            }
         }
     }
 
@@ -137,7 +300,7 @@ impl<T: 'static + Middleware> Poller<T> {
             self.time_range.pair_database, self.poll_interval
         );
 
-        let mut interval = time::interval(self.poll_interval);
+        let mut interval = interval(self.poll_interval);
         loop {
             interval.tick().await;
             self.poll(&collector).await;
@@ -155,15 +318,24 @@ impl<T: 'static + Middleware> Poller<T> {
             + Clone
             + 'static,
     {
+        let grpc_client =             self.cellar_query_client().await;
         let res = try_join!(
             self.poll_time_range(),
             self.poll_cellar_gas(),
-            self.poll_contract_state(),
+            self.poll_contract_state()
         );
         match res {
             Ok((time_range, gas, contract_state_update)) => {
                 self.update_poller(time_range, gas, contract_state_update);
-                self.decide_rebalance().await.unwrap();
+                self.decide_rebalance(
+                    &grpc_client
+                        .contact
+                        .expect("Need a valid contact connection to Sommelier Chain"),
+                    &mut grpc_client
+                        .grpc
+                        .expect("Need a valid gRPC connection to Sommelier Chain"),
+                )
+                .await;
             }
             Err(e) => error!("Error fetching data {}", e),
         }

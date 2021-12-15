@@ -12,6 +12,7 @@
 
 mod allow_erc20;
 mod config_cmd;
+mod cosmos_mode;
 mod cosmos_to_eth;
 mod deploy;
 mod eth_to_cosmos;
@@ -24,14 +25,14 @@ mod reinvest;
 mod remove_funds;
 mod set_validator;
 mod sign_delegate_keys;
-mod start;
+mod single_signer;
 mod transfer;
 mod tx;
 
 use self::{
-    config_cmd::ConfigCmd, fund_cellar::FundCellarCmd, keys::KeysCmd, predictions::PredictionsCmd,
-    remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, start::StartCmd,
-    transfer::TransferCmd,
+    config_cmd::ConfigCmd, cosmos_mode::CosmosSignerCmd, fund_cellar::FundCellarCmd, keys::KeysCmd,
+    predictions::PredictionsCmd, remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd,
+    single_signer::SingleSignerCmd, transfer::TransferCmd,
 };
 
 use crate::config::CellarRebalancerConfig;
@@ -44,29 +45,31 @@ pub const CONFIG_FILE: &str = "contract_monitor.toml";
 /// CellarRebalancer Subcommands
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum CellarRebalancerCmd {
-    AllowErc20(allow_erc20::AllowERC20),
+    SingleSigner(SingleSignerCmd),
+    Transfer(TransferCmd),
+    Predictions(PredictionsCmd),
+    #[clap(subcommand)]
+    Keys(KeysCmd),
+    /// Print default configurations
+    PrintConfig(ConfigCmd),
+    FundCellar(FundCellarCmd),
+    RemoveFunds(RemoveFundsCmd),
     CosmosToEth(cosmos_to_eth::CosmosToEthCmd),
     #[clap(subcommand)]
     Deploy(deploy::DeployCmd),
     EthToCosmos(eth_to_cosmos::EthToCosmosCmd),
-    FundCellar(FundCellarCmd),
-    #[clap(subcommand)]
-    Keys(KeysCmd),
     #[clap(subcommand)]
     Orchestrator(orchestrator::OrchestratorCmd),
-    Predictions(PredictionsCmd),
     /// Print default configurations
-    PrintConfig(ConfigCmd),
     #[clap(subcommand)]
     Query(query::QueryCmd),
     Reinvest(reinvest::ReinvestCommand),
-    RemoveFunds(RemoveFundsCmd),
     SetValidator(SetValidatorCmd),
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
-    Start(StartCmd),
-    Transfer(TransferCmd),
     #[clap(subcommand)]
     Tx(tx::TxCmd),
+    AllowErc20(allow_erc20::AllowERC20),
+    CosmosSigner(CosmosSignerCmd),
 }
 
 /// Entry point for the application. It needs to be a struct to allow using subcommands!

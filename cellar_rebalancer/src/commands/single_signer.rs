@@ -1,9 +1,9 @@
 //! Start subcommand - example of how to write a subcommand
 
+use crate::collector::{Collector, Poller};
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::{application::APP, config::CellarRebalancerConfig, prelude::*};
-use crate::collector::{Collector, Poller};
 use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
 use ethers::prelude::*;
 use ethers::providers::{Http, Provider};
@@ -20,12 +20,12 @@ use tower::ServiceBuilder;
 ///
 /// <https://docs.rs/gumdrop/>
 #[derive(Command, Debug, Clap)]
-pub struct StartCmd {
+pub struct SingleSignerCmd {
     /// To whom are we saying hello?
     recipient: Vec<String>,
 }
 
-impl StartCmd {
+impl SingleSignerCmd {
     /// Initialize collector poller (if configured/needed)
     async fn build_pollers(
         &self,
@@ -57,8 +57,10 @@ impl StartCmd {
             let client = SignerMiddleware::new(client, wallet.clone());
             let client = Arc::new(client);
             let mongo = config.mongo.clone();
+            let name = &config.keys.rebalancer_key;
+            let cosmos_key = config.load_deep_space_key(name.clone());
 
-            let poller = Poller::new(&cellar, client, &mongo)
+            let poller = Poller::new(&cellar, client, &mongo, &cosmos_key, config.clone())
                 .await
                 .unwrap_or_else(|e| {
                     status_err!("couldn't initialize poller: {}", e);
@@ -72,7 +74,7 @@ impl StartCmd {
     }
 }
 
-impl Runnable for StartCmd {
+impl Runnable for SingleSignerCmd {
     /// Start the application.
     fn run(&self) {
         info!("Starting application");
@@ -104,7 +106,7 @@ impl Runnable for StartCmd {
     }
 }
 
-impl config::Override<CellarRebalancerConfig> for StartCmd {
+impl config::Override<CellarRebalancerConfig> for SingleSignerCmd {
     // Process the given command line options, overriding settings from
     // a configuration file using explicit flags taken from command-line
     // arguments.

@@ -2,7 +2,7 @@ use ethers::contract::Abigen;
 use std::process;
 
 fn main() {
-    // Aave    
+    // Aave
     let abigen = match Abigen::new("Aave", "../rebalancer_abi/aave_lending_abi.json") {
         Ok(abigen) => abigen,
         Err(e) => {
@@ -159,7 +159,10 @@ fn main() {
     }
 
     // Cellar Uniswap
-    let abigen = match Abigen::new("UniswapV3Cellar", "../rebalancer_abi/cellar_uniswap_abi.json") {
+    let abigen = match Abigen::new(
+        "UniswapV3Cellar",
+        "../rebalancer_abi/cellar_uniswap_abi.json",
+    ) {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open cellar_uniswap_abi.json: {}", e);
@@ -184,4 +187,3 @@ fn main() {
         Err(e) => println!("Error writing cellar_uniswap.rs: {}", e),
     }
 }
-

@@ -20,6 +20,7 @@ pub mod error;
 pub mod gas;
 pub mod position_manager;
 pub mod prelude;
+pub mod somm_send;
 pub mod time_range;
 pub mod uniswap_pool;
 pub mod uniswap_router;
