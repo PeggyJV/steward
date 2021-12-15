@@ -163,7 +163,7 @@ impl<T: 'static + Middleware> Poller<T> {
         Ok(ContractStateUpdate {})
     }
 
-    pub async fn cellar_query_client(&self) -> Result<Connections, Error> {
+    pub async fn cellar_query_client(&self) -> Connections {
         let mut grpc = None;
         let mut contact = None;
         let config = APP.config();
@@ -176,16 +176,17 @@ impl<T: 'static + Middleware> Poller<T> {
                     &config.cosmos.grpc,
                     timeout,
                     &config.cosmos.prefix,
-                ).unwrap())
-            }
+                ).unwrap());
+            },
             Err(e) => {
                 warn!(
                     "Failed to access Cosmos gRPC with {:?} and create connections",
                     e
                 );
+                return e;
             }
-        }
-        Ok(Connections { grpc, contact })
+        };
+        Connections { grpc, contact }
     }
 
     // Update poller with time_range, gas price and contract_state
