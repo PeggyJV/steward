@@ -102,8 +102,7 @@ pub async fn query_allocation_precommits(
     client: &mut AllocationQueryClient<Channel>,
 ) -> Result<Vec<AllocationPrecommit>, CosmosGrpcError> {
     let response = client
-        .query_allocation_precommits(proto::QueryAllocationPrecommitsRequest {
-        })
+        .query_allocation_precommits(proto::QueryAllocationPrecommitsRequest {})
         .await?;
     let precommits = response.into_inner().precommits;
     Ok(precommits)

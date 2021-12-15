@@ -1,9 +1,9 @@
-mod eth;
 mod cosmos;
+mod eth;
 
-use abscissa_core::{Command, Clap, Runnable};
-use crate::commands::keys::eth::EthKeysCmd;
 use crate::commands::keys::cosmos::CosmosKeysCmd;
+use crate::commands::keys::eth::EthKeysCmd;
+use abscissa_core::{Clap, Command, Runnable};
 
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum KeysCmd {

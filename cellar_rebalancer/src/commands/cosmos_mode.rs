@@ -16,9 +16,9 @@ use crate::{
     collector::{Collector, Poller},
     config::CellarRebalancerConfig,
 };
-use abscissa_core::{config, Command, FrameworkError, Clap, Runnable};
-use std::{convert::TryFrom, path, sync::Arc, result::Result};
-use tower::{ServiceBuilder};
+use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
+use std::{convert::TryFrom, path, result::Result, sync::Arc};
+use tower::ServiceBuilder;
 
 /// `Cosmos mode signer` subcommand
 ///
@@ -66,9 +66,7 @@ impl CosmosSignerCmd {
             let client = Arc::new(client);
             let mongo = config.mongo.clone();
 
-            let name = &config
-            .keys
-            .rebalancer_key;
+            let name = &config.keys.rebalancer_key;
             let cosmos_key = config.load_deep_space_key(name.clone());
 
             let poller = Poller::new(&cellar, client, &mongo, &cosmos_key, config.clone())

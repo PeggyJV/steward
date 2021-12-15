@@ -1,11 +1,10 @@
-
 mod add;
 mod delete;
 mod import;
 mod list;
 mod show;
 
-use abscissa_core::{Command, Clap, Runnable};
+use abscissa_core::{Clap, Command, Runnable};
 
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum EthKeysCmd {

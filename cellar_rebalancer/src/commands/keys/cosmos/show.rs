@@ -1,5 +1,5 @@
 use crate::application::APP;
-use abscissa_core::{Application, Command, Clap, Runnable};
+use abscissa_core::{Application, Clap, Command, Runnable};
 
 #[derive(Command, Debug, Default, Clap)]
 pub struct ShowCosmosKeyCmd {

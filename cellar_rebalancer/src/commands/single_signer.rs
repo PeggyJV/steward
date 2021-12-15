@@ -1,9 +1,9 @@
 //! Start subcommand - example of how to write a subcommand
 
+use crate::collector::{Collector, Poller};
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::{application::APP, config::CellarRebalancerConfig, prelude::*};
-use crate::collector::{Collector, Poller};
 use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
 use ethers::prelude::*;
 use ethers::providers::{Http, Provider};
@@ -57,9 +57,7 @@ impl SingleSignerCmd {
             let client = SignerMiddleware::new(client, wallet.clone());
             let client = Arc::new(client);
             let mongo = config.mongo.clone();
-            let name = &config
-            .keys
-            .rebalancer_key;
+            let name = &config.keys.rebalancer_key;
             let cosmos_key = config.load_deep_space_key(name.clone());
 
             let poller = Poller::new(&cellar, client, &mongo, &cosmos_key, config.clone())
