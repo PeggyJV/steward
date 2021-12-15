@@ -17,7 +17,7 @@ use ethers::prelude::*;
 use rebalancer_abi::cellar_uniswap::*;
 use somm_proto::somm as proto;
 use somm_proto::somm::query_client::QueryClient as AllocationQueryClient;
-use std::{convert::TryFrom, result::Result, sync::Arc, time::Duration};
+use std::{result::Result, sync::Arc, time::Duration};
 use tokio::{
     time::{interval, sleep, timeout},
     try_join,
@@ -163,14 +163,6 @@ impl<T: 'static + Middleware> Poller<T> {
         Ok(ContractStateUpdate {})
     }
 
-    pub async fn cellar_contact(&self) -> Result<Contact, Error> {
-        let config = APP.config();
-        let timeout = Duration::from_secs(10);
-        let contact = Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix)
-            .expect("Could not create contact");
-        Ok(contact)
-    }
-
     pub async fn cellar_query_client(&self) -> Result<Connections, Error> {
         let mut grpc = None;
         let mut contact = None;
@@ -179,12 +171,12 @@ impl<T: 'static + Middleware> Poller<T> {
         let try_base = AllocationQueryClient::connect(config.cosmos.grpc.clone()).await;
         match try_base {
             Ok(val) => {
-                grpc = Some(val);
-                contact = Some(Contact::new(
+                let grpc = val;
+                let contact = Contact::new(
                     &config.cosmos.grpc,
                     timeout,
                     &config.cosmos.prefix,
-                ).unwrap())
+                ).unwrap();
             }
             Err(e) => {
                 warn!(
@@ -333,13 +325,12 @@ impl<T: 'static + Middleware> Poller<T> {
             self.poll_time_range(),
             self.poll_cellar_gas(),
             self.poll_contract_state(),
-            self.cellar_contact(),
             self.cellar_query_client(),
         );
         match res {
-            Ok((time_range, gas, contract_state_update, contact, grpc_client)) => {
+            Ok((time_range, gas, contract_state_update, grpc_client)) => {
                 self.update_poller(time_range, gas, contract_state_update);
-                self.decide_rebalance(&contact, &mut grpc_client.grpc.unwrap()).await;
+                self.decide_rebalance(&grpc_client.contact.unwrap(), &mut grpc_client.grpc.unwrap()).await;
             }
             Err(e) => error!("Error fetching data {}", e),
         }
