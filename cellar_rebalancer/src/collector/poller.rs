@@ -163,28 +163,26 @@ impl<T: 'static + Middleware> Poller<T> {
         Ok(ContractStateUpdate {})
     }
 
-    pub async fn cellar_query_client(&self) -> Result<Connections, Error> {
-        let mut grpc = None;
-        let mut contact = None;
+    pub async fn cellar_query_client(&self) -> Connections {
         let config = APP.config();
         let timeout = Duration::from_secs(10);
         let try_base = AllocationQueryClient::connect(config.cosmos.grpc.clone()).await;
-        match try_base {
+        let(grpc,contact) = match try_base {
             Ok(val) => {
-                grpc = Some(val);
-                contact = Some(
+                (Some(val),
+                Some(
                     Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix).unwrap(),
-                );
+                ))
             }
             Err(e) => {
                 warn!(
                     "Failed to access Cosmos gRPC with {:?} and create connections",
                     e
                 );
-                return Err(e.into());
+                (None,None)
             }
         };
-        Ok(Connections { grpc, contact })
+        Connections { grpc, contact }
     }
 
     // Update poller with time_range, gas price and contract_state
@@ -320,14 +318,14 @@ impl<T: 'static + Middleware> Poller<T> {
             + Clone
             + 'static,
     {
+        let grpc_client =             self.cellar_query_client().await;
         let res = try_join!(
             self.poll_time_range(),
             self.poll_cellar_gas(),
-            self.poll_contract_state(),
-            self.cellar_query_client(),
+            self.poll_contract_state()
         );
         match res {
-            Ok((time_range, gas, contract_state_update, grpc_client)) => {
+            Ok((time_range, gas, contract_state_update)) => {
                 self.update_poller(time_range, gas, contract_state_update);
                 self.decide_rebalance(
                     &grpc_client
