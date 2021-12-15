@@ -171,12 +171,12 @@ impl<T: 'static + Middleware> Poller<T> {
         let try_base = AllocationQueryClient::connect(config.cosmos.grpc.clone()).await;
         match try_base {
             Ok(val) => {
-                let grpc = val;
-                let contact = Contact::new(
+                grpc = Some(val);
+                contact = Some(Contact::new(
                     &config.cosmos.grpc,
                     timeout,
                     &config.cosmos.prefix,
-                ).unwrap();
+                ).unwrap())
             }
             Err(e) => {
                 warn!(
