@@ -163,7 +163,7 @@ impl<T: 'static + Middleware> Poller<T> {
         Ok(ContractStateUpdate {})
     }
 
-    pub async fn cellar_query_client(&self) -> Connections {
+    pub async fn cellar_query_client(&self) -> Result<Connections, Error> {
         let mut grpc = None;
         let mut contact = None;
         let config = APP.config();
@@ -172,21 +172,19 @@ impl<T: 'static + Middleware> Poller<T> {
         match try_base {
             Ok(val) => {
                 grpc = Some(val);
-                contact = Some(Contact::new(
-                    &config.cosmos.grpc,
-                    timeout,
-                    &config.cosmos.prefix,
-                ).unwrap());
-            },
+                contact = Some(
+                    Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix).unwrap(),
+                );
+            }
             Err(e) => {
                 warn!(
                     "Failed to access Cosmos gRPC with {:?} and create connections",
                     e
                 );
-                return e;
+                return Err(e.into());
             }
         };
-        Connections { grpc, contact }
+        Ok(Connections { grpc, contact })
     }
 
     // Update poller with time_range, gas price and contract_state
@@ -331,7 +329,15 @@ impl<T: 'static + Middleware> Poller<T> {
         match res {
             Ok((time_range, gas, contract_state_update, grpc_client)) => {
                 self.update_poller(time_range, gas, contract_state_update);
-                self.decide_rebalance(&grpc_client.contact, &mut grpc_client.grpc).await;
+                self.decide_rebalance(
+                    &grpc_client
+                        .contact
+                        .expect("Need a valid contact connection to Sommelier Chain"),
+                    &mut grpc_client
+                        .grpc
+                        .expect("Need a valid gRPC connection to Sommelier Chain"),
+                )
+                .await;
             }
             Err(e) => error!("Error fetching data {}", e),
         }

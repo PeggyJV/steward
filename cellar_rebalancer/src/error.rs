@@ -9,6 +9,8 @@ use std::{
 };
 use thiserror::Error;
 
+use tonic::transport::Error as TonicError;
+
 /// Kinds of errors
 #[derive(Copy, Clone, Debug, Eq, Error, PartialEq)]
 pub enum ErrorKind {
@@ -30,6 +32,9 @@ pub enum ErrorKind {
     /// Provider error
     #[error("provider error")]
     ProviderError,
+    /// Provider error
+    #[error("grpc error")]
+    GrpcError,
 }
 
 impl ErrorKind {
@@ -104,5 +109,12 @@ impl From<ProviderError> for Error {
     fn from(err: ProviderError) -> Self {
         let err: BoxError = err.into();
         ErrorKind::ContractError.context(err).into()
+    }
+}
+
+impl From<TonicError> for Error {
+    fn from(err: TonicError) -> Self {
+        let err: BoxError = err.into();
+        ErrorKind::GrpcError.context(err).into()
     }
 }
