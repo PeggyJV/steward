@@ -331,7 +331,7 @@ impl<T: 'static + Middleware> Poller<T> {
         match res {
             Ok((time_range, gas, contract_state_update, grpc_client)) => {
                 self.update_poller(time_range, gas, contract_state_update);
-                self.decide_rebalance(&grpc_client.contact.unwrap(), &mut grpc_client.grpc.unwrap()).await;
+                self.decide_rebalance(&grpc_client.contact, &mut grpc_client.grpc).await;
             }
             Err(e) => error!("Error fetching data {}", e),
         }
