@@ -3,7 +3,7 @@ package cellars.uniswapv3.v1;
 
 import "google/protobuf/timestamp.proto";
 
-service UniswapV3CellarHandler {
+service UniswapV3CellarAllocator {
     rpc Rebalance(RebalanceRequest) returns (RebalanceResponse) {}
 }
 
@@ -19,9 +19,7 @@ message RebalanceRequest {
     google.protobuf.Timestamp created_timestamp = 3;
 }
 
-message RebalanceResponse {
-    bool success = 1;
-}
+message RebalanceResponse {}
 
 // {
 //     "cellar_id": ...,

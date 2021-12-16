@@ -3,10 +3,10 @@
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 
-use crate::{application::APP, config::CellarRebalancerConfig, prelude::*, cellars::uniswapv3::UniswapV3CellarHandler};
+use crate::{application::APP, config::CellarRebalancerConfig, prelude::*, cellars::uniswapv3::UniswapV3CellarAllocator};
 use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
 use std::{result::Result, fs};
-use steward_proto::uniswapv3::server::UniswapV3CellarHandlerServer;
+use steward_proto::uniswapv3::server::UniswapV3CellarAllocatorServer;
 use tonic::transport::{Identity, Certificate, ServerTlsConfig};
 
 #[derive(Command, Debug, Clap)]
@@ -43,7 +43,7 @@ impl Runnable for CosmosSignerCmd {
                 .unwrap_or_else(|err| {
                     panic!("{:?}", err);
                 })
-                .add_service(UniswapV3CellarHandlerServer::new(UniswapV3CellarHandler))
+                .add_service(UniswapV3CellarAllocatorServer::new(UniswapV3CellarAllocator))
                 .add_service(proto_descriptor_service)
                 .serve(addr)
                 .await

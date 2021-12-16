@@ -1,11 +1,11 @@
 //! Start subcommand - example of how to write a subcommand
 
-use crate::cellars::uniswapv3::UniswapV3CellarHandler;
+use crate::cellars::uniswapv3::UniswapV3CellarAllocator;
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::{application::APP, config::CellarRebalancerConfig, prelude::*};
 use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
-use steward_proto::uniswapv3::server::UniswapV3CellarHandlerServer;
+use steward_proto::uniswapv3::server::UniswapV3CellarAllocatorServer;
 use tonic::transport::{Identity, Certificate, ServerTlsConfig};
 use std::{fs, result::Result};
 
@@ -43,7 +43,7 @@ impl Runnable for SingleSignerCmd {
                 .unwrap_or_else(|err| {
                     panic!("{:?}", err);
                 })
-                .add_service(UniswapV3CellarHandlerServer::new(UniswapV3CellarHandler))
+                .add_service(UniswapV3CellarAllocatorServer::new(UniswapV3CellarAllocator))
                 .add_service(proto_descriptor_service)
                 .serve(addr)
                 .await

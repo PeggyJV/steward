@@ -17,18 +17,15 @@ pub struct RebalanceRequest {
     pub created_timestamp: ::core::option::Option<::prost_types::Timestamp>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct RebalanceResponse {
-    #[prost(bool, tag = "1")]
-    pub success: bool,
-}
+pub struct RebalanceResponse {}
 #[doc = r" Generated client implementations."]
-pub mod uniswap_v3_cellar_handler_client {
+pub mod uniswap_v3_cellar_allocator_client {
     #![allow(unused_variables, dead_code, missing_docs)]
     use tonic::codegen::*;
-    pub struct UniswapV3CellarHandlerClient<T> {
+    pub struct UniswapV3CellarAllocatorClient<T> {
         inner: tonic::client::Grpc<T>,
     }
-    impl UniswapV3CellarHandlerClient<tonic::transport::Channel> {
+    impl UniswapV3CellarAllocatorClient<tonic::transport::Channel> {
         #[doc = r" Attempt to create a new client by connecting to a given endpoint."]
         pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
         where
@@ -39,7 +36,7 @@ pub mod uniswap_v3_cellar_handler_client {
             Ok(Self::new(conn))
         }
     }
-    impl<T> UniswapV3CellarHandlerClient<T>
+    impl<T> UniswapV3CellarAllocatorClient<T>
     where
         T: tonic::client::GrpcService<tonic::body::BoxBody>,
         T::ResponseBody: Body + HttpBody + Send + 'static,
@@ -66,42 +63,42 @@ pub mod uniswap_v3_cellar_handler_client {
             })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/cellars.uniswapv3.v1.UniswapV3CellarHandler/Rebalance",
+                "/cellars.uniswapv3.v1.UniswapV3CellarAllocator/Rebalance",
             );
             self.inner.unary(request.into_request(), path, codec).await
         }
     }
-    impl<T: Clone> Clone for UniswapV3CellarHandlerClient<T> {
+    impl<T: Clone> Clone for UniswapV3CellarAllocatorClient<T> {
         fn clone(&self) -> Self {
             Self {
                 inner: self.inner.clone(),
             }
         }
     }
-    impl<T> std::fmt::Debug for UniswapV3CellarHandlerClient<T> {
+    impl<T> std::fmt::Debug for UniswapV3CellarAllocatorClient<T> {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-            write!(f, "UniswapV3CellarHandlerClient {{ ... }}")
+            write!(f, "UniswapV3CellarAllocatorClient {{ ... }}")
         }
     }
 }
 #[doc = r" Generated server implementations."]
-pub mod uniswap_v3_cellar_handler_server {
+pub mod uniswap_v3_cellar_allocator_server {
     #![allow(unused_variables, dead_code, missing_docs)]
     use tonic::codegen::*;
-    #[doc = "Generated trait containing gRPC methods that should be implemented for use with UniswapV3CellarHandlerServer."]
+    #[doc = "Generated trait containing gRPC methods that should be implemented for use with UniswapV3CellarAllocatorServer."]
     #[async_trait]
-    pub trait UniswapV3CellarHandler: Send + Sync + 'static {
+    pub trait UniswapV3CellarAllocator: Send + Sync + 'static {
         async fn rebalance(
             &self,
             request: tonic::Request<super::RebalanceRequest>,
         ) -> Result<tonic::Response<super::RebalanceResponse>, tonic::Status>;
     }
     #[derive(Debug)]
-    pub struct UniswapV3CellarHandlerServer<T: UniswapV3CellarHandler> {
+    pub struct UniswapV3CellarAllocatorServer<T: UniswapV3CellarAllocator> {
         inner: _Inner<T>,
     }
     struct _Inner<T>(Arc<T>, Option<tonic::Interceptor>);
-    impl<T: UniswapV3CellarHandler> UniswapV3CellarHandlerServer<T> {
+    impl<T: UniswapV3CellarAllocator> UniswapV3CellarAllocatorServer<T> {
         pub fn new(inner: T) -> Self {
             let inner = Arc::new(inner);
             let inner = _Inner(inner, None);
@@ -113,9 +110,9 @@ pub mod uniswap_v3_cellar_handler_server {
             Self { inner }
         }
     }
-    impl<T, B> Service<http::Request<B>> for UniswapV3CellarHandlerServer<T>
+    impl<T, B> Service<http::Request<B>> for UniswapV3CellarAllocatorServer<T>
     where
-        T: UniswapV3CellarHandler,
+        T: UniswapV3CellarAllocator,
         B: HttpBody + Send + Sync + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
@@ -128,10 +125,10 @@ pub mod uniswap_v3_cellar_handler_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/cellars.uniswapv3.v1.UniswapV3CellarHandler/Rebalance" => {
+                "/cellars.uniswapv3.v1.UniswapV3CellarAllocator/Rebalance" => {
                     #[allow(non_camel_case_types)]
-                    struct RebalanceSvc<T: UniswapV3CellarHandler>(pub Arc<T>);
-                    impl<T: UniswapV3CellarHandler>
+                    struct RebalanceSvc<T: UniswapV3CellarAllocator>(pub Arc<T>);
+                    impl<T: UniswapV3CellarAllocator>
                         tonic::server::UnaryService<super::RebalanceRequest> for RebalanceSvc<T>
                     {
                         type Response = super::RebalanceResponse;
@@ -172,13 +169,13 @@ pub mod uniswap_v3_cellar_handler_server {
             }
         }
     }
-    impl<T: UniswapV3CellarHandler> Clone for UniswapV3CellarHandlerServer<T> {
+    impl<T: UniswapV3CellarAllocator> Clone for UniswapV3CellarAllocatorServer<T> {
         fn clone(&self) -> Self {
             let inner = self.inner.clone();
             Self { inner }
         }
     }
-    impl<T: UniswapV3CellarHandler> Clone for _Inner<T> {
+    impl<T: UniswapV3CellarAllocator> Clone for _Inner<T> {
         fn clone(&self) -> Self {
             Self(self.0.clone(), self.1.clone())
         }
@@ -188,7 +185,9 @@ pub mod uniswap_v3_cellar_handler_server {
             write!(f, "{:?}", self.0)
         }
     }
-    impl<T: UniswapV3CellarHandler> tonic::transport::NamedService for UniswapV3CellarHandlerServer<T> {
-        const NAME: &'static str = "cellars.uniswapv3.v1.UniswapV3CellarHandler";
+    impl<T: UniswapV3CellarAllocator> tonic::transport::NamedService
+        for UniswapV3CellarAllocatorServer<T>
+    {
+        const NAME: &'static str = "cellars.uniswapv3.v1.UniswapV3CellarAllocator";
     }
 }

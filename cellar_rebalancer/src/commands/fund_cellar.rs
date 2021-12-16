@@ -78,9 +78,8 @@ impl Runnable for FundCellarCmd {
             let mut i = U256::zero();
             loop {
                 match contract_state.contract.cellar_tick_info(i).call().await {
-                    Ok((token_id, tick_upper, tick_lower, weight)) => {
+                    Ok((pair_id, tick_upper, tick_lower, weight)) => {
                         let tick_info = UniswapV3CellarTickInfo {
-                            token_id: token_id,
                             tick_upper: tick_upper,
                             tick_lower: tick_lower,
                             weight: weight,

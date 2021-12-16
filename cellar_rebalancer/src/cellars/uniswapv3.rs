@@ -1,9 +1,10 @@
 //! Rust Wrapper for cellar functions
 /// This will convert cellar functions from tuples to Rust types
-use crate::{cellars, error::Error, prelude::*};
+use crate::{allocation, cellars, error::Error, prelude::*};
 use axum::async_trait;
-use ethers::{types::H160, prelude::*, types::U256};
+use ethers::prelude::*;
 use rebalancer_abi::cellar_uniswap::*;
+use somm_proto::somm as proto;
 use std::result::Result;
 use std::sync::Arc;
 use steward_proto::uniswapv3::{server, RebalanceRequest, RebalanceResponse};
@@ -11,13 +12,10 @@ use steward_proto::uniswapv3::{server, RebalanceRequest, RebalanceResponse};
 // Struct for UniswapV3CellarTickInfo
 #[derive(Clone, Debug)]
 pub struct UniswapV3CellarTickInfo {
-    pub(crate) token_id: U256,
     pub(crate) tick_upper: i32,
     pub(crate) tick_lower: i32,
     pub(crate) weight: u32,
 }
-
-pub struct ContractStateUpdate;
 
 // Use generic data types for CellarWrapper struct since contract will have different data types.
 pub struct UniswapV3CellarState<T: Middleware> {
@@ -168,40 +166,42 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
     }
 }
 
-pub struct UniswapV3CellarHandler;
+pub struct UniswapV3CellarAllocator;
 
 #[async_trait]
-impl server::UniswapV3CellarHandler for UniswapV3CellarHandler {
+impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
     async fn rebalance(
         &self,
         request: tonic::Request<RebalanceRequest>,
     ) -> Result<tonic::Response<RebalanceResponse>, tonic::Status> {
-        let client = cellars::get_signing_client();
         let request = request.get_ref();
-        // let (_, address) = cellars::parse_cellar_id(request.cellar_id);
-        // let token_id = cellars::get_token_id(cellars::UNISWAPV3_CELLAR);
-        // let tick_infos: Vec<UniswapV3CellarTickInfo> = request.data
-        //     .clone()
-        //     .into_iter()
-        //     .map(|d| {
-        //         UniswapV3CellarTickInfo {
-        //             token_id: token_id.to_owned(),
-        //             tick_upper: d.upper_price,
-        //             tick_lower: d.lower_price,
-        //             weight: d.weight
-        //         }
-        //     })
-        //     .collect();
-        let gas_price: Option<U256> = match cellars::get_gas_price().await {
-            Ok(gp) => Some(gp),
+        let tick_ranges: Vec<proto::TickRange> = request.data
+            .clone()
+            .into_iter()
+            .map(|d| {
+                proto::TickRange {
+                    upper: d.upper_price,
+                    lower: d.lower_price,
+                    weight: d.weight
+                }
+            })
+            .collect();
+        let pair_id = APP.config()
+            .cellars
+            // sketchy
+            .get(0)
+            .unwrap()
+            .pair_id;
+        let eth_gas_price = match cellars::get_gas_price().await {
+            Ok(gp) => gp,
             Err(err) => {
                 error!("Failed to get cellar gas price: {:?}", err);
-                None
+                // what's the right way to handle this?
+                0.into()
             }
         };
-        // let mut cellar = UniswapV3CellarState::new(address, client);
-        // cellar.gas_price = gas_price;
-        info!("Gas price: {:?}", gas_price);
-        Ok(tonic::Response::new(RebalanceResponse { success: true }))
+
+        allocation::decide_rebalance(tick_ranges, pair_id, eth_gas_price.as_u64()).await;
+        Ok(tonic::Response::new(RebalanceResponse {}))
     }
 }
