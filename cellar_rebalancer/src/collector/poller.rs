@@ -2,7 +2,7 @@
 /// The collector's [`Poller`] collects information from external sources
 /// which aren't capable of pushing data.
 use crate::{
-    cellar_uniswap_wrapper::{ContractStateUpdate, UniswapV3CellarState},
+    cellars::uniswapv3::{ContractStateUpdate, UniswapV3CellarState},
     collector, config,
     error::Error,
     gas::CellarGas,

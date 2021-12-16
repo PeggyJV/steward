@@ -5,7 +5,7 @@ use signatory::FsKeyStore;
 use std::{convert::TryFrom, ops::Add, path, sync::Arc, time::Duration};
 
 use crate::{
-    cellar_uniswap_wrapper::{UniswapV3CellarState, UniswapV3CellarTickInfo},
+    cellars::uniswapv3::{UniswapV3CellarState, UniswapV3CellarTickInfo},
     gas::CellarGas,
     prelude::*,
     uniswap_pool::PoolState,

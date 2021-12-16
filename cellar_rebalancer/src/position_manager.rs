@@ -1,5 +1,5 @@
 use crate::{
-    cellar_uniswap_wrapper::UniswapV3CellarTickInfo,
+    cellars::uniswapv3::UniswapV3CellarTickInfo,
     time_range::{TickWeight, TimeRange},
 };
 use ethers::prelude::*;

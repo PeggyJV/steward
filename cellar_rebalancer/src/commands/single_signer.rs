@@ -1,103 +1,53 @@
 //! Start subcommand - example of how to write a subcommand
 
-use crate::collector::{Collector, Poller};
+use crate::cellars::uniswapv3::UniswapV3CellarHandler;
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::{application::APP, config::CellarRebalancerConfig, prelude::*};
 use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
-use ethers::prelude::*;
-use ethers::providers::{Http, Provider};
-use futures::future;
-use signatory::FsKeyStore;
-use std::{convert::TryFrom, path, result::Result, sync::Arc};
-use tower::ServiceBuilder;
+use steward_proto::uniswapv3::server::UniswapV3CellarHandlerServer;
+use tonic::transport::{Identity, Certificate, ServerTlsConfig};
+use std::{fs, result::Result};
 
-/// `start` subcommand
-///
-/// The `Options` proc macro generates an option parser based on the struct
-/// definition, and is defined in the `gumdrop` crate. See their documentation
-/// for a more comprehensive example:
-///
-/// <https://docs.rs/gumdrop/>
 #[derive(Command, Debug, Clap)]
-pub struct SingleSignerCmd {
-    /// To whom are we saying hello?
-    recipient: Vec<String>,
-}
-
-impl SingleSignerCmd {
-    /// Initialize collector poller (if configured/needed)
-    async fn build_pollers(
-        &self,
-        config: CellarRebalancerConfig,
-    ) -> Vec<Poller<SignerMiddleware<Provider<Http>, Wallet<k256::ecdsa::SigningKey>>>> {
-        let keystore = path::Path::new(&config.keys.keystore);
-        let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
-
-        let name = &config
-            .keys
-            .rebalancer_key
-            .parse()
-            .expect("Could not parse name");
-        let key = keystore.load(name).expect("Could not load key");
-
-        let key = key
-            .to_pem()
-            .parse::<k256::elliptic_curve::SecretKey<k256::Secp256k1>>()
-            .expect("Could not parse key");
-
-        let wallet: LocalWallet = Wallet::from(key);
-
-        let eth_host = config.ethereum.rpc.clone();
-
-        let mut pollers = vec![];
-
-        for cellar in config.cellars.clone().into_iter() {
-            let client = Provider::<Http>::try_from(eth_host.clone()).unwrap();
-            let client = SignerMiddleware::new(client, wallet.clone());
-            let client = Arc::new(client);
-            let mongo = config.mongo.clone();
-            let name = &config.keys.rebalancer_key;
-            let cosmos_key = config.load_deep_space_key(name.clone());
-
-            let poller = Poller::new(&cellar, client, &mongo, &cosmos_key, config.clone())
-                .await
-                .unwrap_or_else(|e| {
-                    status_err!("couldn't initialize poller: {}", e);
-                    std::process::exit(1);
-                });
-
-            pollers.push(poller);
-        }
-
-        pollers
-    }
-}
+pub struct SingleSignerCmd;
 
 impl Runnable for SingleSignerCmd {
     /// Start the application.
     fn run(&self) {
-        info!("Starting application");
-
         let config = APP.config();
+        info!("Starting application");
         abscissa_tokio::run(&APP, async {
-            let collector =
-                ServiceBuilder::new()
-                    .buffer(20)
-                    .service(Collector::new(&config).unwrap_or_else(|e| {
-                        status_err!("couldn't initialize collector service: {}", e);
-                        std::process::exit(1);
-                    }));
+            // Reflection required for certain clients to function... such as grpcurl
+            let contents = fs::read("steward_proto/src/prost/descriptor.bin").unwrap();
+            let proto_descriptor_service = tonic_reflection::server::Builder::configure()
+                .register_encoded_file_descriptor_set(contents.as_slice())
+                .build()
+                .unwrap();
 
-            let pollers = self.build_pollers(config.as_ref().clone()).await;
+            // Configure TLS
+            let cert = tokio::fs::read(&config.tls.server_cert).await.unwrap();
+            let key = tokio::fs::read(&config.tls.server_key).await.unwrap();
+            let server_identity = Identity::from_pem(cert, key);
+            let client_ca_cert = tokio::fs::read(&config.tls.client_ca_cert).await.unwrap();
+            let client_ca_cert = Certificate::from_pem(client_ca_cert);
+            let tls_config = ServerTlsConfig::new()
+                .identity(server_identity)
+                .client_ca_root(client_ca_cert);
 
-            let mut tasks = vec![];
-            for poller in pollers {
-                let collector = collector.clone();
-                let task = tokio::spawn(async move { poller.run(collector).await });
-                tasks.push(task);
-            }
-            future::join_all(tasks).await;
+            // run it
+            let addr = ([127, 0, 0, 1], 3000).into();
+            info!("listening on {}", addr);
+            tonic::transport::Server::builder()
+                .tls_config(tls_config)
+                .unwrap_or_else(|err| {
+                    panic!("{:?}", err);
+                })
+                .add_service(UniswapV3CellarHandlerServer::new(UniswapV3CellarHandler))
+                .add_service(proto_descriptor_service)
+                .serve(addr)
+                .await
+                .unwrap();
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

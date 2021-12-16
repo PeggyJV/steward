@@ -6,7 +6,7 @@ use ethers::prelude::*;
 
 use signatory::FsKeyStore;
 
-use crate::{cellar_uniswap_wrapper::UniswapV3CellarState, gas::CellarGas, prelude::*};
+use crate::{cellars::uniswapv3::UniswapV3CellarState, gas::CellarGas, prelude::*};
 
 /// Cellars reinvest command
 #[derive(Command, Debug, Clap)]
