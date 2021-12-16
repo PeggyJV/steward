@@ -39,7 +39,7 @@ use abscissa_core::{Clap, Command, Configurable, FrameworkError, Runnable};
 use std::path::PathBuf;
 
 /// CellarRebalancer Configuration Filename
-pub const CONFIG_FILE: &str = "contract_monitor.toml";
+pub const CONFIG_FILE: &str = "steward.toml";
 
 /// CellarRebalancer Subcommands
 #[derive(Command, Debug, Clap, Runnable)]
