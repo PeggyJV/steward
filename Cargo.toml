@@ -6,13 +6,23 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [workspace]
-default-members = ["abi_build", "cellar_rebalancer", "rebalancer_abi"]
-members = [
-	"abi_build",
+default-members = [
 	"cellar_rebalancer",
     "rebalancer_abi",
+	"steward_abi_build",
+	"steward_proto",
+	"steward_proto_build",
+]
+members = [
+	"cellar_rebalancer",
+    "rebalancer_abi",
+	"steward_abi_build",
+	"steward_proto",
+	"steward_proto_build",
 ]
 [dependencies]
-abi_build = {path = "./abi_build"}
-cellar_rebalancer = {path = "./cellar_rebalancer"}
-rebalancer_abi = {path = "./rebalancer_abi"}
+cellar_rebalancer = { path = "./cellar_rebalancer" }
+rebalancer_abi = { path = "./rebalancer_abi" }
+steward_abi_build = { path = "./steward_abi_build" }
+steward_proto = { path = "./steward_proto" }
+steward_proto_build = { path = "./steward_proto_build" }

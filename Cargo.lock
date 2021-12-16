@@ -13,16 +13,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "abi_build"
-version = "0.1.0"
-dependencies = [
- "ethers",
- "serde",
- "serde_derive",
- "serde_json",
-]
-
-[[package]]
 name = "abscissa_core"
 version = "0.6.0-beta.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -732,7 +722,71 @@ dependencies = [
  "tokio 1.14.0",
  "tokio-util 0.6.9",
  "tower",
- "tower-http",
+ "tower-http 0.1.2",
+]
+
+[[package]]
+name = "axum"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ae08f7a0b974a1b226b9a4bb07fcc865f25d7c7513cefc53603f84ab41e586fd"
+dependencies = [
+ "async-trait",
+ "axum-core",
+ "bitflags",
+ "bytes 1.1.0",
+ "futures-util",
+ "http",
+ "http-body",
+ "hyper",
+ "matchit",
+ "mime",
+ "percent-encoding",
+ "pin-project-lite 0.2.7",
+ "serde",
+ "serde_json",
+ "serde_urlencoded",
+ "sync_wrapper",
+ "tokio 1.14.0",
+ "tokio-util 0.6.9",
+ "tower",
+ "tower-http 0.2.0",
+ "tower-layer",
+ "tower-service",
+]
+
+[[package]]
+name = "axum-core"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1ca6c0b218388a7ed6a8d25e94f7dea5498daaa4fd8c711fb3ff166041b06fda"
+dependencies = [
+ "async-trait",
+ "bytes 1.1.0",
+ "futures-util",
+ "http",
+ "http-body",
+ "mime",
+]
+
+[[package]]
+name = "axum-server"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f9cfd9dbe28ebde5c0460067ea27c6f3b1d514b699c4e0a5aab0fb63e452a8a8"
+dependencies = [
+ "arc-swap",
+ "bytes 1.1.0",
+ "futures-util",
+ "http",
+ "http-body",
+ "hyper",
+ "pin-project-lite 0.2.7",
+ "rustls 0.20.2",
+ "rustls-pemfile",
+ "tokio 1.14.0",
+ "tokio-rustls 0.23.1",
+ "tower-service",
 ]
 
 [[package]]
@@ -1051,6 +1105,8 @@ version = "0.1.0"
 dependencies = [
  "abscissa_core",
  "abscissa_tokio",
+ "axum 0.4.2",
+ "axum-server",
  "bip32",
  "bson",
  "bytes 1.1.0",
@@ -1066,6 +1122,7 @@ dependencies = [
  "hyper",
  "iqhttp",
  "k256",
+ "lazy_static",
  "mongodb",
  "num-bigint 0.4.3",
  "num-rational 0.4.0",
@@ -1083,10 +1140,12 @@ dependencies = [
  "sha2 0.9.8",
  "signatory",
  "somm_proto",
+ "steward_proto",
  "thiserror",
  "tokio 1.14.0",
  "toml",
  "tonic 0.4.3",
+ "tonic-reflection",
  "tower",
  "uniswap_v3_sdk",
 ]
@@ -1095,9 +1154,11 @@ dependencies = [
 name = "cellar_rebalancer_rs"
 version = "0.1.0"
 dependencies = [
- "abi_build",
  "cellar_rebalancer",
  "rebalancer_abi",
+ "steward_abi_build",
+ "steward_proto",
+ "steward_proto_build",
 ]
 
 [[package]]
@@ -2609,6 +2670,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "http-range-header"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0bfe8eed0a9285ef776bb792479ea3834e8b94e13d615c2f66d03dd50a435a29"
+
+[[package]]
 name = "httparse"
 version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2993,6 +3060,12 @@ name = "matches"
 version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a3e378b66a060d48947b590737b30a1be76706c8dd7b8ba0f2fe3989c68a853f"
+
+[[package]]
+name = "matchit"
+version = "0.4.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "58b6f41fdfbec185dd3dff58b51e323f5bc61692c0de38419a957b0dcfccca3c"
 
 [[package]]
 name = "md-5"
@@ -3428,7 +3501,7 @@ version = "0.4.1"
 source = "git+https://github.com/PeggyJV/gravity-bridge#990d023bb572448c883ee06a5f49833e5e63e6f2"
 dependencies = [
  "actix-rt 2.5.0",
- "axum",
+ "axum 0.1.3",
  "clarity",
  "cosmos_gravity",
  "deep_space 2.4.7",
@@ -4848,6 +4921,37 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
 
 [[package]]
+name = "steward_abi_build"
+version = "0.1.0"
+dependencies = [
+ "ethers",
+ "serde",
+ "serde_derive",
+ "serde_json",
+]
+
+[[package]]
+name = "steward_proto"
+version = "0.1.0"
+dependencies = [
+ "prost 0.7.0",
+ "prost-types 0.7.0",
+ "tonic 0.4.3",
+]
+
+[[package]]
+name = "steward_proto_build"
+version = "0.1.0"
+dependencies = [
+ "prost 0.7.0",
+ "prost-build",
+ "tempdir",
+ "tonic 0.4.3",
+ "tonic-build",
+ "walkdir",
+]
+
+[[package]]
 name = "stringprep"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4888,6 +4992,12 @@ dependencies = [
  "quote",
  "unicode-xid",
 ]
+
+[[package]]
+name = "sync_wrapper"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "20518fe4a4c9acf048008599e464deb21beeae3d3578418951a189c235a7a9a8"
 
 [[package]]
 name = "synstructure"
@@ -5316,6 +5426,7 @@ dependencies = [
  "prost 0.7.0",
  "prost-derive 0.7.0",
  "tokio 1.14.0",
+ "tokio-rustls 0.22.0",
  "tokio-stream",
  "tokio-util 0.6.9",
  "tower",
@@ -5368,6 +5479,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "tonic-reflection"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "56498d20188550337ea6c48ecf59d11646382dbfcd61051fb98c1093cfae3c21"
+dependencies = [
+ "bytes 1.1.0",
+ "prost 0.7.0",
+ "prost-types 0.7.0",
+ "tokio 1.14.0",
+ "tokio-stream",
+ "tonic 0.4.3",
+ "tonic-build",
+]
+
+[[package]]
 name = "tower"
 version = "0.4.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5400,6 +5526,24 @@ dependencies = [
  "http",
  "http-body",
  "pin-project 1.0.8",
+ "tower-layer",
+ "tower-service",
+]
+
+[[package]]
+name = "tower-http"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "39ee603d6e665ecc7e0f8d479eedb4626bd4726f0ee6119cee5b3a6bf184cac0"
+dependencies = [
+ "bitflags",
+ "bytes 1.1.0",
+ "futures-core",
+ "futures-util",
+ "http",
+ "http-body",
+ "http-range-header",
+ "pin-project-lite 0.2.7",
  "tower-layer",
  "tower-service",
 ]

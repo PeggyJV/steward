@@ -1,0 +1,14 @@
+[package]
+name = "steward_proto_build"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+prost = "0.7"
+prost-build = "0.7"
+tempdir = "0.3.7"
+tonic = "0.4"
+tonic-build = "0.4"
+walkdir = "2.3.2"
