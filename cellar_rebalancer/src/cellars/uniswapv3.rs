@@ -201,7 +201,9 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
             }
         };
 
-        allocation::decide_rebalance(tick_ranges, pair_id, eth_gas_price.as_u64()).await;
+        tokio::spawn(async move {
+            allocation::decide_rebalance(tick_ranges, pair_id, eth_gas_price.as_u64()).await;
+        });
         Ok(tonic::Response::new(RebalanceResponse {}))
     }
 }
