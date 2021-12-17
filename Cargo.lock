@@ -1044,7 +1044,6 @@ dependencies = [
  "bip32",
  "bson",
  "bytes 1.1.0",
- "cellar_rebalancer_abi",
  "chrono",
  "clap",
  "clarity",
@@ -1074,6 +1073,7 @@ dependencies = [
  "sha2 0.9.8",
  "signatory",
  "somm_proto",
+ "steward_abi",
  "steward_proto",
  "thiserror",
  "tokio 1.14.0",
@@ -1085,21 +1085,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "cellar_rebalancer_abi"
-version = "0.1.0"
-dependencies = [
- "ethers",
- "serde",
- "serde_derive",
- "serde_json",
-]
-
-[[package]]
 name = "cellar_rebalancer_rs"
 version = "0.1.0"
 dependencies = [
  "cellar_rebalancer",
- "cellar_rebalancer_abi",
+ "steward_abi",
  "steward_abi_build",
  "steward_proto",
  "steward_proto_build",
@@ -4841,6 +4831,16 @@ name = "stdweb-internal-runtime"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
+
+[[package]]
+name = "steward_abi"
+version = "0.1.0"
+dependencies = [
+ "ethers",
+ "serde",
+ "serde_derive",
+ "serde_json",
+]
 
 [[package]]
 name = "steward_abi_build"

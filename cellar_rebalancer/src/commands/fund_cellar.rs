@@ -10,7 +10,7 @@ use crate::{
     prelude::*,
     uniswap_pool::PoolState,
 };
-use cellar_rebalancer_abi::cellar_uniswap::*;
+use steward_abi::cellar_uniswap::*;
 
 /// Command to fund Cellars
 #[derive(Command, Debug, Clap)]

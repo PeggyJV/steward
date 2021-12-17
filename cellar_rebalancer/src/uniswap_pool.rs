@@ -1,4 +1,4 @@
-use cellar_rebalancer_abi::uniswapv3pool::UniswapV3 as UPool;
+use steward_abi::uniswapv3pool::UniswapV3 as UPool;
 use ethers::prelude::*;
 use std::sync::Arc;
 
