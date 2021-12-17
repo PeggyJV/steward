@@ -13,16 +13,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "abi_build"
-version = "0.1.0"
-dependencies = [
- "ethers",
- "serde",
- "serde_derive",
- "serde_json",
-]
-
-[[package]]
 name = "abscissa_core"
 version = "0.6.0-beta.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1054,6 +1044,7 @@ dependencies = [
  "bip32",
  "bson",
  "bytes 1.1.0",
+ "cellar_rebalancer_abi",
  "chrono",
  "clap",
  "clarity",
@@ -1066,6 +1057,7 @@ dependencies = [
  "hyper",
  "iqhttp",
  "k256",
+ "lazy_static",
  "mongodb",
  "num-bigint 0.4.3",
  "num-rational 0.4.0",
@@ -1075,7 +1067,6 @@ dependencies = [
  "prost 0.7.0",
  "prost-types 0.7.0",
  "rand_core 0.6.3",
- "rebalancer_abi",
  "regex",
  "rpassword",
  "serde",
@@ -1083,21 +1074,35 @@ dependencies = [
  "sha2 0.9.8",
  "signatory",
  "somm_proto",
+ "steward_proto",
  "thiserror",
  "tokio 1.14.0",
  "toml",
  "tonic 0.4.3",
+ "tonic-reflection",
  "tower",
  "uniswap_v3_sdk",
+]
+
+[[package]]
+name = "cellar_rebalancer_abi"
+version = "0.1.0"
+dependencies = [
+ "ethers",
+ "serde",
+ "serde_derive",
+ "serde_json",
 ]
 
 [[package]]
 name = "cellar_rebalancer_rs"
 version = "0.1.0"
 dependencies = [
- "abi_build",
  "cellar_rebalancer",
- "rebalancer_abi",
+ "cellar_rebalancer_abi",
+ "steward_abi_build",
+ "steward_proto",
+ "steward_proto_build",
 ]
 
 [[package]]
@@ -4043,16 +4048,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rebalancer_abi"
-version = "0.1.0"
-dependencies = [
- "ethers",
- "serde",
- "serde_derive",
- "serde_json",
-]
-
-[[package]]
 name = "redox_syscall"
 version = "0.2.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4848,6 +4843,37 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
 
 [[package]]
+name = "steward_abi_build"
+version = "0.1.0"
+dependencies = [
+ "ethers",
+ "serde",
+ "serde_derive",
+ "serde_json",
+]
+
+[[package]]
+name = "steward_proto"
+version = "0.1.0"
+dependencies = [
+ "prost 0.7.0",
+ "prost-types 0.7.0",
+ "tonic 0.4.3",
+]
+
+[[package]]
+name = "steward_proto_build"
+version = "0.1.0"
+dependencies = [
+ "prost 0.7.0",
+ "prost-build",
+ "tempdir",
+ "tonic 0.4.3",
+ "tonic-build",
+ "walkdir",
+]
+
+[[package]]
 name = "stringprep"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5316,6 +5342,7 @@ dependencies = [
  "prost 0.7.0",
  "prost-derive 0.7.0",
  "tokio 1.14.0",
+ "tokio-rustls 0.22.0",
  "tokio-stream",
  "tokio-util 0.6.9",
  "tower",
@@ -5365,6 +5392,21 @@ dependencies = [
  "prost-build",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "tonic-reflection"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "56498d20188550337ea6c48ecf59d11646382dbfcd61051fb98c1093cfae3c21"
+dependencies = [
+ "bytes 1.1.0",
+ "prost 0.7.0",
+ "prost-types 0.7.0",
+ "tokio 1.14.0",
+ "tokio-stream",
+ "tonic 0.4.3",
+ "tonic-build",
 ]
 
 [[package]]

@@ -1,19 +1,27 @@
 //! Rust Wrapper for cellar functions
 /// This will convert cellar functions from tuples to Rust types
-use crate::error::Error;
-use crate::prelude::*;
+use crate::{allocation, error::Error, prelude::*};
+use cellar_rebalancer_abi::cellar_uniswap::*;
 use ethers::prelude::*;
-use rebalancer_abi::cellar_uniswap::*;
+use somm_proto::somm;
 use std::result::Result;
 use std::sync::Arc;
+use steward_proto::uniswapv3::{server, RebalanceRequest, RebalanceResponse};
+use tonic::async_trait;
+
+// Struct for UniswapV3CellarTickInfo
+#[derive(Clone, Debug)]
+pub struct UniswapV3CellarTickInfo {
+    pub(crate) tick_upper: i32,
+    pub(crate) tick_lower: i32,
+    pub(crate) weight: u32,
+}
 
 // Use generic data types for CellarWrapper struct since contract will have different data types.
-pub struct UniswapV3CellarState<T> {
+pub struct UniswapV3CellarState<T: Middleware> {
     pub contract: UniswapV3Cellar<T>,
     pub gas_price: Option<U256>,
 }
-
-pub struct ContractStateUpdate {}
 
 // Implementation for ContractState.
 impl<T: 'static + Middleware> UniswapV3CellarState<T> {
@@ -158,11 +166,36 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
     }
 }
 
-// Struct for UniswapV3CellarTickInfo
-#[derive(Clone, Debug)]
-pub struct UniswapV3CellarTickInfo {
-    pub(crate) token_id: U256,
-    pub(crate) tick_upper: i32,
-    pub(crate) tick_lower: i32,
-    pub(crate) weight: u32,
+pub struct UniswapV3CellarAllocator;
+
+#[async_trait]
+impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
+    async fn rebalance(
+        &self,
+        request: tonic::Request<RebalanceRequest>,
+    ) -> Result<tonic::Response<RebalanceResponse>, tonic::Status> {
+        let request = request.get_ref();
+        let tick_ranges: Vec<somm::TickRange> = request
+            .data
+            .clone()
+            .into_iter()
+            .map(|d| somm::TickRange {
+                upper: d.upper_price,
+                lower: d.lower_price,
+                weight: d.weight,
+            })
+            .collect();
+        let pair_id = APP
+            .config()
+            .cellars
+            // sketchy
+            .get(0)
+            .unwrap()
+            .pair_id;
+
+        tokio::spawn(async move {
+            allocation::decide_rebalance(tick_ranges, pair_id).await;
+        });
+        Ok(tonic::Response::new(RebalanceResponse {}))
+    }
 }

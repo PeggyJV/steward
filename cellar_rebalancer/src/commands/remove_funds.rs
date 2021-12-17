@@ -5,8 +5,8 @@ use chrono::Utc;
 use ethers::prelude::*;
 use signatory::FsKeyStore;
 
-use crate::{cellar_uniswap_wrapper::UniswapV3CellarState, prelude::*};
-use rebalancer_abi::cellar_uniswap::*;
+use crate::{cellars::uniswapv3::UniswapV3CellarState, prelude::*};
+use cellar_rebalancer_abi::cellar_uniswap::*;
 
 /// Remove funds from Cellars
 #[derive(Command, Debug, Clap)]

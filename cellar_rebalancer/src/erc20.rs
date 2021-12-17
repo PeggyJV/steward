@@ -1,9 +1,9 @@
 //! Rust Wrapper for cellar functions
 
 use crate::prelude::*;
+use cellar_rebalancer_abi::erc20::Erc20;
+use cellar_rebalancer_abi::weth::Weth;
 use ethers::prelude::*;
-use rebalancer_abi::erc20::Erc20;
-use rebalancer_abi::weth::Weth;
 use std::sync::Arc;
 
 pub struct Erc20State<T> {

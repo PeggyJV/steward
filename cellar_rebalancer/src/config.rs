@@ -17,6 +17,7 @@ use std::path::Path;
 #[serde(default, deny_unknown_fields)]
 pub struct CellarRebalancerConfig {
     pub keystore: String,
+    pub tls: TlsSection,
     pub gravity: GravitySection,
     pub ethereum: EthereumSection,
     pub cosmos: CosmosSection,
@@ -55,6 +56,7 @@ impl Default for CellarRebalancerConfig {
     fn default() -> Self {
         Self {
             keystore: "/tmp/keystore".to_owned(),
+            tls: TlsSection::default(),
             gravity: GravitySection::default(),
             ethereum: EthereumSection::default(),
             cosmos: CosmosSection::default(),
@@ -65,6 +67,24 @@ impl Default for CellarRebalancerConfig {
         }
     }
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct TlsSection {
+    pub server_cert_path: String,
+    pub server_key_path: String,
+    pub client_ca_cert_path: String,
+}
+
+impl Default for TlsSection {
+    fn default() -> Self {
+        Self {
+            server_cert_path: "".to_string(),
+            server_key_path: "".to_string(),
+            client_ca_cert_path: "".to_string(),
+        }
+    }
+}
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MongoSection {
     pub host: String,
@@ -101,6 +121,8 @@ impl Default for KeysConfig {
 pub struct CellarConfig {
     /// Example configuration value
     pub pair_id: ethers::types::U256,
+    pub name: String,
+    pub token_id: ethers::types::U256,
     pub cellar_address: ethers::types::H160,
     pub pool_address: ethers::types::H160,
     pub weight_factor: u32,
@@ -115,6 +137,8 @@ impl Default for CellarConfig {
     fn default() -> Self {
         CellarConfig {
             pair_id: ethers::types::U256::zero(),
+            name: String::default(),
+            token_id: ethers::types::U256::zero(),
             cellar_address: ethers::types::H160::zero(),
             pool_address: ethers::types::H160::zero(),
             weight_factor: 100,

@@ -19,7 +19,6 @@ mod eth_to_cosmos;
 mod fund_cellar;
 mod keys;
 mod orchestrator;
-mod predictions;
 mod query;
 mod reinvest;
 mod remove_funds;
@@ -31,8 +30,8 @@ mod tx;
 
 use self::{
     config_cmd::ConfigCmd, cosmos_mode::CosmosSignerCmd, fund_cellar::FundCellarCmd, keys::KeysCmd,
-    predictions::PredictionsCmd, remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd,
-    single_signer::SingleSignerCmd, transfer::TransferCmd,
+    remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, single_signer::SingleSignerCmd,
+    transfer::TransferCmd,
 };
 
 use crate::config::CellarRebalancerConfig;
@@ -40,14 +39,13 @@ use abscissa_core::{Clap, Command, Configurable, FrameworkError, Runnable};
 use std::path::PathBuf;
 
 /// CellarRebalancer Configuration Filename
-pub const CONFIG_FILE: &str = "contract_monitor.toml";
+pub const CONFIG_FILE: &str = "steward.toml";
 
 /// CellarRebalancer Subcommands
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum CellarRebalancerCmd {
     SingleSigner(SingleSignerCmd),
     Transfer(TransferCmd),
-    Predictions(PredictionsCmd),
     #[clap(subcommand)]
     Keys(KeysCmd),
     /// Print default configurations

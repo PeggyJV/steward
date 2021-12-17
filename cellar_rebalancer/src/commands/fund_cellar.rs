@@ -5,12 +5,12 @@ use signatory::FsKeyStore;
 use std::{convert::TryFrom, ops::Add, path, sync::Arc, time::Duration};
 
 use crate::{
-    cellar_uniswap_wrapper::{UniswapV3CellarState, UniswapV3CellarTickInfo},
+    cellars::uniswapv3::{UniswapV3CellarState, UniswapV3CellarTickInfo},
     gas::CellarGas,
     prelude::*,
     uniswap_pool::PoolState,
 };
-use rebalancer_abi::cellar_uniswap::*;
+use cellar_rebalancer_abi::cellar_uniswap::*;
 
 /// Command to fund Cellars
 #[derive(Command, Debug, Clap)]
@@ -78,9 +78,8 @@ impl Runnable for FundCellarCmd {
             let mut i = U256::zero();
             loop {
                 match contract_state.contract.cellar_tick_info(i).call().await {
-                    Ok((token_id, tick_upper, tick_lower, weight)) => {
+                    Ok((pair_id, tick_upper, tick_lower, weight)) => {
                         let tick_info = UniswapV3CellarTickInfo {
-                            token_id: token_id,
                             tick_upper: tick_upper,
                             tick_lower: tick_lower,
                             weight: weight,

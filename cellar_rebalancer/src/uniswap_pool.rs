@@ -1,5 +1,5 @@
+use cellar_rebalancer_abi::uniswapv3pool::UniswapV3 as UPool;
 use ethers::prelude::*;
-use rebalancer_abi::uniswapv3pool::UniswapV3 as UPool;
 use std::sync::Arc;
 
 pub struct PoolState<T> {

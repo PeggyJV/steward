@@ -1,0 +1,30 @@
+syntax = "proto3";
+package cellars.uniswapv3.v1;
+
+import "google/protobuf/timestamp.proto";
+
+service UniswapV3CellarAllocator {
+    rpc Rebalance(RebalanceRequest) returns (RebalanceResponse) {}
+}
+
+message Position {
+    int32 upper_price = 1;
+    int32 lower_price = 2;
+    uint32 weight = 3;
+}
+
+message RebalanceRequest {
+    string cellar_id = 1;
+    repeated Position data = 2;
+    google.protobuf.Timestamp created_timestamp = 3;
+}
+
+message RebalanceResponse {}
+
+// {
+//     "cellar_id": ...,
+//     "data": [{"upper_price": 100, "lower_price": 50, "weight":0.7}],
+//     "created_timestamp": "...",
+//     "check_frequency": 3600,
+//     "schema_type": "UNIv3",
+// }

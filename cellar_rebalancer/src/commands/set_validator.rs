@@ -4,7 +4,7 @@ use abscissa_core::{Clap, Command, Runnable};
 use ethers::prelude::*;
 use signatory::FsKeyStore;
 
-use crate::{cellar_uniswap_wrapper::UniswapV3CellarState, gas::CellarGas, prelude::*};
+use crate::{cellars::uniswapv3::UniswapV3CellarState, gas::CellarGas, prelude::*};
 
 /// `set-validator` subcommand
 #[derive(Command, Debug, Clap)]
