@@ -1,5 +1,5 @@
 [package]
-name = "rebalancer_abi"
+name = "cellar_rebalancer_abi"
 version = "0.1.0"
 edition = "2021"
 

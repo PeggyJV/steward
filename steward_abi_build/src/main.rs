@@ -3,7 +3,7 @@ use std::process;
 
 fn main() {
     // Aave
-    let abigen = match Abigen::new("Aave", "../rebalancer_abi/aave_lending_abi.json") {
+    let abigen = match Abigen::new("Aave", "../cellar_rebalancer_abi/aave_lending_abi.json") {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open aave_lending_abi.json: {}", e);
@@ -23,13 +23,13 @@ fn main() {
         }
     };
 
-    match abi.write_to_file("../rebalancer_abi/src/aave.rs") {
+    match abi.write_to_file("../cellar_rebalancer_abi/src/aave.rs") {
         Ok(_) => (),
         Err(e) => println!("Error writing aave.rs: {}", e),
     }
 
     // Erc20
-    let abigen = match Abigen::new("Erc20", "../rebalancer_abi/erc20_abi.json") {
+    let abigen = match Abigen::new("Erc20", "../cellar_rebalancer_abi/erc20_abi.json") {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open erc20_abi.json: {}", e);
@@ -49,13 +49,16 @@ fn main() {
         }
     };
 
-    match abi.write_to_file("../rebalancer_abi/src/erc20.rs") {
+    match abi.write_to_file("../cellar_rebalancer_abi/src/erc20.rs") {
         Ok(_) => (),
         Err(e) => println!("Error writing erc20.rs: {}", e),
     }
 
     // Uniswap Router
-    let abigen = match Abigen::new("UniswapRouter", "../rebalancer_abi/uniswap_router_abi.json") {
+    let abigen = match Abigen::new(
+        "UniswapRouter",
+        "../cellar_rebalancer_abi/uniswap_router_abi.json",
+    ) {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open uniswap_router_abi.json: {}", e);
@@ -75,13 +78,16 @@ fn main() {
         }
     };
 
-    match abi.write_to_file("../rebalancer_abi/src/uniswap_router.rs") {
+    match abi.write_to_file("../cellar_rebalancer_abi/src/uniswap_router.rs") {
         Ok(_) => (),
         Err(e) => println!("Error writing uniswap_router.rs: {}", e),
     }
 
     // Uniswapv3 Pool
-    let abigen = match Abigen::new("UniswapV3", "../rebalancer_abi/uniswapv3pool_abi.json") {
+    let abigen = match Abigen::new(
+        "UniswapV3",
+        "../cellar_rebalancer_abi/uniswapv3pool_abi.json",
+    ) {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open uniswapv3pool_abi.json: {}", e);
@@ -101,13 +107,13 @@ fn main() {
         }
     };
 
-    match abi.write_to_file("../rebalancer_abi/src/uniswapv3pool.rs") {
+    match abi.write_to_file("../cellar_rebalancer_abi/src/uniswapv3pool.rs") {
         Ok(_) => (),
         Err(e) => println!("Error writing uniswapv3pool.rs: {}", e),
     }
 
     // Weth
-    let abigen = match Abigen::new("Weth", "../rebalancer_abi/weth_abi.json") {
+    let abigen = match Abigen::new("Weth", "../cellar_rebalancer_abi/weth_abi.json") {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open weth_abi.json: {}", e);
@@ -127,13 +133,16 @@ fn main() {
         }
     };
 
-    match abi.write_to_file("../rebalancer_abi/src/weth.rs") {
+    match abi.write_to_file("../cellar_rebalancer_abi/src/weth.rs") {
         Ok(_) => (),
         Err(e) => println!("Error writing weth.rs: {}", e),
     }
 
     // Cellar Aave
-    let abigen = match Abigen::new("AaveCellar", "../rebalancer_abi/cellar_aave_abi.json") {
+    let abigen = match Abigen::new(
+        "AaveCellar",
+        "../cellar_rebalancer_abi/cellar_aave_abi.json",
+    ) {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open cellar_aave_abi.json: {}", e);
@@ -153,7 +162,7 @@ fn main() {
         }
     };
 
-    match abi.write_to_file("../rebalancer_abi/src/cellar_aave.rs") {
+    match abi.write_to_file("../cellar_rebalancer_abi/src/cellar_aave.rs") {
         Ok(_) => (),
         Err(e) => println!("Error writing cellar_aave.rs: {}", e),
     }
@@ -161,7 +170,7 @@ fn main() {
     // Cellar Uniswap
     let abigen = match Abigen::new(
         "UniswapV3Cellar",
-        "../rebalancer_abi/cellar_uniswap_abi.json",
+        "../cellar_rebalancer_abi/cellar_uniswap_abi.json",
     ) {
         Ok(abigen) => abigen,
         Err(e) => {
@@ -182,7 +191,7 @@ fn main() {
         }
     };
 
-    match abi.write_to_file("../rebalancer_abi/src/cellar_uniswap.rs") {
+    match abi.write_to_file("../cellar_rebalancer_abi/src/cellar_uniswap.rs") {
         Ok(_) => (),
         Err(e) => println!("Error writing cellar_uniswap.rs: {}", e),
     }

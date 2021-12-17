@@ -8,21 +8,21 @@ edition = "2021"
 [workspace]
 default-members = [
 	"cellar_rebalancer",
-    "rebalancer_abi",
+	"cellar_rebalancer_abi",
 	"steward_abi_build",
 	"steward_proto",
 	"steward_proto_build",
 ]
 members = [
 	"cellar_rebalancer",
-    "rebalancer_abi",
+	"cellar_rebalancer_abi",
 	"steward_abi_build",
 	"steward_proto",
 	"steward_proto_build",
 ]
 [dependencies]
 cellar_rebalancer = { path = "./cellar_rebalancer" }
-rebalancer_abi = { path = "./rebalancer_abi" }
+cellar_rebalancer_abi = { path = "./cellar_rebalancer_abi" }
 steward_abi_build = { path = "./steward_abi_build" }
 steward_proto = { path = "./steward_proto" }
 steward_proto_build = { path = "./steward_proto_build" }

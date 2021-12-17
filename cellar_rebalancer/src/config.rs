@@ -70,17 +70,17 @@ impl Default for CellarRebalancerConfig {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TlsSection {
-    pub server_cert: String,
-    pub server_key: String,
-    pub client_ca_cert: String,
+    pub server_cert_path: String,
+    pub server_key_path: String,
+    pub client_ca_cert_path: String,
 }
 
 impl Default for TlsSection {
     fn default() -> Self {
         Self {
-            server_cert: "".to_string(),
-            server_key: "".to_string(),
-            client_ca_cert: "".to_string(),
+            server_cert_path: "".to_string(),
+            server_key_path: "".to_string(),
+            client_ca_cert_path: "".to_string(),
         }
     }
 }

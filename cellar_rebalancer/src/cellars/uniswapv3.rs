@@ -1,13 +1,13 @@
 //! Rust Wrapper for cellar functions
 /// This will convert cellar functions from tuples to Rust types
-use crate::{allocation, cellars, error::Error, prelude::*};
-use axum::async_trait;
+use crate::{allocation, error::Error, prelude::*};
+use cellar_rebalancer_abi::cellar_uniswap::*;
 use ethers::prelude::*;
-use rebalancer_abi::cellar_uniswap::*;
-use somm_proto::somm as proto;
+use somm_proto::somm;
 use std::result::Result;
 use std::sync::Arc;
 use steward_proto::uniswapv3::{server, RebalanceRequest, RebalanceResponse};
+use tonic::async_trait;
 
 // Struct for UniswapV3CellarTickInfo
 #[derive(Clone, Debug)]
@@ -175,11 +175,11 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
         request: tonic::Request<RebalanceRequest>,
     ) -> Result<tonic::Response<RebalanceResponse>, tonic::Status> {
         let request = request.get_ref();
-        let tick_ranges: Vec<proto::TickRange> = request
+        let tick_ranges: Vec<somm::TickRange> = request
             .data
             .clone()
             .into_iter()
-            .map(|d| proto::TickRange {
+            .map(|d| somm::TickRange {
                 upper: d.upper_price,
                 lower: d.lower_price,
                 weight: d.weight,
@@ -192,17 +192,9 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
             .get(0)
             .unwrap()
             .pair_id;
-        let eth_gas_price = match cellars::get_gas_price().await {
-            Ok(gp) => gp,
-            Err(err) => {
-                error!("Failed to get cellar gas price: {:?}", err);
-                // what's the right way to handle this?
-                0.into()
-            }
-        };
 
         tokio::spawn(async move {
-            allocation::decide_rebalance(tick_ranges, pair_id, eth_gas_price.as_u64()).await;
+            allocation::decide_rebalance(tick_ranges, pair_id).await;
         });
         Ok(tonic::Response::new(RebalanceResponse {}))
     }

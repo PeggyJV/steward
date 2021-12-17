@@ -11,7 +11,7 @@ use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::{
 };
 use prost::Message;
 use sha2::Digest;
-use somm_proto::somm as proto;
+use somm_proto::somm;
 use somm_proto::somm::query_client::QueryClient as AllocationQueryClient;
 use somm_proto::somm::AllocationPrecommit;
 use std::{result::Result, time::Duration};
@@ -25,9 +25,9 @@ pub async fn send_precommit(
     delegate_cosmos_address: Address,
     cosmos_key: CosmosPrivateKey,
     fee: Coin,
-    allocation_precommit: Vec<proto::AllocationPrecommit>,
+    allocation_precommit: Vec<somm::AllocationPrecommit>,
 ) -> Result<TxResponse, CosmosGrpcError> {
-    let msg = proto::MsgAllocationPrecommit {
+    let msg = somm::MsgAllocationPrecommit {
         precommit: allocation_precommit,
         signer: delegate_cosmos_address.to_bech32("somm").unwrap(),
     };
@@ -41,9 +41,9 @@ pub async fn send_allocation(
     delegate_cosmos_address: Address,
     cosmos_key: CosmosPrivateKey,
     fee: Coin,
-    allocation_commit: Vec<proto::Allocation>,
+    allocation_commit: Vec<somm::Allocation>,
 ) -> Result<TxResponse, CosmosGrpcError> {
-    let msg = proto::MsgAllocationCommit {
+    let msg = somm::MsgAllocationCommit {
         signer: delegate_cosmos_address.to_bech32("somm").unwrap(),
         commit: allocation_commit,
     };
@@ -79,7 +79,7 @@ async fn __send_messages(
 }
 
 pub async fn data_hash(
-    allocation: &proto::Allocation,
+    allocation: &somm::Allocation,
     valAddress: String,
 ) -> Result<AllocationPrecommit, String> {
     let mut hasher = sha2::Sha256::new();
@@ -102,7 +102,7 @@ pub async fn query_allocation_precommits(
     client: &mut AllocationQueryClient<Channel>,
 ) -> Result<Vec<AllocationPrecommit>, CosmosGrpcError> {
     let response = client
-        .query_allocation_precommits(proto::QueryAllocationPrecommitsRequest {})
+        .query_allocation_precommits(somm::QueryAllocationPrecommitsRequest {})
         .await?;
     let precommits = response.into_inner().precommits;
     Ok(precommits)
@@ -110,9 +110,9 @@ pub async fn query_allocation_precommits(
 
 pub async fn query_commit_period(
     client: &mut AllocationQueryClient<Channel>,
-) -> Result<proto::QueryCommitPeriodResponse, CosmosGrpcError> {
+) -> Result<somm::QueryCommitPeriodResponse, CosmosGrpcError> {
     let response = client
-        .query_commit_period(proto::QueryCommitPeriodRequest {})
+        .query_commit_period(somm::QueryCommitPeriodRequest {})
         .await?;
 
     let query_commit_response = response.into_inner();

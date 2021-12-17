@@ -19,6 +19,7 @@ pub mod erc20;
 pub mod error;
 pub mod gas;
 pub mod prelude;
+pub mod server;
 pub mod somm_send;
 pub mod uniswap_pool;
 pub mod uniswap_router;

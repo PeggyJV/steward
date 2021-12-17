@@ -1,23 +1,23 @@
-use crate::{cellars::uniswapv3::UniswapV3CellarTickInfo, prelude::*, somm_send};
+use crate::{cellars, error::Error, prelude::*, somm_send};
 use abscissa_core::Application;
-use deep_space::{Coin, Contact};
+use deep_space::{private_key::PrivateKey, Coin, Contact};
 use ethers::prelude::U256;
-use proto::query_client::QueryClient as AllocationQueryClient;
-use somm_proto::somm as proto;
+use somm_proto::{somm, somm::query_client::QueryClient as AllocationQueryClient};
 use std::time::Duration;
 use tokio::time::{sleep, timeout};
 use tonic::transport::Channel;
 
+// TO-DO Remove the need for options here
 pub struct Connections {
-    pub grpc: Option<AllocationQueryClient<Channel>>,
-    pub contact: Option<Contact>,
+    pub grpc: AllocationQueryClient<Channel>,
+    pub contact: Contact,
 }
 
 pub async fn allocation_precommit(
-    cosmos_key: &deep_space::private_key::PrivateKey,
-    allocation: &proto::Allocation,
+    cosmos_key: &PrivateKey,
+    allocation: &somm::Allocation,
     pair_id: String,
-) -> proto::AllocationPrecommit {
+) -> somm::AllocationPrecommit {
     let config = APP.config();
     let delegate_cosmos_address = cosmos_key
         .to_address(&config.cosmos.prefix)
@@ -26,52 +26,55 @@ pub async fn allocation_precommit(
     let hasher = somm_send::data_hash(allocation, delegate_cosmos_address)
         .await
         .unwrap();
-    proto::AllocationPrecommit {
+    somm::AllocationPrecommit {
         hash: hasher.hash,
         cellar_id: pair_id,
     }
 }
 
-pub async fn cellar_query_client() -> Connections {
+pub async fn get_connections() -> Result<Connections, Error> {
     let config = APP.config();
     let timeout = Duration::from_secs(10);
     let try_base = AllocationQueryClient::connect(config.cosmos.grpc.clone()).await;
     let (grpc, contact) = match try_base {
         Ok(val) => (
-            Some(val),
-            Some(Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix).unwrap()),
+            val,
+            Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix).unwrap(),
         ),
         Err(e) => {
-            warn!(
+            error!(
                 "Failed to access Cosmos gRPC with {:?} and create connections",
                 e
             );
-            (None, None)
+            return Err(Error::from(e));
         }
     };
-    Connections { grpc, contact }
+    Ok(Connections { grpc, contact })
 }
 
-pub async fn decide_rebalance(
-    tick_range: Vec<proto::TickRange>,
-    pair_id: U256,
-    eth_gas_price: u64,
-) {
+pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, pair_id: U256) {
     if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
         ()
     } else {
-        let connections = cellar_query_client().await;
-        let contact = connections.contact.unwrap();
-        let grpc_client = &mut connections.grpc.unwrap();
+        let mut connections = get_connections().await.unwrap();
+        let (contact, grpc_client) = (connections.contact, &mut connections.grpc);
+
+        let eth_gas_price = match cellars::get_gas_price().await {
+            Ok(gp) => gp,
+            Err(err) => {
+                error!("Failed to get cellar gas price: {:?}", err);
+                // TO-DO handle this better
+                0.into()
+            }
+        };
+        let allocation = to_allocation(tick_range, pair_id.to_string(), eth_gas_price.as_u64());
 
         let config = APP.config();
-        let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
-        let allocation = to_allocation(tick_range, pair_id.to_string(), eth_gas_price);
-
         let name = &config.keys.rebalancer_key;
         let cosmos_key = config.load_deep_space_key(name.clone());
         let delegate_cosmos_address = cosmos_key.to_address(&contact.get_prefix()).unwrap();
 
+        let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
         let fee = Coin {
             denom: cosmos_gas_price.1,
             amount: 0u32.into(),
@@ -140,13 +143,13 @@ pub async fn decide_rebalance(
 }
 
 pub fn to_allocation(
-    tick_ranges: Vec<proto::TickRange>,
+    tick_ranges: Vec<somm::TickRange>,
     pair_id: String,
     eth_gas_price: u64,
-) -> proto::Allocation {
-    proto::Allocation {
-        vote: Some(proto::RebalanceVote {
-            cellar: Some(proto::Cellar {
+) -> somm::Allocation {
+    somm::Allocation {
+        vote: Some(somm::RebalanceVote {
+            cellar: Some(somm::Cellar {
                 id: pair_id,
                 tick_ranges: tick_ranges,
             }),
