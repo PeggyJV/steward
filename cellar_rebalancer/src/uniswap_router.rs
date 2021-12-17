@@ -1,7 +1,7 @@
 //! Rust Wrapper for cellar functions
 
-use cellar_rebalancer_abi::uniswap_router::UniswapRouter;
-use cellar_rebalancer_abi::uniswapv3pool::UniswapV3 as UniswapPool;
+use steward_abi::uniswap_router::UniswapRouter;
+use steward_abi::uniswapv3pool::UniswapV3 as UniswapPool;
 use ethers::prelude::*;
 use std::sync::Arc;
 

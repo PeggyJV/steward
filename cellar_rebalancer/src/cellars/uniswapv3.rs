@@ -1,7 +1,7 @@
 //! Rust Wrapper for cellar functions
 /// This will convert cellar functions from tuples to Rust types
 use crate::{allocation, error::Error, prelude::*};
-use cellar_rebalancer_abi::cellar_uniswap::*;
+use steward_abi::cellar_uniswap::*;
 use ethers::prelude::*;
 use somm_proto::somm;
 use std::result::Result;
