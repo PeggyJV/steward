@@ -175,18 +175,18 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
         request: tonic::Request<RebalanceRequest>,
     ) -> Result<tonic::Response<RebalanceResponse>, tonic::Status> {
         let request = request.get_ref();
-        let tick_ranges: Vec<proto::TickRange> = request.data
+        let tick_ranges: Vec<proto::TickRange> = request
+            .data
             .clone()
             .into_iter()
-            .map(|d| {
-                proto::TickRange {
-                    upper: d.upper_price,
-                    lower: d.lower_price,
-                    weight: d.weight
-                }
+            .map(|d| proto::TickRange {
+                upper: d.upper_price,
+                lower: d.lower_price,
+                weight: d.weight,
             })
             .collect();
-        let pair_id = APP.config()
+        let pair_id = APP
+            .config()
             .cellars
             // sketchy
             .get(0)

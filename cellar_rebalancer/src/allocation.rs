@@ -1,11 +1,11 @@
-use crate::{cellars::{uniswapv3::UniswapV3CellarTickInfo}, somm_send, prelude::*};
+use crate::{cellars::uniswapv3::UniswapV3CellarTickInfo, prelude::*, somm_send};
 use abscissa_core::Application;
-use deep_space::{Contact, Coin};
+use deep_space::{Coin, Contact};
 use ethers::prelude::U256;
 use proto::query_client::QueryClient as AllocationQueryClient;
 use somm_proto::somm as proto;
 use std::time::Duration;
-use tokio::time::{timeout, sleep};
+use tokio::time::{sleep, timeout};
 use tonic::transport::Channel;
 
 pub struct Connections {
@@ -36,19 +36,17 @@ pub async fn cellar_query_client() -> Connections {
     let config = APP.config();
     let timeout = Duration::from_secs(10);
     let try_base = AllocationQueryClient::connect(config.cosmos.grpc.clone()).await;
-    let(grpc,contact) = match try_base {
-        Ok(val) => {
-            (Some(val),
-            Some(
-                Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix).unwrap(),
-            ))
-        }
+    let (grpc, contact) = match try_base {
+        Ok(val) => (
+            Some(val),
+            Some(Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix).unwrap()),
+        ),
         Err(e) => {
             warn!(
                 "Failed to access Cosmos gRPC with {:?} and create connections",
                 e
             );
-            (None,None)
+            (None, None)
         }
     };
     Connections { grpc, contact }
@@ -57,7 +55,7 @@ pub async fn cellar_query_client() -> Connections {
 pub async fn decide_rebalance(
     tick_range: Vec<proto::TickRange>,
     pair_id: U256,
-    eth_gas_price: u64
+    eth_gas_price: u64,
 ) {
     if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
         ()
@@ -141,7 +139,11 @@ pub async fn decide_rebalance(
     }
 }
 
-pub fn to_allocation(tick_ranges: Vec<proto::TickRange>, pair_id: String, eth_gas_price: u64) -> proto::Allocation {
+pub fn to_allocation(
+    tick_ranges: Vec<proto::TickRange>,
+    pair_id: String,
+    eth_gas_price: u64,
+) -> proto::Allocation {
     proto::Allocation {
         vote: Some(proto::RebalanceVote {
             cellar: Some(proto::Cellar {

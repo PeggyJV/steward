@@ -5,11 +5,11 @@
 // Building new steward rust proto definitions
 // run 'cargo run'
 
+use std::path::Path;
 use std::{
     fs::{self, create_dir_all, remove_dir_all},
     path::PathBuf,
 };
-use std::{path::Path};
 use walkdir::WalkDir;
 
 /// A temporary directory for proto building
@@ -62,9 +62,7 @@ fn main() {
     // Compile all proto files
     let mut config = prost_build::Config::default();
     config.out_dir(tmp_dir);
-    config
-        .compile_protos(&protos, &steward_proto_dir)
-        .unwrap();
+    config.compile_protos(&protos, &steward_proto_dir).unwrap();
 
     // Compile all proto client for GRPC services
     println!("[info ] Compiling proto clients for GRPC services!");
