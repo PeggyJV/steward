@@ -34,8 +34,14 @@ pub enum ErrorKind {
     #[error("http error")]
     Http,
     /// Cryptographic Keys error
-    #[error("keys error")]
+    #[error("key related error")]
     KeysError,
+    /// Miscellaneous error
+    ///
+    /// Errors that are returned with types that provide no
+    /// categorical information, such as String
+    #[error("allocation error")]
+    MiscError,
     /// Provider error
     #[error("provider error")]
     ProviderError,
@@ -125,6 +131,12 @@ impl From<ProviderError> for Error {
     fn from(err: ProviderError) -> Self {
         let err: BoxError = err.into();
         ErrorKind::ContractError.context(err).into()
+    }
+}
+
+impl From<String> for Error {
+    fn from(msg: String) -> Self {
+        ErrorKind::MiscError.context(msg).into()
     }
 }
 

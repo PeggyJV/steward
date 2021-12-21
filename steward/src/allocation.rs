@@ -28,19 +28,17 @@ pub async fn allocation_precommit(
     cosmos_key: &PrivateKey,
     allocation: &somm::Allocation,
     cellar_address: String,
-) -> somm::AllocationPrecommit {
+) -> Result<somm::AllocationPrecommit, Error> {
     let config = APP.config();
     let delegate_cosmos_address = cosmos_key
-        .to_address(&config.cosmos.prefix)
-        .unwrap()
+        .to_address(&config.cosmos.prefix)?
         .to_string();
     let hasher = somm_send::data_hash(allocation, delegate_cosmos_address)
-        .await
-        .unwrap();
-    somm::AllocationPrecommit {
+        .await?;
+    Ok(somm::AllocationPrecommit {
         hash: hasher.hash,
         cellar_id: cellar_address,
-    }
+    })
 }
 
 pub async fn get_connections() -> Result<Connections, Error> {
@@ -121,7 +119,7 @@ pub async fn decide_rebalance(
                     fee.clone(),
                     vec![
                         allocation_precommit(&cosmos_key, &allocation, format_eth_address(cellar_address))
-                            .await,
+                            .await?,
                     ],
                 )
                 .await?;
