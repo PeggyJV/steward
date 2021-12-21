@@ -175,6 +175,8 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
         request: tonic::Request<RebalanceRequest>,
     ) -> Result<tonic::Response<RebalanceResponse>, tonic::Status> {
         let request = request.get_ref();
+        debug!("received request \n {:?}", request);
+
         let tick_ranges: Vec<somm::TickRange> = request
             .data
             .clone()
@@ -188,7 +190,6 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
 
         let cellar_address = cellars::parse_cellar_id(&request.cellar_id).address;
 
-        // TO-DO cellar id not being passed in. How does it know which cellar to act on?
         tokio::spawn(async move {
             if let Err(err) = allocation::decide_rebalance(tick_ranges, cellar_address).await {
                 error!("error occurred during uniswapv3 cellar allocation: {:?}", err);
