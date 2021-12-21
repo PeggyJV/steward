@@ -186,10 +186,13 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
             })
             .collect();
 
-        let cellars_address = cellars::parse_cellar_id(&request.cellar_id).address;
+        let cellar_address = cellars::parse_cellar_id(&request.cellar_id).address;
 
+        // TO-DO cellar id not being passed in. How does it know which cellar to act on?
         tokio::spawn(async move {
-            allocation::decide_rebalance(tick_ranges, cellars_address).await;
+            if let Err(err) = allocation::decide_rebalance(tick_ranges, cellar_address).await {
+                error!("error occurred during uniswapv3 cellar allocation: {:?}", err);
+            }
         });
         Ok(tonic::Response::new(RebalanceResponse {}))
     }
