@@ -17,7 +17,6 @@ mod cosmos_to_eth;
 mod deploy;
 mod eth_to_cosmos;
 mod fund_cellar;
-mod keys;
 mod orchestrator;
 mod query;
 mod reinvest;
@@ -29,7 +28,7 @@ mod transfer;
 mod tx;
 
 use self::{
-    config_cmd::ConfigCmd, cosmos_mode::CosmosSignerCmd, fund_cellar::FundCellarCmd, keys::KeysCmd,
+    config_cmd::ConfigCmd, cosmos_mode::CosmosSignerCmd, fund_cellar::FundCellarCmd,
     remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, single_signer::SingleSignerCmd,
     transfer::TransferCmd,
 };
@@ -46,8 +45,6 @@ pub const CONFIG_FILE: &str = "steward.toml";
 pub enum CellarRebalancerCmd {
     SingleSigner(SingleSignerCmd),
     Transfer(TransferCmd),
-    #[clap(subcommand)]
-    Keys(KeysCmd),
     /// Print default configurations
     PrintConfig(ConfigCmd),
     FundCellar(FundCellarCmd),
