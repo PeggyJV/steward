@@ -55,10 +55,7 @@ fn main() {
     }
 
     // Uniswap Router
-    let abigen = match Abigen::new(
-        "UniswapRouter",
-        "../steward_abi/uniswap_router_abi.json",
-    ) {
+    let abigen = match Abigen::new("UniswapRouter", "../steward_abi/uniswap_router_abi.json") {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open uniswap_router_abi.json: {}", e);
@@ -84,10 +81,7 @@ fn main() {
     }
 
     // Uniswapv3 Pool
-    let abigen = match Abigen::new(
-        "UniswapV3",
-        "../steward_abi/uniswapv3pool_abi.json",
-    ) {
+    let abigen = match Abigen::new("UniswapV3", "../steward_abi/uniswapv3pool_abi.json") {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open uniswapv3pool_abi.json: {}", e);
@@ -139,10 +133,7 @@ fn main() {
     }
 
     // Cellar Aave
-    let abigen = match Abigen::new(
-        "AaveCellar",
-        "../steward_abi/cellar_aave_abi.json",
-    ) {
+    let abigen = match Abigen::new("AaveCellar", "../steward_abi/cellar_aave_abi.json") {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open cellar_aave_abi.json: {}", e);
@@ -168,10 +159,7 @@ fn main() {
     }
 
     // Cellar Uniswap
-    let abigen = match Abigen::new(
-        "UniswapV3Cellar",
-        "../steward_abi/cellar_uniswap_abi.json",
-    ) {
+    let abigen = match Abigen::new("UniswapV3Cellar", "../steward_abi/cellar_uniswap_abi.json") {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open cellar_uniswap_abi.json: {}", e);

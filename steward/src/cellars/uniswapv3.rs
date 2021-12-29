@@ -1,11 +1,11 @@
 //! Rust Wrapper for cellar functions
 /// This will convert cellar functions from tuples to Rust types
 use crate::{allocation, error::Error, prelude::*};
-use steward_abi::cellar_uniswap::*;
 use ethers::prelude::*;
 use somm_proto::somm;
 use std::result::Result;
 use std::sync::Arc;
+use steward_abi::cellar_uniswap::*;
 use steward_proto::uniswapv3::{server, RebalanceRequest, RebalanceResponse};
 use tonic::async_trait;
 
