@@ -103,7 +103,8 @@ mod uniswaprouter_mod {
         pub fn multicall(
             &self,
             data: ::std::vec::Vec<ethers::core::types::Bytes>,
-        ) -> ethers::contract::builders::ContractCall<M, Vec<ethers::core::types::Bytes>> {
+        ) -> ethers::contract::builders::ContractCall<M, ::std::vec::Vec<ethers::core::types::Bytes>>
+        {
             self.0
                 .method_hash([172, 150, 80, 216], data)
                 .expect("method not found (this should never happen)")

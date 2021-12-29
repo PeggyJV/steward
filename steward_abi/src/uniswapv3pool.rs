@@ -202,8 +202,13 @@ mod uniswapv3_mod {
         pub fn observe(
             &self,
             seconds_agos: ::std::vec::Vec<u32>,
-        ) -> ethers::contract::builders::ContractCall<M, (Vec<i64>, Vec<ethers::core::types::U256>)>
-        {
+        ) -> ethers::contract::builders::ContractCall<
+            M,
+            (
+                ::std::vec::Vec<i64>,
+                ::std::vec::Vec<ethers::core::types::U256>,
+            ),
+        > {
             self.0
                 .method_hash([136, 59, 219, 253], seconds_agos)
                 .expect("method not found (this should never happen)")
