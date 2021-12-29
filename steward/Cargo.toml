@@ -13,7 +13,7 @@ chrono = "0.4"
 clap = "3.0.0-beta.5"
 clarity = "0.4.12"
 deep_space ={ git = "https://github.com/iqlusioninc/deep_space/", branch = "master" }
-ethers = { version = "0.6.1", features = ["abigen"] }
+ethers = { git = "https://github.com/gakonst/ethers-rs.git", branch="zaki/error_abi_support", features = ["abigen"] }
 futures = "0.3"
 gravity_bridge = { git = "https://github.com/PeggyJV/gravity-bridge" }
 gumdrop = "0.7"
