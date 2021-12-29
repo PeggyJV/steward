@@ -19,7 +19,7 @@
 )]
 
 use abscissa_core::testing::prelude::*;
-use cellar_rebalancer::config::CellarRebalancerConfig;
+use steward::config::CellarRebalancerConfig;
 use once_cell::sync::Lazy;
 
 /// Executes your application binary via `cargo run`.

@@ -1,2 +1,2 @@
-pub use cellar_rebalancer;
+pub use steward;
 pub use steward_abi;

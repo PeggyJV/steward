@@ -1,5 +1,5 @@
 [package]
-name = "cellar_rebalancer_rs"
+name = "sommelier_steward"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,21 +7,21 @@ edition = "2021"
 
 [workspace]
 default-members = [
-	"cellar_rebalancer",
+	"steward",
 	"steward_abi",
 	"steward_abi_build",
 	"steward_proto",
 	"steward_proto_build",
 ]
 members = [
-	"cellar_rebalancer",
+	"steward",
 	"steward_abi",
 	"steward_abi_build",
 	"steward_proto",
 	"steward_proto_build",
 ]
 [dependencies]
-cellar_rebalancer = { path = "./cellar_rebalancer" }
+steward = { path = "./steward" }
 steward_abi = { path = "./steward_abi" }
 steward_abi_build = { path = "./steward_abi_build" }
 steward_proto = { path = "./steward_proto" }

@@ -1036,66 +1036,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cellar_rebalancer"
-version = "0.1.0"
-dependencies = [
- "abscissa_core",
- "abscissa_tokio",
- "bip32",
- "bson",
- "bytes 1.1.0",
- "chrono",
- "clap",
- "clarity",
- "deep_space 2.4.7",
- "ethers",
- "futures",
- "gravity_bridge",
- "gumdrop",
- "hex",
- "hyper",
- "iqhttp",
- "k256",
- "lazy_static",
- "mongodb",
- "num-bigint 0.4.3",
- "num-rational 0.4.0",
- "num-traits",
- "once_cell",
- "pkcs8",
- "prost 0.7.0",
- "prost-types 0.7.0",
- "rand_core 0.6.3",
- "regex",
- "rpassword",
- "serde",
- "serde_json",
- "sha2 0.9.8",
- "signatory",
- "somm_proto",
- "steward_abi",
- "steward_proto",
- "thiserror",
- "tokio 1.14.0",
- "toml",
- "tonic 0.4.3",
- "tonic-reflection",
- "tower",
- "uniswap_v3_sdk",
-]
-
-[[package]]
-name = "cellar_rebalancer_rs"
-version = "0.1.0"
-dependencies = [
- "cellar_rebalancer",
- "steward_abi",
- "steward_abi_build",
- "steward_proto",
- "steward_proto_build",
-]
-
-[[package]]
 name = "cfg-if"
 version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4754,6 +4694,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "sommelier_steward"
+version = "0.1.0"
+dependencies = [
+ "steward",
+ "steward_abi",
+ "steward_abi_build",
+ "steward_proto",
+ "steward_proto_build",
+]
+
+[[package]]
 name = "spin"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4831,6 +4782,55 @@ name = "stdweb-internal-runtime"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
+
+[[package]]
+name = "steward"
+version = "0.1.0"
+dependencies = [
+ "abscissa_core",
+ "abscissa_tokio",
+ "bip32",
+ "bson",
+ "bytes 1.1.0",
+ "chrono",
+ "clap",
+ "clarity",
+ "deep_space 2.4.7",
+ "ethers",
+ "futures",
+ "gravity_bridge",
+ "gumdrop",
+ "hex",
+ "hyper",
+ "iqhttp",
+ "k256",
+ "lazy_static",
+ "mongodb",
+ "num-bigint 0.4.3",
+ "num-rational 0.4.0",
+ "num-traits",
+ "once_cell",
+ "pkcs8",
+ "prost 0.7.0",
+ "prost-types 0.7.0",
+ "rand_core 0.6.3",
+ "regex",
+ "rpassword",
+ "serde",
+ "serde_json",
+ "sha2 0.9.8",
+ "signatory",
+ "somm_proto",
+ "steward_abi",
+ "steward_proto",
+ "thiserror",
+ "tokio 1.14.0",
+ "toml",
+ "tonic 0.4.3",
+ "tonic-reflection",
+ "tower",
+ "uniswap_v3_sdk",
+]
 
 [[package]]
 name = "steward_abi"
