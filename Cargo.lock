@@ -65,9 +65,9 @@ dependencies = [
 
 [[package]]
 name = "actix"
-version = "0.11.1"
+version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "543c47e7827f8fcc9d1445bd98ba402137bfce80ee2187429de49c52b5131bd3"
+checksum = "3720d0064a0ce5c0de7bd93bdb0a6caebab2a9b5668746145d7b3b0c5da02914"
 dependencies = [
  "actix-rt 2.5.0",
  "actix_derive",
@@ -1307,17 +1307,17 @@ dependencies = [
 [[package]]
 name = "cosmos_gravity"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge#990d023bb572448c883ee06a5f49833e5e63e6f2"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#4ebc81962483c0ef46d24567bc3f9ff839f456b6"
 dependencies = [
  "bytes 1.1.0",
  "clarity",
  "cosmos-sdk-proto 0.6.3",
  "deep_space 2.4.7",
  "ethereum_gravity",
+ "ethers",
  "gravity_proto",
  "gravity_utils",
  "log",
- "num256",
  "prost 0.7.0",
  "prost-types 0.7.0",
  "serde",
@@ -1794,14 +1794,16 @@ dependencies = [
 [[package]]
 name = "ethereum_gravity"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge#990d023bb572448c883ee06a5f49833e5e63e6f2"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#4ebc81962483c0ef46d24567bc3f9ff839f456b6"
 dependencies = [
  "clarity",
  "deep_space 2.4.7",
+ "ethers",
+ "gravity_abi",
  "gravity_utils",
  "log",
- "num256",
  "sha3",
+ "tokio 1.14.0",
  "web30",
 ]
 
@@ -2302,7 +2304,7 @@ checksum = "9b919933a397b79c37e33b77bb2aa3dc8eb6e165ad809e58ff75bc7db2e34574"
 [[package]]
 name = "gorc"
 version = "0.2.23"
-source = "git+https://github.com/PeggyJV/gravity-bridge#990d023bb572448c883ee06a5f49833e5e63e6f2"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#4ebc81962483c0ef46d24567bc3f9ff839f456b6"
 dependencies = [
  "abscissa_core",
  "abscissa_tokio",
@@ -2315,6 +2317,7 @@ dependencies = [
  "deep_space 2.4.7",
  "env_logger",
  "ethereum_gravity",
+ "ethers",
  "gravity_proto",
  "gravity_utils",
  "k256",
@@ -2338,17 +2341,41 @@ dependencies = [
 ]
 
 [[package]]
+name = "gravity_abi"
+version = "0.1.0"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#4ebc81962483c0ef46d24567bc3f9ff839f456b6"
+dependencies = [
+ "ethers",
+ "serde",
+ "serde_derive",
+ "serde_json",
+]
+
+[[package]]
+name = "gravity_abi_build"
+version = "0.1.0"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#4ebc81962483c0ef46d24567bc3f9ff839f456b6"
+dependencies = [
+ "ethers",
+ "serde",
+ "serde_derive",
+ "serde_json",
+]
+
+[[package]]
 name = "gravity_bridge"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge#990d023bb572448c883ee06a5f49833e5e63e6f2"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#4ebc81962483c0ef46d24567bc3f9ff839f456b6"
 dependencies = [
  "cosmos_gravity",
  "ethereum_gravity",
  "gorc",
+ "gravity_abi",
+ "gravity_abi_build",
  "gravity_proto",
+ "gravity_proto_build",
  "gravity_utils",
  "orchestrator",
- "proto_build",
  "register_delegate_keys",
  "relayer",
  "test_runner",
@@ -2357,7 +2384,7 @@ dependencies = [
 [[package]]
 name = "gravity_proto"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge#990d023bb572448c883ee06a5f49833e5e63e6f2"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#4ebc81962483c0ef46d24567bc3f9ff839f456b6"
 dependencies = [
  "bytes 1.1.0",
  "cosmos-sdk-proto 0.6.3",
@@ -2367,19 +2394,37 @@ dependencies = [
 ]
 
 [[package]]
+name = "gravity_proto_build"
+version = "0.1.0"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#4ebc81962483c0ef46d24567bc3f9ff839f456b6"
+dependencies = [
+ "prost 0.7.0",
+ "prost-build",
+ "regex",
+ "tempdir",
+ "tonic 0.4.3",
+ "tonic-build",
+ "walkdir",
+]
+
+[[package]]
 name = "gravity_utils"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge#990d023bb572448c883ee06a5f49833e5e63e6f2"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#4ebc81962483c0ef46d24567bc3f9ff839f456b6"
 dependencies = [
  "clarity",
  "cosmos-sdk-proto 0.6.3",
  "deep_space 2.4.7",
+ "ethers",
+ "gravity_abi",
  "gravity_proto",
  "log",
  "num-bigint 0.4.3",
  "num256",
+ "rustc-hex",
  "serde",
  "serde_derive",
+ "serde_json",
  "sha3",
  "tokio 1.14.0",
  "tonic 0.4.3",
@@ -3389,7 +3434,7 @@ dependencies = [
 [[package]]
 name = "orchestrator"
 version = "0.4.1"
-source = "git+https://github.com/PeggyJV/gravity-bridge#990d023bb572448c883ee06a5f49833e5e63e6f2"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#4ebc81962483c0ef46d24567bc3f9ff839f456b6"
 dependencies = [
  "actix-rt 2.5.0",
  "axum",
@@ -3399,13 +3444,14 @@ dependencies = [
  "docopt",
  "env_logger",
  "ethereum_gravity",
+ "ethers",
  "futures",
+ "gravity_abi",
  "gravity_proto",
  "gravity_utils",
  "hyper",
  "lazy_static",
  "log",
- "num256",
  "openssl",
  "openssl-probe",
  "prometheus",
@@ -3842,20 +3888,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "proto_build"
-version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge#990d023bb572448c883ee06a5f49833e5e63e6f2"
-dependencies = [
- "prost 0.7.0",
- "prost-build",
- "regex",
- "tempdir",
- "tonic 0.4.3",
- "tonic-build",
- "walkdir",
-]
-
-[[package]]
 name = "protobuf"
 version = "2.25.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4044,7 +4076,7 @@ checksum = "f497285884f3fcff424ffc933e56d7cbca511def0c9831a7f9b5f6153e3cc89b"
 [[package]]
 name = "register_delegate_keys"
 version = "0.4.1"
-source = "git+https://github.com/PeggyJV/gravity-bridge#990d023bb572448c883ee06a5f49833e5e63e6f2"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#4ebc81962483c0ef46d24567bc3f9ff839f456b6"
 dependencies = [
  "actix-rt 2.5.0",
  "clarity",
@@ -4054,6 +4086,7 @@ dependencies = [
  "docopt",
  "env_logger",
  "ethereum_gravity",
+ "ethers",
  "gravity_proto",
  "gravity_utils",
  "lazy_static",
@@ -4069,7 +4102,7 @@ dependencies = [
 [[package]]
 name = "relayer"
 version = "0.4.1"
-source = "git+https://github.com/PeggyJV/gravity-bridge#990d023bb572448c883ee06a5f49833e5e63e6f2"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#4ebc81962483c0ef46d24567bc3f9ff839f456b6"
 dependencies = [
  "actix-rt 2.5.0",
  "clarity",
@@ -4078,11 +4111,12 @@ dependencies = [
  "docopt",
  "env_logger",
  "ethereum_gravity",
+ "ethers",
+ "gravity_abi",
  "gravity_proto",
  "gravity_utils",
  "lazy_static",
  "log",
- "num256",
  "openssl-probe",
  "serde",
  "serde_derive",
@@ -4839,6 +4873,8 @@ dependencies = [
  "num-rational 0.4.0",
  "num-traits",
  "once_cell",
+ "openssl",
+ "openssl-probe",
  "pkcs8",
  "prost 0.7.0",
  "prost-types 0.7.0",
@@ -5041,7 +5077,7 @@ dependencies = [
 [[package]]
 name = "test_runner"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge#990d023bb572448c883ee06a5f49833e5e63e6f2"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#4ebc81962483c0ef46d24567bc3f9ff839f456b6"
 dependencies = [
  "actix",
  "actix-rt 2.5.0",
@@ -5052,12 +5088,14 @@ dependencies = [
  "docopt",
  "env_logger",
  "ethereum_gravity",
+ "ethers",
  "futures",
+ "gravity_abi",
  "gravity_proto",
  "gravity_utils",
+ "hex",
  "lazy_static",
  "log",
- "num256",
  "orchestrator",
  "rand 0.8.4",
  "serde",

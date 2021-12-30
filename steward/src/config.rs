@@ -4,6 +4,7 @@
 //! application's configuration file and/or command-line options
 //! for specifying it.
 
+use ethers::signers::LocalWallet as EthWallet;
 use std::time::Duration;
 
 use ethers::prelude::H160;
@@ -45,6 +46,10 @@ impl CellarRebalancerConfig {
         let key = self.load_secret_key(name).to_bytes();
         let key = deep_space::utils::bytes_to_hex_str(&key);
         return key.parse().expect("Could not parse private key");
+    }
+
+    pub fn load_ethers_wallet(&self, name: String) -> EthWallet {
+        EthWallet::from(self.load_secret_key(name))
     }
 }
 

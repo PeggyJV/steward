@@ -1,12 +1,16 @@
 //! `eth subcommands` subcommand
 
+use std::sync::Arc;
+
 use crate::{application::APP, prelude::*, utils::*};
 use abscissa_core::{Clap, Command, Runnable};
-use clarity::Address as EthAddress;
-use clarity::{PrivateKey as EthPrivateKey, Uint256};
 use deep_space::address::Address as CosmosAddress;
+use ethers::prelude::{LocalWallet, Middleware, Signer, SignerMiddleware, U256};
+use ethers::types::Address as EthAddress;
+use gravity_bridge::ethereum_gravity::erc20_utils::get_erc20_balance;
 use gravity_bridge::ethereum_gravity::send_to_cosmos::send_to_cosmos;
 use gravity_bridge::gravity_utils::connection_prep::{check_for_eth, create_rpc_connections};
+use gravity_bridge::gravity_utils::ethereum::{downcast_to_u64, format_eth_address};
 
 /// Create Tx on Eth chain
 #[derive(Command, Debug, Clap)]
@@ -26,8 +30,9 @@ pub struct SendToCosmos {
     #[clap(short, long)]
     help: bool,
 }
-
-fn lookup_eth_key(_key: String) -> EthPrivateKey {
+// TODO(bolten): I guess this command is also non-functional?
+// are the commands under tx dead code?
+fn lookup_eth_key(_key: String) -> LocalWallet {
     todo!()
 }
 
@@ -44,11 +49,11 @@ impl Runnable for SendToCosmos {
             .parse()
             .expect("Expected a valid Eth Address");
         let erc20_amount = self.free[3].clone();
-        let eth_key = lookup_eth_key(from_eth_key);
+        let ethereum_wallet = lookup_eth_key(from_eth_key);
 
         println!(
             "Sending from Eth address {}",
-            eth_key.to_public_key().unwrap()
+            format_eth_address(ethereum_wallet.address())
         );
         let config = APP.config();
         let cosmos_prefix = config.cosmos.prefix.clone();
@@ -65,18 +70,25 @@ impl Runnable for SendToCosmos {
             let connections =
                 create_rpc_connections(cosmos_prefix, Some(cosmso_grpc), Some(eth_rpc), TIMEOUT)
                     .await;
-            let web3 = connections.web3.unwrap();
-            let ethereum_public_key = eth_key.to_public_key().unwrap();
-            check_for_eth(ethereum_public_key, &web3).await;
-
-            let amount: Uint256 = erc20_amount
-                .parse()
-                .expect("Expected amount in xx.yy format");
-
-            let erc20_balance = web3
-                .get_erc20_balance(erc20_contract, ethereum_public_key)
+            let provider = connections.eth_provider.clone().unwrap();
+            let chain_id = provider
+                .get_chainid()
                 .await
-                .expect("Failed to get balance, check ERC20 contract address");
+                .expect("Could not retrieve chain ID");
+            let chain_id =
+                downcast_to_u64(chain_id).expect("Chain ID overflowed when downcasting to u64");
+            let eth_client =
+                SignerMiddleware::new(provider, ethereum_wallet.clone().with_chain_id(chain_id));
+            let eth_client = Arc::new(eth_client);
+            check_for_eth(eth_client.address(), eth_client.clone()).await;
+
+            let amount =
+                U256::from_dec_str(erc20_amount.as_str()).expect("Could not parse amount to U256");
+
+            let erc20_balance =
+                get_erc20_balance(erc20_contract, eth_client.address(), eth_client.clone())
+                    .await
+                    .expect("Failed to get balance, check ERC20 contract address");
 
             if erc20_balance == 0u8.into() {
                 panic!(
@@ -86,7 +98,10 @@ impl Runnable for SendToCosmos {
             }
             println!(
                 "Sending {} / {} to Cosmos from {} to {}",
-                amount, erc20_contract, ethereum_public_key, to_cosmos_addr
+                amount,
+                erc20_contract,
+                eth_client.address(),
+                to_cosmos_addr
             );
             // we send some erc20 tokens to the gravity contract to register a deposit
             let res = send_to_cosmos(
@@ -94,10 +109,8 @@ impl Runnable for SendToCosmos {
                 contract_address,
                 amount.clone(),
                 to_cosmos_addr,
-                eth_key,
                 Some(TIMEOUT),
-                &web3,
-                vec![],
+                eth_client.clone(),
             )
             .await;
             match res {
