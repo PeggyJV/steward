@@ -80,14 +80,14 @@ async fn __send_messages(
 
 pub async fn data_hash(
     allocation: &somm::Allocation,
-    valAddress: String,
+    val_address: String,
 ) -> Result<AllocationPrecommit, String> {
     let mut hasher = sha2::Sha256::new();
     if let Some(cellar) = &allocation.clone().vote.unwrap().cellar {
         let mut buf = BytesMut::new();
         cellar.encode(&mut buf).unwrap();
         let cellar_data = hex::encode(&buf).to_string();
-        let msg = format!("{}:{}:{}", allocation.salt, cellar_data, valAddress);
+        let msg = format!("{}:{}:{}", allocation.salt, cellar_data, val_address);
         hasher.update(msg.as_bytes());
 
         return Ok(AllocationPrecommit {

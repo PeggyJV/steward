@@ -13,9 +13,9 @@ chrono = "0.4"
 clap = "3.0.0-beta.5"
 clarity = "0.4.12"
 deep_space ={ git = "https://github.com/iqlusioninc/deep_space/", branch = "master" }
-ethers = { version = "0.6.1", features = ["abigen"] }
+ethers = { git = "https://github.com/iqlusioninc/ethers-rs.git", branch="zaki/error_abi_support", features = ["abigen"] }
 futures = "0.3"
-gravity_bridge = { git = "https://github.com/PeggyJV/gravity-bridge" }
+gravity_bridge = { git = "https://github.com/PeggyJV/gravity-bridge", branch = "main" }
 gumdrop = "0.7"
 hex = "0.4"
 hyper = "0.14.12"
@@ -46,6 +46,16 @@ tonic-reflection = "0.1.0"
 tower = { version = "0.4", features = ["buffer", "util"] }
 uniswap_v3_sdk ={ git = "https://github.com/PeggyJV/uniswap_sdk_rs", branch = "main" }
 lazy_static = "1.4.0"
+
+# this is a dirty trick, we depent transitively on OpenSSL it's never
+# called directly in this crate, but if we specify this dep we can enable
+# this feature for all the crates in our dependency tree which depend on
+# this crate. This allows for easy cross compiled builds because the 'vendored'
+# feature includes it's own OpenSSL version that's compiled on the fly
+# If ANY crate in this workspace has this it will work for all of them.
+openssl = { version = "0.10", features = ["vendored"] }
+openssl-probe = "0.1.4"
+
 
 [dependencies.abscissa_core]
 version = "0.6.0-beta.1"

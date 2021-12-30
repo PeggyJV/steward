@@ -1,10 +1,10 @@
 //! Rust Wrapper for cellar functions
 
 use crate::prelude::*;
-use steward_abi::erc20::Erc20;
-use steward_abi::weth::Weth;
 use ethers::prelude::*;
 use std::sync::Arc;
+use steward_abi::erc20::Erc20;
+use steward_abi::weth::Weth;
 
 pub struct Erc20State<T> {
     pub contract: Erc20<T>,

@@ -178,7 +178,7 @@ mod aave_mod {
         pub fn get_configuration(
             &self,
             asset: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, (ethers::core::types::U256,)> {
+        ) -> ethers::contract::builders::ContractCall<M, ReserveConfigurationMap> {
             self.0
                 .method_hash([196, 75, 17, 247], asset)
                 .expect("method not found (this should never happen)")
@@ -187,23 +187,7 @@ mod aave_mod {
         pub fn get_reserve_data(
             &self,
             asset: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<
-            M,
-            (
-                (ethers::core::types::U256,),
-                u128,
-                u128,
-                u128,
-                u128,
-                u128,
-                u64,
-                ethers::core::types::Address,
-                ethers::core::types::Address,
-                ethers::core::types::Address,
-                ethers::core::types::Address,
-                u8,
-            ),
-        > {
+        ) -> ethers::contract::builders::ContractCall<M, ReserveData> {
             self.0
                 .method_hash([53, 234, 106, 117], asset)
                 .expect("method not found (this should never happen)")
@@ -229,8 +213,10 @@ mod aave_mod {
         #[doc = "Calls the contract's `getReservesList` (0xd1946dbc) function"]
         pub fn get_reserves_list(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, Vec<ethers::core::types::Address>>
-        {
+        ) -> ethers::contract::builders::ContractCall<
+            M,
+            ::std::vec::Vec<ethers::core::types::Address>,
+        > {
             self.0
                 .method_hash([209, 148, 109, 188], ())
                 .expect("method not found (this should never happen)")
@@ -258,7 +244,7 @@ mod aave_mod {
         pub fn get_user_configuration(
             &self,
             user: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, (ethers::core::types::U256,)> {
+        ) -> ethers::contract::builders::ContractCall<M, UserConfigurationMap> {
             self.0
                 .method_hash([68, 23, 165, 131], user)
                 .expect("method not found (this should never happen)")

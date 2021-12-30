@@ -1,9 +1,9 @@
 //! Rust Wrapper for cellar functions
 
-use steward_abi::uniswap_router::UniswapRouter;
-use steward_abi::uniswapv3pool::UniswapV3 as UniswapPool;
 use ethers::prelude::*;
 use std::sync::Arc;
+use steward_abi::uniswap_router::UniswapRouter;
+use steward_abi::uniswapv3pool::UniswapV3 as UniswapPool;
 
 pub struct RouterState<T> {
     pub contract: UniswapRouter<T>,

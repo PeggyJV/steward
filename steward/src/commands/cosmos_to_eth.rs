@@ -1,8 +1,8 @@
 use crate::application::APP;
 use abscissa_core::{status_err, Application, Clap, Command, Runnable};
-use clarity::Address as EthAddress;
 use clarity::Uint256;
 use deep_space::coin::Coin;
+use ethers::types::Address as EthAddress;
 use gravity_bridge::cosmos_gravity::send::{send_request_batch_tx, send_to_eth};
 use gravity_bridge::gravity_proto::gravity::DenomToErc20Request;
 use gravity_bridge::gravity_utils::connection_prep::{check_for_fee_denom, create_rpc_connections};
@@ -47,10 +47,6 @@ impl Runnable for CosmosToEthCmd {
         let gravity_denom = gravity_denom.to_string();
         let is_cosmos_originated = !gravity_denom.starts_with("gravity");
 
-        let gas_price = config.cosmos.gas_price.as_tuple();
-
-        let gas_adjustment = config.cosmos.gas_adjustment;
-
         let amount = self.args.get(1).expect("amount is required");
         let amount: Uint256 = amount.parse().expect("cannot parse amount");
 
@@ -58,8 +54,8 @@ impl Runnable for CosmosToEthCmd {
         let cosmos_key = config.load_deep_space_key(cosmos_key.to_string());
 
         let cosmos_prefix = config.cosmos.prefix.trim();
-        let cosmos_address = cosmos_key.to_address(&cosmos_prefix).unwrap();
-        let cosmos_grpc = config.cosmos.prefix.trim();
+        let cosmos_address = cosmos_key.to_address(cosmos_prefix).unwrap();
+        let cosmos_grpc = config.cosmos.grpc.trim();
         println!("Sending from Cosmos address {}", cosmos_address);
         abscissa_tokio::run_with_actix(&APP, async {
         let connections = create_rpc_connections(
@@ -90,13 +86,14 @@ impl Runnable for CosmosToEthCmd {
                 exit(1);
             }
         }
+
         let amount = Coin {
             amount: amount.clone(),
             denom: gravity_denom.clone(),
         };
         let bridge_fee = Coin {
-            denom: gravity_denom.clone(),
             amount: 1u64.into(),
+            denom: gravity_denom.clone(),
         };
 
         let eth_dest = self.args.get(3).expect("ethereum destination is required");
@@ -119,21 +116,22 @@ impl Runnable for CosmosToEthCmd {
         let times = self.args.get(4).expect("times is required");
         let times = times.parse::<usize>().expect("cannot parse times");
 
-        if found.is_none() {
-            panic!("You don't have any {} tokens!", gravity_denom);
-        } else if amount.amount.clone() * times.into() >= found.clone().unwrap().amount
-            && times == 1
-        {
-            if is_cosmos_originated {
-                panic!("Your transfer of {} {} tokens is greater than your balance of {} tokens. Remember you need some to pay for fees!", print_atom(amount.amount), gravity_denom, print_atom(found.unwrap().amount.clone()));
-            } else {
-                panic!("Your transfer of {} {} tokens is greater than your balance of {} tokens. Remember you need some to pay for fees!", print_eth(amount.amount), gravity_denom, print_eth(found.unwrap().amount.clone()));
-            }
-        } else if amount.amount.clone() * times.into() >= found.clone().unwrap().amount {
-            if is_cosmos_originated {
-                panic!("Your transfer of {} * {} {} tokens is greater than your balance of {} tokens. Try to reduce the amount or the --times parameter", print_atom(amount.amount), times, gravity_denom, print_atom(found.unwrap().amount.clone()));
-            } else {
-                panic!("Your transfer of {} * {} {} tokens is greater than your balance of {} tokens. Try to reduce the amount or the --times parameter", print_eth(amount.amount), times, gravity_denom, print_eth(found.unwrap().amount.clone()));
+        match found {
+            None => panic!("You don't have any {} tokens!", gravity_denom),
+            Some(found) => {
+                if amount.amount.clone() * times.into() >= found.amount && times == 1 {
+                    if is_cosmos_originated {
+                        panic!("Your transfer of {} {} tokens is greater than your balance of {} tokens. Remember you need some to pay for fees!", print_atom(amount.amount), gravity_denom, print_atom(found.amount.clone()));
+                    } else {
+                        panic!("Your transfer of {} {} tokens is greater than your balance of {} tokens. Remember you need some to pay for fees!", print_eth(amount.amount), gravity_denom, print_eth(found.amount.clone()));
+                    }
+                } else if amount.amount.clone() * times.into() >= found.amount {
+                    if is_cosmos_originated {
+                        panic!("Your transfer of {} * {} {} tokens is greater than your balance of {} tokens. Try to reduce the amount or the --times parameter", print_atom(amount.amount), times, gravity_denom, print_atom(found.amount.clone()));
+                    } else {
+                        panic!("Your transfer of {} * {} {} tokens is greater than your balance of {} tokens. Try to reduce the amount or the --times parameter", print_eth(amount.amount), times, gravity_denom, print_eth(found.amount.clone()));
+                    }
+                }
             }
         }
 
@@ -143,15 +141,14 @@ impl Runnable for CosmosToEthCmd {
                 amount.clone(),
                 gravity_denom
             );
-
             let res = send_to_eth(
                 cosmos_key,
                 eth_dest,
                 amount.clone(),
                 bridge_fee.clone(),
-                gas_price.clone(),
+                config.cosmos.gas_price.as_tuple(),
                 &contact,
-                gas_adjustment
+                1.0
             )
             .await;
             match res {
@@ -162,7 +159,7 @@ impl Runnable for CosmosToEthCmd {
 
         if !self.flag_no_batch {
             println!("Requesting a batch to push transaction along immediately");
-            send_request_batch_tx(cosmos_key, gravity_denom, gas_price, &contact, gas_adjustment)
+            send_request_batch_tx(cosmos_key, gravity_denom,config.cosmos.gas_price.as_tuple(), &contact,config.cosmos.gas_adjustment)
                 .await
                 .expect("Failed to request batch");
         } else {

@@ -1,6 +1,6 @@
-use steward_abi::uniswapv3pool::UniswapV3 as UPool;
 use ethers::prelude::*;
 use std::sync::Arc;
+use steward_abi::uniswapv3pool::UniswapV3 as UPool;
 
 pub struct PoolState<T> {
     pub contract: UPool<T>,
