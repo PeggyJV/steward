@@ -1314,7 +1314,7 @@ dependencies = [
  "cosmos-sdk-proto 0.6.3",
  "deep_space 2.4.7",
  "ethereum_gravity",
- "ethers 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers",
  "gravity_proto",
  "gravity_utils",
  "log",
@@ -1798,7 +1798,7 @@ source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#f2be9452188f
 dependencies = [
  "clarity",
  "deep_space 2.4.7",
- "ethers 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers",
  "gravity_abi",
  "gravity_utils",
  "log",
@@ -1810,47 +1810,15 @@ dependencies = [
 [[package]]
 name = "ethers"
 version = "0.6.0"
-source = "git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
-dependencies = [
- "ethers-contract 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-core 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-etherscan 0.2.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-middleware 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-providers 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-signers 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-solc 0.1.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
-]
-
-[[package]]
-name = "ethers"
-version = "0.6.0"
 source = "git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
 dependencies = [
- "ethers-contract 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-core 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-etherscan 0.2.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-middleware 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-providers 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-signers 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-solc 0.1.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
-]
-
-[[package]]
-name = "ethers-contract"
-version = "0.6.0"
-source = "git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
-dependencies = [
- "ethers-contract-abigen 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-contract-derive 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-core 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-providers 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "futures-util",
- "hex",
- "once_cell",
- "pin-project 1.0.8",
- "serde",
- "serde_json",
- "thiserror",
+ "ethers-contract",
+ "ethers-core",
+ "ethers-etherscan",
+ "ethers-middleware",
+ "ethers-providers",
+ "ethers-signers",
+ "ethers-solc",
 ]
 
 [[package]]
@@ -1858,10 +1826,10 @@ name = "ethers-contract"
 version = "0.6.0"
 source = "git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
 dependencies = [
- "ethers-contract-abigen 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-contract-derive 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-core 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-providers 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers-contract-abigen",
+ "ethers-contract-derive",
+ "ethers-core",
+ "ethers-providers",
  "futures-util",
  "hex",
  "once_cell",
@@ -1874,33 +1842,12 @@ dependencies = [
 [[package]]
 name = "ethers-contract-abigen"
 version = "0.6.0"
-source = "git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
-dependencies = [
- "Inflector",
- "anyhow",
- "cfg-if 1.0.0",
- "ethers-core 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "getrandom 0.2.3",
- "hex",
- "once_cell",
- "proc-macro2",
- "quote",
- "reqwest",
- "serde",
- "serde_json",
- "syn",
- "url",
-]
-
-[[package]]
-name = "ethers-contract-abigen"
-version = "0.6.0"
 source = "git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
 dependencies = [
  "Inflector",
  "anyhow",
  "cfg-if 1.0.0",
- "ethers-core 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers-core",
  "getrandom 0.2.3",
  "hex",
  "once_cell",
@@ -1916,57 +1863,15 @@ dependencies = [
 [[package]]
 name = "ethers-contract-derive"
 version = "0.6.0"
-source = "git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
-dependencies = [
- "ethers-contract-abigen 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-core 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "hex",
- "proc-macro2",
- "quote",
- "serde_json",
- "syn",
-]
-
-[[package]]
-name = "ethers-contract-derive"
-version = "0.6.0"
 source = "git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
 dependencies = [
- "ethers-contract-abigen 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-core 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers-contract-abigen",
+ "ethers-core",
  "hex",
  "proc-macro2",
  "quote",
  "serde_json",
  "syn",
-]
-
-[[package]]
-name = "ethers-core"
-version = "0.6.0"
-source = "git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
-dependencies = [
- "arrayvec 0.7.2",
- "bytes 1.1.0",
- "cargo_metadata",
- "convert_case",
- "ecdsa",
- "elliptic-curve 0.11.6",
- "ethabi",
- "generic-array 0.14.4",
- "hex",
- "k256",
- "once_cell",
- "proc-macro2",
- "quote",
- "rand 0.8.4",
- "rlp",
- "rlp-derive",
- "serde",
- "serde_json",
- "syn",
- "thiserror",
- "tiny-keccak",
 ]
 
 [[package]]
@@ -2000,22 +1905,9 @@ dependencies = [
 [[package]]
 name = "ethers-etherscan"
 version = "0.2.0"
-source = "git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
-dependencies = [
- "ethers-core 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "reqwest",
- "serde",
- "serde-aux",
- "serde_json",
- "thiserror",
-]
-
-[[package]]
-name = "ethers-etherscan"
-version = "0.2.0"
 source = "git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
 dependencies = [
- "ethers-core 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers-core",
  "reqwest",
  "serde",
  "serde-aux",
@@ -2026,37 +1918,14 @@ dependencies = [
 [[package]]
 name = "ethers-middleware"
 version = "0.6.0"
-source = "git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
-dependencies = [
- "async-trait",
- "ethers-contract 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-core 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-etherscan 0.2.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-providers 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-signers 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "futures-util",
- "instant",
- "reqwest",
- "serde",
- "serde_json",
- "thiserror",
- "tokio 1.14.0",
- "tracing",
- "tracing-futures",
- "url",
-]
-
-[[package]]
-name = "ethers-middleware"
-version = "0.6.0"
 source = "git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
 dependencies = [
  "async-trait",
- "ethers-contract 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-core 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-etherscan 0.2.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-providers 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
- "ethers-signers 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers-contract",
+ "ethers-core",
+ "ethers-etherscan",
+ "ethers-providers",
+ "ethers-signers",
  "futures-util",
  "instant",
  "reqwest",
@@ -2072,40 +1941,11 @@ dependencies = [
 [[package]]
 name = "ethers-providers"
 version = "0.6.0"
-source = "git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
-dependencies = [
- "async-trait",
- "auto_impl",
- "ethers-core 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "futures-channel",
- "futures-core",
- "futures-timer",
- "futures-util",
- "hex",
- "parking_lot",
- "pin-project 1.0.8",
- "reqwest",
- "serde",
- "serde_json",
- "thiserror",
- "tracing",
- "tracing-futures",
- "url",
- "wasm-bindgen",
- "wasm-bindgen-futures",
- "wasm-timer",
- "web-sys",
- "ws_stream_wasm",
-]
-
-[[package]]
-name = "ethers-providers"
-version = "0.6.0"
 source = "git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
 dependencies = [
  "async-trait",
  "auto_impl",
- "ethers-core 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers-core",
  "futures-channel",
  "futures-core",
  "futures-timer",
@@ -2130,26 +1970,6 @@ dependencies = [
 [[package]]
 name = "ethers-signers"
 version = "0.6.0"
-source = "git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
-dependencies = [
- "async-trait",
- "coins-bip32",
- "coins-bip39",
- "elliptic-curve 0.11.6",
- "eth-keystore",
- "ethers-core 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "futures-executor",
- "futures-util",
- "hex",
- "rand 0.8.4",
- "semver 1.0.4",
- "sha2 0.9.8",
- "thiserror",
-]
-
-[[package]]
-name = "ethers-signers"
-version = "0.6.0"
 source = "git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
 dependencies = [
  "async-trait",
@@ -2157,7 +1977,7 @@ dependencies = [
  "coins-bip39",
  "elliptic-curve 0.11.6",
  "eth-keystore",
- "ethers-core 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers-core",
  "futures-executor",
  "futures-util",
  "hex",
@@ -2170,35 +1990,10 @@ dependencies = [
 [[package]]
 name = "ethers-solc"
 version = "0.1.0"
-source = "git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
-dependencies = [
- "colored",
- "ethers-core 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
- "getrandom 0.2.3",
- "glob",
- "hex",
- "home",
- "md-5 0.10.0",
- "num_cpus",
- "once_cell",
- "regex",
- "semver 1.0.4",
- "serde",
- "serde_json",
- "sha2 0.9.8",
- "thiserror",
- "tiny-keccak",
- "tracing",
- "walkdir",
-]
-
-[[package]]
-name = "ethers-solc"
-version = "0.1.0"
 source = "git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support#4959552eb667ed2c765f6c0123bb0b7352cf948e"
 dependencies = [
  "colored",
- "ethers-core 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers-core",
  "getrandom 0.2.3",
  "glob",
  "hex",
@@ -2522,7 +2317,7 @@ dependencies = [
  "deep_space 2.4.7",
  "env_logger",
  "ethereum_gravity",
- "ethers 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers",
  "gravity_proto",
  "gravity_utils",
  "k256",
@@ -2550,7 +2345,7 @@ name = "gravity_abi"
 version = "0.1.0"
 source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#f2be9452188fbf5dff51289ba01562f17517afee"
 dependencies = [
- "ethers 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers",
  "serde",
  "serde_derive",
  "serde_json",
@@ -2561,7 +2356,7 @@ name = "gravity_abi_build"
 version = "0.1.0"
 source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#f2be9452188fbf5dff51289ba01562f17517afee"
 dependencies = [
- "ethers 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers",
  "serde",
  "serde_derive",
  "serde_json",
@@ -2620,7 +2415,7 @@ dependencies = [
  "clarity",
  "cosmos-sdk-proto 0.6.3",
  "deep_space 2.4.7",
- "ethers 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers",
  "gravity_abi",
  "gravity_proto",
  "log",
@@ -3649,7 +3444,7 @@ dependencies = [
  "docopt",
  "env_logger",
  "ethereum_gravity",
- "ethers 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers",
  "futures",
  "gravity_abi",
  "gravity_proto",
@@ -4291,7 +4086,7 @@ dependencies = [
  "docopt",
  "env_logger",
  "ethereum_gravity",
- "ethers 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers",
  "gravity_proto",
  "gravity_utils",
  "lazy_static",
@@ -4316,7 +4111,7 @@ dependencies = [
  "docopt",
  "env_logger",
  "ethereum_gravity",
- "ethers 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers",
  "gravity_abi",
  "gravity_proto",
  "gravity_utils",
@@ -5064,7 +4859,7 @@ dependencies = [
  "clap",
  "clarity",
  "deep_space 2.4.7",
- "ethers 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers",
  "futures",
  "gravity_bridge",
  "gumdrop",
@@ -5106,7 +4901,7 @@ dependencies = [
 name = "steward_abi"
 version = "0.1.0"
 dependencies = [
- "ethers 0.6.0 (git+https://github.com/gakonst/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers",
  "serde",
  "serde_derive",
  "serde_json",
@@ -5116,7 +4911,7 @@ dependencies = [
 name = "steward_abi_build"
 version = "0.1.0"
 dependencies = [
- "ethers 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers",
  "serde",
  "serde_derive",
  "serde_json",
@@ -5293,7 +5088,7 @@ dependencies = [
  "docopt",
  "env_logger",
  "ethereum_gravity",
- "ethers 0.6.0 (git+https://github.com/iqlusioninc/ethers-rs.git?branch=zaki/error_abi_support)",
+ "ethers",
  "futures",
  "gravity_abi",
  "gravity_proto",
