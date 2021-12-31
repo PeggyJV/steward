@@ -1,4 +1,4 @@
-use crate::{cellars, error::Error, prelude::*, somm_send};
+use crate::{cellars, cellars::uniswapv3::{UniswapV3CellarState, UniswapV3CellarTickInfo}, error::Error, prelude::*, somm_send, time_range::TimeRange};
 use abscissa_core::Application;
 use deep_space::{private_key::PrivateKey, Coin, Contact};
 use ethers::prelude::U256;
@@ -156,5 +156,23 @@ pub fn to_allocation(
             current_price: eth_gas_price,
         }),
         salt: "".to_string(), //TODO: Add salt,
+    }
+}
+
+pub async fn direct_rebalance(client: Arc<T>,) -> Result<(), Error> {
+    let config = APP.config().cellars;
+    let mut tick_info: Vec<UniswapV3CellarTickInfo> = Vec::new();
+    let contract_state = UniswapV3CellarState::new(config.cellar_address, client);
+    for ref tick_weight in TimeRange.tick_weights.clone() {
+        if tick_weight.weight > 0 {
+            tick_info.push(UniswapV3CellarTickInfo::from_tick_weight(tick_weight))
+        }
+    }
+
+    if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
+        Ok(())
+    } else {
+        tick_info.reverse();
+        contract_state.rebalance(tick_info).await
     }
 }
