@@ -1,9 +1,10 @@
-use crate::{cellars, cellars::uniswapv3::{UniswapV3CellarState, UniswapV3CellarTickInfo}, error::Error, prelude::*, somm_send, time_range::TimeRange};
+use crate::{cellars, error::Error, prelude::*, time_range::{TimeRange, TickWeight}, cellars::uniswapv3::UniswapV3CellarState, somm_send, config};
 use abscissa_core::Application;
+use steward_abi::cellar_uniswap::CellarTickInfo;
 use deep_space::{private_key::PrivateKey, Coin, Contact};
 use ethers::prelude::U256;
 use somm_proto::{somm, somm::query_client::QueryClient as AllocationQueryClient};
-use std::time::Duration;
+use std::{time::Duration, sync::Arc};
 use tokio::time::{sleep, timeout};
 use tonic::transport::Channel;
 
@@ -159,13 +160,21 @@ pub fn to_allocation(
     }
 }
 
-pub async fn direct_rebalance(client: Arc<T>,) -> Result<(), Error> {
-    let config = APP.config().cellars;
-    let mut tick_info: Vec<UniswapV3CellarTickInfo> = Vec::new();
-    let contract_state = UniswapV3CellarState::new(config.cellar_address, client);
-    for ref tick_weight in TimeRange.tick_weights.clone() {
+pub fn from_tick_weight(tick_weight: TickWeight) -> CellarTickInfo {
+    CellarTickInfo {
+        token_id: U256::zero(),
+        tick_upper: tick_weight.upper_bound,
+        tick_lower: tick_weight.lower_bound,
+        weight: tick_weight.weight,
+    }
+}
+
+pub async fn direct_rebalance(cellar: &config::CellarConfig, time_range: TimeRange ) -> Result<(), Error> {
+    let mut tick_info: Vec<CellarTickInfo> = Vec::new();
+    let contract_state = UniswapV3CellarState::new(cellar.cellar_address, client);
+    for tick_weight in time_range.tick_weights {
         if tick_weight.weight > 0 {
-            tick_info.push(UniswapV3CellarTickInfo::from_tick_weight(tick_weight))
+            tick_info.push(from_tick_weight(tick_weight))
         }
     }
 
