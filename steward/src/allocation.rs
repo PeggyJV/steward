@@ -1,7 +1,7 @@
 use crate::{cellars, error::Error, prelude::*, somm_send};
 use abscissa_core::Application;
 use deep_space::{private_key::PrivateKey, Coin, Contact};
-use ethers::prelude::U256;
+use ethers::{prelude::U256, types::H160};
 use somm_proto::{somm, somm::query_client::QueryClient as AllocationQueryClient};
 use std::time::Duration;
 use tokio::time::{sleep, timeout};
@@ -52,7 +52,7 @@ pub async fn get_connections() -> Result<Connections, Error> {
     Ok(Connections { grpc, contact })
 }
 
-pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, pair_id: U256) {
+pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, cellar_address: H160) {
     if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
         ()
     } else {
@@ -67,9 +67,10 @@ pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, pair_id: U256) {
                 0.into()
             }
         };
+        let config = APP.config();
+        let pair_id = &config.cellars[0].pair_id;
         let allocation = to_allocation(tick_range, pair_id.to_string(), eth_gas_price.as_u64());
 
-        let config = APP.config();
         let name = &config.keys.rebalancer_key;
         let cosmos_key = config.load_deep_space_key(name.clone());
         let delegate_cosmos_address = cosmos_key.to_address(&contact.get_prefix()).unwrap();

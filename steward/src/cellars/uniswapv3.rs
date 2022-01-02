@@ -1,6 +1,6 @@
 //! Rust Wrapper for cellar functions
 /// This will convert cellar functions from tuples to Rust types
-use crate::{allocation, error::Error, prelude::*};
+use crate::{allocation, error::Error, prelude::*, cellars};
 use ethers::prelude::*;
 use somm_proto::somm;
 use std::result::Result;
@@ -185,16 +185,11 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
                 weight: d.weight,
             })
             .collect();
-        let pair_id = APP
-            .config()
-            .cellars
-            // sketchy
-            .get(0)
-            .unwrap()
-            .pair_id;
+
+        let cellars_address = cellars::parse_cellar_id(&request.cellar_id).address;
 
         tokio::spawn(async move {
-            allocation::decide_rebalance(tick_ranges, pair_id).await;
+            allocation::decide_rebalance(tick_ranges, cellars_address).await;
         });
         Ok(tonic::Response::new(RebalanceResponse {}))
     }
