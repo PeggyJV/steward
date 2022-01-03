@@ -59,7 +59,7 @@ pub async fn get_connections() -> Result<Connections, Error> {
     Ok(Connections { grpc, contact })
 }
 
-pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, cellar_address: H160) {
+pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, cellar_address: H160, pair_id: String) {
     if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
         ()
     } else {
@@ -75,7 +75,6 @@ pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, cellar_address: 
             }
         };
         let config = APP.config();
-        let pair_id = &config.cellars[0].pair_id;
         let allocation = to_allocation(tick_range, pair_id.to_string(), eth_gas_price.as_u64());
 
         let name = &config.keys.rebalancer_key;
