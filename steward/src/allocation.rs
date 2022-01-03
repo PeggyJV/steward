@@ -6,11 +6,18 @@ use somm_proto::{somm, somm::query_client::QueryClient as AllocationQueryClient}
 use std::time::Duration;
 use tokio::time::{sleep, timeout};
 use tonic::transport::Channel;
+use rand_core::{OsRng, RngCore};
 
 // TO-DO Remove the need for options here
 pub struct Connections {
     pub grpc: AllocationQueryClient<Channel>,
     pub contact: Contact,
+}
+
+fn generate_salt() -> [u8; 16] {
+    let mut salt = [0u8; 16];
+    OsRng.fill_bytes(&mut salt);
+    salt
 }
 
 pub async fn allocation_precommit(
@@ -148,6 +155,11 @@ pub fn to_allocation(
     pair_id: String,
     eth_gas_price: u64,
 ) -> somm::Allocation {
+    let salt = &generate_salt();
+    let salt = match std::str::from_utf8(salt) {
+        Ok(v) => v,
+        Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
+    };
     somm::Allocation {
         vote: Some(somm::RebalanceVote {
             cellar: Some(somm::Cellar {
@@ -156,6 +168,6 @@ pub fn to_allocation(
             }),
             current_price: eth_gas_price,
         }),
-        salt: "".to_string(), //TODO: Add salt,
+        salt: salt.to_string(),
     }
 }
