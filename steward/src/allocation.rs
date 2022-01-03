@@ -23,7 +23,7 @@ fn generate_salt() -> [u8; 16] {
 pub async fn allocation_precommit(
     cosmos_key: &PrivateKey,
     allocation: &somm::Allocation,
-    pair_id: String,
+    cellar_address: String,
 ) -> somm::AllocationPrecommit {
     let config = APP.config();
     let delegate_cosmos_address = cosmos_key
@@ -35,7 +35,7 @@ pub async fn allocation_precommit(
         .unwrap();
     somm::AllocationPrecommit {
         hash: hasher.hash,
-        cellar_id: pair_id,
+        cellar_id: cellar_address,
     }
 }
 
@@ -59,7 +59,7 @@ pub async fn get_connections() -> Result<Connections, Error> {
     Ok(Connections { grpc, contact })
 }
 
-pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, cellar_address: H160, pair_id: String) {
+pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, cellar_address: H160) {
     if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
         ()
     } else {
@@ -75,7 +75,7 @@ pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, cellar_address: 
             }
         };
         let config = APP.config();
-        let allocation = to_allocation(tick_range, pair_id.to_string(), eth_gas_price.as_u64());
+        let allocation = to_allocation(tick_range, cellar_address.to_string(), eth_gas_price.as_u64());
 
         let name = &config.keys.rebalancer_key;
         let cosmos_key = config.load_deep_space_key(name.clone());
@@ -108,7 +108,7 @@ pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, cellar_address: 
                     delegate_cosmos_address,
                     cosmos_key,
                     fee.clone(),
-                    vec![allocation_precommit(&cosmos_key, &allocation, pair_id.to_string()).await],
+                    vec![allocation_precommit(&cosmos_key, &allocation, cellar_address.to_string()).await],
                 )
                 .await
                 .unwrap();
@@ -151,7 +151,7 @@ pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, cellar_address: 
 
 pub fn to_allocation(
     tick_ranges: Vec<somm::TickRange>,
-    pair_id: String,
+    cellar_address: String,
     eth_gas_price: u64,
 ) -> somm::Allocation {
     let salt = &generate_salt();
@@ -162,7 +162,7 @@ pub fn to_allocation(
     somm::Allocation {
         vote: Some(somm::RebalanceVote {
             cellar: Some(somm::Cellar {
-                id: pair_id,
+                id: cellar_address,
                 tick_ranges: tick_ranges,
             }),
             current_price: eth_gas_price,
