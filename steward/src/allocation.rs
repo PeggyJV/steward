@@ -1,17 +1,31 @@
 use crate::{cellars, error::Error, prelude::*, somm_send};
 use abscissa_core::Application;
 use deep_space::{private_key::PrivateKey, Coin, Contact};
-use ethers::{prelude::U256, types::H160};
+use ethers::{
+    prelude::U256,
+    types::{Address as EthAddress, H160},
+};
+use rand::{distributions::Alphanumeric, rngs::OsRng, Rng};
 use somm_proto::{somm, somm::query_client::QueryClient as AllocationQueryClient};
 use std::time::Duration;
 use tokio::time::{sleep, timeout};
 use tonic::transport::Channel;
-use rand::{distributions::Alphanumeric, Rng, rngs::OsRng};
 
 // TO-DO Remove the need for options here
 pub struct Connections {
     pub grpc: AllocationQueryClient<Channel>,
     pub contact: Contact,
+}
+
+pub fn format_eth_address(address: EthAddress) -> String {
+    format!("0x{}", bytes_to_hex_str(address.as_bytes()))
+}
+
+pub fn bytes_to_hex_str(bytes: &[u8]) -> String {
+    bytes
+        .iter()
+        .map(|b| format!("{:0>2x?}", b))
+        .fold(String::new(), |acc, x| acc + &x)
 }
 
 pub async fn allocation_precommit(
@@ -69,7 +83,11 @@ pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, cellar_address: 
             }
         };
         let config = APP.config();
-        let allocation = to_allocation(tick_range, cellar_address.to_string(), eth_gas_price.as_u64());
+        let allocation = to_allocation(
+            tick_range,
+            format_eth_address(cellar_address),
+            eth_gas_price.as_u64(),
+        );
 
         let name = &config.keys.rebalancer_key;
         let cosmos_key = config.load_deep_space_key(name.clone());
@@ -102,7 +120,10 @@ pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, cellar_address: 
                     delegate_cosmos_address,
                     cosmos_key,
                     fee.clone(),
-                    vec![allocation_precommit(&cosmos_key, &allocation, cellar_address.to_string()).await],
+                    vec![
+                        allocation_precommit(&cosmos_key, &allocation, cellar_address.to_string())
+                            .await,
+                    ],
                 )
                 .await
                 .unwrap();
@@ -157,9 +178,9 @@ pub fn to_allocation(
             current_price: eth_gas_price,
         }),
         salt: OsRng
-        .sample_iter(&Alphanumeric)
-        .take(8)
-        .map(char::from)
-        .collect(),
+            .sample_iter(&Alphanumeric)
+            .take(8)
+            .map(char::from)
+            .collect(),
     }
 }
