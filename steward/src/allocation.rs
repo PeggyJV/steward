@@ -121,7 +121,7 @@ pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, cellar_address: 
                     cosmos_key,
                     fee.clone(),
                     vec![
-                        allocation_precommit(&cosmos_key, &allocation, cellar_address.to_string())
+                        allocation_precommit(&cosmos_key, &allocation, format_eth_address(cellar_address))
                             .await,
                     ],
                 )
