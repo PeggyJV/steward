@@ -1,7 +1,11 @@
 use crate::{cellars, error::Error, prelude::*, somm_send};
 use abscissa_core::Application;
 use deep_space::{private_key::PrivateKey, Coin, Contact};
-use ethers::{prelude::U256, types::H160};
+use ethers::{
+    prelude::U256,
+    types::{Address as EthAddress, H160},
+};
+use rand::{distributions::Alphanumeric, rngs::OsRng, Rng};
 use somm_proto::{somm, somm::query_client::QueryClient as AllocationQueryClient};
 use std::time::Duration;
 use tokio::time::{sleep, timeout};
@@ -13,10 +17,21 @@ pub struct Connections {
     pub contact: Contact,
 }
 
+pub fn format_eth_address(address: EthAddress) -> String {
+    format!("0x{}", bytes_to_hex_str(address.as_bytes()))
+}
+
+pub fn bytes_to_hex_str(bytes: &[u8]) -> String {
+    bytes
+        .iter()
+        .map(|b| format!("{:0>2x?}", b))
+        .fold(String::new(), |acc, x| acc + &x)
+}
+
 pub async fn allocation_precommit(
     cosmos_key: &PrivateKey,
     allocation: &somm::Allocation,
-    pair_id: String,
+    cellar_address: String,
 ) -> somm::AllocationPrecommit {
     let config = APP.config();
     let delegate_cosmos_address = cosmos_key
@@ -28,7 +43,7 @@ pub async fn allocation_precommit(
         .unwrap();
     somm::AllocationPrecommit {
         hash: hasher.hash,
-        cellar_id: pair_id,
+        cellar_id: cellar_address,
     }
 }
 
@@ -68,8 +83,11 @@ pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, cellar_address: 
             }
         };
         let config = APP.config();
-        let pair_id = &config.cellars[0].pair_id;
-        let allocation = to_allocation(tick_range, pair_id.to_string(), eth_gas_price.as_u64());
+        let allocation = to_allocation(
+            tick_range,
+            format_eth_address(cellar_address),
+            eth_gas_price.as_u64(),
+        );
 
         let name = &config.keys.rebalancer_key;
         let cosmos_key = config.load_deep_space_key(name.clone());
@@ -102,7 +120,10 @@ pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, cellar_address: 
                     delegate_cosmos_address,
                     cosmos_key,
                     fee.clone(),
-                    vec![allocation_precommit(&cosmos_key, &allocation, pair_id.to_string()).await],
+                    vec![
+                        allocation_precommit(&cosmos_key, &allocation, format_eth_address(cellar_address))
+                            .await,
+                    ],
                 )
                 .await
                 .unwrap();
@@ -145,17 +166,21 @@ pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, cellar_address: 
 
 pub fn to_allocation(
     tick_ranges: Vec<somm::TickRange>,
-    pair_id: String,
+    cellar_address: String,
     eth_gas_price: u64,
 ) -> somm::Allocation {
     somm::Allocation {
         vote: Some(somm::RebalanceVote {
             cellar: Some(somm::Cellar {
-                id: pair_id,
+                id: cellar_address,
                 tick_ranges: tick_ranges,
             }),
             current_price: eth_gas_price,
         }),
-        salt: "".to_string(), //TODO: Add salt,
+        salt: OsRng
+            .sample_iter(&Alphanumeric)
+            .take(8)
+            .map(char::from)
+            .collect(),
     }
 }
