@@ -15,6 +15,9 @@ use tonic::transport::Error as TonicError;
 /// Kinds of errors
 #[derive(Copy, Clone, Debug, Eq, Error, PartialEq)]
 pub enum ErrorKind {
+    /// Allocation error
+    #[error("allocation error")]
+    AllocationError,
     /// Error in configuration file
     #[error("config error")]
     Config,
