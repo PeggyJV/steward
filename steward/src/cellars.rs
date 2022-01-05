@@ -23,12 +23,17 @@ pub async fn get_gas_price() -> Result<U256, Error> {
     CellarGas::etherscan_standard().await.map_err(|e| e.into())
 }
 
-fn parse_cellar_id(cellar_id: &str) -> CellarId {
-    let parts = cellar_id.split_at(cellar_id.chars().position(|c| c == ':').unwrap());
+fn parse_cellar_id(cellar_id: &str) -> Result<CellarId, String> {
+    let delimiter = match cellar_id.chars().position(|c| c == ':') {
+        Some(d) => d,
+        None => return Err("invalid cellar_id format; could not find delimiter ':'".to_string()),
+    };
+    // TO-DO: Eventually we need some validation of chain name/address format for that chain
+    let parts = cellar_id.split_at(delimiter);
     let address: H160 = H160::from_slice(parts.1.as_bytes());
 
-    CellarId {
+    Ok(CellarId {
         chain: parts.0.to_string(),
         address: address,
-    }
+    })
 }
