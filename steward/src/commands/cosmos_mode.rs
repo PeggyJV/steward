@@ -23,7 +23,7 @@ impl Runnable for CosmosSignerCmd {
         info!("Starting application");
         abscissa_tokio::run(&APP, async {
             // Reflection required for certain clients to function... such as grpcurl
-            let contents = server::get_steward_descriptor_contents().unwrap();
+            let contents = server::DESCRIPTOR.to_vec();
             let proto_descriptor_service = tonic_reflection::server::Builder::configure()
                 .register_encoded_file_descriptor_set(contents.as_slice())
                 .build()

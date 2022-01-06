@@ -1,10 +1,7 @@
 use crate::config::CellarRebalancerConfig;
-use std::{fs, io};
 use tonic::transport::{Certificate, Identity, ServerTlsConfig};
 
-pub fn get_steward_descriptor_contents() -> Result<Vec<u8>, io::Error> {
-    fs::read("steward_proto/src/prost/descriptor.bin")
-}
+pub const DESCRIPTOR: &'static [u8] = include_bytes!("../../steward_proto/src/prost/descriptor.bin");
 
 pub async fn load_server_config(config: std::sync::Arc<CellarRebalancerConfig>) -> ServerTlsConfig {
     let cert = tokio::fs::read(&config.tls.server_cert_path).await.unwrap();
