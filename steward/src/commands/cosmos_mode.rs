@@ -7,7 +7,7 @@ use crate::{
     cellars::{uniswapv3::UniswapV3CellarAllocator, STEWARD_PORT},
     config::CellarRebalancerConfig,
     prelude::*,
-    server,
+    server, error::ErrorKind,
 };
 use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
 use std::result::Result;
@@ -24,13 +24,18 @@ impl Runnable for CosmosSignerCmd {
         abscissa_tokio::run(&APP, async {
             // Reflection required for certain clients to function... such as grpcurl
             let contents = server::DESCRIPTOR.to_vec();
-            let proto_descriptor_service = tonic_reflection::server::Builder::configure()
+            let proto_descriptor_service = match tonic_reflection::server::Builder::configure()
                 .register_encoded_file_descriptor_set(contents.as_slice())
-                .build()
-                .unwrap();
+                .build() {
+                    Ok(svc) => svc,
+                    Err(err) => panic!("failed to build descriptor service: {:?}", err),
+                };
 
             // Configure TLS
-            let tls_config = server::load_server_config(config).await;
+            let tls_config = match server::load_server_config(config).await {
+                Ok(cfg) => cfg,
+                Err(err) =>  panic!("failed to load TLS config: {:?}", err),
+            };
 
             // run it
             let addr = ([127, 0, 0, 1], STEWARD_PORT).into();
