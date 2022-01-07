@@ -1,6 +1,7 @@
 //! Error types
 
 use abscissa_core::error::{BoxError, Context};
+use deep_space::error::{CosmosGrpcError, PrivateKeyError};
 use ethers::{contract::ContractError, middleware::gas_oracle::GasOracleError, prelude::*};
 use std::{
     fmt::{self, Display},
@@ -14,6 +15,9 @@ use tonic::transport::Error as TonicError;
 /// Kinds of errors
 #[derive(Copy, Clone, Debug, Eq, Error, PartialEq)]
 pub enum ErrorKind {
+    /// Allocation error
+    #[error("allocation error")]
+    AllocationError,
     /// Error in configuration file
     #[error("config error")]
     Config,
@@ -26,15 +30,24 @@ pub enum ErrorKind {
     /// Gas Oracle error
     #[error("gas error")]
     GasOracle,
-    /// Input/output error
-    #[error("http error")]
-    Http,
-    /// Provider error
-    #[error("provider error")]
-    ProviderError,
     /// Provider error
     #[error("grpc error")]
     GrpcError,
+    /// Input/output error
+    #[error("http error")]
+    Http,
+    /// Cryptographic Keys error
+    #[error("key related error")]
+    KeysError,
+    /// Miscellaneous error
+    ///
+    /// Errors that are returned with types that provide no
+    /// categorical information, such as String
+    #[error("allocation error")]
+    MiscError,
+    /// Provider error
+    #[error("provider error")]
+    ProviderError,
 }
 
 impl ErrorKind {
@@ -80,6 +93,12 @@ impl From<Context<ErrorKind>> for Error {
     }
 }
 
+impl From<CosmosGrpcError> for Error {
+    fn from(err: CosmosGrpcError) -> Self {
+        ErrorKind::GrpcError.context(err).into()
+    }
+}
+
 impl From<io::Error> for Error {
     fn from(err: io::Error) -> Self {
         ErrorKind::Io.context(err).into()
@@ -105,10 +124,22 @@ impl<T: 'static + Middleware> From<ContractError<T>> for Error {
     }
 }
 
+impl From<PrivateKeyError> for Error {
+    fn from(err: PrivateKeyError) -> Self {
+        ErrorKind::KeysError.context(err).into()
+    }
+}
+
 impl From<ProviderError> for Error {
     fn from(err: ProviderError) -> Self {
         let err: BoxError = err.into();
         ErrorKind::ContractError.context(err).into()
+    }
+}
+
+impl From<String> for Error {
+    fn from(msg: String) -> Self {
+        ErrorKind::MiscError.context(msg).into()
     }
 }
 

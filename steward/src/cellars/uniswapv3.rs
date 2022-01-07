@@ -175,6 +175,8 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
         request: tonic::Request<RebalanceRequest>,
     ) -> Result<tonic::Response<RebalanceResponse>, tonic::Status> {
         let request = request.get_ref();
+        debug!("received request \n {:?}", request);
+
         let tick_ranges: Vec<somm::TickRange> = request
             .data
             .clone()
@@ -186,10 +188,12 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
             })
             .collect();
 
-        let cellars_address = cellars::parse_cellar_id(&request.cellar_id).address;
+        let cellar_address = cellars::parse_cellar_id(&request.cellar_id).address;
 
         tokio::spawn(async move {
-            allocation::decide_rebalance(tick_ranges, cellars_address).await;
+            if let Err(err) = allocation::decide_rebalance(tick_ranges, cellar_address).await {
+                error!("error occurred during uniswapv3 cellar allocation: {:?}", err);
+            }
         });
         Ok(tonic::Response::new(RebalanceResponse {}))
     }
