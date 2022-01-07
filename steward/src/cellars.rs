@@ -1,4 +1,4 @@
-use crate::{error::Error, gas::CellarGas};
+use crate::{error::{Error, ErrorKind}, gas::CellarGas};
 use ethers::prelude::*;
 use std::{fmt, result::Result};
 
@@ -24,16 +24,47 @@ pub async fn get_gas_price() -> Result<U256, Error> {
 }
 
 fn parse_cellar_id(cellar_id: &str) -> Result<CellarId, String> {
-    let delimiter = match cellar_id.chars().position(|c| c == ':') {
-        Some(d) => d,
-        None => return Err("invalid cellar_id format; could not find delimiter ':'".to_string()),
+    let parts: Vec<&str> = cellar_id.split(':').collect();
+    if parts.len() != 2 {
+        return Err(format!("invalid cellar_id format: {}. proper format is 'chainname:address'", cellar_id).to_string());
+    }
+    // This assumes Ethereum address format for now.
+    let address = match parts[1].parse::<H160>() {
+        Ok(addr) => addr,
+        Err(err) => return Err(format!("error parsing ethereum address: {}", err).to_string()),
     };
-    // TO-DO: Eventually we need some validation of chain name/address format for that chain
-    let parts = cellar_id.split_at(delimiter);
-    let address: H160 = H160::from_slice(parts.1.as_bytes());
 
     Ok(CellarId {
-        chain: parts.0.to_string(),
+        chain: parts[0].to_string(),
         address: address,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn invalid_cellar_id_format_errors() {
+        let cellar_id = "thisaintright";
+        let result = parse_cellar_id(cellar_id);
+
+        assert!(result.is_err())
+    }
+
+    #[test]
+    fn invalid_ethereum_address_errors() {
+        let cellar_id = "ethereum:whatever";
+        let result = parse_cellar_id(cellar_id);
+
+        assert!(result.is_err())
+    }
+
+    #[test]
+    fn valid_cellar_id_works() {
+        let cellar_id = "ethereum:0x0000000000000000000000000000000000000000";
+        let result = parse_cellar_id(cellar_id);
+
+        assert!(result.is_ok());
+    }
 }
