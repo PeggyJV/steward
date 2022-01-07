@@ -10,7 +10,7 @@ use crate::{
     server, error::ErrorKind,
 };
 use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
-use std::result::Result;
+use std::{process, result::Result};
 use steward_proto::uniswapv3::server::UniswapV3CellarAllocatorServer;
 
 #[derive(Command, Debug, Clap)]
@@ -28,14 +28,16 @@ impl Runnable for CosmosSignerCmd {
                 .register_encoded_file_descriptor_set(contents.as_slice())
                 .build()
                 .unwrap_or_else(|err| {
-                    panic!("failed to build descriptor service: {}", err);
+                    status_err!("failed to build descriptor service: {}", err);
+                    std::process::exit(1);
                 });
 
             // Configure TLS
             let tls_config = server::load_server_config(config)
                 .await
                 .unwrap_or_else(|err| {
-                    panic!("failed to load TLS config: {}", err);
+                    status_err!("failed to load TLS config: {}", err);
+                    std::process::exit(1)
                 });
 
             // run it
