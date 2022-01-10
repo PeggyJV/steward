@@ -17,6 +17,9 @@ use somm_proto::somm::AllocationPrecommit;
 use std::{result::Result, time::Duration};
 use tonic::transport::Channel;
 
+use crate::error::Error;
+use crate::error::ErrorKind;
+
 pub const TIMEOUT: Duration = Duration::from_secs(60);
 pub const MEMO: &str = "Sent using Somm Orchestrator";
 
@@ -81,7 +84,7 @@ async fn __send_messages(
 pub async fn data_hash(
     allocation: &somm::Allocation,
     val_address: String,
-) -> Result<AllocationPrecommit, String> {
+) -> Result<AllocationPrecommit, Error> {
     let mut hasher = sha2::Sha256::new();
     if let Some(cellar) = &allocation.clone().vote.unwrap().cellar {
         let mut buf = BytesMut::new();
@@ -95,7 +98,7 @@ pub async fn data_hash(
             cellar_id: cellar.id.clone(),
         });
     }
-    return Err("No cellar".to_string());
+    return Err(ErrorKind::AllocationError.context("No cellar".to_string()).into());
 }
 
 pub async fn query_allocation_precommits(

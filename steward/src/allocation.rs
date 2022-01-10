@@ -2,35 +2,44 @@ use crate::{cellars, error::Error, prelude::*, time_range::{TimeRange, TickWeigh
 use abscissa_core::Application;
 use steward_abi::cellar_uniswap::CellarTickInfo;
 use deep_space::{private_key::PrivateKey, Coin, Contact};
-use ethers::prelude::U256;
+use ethers::types::{Address as EthAddress, H160};
+use rand::{distributions::Alphanumeric, rngs::OsRng, Rng};
 use somm_proto::{somm, somm::query_client::QueryClient as AllocationQueryClient};
 use std::{time::Duration, sync::Arc};
 use tokio::time::{sleep, timeout};
 use tonic::transport::Channel;
 
-// TO-DO Remove the need for options here
 pub struct Connections {
     pub grpc: AllocationQueryClient<Channel>,
     pub contact: Contact,
 }
 
+pub fn format_eth_address(address: EthAddress) -> String {
+    format!("0x{}", bytes_to_hex_str(address.as_bytes()))
+}
+
+pub fn bytes_to_hex_str(bytes: &[u8]) -> String {
+    bytes
+        .iter()
+        .map(|b| format!("{:0>2x?}", b))
+        .fold(String::new(), |acc, x| acc + &x)
+}
+
 pub async fn allocation_precommit(
     cosmos_key: &PrivateKey,
     allocation: &somm::Allocation,
-    pair_id: String,
-) -> somm::AllocationPrecommit {
+    cellar_address: String,
+) -> Result<somm::AllocationPrecommit, Error> {
     let config = APP.config();
     let delegate_cosmos_address = cosmos_key
-        .to_address(&config.cosmos.prefix)
-        .unwrap()
+        .to_address(&config.cosmos.prefix)?
         .to_string();
     let hasher = somm_send::data_hash(allocation, delegate_cosmos_address)
-        .await
-        .unwrap();
-    somm::AllocationPrecommit {
+        .await?;
+    Ok(somm::AllocationPrecommit {
         hash: hasher.hash,
-        cellar_id: pair_id,
-    }
+        cellar_id: cellar_address,
+    })
 }
 
 pub async fn get_connections() -> Result<Connections, Error> {
@@ -40,7 +49,7 @@ pub async fn get_connections() -> Result<Connections, Error> {
     let (grpc, contact) = match try_base {
         Ok(val) => (
             val,
-            Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix).unwrap(),
+            Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix)?,
         ),
         Err(e) => {
             error!(
@@ -53,11 +62,14 @@ pub async fn get_connections() -> Result<Connections, Error> {
     Ok(Connections { grpc, contact })
 }
 
-pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, pair_id: U256) {
+pub async fn decide_rebalance(
+    tick_range: Vec<somm::TickRange>,
+    cellar_address: H160,
+) -> Result<(), Error> {
     if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
-        ()
+        return Ok(());
     } else {
-        let mut connections = get_connections().await.unwrap();
+        let mut connections = get_connections().await?;
         let (contact, grpc_client) = (connections.contact, &mut connections.grpc);
 
         let eth_gas_price = match cellars::get_gas_price().await {
@@ -68,12 +80,16 @@ pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, pair_id: U256) {
                 0.into()
             }
         };
-        let allocation = to_allocation(tick_range, pair_id.to_string(), eth_gas_price.as_u64());
-
         let config = APP.config();
+        let allocation = to_allocation(
+            tick_range,
+            format_eth_address(cellar_address),
+            eth_gas_price.as_u64(),
+        );
+
         let name = &config.keys.rebalancer_key;
         let cosmos_key = config.load_deep_space_key(name.clone());
-        let delegate_cosmos_address = cosmos_key.to_address(&contact.get_prefix()).unwrap();
+        let delegate_cosmos_address = cosmos_key.to_address(&contact.get_prefix())?;
 
         let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
         let fee = Coin {
@@ -95,20 +111,22 @@ pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, pair_id: U256) {
         })
         .await
         {
-            Ok(val) => {
+            Ok(_) => {
                 // Sending Pre-commits
                 somm_send::send_precommit(
                     &contact,
                     delegate_cosmos_address,
                     cosmos_key,
                     fee.clone(),
-                    vec![allocation_precommit(&cosmos_key, &allocation, pair_id.to_string()).await],
+                    vec![
+                        allocation_precommit(&cosmos_key, &allocation, format_eth_address(cellar_address))
+                            .await?,
+                    ],
                 )
-                .await
-                .unwrap();
+                .await?;
             }
             Err(e) => {
-                println!("Couldn't Send Precommit {:?}", e);
+                error!("Couldn't Send Precommit {:?}", e);
             }
         }
 
@@ -124,7 +142,7 @@ pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, pair_id: U256) {
         })
         .await
         {
-            Ok(val) => {
+            Ok(_) => {
                 // Sending Commits
                 somm_send::send_allocation(
                     &contact,
@@ -133,30 +151,35 @@ pub async fn decide_rebalance(tick_range: Vec<somm::TickRange>, pair_id: U256) {
                     fee,
                     vec![allocation],
                 )
-                .await
-                .unwrap();
+                .await?;
             }
             Err(e) => {
-                println!("Couldn't Send Commit {:?}", e);
+                error!("Couldn't Send Commit {:?}", e);
             }
         }
     }
+
+    Ok(())
 }
 
 pub fn to_allocation(
     tick_ranges: Vec<somm::TickRange>,
-    pair_id: String,
+    cellar_address: String,
     eth_gas_price: u64,
 ) -> somm::Allocation {
     somm::Allocation {
         vote: Some(somm::RebalanceVote {
             cellar: Some(somm::Cellar {
-                id: pair_id,
+                id: cellar_address,
                 tick_ranges: tick_ranges,
             }),
             current_price: eth_gas_price,
         }),
-        salt: "".to_string(), //TODO: Add salt,
+        salt: OsRng
+            .sample_iter(&Alphanumeric)
+            .take(8)
+            .map(char::from)
+            .collect(),
     }
 }
 

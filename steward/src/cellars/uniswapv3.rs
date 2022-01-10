@@ -1,6 +1,6 @@
 //! Rust Wrapper for cellar functions
 /// This will convert cellar functions from tuples to Rust types
-use crate::{allocation, error::Error, prelude::*};
+use crate::{allocation, error::Error, prelude::*, cellars};
 use ethers::prelude::*;
 use somm_proto::somm;
 use std::result::Result;
@@ -175,6 +175,8 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
         request: tonic::Request<RebalanceRequest>,
     ) -> Result<tonic::Response<RebalanceResponse>, tonic::Status> {
         let request = request.get_ref();
+        debug!("received request \n {:?}", request);
+
         let tick_ranges: Vec<somm::TickRange> = request
             .data
             .clone()
@@ -185,16 +187,13 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
                 weight: d.weight,
             })
             .collect();
-        let pair_id = APP
-            .config()
-            .cellars
-            // sketchy
-            .get(0)
-            .unwrap()
-            .pair_id;
+
+        let cellar_address = cellars::parse_cellar_id(&request.cellar_id).address;
 
         tokio::spawn(async move {
-            allocation::decide_rebalance(tick_ranges, pair_id).await;
+            if let Err(err) = allocation::decide_rebalance(tick_ranges, cellar_address).await {
+                error!("error occurred during uniswapv3 cellar allocation: {:?}", err);
+            }
         });
         Ok(tonic::Response::new(RebalanceResponse {}))
     }
