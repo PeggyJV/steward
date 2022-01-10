@@ -1,11 +1,19 @@
-use crate::{cellars, error::Error, prelude::*, time_range::{TimeRange, TickWeight}, cellars::uniswapv3::UniswapV3CellarState, somm_send, config};
+use crate::{
+    cellars,
+    cellars::uniswapv3::UniswapV3CellarState,
+    error::Error,
+    prelude::*,
+    somm_send,
+    time_range::{TickWeight, TimeRange},
+};
 use abscissa_core::Application;
-use steward_abi::cellar_uniswap::CellarTickInfo;
 use deep_space::{private_key::PrivateKey, Coin, Contact};
-use ethers::types::{Address as EthAddress, H160};
+use ethers::prelude::*;
 use rand::{distributions::Alphanumeric, rngs::OsRng, Rng};
+use signatory::FsKeyStore;
 use somm_proto::{somm, somm::query_client::QueryClient as AllocationQueryClient};
-use std::{time::Duration, sync::Arc};
+use std::{convert::TryFrom, path, sync::Arc, time::Duration};
+use steward_abi::cellar_uniswap::CellarTickInfo;
 use tokio::time::{sleep, timeout};
 use tonic::transport::Channel;
 
@@ -14,7 +22,7 @@ pub struct Connections {
     pub contact: Contact,
 }
 
-pub fn format_eth_address(address: EthAddress) -> String {
+pub fn format_eth_address(address: Address) -> String {
     format!("0x{}", bytes_to_hex_str(address.as_bytes()))
 }
 
@@ -31,11 +39,8 @@ pub async fn allocation_precommit(
     cellar_address: String,
 ) -> Result<somm::AllocationPrecommit, Error> {
     let config = APP.config();
-    let delegate_cosmos_address = cosmos_key
-        .to_address(&config.cosmos.prefix)?
-        .to_string();
-    let hasher = somm_send::data_hash(allocation, delegate_cosmos_address)
-        .await?;
+    let delegate_cosmos_address = cosmos_key.to_address(&config.cosmos.prefix)?.to_string();
+    let hasher = somm_send::data_hash(allocation, delegate_cosmos_address).await?;
     Ok(somm::AllocationPrecommit {
         hash: hasher.hash,
         cellar_id: cellar_address,
@@ -119,8 +124,12 @@ pub async fn decide_rebalance(
                     cosmos_key,
                     fee.clone(),
                     vec![
-                        allocation_precommit(&cosmos_key, &allocation, format_eth_address(cellar_address))
-                            .await?,
+                        allocation_precommit(
+                            &cosmos_key,
+                            &allocation,
+                            format_eth_address(cellar_address),
+                        )
+                        .await?,
                     ],
                 )
                 .await?;
@@ -192,9 +201,31 @@ pub fn from_tick_weight(tick_weight: TickWeight) -> CellarTickInfo {
     }
 }
 
-pub async fn direct_rebalance(cellar: &config::CellarConfig, time_range: TimeRange ) -> Result<(), Error> {
+pub async fn direct_rebalance(cellar_address: H160, time_range: TimeRange) -> Result<(), Error> {
     let mut tick_info: Vec<CellarTickInfo> = Vec::new();
-    let contract_state = UniswapV3CellarState::new(cellar.cellar_address, client);
+    let config = APP.config();
+    let keystore = path::Path::new(&config.keys.keystore);
+    let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
+
+    let name = &config
+        .keys
+        .rebalancer_key
+        .parse()
+        .expect("Could not parse name");
+    let key = keystore.load(name).expect("Could not load key");
+
+    let key = key
+        .to_pem()
+        .parse::<k256::elliptic_curve::SecretKey<k256::Secp256k1>>()
+        .expect("Could not parse key");
+
+    let wallet: LocalWallet = Wallet::from(key);
+
+    let eth_host = config.ethereum.rpc.clone();
+    let client = Provider::<Http>::try_from(eth_host.clone()).unwrap();
+    let client = SignerMiddleware::new(client, wallet.clone());
+    let client = Arc::new(client);
+    let mut contract_state = UniswapV3CellarState::new(cellar_address, client);
     for tick_weight in time_range.tick_weights {
         if tick_weight.weight > 0 {
             tick_info.push(from_tick_weight(tick_weight))
