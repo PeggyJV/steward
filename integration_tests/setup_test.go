@@ -73,6 +73,7 @@ type IntegrationTestSuite struct {
 	ethResource   *dockertest.Resource
 	valResources  []*dockertest.Resource
 	orchResources []*dockertest.Resource
+	stewResources []*dockertest.Resource
 }
 
 func TestIntegrationTestSuite(t *testing.T) {
@@ -105,6 +106,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.runEthContainer()
 	s.runValidators()
 	s.runOrchestrators()
+	s.runStewards()
 }
 
 func (s *IntegrationTestSuite) TearDownSuite() {
@@ -705,6 +707,74 @@ msg_batch_size = 5
 			resource.Container.ID,
 		)
 	}
+}
+
+func (s *IntegrationTestSuite) runStewards() {
+	s.T().Log("starting steward containers...")
+
+	s.stewResources = make([]*dockertest.Resource, len(s.chain.stewards))
+	for i, stew := range s.chain.stewards {
+		runOpts := &dockertest.RunOptions{
+			Name:       fmt.Sprintf("steward", stew.index),
+			NetworkID:  s.dockerNetwork.Network.ID,
+			Repository: "steward",
+			Tag:        "prebuilt",
+			Entrypoint: []string{"steward", "-c config.toml", "cosmos-signer"},
+		}
+
+		if stew.index == 0 {
+			runOpts.PortBindings = map[docker.Port][]docker.PortBinding{
+				"5734/tcp": {{HostIP: "", HostPort: "5734"}},
+			}
+			runOpts.ExposedPorts = []string{"5734/tcp"}
+		}
+
+		resource, err := s.dockerPool.RunWithOptions(runOpts, noRestart)
+		s.Require().NoError(err)
+
+		s.stewResources[i] = resource
+		s.T().Logf("started steward container: %s", resource.Container.ID)
+	}
+
+	rpcClient, err := rpchttp.New("tcp://localhost:26657", "/websocket")
+	s.Require().NoError(err)
+
+	s.Require().Eventually(
+		func() bool {
+			status, err := rpcClient.Status(context.Background())
+			if err != nil {
+				s.T().Logf("can't get container status: %s", err.Error())
+			}
+			if status == nil {
+				container, ok := s.dockerPool.ContainerByName("sommelier0")
+				if !ok {
+					s.T().Logf("no container by 'sommelier0'")
+				} else {
+					if container.Container.State.Status == "exited" {
+						s.Fail("validators exited", "state: %s logs: \n%s", container.Container.State.String(), s.logsByContainerID(container.Container.ID))
+						s.T().FailNow()
+					}
+					s.T().Logf("state: %v, health: %v", container.Container.State.Status, container.Container.State.Health)
+				}
+				return false
+			}
+
+			// let the node produce a few blocks
+			if status.SyncInfo.CatchingUp {
+				s.T().Logf("catching up: %t", status.SyncInfo.CatchingUp)
+				return false
+			}
+			if status.SyncInfo.LatestBlockHeight < 2 {
+				s.T().Logf("block height %d", status.SyncInfo.LatestBlockHeight)
+				return false
+			}
+
+			return true
+		},
+		10*time.Minute,
+		15*time.Second,
+		"validator node failed to produce blocks",
+	)
 }
 
 func noRestart(config *docker.HostConfig) {

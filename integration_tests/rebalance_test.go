@@ -4,8 +4,15 @@ import (
 	"context"
 	"time"
 
+	proto "./uniswapv3_cellar"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/openzipkin/zipkin-go/middleware/grpc"
 	"github.com/peggyjv/sommelier/x/allocation/types"
+)
+
+const (
+	addr = "localhost:5734"
 )
 
 func (s *IntegrationTestSuite) TestRebalance() {
@@ -54,58 +61,86 @@ func (s *IntegrationTestSuite) TestRebalance() {
 			return false
 		}, 30*time.Second, 2*time.Second, "hardhat cellar not found in chain")
 
-		s.T().Logf("wait for new vote period start")
-		val = s.chain.validators[0]
-		s.Require().Eventuallyf(func() bool {
-			kb, err := val.keyring()
-			s.Require().NoError(err)
-			clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
-			s.Require().NoError(err)
+		// check steward endpoints are available
 
-			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.QueryCommitPeriod(context.Background(), &types.QueryCommitPeriodRequest{})
+		// replace vote period check - sending commits with grpc call to steward
+		s.T().Logf("request rebalance start")
+		s.Require().Eventually(func() bool {
+			conn, err := grpc.Dial(addr, grpc.WithRemoteServiceName)
 			if err != nil {
-				return false
+				s.T().Fatalf("failed to connect to steward: %v", err)
 			}
-			if res.VotePeriodStart != res.CurrentHeight {
-				if res.CurrentHeight%10 == 0 {
-					s.T().Logf("current height: %d, period end: %d", res.CurrentHeight, res.VotePeriodEnd)
+			defer conn.Close()
+			c := proto.NewUniswapV3CellarAllocatorClient(conn)
+
+			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+			defer cancel()
+
+			data := []*proto.Position{&proto.Position{UpperPrice: 1000, LowerPrice: 1, Weight: 100}}
+			request := proto.RebalanceRequest{CellarId: "ethereum:0x0000000000000000000000000000000000000000", Data: data}
+			// figure out hte networking and addressing here
+			for i, val := range s.chain.validators {
+				r, err := c.Rebalance(ctx, &request)
+				if err != nil {
+					s.T().Fatalf("rebalance request error: %v", err)
 				}
-				return false
 			}
 
 			return true
-		}, 105*time.Second, 1*time.Second, "new vote period never seen")
+		}, 100*time.Second, 1*time.Second, "rebalance request took too long")
 
-		s.T().Logf("sending pre-commits")
-		for i, orch := range s.chain.orchestrators {
-			i := i
-			orch := orch
-			s.Require().Eventuallyf(func() bool {
-				clientCtx, err := s.chain.clientContext("tcp://localhost:26657", orch.keyring, "orch", orch.keyInfo.GetAddress())
-				s.Require().NoError(err)
+		// s.T().Logf("wait for new vote period start")
+		// val = s.chain.validators[0]
+		// s.Require().Eventuallyf(func() bool {
+		// 	kb, err := val.keyring()
+		// 	s.Require().NoError(err)
+		// 	clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		// 	s.Require().NoError(err)
 
-				delegatedVal := s.chain.validators[i]
+		// 	queryClient := types.NewQueryClient(clientCtx)
+		// 	res, err := queryClient.QueryCommitPeriod(context.Background(), &types.QueryCommitPeriodRequest{})
+		// 	if err != nil {
+		// 		return false
+		// 	}
+		// 	if res.VotePeriodStart != res.CurrentHeight {
+		// 		if res.CurrentHeight%10 == 0 {
+		// 			s.T().Logf("current height: %d, period end: %d", res.CurrentHeight, res.VotePeriodEnd)
+		// 		}
+		// 		return false
+		// 	}
 
-				precommitMsg, err := types.NewMsgAllocationPrecommit(*commit.Vote, commit.Salt, orch.keyInfo.GetAddress(), sdk.ValAddress(delegatedVal.keyInfo.GetAddress()))
-				s.Require().NoError(err, "unable to create precommit")
+		// 	return true
+		// }, 105*time.Second, 1*time.Second, "new vote period never seen")
 
-				response, err := s.chain.sendMsgs(*clientCtx, precommitMsg)
-				if err != nil {
-					s.T().Logf("error: %s", err)
-					return false
-				}
-				if response.Code != 0 {
-					if response.Code != 32 {
-						s.T().Log(response)
-					}
-					return false
-				}
+		// s.T().Logf("sending pre-commits")
+		// for i, orch := range s.chain.orchestrators {
+		// 	i := i
+		// 	orch := orch
+		// 	s.Require().Eventuallyf(func() bool {
+		// 		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", orch.keyring, "orch", orch.keyInfo.GetAddress())
+		// 		s.Require().NoError(err)
 
-				s.T().Logf("precommit for %d node with hash %x sent successfully", i, precommitMsg.Precommit[0].Hash)
-				return true
-			}, 10*time.Second, 500*time.Millisecond, "unable to deploy precommit for node %d", i)
-		}
+		// 		delegatedVal := s.chain.validators[i]
+
+		// 		precommitMsg, err := types.NewMsgAllocationPrecommit(*commit.Vote, commit.Salt, orch.keyInfo.GetAddress(), sdk.ValAddress(delegatedVal.keyInfo.GetAddress()))
+		// 		s.Require().NoError(err, "unable to create precommit")
+
+		// 		response, err := s.chain.sendMsgs(*clientCtx, precommitMsg)
+		// 		if err != nil {
+		// 			s.T().Logf("error: %s", err)
+		// 			return false
+		// 		}
+		// 		if response.Code != 0 {
+		// 			if response.Code != 32 {
+		// 				s.T().Log(response)
+		// 			}
+		// 			return false
+		// 		}
+
+		// 		s.T().Logf("precommit for %d node with hash %x sent successfully", i, precommitMsg.Precommit[0].Hash)
+		// 		return true
+		// 	}, 10*time.Second, 500*time.Millisecond, "unable to deploy precommit for node %d", i)
+		// }
 
 		s.T().Logf("checking pre-commits for validators")
 		for i, val := range s.chain.validators {
@@ -142,31 +177,31 @@ func (s *IntegrationTestSuite) TestRebalance() {
 				val.keyInfo.GetAddress().String())
 		}
 
-		s.T().Logf("sending commits")
-		for i, orch := range s.chain.orchestrators {
-			i := i
-			orch := orch
-			s.Require().Eventuallyf(func() bool {
-				clientCtx, err := s.chain.clientContext("tcp://localhost:26657", orch.keyring, "orch", orch.keyInfo.GetAddress())
-				s.Require().NoError(err)
+		// s.T().Logf("sending commits")
+		// for i, orch := range s.chain.orchestrators {
+		// 	i := i
+		// 	orch := orch
+		// 	s.Require().Eventuallyf(func() bool {
+		// 		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", orch.keyring, "orch", orch.keyInfo.GetAddress())
+		// 		s.Require().NoError(err)
 
-				commitMsg := types.NewMsgAllocationCommit([]*types.Allocation{&commit}, orch.keyInfo.GetAddress())
-				response, err := s.chain.sendMsgs(*clientCtx, commitMsg)
-				if err != nil {
-					s.T().Logf("error: %s", err)
-					return false
-				}
-				if response.Code != 0 {
-					if response.Code != 32 {
-						s.T().Logf("response: %s", response)
-						s.FailNow("failing")
-					}
-					return false
-				}
+		// 		commitMsg := types.NewMsgAllocationCommit([]*types.Allocation{&commit}, orch.keyInfo.GetAddress())
+		// 		response, err := s.chain.sendMsgs(*clientCtx, commitMsg)
+		// 		if err != nil {
+		// 			s.T().Logf("error: %s", err)
+		// 			return false
+		// 		}
+		// 		if response.Code != 0 {
+		// 			if response.Code != 32 {
+		// 				s.T().Logf("response: %s", response)
+		// 				s.FailNow("failing")
+		// 			}
+		// 			return false
+		// 		}
 
-				return true
-			}, 10*time.Second, 500*time.Millisecond, "unable to deploy commit for node %d", i)
-		}
+		// 		return true
+		// 	}, 10*time.Second, 500*time.Millisecond, "unable to deploy commit for node %d", i)
+		// }
 
 		s.T().Logf("checking commits for validators")
 		for _, val := range s.chain.validators {
