@@ -8,7 +8,7 @@ It integrates the full functionality of gorc for operating as an orchestator and
 
 ## TLS
 
-To provide data to Steward, an encrypted and authenticated gRPC connection must be established. The client certificate authority used by the initial Data Provider is included in `certs/`. This is the only client root of trust accepted by default by Steward right now as we are only accepting client certs from one Data Provider, VolumeFi.
+To provide data to Steward, an encrypted and authenticated gRPC connection must be established. The client certificate authority used by the initial Data Provider is included in `tls/`. This is the only client root of trust accepted by default by Steward right now as we are only accepting client certs from one Data Provider, VolumeFi.
 
 ## Getting Started
 

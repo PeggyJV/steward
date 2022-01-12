@@ -77,7 +77,7 @@ impl Default for CellarRebalancerConfig {
 pub struct TlsSection {
     pub server_cert_path: String,
     pub server_key_path: String,
-    pub client_ca_cert_path: String,
+    pub client_ca_cert_path: Option<String>,
 }
 
 impl Default for TlsSection {
@@ -85,7 +85,7 @@ impl Default for TlsSection {
         Self {
             server_cert_path: "".to_string(),
             server_key_path: "".to_string(),
-            client_ca_cert_path: "".to_string(),
+            client_ca_cert_path: Some("".to_string()),
         }
     }
 }
