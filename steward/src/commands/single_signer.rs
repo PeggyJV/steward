@@ -3,7 +3,10 @@
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::{
-    application::APP, cellars::STEWARD_PORT, config::CellarRebalancerConfig, prelude::*, server,
+    application::APP,
+    config::CellarRebalancerConfig,
+    prelude::*,
+    server::{self, DEFAULT_STEWARD_PORT},
 };
 use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
 use std::result::Result;
@@ -28,7 +31,7 @@ impl Runnable for SingleSignerCmd {
                 });
 
             // Configure TLS
-            let tls_config = server::load_server_config(config)
+            let tls_config = server::load_server_config(&config)
                 .await
                 .unwrap_or_else(|err| {
                     status_err!("failed to load TLS config: {}", err);
@@ -36,7 +39,11 @@ impl Runnable for SingleSignerCmd {
                 });
 
             // run it
-            let addr = ([127, 0, 0, 1], STEWARD_PORT).into();
+            let port = match config.server.port {
+                Some(port) => port,
+                None => DEFAULT_STEWARD_PORT,
+            };
+            let addr = ([127, 0, 0, 1], port).into();
             info!("listening on {}", addr);
             tonic::transport::Server::builder()
                 .tls_config(tls_config)

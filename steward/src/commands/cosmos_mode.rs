@@ -4,13 +4,13 @@
 /// accessors along with logging macros. Customize as you see fit.
 use crate::{
     application::APP,
-    cellars::{uniswapv3::UniswapV3CellarAllocator, STEWARD_PORT},
+    cellars::uniswapv3::UniswapV3CellarAllocator,
     config::CellarRebalancerConfig,
     prelude::*,
-    server, error::ErrorKind,
+    server::{self, DEFAULT_STEWARD_PORT},
 };
 use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
-use std::{process, result::Result};
+use std::result::Result;
 use steward_proto::uniswapv3::server::UniswapV3CellarAllocatorServer;
 
 #[derive(Command, Debug, Clap)]
@@ -33,7 +33,7 @@ impl Runnable for CosmosSignerCmd {
                 });
 
             // Configure TLS
-            let tls_config = server::load_server_config(config)
+            let tls_config = server::load_server_config(&config)
                 .await
                 .unwrap_or_else(|err| {
                     status_err!("failed to load TLS config: {}", err);
@@ -41,7 +41,11 @@ impl Runnable for CosmosSignerCmd {
                 });
 
             // run it
-            let addr = ([127, 0, 0, 1], STEWARD_PORT).into();
+            let port = match config.server.port {
+                Some(port) => port,
+                None => DEFAULT_STEWARD_PORT,
+            };
+            let addr = ([127, 0, 0, 1], port).into();
             info!("listening on {}", addr);
             tonic::transport::Server::builder()
                 .tls_config(tls_config)

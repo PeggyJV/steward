@@ -3,22 +3,19 @@
 //! See instructions in `commands.rs` to specify the path to your
 //! application's configuration file and/or command-line options
 //! for specifying it.
-
-use ethers::signers::LocalWallet as EthWallet;
-use std::time::Duration;
-
-use ethers::prelude::H160;
+use crate::server::{DEFAULT_CLIENT_CA, DEFAULT_STEWARD_PORT};
+use ethers::{prelude::H160, signers::LocalWallet as EthWallet};
 use serde::{Deserialize, Serialize};
 use signatory::FsKeyStore;
-use std::net::SocketAddr;
-use std::path::Path;
+use std::{net::SocketAddr, path::Path, time::Duration};
+
 
 /// CellarRebalancer Configuration
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields)]
 pub struct CellarRebalancerConfig {
     pub keystore: String,
-    pub tls: TlsSection,
+    pub server: ServerSection,
     pub gravity: GravitySection,
     pub ethereum: EthereumSection,
     pub cosmos: CosmosSection,
@@ -61,7 +58,7 @@ impl Default for CellarRebalancerConfig {
     fn default() -> Self {
         Self {
             keystore: "/tmp/keystore".to_owned(),
-            tls: TlsSection::default(),
+            server: ServerSection::default(),
             gravity: GravitySection::default(),
             ethereum: EthereumSection::default(),
             cosmos: CosmosSection::default(),
@@ -74,18 +71,20 @@ impl Default for CellarRebalancerConfig {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct TlsSection {
+pub struct ServerSection {
+    pub client_ca_cert_path: Option<String>,
+    pub port: Option<u16>,
     pub server_cert_path: String,
     pub server_key_path: String,
-    pub client_ca_cert_path: Option<String>,
 }
 
-impl Default for TlsSection {
+impl Default for ServerSection {
     fn default() -> Self {
         Self {
+            client_ca_cert_path: Some("".to_string()),
             server_cert_path: "".to_string(),
             server_key_path: "".to_string(),
-            client_ca_cert_path: Some("".to_string()),
+            port: Some(DEFAULT_STEWARD_PORT),
         }
     }
 }
