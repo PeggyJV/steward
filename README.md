@@ -6,6 +6,10 @@ It can run in single signer mode or as a voter in the Cosmos sommelier protocol.
 
 It integrates the full functionality of gorc for operating as an orchestator and relayer of gravity bridge messages between Ethereum and Cosmos chains.
 
+## TLS
+
+To provide data to Steward, an encrypted and authenticated gRPC connection must be established. The client certificate authority used by the initial Data Provider is included in `certs/`. This is the only client root of trust accepted by default by Steward right now as we are only accepting client certs from one Data Provider, VolumeFi.
+
 ## Getting Started
 
 The rebalancer has two modes; the single signer mode(testing mode) and the cosmos voting mode, also known as the chain signer mode. The gravity bridge will run the chain signer mode, while the single signer mode can be bootstraped. The section gives an overview on how to bootstrap the testing mode.
