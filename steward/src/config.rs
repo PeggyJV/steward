@@ -3,22 +3,19 @@
 //! See instructions in `commands.rs` to specify the path to your
 //! application's configuration file and/or command-line options
 //! for specifying it.
-
-use ethers::signers::LocalWallet as EthWallet;
-use std::time::Duration;
-
-use ethers::prelude::H160;
+use crate::server::{DEFAULT_CLIENT_CA, DEFAULT_STEWARD_PORT};
+use ethers::{prelude::H160, signers::LocalWallet as EthWallet};
 use serde::{Deserialize, Serialize};
 use signatory::FsKeyStore;
-use std::net::SocketAddr;
-use std::path::Path;
+use std::{net::SocketAddr, path::Path, time::Duration};
+
 
 /// CellarRebalancer Configuration
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields)]
-pub struct CellarRebalancerConfig {
+pub struct StewardConfig {
     pub keystore: String,
-    pub tls: TlsSection,
+    pub server: ServerSection,
     pub gravity: GravitySection,
     pub ethereum: EthereumSection,
     pub cosmos: CosmosSection,
@@ -28,7 +25,7 @@ pub struct CellarRebalancerConfig {
     pub mongo: MongoSection,
 }
 
-impl CellarRebalancerConfig {
+impl StewardConfig {
     fn load_secret_key(&self, name: String) -> k256::elliptic_curve::SecretKey<k256::Secp256k1> {
         let keystore = Path::new(&self.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
@@ -57,11 +54,11 @@ impl CellarRebalancerConfig {
 ///
 /// Note: if your needs are as simple as below, you can
 /// use `#[derive(Default)]` on CellarRebalancerConfig instead.
-impl Default for CellarRebalancerConfig {
+impl Default for StewardConfig {
     fn default() -> Self {
         Self {
             keystore: "/tmp/keystore".to_owned(),
-            tls: TlsSection::default(),
+            server: ServerSection::default(),
             gravity: GravitySection::default(),
             ethereum: EthereumSection::default(),
             cosmos: CosmosSection::default(),
@@ -73,21 +70,13 @@ impl Default for CellarRebalancerConfig {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct TlsSection {
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct ServerSection {
+    pub address: Option<String>,
+    pub client_ca_cert_path: Option<String>,
+    pub port: Option<u16>,
     pub server_cert_path: String,
     pub server_key_path: String,
-    pub client_ca_cert_path: String,
-}
-
-impl Default for TlsSection {
-    fn default() -> Self {
-        Self {
-            server_cert_path: "".to_string(),
-            server_key_path: "".to_string(),
-            client_ca_cert_path: "".to_string(),
-        }
-    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

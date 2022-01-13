@@ -6,7 +6,7 @@ use ethers::{contract::ContractError, middleware::gas_oracle::GasOracleError, pr
 use std::{
     fmt::{self, Display},
     io,
-    ops::Deref,
+    ops::Deref, net::AddrParseError,
 };
 use thiserror::Error;
 
@@ -78,6 +78,12 @@ impl Display for Error {
 impl std::error::Error for Error {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         self.0.source()
+    }
+}
+
+impl From<AddrParseError> for Error {
+    fn from(err: AddrParseError) -> Error {
+        ErrorKind::Config.context(err).into()
     }
 }
 

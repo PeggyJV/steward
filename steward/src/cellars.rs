@@ -4,9 +4,6 @@ use std::{fmt, result::Result};
 
 pub(crate) mod uniswapv3;
 
-pub const STEWARD_PORT: u16 = 5734;
-const UNISWAPV3_CELLAR: &str = "uniswapv3";
-
 #[derive(Debug)]
 pub struct CellarId {
     chain: String,

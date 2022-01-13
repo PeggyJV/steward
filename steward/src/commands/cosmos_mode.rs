@@ -4,13 +4,13 @@
 /// accessors along with logging macros. Customize as you see fit.
 use crate::{
     application::APP,
-    cellars::{uniswapv3::UniswapV3CellarAllocator, STEWARD_PORT},
-    config::CellarRebalancerConfig,
+    cellars::uniswapv3::UniswapV3CellarAllocator,
+    config::StewardConfig,
     prelude::*,
-    server, error::ErrorKind,
+    server::{self, DEFAULT_STEWARD_PORT},
 };
 use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
-use std::{process, result::Result};
+use std::result::Result;
 use steward_proto::uniswapv3::server::UniswapV3CellarAllocatorServer;
 
 #[derive(Command, Debug, Clap)]
@@ -29,22 +29,19 @@ impl Runnable for CosmosSignerCmd {
                 .build()
                 .unwrap_or_else(|err| {
                     status_err!("failed to build descriptor service: {}", err);
-                    std::process::exit(1);
-                });
-
-            // Configure TLS
-            let tls_config = server::load_server_config(config)
-                .await
-                .unwrap_or_else(|err| {
-                    status_err!("failed to load TLS config: {}", err);
                     std::process::exit(1)
                 });
 
-            // run it
-            let addr = ([127, 0, 0, 1], STEWARD_PORT).into();
-            info!("listening on {}", addr);
-            tonic::transport::Server::builder()
-                .tls_config(tls_config)
+            let server_config = server::load_server_config(&config)
+                .await
+                .unwrap_or_else(|err| {
+                    status_err!("failed to load server config: {}", err);
+                    std::process::exit(1)
+                });
+
+            info!("listening on {}", server_config.address);
+            if let Err(err) = tonic::transport::Server::builder()
+                .tls_config(server_config.tls_config)
                 .unwrap_or_else(|err| {
                     panic!("{:?}", err);
                 })
@@ -52,25 +49,25 @@ impl Runnable for CosmosSignerCmd {
                     UniswapV3CellarAllocator,
                 ))
                 .add_service(proto_descriptor_service)
-                .serve(addr)
+                .serve(server_config.address)
                 .await
-                .unwrap();
+            {
+                status_err!("server error: {}", err);
+                std::process::exit(1)
+            }
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
-            std::process::exit(1);
+            std::process::exit(1)
         });
     }
 }
 
-impl config::Override<CellarRebalancerConfig> for CosmosSignerCmd {
+impl config::Override<StewardConfig> for CosmosSignerCmd {
     // Process the given command line options, overriding settings from
     // a configuration file using explicit flags taken from command-line
     // arguments.
-    fn override_config(
-        &self,
-        config: CellarRebalancerConfig,
-    ) -> Result<CellarRebalancerConfig, FrameworkError> {
+    fn override_config(&self, config: StewardConfig) -> Result<StewardConfig, FrameworkError> {
         Ok(config)
     }
 }
