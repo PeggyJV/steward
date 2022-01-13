@@ -37,6 +37,7 @@ impl Runnable for SingleSignerCmd {
                     std::process::exit(1)
                 });
 
+            info!("listening on {}", server_config.address);
             if let Err(err) = tonic::transport::Server::builder()
                 .tls_config(server_config.tls_config)
                 .unwrap_or_else(|err| {
@@ -49,7 +50,6 @@ impl Runnable for SingleSignerCmd {
                 status_err!("server error: {}", err);
                 std::process::exit(1)
             }
-            info!("listening on {}", server_config.address);
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
