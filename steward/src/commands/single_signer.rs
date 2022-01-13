@@ -30,15 +30,14 @@ impl Runnable for SingleSignerCmd {
                     std::process::exit(1);
                 });
 
-                let server_config = server::load_server_config(&config)
+            let server_config = server::load_server_config(&config)
                 .await
                 .unwrap_or_else(|err| {
                     status_err!("failed to load server config: {}", err);
                     std::process::exit(1)
                 });
 
-            info!("listening on {}", server_config.address);
-            tonic::transport::Server::builder()
+            if let Err(err) = tonic::transport::Server::builder()
                 .tls_config(server_config.tls_config)
                 .unwrap_or_else(|err| {
                     panic!("{:?}", err);
@@ -46,7 +45,11 @@ impl Runnable for SingleSignerCmd {
                 .add_service(proto_descriptor_service)
                 .serve(server_config.address)
                 .await
-                .unwrap();
+            {
+                status_err!("server error: {}", err);
+                std::process::exit(1)
+            }
+            info!("listening on {}", server_config.address);
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
@@ -59,10 +62,7 @@ impl config::Override<StewardConfig> for SingleSignerCmd {
     // Process the given command line options, overriding settings from
     // a configuration file using explicit flags taken from command-line
     // arguments.
-    fn override_config(
-        &self,
-        config: StewardConfig,
-    ) -> Result<StewardConfig, FrameworkError> {
+    fn override_config(&self, config: StewardConfig) -> Result<StewardConfig, FrameworkError> {
         Ok(config)
     }
 }

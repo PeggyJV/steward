@@ -29,7 +29,7 @@ impl Runnable for CosmosSignerCmd {
                 .build()
                 .unwrap_or_else(|err| {
                     status_err!("failed to build descriptor service: {}", err);
-                    std::process::exit(1);
+                    std::process::exit(1)
                 });
 
             let server_config = server::load_server_config(&config)
@@ -40,7 +40,7 @@ impl Runnable for CosmosSignerCmd {
                 });
 
             info!("listening on {}", server_config.address);
-            tonic::transport::Server::builder()
+            if let Err(err) = tonic::transport::Server::builder()
                 .tls_config(server_config.tls_config)
                 .unwrap_or_else(|err| {
                     panic!("{:?}", err);
@@ -51,11 +51,14 @@ impl Runnable for CosmosSignerCmd {
                 .add_service(proto_descriptor_service)
                 .serve(server_config.address)
                 .await
-                .unwrap();
+            {
+                status_err!("server error: {}", err);
+                std::process::exit(1)
+            }
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
-            std::process::exit(1);
+            std::process::exit(1)
         });
     }
 }
@@ -64,10 +67,7 @@ impl config::Override<StewardConfig> for CosmosSignerCmd {
     // Process the given command line options, overriding settings from
     // a configuration file using explicit flags taken from command-line
     // arguments.
-    fn override_config(
-        &self,
-        config: StewardConfig,
-    ) -> Result<StewardConfig, FrameworkError> {
+    fn override_config(&self, config: StewardConfig) -> Result<StewardConfig, FrameworkError> {
         Ok(config)
     }
 }
