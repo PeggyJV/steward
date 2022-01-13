@@ -5,7 +5,7 @@
 use crate::{
     application::APP,
     cellars::uniswapv3::UniswapV3CellarAllocator,
-    config::CellarRebalancerConfig,
+    config::StewardConfig,
     prelude::*,
     server::{self, DEFAULT_STEWARD_PORT},
 };
@@ -32,23 +32,16 @@ impl Runnable for CosmosSignerCmd {
                     std::process::exit(1);
                 });
 
-            // Configure TLS
-            let tls_config = server::load_server_config(&config)
+            let server_config = server::load_server_config(&config)
                 .await
                 .unwrap_or_else(|err| {
-                    status_err!("failed to load TLS config: {}", err);
+                    status_err!("failed to load server config: {}", err);
                     std::process::exit(1)
                 });
 
-            // run it
-            let port = match config.server.port {
-                Some(port) => port,
-                None => DEFAULT_STEWARD_PORT,
-            };
-            let addr = ([127, 0, 0, 1], port).into();
-            info!("listening on {}", addr);
+            info!("listening on {}", server_config.address);
             tonic::transport::Server::builder()
-                .tls_config(tls_config)
+                .tls_config(server_config.tls_config)
                 .unwrap_or_else(|err| {
                     panic!("{:?}", err);
                 })
@@ -56,7 +49,7 @@ impl Runnable for CosmosSignerCmd {
                     UniswapV3CellarAllocator,
                 ))
                 .add_service(proto_descriptor_service)
-                .serve(addr)
+                .serve(server_config.address)
                 .await
                 .unwrap();
         })
@@ -67,14 +60,14 @@ impl Runnable for CosmosSignerCmd {
     }
 }
 
-impl config::Override<CellarRebalancerConfig> for CosmosSignerCmd {
+impl config::Override<StewardConfig> for CosmosSignerCmd {
     // Process the given command line options, overriding settings from
     // a configuration file using explicit flags taken from command-line
     // arguments.
     fn override_config(
         &self,
-        config: CellarRebalancerConfig,
-    ) -> Result<CellarRebalancerConfig, FrameworkError> {
+        config: StewardConfig,
+    ) -> Result<StewardConfig, FrameworkError> {
         Ok(config)
     }
 }

@@ -34,7 +34,7 @@ use self::{
     transfer::TransferCmd,
 };
 
-use crate::config::CellarRebalancerConfig;
+use crate::config::StewardConfig;
 use abscissa_core::{Clap, Command, Configurable, FrameworkError, Runnable};
 use std::path::PathBuf;
 
@@ -91,7 +91,7 @@ impl Runnable for EntryPoint {
 }
 
 /// This trait allows you to define how application configuration is loaded.
-impl Configurable<CellarRebalancerConfig> for EntryPoint {
+impl Configurable<StewardConfig> for EntryPoint {
     /// Location of the configuration file
     fn config_path(&self) -> Option<PathBuf> {
         // Check if the config file exists, and if it does not, ignore it.
@@ -117,8 +117,8 @@ impl Configurable<CellarRebalancerConfig> for EntryPoint {
     /// settings from command-line options.
     fn process_config(
         &self,
-        config: CellarRebalancerConfig,
-    ) -> Result<CellarRebalancerConfig, FrameworkError> {
+        config: StewardConfig,
+    ) -> Result<StewardConfig, FrameworkError> {
         match &self.cmd {
             _ => Ok(config),
         }

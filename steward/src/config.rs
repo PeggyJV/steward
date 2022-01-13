@@ -13,7 +13,7 @@ use std::{net::SocketAddr, path::Path, time::Duration};
 /// CellarRebalancer Configuration
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields)]
-pub struct CellarRebalancerConfig {
+pub struct StewardConfig {
     pub keystore: String,
     pub server: ServerSection,
     pub gravity: GravitySection,
@@ -25,7 +25,7 @@ pub struct CellarRebalancerConfig {
     pub mongo: MongoSection,
 }
 
-impl CellarRebalancerConfig {
+impl StewardConfig {
     fn load_secret_key(&self, name: String) -> k256::elliptic_curve::SecretKey<k256::Secp256k1> {
         let keystore = Path::new(&self.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
@@ -54,7 +54,7 @@ impl CellarRebalancerConfig {
 ///
 /// Note: if your needs are as simple as below, you can
 /// use `#[derive(Default)]` on CellarRebalancerConfig instead.
-impl Default for CellarRebalancerConfig {
+impl Default for StewardConfig {
     fn default() -> Self {
         Self {
             keystore: "/tmp/keystore".to_owned(),
@@ -70,23 +70,13 @@ impl Default for CellarRebalancerConfig {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ServerSection {
+    pub address: Option<String>,
     pub client_ca_cert_path: Option<String>,
     pub port: Option<u16>,
     pub server_cert_path: String,
     pub server_key_path: String,
-}
-
-impl Default for ServerSection {
-    fn default() -> Self {
-        Self {
-            client_ca_cert_path: Some("".to_string()),
-            server_cert_path: "".to_string(),
-            server_key_path: "".to_string(),
-            port: Some(DEFAULT_STEWARD_PORT),
-        }
-    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
