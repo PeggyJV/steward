@@ -22,7 +22,6 @@ pub struct StewardConfig {
     pub metrics: MetricsSection,
     pub cellars: Vec<CellarConfig>,
     pub keys: KeysConfig,
-    pub mongo: MongoSection,
 }
 
 impl StewardConfig {
@@ -65,7 +64,6 @@ impl Default for StewardConfig {
             metrics: MetricsSection::default(),
             cellars: vec![CellarConfig::default()],
             keys: KeysConfig::default(),
-            mongo: MongoSection::default(),
         }
     }
 }
@@ -79,18 +77,6 @@ pub struct ServerSection {
     pub server_key_path: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct MongoSection {
-    pub host: String,
-}
-
-impl Default for MongoSection {
-    fn default() -> Self {
-        Self {
-            host: "mongodb://localhost:27017/".to_string(),
-        }
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct KeysConfig {
@@ -121,7 +107,6 @@ pub struct CellarConfig {
     pub pool_address: ethers::types::H160,
     pub weight_factor: u32,
     pub max_gas_price_gwei: u32,
-    pub pair_database: String,
     pub token_0: TokenInfo,
     pub token_1: TokenInfo,
     pub duration: Duration,
@@ -140,7 +125,6 @@ impl Default for CellarConfig {
             duration: Duration::from_secs(60),
             token_0: TokenInfo::default(),
             token_1: TokenInfo::default(),
-            pair_database: "MONGODB".to_string(),
         }
     }
 }
