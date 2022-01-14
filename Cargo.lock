@@ -137,8 +137,8 @@ dependencies = [
  "log",
  "openssl",
  "tokio-openssl 0.4.0",
- "trust-dns-proto 0.19.7",
- "trust-dns-resolver 0.19.7",
+ "trust-dns-proto",
+ "trust-dns-resolver",
 ]
 
 [[package]]
@@ -1488,12 +1488,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "data-encoding"
-version = "2.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ee2393c4a91429dffb4bedf19f4d6abf27d8a732c8ce4980305d782e5426d57"
-
-[[package]]
 name = "deep_space"
 version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1563,17 +1557,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6919815d73839e7ad218de758883aae3a257ba6759ce7a9992501efbb53d705c"
 dependencies = [
  "const-oid 0.7.1",
-]
-
-[[package]]
-name = "derivative"
-version = "2.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fcc3dd5e9e9c0b295d6e1e4d811fb6f157d5ffd784b8d202fc62eac8035a770b"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
 ]
 
 [[package]]
@@ -1998,7 +1981,7 @@ dependencies = [
  "glob",
  "hex",
  "home",
- "md-5 0.10.0",
+ "md-5",
  "num_cpus",
  "once_cell",
  "regex",
@@ -2996,17 +2979,6 @@ checksum = "a3e378b66a060d48947b590737b30a1be76706c8dd7b8ba0f2fe3989c68a853f"
 
 [[package]]
 name = "md-5"
-version = "0.9.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7b5a279bb9607f9f53c22d496eade00d138d1bdcccd07d74650387cf94942a15"
-dependencies = [
- "block-buffer 0.9.0",
- "digest 0.9.0",
- "opaque-debug 0.3.0",
-]
-
-[[package]]
-name = "md-5"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e6a38fc55c8bbc10058782919516f88826e70320db6d206aebc49611d24216ae"
@@ -3098,53 +3070,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b9f1c5b025cda876f66ef43a113f91ebc9f4ccef34843000e0adf6ebbab84e21"
 dependencies = [
  "winapi 0.3.9",
-]
-
-[[package]]
-name = "mongodb"
-version = "2.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a2ac4ac0fb3a154a59e47cf202e41060e8af93d16b84434cea0755a845da9bd1"
-dependencies = [
- "async-trait",
- "base64 0.13.0",
- "bitflags",
- "bson",
- "chrono",
- "derivative",
- "futures-core",
- "futures-executor",
- "futures-io",
- "futures-util",
- "hex",
- "hmac 0.11.0",
- "lazy_static",
- "md-5 0.9.1",
- "os_info",
- "pbkdf2 0.8.0",
- "percent-encoding",
- "rand 0.8.4",
- "rustls 0.19.1",
- "serde",
- "serde_bytes",
- "serde_with",
- "sha-1",
- "sha2 0.9.8",
- "socket2 0.4.2",
- "stringprep",
- "strsim",
- "take_mut",
- "thiserror",
- "tokio 1.14.0",
- "tokio-rustls 0.22.0",
- "tokio-util 0.6.9",
- "trust-dns-proto 0.20.3",
- "trust-dns-resolver 0.20.3",
- "typed-builder",
- "uuid",
- "version_check",
- "webpki 0.21.4",
- "webpki-roots",
 ]
 
 [[package]]
@@ -3463,16 +3388,6 @@ dependencies = [
  "tokio 1.14.0",
  "tonic 0.4.3",
  "web30",
-]
-
-[[package]]
-name = "os_info"
-version = "3.0.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e5501659840950e918d046ad97ebe9702cbb4ec0097e47dbd27abf7692223181"
-dependencies = [
- "log",
- "winapi 0.3.9",
 ]
 
 [[package]]
@@ -4329,12 +4244,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rustversion"
-version = "1.0.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "61b3909d758bb75c79f23d4736fac9433868679d3ad2ea7a61e3c25cfda9a088"
-
-[[package]]
 name = "ryu"
 version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4580,29 +4489,6 @@ dependencies = [
  "itoa",
  "ryu",
  "serde",
-]
-
-[[package]]
-name = "serde_with"
-version = "1.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ad6056b4cb69b6e43e3a0f055def223380baecc99da683884f205bf347f7c4b3"
-dependencies = [
- "rustversion",
- "serde",
- "serde_with_macros",
-]
-
-[[package]]
-name = "serde_with_macros"
-version = "1.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "12e47be9471c72889ebafb5e14d5ff930d89ae7a67bbdb5f8abb564f845a927e"
-dependencies = [
- "darling",
- "proc-macro2",
- "quote",
- "syn",
 ]
 
 [[package]]
@@ -4868,7 +4754,6 @@ dependencies = [
  "iqhttp",
  "k256",
  "lazy_static",
- "mongodb",
  "num-bigint 0.4.3",
  "num-rational 0.4.0",
  "num-traits",
@@ -4940,16 +4825,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "stringprep"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8ee348cb74b87454fff4b551cbf727025810a004f88aeacae7f85b87f4e9a1c1"
-dependencies = [
- "unicode-bidi",
- "unicode-normalization",
-]
-
-[[package]]
 name = "strsim"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4992,12 +4867,6 @@ dependencies = [
  "syn",
  "unicode-xid",
 ]
-
-[[package]]
-name = "take_mut"
-version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f764005d11ee5f36500a149ace24e00e3da98b0158b3e2d53a7495660d3f4d60"
 
 [[package]]
 name = "tap"
@@ -5625,31 +5494,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "trust-dns-proto"
-version = "0.20.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ad0d7f5db438199a6e2609debe3f69f808d074e0a2888ee0bccb45fe234d03f4"
-dependencies = [
- "async-trait",
- "cfg-if 1.0.0",
- "data-encoding",
- "enum-as-inner",
- "futures-channel",
- "futures-io",
- "futures-util",
- "idna",
- "ipnet",
- "lazy_static",
- "log",
- "rand 0.8.4",
- "smallvec",
- "thiserror",
- "tinyvec",
- "tokio 1.14.0",
- "url",
-]
-
-[[package]]
 name = "trust-dns-resolver"
 version = "0.19.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5665,27 +5509,7 @@ dependencies = [
  "smallvec",
  "thiserror",
  "tokio 0.2.25",
- "trust-dns-proto 0.19.7",
-]
-
-[[package]]
-name = "trust-dns-resolver"
-version = "0.20.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f6ad17b608a64bd0735e67bde16b0636f8aa8591f831a25d18443ed00a699770"
-dependencies = [
- "cfg-if 1.0.0",
- "futures-util",
- "ipconfig",
- "lazy_static",
- "log",
- "lru-cache",
- "parking_lot",
- "resolv-conf",
- "smallvec",
- "thiserror",
- "tokio 1.14.0",
- "trust-dns-proto 0.20.3",
+ "trust-dns-proto",
 ]
 
 [[package]]
@@ -5699,17 +5523,6 @@ name = "typeable"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1410f6f91f21d1612654e7cc69193b0334f909dcf2c790c4826254fbb86f8887"
-
-[[package]]
-name = "typed-builder"
-version = "0.9.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a46ee5bd706ff79131be9c94e7edcb82b703c487766a114434e5790361cf08c5"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
 
 [[package]]
 name = "typenum"
