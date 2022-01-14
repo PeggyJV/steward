@@ -5,9 +5,9 @@ import (
 )
 
 type steward struct {
-	chain        *chain
-	index        int
-	keystorePath string
+	chain    *chain
+	index    int
+	mnemonic string
 }
 
 func (s *steward) configBind() string {

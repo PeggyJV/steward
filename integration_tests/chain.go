@@ -179,6 +179,16 @@ func (c *chain) createAndInitOrchestratorsWithMnemonics(mnemonics []string) erro
 	return nil
 }
 
+func (c *chain) createAndInitStewardsWithMnemonics(mnemonics []string) {
+	for i, mnemonic := range mnemonics {
+		c.stewards = append(c.stewards, &steward{
+			index:    i,
+			chain:    c,
+			mnemonic: mnemonic,
+		})
+	}
+}
+
 func (c *chain) createValidator(index int) *validator {
 	return &validator{
 		chain:   c,
@@ -189,13 +199,6 @@ func (c *chain) createValidator(index int) *validator {
 
 func (c *chain) createOrchestrator(index int) *orchestrator {
 	return &orchestrator{
-		index: index,
-	}
-}
-
-func (c *chain) createSteward(index int) *steward {
-	return &steward{
-		chain: c,
 		index: index,
 	}
 }

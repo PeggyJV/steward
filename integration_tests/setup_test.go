@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"math/big"
 	"os"
 	"path"
@@ -103,12 +102,10 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.dockerNetwork, err = s.dockerPool.CreateNetwork(fmt.Sprintf("%s-testnet", s.chain.id))
 	s.Require().NoError(err)
 
-	s.initStewardConfigs(mnemonics)
-
 	// container infrastructure
-	s.runEthContainer()
-	s.runValidators()
-	s.runOrchestrators()
+	// s.runEthContainer()
+	// s.runValidators()
+	// s.runOrchestrators()
 	s.runStewards()
 }
 
@@ -171,6 +168,7 @@ func (s *IntegrationTestSuite) initNodes(nodeCount int) {
 func (s *IntegrationTestSuite) initNodesWithMnemonics(mnemonics ...string) {
 	s.Require().NoError(s.chain.createAndInitValidatorsWithMnemonics(mnemonics))
 	s.Require().NoError(s.chain.createAndInitOrchestratorsWithMnemonics(mnemonics))
+	s.chain.createAndInitStewardsWithMnemonics(mnemonics)
 
 	//initialize a genesis file for the first validator
 	val0ConfigDir := s.chain.validators[0].configDir()
@@ -436,85 +434,6 @@ func (s *IntegrationTestSuite) initValidatorConfigs() {
 
 		srvconfig.WriteConfigFile(appCfgPath, appConfig)
 	}
-}
-
-func (s *IntegrationTestSuite) initStewardConfigs(mnemonics []string) {
-	s.Require().NoError(s.buildStewardImage())
-
-	for i, o := range s.chain.stewards {
-		mnemonic := mnemonics[i]
-		steward := o
-		steward.keystorePath = "/home/steward/keystore/"
-		stewardCfg := fmt.Sprintf(`keystore = %s
-
-[cosmos]
-key_derivation_path = "m/44'/118'/0'/0/0"
-
-[server]
-server_cert_path = "tls/server/test_server.crt"
-server_key_path = "tls/server/test_server_key_pkcs8.pem"
-`,
-			steward.keystorePath,
-		)
-		stewardCfgPath := steward.configDir()
-		s.Require().NoError(os.MkdirAll(stewardCfgPath, 0755))
-
-		filePath := path.Join(stewardCfgPath, "config.toml")
-		s.Require().NoError(writeFile(filePath, []byte(stewardCfg)))
-
-		s.runStewardInitJob(steward, mnemonic)
-	}
-}
-
-func (s *IntegrationTestSuite) buildStewardImage() error {
-	return s.dockerPool.Client.BuildImage(docker.BuildImageOptions{
-		Dockerfile:   "Dockerfile",
-		Name:         "steward:prebuilt",
-		OutputStream: io.Writer(),
-	})
-}
-
-func (s *IntegrationTestSuite) runStewardInitJob(steward *steward, mnemonic string) {
-	ctx := context.Background()
-	command := []string{
-		"steward", "-c", "config.toml",
-		"keys",
-		"cosmos-keys-cmd",
-		"recover",
-		"steward_key",
-		mnemonic,
-	}
-	container := RandLowerCaseLetterString(10)
-
-	cont, err := s.dockerPool.Client.CreateContainer(docker.CreateContainerOptions{
-		Name: container,
-		Config: &docker.Config{
-			User:         GetDockerUserString(),
-			Hostname:     container,
-			ExposedPorts: map[docker.Port]struct{}{},
-			DNS:          []string{},
-			Image:        "steward:test",
-			Cmd:          command,
-			Labels:       map[string]string{},
-		},
-		HostConfig: &docker.HostConfig{
-			Binds:           []string{steward.configBind()},
-			PublishAllPorts: true,
-			AutoRemove:      true,
-		},
-		NetworkingConfig: &docker.NetworkingConfig{
-			EndpointsConfig: map[string]*docker.EndpointConfig{},
-		},
-		Context: nil,
-	})
-	s.Require().NoError(err)
-
-	err = s.dockerPool.Client.StartContainer(cont.ID, nil)
-	s.Require().NoError(err)
-
-	code, err := s.dockerPool.Client.WaitContainerWithContext(cont.ID, ctx)
-	s.Require().NoError(err)
-	s.T().Logf("init container exited with code %d", code)
 }
 
 func (s *IntegrationTestSuite) runHardhatContainer() {
@@ -793,22 +712,77 @@ msg_batch_size = 5
 
 func (s *IntegrationTestSuite) runStewards() {
 	s.T().Log("starting steward containers...")
-
 	s.stewResources = make([]*dockertest.Resource, len(s.chain.stewards))
-	for i, stew := range s.chain.stewards {
+	for i, steward := range s.chain.stewards {
+		stewardCfg := `keystore = "/root/steward/keystore/"
+
+[cosmos]
+key_derivation_path = "m/44'/118'/0'/0/0"
+
+[server]
+client_ca_cert_path = "root/steward/test_client_ca.crt"
+server_cert_path = "root/steward/test_server.crt"
+server_key_path = "root/steward/test_server_key_pkcs8.pem"
+`
+
+		stewardCfgPath := steward.configDir()
+		s.Require().NoError(os.MkdirAll(stewardCfgPath, 0755))
+
+		filePath := path.Join(stewardCfgPath, "config.toml")
+		s.Require().NoError(writeFile(filePath, []byte(stewardCfg)))
+
+		err := copyFile(
+			filepath.Join("integration_tests", "tls", "client", "test_client_ca.crt"),
+			filepath.Join(stewardCfgPath, "test_client_ca.crt"),
+		)
+		s.Require().NoError(err)
+
+		err = copyFile(
+			filepath.Join("integration_tests", "tls", "server", "test_server.crt"),
+			filepath.Join(stewardCfgPath, "test_server.crt"),
+		)
+		s.Require().NoError(err)
+
+		err = copyFile(
+			filepath.Join("integration_tests", "tls", "server", "test_server_key_pkcs8.pem"),
+			filepath.Join(stewardCfgPath, "test_server_key_pkcs8.pem"),
+		)
+		s.Require().NoError(err)
+
+		// We must first populate the steward's keystore prior to starting
+		// the steward cosmos-signer process. The steward_bootstrap.sh script
+		// provisions this.
+		//
+		// NOTE: If the Docker build changes, the script might have to be modified
+		// as it relies on busybox.
+		err = copyFile(
+			filepath.Join("integration_tests", "steward_bootstrap.sh"),
+			filepath.Join(stewardCfgPath, "steward_bootstrap.sh"),
+		)
+		s.Require().NoError(err)
+
 		runOpts := &dockertest.RunOptions{
-			Name:       fmt.Sprintf("steward%d", stew.index),
+			Name:       steward.instanceName(),
 			NetworkID:  s.dockerNetwork.Network.ID,
 			Repository: "steward",
-			Tag:        "test",
-			Entrypoint: []string{"steward", "-c config.toml", "cosmos-signer"},
-		}
-
-		if stew.index == 0 {
-			runOpts.PortBindings = map[docker.Port][]docker.PortBinding{
-				"5734/tcp": {{HostIP: "", HostPort: strconv.Itoa(5734 + stew.index)}},
-			}
-			runOpts.ExposedPorts = []string{"5734/tcp"}
+			Tag:        "prebuilt",
+			Mounts: []string{
+				fmt.Sprintf("%s/:/root/steward", stewardCfgPath),
+			},
+			Env: []string{
+				fmt.Sprintf("MNEMONIC=%s", steward.mnemonic),
+				"RUST_BACKTRACE=full",
+				"RUST_LOG=debug",
+			},
+			Entrypoint: []string{
+				"sh",
+				"-c",
+				"chmod +x /root/steward/steward_bootstrap.sh && /root/steward/steward_bootstrap.sh",
+			},
+			PortBindings: map[docker.Port][]docker.PortBinding{
+				"5734/tcp": {{HostIP: "", HostPort: strconv.Itoa(5734 + steward.index)}},
+			},
+			ExposedPorts: []string{"5734/tcp"},
 		}
 
 		resource, err := s.dockerPool.RunWithOptions(runOpts, noRestart)
@@ -818,45 +792,7 @@ func (s *IntegrationTestSuite) runStewards() {
 		s.T().Logf("started steward container: %s", resource.Container.ID)
 	}
 
-	rpcClient, err := rpchttp.New("tcp://localhost:26657", "/websocket")
-	s.Require().NoError(err)
-
-	s.Require().Eventually(
-		func() bool {
-			status, err := rpcClient.Status(context.Background())
-			if err != nil {
-				s.T().Logf("can't get container status: %s", err.Error())
-			}
-			if status == nil {
-				container, ok := s.dockerPool.ContainerByName("sommelier0")
-				if !ok {
-					s.T().Logf("no container by 'sommelier0'")
-				} else {
-					if container.Container.State.Status == "exited" {
-						s.Fail("validators exited", "state: %s logs: \n%s", container.Container.State.String(), s.logsByContainerID(container.Container.ID))
-						s.T().FailNow()
-					}
-					s.T().Logf("state: %v, health: %v", container.Container.State.Status, container.Container.State.Health)
-				}
-				return false
-			}
-
-			// let the node produce a few blocks
-			if status.SyncInfo.CatchingUp {
-				s.T().Logf("catching up: %t", status.SyncInfo.CatchingUp)
-				return false
-			}
-			if status.SyncInfo.LatestBlockHeight < 2 {
-				s.T().Logf("block height %d", status.SyncInfo.LatestBlockHeight)
-				return false
-			}
-
-			return true
-		},
-		10*time.Minute,
-		15*time.Second,
-		"validator node failed to produce blocks",
-	)
+	// Need to figure out a way to test that steward is healthy before continuing
 }
 
 func noRestart(config *docker.HostConfig) {
