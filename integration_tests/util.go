@@ -1,7 +1,12 @@
 package integration_tests
 
 import (
+	"crypto/rand"
 	"fmt"
+	"math/big"
+	"os"
+	"runtime"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/codec/unknownproto"
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
@@ -44,4 +49,26 @@ func decodeTx(txBytes []byte) (*sdktx.Tx, error) {
 		AuthInfo:   &authInfo,
 		Signatures: raw.Signatures,
 	}, nil
+}
+
+func GetDockerUserString() string {
+	uid := os.Getuid()
+	var usr string
+	userOS := runtime.GOOS
+	if userOS == "darwin" {
+		usr = ""
+	} else {
+		usr = fmt.Sprintf("%d:%d", uid, uid)
+	}
+	return usr
+}
+
+func RandLowerCaseLetterString(length int) string {
+	chars := []rune("abcdefghijklmnopqrstuvwxyz")
+	var b strings.Builder
+	for i := 0; i < length; i++ {
+		i, _ := rand.Int(rand.Reader, big.NewInt(int64(len(chars))))
+		b.WriteRune(chars[i.Int64()])
+	}
+	return b.String()
 }

@@ -62,6 +62,7 @@ type chain struct {
 	id            string
 	validators    []*validator
 	orchestrators []*orchestrator
+	stewards      []*steward
 }
 
 func newChain() (*chain, error) {
@@ -188,6 +189,13 @@ func (c *chain) createValidator(index int) *validator {
 
 func (c *chain) createOrchestrator(index int) *orchestrator {
 	return &orchestrator{
+		index: index,
+	}
+}
+
+func (c *chain) createSteward(index int) *steward {
+	return &steward{
+		chain: c,
 		index: index,
 	}
 }

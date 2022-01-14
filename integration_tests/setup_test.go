@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"math/big"
 	"os"
 	"path"
@@ -101,6 +102,8 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	s.dockerNetwork, err = s.dockerPool.CreateNetwork(fmt.Sprintf("%s-testnet", s.chain.id))
 	s.Require().NoError(err)
+
+	s.initStewardConfigs(mnemonics)
 
 	// container infrastructure
 	s.runEthContainer()
@@ -435,6 +438,85 @@ func (s *IntegrationTestSuite) initValidatorConfigs() {
 	}
 }
 
+func (s *IntegrationTestSuite) initStewardConfigs(mnemonics []string) {
+	s.Require().NoError(s.buildStewardImage())
+
+	for i, o := range s.chain.stewards {
+		mnemonic := mnemonics[i]
+		steward := o
+		steward.keystorePath = "/home/steward/keystore/"
+		stewardCfg := fmt.Sprintf(`keystore = %s
+
+[cosmos]
+key_derivation_path = "m/44'/118'/0'/0/0"
+
+[server]
+server_cert_path = "tls/server/test_server.crt"
+server_key_path = "tls/server/test_server_key_pkcs8.pem"
+`,
+			steward.keystorePath,
+		)
+		stewardCfgPath := steward.configDir()
+		s.Require().NoError(os.MkdirAll(stewardCfgPath, 0755))
+
+		filePath := path.Join(stewardCfgPath, "config.toml")
+		s.Require().NoError(writeFile(filePath, []byte(stewardCfg)))
+
+		s.runStewardInitJob(steward, mnemonic)
+	}
+}
+
+func (s *IntegrationTestSuite) buildStewardImage() error {
+	return s.dockerPool.Client.BuildImage(docker.BuildImageOptions{
+		Dockerfile:   "Dockerfile",
+		Name:         "steward:prebuilt",
+		OutputStream: io.Writer(),
+	})
+}
+
+func (s *IntegrationTestSuite) runStewardInitJob(steward *steward, mnemonic string) {
+	ctx := context.Background()
+	command := []string{
+		"steward", "-c", "config.toml",
+		"keys",
+		"cosmos-keys-cmd",
+		"recover",
+		"steward_key",
+		mnemonic,
+	}
+	container := RandLowerCaseLetterString(10)
+
+	cont, err := s.dockerPool.Client.CreateContainer(docker.CreateContainerOptions{
+		Name: container,
+		Config: &docker.Config{
+			User:         GetDockerUserString(),
+			Hostname:     container,
+			ExposedPorts: map[docker.Port]struct{}{},
+			DNS:          []string{},
+			Image:        "steward:test",
+			Cmd:          command,
+			Labels:       map[string]string{},
+		},
+		HostConfig: &docker.HostConfig{
+			Binds:           []string{steward.configBind()},
+			PublishAllPorts: true,
+			AutoRemove:      true,
+		},
+		NetworkingConfig: &docker.NetworkingConfig{
+			EndpointsConfig: map[string]*docker.EndpointConfig{},
+		},
+		Context: nil,
+	})
+	s.Require().NoError(err)
+
+	err = s.dockerPool.Client.StartContainer(cont.ID, nil)
+	s.Require().NoError(err)
+
+	code, err := s.dockerPool.Client.WaitContainerWithContext(cont.ID, ctx)
+	s.Require().NoError(err)
+	s.T().Logf("init container exited with code %d", code)
+}
+
 func (s *IntegrationTestSuite) runHardhatContainer() {
 	s.T().Log("starting Ethereum Hardhat container...")
 
@@ -715,16 +797,16 @@ func (s *IntegrationTestSuite) runStewards() {
 	s.stewResources = make([]*dockertest.Resource, len(s.chain.stewards))
 	for i, stew := range s.chain.stewards {
 		runOpts := &dockertest.RunOptions{
-			Name:       fmt.Sprintf("steward", stew.index),
+			Name:       fmt.Sprintf("steward%d", stew.index),
 			NetworkID:  s.dockerNetwork.Network.ID,
 			Repository: "steward",
-			Tag:        "prebuilt",
+			Tag:        "test",
 			Entrypoint: []string{"steward", "-c config.toml", "cosmos-signer"},
 		}
 
 		if stew.index == 0 {
 			runOpts.PortBindings = map[docker.Port][]docker.PortBinding{
-				"5734/tcp": {{HostIP: "", HostPort: "5734"}},
+				"5734/tcp": {{HostIP: "", HostPort: strconv.Itoa(5734 + stew.index)}},
 			}
 			runOpts.ExposedPorts = []string{"5734/tcp"}
 		}

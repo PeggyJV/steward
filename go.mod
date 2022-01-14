@@ -13,6 +13,8 @@ require (
 	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
 	github.com/tendermint/tendermint v0.34.14
+	google.golang.org/grpc v1.42.0
+	google.golang.org/protobuf v1.27.1
 )
 
 replace google.golang.org/grpc => google.golang.org/grpc v1.33.2

@@ -2,17 +2,22 @@ package integration_tests
 
 import (
 	"fmt"
-
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 )
 
 type steward struct {
-	index    int
-	mnemonic string
-	keyInfo  keyring.Info
-	keyring  *keyring.Keyring
+	chain        *chain
+	index        int
+	keystorePath string
 }
 
-func (o *steward) instanceName() string {
-	return fmt.Sprintf("orchestrator%d", o.index)
+func (s *steward) configBind() string {
+	return fmt.Sprintf("%s:%s", s.configDir(), "/home/steward")
+}
+
+func (s *steward) configDir() string {
+	return fmt.Sprintf("%s/%s", s.chain.configDir(), s.instanceName())
+}
+
+func (s *steward) instanceName() string {
+	return fmt.Sprintf("steward%d", s.index)
 }

@@ -2,17 +2,16 @@ package integration_tests
 
 import (
 	"context"
+	"fmt"
 	"time"
 
-	proto "./uniswapv3_cellar"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/openzipkin/zipkin-go/middleware/grpc"
 	"github.com/peggyjv/sommelier/x/allocation/types"
+	"google.golang.org/grpc"
 )
 
 const (
-	addr = "localhost:5734"
+	port = 5734
 )
 
 func (s *IntegrationTestSuite) TestRebalance() {
@@ -54,7 +53,7 @@ func (s *IntegrationTestSuite) TestRebalance() {
 				return false
 			}
 			for _, c := range res.Cellars {
-				if c.Id == commit.Vote.Cellar.Id {
+				if c.Id == hardhatCellar.String() {
 					return true
 				}
 			}
@@ -66,23 +65,24 @@ func (s *IntegrationTestSuite) TestRebalance() {
 		// replace vote period check - sending commits with grpc call to steward
 		s.T().Logf("request rebalance start")
 		s.Require().Eventually(func() bool {
-			conn, err := grpc.Dial(addr, grpc.WithRemoteServiceName)
-			if err != nil {
-				s.T().Fatalf("failed to connect to steward: %v", err)
-			}
-			defer conn.Close()
-			c := proto.NewUniswapV3CellarAllocatorClient(conn)
+			data := []*Position{{UpperPrice: 1000, LowerPrice: 1, Weight: 100}}
+			request := RebalanceRequest{CellarId: "ethereum:0x0000000000000000000000000000000000000000", Data: data}
 
-			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-			defer cancel()
-
-			data := []*proto.Position{&proto.Position{UpperPrice: 1000, LowerPrice: 1, Weight: 100}}
-			request := proto.RebalanceRequest{CellarId: "ethereum:0x0000000000000000000000000000000000000000", Data: data}
-			// figure out hte networking and addressing here
-			for i, val := range s.chain.validators {
-				r, err := c.Rebalance(ctx, &request)
+			for i, steward := range s.chain.stewards {
+				addr := fmt.Sprintf("localhost:%v", port+i)
+				conn, err := grpc.Dial(addr, grpc.WithBlock())
 				if err != nil {
-					s.T().Fatalf("rebalance request error: %v", err)
+					s.T().Fatalf("failed to connect to steward: %v", err)
+				}
+				defer conn.Close()
+				c := NewUniswapV3CellarAllocatorClient(conn)
+
+				ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+				defer cancel()
+
+				_, err = c.Rebalance(ctx, &request)
+				if err != nil {
+					s.T().Fatalf("rebalance request to %s at %s failed: %v", steward.instanceName(), addr, err)
 				}
 			}
 

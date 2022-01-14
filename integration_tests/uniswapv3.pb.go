@@ -4,7 +4,7 @@
 // 	protoc        v3.19.2
 // source: uniswapv3.proto
 
-package uniswapv3_cellar
+package integration_tests
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
