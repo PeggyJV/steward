@@ -1,11 +1,8 @@
-use crate::{error::Error, gas::CellarGas};
+use crate::{error::{Error, ErrorKind}, gas::CellarGas};
 use ethers::prelude::*;
 use std::{fmt, result::Result};
 
 pub(crate) mod uniswapv3;
-
-pub const STEWARD_PORT: u16 = 5734;
-const UNISWAPV3_CELLAR: &str = "uniswapv3";
 
 #[derive(Debug)]
 pub struct CellarId {
@@ -23,12 +20,48 @@ pub async fn get_gas_price() -> Result<U256, Error> {
     CellarGas::etherscan_standard().await.map_err(|e| e.into())
 }
 
-fn parse_cellar_id(cellar_id: &str) -> CellarId {
-    let parts = cellar_id.split_at(cellar_id.chars().position(|c| c == ':').unwrap());
-    let address: H160 = H160::from_slice(parts.1.as_bytes());
+fn parse_cellar_id(cellar_id: &str) -> Result<CellarId, String> {
+    let parts: Vec<&str> = cellar_id.split(':').collect();
+    if parts.len() != 2 {
+        return Err(format!("invalid cellar_id format: {}. proper format is 'chainname:address'", cellar_id).to_string());
+    }
+    // This assumes Ethereum address format for now.
+    let address = match parts[1].parse::<H160>() {
+        Ok(addr) => addr,
+        Err(err) => return Err(format!("error parsing ethereum address: {}", err).to_string()),
+    };
 
-    CellarId {
-        chain: parts.0.to_string(),
+    Ok(CellarId {
+        chain: parts[0].to_string(),
         address: address,
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn invalid_cellar_id_format_errors() {
+        let cellar_id = "thisaintright";
+        let result = parse_cellar_id(cellar_id);
+
+        assert!(result.is_err())
+    }
+
+    #[test]
+    fn invalid_ethereum_address_errors() {
+        let cellar_id = "ethereum:whatever";
+        let result = parse_cellar_id(cellar_id);
+
+        assert!(result.is_err())
+    }
+
+    #[test]
+    fn valid_cellar_id_works() {
+        let cellar_id = "ethereum:0x0000000000000000000000000000000000000000";
+        let result = parse_cellar_id(cellar_id);
+
+        assert!(result.is_ok());
     }
 }

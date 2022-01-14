@@ -20,7 +20,7 @@
 
 use abscissa_core::testing::prelude::*;
 use once_cell::sync::Lazy;
-use steward::config::CellarRebalancerConfig;
+use steward::config::StewardConfig;
 
 /// Executes your application binary via `cargo run`.
 ///
@@ -71,7 +71,7 @@ fn start_with_args() {
 #[test]
 #[ignore]
 fn start_with_config_and_args() {
-    let config = CellarRebalancerConfig::default();
+    let config = StewardConfig::default();
     // config.hello.recipient = "configured recipient".to_owned();
 
     let mut runner = RUNNER.clone();

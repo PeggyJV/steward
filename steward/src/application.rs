@@ -1,6 +1,6 @@
 //! CellarRebalancer Abscissa Application
 
-use crate::{commands::EntryPoint, config::CellarRebalancerConfig};
+use crate::{commands::EntryPoint, config::StewardConfig};
 use abscissa_core::{
     application::{self, AppCell},
     config::{self, CfgCell},
@@ -14,7 +14,7 @@ pub static APP: AppCell<CellarRebalancerApp> = AppCell::new();
 #[derive(Debug)]
 pub struct CellarRebalancerApp {
     /// Application configuration.
-    config: CfgCell<CellarRebalancerConfig>,
+    config: CfgCell<StewardConfig>,
 
     /// Application state.
     state: application::State<Self>,
@@ -38,13 +38,13 @@ impl Application for CellarRebalancerApp {
     type Cmd = EntryPoint;
 
     /// Application configuration.
-    type Cfg = CellarRebalancerConfig;
+    type Cfg = StewardConfig;
 
     /// Paths to resources within the application.
     type Paths = StandardPaths;
 
     /// Accessor for application configuration.
-    fn config(&self) -> config::Reader<CellarRebalancerConfig> {
+    fn config(&self) -> config::Reader<StewardConfig> {
         self.config.read()
     }
 
