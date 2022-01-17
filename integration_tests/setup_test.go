@@ -103,9 +103,9 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.Require().NoError(err)
 
 	// container infrastructure
-	// s.runEthContainer()
-	// s.runValidators()
-	// s.runOrchestrators()
+	s.runEthContainer()
+	s.runValidators()
+	s.runOrchestrators()
 	s.runStewards()
 }
 
@@ -664,7 +664,7 @@ msg_batch_size = 5
 					fmt.Sprintf("ORCH_MNEMONIC=%s", orch.mnemonic),
 					fmt.Sprintf("ETH_PRIV_KEY=%s", val.ethereumKey.privateKey),
 					"RUST_BACKTRACE=full",
-					"RUST_LOG=debug",
+					"RUST_LOG=info,steward::allocation::debug",
 				},
 				Entrypoint: []string{
 					"sh",
@@ -714,16 +714,30 @@ func (s *IntegrationTestSuite) runStewards() {
 	s.T().Log("starting steward containers...")
 	s.stewResources = make([]*dockertest.Resource, len(s.chain.stewards))
 	for i, steward := range s.chain.stewards {
-		stewardCfg := `keystore = "/root/steward/keystore/"
-
-[cosmos]
+		stewardCfg := fmt.Sprintf(`[cosmos]
 key_derivation_path = "m/44'/118'/0'/0/0"
+grpc = "http://%s:9090"
+prefix = "somm"
+msg_batch_size = 5
+gas_adjustment = 1.0
+
+[cosmos.gas_price]
+amount = 1000000000
+denom = "%s"
+
+[keys]
+keystore = "/tmp/keystore"
+rebalancer_key = "steward-key"
 
 [server]
-client_ca_cert_path = "root/steward/test_client_ca.crt"
-server_cert_path = "root/steward/test_server.crt"
-server_key_path = "root/steward/test_server_key_pkcs8.pem"
-`
+address = "0.0.0.0"
+client_ca_cert_path = "/root/steward/test_client_ca.crt"
+server_cert_path = "/root/steward/test_server.crt"
+server_key_path = "/root/steward/test_server_key_pkcs8.pem"
+`,
+			s.valResources[i].Container.Name[1:],
+			testDenom,
+		)
 
 		stewardCfgPath := steward.configDir()
 		s.Require().NoError(os.MkdirAll(stewardCfgPath, 0755))
@@ -770,6 +784,8 @@ server_key_path = "root/steward/test_server_key_pkcs8.pem"
 				fmt.Sprintf("%s/:/root/steward", stewardCfgPath),
 			},
 			Env: []string{
+				"CELLAR_DRY_RUN=false",
+				"ETHERSCAN_API_KEY=W8C9NACKN284HFZCGNZA1CM4UHYZIMI4YN",
 				fmt.Sprintf("MNEMONIC=%s", steward.mnemonic),
 				"RUST_BACKTRACE=full",
 				"RUST_LOG=debug",
@@ -779,6 +795,8 @@ server_key_path = "root/steward/test_server_key_pkcs8.pem"
 				"-c",
 				"chmod +x /root/steward/steward_bootstrap.sh && /root/steward/steward_bootstrap.sh",
 			},
+			// Each steward container will be mapped to host port (5732 + index) since containers
+			// can't share.
 			PortBindings: map[docker.Port][]docker.PortBinding{
 				"5734/tcp": {{HostIP: "", HostPort: strconv.Itoa(5734 + steward.index)}},
 			},
