@@ -107,7 +107,7 @@ impl Runnable for StartCommand {
                 eth_client,
                 grpc,
                 contract_address,
-                gas_price,
+                gas_price.into(),
                 &config.metrics.listen_addr,
                 config.ethereum.gas_price_multiplier,
                 config.ethereum.blocks_to_search,
