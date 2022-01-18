@@ -197,7 +197,7 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
         debug!("parsed cellar_addres: {}", cellar_address);
         tokio::spawn(async move {
             if let Err(err) = allocation::decide_rebalance(tick_ranges, cellar_address).await {
-                error!("error occurred during uniswapv3 cellar allocation: {:?}", err);
+                error!("error occurred during uniswapv3 cellar allocation: {}", err);
             }
         });
         Ok(tonic::Response::new(RebalanceResponse {}))

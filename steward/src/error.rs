@@ -1,7 +1,7 @@
 //! Error types
 
 use abscissa_core::error::{BoxError, Context};
-use deep_space::error::{CosmosGrpcError, PrivateKeyError};
+use deep_space::error::{CosmosGrpcError, PrivateKeyError, AddressError};
 use ethers::{contract::ContractError, middleware::gas_oracle::GasOracleError, prelude::*};
 use std::{
     fmt::{self, Display},
@@ -78,6 +78,12 @@ impl Display for Error {
 impl std::error::Error for Error {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         self.0.source()
+    }
+}
+
+impl From<AddressError> for Error {
+    fn from(err: AddressError) -> Error {
+        ErrorKind::KeysError.context(err).into()
     }
 }
 

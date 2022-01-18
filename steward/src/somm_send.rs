@@ -25,34 +25,34 @@ pub const MEMO: &str = "Sent using Somm Orchestrator";
 
 pub async fn send_precommit(
     contact: &Contact,
-    delegate_cosmos_address: Address,
-    cosmos_key: CosmosPrivateKey,
+    delegate_address: String,
+    delegate_key: CosmosPrivateKey,
     fee: Coin,
     allocation_precommit: Vec<somm::AllocationPrecommit>,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let msg = somm::MsgAllocationPrecommit {
         precommit: allocation_precommit,
-        signer: delegate_cosmos_address.to_bech32("somm").unwrap(),
+        signer: delegate_address,
     };
 
     let msg = Msg::new("/allocation.v1.MsgAllocationPrecommit", msg);
-    __send_messages(contact, cosmos_key, fee, vec![msg]).await
+    __send_messages(contact, delegate_key, fee, vec![msg]).await
 }
 
 pub async fn send_allocation(
     contact: &Contact,
-    delegate_cosmos_address: Address,
-    cosmos_key: CosmosPrivateKey,
+    delegate_address: String,
+    delegate_key: CosmosPrivateKey,
     fee: Coin,
     allocation_commit: Vec<somm::Allocation>,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let msg = somm::MsgAllocationCommit {
         commit: allocation_commit,
-        signer: delegate_cosmos_address.to_bech32("somm").unwrap(),
+        signer: delegate_address,
     };
 
     let msg = Msg::new("/allocation.v1.MsgAllocationCommit", msg);
-    __send_messages(contact, cosmos_key, fee, vec![msg]).await
+    __send_messages(contact, delegate_key, fee, vec![msg]).await
 }
 
 async fn __send_messages(
