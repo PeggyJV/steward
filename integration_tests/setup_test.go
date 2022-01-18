@@ -715,7 +715,7 @@ func (s *IntegrationTestSuite) runStewards() {
 	s.stewResources = make([]*dockertest.Resource, len(s.chain.stewards))
 	for i, steward := range s.chain.stewards {
 		stewardCfg := fmt.Sprintf(`[cosmos]
-key_derivation_path = "m/44'/118'/0'/0/0"
+key_derivation_path = "m/44'/118'/1'/0/0"
 grpc = "http://%s:9090"
 prefix = "somm"
 msg_batch_size = 5
