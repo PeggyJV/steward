@@ -436,11 +436,6 @@ func (s *IntegrationTestSuite) initValidatorConfigs() {
 	}
 }
 
-func (s *IntegrationTestSuite) runHardhatContainer() {
-	s.T().Log("starting Ethereum Hardhat container...")
-
-}
-
 func (s *IntegrationTestSuite) runEthContainer() {
 	s.T().Log("starting Ethereum container...")
 	var err error
@@ -517,7 +512,7 @@ func (s *IntegrationTestSuite) runEthContainer() {
 		}
 		return false
 	}, time.Minute*5, time.Second*10, "unable to retrieve gravity address from logs")
-	s.T().Logf("gravity contrained deployed at %s", gravityContract.String())
+	s.T().Logf("gravity contract deployed at %s", gravityContract.String())
 
 	s.T().Logf("started Ethereum container: %s", s.ethResource.Container.ID)
 }
@@ -745,6 +740,7 @@ server_key_path = "/root/steward/test_server_key_pkcs8.pem"
 		filePath := path.Join(stewardCfgPath, "config.toml")
 		s.Require().NoError(writeFile(filePath, []byte(stewardCfg)))
 
+		// Copy the necessary material for establishing a TLS connection to Steward
 		err := copyFile(
 			filepath.Join("integration_tests", "tls", "client", "test_client_ca.crt"),
 			filepath.Join(stewardCfgPath, "test_client_ca.crt"),
@@ -795,7 +791,7 @@ server_key_path = "/root/steward/test_server_key_pkcs8.pem"
 				"-c",
 				"chmod +x /root/steward/steward_bootstrap.sh && /root/steward/steward_bootstrap.sh",
 			},
-			// Each steward container will be mapped to host port (5732 + index) since containers
+			// Each steward container will be mapped to host port (5734 + index) since containers
 			// can't share.
 			PortBindings: map[docker.Port][]docker.PortBinding{
 				"5734/tcp": {{HostIP: "", HostPort: strconv.Itoa(5734 + steward.index)}},

@@ -1,6 +1,6 @@
 use crate::{cellars, error::Error, prelude::*, somm_send, utils};
 use abscissa_core::Application;
-use deep_space::{Coin, Contact, Address};
+use deep_space::{Coin, Contact};
 use gravity_bridge::gravity_proto::gravity::query_client::QueryClient as GravityQueryClient;
 use rand::{distributions::Alphanumeric, rngs::OsRng, Rng};
 use somm_proto::{somm, somm::query_client::QueryClient as AllocationQueryClient};
@@ -35,12 +35,9 @@ pub async fn get_connections() -> Result<Connections, Error> {
             val,
             Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix)?,
         ),
-        Err(e) => {
-            error!(
-                "Failed to access Cosmos gRPC with {:?} and create connections",
-                e
-            );
-            return Err(Error::from(e));
+        Err(err) => {
+            error!("failed to create allocation client: {}", err);
+            return Err(Error::from(err));
         }
     };
     Ok(Connections { grpc, contact })
@@ -61,7 +58,7 @@ pub async fn decide_rebalance(
             gp
         },
         Err(err) => {
-            error!("Failed to get cellar gas price: {:?}", err);
+            error!("failed to get cellar gas price: {}", err);
             // TO-DO handle this better
             0.into()
         }
@@ -97,7 +94,6 @@ pub async fn decide_rebalance(
     match timeout(Duration::from_secs(100), async {
         debug!("waiting for new vote period to start");
         loop {
-            // Waiting for new vote period
             let res = somm_send::query_commit_period(grpc_client).await;
             if let Ok(val) = res {
                 if val.vote_period_start == val.current_height {
@@ -121,8 +117,8 @@ pub async fn decide_rebalance(
             .await?;
             debug!("precommit response: {:?}", response);
         }
-        Err(e) => {
-            error!("Couldn't Send Precommit {:?}", e);
+        Err(err) => {
+            error!("Couldn't Send Precommit {:?}", err);
         }
     }
 
@@ -155,8 +151,8 @@ pub async fn decide_rebalance(
             .await?;
             debug!("commit response: {:?}", response);
         }
-        Err(e) => {
-            error!("couldn't send commit {:?}", e);
+        Err(err) => {
+            error!("couldn't send commit {:?}", err);
         }
     }
 
