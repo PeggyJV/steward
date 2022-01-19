@@ -15,6 +15,8 @@ use std::{convert::TryFrom, path, sync::Arc, time::Duration};
 use steward_abi::cellar_uniswap::CellarTickInfo;
 use tokio::time::{sleep, timeout};
 use tonic::transport::Channel;
+use serde::{Deserialize, Serialize};
+use chrono::DateTime;
 
 pub struct Connections {
     pub grpc: AllocationQueryClient<Channel>,
@@ -30,6 +32,32 @@ pub fn bytes_to_hex_str(bytes: &[u8]) -> String {
         .iter()
         .map(|b| format!("{:0>2x?}", b))
         .fold(String::new(), |acc, x| acc + &x)
+}
+
+// Struct TimeRange for time independent bollinger ranges
+#[derive(Serialize, Deserialize, Clone)]
+pub struct TimeRange {
+    pub time: Option<DateTime<chrono::Utc>>,
+    pub previous_update: Option<DateTime<chrono::Utc>>,
+    pub pair_id: U256,
+    pub tick_weights: Vec<TickWeight>,
+}
+
+/// Struct TickWeights for time independent bollinger ranges
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct TickWeight {
+    pub upper_bound: i32,
+    pub lower_bound: i32,
+    pub weight: u32,
+}
+
+pub fn from_tick_weight(tick_weight: TickWeight) -> CellarTickInfo {
+    CellarTickInfo {
+        token_id: U256::zero(),
+        tick_upper: tick_weight.upper_bound,
+        tick_lower: tick_weight.lower_bound,
+        weight: tick_weight.weight,
+    }
 }
 
 pub async fn allocation_precommit(
@@ -192,7 +220,7 @@ pub fn to_allocation(
 }
 
 
-pub async fn direct_rebalance(cellar_address: H160) -> Result<(), Error> {
+pub async fn direct_rebalance(cellar_address: H160, time_range: TimeRange) -> Result<(), Error> {
     let mut tick_info: Vec<CellarTickInfo> = Vec::new();
     let config = APP.config();
     let keystore = path::Path::new(&config.keys.keystore);
@@ -217,6 +245,12 @@ pub async fn direct_rebalance(cellar_address: H160) -> Result<(), Error> {
     let client = SignerMiddleware::new(client, wallet.clone());
     let client = Arc::new(client);
     let mut contract_state = UniswapV3CellarState::new(cellar_address, client);
+    
+    for ref tick_weight in time_range.tick_weights.clone() {
+        if tick_weight.weight > 0 {
+            tick_info.push(from_tick_weight(tick_weight.clone()))
+        }
+    }
 
     if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
         Ok(())
