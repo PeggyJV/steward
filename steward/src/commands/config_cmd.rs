@@ -5,7 +5,7 @@ pub struct ConfigCmd {}
 
 impl Runnable for ConfigCmd {
     fn run(&self) {
-        let config = crate::config::CellarRebalancerConfig::default();
+        let config = crate::config::StewardConfig::default();
         print!("{}", toml::to_string(&config).unwrap());
     }
 }

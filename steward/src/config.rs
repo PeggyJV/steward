@@ -3,32 +3,28 @@
 //! See instructions in `commands.rs` to specify the path to your
 //! application's configuration file and/or command-line options
 //! for specifying it.
-
-use ethers::signers::LocalWallet as EthWallet;
-use std::time::Duration;
-
-use ethers::prelude::H160;
+use crate::server::{DEFAULT_CLIENT_CA, DEFAULT_STEWARD_PORT};
+use ethers::{prelude::H160, signers::LocalWallet as EthWallet};
 use serde::{Deserialize, Serialize};
 use signatory::FsKeyStore;
-use std::net::SocketAddr;
-use std::path::Path;
+use std::{net::SocketAddr, path::Path, time::Duration};
+
 
 /// CellarRebalancer Configuration
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields)]
-pub struct CellarRebalancerConfig {
+pub struct StewardConfig {
     pub keystore: String,
-    pub tls: TlsSection,
+    pub server: ServerSection,
     pub gravity: GravitySection,
     pub ethereum: EthereumSection,
     pub cosmos: CosmosSection,
     pub metrics: MetricsSection,
     pub cellars: Vec<CellarConfig>,
     pub keys: KeysConfig,
-    pub mongo: MongoSection,
 }
 
-impl CellarRebalancerConfig {
+impl StewardConfig {
     fn load_secret_key(&self, name: String) -> k256::elliptic_curve::SecretKey<k256::Secp256k1> {
         let keystore = Path::new(&self.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
@@ -57,51 +53,42 @@ impl CellarRebalancerConfig {
 ///
 /// Note: if your needs are as simple as below, you can
 /// use `#[derive(Default)]` on CellarRebalancerConfig instead.
-impl Default for CellarRebalancerConfig {
+impl Default for StewardConfig {
     fn default() -> Self {
         Self {
             keystore: "/tmp/keystore".to_owned(),
-            tls: TlsSection::default(),
+            server: ServerSection::default(),
             gravity: GravitySection::default(),
             ethereum: EthereumSection::default(),
             cosmos: CosmosSection::default(),
             metrics: MetricsSection::default(),
             cellars: vec![CellarConfig::default()],
             keys: KeysConfig::default(),
-            mongo: MongoSection::default(),
         }
     }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct TlsSection {
+pub struct ServerSection {
+    pub address: Option<String>,
+    pub client_ca_cert_path: Option<String>,
+    pub port: Option<u16>,
     pub server_cert_path: String,
     pub server_key_path: String,
-    pub client_ca_cert_path: String,
 }
 
-impl Default for TlsSection {
+impl Default for ServerSection {
     fn default() -> Self {
         Self {
-            server_cert_path: "".to_string(),
-            server_key_path: "".to_string(),
-            client_ca_cert_path: "".to_string(),
+            address: Some("127.0.0.1".to_owned()),
+            client_ca_cert_path: Some("".to_owned()),
+            port: Some(9999),
+            server_cert_path: "".to_owned(),
+            server_key_path: "".to_owned(),
         }
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct MongoSection {
-    pub host: String,
-}
-
-impl Default for MongoSection {
-    fn default() -> Self {
-        Self {
-            host: "mongodb://localhost:27017/".to_string(),
-        }
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct KeysConfig {
@@ -132,7 +119,6 @@ pub struct CellarConfig {
     pub pool_address: ethers::types::H160,
     pub weight_factor: u32,
     pub max_gas_price_gwei: u32,
-    pub pair_database: String,
     pub token_0: TokenInfo,
     pub token_1: TokenInfo,
     pub duration: Duration,
@@ -151,7 +137,6 @@ impl Default for CellarConfig {
             duration: Duration::from_secs(60),
             token_0: TokenInfo::default(),
             token_1: TokenInfo::default(),
-            pair_database: "MONGODB".to_string(),
         }
     }
 }
