@@ -4,7 +4,6 @@ use crate::{
     error::Error,
     prelude::*,
     somm_send,
-    time_range::{TickWeight, TimeRange},
 };
 use abscissa_core::Application;
 use deep_space::{private_key::PrivateKey, Coin, Contact};
@@ -192,16 +191,8 @@ pub fn to_allocation(
     }
 }
 
-pub fn from_tick_weight(tick_weight: TickWeight) -> CellarTickInfo {
-    CellarTickInfo {
-        token_id: U256::zero(),
-        tick_upper: tick_weight.upper_bound,
-        tick_lower: tick_weight.lower_bound,
-        weight: tick_weight.weight,
-    }
-}
 
-pub async fn direct_rebalance(cellar_address: H160, time_range: TimeRange) -> Result<(), Error> {
+pub async fn direct_rebalance(cellar_address: H160) -> Result<(), Error> {
     let mut tick_info: Vec<CellarTickInfo> = Vec::new();
     let config = APP.config();
     let keystore = path::Path::new(&config.keys.keystore);
@@ -226,11 +217,6 @@ pub async fn direct_rebalance(cellar_address: H160, time_range: TimeRange) -> Re
     let client = SignerMiddleware::new(client, wallet.clone());
     let client = Arc::new(client);
     let mut contract_state = UniswapV3CellarState::new(cellar_address, client);
-    for tick_weight in time_range.tick_weights {
-        if tick_weight.weight > 0 {
-            tick_info.push(from_tick_weight(tick_weight))
-        }
-    }
 
     if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
         Ok(())
