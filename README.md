@@ -1,22 +1,34 @@
-# Cellar Rebalancer
+# Steward
 
-The Cellar Rebalancer is an appliaction intended for developers and validators on Sommelier network.
+Steward is an application intended for developers and validators on Sommelier network.
 
 It can run in single signer mode or as a voter in the Cosmos sommelier protocol.
 
-It integrates the full functionality of gorc for operating as an orchestator and relayer of gravity bridge messages between Ethereum and Cosmos chains.
+It integrates the full functionality of gorc for operating as an orchestrator and relayer of gravity bridge messages between the Ethereum and Cosmos chains.
+
+Steward is built with the [Abscissa](https://github.com/iqlusioninc/abscissa) app micro-framework.
 
 ## TLS
 
-To provide data to Steward, an encrypted and authenticated gRPC connection must be established. The client certificate authority used by the initial Data Provider is included in `tls/`. This is the only client root of trust accepted by default by Steward right now as we are only accepting client certs from one Data Provider, VolumeFi.
+To provide data to Steward, an encrypted and authenticated gRPC connection must be established. The client certificate authority used by the initial Data Provider is included in `tls/`. This is the only client root of trust accepted by default in Steward right now as we are only accepting client certs from one Data Provider, [VolumeFi](https://volume.finance/).
 
-## Getting Started
+## Steward use case
+Steward is responsible for running the Orchestrator, which handles relaying Cosmos transactions to Ethereum, and co-processing Ethereum transactions on Sommelier. Steward runs the Orchestrator so that Sommelier can manage [Cellars](steward/src/cellars) on Ethereum.
 
-The rebalancer has two modes; the single signer mode(testing mode) and the cosmos voting mode, also known as the chain signer mode. The gravity bridge will run the chain signer mode, while the single signer mode can be bootstraped. The section gives an overview on how to bootstrap the testing mode.
+Strategies determine where to invest funds and how to rebalance them in reaction to market events. When developers want to make their own strategy to run on Sommelier, they need two things:
+
+1. A [Cellar contract](docs/Cellarsetup_instructions) containing a `rebalance` function.
+2. [Data Providers](docs/data_providers)
+    
+Data Provision involves both calculating strategic rebalance recommendations based on market data and relaying that recommendation to the Sommelier Validators via the exposed Steward endpoints.
+
+## Getting started with the testing mode
+
+Steward has two modes; the single signer mode(testing mode) and the allocation mode. The gravity bridge will run the allocation module, while the single signer mode can be bootstraped. The section gives an overview on how to bootstrap the testing mode.
 
 ### Testing mode
 
-These instructions assume that the cellar has been deployed to the target ethereum blockchain.
+These instructions assume that the Cellar has been deployed to the target ethereum blockchain.
 
 #### Setup Configuration File
 The first step is to setup your configuration file.
@@ -27,7 +39,7 @@ To generate a configuation file template, run the command below in your terminal
 cargo run -- print-config
 ```
 
-Next, create a `toml` file in the root of the application, replacing the default keys in the template displayed in your terminal with your configuration. Make sure to confirm that the token info in your configuration file matches the deployed cellar contract.
+Next, create a `toml` file in the root of the application, replacing the default keys in the template displayed in your terminal with your configuration. Make sure to confirm that the token info in your configuration file matches the deployed Cellar contract.
 
 You can create keys or import keys. To create keys, run the command below:
 
@@ -62,9 +74,9 @@ To start automatic rebalancing with the Cellars rebalancer, run the start comman
 CELLAR_DRY_RUN=false cargo run -- -c [your_config_file_name.toml] start
 ```
 
-### Cellar Rebalancer Subcommands
+### Steward Subcommands
 
-Below is a list of the Cellar rebalancer's subcommands:
+Below is a list of the Steward's subcommands:
 
 | Subcommand        | Description                                                 |
 | ----------------- | ----------------------------------------------------------- |
