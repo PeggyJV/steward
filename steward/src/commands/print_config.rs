@@ -18,7 +18,6 @@ impl Runnable for PrintConfigCmd {
                 cellars: config.cellars.to_owned(),
                 ethereum: config.ethereum.to_owned(),
                 keys: config.keys.to_owned(),
-                mongo: config.mongo.to_owned(),
                 keystore: config.keystore.to_owned(),
                 gravity: config.gravity.to_owned(),
                 cosmos: config.cosmos.to_owned(),
