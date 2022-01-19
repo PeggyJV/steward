@@ -780,8 +780,7 @@ server_key_path = "/root/steward/test_server_key_pkcs8.pem"
 				fmt.Sprintf("%s/:/root/steward", stewardCfgPath),
 			},
 			Env: []string{
-				"CELLAR_DRY_RUN=false",
-				"ETHERSCAN_API_KEY=W8C9NACKN284HFZCGNZA1CM4UHYZIMI4YN",
+				fmt.Sprintf("ETHERSCAN_API_KEY=%s", os.Getenv("ETHERSCAN_API_KEY")),
 				fmt.Sprintf("MNEMONIC=%s", steward.mnemonic),
 				"RUST_BACKTRACE=full",
 				"RUST_LOG=debug",
