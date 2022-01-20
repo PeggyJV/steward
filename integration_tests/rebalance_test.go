@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"time"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/peggyjv/sommelier/x/allocation/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -123,6 +124,111 @@ func (s *IntegrationTestSuite) TestRebalance() {
 
 			return true
 		}, 100*time.Second, 1*time.Second, "rebalance request took too long")
+
+		s.T().Logf("wait for new vote period start")
+		val = s.chain.validators[0]
+		s.Require().Eventuallyf(func() bool {
+			kb, err := val.keyring()
+			s.Require().NoError(err)
+			clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+			s.Require().NoError(err)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.QueryCommitPeriod(context.Background(), &types.QueryCommitPeriodRequest{})
+			if err != nil {
+				return false
+			}
+			if res.VotePeriodStart != res.CurrentHeight {
+				if res.CurrentHeight%10 == 0 {
+					s.T().Logf("current height: %d, period end: %d", res.CurrentHeight, res.VotePeriodEnd)
+				}
+				return false
+			}
+
+			return true
+		}, 105*time.Second, 1*time.Second, "new vote period never seen")
+
+		s.T().Logf("checking pre-commits for validators")
+		for _, val := range s.chain.validators {
+			val := val
+			s.Require().Eventuallyf(func() bool {
+				kb, err := val.keyring()
+				s.Require().NoError(err)
+				clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+				s.Require().NoError(err)
+
+				queryClient := types.NewQueryClient(clientCtx)
+				signerVal := sdk.ValAddress(val.keyInfo.GetAddress())
+				res, err := queryClient.QueryAllocationPrecommit(context.Background(), &types.QueryAllocationPrecommitRequest{
+					Validator: signerVal.String(),
+					Cellar:    hardhatCellar.String(),
+				})
+				if err != nil {
+					return false
+				}
+				if res == nil {
+					return false
+				}
+				s.Require().NoError(err, "unable to create precommit")
+				s.Require().Equal(res.Precommit.CellarId, commit.Vote.Cellar.Id, "cellar ids unequal")
+
+				return true
+			},
+				30*time.Second,
+				2*time.Second,
+				"pre-commit not found for validator %s",
+				val.keyInfo.GetAddress().String())
+		}
+
+		s.T().Logf("checking commits for validators")
+		for _, val := range s.chain.validators {
+			val := val
+			s.Require().Eventuallyf(func() bool {
+				kb, err := val.keyring()
+				s.Require().NoError(err)
+				clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+				s.Require().NoError(err)
+
+				queryClient := types.NewQueryClient(clientCtx)
+				res, err := queryClient.QueryAllocationCommit(context.Background(), &types.QueryAllocationCommitRequest{Validator: sdk.ValAddress(val.keyInfo.GetAddress()).String(), Cellar: hardhatCellar.String()})
+				if err != nil {
+					return false
+				}
+				if res == nil {
+					return false
+				}
+				s.Require().Equal(res.Commit.Vote.Cellar.Id, commit.Vote.Cellar.Id, "cellar ids unequal")
+
+				return true
+			},
+				30*time.Second,
+				2*time.Second,
+				"commit not found for validator %s",
+				val.keyInfo.GetAddress().String())
+		}
+
+		s.T().Logf("waiting for end of vote period, endblocker to run")
+		val = s.chain.validators[0]
+		s.Require().Eventuallyf(func() bool {
+			kb, err := val.keyring()
+			s.Require().NoError(err)
+			clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+			s.Require().NoError(err)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.QueryCommitPeriod(context.Background(), &types.QueryCommitPeriodRequest{})
+			if err != nil {
+				return false
+			}
+			if res.VotePeriodStart != res.CurrentHeight {
+				if res.CurrentHeight%10 == 0 {
+					s.T().Logf("current height: %d, period end: %d", res.CurrentHeight, res.VotePeriodEnd)
+				}
+				return false
+			}
+
+			return true
+		}, 105*time.Second, 1*time.Second, "new vote period never seen")
 
 		s.T().Logf("checking for updated tick ranges in cellar")
 		s.Require().Eventuallyf(func() bool {

@@ -128,7 +128,7 @@ pub async fn decide_rebalance(
             let res = somm_send::query_allocation_precommits(grpc_client).await;
             match res {
                 Ok(val) => {
-                    if val.len() > 0 && val.contains(allocation_precommit) {
+                    if val.contains(allocation_precommit) {
                         break val;
                     }
                 },
