@@ -4,27 +4,26 @@ Steward is an application intended for developers and validators on Sommelier ne
 
 It can run in single signer mode or as a voter in the Cosmos sommelier protocol.
 
-It integrates the full functionality of gorc for operating as an orchestrator and relayer of gravity bridge messages between the Ethereum and Cosmos chains.
+It integrates the full functionality of [Gorc](https://github.com/PeggyJV/gravity-bridge/tree/main/orchestrator/gorc) for operating as an orchestrator and relayer of [Gravity bridge](https://github.com/PeggyJV/gravity-bridge) messages between the Ethereum and Cosmos chains.
 
 Steward is built with the [Abscissa](https://github.com/iqlusioninc/abscissa) app micro-framework.
 
-## TLS
-
-To provide data to Steward, an encrypted and authenticated gRPC connection must be established. The client certificate authority used by the initial Data Provider is included in `tls/`. This is the only client root of trust accepted by default in Steward right now as we are only accepting client certs from one Data Provider, [VolumeFi](https://volume.finance/).
-
 ## Steward use case
-Steward is responsible for running the Orchestrator, which handles relaying Cosmos transactions to Ethereum, and co-processing Ethereum transactions on Sommelier. Steward runs the Orchestrator so that Sommelier can manage [Cellars](steward/src/cellars) on Ethereum.
+Steward is responsible for running the Orchestrator, which handles relaying Cosmos transactions to Ethereum, and co-processing Ethereum transactions on Sommelier. Steward runs the Orchestrator so that Sommelier can manage [Cellars](steward/src/cellars) on Ethereum. To to this, Steward provides a gRPC server to accept recommendations from data providers. 
 
-Strategies determine where to invest funds and how to rebalance them in reaction to market events. When developers want to make their own strategy to run on Sommelier, they need two things:
+Data Provision involves both calculating strategic rebalance recommendations based on market data and relaying that recommendation to the Sommelier Validators via the exposed Steward endpoints. To provide data to Steward, an encrypted and authenticated gRPC connection must be established. The client certificate authority used by the initial Data Provider is included in `tls/`. This is the only client root of trust accepted by default in Steward right now as we are only accepting client certs from one Data Provider, [VolumeFi](https://volume.finance/).
+
+It is also responsible for accepting recommendations for executing strategies. Strategies determine where to invest funds and how to rebalance them in reaction to market events. When developers want to make their own strategy to run on Sommelier, they need two things:
 
 1. A [Cellar contract](docs/Cellarsetup_instructions) containing a `rebalance` function.
 2. [Data Providers](docs/data_providers)
     
-Data Provision involves both calculating strategic rebalance recommendations based on market data and relaying that recommendation to the Sommelier Validators via the exposed Steward endpoints.
+
+Steward also provides a suite of utility functions for interacting with Sommelier and the Gravity bridge. For instance, the last section shows series of subcommands that allows you to interact with the Sommelier chain via Steward.s 
 
 ## Getting started with the testing mode
 
-Steward has two modes; the single signer mode(testing mode) and the allocation mode. The gravity bridge will run the allocation module, while the single signer mode can be bootstraped. The section gives an overview on how to bootstrap the testing mode.
+Steward has two modes; the single signer mode(testing mode) and the allocation mode. The Sommelier chain will run the allocation module, while the single signer mode can be bootstraped. The section gives an overview on how to bootstrap the testing mode.
 
 ### Testing mode
 
@@ -45,6 +44,11 @@ You can create keys or import keys. To create keys, run the command below:
 
 ```
 cargo run -- -c [your_config_file_name.toml] keys add [key_name]
+```
+If you already have a key, you can import it with the command below:
+
+```
+cargo run -- -c [your_config_file_name.toml] keys import [key_name]
 ```
 
 Now, navigate to the keystore location in your local environment, i.e `keys.keystore`. Confirm that the key was created successfully in the location you specified in your config file.
@@ -68,10 +72,10 @@ cargo run -- -c [your_config_file_name.toml] fund-cellar --cellar-id[cellar_id] 
 ```
 
 #### Rebalance Cellars
-To start automatic rebalancing with the Cellars rebalancer, run the start command in your terminal. Note that the `poller` requires the standard environment variable `CELLAR_DRY_RUN` to be false in order to decide rebalance. Therefore, to start the application follow the command below:
+To start automatic rebalancing with the Cellars rebalancer, run the `single-signer` command in your terminal. Note that we need the standard environment variable `CELLAR_DRY_RUN` to be false in order to decide rebalance in the test mode. Therefore, to start the application run the command below:
 
 ```
-CELLAR_DRY_RUN=false cargo run -- -c [your_config_file_name.toml] start
+CELLAR_DRY_RUN=false cargo run -- -c [your_config_file_name.toml] single-signer
 ```
 
 ### Steward Subcommands
@@ -81,7 +85,6 @@ Below is a list of the Steward's subcommands:
 | Subcommand        | Description                                                 |
 | ----------------- | ----------------------------------------------------------- |
 | help              | Help command to get usage information                       |
-| start             | Command to start the rebalancer                             |
 | transfer          | Command to transfer ETH                                     |
 | version           | Display version information                                 |
 | predictions       | Display lastest prediction in the application               |
