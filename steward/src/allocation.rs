@@ -9,8 +9,9 @@ use tokio::time::{sleep, timeout};
 use tonic::transport::Channel;
 
 pub struct Connections {
-    pub grpc: AllocationQueryClient<Channel>,
+    pub allocation_client: AllocationQueryClient<Channel>,
     pub contact: Contact,
+    pub gravity_client: GravityQueryClient<Channel>,
 }
 
 pub async fn allocation_precommit(
@@ -29,18 +30,12 @@ pub async fn allocation_precommit(
 pub async fn get_connections() -> Result<Connections, Error> {
     let config = APP.config();
     let timeout = Duration::from_secs(10);
-    let try_base = AllocationQueryClient::connect(config.cosmos.grpc.clone()).await;
-    let (grpc, contact) = match try_base {
-        Ok(val) => (
-            val,
-            Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix)?,
-        ),
-        Err(err) => {
-            error!("failed to create allocation client: {}", err);
-            return Err(Error::from(err));
-        }
-    };
-    Ok(Connections { grpc, contact })
+
+    Ok(Connections {
+        allocation_client: AllocationQueryClient::connect(config.cosmos.grpc.clone()).await?,
+        contact: Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix)?,
+        gravity_client: GravityQueryClient::connect(config.cosmos.grpc.clone()).await?,
+    })
 }
 
 pub async fn decide_rebalance(
@@ -48,9 +43,6 @@ pub async fn decide_rebalance(
     cellar_address: String,
 ) -> Result<(), Error> {
     debug!("deciding rebalance for cellar address {}", cellar_address);
-    let mut connections = get_connections().await?;
-    let (contact, grpc_client) = (connections.contact, &mut connections.grpc);
-
     debug!("getting eth gas price");
     let eth_gas_price = match cellars::get_gas_price().await {
         Ok(gp) => {
@@ -70,8 +62,11 @@ pub async fn decide_rebalance(
     let cosmos_delegate_key = config.load_deep_space_key(name.clone());
     let cosmos_delegate_address = cosmos_delegate_key.to_address(&config.cosmos.prefix)?;
 
+    debug!("establishing connections to validator");
+    let mut connections = get_connections().await?;
+    let (allocation_client, contact, mut gravity_client) = (&mut connections.allocation_client, connections.contact, &mut connections.gravity_client);
+
     debug!("querying the validator address based on the associated delegate address {}", cosmos_delegate_address);
-    let mut gravity_client = GravityQueryClient::connect(config.cosmos.grpc.clone()).await?;
     let delegate_keys = utils::get_delegates_keys_by_orchestrator(&mut gravity_client, cosmos_delegate_address.to_string()).await?;
     let validator_address = delegate_keys.validator_address;
     debug!("precommit containing cellar {} will be signed by {} on behalf of {}", cellar_address, cosmos_delegate_address, validator_address);
@@ -94,7 +89,7 @@ pub async fn decide_rebalance(
     match timeout(Duration::from_secs(100), async {
         debug!("waiting for new vote period to start");
         loop {
-            let res = somm_send::query_commit_period(grpc_client).await;
+            let res = somm_send::query_commit_period(allocation_client).await;
             if let Ok(val) = res {
                 if val.vote_period_start == val.current_height {
                     break val;
@@ -125,7 +120,7 @@ pub async fn decide_rebalance(
     match timeout(Duration::from_secs(100), async {
         debug!("querying precommit");
         loop {
-            let res = somm_send::query_allocation_precommits(grpc_client).await;
+            let res = somm_send::query_allocation_precommits(allocation_client).await;
             match res {
                 Ok(val) => {
                     if val.contains(allocation_precommit) {
