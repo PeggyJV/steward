@@ -4,7 +4,7 @@ Steward is an application intended for developers and validators on the Sommelie
 
 It can run in single signer mode or as a voter in the Cosmos sommelier protocol.
 
-It integrates the full functionality of gorc for operating as an orchestrator and relayer of gravity bridge messages between the Ethereum and Cosmos chains.
+It integrates the full functionality of gorc for operating as an orchestrator and relayer of [Gravity bridge](https://github.com/PeggyJV/gravity-bridge/) messages between the Ethereum and Cosmos chains.
 
 ## Background
 
@@ -36,8 +36,8 @@ Since Sommelier is a Cosmos chain, in order to provide strategies on Ethereum it
 
 In this section, let’s explore setting up steward for validators. First, ensure the sommelier chain is running. Next, create a `toml` file in the root of the application which will hold your configuration. To get a template for your configuration file, run the command below:
 
-```rust
-steward -- print-config
+```bash
+steward print-config
 ```
 
 Replace the default keys in the template displayed in your terminal with your configuration. Now you have the configurations set up, let’s go through stewards commands.
@@ -46,19 +46,19 @@ Replace the default keys in the template displayed in your terminal with your co
 
 To start the Allocation signer mode, ensure that the server section in your config file is set properly as shown below. The `address`, `client_ca_cert_path` and `port` are optional fields.
 
-```rust
+```toml
 keystore = "/tmp/keystore"
 
 [server]
-address = "127.0.0.1"           // This is an optional feild.
+address = "0.0.0.0"           // This is an optional feild.
 client_ca_cert_path = ""       // optional, defaults to VolumeFi client cert
-port = 9999                   // optional, default is 5734
+port = 5734                  // optional, default is 5734
 server_cert_path = ""
 server_key_path = ""
 
 [gravity]
 contract = "0x0000000000000000000000000000000000000000"
-fees_denom = "stake"
+fees_denom = "usomm"
 
 [ethereum]
 key_derivation_path = "m/44'/60'/0'/0/0"
@@ -75,7 +75,7 @@ gas_adjustment = 1.0
 
 [cosmos.gas_price]
 amount = 0.001
-denom = "stake"
+denom = "usomm"
 
 [metrics]
 listen_addr = "127.0.0.1:3000"
@@ -108,17 +108,18 @@ keystore = "/tmp/keystore"
 rebalancer_key = ""
 ```
 
+All cellar configurations would only be required in the single signer testing mode.
 Next, run the cosmos signer command to start the cosmos mode:
 
-```rust
-steward -- -c [your_config_file_name.toml] cosmos-signer
+```bash
+steward -c [your_config_file_name.toml] cosmos-signer
 ```
 
 ## Start Orchestrator
 
 Steward allows you to start the Orchestrator with or without the Relayer. First, you’ll need an Ethereum key and a Cosmos key. Run the command below to create your keys if you don’t have one.
 
-```rust
+```bash
 // Create Eth key
 steward eth keys add [key_name] 
 
@@ -128,12 +129,12 @@ steward cosmos keys add [key_name]
 
 To start the Orchestrator with the Relayer, run the command below:
 
-```rust
-steward -- -c [your_config_file_name.toml] orchestrator start cosmos_key=[key_name] ethereum_key=[key_name] orchestrator_only=false
+```bash
+steward -c [your_config_file_name.toml] orchestrator start cosmos_key=[key_name] ethereum_key=[key_name] orchestrator_only=false
 ```
 
 You can start the Orchestrator only by running the command below:
 
-```rust
-steward -- -c [your_config_file_name.toml] orchestrator start cosmos_key=[key_name] ethereum_key=[key_name] orchestrator_only=true
+```bash
+steward -c [your_config_file_name.toml] orchestrator start cosmos_key=[key_name] ethereum_key=[key_name] orchestrator_only=true
 ```

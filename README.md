@@ -100,4 +100,4 @@ Below is a list of the Steward's subcommands:
 | tx                | Create transactions on either ethereum or cosmos chains     |
 | allow-erc-2-0     | Allow Erc20 Token to interact with cellar contract          |
 
-If you have any questions, you can ask the community in our [Telegram](https://t.me/getsomm) and [Discord](https://discord.com/invite/ZcAYgSBxvY) group.
+If you have any questions, you can ask the community in our [Telegram](https://t.me/getsomm) and [Discord](https://discord.com/invite/ZcAYgSBxvY) group. Also, you can take a look at the [documentation](docs/validators_instructions) for Validators instructions. 
