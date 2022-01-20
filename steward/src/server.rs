@@ -31,7 +31,7 @@ pub async fn load_server_config(config: &std::sync::Arc<StewardConfig>) -> Resul
     };
     let address = match &config.server.address {
         Some(a) => a,
-        None => "127.0.0.1",
+        None => "0.0.0.0",
     };
     let address: SocketAddr = format!("{}:{}", address, port).parse()?;
 
