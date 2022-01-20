@@ -25,6 +25,9 @@ fn parse_cellar_id(cellar_id: &str) -> Result<CellarId, String> {
     if parts.len() != 2 {
         return Err(format!("invalid cellar_id format: {}. proper format is 'chainname:address'", cellar_id).to_string());
     }
+    if let Err(err) = parts[1].parse::<H160>() {
+        return Err(format!("invalid ethereum address: {}", err).to_string());
+    }
 
     Ok(CellarId {
         chain: parts[0].to_string(),
