@@ -1,4 +1,4 @@
-use std::{net::SocketAddr, convert::TryInto};
+use std::{net::SocketAddr};
 
 use crate::{config::StewardConfig, error::Error};
 use tonic::transport::{Certificate, Identity, ServerTlsConfig};

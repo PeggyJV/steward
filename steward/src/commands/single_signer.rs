@@ -6,7 +6,7 @@ use crate::{
     application::APP,
     config::StewardConfig,
     prelude::*,
-    server::{self, DEFAULT_STEWARD_PORT},
+    server,
 };
 use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
 use std::result::Result;

@@ -1,4 +1,4 @@
-use crate::{error::Error, gas::CellarGas, utils};
+use crate::{error::Error, gas::CellarGas};
 use ethers::prelude::*;
 use std::{fmt, result::Result};
 
