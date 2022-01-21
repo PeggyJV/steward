@@ -206,7 +206,10 @@ pub fn to_allocation(
     }
 }
 
-pub async fn direct_rebalance(cellar_address: H160, tick_weight: Vec<TickWeight>) -> Result<(), Error> {
+pub async fn direct_rebalance(
+    cellar_address: H160,
+    tick_weight: Vec<TickWeight>,
+) -> Result<(), Error> {
     let mut tick_info: Vec<CellarTickInfo> = Vec::new();
     let config = APP.config();
     let keystore = path::Path::new(&config.keys.keystore);

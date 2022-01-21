@@ -1,13 +1,15 @@
 //! Rust Wrapper for cellar functions
 /// This will convert cellar functions from tuples to Rust types
-use crate::{allocation, error::Error, prelude::*, cellars};
+use crate::{allocation, cellars, error::Error, prelude::*};
 use ethers::prelude::*;
 use somm_proto::somm;
 use std::result::Result;
 use std::sync::Arc;
 use steward_abi::cellar_uniswap::*;
 use steward_proto::uniswapv3::{server, RebalanceRequest, RebalanceResponse};
-use steward_proto::uniswapv3::{uniswap_v3_direct_cellar_server, DirectRebalanceRequest, DirectRebalanceResponse};
+use steward_proto::uniswapv3::{
+    uniswap_v3_direct_cellar_server, DirectRebalanceRequest, DirectRebalanceResponse,
+};
 use tonic::async_trait;
 
 // Struct for UniswapV3CellarTickInfo
@@ -192,11 +194,15 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
         let cellar_address = match cellars::parse_cellar_id(&request.cellar_id) {
             Ok(addr) => addr,
             Err(err) => return Err(tonic::Status::invalid_argument(err)),
-        }.address;
+        }
+        .address;
 
         tokio::spawn(async move {
             if let Err(err) = allocation::decide_rebalance(tick_ranges, cellar_address).await {
-                error!("error occurred during uniswapv3 cellar allocation: {:?}", err);
+                error!(
+                    "error occurred during uniswapv3 cellar allocation: {:?}",
+                    err
+                );
             }
         });
         Ok(tonic::Response::new(RebalanceResponse {}))
@@ -209,29 +215,33 @@ impl uniswap_v3_direct_cellar_server::UniswapV3DirectCellar for UniswapV3DirectC
     async fn direct_rebalance(
         &self,
         request: tonic::Request<DirectRebalanceRequest>,
-    )-> Result<tonic::Response<DirectRebalanceResponse>, tonic::Status> {
+    ) -> Result<tonic::Response<DirectRebalanceResponse>, tonic::Status> {
         let request = request.get_ref();
         debug!("received request \n {:?}", request);
 
         let tick_weight: Vec<allocation::TickWeight> = request
-        .data
-        .clone()
-        .into_iter()
-        .map(|d| allocation::TickWeight {
-            upper: d.upper_price,
-            lower: d.lower_price,
-            weight: d.weight,
-        })
-        .collect();
+            .data
+            .clone()
+            .into_iter()
+            .map(|d| allocation::TickWeight {
+                upper: d.upper_price,
+                lower: d.lower_price,
+                weight: d.weight,
+            })
+            .collect();
 
         let cellar_address = match cellars::parse_cellar_id(&request.cellar_id) {
             Ok(addr) => addr,
             Err(err) => return Err(tonic::Status::invalid_argument(err)),
-        }.address;
+        }
+        .address;
 
         tokio::spawn(async move {
             if let Err(err) = allocation::direct_rebalance(cellar_address, tick_weight).await {
-                error!("error occurred during uniswapv3 cellar direct rebalance: {:?}", err);
+                error!(
+                    "error occurred during uniswapv3 cellar direct rebalance: {:?}",
+                    err
+                );
             }
         });
         Ok(tonic::Response::new(DirectRebalanceResponse {}))
