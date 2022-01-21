@@ -10,7 +10,7 @@ use crate::{
 };
 use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
 use std::result::Result;
-use steward_proto::uniswapv3::uniswap_v3_direct_cellar_server::UniswapV3DirectCellarServer;
+use steward_proto::uniswapv3::uniswap_v3_direct_cellar_server::{UniswapV3DirectCellarServer, UniswapV3DirectCellar};
 
 #[derive(Command, Debug, Clap)]
 pub struct SingleSignerCmd;
