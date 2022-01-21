@@ -13,7 +13,7 @@ Steward is responsible for running the Orchestrator, which handles relaying Cosm
 
 Steward provides a gRPC server to accept recommendations from data providers. Data Provision involves both calculating strategic rebalance recommendations based on market data and relaying that recommendation to the Sommelier Validators via the exposed Steward endpoints. To provide data to Steward, an encrypted and authenticated gRPC connection must be established. The client certificate authority used by the initial Data Provider is included in `tls/`. This is the only client root of trust accepted by default in Steward right now as we are only accepting client certs from one Data Provider, [VolumeFi](https://volume.finance/).
 
-It is also responsible for accepting recommendations for executing strategies. Strategies determine where to invest funds and how to rebalance them in reaction to market events. When developers want to make their own strategy to run on Sommelier, they need two things:
+Strategies determine where to invest funds and how to rebalance them in reaction to market events. When developers want to make their own strategy to run on Sommelier, they need two things:
 
 1. A [Cellar contract](docs/Cellarsetup_instructions) containing a `rebalance` function.
 2. [Data Providers](docs/data_providers)
