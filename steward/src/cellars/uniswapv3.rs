@@ -6,9 +6,9 @@ use somm_proto::somm;
 use std::result::Result;
 use std::sync::Arc;
 use steward_abi::cellar_uniswap::*;
-use steward_proto::uniswapv3::{server, RebalanceRequest, RebalanceResponse};
 use steward_proto::uniswapv3::{
-    uniswap_v3_direct_cellar_server, DirectRebalanceRequest, DirectRebalanceResponse,
+    server, uniswap_v3_direct_cellar_server, DirectRebalanceRequest, DirectRebalanceResponse,
+    RebalanceRequest, RebalanceResponse,
 };
 use tonic::async_trait;
 

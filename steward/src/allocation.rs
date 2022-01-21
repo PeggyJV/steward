@@ -38,12 +38,12 @@ pub struct TickWeight {
     pub weight: u32,
 }
 
-pub fn from_tick_weight(tick_weight: Vec<TickWeight>) -> CellarTickInfo {
+pub fn from_tick_weight(tick_weight: TickWeight) -> CellarTickInfo {
     CellarTickInfo {
         token_id: U256::zero(),
-        tick_upper: tick_weight[0].upper,
-        tick_lower: tick_weight[0].lower,
-        weight: tick_weight[0].weight,
+        tick_upper: tick_weight.upper,
+        tick_lower: tick_weight.lower,
+        weight: tick_weight.weight,
     }
 }
 
@@ -234,8 +234,10 @@ pub async fn direct_rebalance(
     let client = SignerMiddleware::new(client, wallet.clone());
     let client = Arc::new(client);
     let mut contract_state = UniswapV3CellarState::new(cellar_address, client);
-    if tick_weight[0].weight > 0 {
-        tick_info.push(from_tick_weight(tick_weight.clone()))
+    for tick_weight in tick_weight {
+        if tick_weight.weight > 0 {
+            tick_info.push(from_tick_weight(tick_weight.clone()))
+        }
     }
     if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
         Ok(())
