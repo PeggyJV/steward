@@ -8,8 +8,8 @@ use abscissa_core::{Clap, Command, Runnable};
 #[derive(Command, Debug, Clap, Runnable)]
 pub enum KeysCmd {
     #[clap(subcommand)]
-    EthKeysCmd(EthKeysCmd),
+    Eth(EthKeysCmd),
 
     #[clap(subcommand)]
-    CosmosKeysCmd(CosmosKeysCmd),
+    Cosmos(CosmosKeysCmd),
 }
