@@ -33,33 +33,9 @@ service UniswapV3DirectCellar {
     rpc DirectRebalance(DirectRebalanceRequest) returns (DirectRebalanceResponse) {}
 }
 
-message TickWeight{
-    int32 upper_bound = 1;
-    int32 lower_bound = 2;
-    uint32 weight = 3;
-}
-
-message TokenInfo {
-    uint32 decimals = 1;
-    string symbol = 2;
-    string address = 3;
-}
-
-message TimeRange {
-    google.protobuf.Timestamp time = 1;
-    google.protobuf.Timestamp previous_update = 2;
-    string  pair_id = 3;
-    TokenInfo token_info = 4;
-    uint32 weight_factor = 5;
-    repeated TickWeight tick_weight = 6;
-    string monogo_uri = 7;
-    string pair_database = 8;
-    int32 tick_spacing = 9;
-}
-
 message DirectRebalanceRequest {
     string cellar_id = 1;
-    repeated TimeRange time_range = 2;
+    repeated Position data = 2;
     google.protobuf.Timestamp created_timestamp = 3;
 }
 

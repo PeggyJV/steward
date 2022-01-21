@@ -1,22 +1,18 @@
 use crate::{
-    cellars,
-    cellars::uniswapv3::UniswapV3CellarState,
-    error::Error,
-    prelude::*,
-    somm_send,
+    cellars, cellars::uniswapv3::UniswapV3CellarState, error::Error, prelude::*, somm_send,
 };
 use abscissa_core::Application;
+use chrono::DateTime;
 use deep_space::{private_key::PrivateKey, Coin, Contact};
 use ethers::prelude::*;
 use rand::{distributions::Alphanumeric, rngs::OsRng, Rng};
+use serde::{Deserialize, Serialize};
 use signatory::FsKeyStore;
 use somm_proto::{somm, somm::query_client::QueryClient as AllocationQueryClient};
 use std::{convert::TryFrom, path, sync::Arc, time::Duration};
 use steward_abi::cellar_uniswap::CellarTickInfo;
 use tokio::time::{sleep, timeout};
 use tonic::transport::Channel;
-use serde::{Deserialize, Serialize};
-use chrono::DateTime;
 
 pub struct Connections {
     pub grpc: AllocationQueryClient<Channel>,
@@ -219,8 +215,7 @@ pub fn to_allocation(
     }
 }
 
-
-pub async fn direct_rebalance(cellar_address: H160, time_range: TimeRange) -> Result<(), Error> {
+pub async fn direct_rebalance(cellar_address: H160, tick_weight: TickWeight) -> Result<(), Error> {
     let mut tick_info: Vec<CellarTickInfo> = Vec::new();
     let config = APP.config();
     let keystore = path::Path::new(&config.keys.keystore);
@@ -245,13 +240,9 @@ pub async fn direct_rebalance(cellar_address: H160, time_range: TimeRange) -> Re
     let client = SignerMiddleware::new(client, wallet.clone());
     let client = Arc::new(client);
     let mut contract_state = UniswapV3CellarState::new(cellar_address, client);
-    
-    for ref tick_weight in time_range.tick_weights.clone() {
-        if tick_weight.weight > 0 {
-            tick_info.push(from_tick_weight(tick_weight.clone()))
-        }
+    if tick_weight.weight > 0 {
+        tick_info.push(from_tick_weight(tick_weight.clone()))
     }
-
     if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
         Ok(())
     } else {

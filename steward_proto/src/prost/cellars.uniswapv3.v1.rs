@@ -19,50 +19,11 @@ pub struct RebalanceRequest {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RebalanceResponse {}
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct TickWeight {
-    #[prost(int32, tag = "1")]
-    pub upper_bound: i32,
-    #[prost(int32, tag = "2")]
-    pub lower_bound: i32,
-    #[prost(uint32, tag = "3")]
-    pub weight: u32,
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct TokenInfo {
-    #[prost(uint32, tag = "1")]
-    pub decimals: u32,
-    #[prost(string, tag = "2")]
-    pub symbol: ::prost::alloc::string::String,
-    #[prost(string, tag = "3")]
-    pub address: ::prost::alloc::string::String,
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct TimeRange {
-    #[prost(message, optional, tag = "1")]
-    pub time: ::core::option::Option<::prost_types::Timestamp>,
-    #[prost(message, optional, tag = "2")]
-    pub previous_update: ::core::option::Option<::prost_types::Timestamp>,
-    #[prost(string, tag = "3")]
-    pub pair_id: ::prost::alloc::string::String,
-    #[prost(message, optional, tag = "4")]
-    pub token_info: ::core::option::Option<TokenInfo>,
-    #[prost(uint32, tag = "5")]
-    pub weight_factor: u32,
-    #[prost(message, repeated, tag = "6")]
-    pub tick_weight: ::prost::alloc::vec::Vec<TickWeight>,
-    #[prost(string, tag = "7")]
-    pub monogo_uri: ::prost::alloc::string::String,
-    #[prost(string, tag = "8")]
-    pub pair_database: ::prost::alloc::string::String,
-    #[prost(int32, tag = "9")]
-    pub tick_spacing: i32,
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DirectRebalanceRequest {
     #[prost(string, tag = "1")]
     pub cellar_id: ::prost::alloc::string::String,
     #[prost(message, repeated, tag = "2")]
-    pub time_range: ::prost::alloc::vec::Vec<TimeRange>,
+    pub data: ::prost::alloc::vec::Vec<Position>,
     #[prost(message, optional, tag = "3")]
     pub created_timestamp: ::core::option::Option<::prost_types::Timestamp>,
 }
