@@ -2,7 +2,7 @@
 
 Steward is an application intended for developers and validators on the Sommelier network.
 
-It can run in single signer mode or as a voter in the Cosmos sommelier protocol.
+It can run as a voter in the Cosmos Sommelier protocol or in test mode to directly interact with Ethereum contracts as a single signer.
 
 It integrates the full functionality of gorc for operating as an orchestrator and relayer of [Gravity bridge](https://github.com/PeggyJV/gravity-bridge/) messages between the Ethereum and Cosmos chains.
 
@@ -120,10 +120,8 @@ steward -c [your_config_file_name.toml] cosmos-signer
 Steward allows you to start the Orchestrator with or without the Relayer. First, you’ll need an Ethereum key and a Cosmos key. Run the command below to create your keys if you don’t have one.
 
 ```bash
-// Create Eth key
 steward eth keys add [key_name] 
 
-// Create Cosmos key
 steward cosmos keys add [key_name] 
 ```
 
