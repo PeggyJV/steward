@@ -7,6 +7,7 @@ use std::result::Result;
 use std::sync::Arc;
 use steward_abi::cellar_uniswap::*;
 use steward_proto::uniswapv3::{server, RebalanceRequest, RebalanceResponse};
+use steward_proto::uniswapv3::{uniswap_v3_direct_cellar_server, DirectRebalanceRequest, DirectRebalanceResponse};
 use tonic::async_trait;
 
 // Struct for UniswapV3CellarTickInfo
@@ -199,5 +200,40 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
             }
         });
         Ok(tonic::Response::new(RebalanceResponse {}))
+    }
+}
+pub struct UniswapV3DirectCellar;
+
+#[async_trait]
+impl uniswap_v3_direct_cellar_server::UniswapV3DirectCellar for UniswapV3DirectCellar {
+    async fn direct_rebalance(
+        &self,
+        request: tonic::Request<DirectRebalanceRequest>,
+    )-> Result<tonic::Response<DirectRebalanceResponse>, tonic::Status> {
+        let request = request.get_ref();
+        debug!("received request \n {:?}", request);
+
+        let tick_weight: Vec<allocation::TickWeight> = request
+        .data
+        .clone()
+        .into_iter()
+        .map(|d| allocation::TickWeight {
+            upper: d.upper_price,
+            lower: d.lower_price,
+            weight: d.weight,
+        })
+        .collect();
+
+        let cellar_address = match cellars::parse_cellar_id(&request.cellar_id) {
+            Ok(addr) => addr,
+            Err(err) => return Err(tonic::Status::invalid_argument(err)),
+        }.address;
+
+        tokio::spawn(async move {
+            if let Err(err) = allocation::direct_rebalance(cellar_address, tick_weight).await {
+                error!("error occurred during uniswapv3 cellar direct rebalance: {:?}", err);
+            }
+        });
+        Ok(tonic::Response::new(DirectRebalanceResponse {}))
     }
 }
