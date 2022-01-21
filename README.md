@@ -40,15 +40,15 @@ cargo run --bin steward print-config
 
 Next, create a `toml` file in the root of the application, replacing the default keys in the template displayed in your terminal with your configuration. Make sure to confirm that the token info in your configuration file matches the deployed Cellar contract.
 
-You can create keys or import keys. To create keys, run the command below:
+You can create keys or import keys. To create keys, run the command below. Replace `eth` with `cosmos` if you want to create a `cosmos` key instead of an `eth` key.
 
 ```
-cargo run --bin steward -c [your_config_file_name.toml] keys add [key_name]
+cargo run --bin steward -- -c [your_config_file_name.toml] keys eth add [key_name]
 ```
 If you already have a key, you can import it with the command below:
 
 ```
-cargo run --bin steward -c [your_config_file_name.toml] keys import [key_name]
+cargo run --bin steward -- -c [your_config_file_name.toml] keys eth import [key_name]
 ```
 
 Now, navigate to the keystore location in your local environment, i.e `keys.keystore`. Confirm that the key was created successfully in the location you specified in your config file.
@@ -58,24 +58,24 @@ Now, navigate to the keystore location in your local environment, i.e `keys.keys
 Run the `allow-erc-2-0` command as shown below, to allow Erc20 token to interact with Cellar contract.
 
 ```
-cargo run --bin steward -c [your_config_file_name.toml] allow-erc-2-0 --cellar-address=[the_cellar_address] address [the_erc20_address] --amount [amount]
+cargo run --bin steward -- -c [your_config_file_name.toml] allow-erc-2-0 --cellar-address=[the_cellar_address] address [the_erc20_address] --amount [amount]
 
 // The command above, should look like this:
-cargo run --bin steward -c your_config_file_name.toml allow-erc-2-0 --cellar-address=0x08c0a00000000000000000000000000000000000 address 0x08c0a00000000000000000000000000000000000 --amount [amount]
+cargo run --bin steward -- -c your_config_file_name.toml allow-erc-2-0 --cellar-address=0x08c0a00000000000000000000000000000000000 address 0x08c0a00000000000000000000000000000000000 --amount [amount]
 ```
 
 #### Fund Cellars
 Before rebalancing Cellars, it has to be funded. follow the command below, to fund Cellars.
 
 ```
-cargo run --bin steward -c [your_config_file_name.toml] fund-cellar --cellar-id[cellar_id] --amount-0[amount] --amount-1[amount]
+cargo run --bin steward -- -c [your_config_file_name.toml] fund-cellar --cellar-id[cellar_id] --amount-0[amount] --amount-1[amount]
 ```
 
 #### Rebalance Cellars
 To start automatic rebalancing with the Cellars rebalancer, run the `single-signer` command in your terminal. Note that we need the standard environment variable `CELLAR_DRY_RUN` to be false in order to decide rebalance in the test mode. Therefore, to start the application run the command below:
 
 ```
-CELLAR_DRY_RUN=false cargo run --bin steward -c [your_config_file_name.toml] single-signer
+CELLAR_DRY_RUN=false cargo run --bin steward -- -c [your_config_file_name.toml] single-signer
 ```
 
 ### Steward Subcommands

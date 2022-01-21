@@ -117,12 +117,12 @@ steward -c [your_config_file_name.toml] cosmos-signer
 
 ## Start Orchestrator
 
-Steward allows you to start the Orchestrator with or without the Relayer. First, you’ll need an Ethereum key and a Cosmos key. Run the command below to create your keys if you don’t have one.
+Steward allows you to start the Orchestrator with or without the Relayer. First, you’ll need an Ethereum key and a Cosmos key. Run the command below to create your keys if you don’t have one. Replace `eth` with `cosmos` if you want to create a `cosmos` key instead of an `eth` key.
 
 ```bash
-steward eth keys add [key_name] 
+steward -c [your_config_file_name.toml] keys eth add [key_name] 
 
-steward cosmos keys add [key_name] 
+steward -c [your_config_file_name.toml] keys eth import [key_name] 
 ```
 
 To start the Orchestrator with the Relayer, run the command below:
