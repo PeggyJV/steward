@@ -68,13 +68,25 @@ impl Default for StewardConfig {
     }
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ServerSection {
     pub address: Option<String>,
     pub client_ca_cert_path: Option<String>,
     pub port: Option<u16>,
     pub server_cert_path: String,
     pub server_key_path: String,
+}
+
+impl Default for ServerSection {
+    fn default() -> Self {
+        Self {
+            address: Some("127.0.0.1".to_owned()),
+            client_ca_cert_path: Some("".to_owned()),
+            port: Some(9999),
+            server_cert_path: "".to_owned(),
+            server_key_path: "".to_owned(),
+        }
+    }
 }
 
 
