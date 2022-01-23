@@ -250,7 +250,6 @@ pub async fn direct_rebalance(
     if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
         Ok(())
     } else {
-        tick_info.reverse();
         contract_state.rebalance(tick_info).await
     }
 }
