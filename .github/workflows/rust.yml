@@ -63,15 +63,14 @@ jobs:
         with:
           command: fmt
           args: --all -- --check
-
- clippy:
+  clippy:
     name: Clippy
     runs-on: ubuntu-latest
     steps:  
       - name: Checkout branch
         uses: actions/checkout@v2
         with:
-        profile: minimal
+          profile: minimal
           toolchain: stable
           override: true
       - run: rustup component add clippy
