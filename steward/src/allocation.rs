@@ -13,6 +13,7 @@ use std::{convert::TryFrom, path, sync::Arc, time::Duration};
 use steward_abi::cellar_uniswap::CellarTickInfo;
 use tokio::time::{sleep, timeout};
 use tonic::transport::Channel;
+use gravity_bridge::gravity_utils::ethereum::downcast_to_u64;
 
 pub struct Connections {
     pub grpc: AllocationQueryClient<Channel>,
@@ -230,8 +231,15 @@ pub async fn direct_rebalance(
     let wallet: LocalWallet = Wallet::from(key);
 
     let eth_host = config.ethereum.rpc.clone();
-    let client = Provider::<Http>::try_from(eth_host.clone()).unwrap();
-    let client = SignerMiddleware::new(client, wallet.clone());
+    let provider = Provider::<Http>::try_from(eth_host.clone()).unwrap();
+
+    let chain_id = provider
+        .get_chainid()
+        .await
+        .expect("Could not retrieve chain ID");
+
+    let chain_id = downcast_to_u64(chain_id).expect("Chain ID overflowed when downcasting to u64");
+    let client = SignerMiddleware::new(provider, wallet.clone());
     let client = Arc::new(client);
     let mut contract_state = UniswapV3CellarState::new(cellar_address, client);
     for tick_weight in tick_weight {
