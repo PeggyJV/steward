@@ -80,7 +80,7 @@ pub struct ServerSection {
 impl Default for ServerSection {
     fn default() -> Self {
         Self {
-            address: Some("127.0.0.1".to_owned()),
+            address: Some("0.0.0.0".to_owned()),
             client_ca_cert_path: Some("".to_owned()),
             port: Some(9999),
             server_cert_path: "".to_owned(),
