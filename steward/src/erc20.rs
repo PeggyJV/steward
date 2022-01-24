@@ -25,7 +25,6 @@ impl<T: 'static + Middleware> Erc20State<T> {
         let gas_increase = call.gas(80_000);
         let pending = gas_increase.send().await.unwrap();
         info!("Approve transaction {:?}", pending);
-        return;
     }
 }
 

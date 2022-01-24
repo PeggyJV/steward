@@ -164,7 +164,7 @@ pub fn to_allocation(
         vote: Some(somm::RebalanceVote {
             cellar: Some(somm::Cellar {
                 id: cellar_address,
-                tick_ranges: tick_ranges,
+                tick_ranges,
             }),
             current_price: eth_gas_price,
         }),

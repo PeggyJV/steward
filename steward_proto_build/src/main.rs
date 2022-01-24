@@ -34,7 +34,7 @@ fn main() {
     // this gives us the repo root by going up one level from the module root
     let root = root.parent().unwrap().to_path_buf();
 
-    let mut steward_proto_dir = root.clone();
+    let mut steward_proto_dir = root;
     steward_proto_dir.push("steward_proto/proto/cellars");
     let steward_proto_dir = [steward_proto_dir];
 

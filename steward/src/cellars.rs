@@ -11,7 +11,7 @@ pub struct CellarId {
 }
 
 impl std::fmt::Display for CellarId {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}:{}", self.chain, self.address)
     }
 }
@@ -23,7 +23,10 @@ pub async fn get_gas_price() -> Result<U256, Error> {
 fn parse_cellar_id(cellar_id: &str) -> Result<CellarId, String> {
     let parts: Vec<&str> = cellar_id.split(':').collect();
     if parts.len() != 2 {
-        return Err(format!("invalid cellar_id format: {}. proper format is 'chainname:address'", cellar_id).to_string());
+        return Err(format!(
+            "invalid cellar_id format: {}. proper format is 'chainname:address'",
+            cellar_id
+        ));
     }
     if let Err(err) = parts[1].parse::<H160>() {
         return Err(format!("invalid ethereum address: {}", err).to_string());

@@ -97,7 +97,9 @@ pub async fn data_hash(
             cellar_id: vote.cellar.clone().unwrap().id,
         });
     }
-    return Err(ErrorKind::AllocationError.context("No cellar".to_string()).into());
+    Err(ErrorKind::AllocationError
+        .context("No cellar".to_string())
+        .into())
 }
 
 pub async fn query_allocation_precommits(

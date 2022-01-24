@@ -85,7 +85,7 @@ impl Application for CellarRebalancerApp {
         } else {
             match std::env::var("RUST_LOG") {
                 Ok(val) => {
-                    if val != "" {
+                    if !val.is_empty() {
                         val.into()
                     } else {
                         trace::Config::default()
