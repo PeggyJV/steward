@@ -6,7 +6,8 @@ use ethers::{contract::ContractError, middleware::gas_oracle::GasOracleError, pr
 use std::{
     fmt::{self, Display},
     io,
-    ops::Deref, net::AddrParseError,
+    net::AddrParseError,
+    ops::Deref,
 };
 use thiserror::Error;
 

@@ -9,7 +9,6 @@ use serde::{Deserialize, Serialize};
 use signatory::FsKeyStore;
 use std::{net::SocketAddr, path::Path, time::Duration};
 
-
 /// CellarRebalancer Configuration
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields)]
@@ -88,7 +87,6 @@ impl Default for ServerSection {
         }
     }
 }
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct KeysConfig {

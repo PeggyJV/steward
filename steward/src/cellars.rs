@@ -1,4 +1,7 @@
-use crate::{error::{Error, ErrorKind}, gas::CellarGas};
+use crate::{
+    error::{Error, ErrorKind},
+    gas::CellarGas,
+};
 use ethers::prelude::*;
 use std::{fmt, result::Result};
 
@@ -23,7 +26,11 @@ pub async fn get_gas_price() -> Result<U256, Error> {
 fn parse_cellar_id(cellar_id: &str) -> Result<CellarId, String> {
     let parts: Vec<&str> = cellar_id.split(':').collect();
     if parts.len() != 2 {
-        return Err(format!("invalid cellar_id format: {}. proper format is 'chainname:address'", cellar_id).to_string());
+        return Err(format!(
+            "invalid cellar_id format: {}. proper format is 'chainname:address'",
+            cellar_id
+        )
+        .to_string());
     }
     // This assumes Ethereum address format for now.
     let address = match parts[1].parse::<H160>() {

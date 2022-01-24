@@ -1,6 +1,6 @@
 //! Rust Wrapper for cellar functions
 /// This will convert cellar functions from tuples to Rust types
-use crate::{allocation, error::Error, prelude::*, cellars};
+use crate::{allocation, cellars, error::Error, prelude::*};
 use ethers::prelude::*;
 use somm_proto::somm;
 use std::result::Result;
@@ -191,11 +191,15 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
         let cellar_address = match cellars::parse_cellar_id(&request.cellar_id) {
             Ok(addr) => addr,
             Err(err) => return Err(tonic::Status::invalid_argument(err)),
-        }.address;
+        }
+        .address;
 
         tokio::spawn(async move {
             if let Err(err) = allocation::decide_rebalance(tick_ranges, cellar_address).await {
-                error!("error occurred during uniswapv3 cellar allocation: {:?}", err);
+                error!(
+                    "error occurred during uniswapv3 cellar allocation: {:?}",
+                    err
+                );
             }
         });
         Ok(tonic::Response::new(RebalanceResponse {}))
