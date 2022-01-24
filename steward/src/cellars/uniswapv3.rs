@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 //! Rust Wrapper for cellar functions
 /// This will convert cellar functions from tuples to Rust types
 use crate::{allocation, cellars, error::Error, prelude::*};

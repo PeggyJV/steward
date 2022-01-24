@@ -1,12 +1,12 @@
-use std::{convert::TryInto, net::SocketAddr};
+use std::net::SocketAddr;
 
 use crate::{config::StewardConfig, error::Error};
 use tonic::transport::{Certificate, Identity, ServerTlsConfig};
 
-pub const DEFAULT_CLIENT_CA: &'static [u8] = include_bytes!("../../tls/volumefi_ca.crt");
+pub const DEFAULT_CLIENT_CA: &[u8] = include_bytes!("../../tls/volumefi_ca.crt");
 pub const DEFAULT_STEWARD_PORT: u16 = 5734;
 // for gRPC reflection
-pub const DESCRIPTOR: &'static [u8] =
+pub const DESCRIPTOR: &[u8] =
     include_bytes!("../../steward_proto/src/prost/descriptor.bin");
 
 pub struct ServerConfig {
@@ -27,7 +27,7 @@ pub async fn load_server_config(
     let client_ca_cert = Certificate::from_pem(client_ca);
     let tls_config = ServerTlsConfig::new()
         .identity(server_identity.clone())
-        .client_ca_root(client_ca_cert.clone());
+        .client_ca_root(client_ca_cert);
     let port = match config.server.port {
         Some(p) => p,
         None => DEFAULT_STEWARD_PORT,
@@ -39,7 +39,7 @@ pub async fn load_server_config(
     let address: SocketAddr = format!("{}:{}", address, port).parse()?;
 
     Ok(ServerConfig {
-        tls_config: tls_config,
-        address: address,
+        tls_config,
+        address,
     })
 }

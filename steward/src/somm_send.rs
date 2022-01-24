@@ -89,7 +89,7 @@ pub async fn data_hash(
     if let Some(cellar) = &allocation.clone().vote.unwrap().cellar {
         let mut buf = BytesMut::new();
         cellar.encode(&mut buf).unwrap();
-        let cellar_data = hex::encode(&buf).to_string();
+        let cellar_data = hex::encode(&buf);
         let msg = format!("{}:{}:{}", allocation.salt, cellar_data, val_address);
         hasher.update(msg.as_bytes());
 
@@ -98,9 +98,9 @@ pub async fn data_hash(
             cellar_id: cellar.id.clone(),
         });
     }
-    return Err(ErrorKind::AllocationError
+    Err(ErrorKind::AllocationError
         .context("No cellar".to_string())
-        .into());
+        .into())
 }
 
 pub async fn query_allocation_precommits(

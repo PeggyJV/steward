@@ -3,7 +3,6 @@
 //! See instructions in `commands.rs` to specify the path to your
 //! application's configuration file and/or command-line options
 //! for specifying it.
-use crate::server::{DEFAULT_CLIENT_CA, DEFAULT_STEWARD_PORT};
 use ethers::{prelude::H160, signers::LocalWallet as EthWallet};
 use serde::{Deserialize, Serialize};
 use signatory::FsKeyStore;

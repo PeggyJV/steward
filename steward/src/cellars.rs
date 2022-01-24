@@ -1,7 +1,4 @@
-use crate::{
-    error::{Error, ErrorKind},
-    gas::CellarGas,
-};
+use crate::{error::Error, gas::CellarGas};
 use ethers::prelude::*;
 use std::{fmt, result::Result};
 
@@ -14,7 +11,7 @@ pub struct CellarId {
 }
 
 impl std::fmt::Display for CellarId {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}:{}", self.chain, self.address)
     }
 }
@@ -29,18 +26,17 @@ fn parse_cellar_id(cellar_id: &str) -> Result<CellarId, String> {
         return Err(format!(
             "invalid cellar_id format: {}. proper format is 'chainname:address'",
             cellar_id
-        )
-        .to_string());
+        ));
     }
     // This assumes Ethereum address format for now.
     let address = match parts[1].parse::<H160>() {
         Ok(addr) => addr,
-        Err(err) => return Err(format!("error parsing ethereum address: {}", err).to_string()),
+        Err(err) => return Err(format!("error parsing ethereum address: {}", err)),
     };
 
     Ok(CellarId {
         chain: parts[0].to_string(),
-        address: address,
+        address,
     })
 }
 
