@@ -116,8 +116,6 @@ impl Configurable<StewardConfig> for EntryPoint {
     /// This can be safely deleted if you don't want to override config
     /// settings from command-line options.
     fn process_config(&self, config: StewardConfig) -> Result<StewardConfig, FrameworkError> {
-        match &self.cmd {
-            _ => Ok(config),
-        }
+        Ok(config)
     }
 }
