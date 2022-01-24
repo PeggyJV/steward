@@ -21,23 +21,21 @@ const (
 
 func (s *IntegrationTestSuite) TestRebalance() {
 	s.Run("Bring up chain, and submit a re-balance", func() {
-		tickRange, err := s.getFirstTickRange()
+		initialTickRange, err := s.getFirstTickRange()
 		s.Require().NoError(err)
-		s.Require().Equal(int32(600), tickRange.Upper)
-		s.Require().Equal(int32(300), tickRange.Lower)
-		s.Require().Equal(uint32(900), tickRange.Weight)
-
-		commit := types.Allocation{
-			Vote: &types.RebalanceVote{
-				Cellar: &types.Cellar{
-					Id: hardhatCellar.String(),
-					TickRanges: []*types.TickRange{
-						{Upper: 198840, Lower: 192180, Weight: 100},
-					},
-				},
-				CurrentPrice: 100,
+		s.Require().Equal(int32(600), initialTickRange.Upper)
+		s.Require().Equal(int32(300), initialTickRange.Lower)
+		s.Require().Equal(uint32(900), initialTickRange.Weight)
+		expectedTickRange := &types.TickRange{
+			Upper:  198840,
+			Lower:  192180,
+			Weight: 100,
+		}
+		cellar := &types.Cellar{
+			Id: hardhatCellar.String(),
+			TickRanges: []*types.TickRange{
+				expectedTickRange,
 			},
-			Salt: "testsalt",
 		}
 
 		s.T().Logf("checking that test cellar exists in the chain")
@@ -110,9 +108,9 @@ func (s *IntegrationTestSuite) TestRebalance() {
 				c := NewUniswapV3CellarAllocatorClient(conn)
 				data := []*Position{
 					{
-						UpperPrice: commit.Vote.Cellar.TickRanges[0].Upper,
-						LowerPrice: commit.Vote.Cellar.TickRanges[0].Lower,
-						Weight:     commit.Vote.Cellar.TickRanges[0].Weight,
+						UpperPrice: expectedTickRange.Upper,
+						LowerPrice: expectedTickRange.Lower,
+						Weight:     expectedTickRange.Weight,
 					},
 				}
 				s.T().Logf("sending request to %s", s.chain.validators[i].keyInfo.GetAddress())
@@ -149,18 +147,20 @@ func (s *IntegrationTestSuite) TestRebalance() {
 		}, 105*time.Second, 1*time.Second, "new vote period never seen")
 
 		s.T().Logf("checking pre-commits for validators")
+		precommits := make([]types.AllocationPrecommit, 4)
 		for _, val := range s.chain.validators {
 			val := val
+			address := val.keyInfo.GetAddress()
+			operator := sdk.ValAddress(address)
 			s.Require().Eventuallyf(func() bool {
 				kb, err := val.keyring()
 				s.Require().NoError(err)
-				clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+				clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", address)
 				s.Require().NoError(err)
 
 				queryClient := types.NewQueryClient(clientCtx)
-				signerVal := sdk.ValAddress(val.keyInfo.GetAddress())
 				res, err := queryClient.QueryAllocationPrecommit(context.Background(), &types.QueryAllocationPrecommitRequest{
-					Validator: signerVal.String(),
+					Validator: operator.String(),
 					Cellar:    hardhatCellar.String(),
 				})
 				if err != nil {
@@ -170,8 +170,9 @@ func (s *IntegrationTestSuite) TestRebalance() {
 					return false
 				}
 				s.Require().NoError(err, "unable to create precommit")
-				s.Require().Equal(res.Precommit.CellarId, commit.Vote.Cellar.Id, "cellar ids unequal")
+				s.Require().Equal(res.Precommit.CellarId, cellar.Id, "cellar ids unequal")
 
+				precommits[val.index] = *res.Precommit
 				return true
 			},
 				30*time.Second,
@@ -183,21 +184,26 @@ func (s *IntegrationTestSuite) TestRebalance() {
 		s.T().Logf("checking commits for validators")
 		for _, val := range s.chain.validators {
 			val := val
+			address := val.keyInfo.GetAddress()
+			operator := sdk.ValAddress(address)
 			s.Require().Eventuallyf(func() bool {
 				kb, err := val.keyring()
 				s.Require().NoError(err)
-				clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+				clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", address)
 				s.Require().NoError(err)
 
 				queryClient := types.NewQueryClient(clientCtx)
-				res, err := queryClient.QueryAllocationCommit(context.Background(), &types.QueryAllocationCommitRequest{Validator: sdk.ValAddress(val.keyInfo.GetAddress()).String(), Cellar: hardhatCellar.String()})
+				res, err := queryClient.QueryAllocationCommit(context.Background(), &types.QueryAllocationCommitRequest{Validator: operator.String(), Cellar: hardhatCellar.String()})
 				if err != nil {
 					return false
 				}
 				if res == nil {
 					return false
 				}
-				s.Require().Equal(res.Commit.Vote.Cellar.Id, commit.Vote.Cellar.Id, "cellar ids unequal")
+				s.Require().Equal(res.Commit.Vote.Cellar.Id, cellar.Id, "cellar ids unequal")
+				commitHash, err := res.Commit.Vote.Hash(res.Commit.Salt, operator)
+				s.Require().NoError(err, "unable to create commit hash for comparison")
+				s.Require().Equal(commitHash, precommits[val.index].Hash, "commit and precommit hashes do not match")
 
 				return true
 			},
@@ -232,21 +238,21 @@ func (s *IntegrationTestSuite) TestRebalance() {
 
 		s.T().Logf("checking for updated tick ranges in cellar")
 		s.Require().Eventuallyf(func() bool {
-			tickRange, err = s.getFirstTickRange()
+			actualTickRange, err := s.getFirstTickRange()
 			if err != nil {
 				s.T().Logf("got error %e querying ticks", err)
 				return false
 			}
-			if commit.Vote.Cellar.TickRanges[0].Upper != tickRange.Upper {
-				s.T().Logf("wrong upper %s", tickRange.String())
+			if initialTickRange.Upper != actualTickRange.Upper {
+				s.T().Logf("wrong upper %s", actualTickRange.String())
 				return false
 			}
-			if commit.Vote.Cellar.TickRanges[0].Lower != tickRange.Lower {
-				s.T().Logf("wrong lower %s", tickRange.String())
+			if initialTickRange.Lower != actualTickRange.Lower {
+				s.T().Logf("wrong lower %s", actualTickRange.String())
 				return false
 			}
-			if commit.Vote.Cellar.TickRanges[0].Weight != tickRange.Weight {
-				s.T().Logf("wrong weight %s", tickRange.String())
+			if initialTickRange.Weight != actualTickRange.Weight {
+				s.T().Logf("wrong weight %s", actualTickRange.String())
 				return false
 			}
 
@@ -268,11 +274,10 @@ func (s *IntegrationTestSuite) TestRebalance() {
 			}
 			s.Require().Len(res.Cellars, 1, "incorrect number of cellars on chain")
 			s.T().Logf("cellars %s", res.Cellars)
-			if !res.Cellars[0].Equals(*commit.Vote.Cellar) {
-				s.T().Logf("unequal cellars %s %s", res.Cellars[0].String(), commit.Vote.Cellar.String())
+			if !res.Cellars[0].Equals(*cellar) {
+				s.T().Logf("unequal cellars %s %s", res.Cellars[0].String(), cellar.String())
 				return false
 			}
-
 			return true
 		}, 100*time.Second, 10*time.Second, "on chain cellars never updated")
 
