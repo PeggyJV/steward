@@ -48,7 +48,7 @@ pub async fn decide_rebalance(
         Ok(gp) => {
             debug!("eth gas price is {}", gp);
             gp
-        },
+        }
         Err(err) => {
             error!("failed to get cellar gas price: {}", err);
             // TO-DO handle this better
@@ -64,20 +64,31 @@ pub async fn decide_rebalance(
 
     debug!("establishing connections to validator");
     let mut connections = get_connections().await?;
-    let (allocation_client, contact, mut gravity_client) = (&mut connections.allocation_client, connections.contact, &mut connections.gravity_client);
+    let (allocation_client, contact, mut gravity_client) = (
+        &mut connections.allocation_client,
+        connections.contact,
+        &mut connections.gravity_client,
+    );
 
-    debug!("querying the validator address based on the associated delegate address {}", cosmos_delegate_address);
-    let delegate_keys = utils::get_delegates_keys_by_orchestrator(&mut gravity_client, cosmos_delegate_address.to_string()).await?;
+    debug!(
+        "querying the validator address based on the associated delegate address {}",
+        cosmos_delegate_address
+    );
+    let delegate_keys = utils::get_delegates_keys_by_orchestrator(
+        &mut gravity_client,
+        cosmos_delegate_address.to_string(),
+    )
+    .await?;
     let validator_address = delegate_keys.validator_address;
-    debug!("precommit containing cellar {} will be signed by {} on behalf of {}", cellar_address, cosmos_delegate_address, validator_address);
+    debug!(
+        "precommit containing cellar {} will be signed by {} on behalf of {}",
+        cellar_address, cosmos_delegate_address, validator_address
+    );
 
     debug!("building commit and precommit objects");
-    let allocation = to_allocation(
-        tick_range,
-        cellar_address.clone(),
-        eth_gas_price.as_u64(),
-    );
-    let allocation_precommit = &allocation_precommit(validator_address, &allocation, cellar_address).await?;
+    let allocation = to_allocation(tick_range, cellar_address.clone(), eth_gas_price.as_u64());
+    let allocation_precommit =
+        &allocation_precommit(validator_address, &allocation, cellar_address).await?;
 
     debug!("getting cosmos fee");
     let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
@@ -126,8 +137,8 @@ pub async fn decide_rebalance(
                     if val.contains(allocation_precommit) {
                         break val;
                     }
-                },
-                Err(err) => error!("error querying precommit: {}", err)
+                }
+                Err(err) => error!("error querying precommit: {}", err),
             }
             sleep(Duration::from_secs(1)).await;
         }

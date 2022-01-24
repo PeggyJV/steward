@@ -1,7 +1,7 @@
 //! Error types
 
 use abscissa_core::error::{BoxError, Context};
-use deep_space::error::{CosmosGrpcError, PrivateKeyError, AddressError};
+use deep_space::error::{AddressError, CosmosGrpcError, PrivateKeyError};
 use ethers::{contract::ContractError, middleware::gas_oracle::GasOracleError, prelude::*};
 use std::{
     fmt::{self, Display},
