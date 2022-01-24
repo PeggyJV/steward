@@ -30,11 +30,8 @@ pub async fn allocation_precommit(
     cellar_address: String,
 ) -> Result<somm::AllocationPrecommit, Error> {
     let config = APP.config();
-    let delegate_cosmos_address = cosmos_key
-        .to_address(&config.cosmos.prefix)?
-        .to_string();
-    let hasher = somm_send::data_hash(allocation, delegate_cosmos_address)
-        .await?;
+    let delegate_cosmos_address = cosmos_key.to_address(&config.cosmos.prefix)?.to_string();
+    let hasher = somm_send::data_hash(allocation, delegate_cosmos_address).await?;
     Ok(somm::AllocationPrecommit {
         hash: hasher.hash,
         cellar_id: cellar_address,
@@ -118,8 +115,12 @@ pub async fn decide_rebalance(
                     cosmos_key,
                     fee.clone(),
                     vec![
-                        allocation_precommit(&cosmos_key, &allocation, format_eth_address(cellar_address))
-                            .await?,
+                        allocation_precommit(
+                            &cosmos_key,
+                            &allocation,
+                            format_eth_address(cellar_address),
+                        )
+                        .await?,
                     ],
                 )
                 .await?;
@@ -170,7 +171,7 @@ pub fn to_allocation(
         vote: Some(somm::RebalanceVote {
             cellar: Some(somm::Cellar {
                 id: cellar_address,
-                tick_ranges: tick_ranges,
+                tick_ranges,
             }),
             current_price: eth_gas_price,
         }),
