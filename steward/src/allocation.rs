@@ -64,7 +64,7 @@ pub async fn decide_rebalance(
 
     debug!("establishing connections to validator");
     let mut connections = get_connections().await?;
-    let (allocation_client, contact, mut gravity_client) = (
+    let (allocation_client, contact, gravity_client) = (
         &mut connections.allocation_client,
         connections.contact,
         &mut connections.gravity_client,
@@ -75,7 +75,7 @@ pub async fn decide_rebalance(
         cosmos_delegate_address
     );
     let delegate_keys = utils::get_delegates_keys_by_orchestrator(
-        &mut gravity_client,
+        gravity_client,
         cosmos_delegate_address.to_string(),
     )
     .await?;

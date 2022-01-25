@@ -29,7 +29,7 @@ fn parse_cellar_id(cellar_id: &str) -> Result<CellarId, String> {
         ));
     }
     if let Err(err) = parts[1].parse::<H160>() {
-        return Err(format!("invalid ethereum address: {}", err).to_string());
+        return Err(format!("invalid ethereum address: {}", err));
     }
 
     Ok(CellarId {

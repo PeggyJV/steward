@@ -88,7 +88,7 @@ pub async fn data_hash(
     if let Some(vote) = &allocation.clone().vote {
         let mut buf = BytesMut::new();
         vote.encode(&mut buf).unwrap();
-        let vote_data = hex::encode(&buf).to_string();
+        let vote_data = hex::encode(&buf);
         let msg = format!("{}:{}:{}", allocation.salt, vote_data, val_address);
         hasher.update(msg.as_bytes());
 
