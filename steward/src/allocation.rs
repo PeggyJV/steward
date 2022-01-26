@@ -2,9 +2,9 @@ use crate::{
     cellars, cellars::uniswapv3::UniswapV3CellarState, error::Error, prelude::*, somm_send,
 };
 use abscissa_core::Application;
-use chrono::DateTime;
 use deep_space::{private_key::PrivateKey, Coin, Contact};
 use ethers::prelude::*;
+use gravity_bridge::gravity_utils::ethereum::downcast_to_u64;
 use rand::{distributions::Alphanumeric, rngs::OsRng, Rng};
 use serde::{Deserialize, Serialize};
 use signatory::FsKeyStore;
@@ -13,7 +13,6 @@ use std::{convert::TryFrom, path, sync::Arc, time::Duration};
 use steward_abi::cellar_uniswap::CellarTickInfo;
 use tokio::time::{sleep, timeout};
 use tonic::transport::Channel;
-use gravity_bridge::gravity_utils::ethereum::downcast_to_u64;
 
 pub struct Connections {
     pub grpc: AllocationQueryClient<Channel>,
@@ -239,7 +238,7 @@ pub async fn direct_rebalance(
         .expect("Could not retrieve chain ID");
 
     let chain_id = downcast_to_u64(chain_id).expect("Chain ID overflowed when downcasting to u64");
-    let client = SignerMiddleware::new(provider, wallet.clone());
+    let client = SignerMiddleware::new(provider, wallet.clone().with_chain_id(chain_id));
     let client = Arc::new(client);
     let mut contract_state = UniswapV3CellarState::new(cellar_address, client);
     for tick_weight in tick_weight {

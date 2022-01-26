@@ -1,5 +1,6 @@
 //! Start subcommand - example of how to write a subcommand
 
+use crate::cellars::uniswapv3::UniswapV3DirectCellar;
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::{
@@ -10,8 +11,7 @@ use crate::{
 };
 use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
 use std::result::Result;
-use steward_proto::uniswapv3::uniswap_v3_direct_cellar_server::{UniswapV3DirectCellarServer};
-use crate::cellars::uniswapv3::UniswapV3DirectCellar;
+use steward_proto::uniswapv3::uniswap_v3_direct_cellar_server::UniswapV3DirectCellarServer;
 #[derive(Command, Debug, Clap)]
 pub struct SingleSignerCmd;
 
