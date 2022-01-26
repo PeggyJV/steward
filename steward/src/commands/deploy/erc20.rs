@@ -64,10 +64,8 @@ impl Erc20 {
             .expect("Could not retrieve chain ID");
         let chain_id =
             downcast_to_u64(chain_id).expect("Chain ID overflowed when downcasting to u64");
-        let eth_client = SignerMiddleware::new(
-            provider,
-            ethereum_wallet.clone().with_chain_id(chain_id),
-        );
+        let eth_client =
+            SignerMiddleware::new(provider, ethereum_wallet.clone().with_chain_id(chain_id));
         let eth_client = Arc::new(eth_client);
         let mut grpc = connections.grpc.clone().unwrap();
 
@@ -101,7 +99,7 @@ impl Erc20 {
         println!("We have deployed ERC20 contract at tx hash {}, waiting to see if the Cosmos chain chooses to adopt it",
             format_eth_hash(res));
 
-        match tokio::time::timeout(Duration::from_secs(100), async {
+        match tokio::time::timeout(Duration::from_secs(300), async {
             loop {
                 let req = DenomToErc20Request {
                     denom: denom.clone(),

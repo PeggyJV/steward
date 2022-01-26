@@ -7,7 +7,7 @@ use crate::{
     cellars::uniswapv3::UniswapV3CellarAllocator,
     config::StewardConfig,
     prelude::*,
-    server::{self, DEFAULT_STEWARD_PORT},
+    server::{self},
 };
 use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
 use std::result::Result;
