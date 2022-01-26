@@ -43,18 +43,6 @@ pub async fn decide_rebalance(
     cellar_address: String,
 ) -> Result<(), Error> {
     debug!("deciding rebalance for cellar address {}", cellar_address);
-    debug!("getting eth gas price");
-    let eth_gas_price = match cellars::get_gas_price().await {
-        Ok(gp) => {
-            debug!("eth gas price is {}", gp);
-            gp
-        }
-        Err(err) => {
-            error!("failed to get cellar gas price: {}", err);
-            // TO-DO handle this better
-            0.into()
-        }
-    };
     let config = APP.config();
 
     debug!("loading the delegate (orchestrator) key and address from config");
@@ -84,6 +72,9 @@ pub async fn decide_rebalance(
         "precommit containing cellar {} will be signed by {} on behalf of {}",
         cellar_address, cosmos_delegate_address, validator_address
     );
+
+    debug!("getting eth gas price");
+    let eth_gas_price = cellars::get_gas_price().await?;
 
     debug!("building commit and precommit objects");
     let allocation = to_allocation(tick_range, cellar_address.clone(), eth_gas_price.as_u64());

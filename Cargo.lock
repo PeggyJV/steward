@@ -4750,6 +4750,7 @@ dependencies = [
  "tonic-reflection",
  "tower",
  "uniswap_v3_sdk",
+ "url",
 ]
 
 [[package]]

@@ -29,7 +29,6 @@ prost = "0.7"
 prost-types = "0.7"
 rand_core = { version = "0.6", features = ["std"] }
 rand = "0.8.0"
-steward_abi = { path = "../steward_abi" }
 regex = "1.5.4"
 rpassword = "5"
 serde = { version = "1", features = ["serde_derive"] }
@@ -37,6 +36,7 @@ serde_json = "1.0.64"
 sha2 = "0.9"
 signatory = "0.23.0-pre"
 somm_proto = { git = "https://github.com/PeggyJV/sommelier" }
+steward_abi = { path = "../steward_abi" }
 steward_proto = { path = "../steward_proto" }
 thiserror = "1"
 tokio ={ version = "1", features = ["macros", "fs"] }
@@ -45,6 +45,7 @@ tonic = { version = "0.4.3", features = ["codegen", "tls", "transport"] }
 tonic-reflection = "0.1.0"
 tower = { version = "0.4", features = ["buffer", "util"] }
 uniswap_v3_sdk ={ git = "https://github.com/PeggyJV/uniswap_sdk_rs", branch = "main" }
+url = "2.2.2"
 lazy_static = "1.4.0"
 
 # this is a dirty trick, we depent transitively on OpenSSL it's never
