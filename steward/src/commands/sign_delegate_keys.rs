@@ -1,10 +1,10 @@
 use crate::{application::APP, prelude::*};
-use abscissa_core::{Application, Clap, Command, Runnable};
+use abscissa_core::{Application, clap::Parser, Command, Runnable};
 use gravity_bridge::gravity_proto::gravity as proto;
 use std::time::Duration;
 
 /// Sign delegate keys
-#[derive(Command, Debug, Default, Clap)]
+#[derive(Command, Debug, Default, Parser)]
 pub struct SignDelegateKeysCmd {
     pub args: Vec<String>,
 }

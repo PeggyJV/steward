@@ -9,11 +9,11 @@ use crate::{
     prelude::*,
     server::{self},
 };
-use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
+use abscissa_core::{config, clap::Parser, Command, FrameworkError, Runnable};
 use std::result::Result;
 use steward_proto::uniswapv3::server::UniswapV3CellarAllocatorServer;
 
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub struct CosmosSignerCmd;
 
 impl Runnable for CosmosSignerCmd {

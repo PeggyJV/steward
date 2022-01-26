@@ -1,6 +1,6 @@
 use std::{convert::TryFrom, path, sync::Arc, time::Duration};
 
-use abscissa_core::{Application, Clap, Command, Runnable};
+use abscissa_core::{Application, clap::Parser, Command, Runnable};
 
 use ethers::prelude::*;
 
@@ -9,7 +9,7 @@ use signatory::FsKeyStore;
 use crate::{cellars::uniswapv3::UniswapV3CellarState, gas::CellarGas, prelude::*};
 
 /// Cellars reinvest command
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub struct ReinvestCommand {
     #[clap(short = 'i', long)]
     pub cellar_id: u32,

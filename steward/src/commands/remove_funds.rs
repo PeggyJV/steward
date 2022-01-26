@@ -1,6 +1,6 @@
 use std::{convert::TryFrom, path, sync::Arc, time::Duration};
 
-use abscissa_core::{Application, Clap, Command, Runnable};
+use abscissa_core::{Application, clap::Parser, Command, Runnable};
 use chrono::Utc;
 use ethers::prelude::*;
 use signatory::FsKeyStore;
@@ -9,7 +9,7 @@ use crate::{cellars::uniswapv3::UniswapV3CellarState, prelude::*};
 use steward_abi::cellar_uniswap::*;
 
 /// Remove funds from Cellars
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub struct RemoveFundsCmd {}
 
 impl Runnable for RemoveFundsCmd {
