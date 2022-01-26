@@ -1,7 +1,7 @@
 //! `cosmos subcommands` subcommand
 
 use crate::{application::APP, prelude::*, utils::*};
-use abscissa_core::{Clap, Command, Runnable};
+use abscissa_core::{clap::Parser, Command, Runnable};
 use clarity::Uint256;
 use deep_space::{coin::Coin, private_key::PrivateKey as CosmosPrivateKey};
 use ethers::types::Address as EthAddress;
@@ -12,7 +12,7 @@ use regex::Regex;
 use std::process::exit;
 
 /// Create Tx on Cosmos chain
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub enum Cosmos {
     SendToEth(SendToEth),
     Send(Send),
@@ -25,7 +25,7 @@ impl Runnable for Cosmos {
     }
 }
 
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub struct SendToEth {
     free: Vec<String>,
 
@@ -148,7 +148,7 @@ impl Runnable for SendToEth {
     }
 }
 
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub struct Send {
     free: Vec<String>,
 
