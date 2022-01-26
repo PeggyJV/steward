@@ -1,12 +1,12 @@
 use super::show::ShowCosmosKeyCmd;
 use crate::application::APP;
-use abscissa_core::{Application, Clap, Command, Runnable};
+use abscissa_core::{Application, clap::Parser, Command, Runnable};
 use k256::pkcs8::ToPrivateKey;
 use rand_core::OsRng;
 use signatory::FsKeyStore;
 use std::path;
 
-#[derive(Command, Debug, Default, Clap)]
+#[derive(Command, Debug, Default, Parser)]
 pub struct AddCosmosKeyCmd {
     pub args: Vec<String>,
 
