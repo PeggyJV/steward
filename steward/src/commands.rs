@@ -35,14 +35,14 @@ use self::{
 };
 
 use crate::config::StewardConfig;
-use abscissa_core::{Clap, Command, Configurable, FrameworkError, Runnable};
+use abscissa_core::{clap::Parser, Command, Configurable, FrameworkError, Runnable};
 use std::path::PathBuf;
 
 /// CellarRebalancer Configuration Filename
 pub const CONFIG_FILE: &str = "steward.toml";
 
 /// CellarRebalancer Subcommands
-#[derive(Command, Debug, Clap, Runnable)]
+#[derive(Command, Debug, Parser, Runnable)]
 pub enum CellarRebalancerCmd {
     SingleSigner(SingleSignerCmd),
     Transfer(TransferCmd),
@@ -71,7 +71,7 @@ pub enum CellarRebalancerCmd {
 }
 
 /// Entry point for the application. It needs to be a struct to allow using subcommands!
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 #[clap(author, about, version)]
 pub struct EntryPoint {
     #[clap(subcommand)]
