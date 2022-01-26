@@ -4,11 +4,11 @@ mod cosmos;
 
 mod eth;
 
-use abscissa_core::{Clap, Command, Runnable};
+use abscissa_core::{clap::Parser, Command, Runnable};
 
 /// Create transactions on either ethereum or cosmos chains
 
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub enum TxCmd {
     #[clap(subcommand)]
     Cosmos(cosmos::Cosmos),

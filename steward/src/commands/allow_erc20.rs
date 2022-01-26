@@ -1,6 +1,6 @@
 use std::{convert::TryFrom, path, sync::Arc, time::Duration};
 
-use abscissa_core::{Application, Clap, Command, Runnable};
+use abscissa_core::{clap::Parser, Application, Command, Runnable};
 
 use ethers::prelude::*;
 
@@ -9,7 +9,7 @@ use signatory::FsKeyStore;
 use crate::{erc20::Erc20State, gas::CellarGas, prelude::*};
 
 /// Allow Erc20 Token to interact with cellar contract
-#[derive(Command, Debug, Default, Clap)]
+#[derive(Command, Debug, Default, Parser)]
 pub struct AllowERC20 {
     #[clap(short = 'C', long)]
     cellar_address: H160,

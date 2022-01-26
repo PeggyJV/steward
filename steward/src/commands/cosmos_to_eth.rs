@@ -1,5 +1,5 @@
 use crate::application::APP;
-use abscissa_core::{status_err, Application, Clap, Command, Runnable};
+use abscissa_core::{clap::Parser, status_err, Application, Command, Runnable};
 use clarity::Uint256;
 use deep_space::coin::Coin;
 use ethers::types::Address as EthAddress;
@@ -11,7 +11,7 @@ use std::{process::exit, time::Duration};
 const TIMEOUT: Duration = Duration::from_secs(60);
 
 /// Send Cosmos to the Eth chain
-#[derive(Command, Debug, Default, Clap)]
+#[derive(Command, Debug, Default, Parser)]
 pub struct CosmosToEthCmd {
     #[clap(short, long)]
     pub args: Vec<String>,

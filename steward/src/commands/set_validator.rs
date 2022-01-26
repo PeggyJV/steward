@@ -1,13 +1,13 @@
 use std::{convert::TryFrom, path, sync::Arc, time::Duration};
 
-use abscissa_core::{Clap, Command, Runnable};
+use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::prelude::*;
 use signatory::FsKeyStore;
 
 use crate::{cellars::uniswapv3::UniswapV3CellarState, gas::CellarGas, prelude::*};
 
 /// `set-validator` subcommand
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub struct SetValidatorCmd {
     #[clap(short = 'v', long)]
     validator: H160,

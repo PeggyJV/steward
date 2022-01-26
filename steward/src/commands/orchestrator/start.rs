@@ -1,5 +1,5 @@
 use crate::{application::APP, prelude::*};
-use abscissa_core::{Clap, Command, Runnable};
+use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::prelude::{Middleware, Signer, SignerMiddleware};
 use ethers::types::Address as EthAddress;
 use gravity_bridge::gravity_utils::{
@@ -17,7 +17,7 @@ use gravity_bridge::relayer::main_loop::LOOP_SPEED as RELAYER_LOOP_SPEED;
 use std::{cmp::min, sync::Arc};
 
 /// Start Orchestrator
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub struct StartCommand {
     #[clap(short = 'c', long)]
     cosmos_key: String,
