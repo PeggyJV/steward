@@ -41,12 +41,9 @@ func (s *IntegrationTestSuite) TestRebalance() {
 		s.T().Logf("checking that test cellar exists in the chain")
 		val := s.chain.validators[0]
 		s.Require().Eventuallyf(func() bool {
-			kb, err := val.keyring()
-			s.Require().NoError(err)
-			clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
-			s.Require().NoError(err)
+			queryClient, err := val.GetQueryClient()
+			s.Require().NoError(err, "error getting query client")
 
-			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.QueryCellars(context.Background(), &types.QueryCellarsRequest{})
 			if err != nil {
 				return false
@@ -87,7 +84,6 @@ func (s *IntegrationTestSuite) TestRebalance() {
 			tlsConfig := &tls.Config{
 				Certificates: []tls.Certificate{clientCert},
 				RootCAs:      rootPool,
-				ServerName:   "",
 			}
 			creds := credentials.NewTLS(tlsConfig)
 
@@ -126,12 +122,9 @@ func (s *IntegrationTestSuite) TestRebalance() {
 		s.T().Logf("wait for new vote period start")
 		val = s.chain.validators[0]
 		s.Require().Eventuallyf(func() bool {
-			kb, err := val.keyring()
-			s.Require().NoError(err)
-			clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
-			s.Require().NoError(err)
+			queryClient, err := val.GetQueryClient()
+			s.Require().NoError(err, "error getting query client")
 
-			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.QueryCommitPeriod(context.Background(), &types.QueryCommitPeriodRequest{})
 			if err != nil {
 				return false
@@ -149,16 +142,12 @@ func (s *IntegrationTestSuite) TestRebalance() {
 		s.T().Logf("checking pre-commits for validators")
 		precommits := make([]types.AllocationPrecommit, 4)
 		for _, val := range s.chain.validators {
-			val := val
 			address := val.keyInfo.GetAddress()
 			operator := sdk.ValAddress(address)
 			s.Require().Eventuallyf(func() bool {
-				kb, err := val.keyring()
-				s.Require().NoError(err)
-				clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", address)
-				s.Require().NoError(err)
+				queryClient, err := val.GetQueryClient()
+				s.Require().NoError(err, "error getting query client")
 
-				queryClient := types.NewQueryClient(clientCtx)
 				res, err := queryClient.QueryAllocationPrecommit(context.Background(), &types.QueryAllocationPrecommitRequest{
 					Validator: operator.String(),
 					Cellar:    hardhatCellar.String(),
@@ -169,7 +158,6 @@ func (s *IntegrationTestSuite) TestRebalance() {
 				if res == nil {
 					return false
 				}
-				s.Require().NoError(err, "unable to create precommit")
 				s.Require().Equal(res.Precommit.CellarId, cellar.Id, "cellar ids unequal")
 
 				precommits[val.index] = *res.Precommit
@@ -183,16 +171,12 @@ func (s *IntegrationTestSuite) TestRebalance() {
 
 		s.T().Logf("checking commits for validators")
 		for _, val := range s.chain.validators {
-			val := val
 			address := val.keyInfo.GetAddress()
 			operator := sdk.ValAddress(address)
 			s.Require().Eventuallyf(func() bool {
-				kb, err := val.keyring()
-				s.Require().NoError(err)
-				clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", address)
-				s.Require().NoError(err)
+				queryClient, err := val.GetQueryClient()
+				s.Require().NoError(err, "error getting query client")
 
-				queryClient := types.NewQueryClient(clientCtx)
 				res, err := queryClient.QueryAllocationCommit(context.Background(), &types.QueryAllocationCommitRequest{Validator: operator.String(), Cellar: hardhatCellar.String()})
 				if err != nil {
 					return false
@@ -216,12 +200,9 @@ func (s *IntegrationTestSuite) TestRebalance() {
 		s.T().Logf("waiting for end of vote period, endblocker to run")
 		val = s.chain.validators[0]
 		s.Require().Eventuallyf(func() bool {
-			kb, err := val.keyring()
-			s.Require().NoError(err)
-			clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
-			s.Require().NoError(err)
+			queryClient, err := val.GetQueryClient()
+			s.Require().NoError(err, "error getting query client")
 
-			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.QueryCommitPeriod(context.Background(), &types.QueryCommitPeriodRequest{})
 			if err != nil {
 				return false
@@ -262,12 +243,9 @@ func (s *IntegrationTestSuite) TestRebalance() {
 		s.T().Logf("checking to see if hooks updated cellars on chain")
 		val = s.chain.validators[0]
 		s.Require().Eventuallyf(func() bool {
-			kb, err := val.keyring()
-			s.Require().NoError(err)
-			clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
-			s.Require().NoError(err)
+			queryClient, err := val.GetQueryClient()
+			s.Require().NoError(err, "error getting query client")
 
-			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.QueryCellars(context.Background(), &types.QueryCellarsRequest{})
 			if err != nil {
 				return false
