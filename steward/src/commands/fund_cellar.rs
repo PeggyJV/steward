@@ -1,5 +1,5 @@
 #![allow(unused_variables)]
-use abscissa_core::{Application, clap::Parser, Command, Runnable};
+use abscissa_core::{clap::Parser, Application, Command, Runnable};
 use chrono::Utc;
 use ethers::prelude::*;
 use signatory::FsKeyStore;

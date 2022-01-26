@@ -1,6 +1,6 @@
 use std::{convert::TryFrom, path, sync::Arc, time::Duration};
 
-use abscissa_core::{Application, clap::Parser, Command, Runnable};
+use abscissa_core::{clap::Parser, Application, Command, Runnable};
 
 use ethers::prelude::*;
 

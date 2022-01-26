@@ -1,5 +1,5 @@
 use crate::application::APP;
-use abscissa_core::{Application, clap::Parser, Command, Runnable};
+use abscissa_core::{clap::Parser, Application, Command, Runnable};
 use ethers::prelude::*;
 use signatory::FsKeyStore;
 use std::path;

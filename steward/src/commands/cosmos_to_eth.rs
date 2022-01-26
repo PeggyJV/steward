@@ -1,5 +1,5 @@
 use crate::application::APP;
-use abscissa_core::{status_err, Application, clap::Parser, Command, Runnable};
+use abscissa_core::{clap::Parser, status_err, Application, Command, Runnable};
 use clarity::Uint256;
 use deep_space::coin::Coin;
 use ethers::types::Address as EthAddress;

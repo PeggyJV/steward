@@ -8,7 +8,7 @@ use crate::{
     prelude::*,
     server::{self},
 };
-use abscissa_core::{config, clap::Parser, Command, FrameworkError, Runnable};
+use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
 
 #[derive(Command, Debug, Parser)]
