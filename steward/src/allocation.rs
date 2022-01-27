@@ -1,7 +1,7 @@
-use crate::{cellars, error::Error, prelude::*, somm_send};
+use crate::{cellars, error::Error, prelude::*, somm_send, utils};
 use abscissa_core::Application;
-use deep_space::{private_key::PrivateKey, Coin, Contact};
-use ethers::types::{Address as EthAddress, H160};
+use deep_space::{Coin, Contact};
+use gravity_bridge::gravity_proto::gravity::query_client::QueryClient as GravityQueryClient;
 use rand::{distributions::Alphanumeric, rngs::OsRng, Rng};
 use somm_proto::{somm, somm::query_client::QueryClient as AllocationQueryClient};
 use std::time::Duration;
@@ -9,29 +9,18 @@ use tokio::time::{sleep, timeout};
 use tonic::transport::Channel;
 
 pub struct Connections {
-    pub grpc: AllocationQueryClient<Channel>,
+    pub allocation_client: AllocationQueryClient<Channel>,
     pub contact: Contact,
-}
-
-pub fn format_eth_address(address: EthAddress) -> String {
-    format!("0x{}", bytes_to_hex_str(address.as_bytes()))
-}
-
-pub fn bytes_to_hex_str(bytes: &[u8]) -> String {
-    bytes
-        .iter()
-        .map(|b| format!("{:0>2x?}", b))
-        .fold(String::new(), |acc, x| acc + &x)
+    pub gravity_client: GravityQueryClient<Channel>,
 }
 
 pub async fn allocation_precommit(
-    cosmos_key: &PrivateKey,
+    validator_address: String,
     allocation: &somm::Allocation,
     cellar_address: String,
 ) -> Result<somm::AllocationPrecommit, Error> {
-    let config = APP.config();
-    let delegate_cosmos_address = cosmos_key.to_address(&config.cosmos.prefix)?.to_string();
-    let hasher = somm_send::data_hash(allocation, delegate_cosmos_address).await?;
+    let hasher = somm_send::data_hash(allocation, validator_address).await?;
+
     Ok(somm::AllocationPrecommit {
         hash: hasher.hash,
         cellar_id: cellar_address,
@@ -41,124 +30,139 @@ pub async fn allocation_precommit(
 pub async fn get_connections() -> Result<Connections, Error> {
     let config = APP.config();
     let timeout = Duration::from_secs(10);
-    let try_base = AllocationQueryClient::connect(config.cosmos.grpc.clone()).await;
-    let (grpc, contact) = match try_base {
-        Ok(val) => (
-            val,
-            Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix)?,
-        ),
-        Err(e) => {
-            error!(
-                "Failed to access Cosmos gRPC with {:?} and create connections",
-                e
-            );
-            return Err(Error::from(e));
-        }
-    };
-    Ok(Connections { grpc, contact })
+
+    Ok(Connections {
+        allocation_client: AllocationQueryClient::connect(config.cosmos.grpc.clone()).await?,
+        contact: Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix)?,
+        gravity_client: GravityQueryClient::connect(config.cosmos.grpc.clone()).await?,
+    })
 }
 
 pub async fn decide_rebalance(
     tick_range: Vec<somm::TickRange>,
-    cellar_address: H160,
+    cellar_address: String,
 ) -> Result<(), Error> {
-    if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
-        return Ok(());
-    } else {
-        let mut connections = get_connections().await?;
-        let (contact, grpc_client) = (connections.contact, &mut connections.grpc);
-
-        let eth_gas_price = match cellars::get_gas_price().await {
-            Ok(gp) => gp,
-            Err(err) => {
-                error!("Failed to get cellar gas price: {:?}", err);
-                // TO-DO handle this better
-                0.into()
-            }
-        };
-        let config = APP.config();
-        let allocation = to_allocation(
-            tick_range,
-            format_eth_address(cellar_address),
-            eth_gas_price.as_u64(),
-        );
-
-        let name = &config.keys.rebalancer_key;
-        let cosmos_key = config.load_deep_space_key(name.clone());
-        let delegate_cosmos_address = cosmos_key.to_address(&contact.get_prefix())?;
-
-        let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
-        let fee = Coin {
-            denom: cosmos_gas_price.1,
-            amount: 0u32.into(),
-        };
-
-        match timeout(Duration::from_secs(100), async {
-            loop {
-                // Waiting for new vote period
-                let res = somm_send::query_commit_period(grpc_client).await;
-                if let Ok(val) = res {
-                    if val.vote_period_start == val.current_height {
-                        break val;
-                    }
-                }
-                sleep(Duration::from_secs(1)).await;
-            }
-        })
-        .await
-        {
-            Ok(_) => {
-                // Sending Pre-commits
-                somm_send::send_precommit(
-                    &contact,
-                    delegate_cosmos_address,
-                    cosmos_key,
-                    fee.clone(),
-                    vec![
-                        allocation_precommit(
-                            &cosmos_key,
-                            &allocation,
-                            format_eth_address(cellar_address),
-                        )
-                        .await?,
-                    ],
-                )
-                .await?;
-            }
-            Err(e) => {
-                error!("Couldn't Send Precommit {:?}", e);
-            }
+    debug!("deciding rebalance for cellar address {}", cellar_address);
+    debug!("getting eth gas price");
+    let eth_gas_price = match cellars::get_gas_price().await {
+        Ok(gp) => {
+            debug!("eth gas price is {}", gp);
+            gp
         }
+        Err(err) => {
+            error!("failed to get cellar gas price: {}", err);
+            // TO-DO handle this better
+            0.into()
+        }
+    };
+    let config = APP.config();
 
-        match timeout(Duration::from_secs(100), async {
-            loop {
-                // Checking Pre-commits for validators
-                let res = somm_send::query_allocation_precommits(grpc_client).await;
-                if let Ok(val) = res {
+    debug!("loading the delegate (orchestrator) key and address from config");
+    let name = &config.keys.rebalancer_key;
+    let cosmos_delegate_key = config.load_deep_space_key(name.clone());
+    let cosmos_delegate_address = cosmos_delegate_key.to_address(&config.cosmos.prefix)?;
+
+    debug!("establishing connections to validator");
+    let mut connections = get_connections().await?;
+    let (allocation_client, contact, gravity_client) = (
+        &mut connections.allocation_client,
+        connections.contact,
+        &mut connections.gravity_client,
+    );
+
+    debug!(
+        "querying the validator address based on the associated delegate address {}",
+        cosmos_delegate_address
+    );
+    let delegate_keys = utils::get_delegates_keys_by_orchestrator(
+        gravity_client,
+        cosmos_delegate_address.to_string(),
+    )
+    .await?;
+    let validator_address = delegate_keys.validator_address;
+    debug!(
+        "precommit containing cellar {} will be signed by {} on behalf of {}",
+        cellar_address, cosmos_delegate_address, validator_address
+    );
+
+    debug!("building commit and precommit objects");
+    let allocation = to_allocation(tick_range, cellar_address.clone(), eth_gas_price.as_u64());
+    let allocation_precommit =
+        &allocation_precommit(validator_address, &allocation, cellar_address).await?;
+
+    debug!("getting cosmos fee");
+    let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
+    let fee = Coin {
+        amount: (cosmos_gas_price.0 as u64).into(),
+        denom: cosmos_gas_price.1,
+    };
+
+    match timeout(Duration::from_secs(100), async {
+        debug!("waiting for new vote period to start");
+        loop {
+            let res = somm_send::query_commit_period(allocation_client).await;
+            if let Ok(val) = res {
+                if val.vote_period_start == val.current_height {
                     break val;
                 }
-                sleep(Duration::from_secs(1)).await;
             }
-        })
-        .await
-        {
-            Ok(_) => {
-                // Sending Commits
-                somm_send::send_allocation(
-                    &contact,
-                    delegate_cosmos_address,
-                    cosmos_key,
-                    fee,
-                    vec![allocation],
-                )
-                .await?;
-            }
-            Err(e) => {
-                error!("Couldn't Send Commit {:?}", e);
-            }
+            sleep(Duration::from_secs(1)).await;
+        }
+    })
+    .await
+    {
+        Ok(_) => {
+            debug!("sending allocation precommit");
+            let response = somm_send::send_precommit(
+                &contact,
+                cosmos_delegate_address.to_string(),
+                cosmos_delegate_key,
+                fee.clone(),
+                vec![allocation_precommit.to_owned()],
+            )
+            .await?;
+            debug!("precommit response: {:?}", response);
+        }
+        Err(err) => {
+            error!("Couldn't Send Precommit {:?}", err);
         }
     }
 
+    match timeout(Duration::from_secs(100), async {
+        debug!("querying precommit");
+        loop {
+            let res = somm_send::query_allocation_precommits(allocation_client).await;
+            match res {
+                Ok(val) => {
+                    if val.contains(allocation_precommit) {
+                        break val;
+                    }
+                }
+                Err(err) => error!("error querying precommit: {}", err),
+            }
+            sleep(Duration::from_secs(1)).await;
+        }
+    })
+    .await
+    {
+        Ok(_) => {
+            debug!("precommit found! sending commit");
+            let response = somm_send::send_allocation(
+                &contact,
+                cosmos_delegate_address.to_string(),
+                cosmos_delegate_key,
+                fee,
+                vec![allocation],
+            )
+            .await?;
+            debug!("commit response: {:?}", response);
+        }
+        Err(err) => {
+            error!("couldn't send commit {:?}", err);
+        }
+    }
+
+    debug!("allocation workflow complete");
     Ok(())
 }
 

@@ -3,11 +3,8 @@
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::{
-    application::APP,
-    cellars::uniswapv3::UniswapV3CellarAllocator,
-    config::StewardConfig,
-    prelude::*,
-    server::{self},
+    application::APP, cellars::uniswapv3::UniswapV3CellarAllocator, config::StewardConfig,
+    prelude::*, server,
 };
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
