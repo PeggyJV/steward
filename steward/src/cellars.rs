@@ -29,6 +29,7 @@ pub async fn get_gas_price() -> Result<U256, Error> {
     let config = APP.config();
     let url = &config.ethereum.rpc;
     let provider = crate::utils::get_eth_provider(url.as_str()).await?;
+
     provider.get_gas_price().await.map_err(|r| r.into())
 }
 

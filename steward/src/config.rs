@@ -157,6 +157,7 @@ impl Default for TokenInfo {
 
 /// EthereumSection for ethereum rpc and derivation path
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(default)]
 pub struct EthereumSection {
     /// Declaring EthereumSection key_derivation_path
     pub key_derivation_path: String,

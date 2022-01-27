@@ -75,6 +75,7 @@ pub async fn decide_rebalance(
 
     debug!("getting eth gas price");
     let eth_gas_price = cellars::get_gas_price().await?;
+    debug!("gas price: {}", eth_gas_price);
 
     debug!("building commit and precommit objects");
     let allocation = to_allocation(tick_range, cellar_address.clone(), eth_gas_price.as_u64());
