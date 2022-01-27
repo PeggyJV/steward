@@ -1,11 +1,11 @@
 use crate::application::APP;
-use abscissa_core::{Application, Clap, Command, Runnable};
+use abscissa_core::{clap::Parser, Application, Command, Runnable};
 use ethers::prelude::*;
 use signatory::FsKeyStore;
 use std::path;
 
 /// Show Keys
-#[derive(Command, Debug, Default, Clap)]
+#[derive(Command, Debug, Default, Parser)]
 pub struct ShowKeyCmd {
     pub args: Vec<String>,
 }

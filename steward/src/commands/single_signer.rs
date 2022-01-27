@@ -3,10 +3,10 @@
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::{application::APP, config::StewardConfig, prelude::*, server};
-use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
+use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
 
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub struct SingleSignerCmd;
 
 impl Runnable for SingleSignerCmd {

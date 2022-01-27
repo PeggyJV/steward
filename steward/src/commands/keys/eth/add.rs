@@ -1,5 +1,5 @@
 use crate::application::APP;
-use abscissa_core::{Application, Clap, Command, Runnable};
+use abscissa_core::{clap::Parser, Application, Command, Runnable};
 use bip32;
 use k256::pkcs8::ToPrivateKey;
 use rand_core::OsRng;
@@ -7,7 +7,7 @@ use signatory::FsKeyStore;
 use std::path;
 
 /// Create a new Key
-#[derive(Command, Debug, Default, Clap)]
+#[derive(Command, Debug, Default, Parser)]
 pub struct AddKeyCmd {
     pub args: Vec<String>,
 

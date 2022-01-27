@@ -3,7 +3,7 @@
 use std::sync::Arc;
 
 use crate::{application::APP, prelude::*, utils::*};
-use abscissa_core::{Clap, Command, Runnable};
+use abscissa_core::{clap::Parser, Command, Runnable};
 use deep_space::address::Address as CosmosAddress;
 use ethers::prelude::{LocalWallet, Middleware, Signer, SignerMiddleware, U256};
 use ethers::types::Address as EthAddress;
@@ -13,7 +13,7 @@ use gravity_bridge::gravity_utils::connection_prep::{check_for_eth, create_rpc_c
 use gravity_bridge::gravity_utils::ethereum::{downcast_to_u64, format_eth_address};
 
 /// Create Tx on Eth chain
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub enum Eth {
     SendToCosmos(SendToCosmos),
     Send(Send),
@@ -23,7 +23,7 @@ impl Runnable for Eth {
     fn run(&self) {}
 }
 
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub struct SendToCosmos {
     free: Vec<String>,
 
@@ -125,7 +125,7 @@ impl Runnable for SendToCosmos {
     }
 }
 
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub struct Send {
     free: Vec<String>,
 

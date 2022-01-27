@@ -2,18 +2,18 @@
 
 use crate::uniswap_pool::PoolState;
 use crate::{application::APP, prelude::*};
-use abscissa_core::{Clap, Command, Runnable};
+use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::prelude::*;
 use std::{convert::TryFrom, sync::Arc, time::Duration};
 /// Query Eth chain
-#[derive(Command, Debug, Clap, Runnable)]
+#[derive(Command, Debug, Parser, Runnable)]
 pub enum Eth {
     Balance(Balance),
     Contract(Contract),
     Pair(Pair),
 }
 
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub struct Balance {
     free: Vec<String>,
 
@@ -33,7 +33,7 @@ impl Runnable for Balance {
     }
 }
 
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub struct Contract {
     #[clap(short, long)]
     help: bool,
@@ -44,7 +44,7 @@ impl Runnable for Contract {
     fn run(&self) {}
 }
 
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub struct Pair {
     #[clap(short, long)]
     help: bool,
