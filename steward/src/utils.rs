@@ -50,9 +50,9 @@ fn check_scheme(input: &Url, original_string: &str) {
 }
 
 pub async fn get_eth_provider(eth_rpc_url: &str) -> Result<Provider<Http>, Error> {
-    let url = Url::parse(&eth_rpc_url)
+    let url = Url::parse(eth_rpc_url)
         .unwrap_or_else(|_| panic!("Invalid Ethereum RPC url {}", eth_rpc_url));
-    check_scheme(&url, &eth_rpc_url);
+    check_scheme(&url, eth_rpc_url);
     let eth_url = eth_rpc_url.trim_end_matches('/');
     let base_eth_provider = Provider::<Http>::try_from(eth_url).unwrap_or_else(|_| {
         panic!("Could not instantiate Ethereum HTTP provider: {}", eth_url)
@@ -60,7 +60,7 @@ pub async fn get_eth_provider(eth_rpc_url: &str) -> Result<Provider<Http>, Error
     let try_base = base_eth_provider.get_block_number().await;
     match try_base {
         // it worked, lets go!
-        Ok(_) => return Ok(base_eth_provider),
+        Ok(_) => Ok(base_eth_provider),
         // did not work, now we check if it's localhost
         Err(e) => {
             warn!("Failed to access Ethereum RPC with {:?} trying fallback options", e);

@@ -18,7 +18,7 @@ impl std::fmt::Display for CellarId {
 }
 
 pub async fn get_gas_price() -> Result<U256, Error> {
-    if let Ok(_) = std::env::var("ETHERSCAN_API_KEY") {
+    if std::env::var("ETHERSCAN_API_KEY").is_ok() {
         match CellarGas::etherscan_standard().await {
             Ok(gas) => return Ok(gas),
             Err(err) => {
@@ -29,6 +29,7 @@ pub async fn get_gas_price() -> Result<U256, Error> {
     let config = APP.config();
     let url = &config.ethereum.rpc;
     let provider = crate::utils::get_eth_provider(url.as_str()).await?;
+
     provider.get_gas_price().await.map_err(|r| r.into())
 }
 
