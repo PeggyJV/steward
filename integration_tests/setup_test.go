@@ -719,7 +719,7 @@ gas_adjustment = 1.0
 [ethereum]
 key_derivation_path = "m/44'/60'/0'/0/0"
 rpc = "http://%s:8545"
-gas_price_multiplier = 1.2
+gas_price_multiplier = 1.5
 
 [cosmos.gas_price]
 amount = 1000000000
