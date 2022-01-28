@@ -3,8 +3,8 @@
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::{
-    application::APP, cellars::uniswapv3::UniswapV3CellarAllocator, config::StewardConfig,
-    prelude::*, server,
+    application::APP, cellars::uniswapv3::UniswapV3DirectCellar, config::StewardConfig, prelude::*,
+    server,
 };
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
@@ -42,9 +42,7 @@ impl Runnable for SingleSignerCmd {
                 .unwrap_or_else(|err| {
                     panic!("{:?}", err);
                 })
-                .add_service(UniswapV3CellarAllocatorServer::new(
-                    UniswapV3CellarAllocator,
-                ))
+                .add_service(UniswapV3CellarAllocatorServer::new(UniswapV3DirectCellar))
                 .add_service(proto_descriptor_service)
                 .serve(server_config.address)
                 .await

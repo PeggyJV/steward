@@ -23,17 +23,6 @@ pub struct Connections {
     pub gravity_client: GravityQueryClient<Channel>,
 }
 
-pub fn format_eth_address(address: Address) -> String {
-    format!("0x{}", bytes_to_hex_str(address.as_bytes()))
-}
-
-pub fn bytes_to_hex_str(bytes: &[u8]) -> String {
-    bytes
-        .iter()
-        .map(|b| format!("{:0>2x?}", b))
-        .fold(String::new(), |acc, x| acc + &x)
-}
-
 /// Struct TickWeights for time independent bollinger ranges
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct TickWeight {
