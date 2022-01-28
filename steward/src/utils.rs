@@ -1,7 +1,7 @@
 use crate::error::Error;
-use abscissa_core::tracing::{log::warn, info};
+use abscissa_core::tracing::{info, log::warn};
 use deep_space::error::CosmosGrpcError;
-use ethers::prelude::{*, types::Address as EthAddress};
+use ethers::prelude::{types::Address as EthAddress, *};
 use gravity_bridge::gravity_proto::gravity::{
     query_client::QueryClient, DelegateKeysByOrchestratorRequest,
     DelegateKeysByOrchestratorResponse,
@@ -54,16 +54,18 @@ pub async fn get_eth_provider(eth_rpc_url: &str) -> Result<Provider<Http>, Error
         .unwrap_or_else(|_| panic!("Invalid Ethereum RPC url {}", eth_rpc_url));
     check_scheme(&url, eth_rpc_url);
     let eth_url = eth_rpc_url.trim_end_matches('/');
-    let base_eth_provider = Provider::<Http>::try_from(eth_url).unwrap_or_else(|_| {
-        panic!("Could not instantiate Ethereum HTTP provider: {}", eth_url)
-    });
+    let base_eth_provider = Provider::<Http>::try_from(eth_url)
+        .unwrap_or_else(|_| panic!("Could not instantiate Ethereum HTTP provider: {}", eth_url));
     let try_base = base_eth_provider.get_block_number().await;
     match try_base {
         // it worked, lets go!
         Ok(_) => Ok(base_eth_provider),
         // did not work, now we check if it's localhost
         Err(e) => {
-            warn!("Failed to access Ethereum RPC with {:?} trying fallback options", e);
+            warn!(
+                "Failed to access Ethereum RPC with {:?} trying fallback options",
+                e
+            );
             if eth_url.to_lowercase().contains("localhost") {
                 let port = url.port().unwrap_or(80);
                 // this should be http or https
@@ -106,22 +108,20 @@ pub async fn get_eth_provider(eth_rpc_url: &str) -> Result<Provider<Http>, Error
                 // transparently upgrade to https if available, we can't transparently downgrade for obvious security reasons
                 let https_on_80_url = format!("https://{}:80", body);
                 let https_on_443_url = format!("https://{}:443", body);
-                let https_on_80_eth_provider =
-                    Provider::<Http>::try_from(https_on_80_url.as_str()).unwrap_or_else(|_| {
+                let https_on_80_eth_provider = Provider::<Http>::try_from(https_on_80_url.as_str())
+                    .unwrap_or_else(|_| {
                         panic!(
                             "Could not instantiate Ethereum HTTP provider: {}",
                             &https_on_80_url
                         )
                     });
-                let https_on_443_eth_provider = Provider::<Http>::try_from(
-                    https_on_443_url.as_str(),
-                )
-                .unwrap_or_else(|_| {
-                    panic!(
-                        "Could not instantiate Ethereum HTTP provider: {}",
-                        &https_on_443_url
-                    )
-                });
+                let https_on_443_eth_provider =
+                    Provider::<Http>::try_from(https_on_443_url.as_str()).unwrap_or_else(|_| {
+                        panic!(
+                            "Could not instantiate Ethereum HTTP provider: {}",
+                            &https_on_443_url
+                        )
+                    });
                 let https_on_80_test = https_on_80_eth_provider.get_block_number().await;
                 let https_on_443_test = https_on_443_eth_provider.get_block_number().await;
                 warn!(

@@ -1,8 +1,15 @@
-use crate::{cellars, error::{Error, ErrorKind}, prelude::*, somm_send, utils};
+use crate::{
+    cellars,
+    error::{Error, ErrorKind},
+    prelude::*,
+    somm_send, utils,
+};
 use abscissa_core::Application;
 use deep_space::{Coin, Contact};
 use ethers::prelude::U256;
-use gravity_bridge::{gravity_proto::gravity::query_client::QueryClient as GravityQueryClient, gravity_utils};
+use gravity_bridge::{
+    gravity_proto::gravity::query_client::QueryClient as GravityQueryClient, gravity_utils,
+};
 use rand::{distributions::Alphanumeric, rngs::OsRng, Rng};
 use somm_proto::{somm, somm::query_client::QueryClient as AllocationQueryClient};
 use std::time::Duration;
@@ -79,9 +86,11 @@ pub async fn decide_rebalance(
     debug!("padding eth gas price estimate");
     let eth_gas_price = match gravity_utils::ethereum::downcast_to_f32(eth_gas_price) {
         Some(gp) => gp,
-        None => return Err(ErrorKind::AllocationError
-            .context("failed to downcast gas price for padding".to_string())
-            .into()),
+        None => {
+            return Err(ErrorKind::AllocationError
+                .context("failed to downcast gas price for padding".to_string())
+                .into())
+        }
     };
     let eth_gas_price = eth_gas_price * config.ethereum.gas_price_multiplier;
     let eth_gas_price: U256 = (eth_gas_price as u64).into();
