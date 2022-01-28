@@ -1,6 +1,9 @@
 target
 **/*.rs.bk
 expanded.rs
+testdata
+*.test
+!integration_tests/ethereum/artifacts
 
 # personal config files
 cellar_rebalancer*.toml

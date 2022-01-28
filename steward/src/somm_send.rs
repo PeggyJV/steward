@@ -1,5 +1,4 @@
 use bytes::BytesMut;
-use deep_space::address::Address;
 use deep_space::coin::Coin;
 use deep_space::error::CosmosGrpcError;
 use deep_space::private_key::PrivateKey as CosmosPrivateKey;
@@ -25,34 +24,34 @@ pub const MEMO: &str = "Sent using Somm Orchestrator";
 
 pub async fn send_precommit(
     contact: &Contact,
-    delegate_cosmos_address: Address,
-    cosmos_key: CosmosPrivateKey,
+    delegate_address: String,
+    delegate_key: CosmosPrivateKey,
     fee: Coin,
     allocation_precommit: Vec<somm::AllocationPrecommit>,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let msg = somm::MsgAllocationPrecommit {
         precommit: allocation_precommit,
-        signer: delegate_cosmos_address.to_bech32("somm").unwrap(),
+        signer: delegate_address,
     };
 
     let msg = Msg::new("/allocation.v1.MsgAllocationPrecommit", msg);
-    __send_messages(contact, cosmos_key, fee, vec![msg]).await
+    __send_messages(contact, delegate_key, fee, vec![msg]).await
 }
 
 pub async fn send_allocation(
     contact: &Contact,
-    delegate_cosmos_address: Address,
-    cosmos_key: CosmosPrivateKey,
+    delegate_address: String,
+    delegate_key: CosmosPrivateKey,
     fee: Coin,
     allocation_commit: Vec<somm::Allocation>,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let msg = somm::MsgAllocationCommit {
-        signer: delegate_cosmos_address.to_bech32("somm").unwrap(),
         commit: allocation_commit,
+        signer: delegate_address,
     };
 
     let msg = Msg::new("/allocation.v1.MsgAllocationCommit", msg);
-    __send_messages(contact, cosmos_key, fee, vec![msg]).await
+    __send_messages(contact, delegate_key, fee, vec![msg]).await
 }
 
 async fn __send_messages(
@@ -86,16 +85,16 @@ pub async fn data_hash(
     val_address: String,
 ) -> Result<AllocationPrecommit, Error> {
     let mut hasher = sha2::Sha256::new();
-    if let Some(cellar) = &allocation.clone().vote.unwrap().cellar {
+    if let Some(vote) = &allocation.clone().vote {
         let mut buf = BytesMut::new();
-        cellar.encode(&mut buf).unwrap();
-        let cellar_data = hex::encode(&buf);
-        let msg = format!("{}:{}:{}", allocation.salt, cellar_data, val_address);
+        vote.encode(&mut buf).unwrap();
+        let vote_data = hex::encode(&buf);
+        let msg = format!("{}:{}:{}", allocation.salt, vote_data, val_address);
         hasher.update(msg.as_bytes());
 
         return Ok(AllocationPrecommit {
             hash: hasher.finalize().to_vec(),
-            cellar_id: cellar.id.clone(),
+            cellar_id: vote.cellar.clone().unwrap().id,
         });
     }
     Err(ErrorKind::AllocationError

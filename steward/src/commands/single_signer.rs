@@ -3,16 +3,12 @@
 use crate::cellars::uniswapv3::UniswapV3DirectCellar;
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
-use crate::{
-    application::APP,
-    config::StewardConfig,
-    prelude::*,
-    server::{self},
-};
-use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
+use crate::{application::APP, config::StewardConfig, prelude::*, server};
+use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
 use steward_proto::uniswapv3::uniswap_v3_direct_cellar_server::UniswapV3DirectCellarServer;
-#[derive(Command, Debug, Clap)]
+
+#[derive(Command, Debug, Parser)]
 pub struct SingleSignerCmd;
 
 impl Runnable for SingleSignerCmd {

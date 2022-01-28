@@ -3,6 +3,8 @@ package cellars.uniswapv3.v1;
 
 import "google/protobuf/timestamp.proto";
 
+option go_package = "/uniswapv3_cellar";
+
 service UniswapV3CellarAllocator {
     rpc Rebalance(RebalanceRequest) returns (RebalanceResponse) {}
 }

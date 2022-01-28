@@ -3,17 +3,14 @@
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::{
-    application::APP,
-    cellars::uniswapv3::UniswapV3CellarAllocator,
-    config::StewardConfig,
-    prelude::*,
-    server::{self},
+    application::APP, cellars::uniswapv3::UniswapV3CellarAllocator, config::StewardConfig,
+    prelude::*, server,
 };
-use abscissa_core::{config, Clap, Command, FrameworkError, Runnable};
+use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
 use steward_proto::uniswapv3::server::UniswapV3CellarAllocatorServer;
 
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub struct CosmosSignerCmd;
 
 impl Runnable for CosmosSignerCmd {

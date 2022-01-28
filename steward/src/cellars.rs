@@ -7,7 +7,7 @@ pub(crate) mod uniswapv3;
 #[derive(Debug)]
 pub struct CellarId {
     chain: String,
-    address: H160,
+    address: String,
 }
 
 impl std::fmt::Display for CellarId {
@@ -28,15 +28,13 @@ fn parse_cellar_id(cellar_id: &str) -> Result<CellarId, String> {
             cellar_id
         ));
     }
-    // This assumes Ethereum address format for now.
-    let address = match parts[1].parse::<H160>() {
-        Ok(addr) => addr,
-        Err(err) => return Err(format!("error parsing ethereum address: {}", err)),
-    };
+    if let Err(err) = parts[1].parse::<H160>() {
+        return Err(format!("invalid ethereum address: {}", err));
+    }
 
     Ok(CellarId {
         chain: parts[0].to_string(),
-        address,
+        address: parts[1].to_string(),
     })
 }
 

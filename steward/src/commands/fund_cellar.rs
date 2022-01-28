@@ -1,5 +1,5 @@
 #![allow(unused_variables)]
-use abscissa_core::{Application, Clap, Command, Runnable};
+use abscissa_core::{clap::Parser, Application, Command, Runnable};
 use chrono::Utc;
 use ethers::prelude::*;
 use signatory::FsKeyStore;
@@ -14,7 +14,7 @@ use crate::{
 use steward_abi::cellar_uniswap::*;
 
 /// Command to fund Cellars
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 pub struct FundCellarCmd {
     #[clap(short = 'i', long)]
     pub cellar_id: u32,
