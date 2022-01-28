@@ -30,15 +30,3 @@ message RebalanceResponse {}
 //     "check_frequency": 3600,
 //     "schema_type": "UNIv3",
 // }
-
-service UniswapV3DirectCellar {
-    rpc DirectRebalance(DirectRebalanceRequest) returns (DirectRebalanceResponse) {}
-}
-
-message DirectRebalanceRequest {
-    string cellar_id = 1;
-    repeated Position data = 2;
-    google.protobuf.Timestamp created_timestamp = 3;
-}
-
-message DirectRebalanceResponse {}

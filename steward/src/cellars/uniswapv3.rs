@@ -7,10 +7,7 @@ use somm_proto::somm;
 use std::result::Result;
 use std::sync::Arc;
 use steward_abi::cellar_uniswap::*;
-use steward_proto::uniswapv3::{
-    server, uniswap_v3_direct_cellar_server, DirectRebalanceRequest, DirectRebalanceResponse,
-    RebalanceRequest, RebalanceResponse,
-};
+use steward_proto::uniswapv3::{server, RebalanceRequest, RebalanceResponse};
 use tonic::async_trait;
 
 // Struct for UniswapV3CellarTickInfo
@@ -216,11 +213,11 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
 pub struct UniswapV3DirectCellar;
 
 #[async_trait]
-impl uniswap_v3_direct_cellar_server::UniswapV3DirectCellar for UniswapV3DirectCellar {
-    async fn direct_rebalance(
+impl server::UniswapV3CellarAllocator for UniswapV3DirectCellar {
+    async fn rebalance(
         &self,
-        request: tonic::Request<DirectRebalanceRequest>,
-    ) -> Result<tonic::Response<DirectRebalanceResponse>, tonic::Status> {
+        request: tonic::Request<RebalanceRequest>,
+    ) -> Result<tonic::Response<RebalanceResponse>, tonic::Status> {
         let request = request.get_ref();
         debug!("received request \n {:?}", request);
 
@@ -249,6 +246,6 @@ impl uniswap_v3_direct_cellar_server::UniswapV3DirectCellar for UniswapV3DirectC
                 );
             }
         });
-        Ok(tonic::Response::new(DirectRebalanceResponse {}))
+        Ok(tonic::Response::new(RebalanceResponse {}))
     }
 }
