@@ -1,5 +1,6 @@
 use crate::{
-    cellars, cellars::uniswapv3::UniswapV3CellarState, error::Error, prelude::*, somm_send, utils,
+    cellars, cellars::uniswapv3::UniswapV3CellarState, config::CellarConfig, error::Error,
+    prelude::*, somm_send, utils,
 };
 use abscissa_core::Application;
 use deep_space::{Coin, Contact};
@@ -31,9 +32,9 @@ pub struct TickWeight {
     pub weight: u32,
 }
 
-pub fn from_tick_weight(tick_weight: TickWeight) -> CellarTickInfo {
+pub fn from_tick_weight(tick_weight: TickWeight, cellars: CellarConfig) -> CellarTickInfo {
     CellarTickInfo {
-        token_id: U256::zero(),
+        token_id: cellars.token_id,
         tick_upper: tick_weight.upper,
         tick_lower: tick_weight.lower,
         weight: tick_weight.weight,
@@ -253,7 +254,10 @@ pub async fn direct_rebalance(
     let mut contract_state = UniswapV3CellarState::new(cellar_address, client);
     for tick_weight in tick_weight {
         if tick_weight.weight > 0 {
-            tick_info.push(from_tick_weight(tick_weight.clone()))
+            tick_info.push(from_tick_weight(
+                tick_weight.clone(),
+                config.cellars[0].clone(),
+            ))
         }
     }
     if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
