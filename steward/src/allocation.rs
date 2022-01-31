@@ -43,9 +43,9 @@ pub fn from_tick_weight(tick_weight: TickWeight, cellar: CellarConfig) -> Cellar
 
 pub fn get_cellar(address: Address) -> Result<CellarConfig, String> {
     let config = APP.config();
-    for cellar in config.cellars {
+    for cellar in config.cellars.clone() {
         if cellar.cellar_address == address {
-            Ok(cellar);
+            return Ok(cellar);
         }
     }
     Err("Could not get Cellar.".to_string())
