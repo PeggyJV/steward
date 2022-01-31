@@ -40,10 +40,12 @@ pub async fn get_delegates_keys_by_orchestrator(
 
 fn check_scheme(input: &Url, original_string: &str) -> Result<(), Error> {
     if input.scheme() != "http" && input.scheme() != "https" {
-        return Err(
-            ErrorKind::Config.context(format!("Your url {} has an invalid scheme, please chose http or https",
-            original_string)).into()
-        );
+        return Err(ErrorKind::Config
+            .context(format!(
+                "Your url {} has an invalid scheme, please chose http or https",
+                original_string
+            ))
+            .into());
     }
 
     Ok(())
