@@ -32,9 +32,9 @@ pub struct TickWeight {
     pub weight: u32,
 }
 
-pub fn from_tick_weight(tick_weight: TickWeight, cellars: CellarConfig) -> CellarTickInfo {
+pub fn from_tick_weight(tick_weight: TickWeight, cellar: CellarConfig) -> CellarTickInfo {
     CellarTickInfo {
-        token_id: cellars.token_id,
+        token_id: cellar.token_id,
         tick_upper: tick_weight.upper,
         tick_lower: tick_weight.lower,
         weight: tick_weight.weight,
@@ -256,7 +256,11 @@ pub async fn direct_rebalance(
         if tick_weight.weight > 0 {
             tick_info.push(from_tick_weight(
                 tick_weight.clone(),
-                config.cellars[0].clone(),
+                for cellar in config.cellars {
+                    if cellar.cellar_address == address {
+                        return cellar;
+                    }
+                },
             ))
         }
     }
