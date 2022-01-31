@@ -1,10 +1,20 @@
-use crate::{cellars, error::Error, prelude::*, somm_send, utils};
+use crate::{
+    cellars, cellars::uniswapv3::UniswapV3CellarState, config::CellarConfig, error::Error,
+    prelude::*, somm_send, utils,
+};
 use abscissa_core::Application;
 use deep_space::{Coin, Contact};
-use gravity_bridge::gravity_proto::gravity::query_client::QueryClient as GravityQueryClient;
+use ethers::prelude::*;
+use gravity_bridge::{
+    gravity_proto::gravity::query_client::QueryClient as GravityQueryClient,
+    gravity_utils::ethereum::downcast_to_u64,
+};
 use rand::{distributions::Alphanumeric, rngs::OsRng, Rng};
+use serde::{Deserialize, Serialize};
+use signatory::FsKeyStore;
 use somm_proto::{somm, somm::query_client::QueryClient as AllocationQueryClient};
-use std::time::Duration;
+use std::{convert::TryFrom, path, sync::Arc, time::Duration};
+use steward_abi::cellar_uniswap::CellarTickInfo;
 use tokio::time::{sleep, timeout};
 use tonic::transport::Channel;
 
@@ -12,6 +22,33 @@ pub struct Connections {
     pub allocation_client: AllocationQueryClient<Channel>,
     pub contact: Contact,
     pub gravity_client: GravityQueryClient<Channel>,
+}
+
+/// Struct TickWeights for time independent bollinger ranges
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct TickWeight {
+    pub upper: i32,
+    pub lower: i32,
+    pub weight: u32,
+}
+
+pub fn from_tick_weight(tick_weight: TickWeight, cellar: CellarConfig) -> CellarTickInfo {
+    CellarTickInfo {
+        token_id: cellar.token_id,
+        tick_upper: tick_weight.upper,
+        tick_lower: tick_weight.lower,
+        weight: tick_weight.weight,
+    }
+}
+
+pub fn get_cellar(address: Address) -> Result<CellarConfig, String> {
+    let config = APP.config();
+    for cellar in config.cellars.clone() {
+        if cellar.cellar_address == address {
+            return Ok(cellar);
+        }
+    }
+    Err("Could not get Cellar.".to_string())
 }
 
 pub async fn allocation_precommit(
@@ -184,5 +221,58 @@ pub fn to_allocation(
             .take(8)
             .map(char::from)
             .collect(),
+    }
+}
+
+pub async fn direct_rebalance(
+    cellar_address: String,
+    tick_weight: Vec<TickWeight>,
+) -> Result<(), Error> {
+    let mut tick_info: Vec<CellarTickInfo> = Vec::new();
+    let config = APP.config();
+    let keystore = path::Path::new(&config.keys.keystore);
+    let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
+
+    let name = &config
+        .keys
+        .rebalancer_key
+        .parse()
+        .expect("Could not parse name");
+    let key = keystore.load(name).expect("Could not load key");
+
+    let key = key
+        .to_pem()
+        .parse::<k256::elliptic_curve::SecretKey<k256::Secp256k1>>()
+        .expect("Could not parse key");
+
+    let wallet: LocalWallet = Wallet::from(key);
+
+    let eth_host = config.ethereum.rpc.clone();
+    let provider = Provider::<Http>::try_from(eth_host.clone()).unwrap();
+
+    let chain_id = provider
+        .get_chainid()
+        .await
+        .expect("Could not retrieve chain ID");
+
+    let chain_id = downcast_to_u64(chain_id).expect("Chain ID overflowed when downcasting to u64");
+    let client = SignerMiddleware::new(provider, wallet.clone().with_chain_id(chain_id));
+    let client = Arc::new(client);
+    let cellar_address: Address = cellar_address
+        .parse()
+        .expect("Could not parse Cellar address from String");
+    let mut contract_state = UniswapV3CellarState::new(cellar_address, client);
+    for tick_weight in tick_weight {
+        if tick_weight.weight > 0 {
+            tick_info.push(from_tick_weight(
+                tick_weight.clone(),
+                get_cellar(cellar_address)?,
+            ))
+        }
+    }
+    if std::env::var("CELLAR_DRY_RUN").expect("Expect CELLAR_DRY_RUN var") == "TRUE" {
+        Ok(())
+    } else {
+        contract_state.rebalance(tick_info).await
     }
 }
