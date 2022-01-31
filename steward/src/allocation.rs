@@ -41,14 +41,14 @@ pub fn from_tick_weight(tick_weight: TickWeight, cellar: CellarConfig) -> Cellar
     }
 }
 
-pub fn get_cellar(address: Address) -> Result<CellarConfig, Error> {
+pub fn get_cellar(address: Address) -> Result<CellarConfig, String> {
     let config = APP.config();
     for cellar in config.cellars {
         if cellar.cellar_address == address {
-            cellar;
+            Ok(cellar);
         }
     }
-    Ok(cellar)
+    Err("Could not get Cellar.".to_string())
 }
 
 pub async fn allocation_precommit(
@@ -266,7 +266,7 @@ pub async fn direct_rebalance(
         if tick_weight.weight > 0 {
             tick_info.push(from_tick_weight(
                 tick_weight.clone(),
-                get_cellar(cellar_address),
+                get_cellar(cellar_address)?,
             ))
         }
     }
