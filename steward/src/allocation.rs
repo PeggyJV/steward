@@ -41,13 +41,14 @@ pub fn from_tick_weight(tick_weight: TickWeight, cellar: CellarConfig) -> Cellar
     }
 }
 
-pub fn get_cellar(address: Address) -> CellarConfig {
+pub fn get_cellar(address: Address) -> Result<CellarConfig, Error> {
     let config = APP.config();
     for cellar in config.cellars {
         if cellar.cellar_address == address {
-            return cellar;
+            cellar;
         }
     }
+    Ok(cellar)
 }
 
 pub async fn allocation_precommit(
