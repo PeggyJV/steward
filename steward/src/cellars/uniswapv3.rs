@@ -210,3 +210,42 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
         Ok(tonic::Response::new(RebalanceResponse {}))
     }
 }
+pub struct UniswapV3DirectCellar;
+
+#[async_trait]
+impl server::UniswapV3CellarAllocator for UniswapV3DirectCellar {
+    async fn rebalance(
+        &self,
+        request: tonic::Request<RebalanceRequest>,
+    ) -> Result<tonic::Response<RebalanceResponse>, tonic::Status> {
+        let request = request.get_ref();
+        debug!("received request \n {:?}", request);
+
+        let tick_weight: Vec<allocation::TickWeight> = request
+            .data
+            .clone()
+            .into_iter()
+            .map(|d| allocation::TickWeight {
+                upper: d.upper_price,
+                lower: d.lower_price,
+                weight: d.weight,
+            })
+            .collect();
+
+        let cellar_address = match cellars::parse_cellar_id(&request.cellar_id) {
+            Ok(addr) => addr,
+            Err(err) => return Err(tonic::Status::invalid_argument(err)),
+        }
+        .address;
+
+        tokio::spawn(async move {
+            if let Err(err) = allocation::direct_rebalance(cellar_address, tick_weight).await {
+                error!(
+                    "error occurred during uniswapv3 cellar direct rebalance: {:?}",
+                    err
+                );
+            }
+        });
+        Ok(tonic::Response::new(RebalanceResponse {}))
+    }
+}
