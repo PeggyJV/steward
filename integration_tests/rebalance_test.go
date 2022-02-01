@@ -101,7 +101,7 @@ func (s *IntegrationTestSuite) TestRebalance() {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 				defer cancel()
 
-				c := NewUniswapV3CellarAllocatorClient(conn)
+				c := NewUniswapV3Client(conn)
 				data := []*Position{
 					{
 						UpperPrice: expectedTickRange.Upper,
@@ -111,7 +111,7 @@ func (s *IntegrationTestSuite) TestRebalance() {
 				}
 				s.T().Logf("sending request to %s", s.chain.validators[i].keyInfo.GetAddress())
 				cellarId := fmt.Sprintf("%s:%s", "ethereum", hardhatCellar.String())
-				request := RebalanceRequest{CellarId: cellarId, Data: data}
+				request := UniswapV3RebalanceRequest{CellarId: cellarId, Data: data}
 				_, err = c.Rebalance(ctx, &request)
 				s.Require().NoError(err)
 			}

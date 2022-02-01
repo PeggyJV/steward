@@ -8,7 +8,7 @@ use crate::{
 };
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
-use steward_proto::uniswapv3::server::UniswapV3CellarAllocatorServer;
+use steward_proto::uniswapv3::server::UniswapV3Server;
 
 #[derive(Command, Debug, Parser)]
 pub struct CosmosSignerCmd;
@@ -42,7 +42,7 @@ impl Runnable for CosmosSignerCmd {
                 .unwrap_or_else(|err| {
                     panic!("{:?}", err);
                 })
-                .add_service(UniswapV3CellarAllocatorServer::new(
+                .add_service(UniswapV3Server::new(
                     UniswapV3CellarAllocator,
                 ))
                 .add_service(proto_descriptor_service)

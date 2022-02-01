@@ -7,7 +7,7 @@ use somm_proto::somm;
 use std::result::Result;
 use std::sync::Arc;
 use steward_abi::cellar_uniswap::*;
-use steward_proto::uniswapv3::{server, RebalanceRequest, RebalanceResponse};
+use steward_proto::uniswapv3::{server, UniswapV3RebalanceRequest, UniswapV3RebalanceResponse};
 use tonic::async_trait;
 
 // Struct for UniswapV3CellarTickInfo
@@ -170,11 +170,11 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
 pub struct UniswapV3CellarAllocator;
 
 #[async_trait]
-impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
+impl server::UniswapV3 for UniswapV3CellarAllocator {
     async fn rebalance(
         &self,
-        request: tonic::Request<RebalanceRequest>,
-    ) -> Result<tonic::Response<RebalanceResponse>, tonic::Status> {
+        request: tonic::Request<UniswapV3RebalanceRequest>,
+    ) -> Result<tonic::Response<UniswapV3RebalanceResponse>, tonic::Status> {
         let request = request.get_ref();
         debug!("received request {:?}", request);
 
@@ -207,6 +207,6 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
             }
         });
 
-        Ok(tonic::Response::new(RebalanceResponse {}))
+        Ok(tonic::Response::new(UniswapV3RebalanceResponse {}))
     }
 }
