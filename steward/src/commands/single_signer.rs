@@ -10,6 +10,7 @@ use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
 use steward_proto::uniswapv3::server::UniswapV3CellarAllocatorServer;
 
+/// Single Signer, start Eth test mode
 #[derive(Command, Debug, Parser)]
 pub struct SingleSignerCmd;
 

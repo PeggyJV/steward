@@ -6,7 +6,7 @@ use signatory::FsKeyStore;
 
 use crate::{cellars::uniswapv3::UniswapV3CellarState, gas::CellarGas, prelude::*};
 
-/// `set-validator` subcommand
+/// Set-validator subcommand
 #[derive(Command, Debug, Parser)]
 pub struct SetValidatorCmd {
     #[clap(short = 'v', long)]

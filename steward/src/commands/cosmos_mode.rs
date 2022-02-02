@@ -10,6 +10,7 @@ use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
 use steward_proto::uniswapv3::server::UniswapV3CellarAllocatorServer;
 
+/// Cosmos Signer, start allocation module
 #[derive(Command, Debug, Parser)]
 pub struct CosmosSignerCmd;
 
