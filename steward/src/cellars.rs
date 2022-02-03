@@ -1,4 +1,4 @@
-use crate::{error::Error, gas::CellarGas, prelude::APP};
+use crate::{error::Error, gas::CellarGas, prelude::APP, utils};
 use abscissa_core::{tracing::log::warn, Application};
 use ethers::prelude::*;
 use std::{fmt, result::Result};
@@ -26,6 +26,7 @@ pub async fn get_gas_price() -> Result<U256, Error> {
             }
         }
     }
+
     let config = APP.config();
     let url = &config.ethereum.rpc;
     let provider = crate::utils::get_eth_provider(url.as_str()).await?;

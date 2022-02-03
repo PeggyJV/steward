@@ -1,4 +1,11 @@
-use crate::{cellars, error::Error, gas::CellarGas, prelude::*, somm_send, utils};
+use crate::{
+    cellars::{self, uniswapv3::UniswapV3CellarState},
+    config::CellarConfig,
+    error::Error,
+    gas::CellarGas,
+    prelude::*,
+    somm_send, utils,
+};
 use abscissa_core::Application;
 use deep_space::{Coin, Contact};
 use ethers::prelude::*;
@@ -110,7 +117,7 @@ pub async fn decide_rebalance(
     debug!("getting eth gas price estimate");
     let eth_gas_price = cellars::get_gas_price().await?;
     debug!("padding eth gas price estimate");
-    let eth_gas_price = CellarGas::pad(eth_gas_price)?;
+    let eth_gas_price = CellarGas::apply_gas_multiplier(eth_gas_price)?;
     debug!("gas price: {}", eth_gas_price);
 
     debug!("building commit and precommit objects");
