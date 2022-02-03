@@ -3,6 +3,7 @@
 use abscissa_core::error::{BoxError, Context};
 use deep_space::error::{AddressError, CosmosGrpcError, PrivateKeyError};
 use ethers::prelude::*;
+use ethers::prelude::{errors::EtherscanError, gas_oracle::GasOracleError};
 use std::{
     fmt::{self, Display},
     io,
@@ -100,8 +101,8 @@ impl From<ErrorKind> for Error {
     }
 }
 
-impl From<errors::EtherscanError> for Error {
-    fn from(err: errors::EtherscanError) -> Self {
+impl From<EtherscanError> for Error {
+    fn from(err: EtherscanError) -> Self {
         ErrorKind::GasOracle.context(err).into()
     }
 }
@@ -130,8 +131,8 @@ impl From<iqhttp::Error> for Error {
     }
 }
 
-impl From<gas_oracle::GasOracleError> for Error {
-    fn from(err: gas_oracle::GasOracleError) -> Self {
+impl From<GasOracleError> for Error {
+    fn from(err: GasOracleError) -> Self {
         ErrorKind::GasOracle.context(err).into()
     }
 }
