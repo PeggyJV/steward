@@ -10,12 +10,13 @@ use std::{process::exit, time::Duration};
 
 const TIMEOUT: Duration = Duration::from_secs(60);
 
-/// Send Cosmos to the Eth chain
+/// Send Cosmos to the Eth chain. args is a Vector of Strings and flag_no_batch is boolean
 #[derive(Command, Debug, Default, Parser)]
 pub struct CosmosToEthCmd {
+    /// <gravity_denom> <amount> <cosmos_key> <eth_dest> <times>
     #[clap(short, long)]
     pub args: Vec<String>,
-
+    /// boolean
     #[clap(short = 'f', long)]
     pub flag_no_batch: bool,
 }
