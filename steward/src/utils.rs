@@ -8,11 +8,8 @@ use gravity_bridge::{
     },
     gravity_utils::ethereum::downcast_to_u64,
 };
-use std::{convert::TryFrom, sync::Arc, time::Duration};
+use std::{convert::TryFrom, time::Duration};
 use tonic::transport::Channel;
-
-pub type EthSignerMiddleware = SignerMiddleware<Provider<Http>, LocalWallet>;
-pub type EthClient = Arc<EthSignerMiddleware>;
 
 pub const TIMEOUT: Duration = Duration::from_secs(60);
 

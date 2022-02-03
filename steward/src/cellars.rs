@@ -1,4 +1,4 @@
-use crate::{error::Error, gas::CellarGas, prelude::APP, utils};
+use crate::{error::Error, gas::CellarGas, prelude::APP};
 use abscissa_core::{tracing::log::warn, Application};
 use ethers::prelude::*;
 use std::{fmt, result::Result};
