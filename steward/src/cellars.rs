@@ -1,4 +1,5 @@
-use crate::{error::Error, gas::CellarGas};
+use crate::{error::Error, gas::CellarGas, prelude::APP};
+use abscissa_core::{tracing::log::warn, Application};
 use ethers::prelude::*;
 use std::{fmt, result::Result};
 
@@ -17,7 +18,20 @@ impl std::fmt::Display for CellarId {
 }
 
 pub async fn get_gas_price() -> Result<U256, Error> {
-    CellarGas::etherscan_standard().await.map_err(|e| e.into())
+    if std::env::var("ETHERSCAN_API_KEY").is_ok() {
+        match CellarGas::etherscan_standard().await {
+            Ok(gas) => return Ok(gas),
+            Err(err) => {
+                warn!("failed to retrieve gas estimate from etherscan: {}", err);
+            }
+        }
+    }
+
+    let config = APP.config();
+    let url = &config.ethereum.rpc;
+    let provider = crate::utils::get_eth_provider(url.as_str()).await?;
+
+    provider.get_gas_price().await.map_err(|r| r.into())
 }
 
 fn parse_cellar_id(cellar_id: &str) -> Result<CellarId, String> {

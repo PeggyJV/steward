@@ -2,7 +2,8 @@
 
 use abscissa_core::error::{BoxError, Context};
 use deep_space::error::{AddressError, CosmosGrpcError, PrivateKeyError};
-use ethers::{contract::ContractError, middleware::gas_oracle::GasOracleError, prelude::*};
+use ethers::prelude::*;
+use ethers::prelude::{errors::EtherscanError, gas_oracle::GasOracleError};
 use std::{
     fmt::{self, Display},
     io,
@@ -97,6 +98,12 @@ impl From<AddrParseError> for Error {
 impl From<ErrorKind> for Error {
     fn from(kind: ErrorKind) -> Self {
         Context::new(kind, None).into()
+    }
+}
+
+impl From<EtherscanError> for Error {
+    fn from(err: EtherscanError) -> Self {
+        ErrorKind::GasOracle.context(err).into()
     }
 }
 

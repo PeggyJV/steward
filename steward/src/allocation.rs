@@ -1,6 +1,10 @@
 use crate::{
-    cellars, cellars::uniswapv3::UniswapV3CellarState, config::CellarConfig, error::Error,
-    prelude::*, somm_send, utils,
+    cellars::{self, uniswapv3::UniswapV3CellarState},
+    config::CellarConfig,
+    error::Error,
+    gas::CellarGas,
+    prelude::*,
+    somm_send, utils,
 };
 use abscissa_core::Application;
 use deep_space::{Coin, Contact};
@@ -80,18 +84,6 @@ pub async fn decide_rebalance(
     cellar_address: String,
 ) -> Result<(), Error> {
     debug!("deciding rebalance for cellar address {}", cellar_address);
-    debug!("getting eth gas price");
-    let eth_gas_price = match cellars::get_gas_price().await {
-        Ok(gp) => {
-            debug!("eth gas price is {}", gp);
-            gp
-        }
-        Err(err) => {
-            error!("failed to get cellar gas price: {}", err);
-            // TO-DO handle this better
-            0.into()
-        }
-    };
     let config = APP.config();
 
     debug!("loading the delegate (orchestrator) key and address from config");
@@ -121,6 +113,12 @@ pub async fn decide_rebalance(
         "precommit containing cellar {} will be signed by {} on behalf of {}",
         cellar_address, cosmos_delegate_address, validator_address
     );
+
+    debug!("getting eth gas price estimate");
+    let eth_gas_price = cellars::get_gas_price().await?;
+    debug!("padding eth gas price estimate");
+    let eth_gas_price = CellarGas::apply_gas_multiplier(eth_gas_price)?;
+    debug!("gas price: {}", eth_gas_price);
 
     debug!("building commit and precommit objects");
     let allocation = to_allocation(tick_range, cellar_address.clone(), eth_gas_price.as_u64());
