@@ -2,7 +2,7 @@
 use crate::{
     error::{Error, ErrorKind},
     prelude::APP,
-    utils,
+    utils::{get_chain, get_eth_provider},
 };
 use abscissa_core::Application;
 use ethers::{
@@ -78,10 +78,8 @@ impl CellarGas {
     }
 
     async fn get_etherscan_client() -> Result<Client, Error> {
-        let config = APP.config();
-        let url = &config.ethereum.rpc;
-        let provider = crate::utils::get_eth_provider(url.as_str()).await?;
-        let chain = utils::get_chain(provider.clone()).await?;
+        let provider = get_eth_provider().await?;
+        let chain = get_chain(provider.clone()).await?;
 
         Client::new_from_env(chain).map_err(|e| e.into())
     }
