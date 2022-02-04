@@ -1,4 +1,8 @@
-use crate::error::{Error, ErrorKind};
+use crate::{
+    error::{Error, ErrorKind},
+    prelude::APP,
+};
+use abscissa_core::Application;
 use deep_space::error::CosmosGrpcError;
 use ethers::prelude::{types::Address as EthAddress, *};
 use gravity_bridge::{
@@ -59,8 +63,10 @@ pub async fn get_delegates_keys_by_orchestrator(
     Ok(keys)
 }
 
-pub async fn get_eth_provider(eth_rpc_url: &str) -> Result<Provider<Http>, Error> {
-    let eth_url = eth_rpc_url.trim_end_matches('/');
+pub async fn get_eth_provider() -> Result<Provider<Http>, Error> {
+    let config = APP.config();
+    let url = &config.ethereum.rpc;
+    let eth_url = url.trim_end_matches('/');
 
     Provider::<Http>::try_from(eth_url).map_err(|err| ErrorKind::Config.context(err).into())
 }
