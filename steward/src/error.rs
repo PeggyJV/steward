@@ -2,7 +2,9 @@
 
 use abscissa_core::error::{BoxError, Context};
 use deep_space::error::{AddressError, CosmosGrpcError, PrivateKeyError};
-use ethers::prelude::{errors::EtherscanError, gas_oracle::GasOracleError, ProviderError, Middleware, ContractError};
+use ethers::prelude::{
+    errors::EtherscanError, gas_oracle::GasOracleError, ContractError, Middleware, ProviderError,
+};
 use std::{
     fmt::{self, Display},
     io,

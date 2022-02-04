@@ -1,5 +1,5 @@
 use crate::{error::Error, gas::CellarGas, utils::get_eth_provider};
-use abscissa_core::{tracing::log::warn};
+use abscissa_core::tracing::log::warn;
 use ethers::prelude::*;
 use std::{fmt, result::Result};
 
