@@ -2,9 +2,13 @@ use crate::application::APP;
 use abscissa_core::{clap::Parser, Application, Command, Runnable};
 use std::path;
 
+/// Gorc keys cosmos rename [name] [new-name]
 #[derive(Command, Debug, Default, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Rename a Cosmos key.\n This command will rename a Cosmos key in the keystore. It takes the key name and new key name as a vector of Strings."
+)]
 pub struct RenameCosmosKeyCmd {
-    pub args: Vec<String>,
+    pub name: Vec<String>,
 
     #[clap(short, long)]
     pub overwrite: bool,
@@ -17,10 +21,10 @@ impl Runnable for RenameCosmosKeyCmd {
         let keystore = path::Path::new(&config.keystore);
         let keystore = signatory::FsKeyStore::create_or_open(keystore).unwrap();
 
-        let name = self.args.get(0).expect("name is required");
+        let name = self.name.get(0).expect("name is required");
         let name = name.parse().expect("Could not parse name");
 
-        let new_name = self.args.get(1).expect("new_name is required");
+        let new_name = self.name.get(1).expect("new_name is required");
         let new_name = new_name.parse().expect("Could not parse new_name");
         if let Ok(_info) = keystore.info(&new_name) {
             if !self.overwrite {

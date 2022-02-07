@@ -6,9 +6,13 @@ use rand_core::OsRng;
 use signatory::FsKeyStore;
 use std::path;
 
+/// Gorc keys cosmos add [name]
 #[derive(Command, Debug, Default, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Create a new Cosmos Key.\n This command creates a new Cosmos key with a name as a String.\n It has an overwrite option, a boolean which can be true or false."
+)]
 pub struct AddCosmosKeyCmd {
-    pub args: Vec<String>,
+    pub name: Vec<String>,
 
     #[clap(short, long)]
     pub overwrite: bool,
@@ -22,7 +26,7 @@ impl Runnable for AddCosmosKeyCmd {
         let keystore = path::Path::new(&config.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
 
-        let name = self.args.get(0).expect("name is required");
+        let name = self.name.get(0).expect("name is required");
         let name = name.parse().expect("Could not parse name");
         if let Ok(_info) = keystore.info(&name) {
             if !self.overwrite {
@@ -50,8 +54,8 @@ impl Runnable for AddCosmosKeyCmd {
 
         keystore.store(&name, &key).expect("Could not store key");
 
-        let args = vec![name.to_string()];
-        let show_cmd = ShowCosmosKeyCmd { args };
+        let name = vec![name.to_string()];
+        let show_cmd = ShowCosmosKeyCmd { name };
         show_cmd.run();
     }
 }
