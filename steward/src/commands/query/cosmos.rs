@@ -17,9 +17,13 @@ impl Runnable for Cosmos {
     }
 }
 
+/// Query Cosmos balance
 #[derive(Command, Debug, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Query Cosmos balance.\n This command queries the Cosmos balance, taking the name of the key as a String."
+)]
 pub struct Balance {
-    free: Vec<String>,
+    key_name: Vec<String>,
 
     #[clap(short, long)]
     help: bool,
@@ -27,14 +31,18 @@ pub struct Balance {
 
 impl Runnable for Balance {
     fn run(&self) {
-        assert!(self.free.len() == 1);
-        let _key_name = self.free[0].clone();
+        assert!(self.key_name.len() == 1);
+        let _key_name = self.key_name[0].clone();
     }
 }
 
+/// Query Cosmos Gravity keys
 #[derive(Command, Debug, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Query the Cosmos Gravity keys.\n This command queries the Cosmos gravity keys, taking the name of the key as a String."
+)]
 pub struct GravityKeys {
-    free: Vec<String>,
+    key_name: Vec<String>,
     #[clap(short, long)]
     help: bool,
 }
@@ -42,8 +50,8 @@ pub struct GravityKeys {
 impl Runnable for GravityKeys {
     /// Start the application.
     fn run(&self) {
-        assert!(self.free.len() == 1);
-        let _key_name = self.free[0].clone();
+        assert!(self.key_name.len() == 1);
+        let _key_name = self.key_name[0].clone();
 
         abscissa_tokio::run(&APP, async { unimplemented!() }).unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
