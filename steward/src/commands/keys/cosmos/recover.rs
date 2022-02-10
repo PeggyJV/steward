@@ -40,7 +40,7 @@ impl Runnable for RecoverCosmosKeyCmd {
         }
 
         let mnemonic = match self.mnemonic.clone() {
-            Some(mnemonic) => mnemonic.clone(),
+            Some(mnemonic) => mnemonic,
             None => rpassword::read_password_from_tty(Some("> Enter your bip39-mnemonic:\n"))
                 .expect("Could not read mnemonic"),
         };

@@ -13,7 +13,7 @@ pub struct RenameCosmosKeyCmd {
 
     /// New keyname to replace name in keystore, takes a String
     pub new_name: String,
-    
+
     /// Overwrite key with similar name in the keystore when set to true. Takes a Boolean.
     #[clap(short, long)]
     pub overwrite: bool,
