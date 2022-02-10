@@ -1,8 +1,15 @@
 //! Gas models
+use crate::{
+    error::{Error, ErrorKind},
+    prelude::APP,
+    utils::{get_chain, get_eth_provider},
+};
+use abscissa_core::Application;
 use ethers::{
     middleware::gas_oracle::{Etherchain, Etherscan, GasCategory, GasOracle, GasOracleError},
     prelude::*,
 };
+use gravity_bridge::gravity_utils;
 use std::result::Result;
 
 pub struct CellarGas {
@@ -11,18 +18,35 @@ pub struct CellarGas {
 }
 
 impl CellarGas {
-    pub async fn etherscan_standard() -> Result<U256, GasOracleError> {
-        let etherscan_client = Client::new_from_env(Chain::Mainnet)?;
-        let etherscan_oracle = Etherscan::new(etherscan_client).category(GasCategory::Standard);
-        let data = etherscan_oracle.fetch().await;
-        data
+    pub fn apply_gas_multiplier(price: U256) -> Result<U256, Error> {
+        let config = APP.config();
+        let price = match gravity_utils::ethereum::downcast_to_f32(price) {
+            Some(p) => p,
+            None => {
+                return Err(ErrorKind::GasOracle
+                    .context("failed to downcast gas price estimate")
+                    .into())
+            }
+        };
+        let price = price * config.ethereum.gas_price_multiplier;
+
+        Ok((price as u128).into())
     }
 
-    pub async fn etherscan_safelow() -> Result<U256, GasOracleError> {
-        let etherscan_client = Client::new_from_env(Chain::Mainnet)?;
+    pub async fn etherscan_standard() -> Result<U256, Error> {
+        let etherscan_client = CellarGas::get_etherscan_client().await?;
+        let etherscan_oracle = Etherscan::new(etherscan_client).category(GasCategory::Standard);
+        let gas_estimate = etherscan_oracle.fetch().await;
+
+        gas_estimate.map_err(|e| e.into())
+    }
+
+    pub async fn etherscan_safelow() -> Result<U256, Error> {
+        let etherscan_client = CellarGas::get_etherscan_client().await?;
         let etherscan_oracle = Etherscan::new(etherscan_client).category(GasCategory::SafeLow);
-        let data = etherscan_oracle.fetch().await;
-        data
+        let gas_estimate = etherscan_oracle.fetch().await;
+
+        gas_estimate.map_err(|e| e.into())
     }
 
     #[allow(dead_code)]
@@ -51,5 +75,12 @@ impl CellarGas {
         let etherchain_oracle = Etherchain::new().category(GasCategory::SafeLow);
         let data = etherchain_oracle.fetch().await;
         data
+    }
+
+    async fn get_etherscan_client() -> Result<Client, Error> {
+        let provider = get_eth_provider().await?;
+        let chain = get_chain(provider.clone()).await?;
+
+        Client::new_from_env(chain).map_err(|e| e.into())
     }
 }

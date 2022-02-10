@@ -7,7 +7,7 @@ testdata
 
 # personal config files
 cellar_rebalancer*.toml
-*_config.toml
+*config.toml
 
 # js
 node_modules

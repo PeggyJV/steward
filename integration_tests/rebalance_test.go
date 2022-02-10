@@ -224,15 +224,15 @@ func (s *IntegrationTestSuite) TestRebalance() {
 				s.T().Logf("got error %e querying ticks", err)
 				return false
 			}
-			if initialTickRange.Upper != actualTickRange.Upper {
+			if expectedTickRange.Upper != actualTickRange.Upper {
 				s.T().Logf("wrong upper %s", actualTickRange.String())
 				return false
 			}
-			if initialTickRange.Lower != actualTickRange.Lower {
+			if expectedTickRange.Lower != actualTickRange.Lower {
 				s.T().Logf("wrong lower %s", actualTickRange.String())
 				return false
 			}
-			if initialTickRange.Weight != actualTickRange.Weight {
+			if expectedTickRange.Weight != actualTickRange.Weight {
 				s.T().Logf("wrong weight %s", actualTickRange.String())
 				return false
 			}
