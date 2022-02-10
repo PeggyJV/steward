@@ -6,19 +6,20 @@ use rand_core::OsRng;
 use signatory::FsKeyStore;
 use std::path;
 
-/// Gorc keys eth add [name]
+/// Steward keys eth add [name]
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Create a new Eth Key.\n This command creates a new Eth key with a name as a String.\n It has an overwrite option, a boolean which can be true or false."
+    long_about = "DESCRIPTION \n\n Create a new Eth Key.\n This command creates a new Eth key. It has an overwrite option, which if set to true, overwrites\n an existing key in the keystore with similar key name."
 )]
 pub struct AddKeyCmd {
-    pub name: Vec<String>,
+    /// Eth key name, takes a String
+    pub name: String,
 
+    /// Overwrite key with similar name in the keystore when set to true. Takes a Boolean.
     #[clap(short, long)]
     pub overwrite: bool,
 }
 
-// `contract monitor keys add [name]`
 // - [name] required; key name
 impl Runnable for AddKeyCmd {
     fn run(&self) {
@@ -26,8 +27,7 @@ impl Runnable for AddKeyCmd {
         let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
 
-        let name = self.name.get(0).expect("name is required");
-        let name = name.parse().expect("Could not parse name");
+        let name = self.name.parse().expect("Could not parse name");
         if let Ok(_info) = keystore.info(&name) {
             if !self.overwrite {
                 eprintln!("Key already exists, exiting.");

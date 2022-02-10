@@ -2,30 +2,32 @@ use crate::application::APP;
 use abscissa_core::{clap::Parser, Application, Command, Runnable};
 use std::path;
 
-/// Gorc keys cosmos rename [name] [new-name]
+/// Steward keys cosmos rename [name] [new-name]
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Rename a Cosmos key.\n This command will rename a Cosmos key in the keystore. It takes the key name and new key name as a vector of Strings."
+    long_about = "DESCRIPTION \n\n Rename a Cosmos key.\n This command will rename a Cosmos key in the keystore. It takes the existing keyname and new keyname."
 )]
 pub struct RenameCosmosKeyCmd {
-    pub name: Vec<String>,
+    /// Cosmos keyname in keystore, takes a String
+    pub name: String,
 
+    /// New keyname to replace name in keystore, takes a String
+    pub new_name: String,
+    
+    /// Overwrite key with similar name in the keystore when set to true. Takes a Boolean.
     #[clap(short, long)]
     pub overwrite: bool,
 }
 
-/// The `gorc keys cosmos rename [name] [new-name]` subcommand: show keys
+/// The `steward keys cosmos rename [name] [new-name]` subcommand: show keys
 impl Runnable for RenameCosmosKeyCmd {
     fn run(&self) {
         let config = APP.config();
         let keystore = path::Path::new(&config.keystore);
         let keystore = signatory::FsKeyStore::create_or_open(keystore).unwrap();
 
-        let name = self.name.get(0).expect("name is required");
-        let name = name.parse().expect("Could not parse name");
-
-        let new_name = self.name.get(1).expect("new_name is required");
-        let new_name = new_name.parse().expect("Could not parse new_name");
+        let name = self.name.parse().expect("Could not parse name");
+        let new_name = self.new_name.parse().expect("Could not parse new_name");
         if let Ok(_info) = keystore.info(&new_name) {
             if !self.overwrite {
                 println!("Key already exists, exiting.");

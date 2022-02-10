@@ -3,7 +3,7 @@ use crate::application::APP;
 use abscissa_core::{clap::Parser, Application, Command, Runnable};
 use std::path::Path;
 
-/// Gorc keys eth list
+/// Steward keys eth list
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
     long_about = "DESCRIPTION \n\n List all Eth keys in keystore.\n This command lists all Eth keys and their addresses from the keystore."
@@ -23,7 +23,7 @@ impl Runnable for ListKeyCmd {
                     if extension == "pem" {
                         let name = path.file_stem().unwrap();
                         let name = name.to_str().unwrap();
-                        let name = vec![name.to_string()];
+                        let name = name.to_string();
                         let show_cmd = ShowKeyCmd { name };
                         show_cmd.run();
                     }

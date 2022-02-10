@@ -14,13 +14,13 @@ use tokio::time::sleep as delay_for;
 /// Deploy Erc20
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Deploy ERC20 tokens to the Sommelier Chain via the Gravity Bridge.\n This command takes a Vector of Strings called denom as args.\n Options are ethereum-key and gas-multiplier which is a 64-bit floating point type, f64."
+    long_about = "DESCRIPTION \n\n Deploy ERC20 tokens to the Sommelier Chain via the Gravity Bridge.\n This command takes a token denom, Ethereum key and gas multiplier."
 )]
 pub struct Erc20 {
-    /// Erc20 token denom
+    /// Erc20 token denom, takes String.
     #[clap(short, long)]
     denom: String,
-    /// Ethereum ID String representing a Keystore entry.
+    /// Ethereum ID String representing a Keystore entry, takes String.
     #[clap(short, long)]
     ethereum_key: String,
     /// Ethereum gas multiplier, default is 1.

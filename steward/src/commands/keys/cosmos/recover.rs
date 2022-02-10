@@ -5,19 +5,24 @@ use k256::pkcs8::ToPrivateKey;
 use signatory::FsKeyStore;
 use std::path;
 
-/// Gorc keys cosmos recover [name] (bip39-mnemonic)
+/// Steward keys cosmos recover [name] (bip39-mnemonic)
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Recover an external Cosmos key.\n This command will recover a Cosmos key, storing it in the keystore. \n It takes key name as a String and bip39-mnemonic."
+    long_about = "DESCRIPTION \n\n Recover an external Cosmos key.\n This command will recover a Cosmos key, storing it in the keystore. \n It takes a key name and bip39-mnemonic."
 )]
 pub struct RecoverCosmosKeyCmd {
-    pub name: Vec<String>,
+    /// Cosmos key name, takes a String
+    pub name: String,
 
+    /// Overwrite key with similar name in the keystore when set to true. Takes a Boolean.
     #[clap(short, long)]
     pub overwrite: bool,
+
+    /// bip39-mnemonic optional. When absent you'll be prompted to enter it.
+    pub mnemonic: Option<String>,
 }
 
-// `gorc keys cosmos recover [name] (bip39-mnemonic)`
+// `steward keys cosmos recover [name] (bip39-mnemonic)`
 // - [name] required; key name
 // - (bip39-mnemonic) optional; when absent the user will be prompted to enter it
 impl Runnable for RecoverCosmosKeyCmd {
@@ -26,8 +31,7 @@ impl Runnable for RecoverCosmosKeyCmd {
         let keystore = path::Path::new(&config.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
 
-        let name = self.name.get(0).expect("name is required");
-        let name = name.parse().expect("Could not parse name");
+        let name = self.name.parse().expect("Could not parse name");
         if let Ok(_info) = keystore.info(&name) {
             if !self.overwrite {
                 eprintln!("Key already exists, exiting.");
@@ -35,7 +39,7 @@ impl Runnable for RecoverCosmosKeyCmd {
             }
         }
 
-        let mnemonic = match self.name.get(1) {
+        let mnemonic = match self.mnemonic.clone() {
             Some(mnemonic) => mnemonic.clone(),
             None => rpassword::read_password_from_tty(Some("> Enter your bip39-mnemonic:\n"))
                 .expect("Could not read mnemonic"),
@@ -59,7 +63,7 @@ impl Runnable for RecoverCosmosKeyCmd {
 
         keystore.store(&name, &key).expect("Could not store key");
 
-        let name = vec![name.to_string()];
+        let name = name.to_string();
         let show_cmd = ShowCosmosKeyCmd { name };
         show_cmd.run();
     }
