@@ -46,14 +46,17 @@ pub struct EthToCosmosCmd {
 impl Runnable for EthToCosmosCmd {
     fn run(&self) {
         let config = APP.config();
-        let erc20_address: EthAddress = self.erc20_address
+        let erc20_address: EthAddress = self
+            .erc20_address
             .parse()
             .expect("Invalid ERC20 contract address!");
 
         let ethereum_wallet = config.load_ethers_wallet(self.ethereum_key.clone());
 
-        let contract_address: EthAddress =
-            self.contract_address.parse().expect("Invalid contract address!");
+        let contract_address: EthAddress = self
+            .contract_address
+            .parse()
+            .expect("Invalid contract address!");
 
         let cosmos_prefix = config.cosmos.prefix.trim();
         let eth_rpc = config.ethereum.rpc.trim();
@@ -80,7 +83,8 @@ impl Runnable for EthToCosmosCmd {
             let cosmos_dest: CosmosAddress = self.cosmos_dest.parse().unwrap();
             let ethereum_address = eth_client.address();
             check_for_eth(ethereum_address, eth_client.clone()).await;
-            let amount = U256::from_dec_str(&self.init_amount).expect("cannot parse amount as U256");
+            let amount =
+                U256::from_dec_str(&self.init_amount).expect("cannot parse amount as U256");
 
             let erc20_balance =
                 get_erc20_balance(erc20_address, ethereum_address, eth_client.clone())

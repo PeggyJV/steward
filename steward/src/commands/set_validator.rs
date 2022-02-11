@@ -12,7 +12,7 @@ pub struct SetValidatorCmd {
     /// H160 Validator Address
     #[clap(short = 'v', long)]
     validator: H160,
-    
+
     ///
     #[clap(short = 'u', long)]
     value: bool,

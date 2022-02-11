@@ -8,10 +8,10 @@ use std::path;
 /// Steward keys cosmos recover [name] (bip39-mnemonic)
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Recover an external Cosmos key.\n This command will recover a Cosmos key, storing it in the keystore. \n It takes a key name and bip39-mnemonic."
+    long_about = "DESCRIPTION \n\n Recover an external Cosmos key.\n This command will recover a Cosmos key, storing it in the keystore. \n It takes a keyname and bip39-mnemonic."
 )]
 pub struct RecoverCosmosKeyCmd {
-    /// Cosmos key name, takes a String
+    /// Cosmos keyname, takes a String
     pub name: String,
 
     /// Overwrite key with similar name in the keystore when set to true. Takes a Boolean.
@@ -23,7 +23,7 @@ pub struct RecoverCosmosKeyCmd {
 }
 
 // `steward keys cosmos recover [name] (bip39-mnemonic)`
-// - [name] required; key name
+// - [name] required; keyname
 // - (bip39-mnemonic) optional; when absent the user will be prompted to enter it
 impl Runnable for RecoverCosmosKeyCmd {
     fn run(&self) {

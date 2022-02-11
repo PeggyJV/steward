@@ -9,10 +9,10 @@ use std::path;
 /// Steward keys eth add [name]
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Create a new Eth Key.\n This command creates a new Eth key. It has an overwrite option, which if set to true, overwrites\n an existing key in the keystore with similar key name."
+    long_about = "DESCRIPTION \n\n Create a new Eth Key.\n This command creates a new Eth key. It has an overwrite option, which if set to true, overwrites\n an existing key in the keystore with similar keyname."
 )]
 pub struct AddKeyCmd {
-    /// Eth key name, takes a String
+    /// Eth keyname, takes a String
     pub name: String,
 
     /// Overwrite key with similar name in the keystore when set to true. Takes a Boolean.
@@ -20,7 +20,7 @@ pub struct AddKeyCmd {
     pub overwrite: bool,
 }
 
-// - [name] required; key name
+// - [name] required; keyname
 impl Runnable for AddKeyCmd {
     fn run(&self) {
         let config = APP.config();
