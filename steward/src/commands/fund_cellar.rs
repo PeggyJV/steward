@@ -15,11 +15,14 @@ use steward_abi::cellar_uniswap::*;
 
 /// Command to fund Cellars
 #[derive(Command, Debug, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Fund Cellar.\n This command funds the required Cellar by loading the Cellar config. \n It takes the amounts for the Cellar pool pair."
+)]
 pub struct FundCellarCmd {
-    #[clap(short = 'i', long)]
-    pub cellar_id: u32,
+    /// Amount for first pool pair
     #[clap(short = 'm', long)]
     pub amount_0: f64,
+    /// Amount for second pool pair
     #[clap(short = 'o', long)]
     pub amount_1: f64,
 }
