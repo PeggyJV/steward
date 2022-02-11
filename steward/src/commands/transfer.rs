@@ -11,7 +11,7 @@ use std::convert::TryFrom;
 
 #[derive(Command, Debug, Parser)]
 pub struct TransferCmd {
-    recipient: Vec<String>,
+    recipient: String,
 }
 
 impl Runnable for TransferCmd {
@@ -19,7 +19,7 @@ impl Runnable for TransferCmd {
     fn run(&self) {
         abscissa_tokio::run(&APP, async {
             // Pass command line arguement
-            let link = &self.recipient[0];
+            let link = &self.recipient;
             // Clone command line arguement because `&self` is `struct` and `provider` expects `String`
             let link_clone = link.clone();
             // Pass provider as command line arguement

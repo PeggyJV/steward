@@ -10,6 +10,9 @@ use steward_abi::cellar_uniswap::*;
 
 /// Remove funds from Cellars
 #[derive(Command, Debug, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Remove funds from Cellar.\n This command remove funds from the required Cellar by loading the Cellar config."
+)]
 pub struct RemoveFundsCmd {}
 
 impl Runnable for RemoveFundsCmd {
