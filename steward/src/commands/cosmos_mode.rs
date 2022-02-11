@@ -12,6 +12,9 @@ use steward_proto::uniswapv3::server::UniswapV3CellarAllocatorServer;
 
 /// Cosmos Signer, start allocation module
 #[derive(Command, Debug, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Cosmos Signer, start allocation module.\n This command starts Steward using the allocation module."
+)]
 pub struct CosmosSignerCmd;
 
 impl Runnable for CosmosSignerCmd {
