@@ -1,0 +1,28 @@
+syntax = "proto3";
+package steward.v1;
+
+option go_package = "/steward_proto";
+
+service ContractCall {
+    rpc Submit(SubmitRequest) returns (SubmitResponse) {}
+}
+
+message SubmitRequest {
+    string cellar_id = 1;
+    oneof contract_call_data {
+        UniswapV3RebalanceParams uniswapv3_rebalance = 2;
+    }
+}
+
+message SubmitResponse {}
+
+message UniswapV3Position {
+    int32 upper_price = 2;
+    int32 lower_price = 3;
+    int32 weight = 4;
+}
+
+message UniswapV3RebalanceParams {
+    repeated UniswapV3Position cellar_tick_info = 1;
+    uint64 current_price = 2;
+}

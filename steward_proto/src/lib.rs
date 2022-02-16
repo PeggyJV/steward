@@ -1,3 +1,6 @@
+pub mod steward {
+    include!("prost/steward.v1.rs");
+}
 pub mod uniswapv3 {
     include!("prost/cellars.uniswapv3.v1.rs");
 
