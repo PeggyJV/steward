@@ -721,6 +721,9 @@ key_derivation_path = "m/44'/60'/0'/0/0"
 rpc = "http://%s:8545"
 gas_price_multiplier = 1.5
 
+[cork.uniswapv3]
+cellar_ids = ["ethereum:%s"]
+
 [cosmos.gas_price]
 amount = 1000000000
 denom = "%s"
@@ -737,6 +740,7 @@ server_key_path = "/root/steward/test_server_key_pkcs8.pem"
 `,
 			s.valResources[i].Container.Name[1:],
 			s.ethResource.Container.Name[1:],
+			hardhatCellar.String(),
 			testDenom,
 		)
 
