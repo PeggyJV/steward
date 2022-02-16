@@ -10,7 +10,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/peggyjv/sommelier/x/allocation/types"
+	"github.com/peggyjv/sommelier/v3/x/allocation/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )

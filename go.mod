@@ -7,9 +7,9 @@ require (
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/ethereum/go-ethereum v1.10.11
 	github.com/miguelmota/go-ethereum-hdwallet v0.1.1
-	github.com/ory/dockertest/v3 v3.7.0
-	github.com/peggyjv/gravity-bridge/module v0.3.8
-	github.com/peggyjv/sommelier v1.0.4-0.20211230211746-941b82903d54
+	github.com/ory/dockertest/v3 v3.8.1
+	github.com/peggyjv/gravity-bridge/module v0.3.9
+	github.com/peggyjv/sommelier/v3 v3.1.2-0.20220210143701-b23ff6925fdb // indirect
 	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
 	github.com/tendermint/tendermint v0.34.14
