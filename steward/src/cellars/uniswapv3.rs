@@ -39,13 +39,14 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
         let mut ticks = cellar_tick_info.clone();
         ticks.reverse();
 
-        let mut call = self.contract.rebalance(ticks);
+        let gas_price = match self.gas_price {
+            Some(gp) => gp,
+            None => cellars::get_gas_price().await?
+        };
 
-        if let Some(gas_price) = self.gas_price {
-            call = call.gas_price(gas_price)
-        }
-
-        let gased = call.gas(5_000_000);
+        let mut call = self.contract.rebalance(ticks, gas_price);
+        call = call.gas_price(gas_price);
+        let gased = call.gas::<u64>(5_000_000);
 
         let pending = gased.send().await?;
         dbg!(&pending);
@@ -55,13 +56,14 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
 
     // Rebalance portfolio with cellar tick info
     pub async fn reinvest(&mut self) -> Result<(), Error> {
-        let mut call = self.contract.reinvest();
+        let gas_price = match self.gas_price {
+            Some(gp) => gp,
+            None => cellars::get_gas_price().await?
+        };
 
-        if let Some(gas_price) = self.gas_price {
-            call = call.gas_price(gas_price)
-        }
-
-        let gased = call.gas(5_000_000);
+        let mut call = self.contract.reinvest(gas_price);
+        call = call.gas_price(gas_price);
+        let gased = call.gas::<u64>(5_000_000);
 
         let pending = gased.send().await?;
         dbg!(&pending);
@@ -90,44 +92,6 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
         //     Some(receipt) => info!("Added liquidity for uniswap version 3, {:?}", receipt),
         //     None => info!("No pending transaction for add liquidity"),
         // }
-
-        Ok(())
-    }
-
-    // Add ethereum liquidity for uniswap version 3 with values form struct `CellarAddParams`
-    pub async fn add_liquidity_eth_for_uni_v3(
-        &mut self,
-        cellar_add_params: CellarAddParams,
-    ) -> Result<(), Error> {
-        let call = self
-            .contract
-            .add_liquidity_eth_for_uni_v3(cellar_add_params);
-        let pending = call.send().await?;
-
-        let receipt = pending.confirmations(6).await?;
-        match receipt {
-            Some(receipt) => info!("Added liquidity for uniswap version 3, {:?}", receipt),
-            None => info!("No pending transaction for add liquidity"),
-        }
-
-        Ok(())
-    }
-
-    // Remove ethereum liquidity from uniswap version 3 with values form struct `CellarAddParams`
-    pub async fn remove_liquidity_eth_from_uni_v3(
-        &mut self,
-        cellar_remove_params: CellarRemoveParams,
-    ) -> Result<(), Error> {
-        let call = self
-            .contract
-            .remove_liquidity_eth_from_uni_v3(cellar_remove_params);
-        let pending = call.send().await?;
-
-        let receipt = pending.confirmations(6).await?;
-        match receipt {
-            Some(receipt) => info!("Added liquidity for uniswap version 3, {:?}", receipt),
-            None => info!("No pending transaction for add liquidity"),
-        }
 
         Ok(())
     }

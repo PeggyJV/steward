@@ -159,10 +159,10 @@ fn main() {
     }
 
     // Cellar Uniswap
-    let abigen = match Abigen::new("UniswapV3Cellar", "../steward_abi/cellar_uniswap_abi.json") {
+    let abigen = match Abigen::new("UniswapV3Cellar", "../steward_abi/cellar_uniswap.json") {
         Ok(abigen) => abigen,
         Err(e) => {
-            println!("Could not open cellar_uniswap_abi.json: {}", e);
+            println!("Could not open cellar_uniswap.json: {}", e);
             process::exit(1);
         }
     };
@@ -174,7 +174,7 @@ fn main() {
     {
         Ok(abi) => abi,
         Err(e) => {
-            println!("Could not generate abi from cellar_uniswap_abi.json: {}", e);
+            println!("Could not generate abi from cellar_uniswap.json: {}", e);
             process::exit(1);
         }
     };
@@ -182,5 +182,31 @@ fn main() {
     match abi.write_to_file("../steward_abi/src/cellar_uniswap.rs") {
         Ok(_) => (),
         Err(e) => println!("Error writing cellar_uniswap.rs: {}", e),
+    }
+
+    // Cellar Uniswap
+    let abigen = match Abigen::new("UniswapV3Cellar", "../steward_abi/cellar_uniswap_limit_usdc_eth.json") {
+        Ok(abigen) => abigen,
+        Err(e) => {
+            println!("Could not open cellar_uniswap_limit_usdc_eth.json: {}", e);
+            process::exit(1);
+        }
+    };
+
+    let abi = match abigen
+        .add_event_derive("serde::Deserialize")
+        .add_event_derive("serde::Serialize")
+        .generate()
+    {
+        Ok(abi) => abi,
+        Err(e) => {
+            println!("Could not generate abi from cellar_uniswap_limit_usdc_eth.json: {}", e);
+            process::exit(1);
+        }
+    };
+
+    match abi.write_to_file("../steward_abi/src/cellar_uniswap_limit_usdc_eth.rs") {
+        Ok(_) => (),
+        Err(e) => println!("Error writing cellar_uniswap_limit_usdc_eth.rs: {}", e),
     }
 }
