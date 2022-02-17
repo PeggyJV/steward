@@ -92,3 +92,18 @@ fn version_no_args() {
     let mut cmd = runner.arg("--version").capture_stdout().run();
     cmd.stdout().expect_regex(r"\A\w+ [\d\.\-]+\z");
 }
+
+/// Use command-line argument value
+#[test]
+#[ignore]
+fn eth_keys_add() {
+    let mut runner = RUNNER.clone();
+    let cmd = runner
+        .args(&["keys", "eth", "add", "sha"])
+        .capture_stdout()
+        .run();
+    // Check that command executes without error.
+    cmd.wait().unwrap().expect_success();
+
+    // Check that mnemonic contains 24 words.
+}
