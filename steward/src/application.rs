@@ -1,4 +1,4 @@
-//! CellarRebalancer Abscissa Application
+//! Steward Abscissa Application
 
 use crate::{commands::EntryPoint, config::StewardConfig};
 use abscissa_core::{
@@ -8,11 +8,11 @@ use abscissa_core::{
 };
 
 /// Application state
-pub static APP: AppCell<CellarRebalancerApp> = AppCell::new();
+pub static APP: AppCell<StewardApp> = AppCell::new();
 
-/// CellarRebalancer Application
+/// Steward Application
 #[derive(Debug)]
-pub struct CellarRebalancerApp {
+pub struct StewardApp {
     /// Application configuration.
     config: CfgCell<StewardConfig>,
 
@@ -24,7 +24,7 @@ pub struct CellarRebalancerApp {
 ///
 /// By default no configuration is loaded, and the framework state is
 /// initialized to a default, empty state (no components, threads, etc).
-impl Default for CellarRebalancerApp {
+impl Default for StewardApp {
     fn default() -> Self {
         Self {
             config: CfgCell::default(),
@@ -33,7 +33,7 @@ impl Default for CellarRebalancerApp {
     }
 }
 
-impl Application for CellarRebalancerApp {
+impl Application for StewardApp {
     /// Entrypoint command for this application.
     type Cmd = EntryPoint;
 

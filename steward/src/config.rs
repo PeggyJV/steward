@@ -1,4 +1,4 @@
-//! CellarRebalancer Config
+//! Steward Config
 //!
 //! See instructions in `commands.rs` to specify the path to your
 //! application's configuration file and/or command-line options
@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use signatory::FsKeyStore;
 use std::{net::SocketAddr, path::Path, time::Duration};
 
-/// CellarRebalancer Configuration
+/// Steward Configuration
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields)]
 pub struct StewardConfig {
@@ -50,7 +50,7 @@ impl StewardConfig {
 /// Default configuration settings.
 ///
 /// Note: if your needs are as simple as below, you can
-/// use `#[derive(Default)]` on CellarRebalancerConfig instead.
+/// use `#[derive(Default)]` on StewardConfig instead.
 impl Default for StewardConfig {
     fn default() -> Self {
         Self {

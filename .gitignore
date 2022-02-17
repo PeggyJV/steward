@@ -6,7 +6,7 @@ testdata
 !integration_tests/ethereum/artifacts
 
 # personal config files
-cellar_rebalancer*.toml
+steward*.toml
 *config.toml
 
 # js
