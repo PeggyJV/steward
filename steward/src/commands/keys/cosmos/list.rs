@@ -3,7 +3,6 @@ use crate::application::APP;
 use abscissa_core::{clap::Parser, Application, Command, Runnable};
 use std::path::Path;
 
-/// Steward keys cosmos list
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
     long_about = "DESCRIPTION \n\n List all Cosmos keys in keystore.\n This command lists all Cosmos keys and their addresses from the keystore."

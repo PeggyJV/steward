@@ -3,7 +3,6 @@ use abscissa_core::{clap::Parser, Application, Command, Runnable};
 use signatory::FsKeyStore;
 use std::path;
 
-/// steward keys eth delete [name]
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
     long_about = "DESCRIPTION \n\n Delete an Eth Key.\n This command deletes an Eth key from your keystore when provided with the keyname."

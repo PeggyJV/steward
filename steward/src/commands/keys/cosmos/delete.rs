@@ -3,7 +3,6 @@ use abscissa_core::{clap::Parser, Application, Command, Runnable};
 use signatory::FsKeyStore;
 use std::path::Path;
 
-/// Steward keys cosmos delete [name]
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
     long_about = "DESCRIPTION \n\n Delete a Cosmos Key.\n This command deletes a Cosmos key from your keystore when provided with the keyname."

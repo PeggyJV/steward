@@ -1,7 +1,6 @@
 use crate::application::APP;
 use abscissa_core::{clap::Parser, Application, Command, Runnable};
 
-/// Gorc keys cosmos show [name]
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
     long_about = "DESCRIPTION \n\n Show details of a Cosmos key in the keystore.\n This command shows details of a Cosmos key in the keystore, it takes the name of the key."

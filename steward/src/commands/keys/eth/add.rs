@@ -6,7 +6,6 @@ use rand_core::OsRng;
 use signatory::FsKeyStore;
 use std::path;
 
-/// Steward keys eth add [name]
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
     long_about = "DESCRIPTION \n\n Create a new Eth Key.\n This command creates a new Eth key. It has an overwrite option, which if set to true, overwrites\n an existing key in the keystore with similar keyname."

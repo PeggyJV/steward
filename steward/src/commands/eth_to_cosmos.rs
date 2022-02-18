@@ -18,7 +18,7 @@ const TIMEOUT: Duration = Duration::from_secs(60);
     long_about = "DESCRIPTION \n\n Send Eth token to Cosmos chain.\n This command sends Eth token to the Cosmos chain via the Gravity bridge. \n It takes the tx amount, Eth keyname, contract address, Cosmos token destination, number of times \n transaction should be made and if the transaction should be made immediately or wait for the next \n batch."
 )]
 pub struct EthToCosmosCmd {
-    /// H160 Erc20 contract address.
+    /// Erc20 contract address.
     #[clap(short = 'E', long)]
     erc20_address: String,
 
@@ -30,7 +30,7 @@ pub struct EthToCosmosCmd {
     #[clap(short, long)]
     ethereum_key: String,
 
-    /// H160 Cosmos address
+    /// Cosmos address
     #[clap(short, long)]
     cosmos_dest: String,
 
@@ -38,7 +38,7 @@ pub struct EthToCosmosCmd {
     #[clap(short, long, default_value = "1")]
     times: String,
 
-    /// h160 Contract address.
+    /// Contract address.
     #[clap(short = 'C', long)]
     contract_address: String,
 }
