@@ -1,4 +1,4 @@
-//! CellarRebalancer
+//! Steward
 //!
 //! Application based on the [Abscissa] framework.
 //!
