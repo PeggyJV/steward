@@ -14,11 +14,11 @@ use crate::{erc20::Erc20State, gas::CellarGas, prelude::*};
     long_about = "DESCRIPTION \n\n Allow ERC20 tokens to interact with Cellar contract.\n This command approves an Eth transaction with a Cellar address. \n It takes the Cellar address, Eth address and transaction amount."
 )]
 pub struct AllowERC20 {
-    /// H160 Cellar address you want to interact with.
+    /// Cellar address you want to interact with.
     #[clap(short = 'C', long)]
     cellar_address: H160,
 
-    /// H160 Ethereum address to interact with Cellar.
+    /// Ethereum address to interact with Cellar.
     #[clap(short = 'A', long)]
     address: H160,
 
