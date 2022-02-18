@@ -6,6 +6,7 @@ use abscissa_core::{clap::Parser, Application, Command, Runnable};
     long_about = "DESCRIPTION \n\n Show details of a Cosmos key in the keystore.\n This command shows details of a Cosmos key in the keystore, it takes the name of the key."
 )]
 pub struct ShowCosmosKeyCmd {
+    /// Cosmos key name
     pub name: String,
 }
 

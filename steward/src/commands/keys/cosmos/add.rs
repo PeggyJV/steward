@@ -6,10 +6,9 @@ use rand_core::OsRng;
 use signatory::FsKeyStore;
 use std::path;
 
-
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Create a new Cosmos Key.\n This command creates a new Cosmos key. It has an overwrite option, which if set to true, overwrites\n an existing key in the keystore with similar keyname."
+    long_about = "DESCRIPTION \n\n Create a new Cosmos Key.\n This command creates a new Cosmos key when provided an overwrite option, which if set to true, overwrites\n an existing key in the keystore with similar keyname."
 )]
 pub struct AddCosmosKeyCmd {
     /// Cosmos keyname, takes a String
