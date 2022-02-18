@@ -13,7 +13,7 @@ pub struct SetValidatorCmd {
     #[clap(short = 'v', long)]
     validator: H160,
 
-    ///
+    /// Boolean, true if you want to set validator and false if you don't want to.
     #[clap(short = 'u', long)]
     value: bool,
 }
