@@ -53,11 +53,13 @@ fn lookup_eth_key(_key: String) -> LocalWallet {
 impl Runnable for SendToCosmos {
     fn run(&self) {
         let from_eth_key = self.key_name.clone();
-        let to_cosmos_addr: CosmosAddress = self.cosmos_addr
+        let to_cosmos_addr: CosmosAddress = self
+            .cosmos_addr
             .clone()
             .parse()
             .expect("Expected a valid Cosmos Address");
-        let erc20_contract: EthAddress = self.erc20_addr
+        let erc20_contract: EthAddress = self
+            .erc20_addr
             .clone()
             .parse()
             .expect("Expected a valid Eth Address");
