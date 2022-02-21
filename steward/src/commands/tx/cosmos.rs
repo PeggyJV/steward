@@ -31,7 +31,14 @@ impl Runnable for Cosmos {
     long_about = "DESCRIPTION \n\n Send transactions from Cosmos to Ethereum chain.\n This command sends tx from the Cosmos chain to the Eth chain.\n It takes a free vector of strings as required flags for Cosmos key, Eth key and amount."
 )]
 pub struct SendToEth {
-    required_flags: Vec<String>,
+    /// Cosmos key name
+    cosmos_key: String,
+
+    /// Eth Address
+    eth_addr: String,
+
+    /// ERC20 coin amount
+    erc20_amount: String,
 
     #[clap(short, long)]
     help: bool,
@@ -57,10 +64,9 @@ fn get_cosmos_key(_key_name: &str) -> CosmosPrivateKey {
 
 impl Runnable for SendToEth {
     fn run(&self) {
-        assert!(self.required_flags.len() == 3);
-        let from_cosmos_key = self.required_flags[0].clone();
-        let to_eth_addr = self.required_flags[1].clone(); //TODO parse this to an Eth Address
-        let erc_20_coin = self.required_flags[2].clone(); // 1231234uatom
+        let from_cosmos_key = self.cosmos_key.clone();
+        let to_eth_addr = self.eth_addr.clone(); //TODO parse this to an Eth Address
+        let erc_20_coin = self.erc20_amount.clone(); // 1231234uatom
         let (amount, denom) = parse_denom(&erc_20_coin);
 
         let amount: Uint256 = amount.parse().expect("Could not parse amount");
@@ -158,7 +164,14 @@ impl Runnable for SendToEth {
     long_about = "DESCRIPTION \n\n Send transactions from across the Cosmos chain.\n This command sends tx from across the Cosmos chain.\n It takes a free vector of strings as required flags for sender's key, reciever's key and amount."
 )]
 pub struct Send {
-    required_flags: Vec<String>,
+    /// Sender's key name
+    key_name: String,
+
+    /// Reciever's address
+    to_addr: String,
+
+    /// amount
+    amount: String,
 
     #[clap(short, long)]
     help: bool,
@@ -167,10 +180,9 @@ pub struct Send {
 impl Runnable for Send {
     /// Start the application.
     fn run(&self) {
-        assert!(self.required_flags.len() == 3);
-        let _from_key = self.required_flags[0].clone();
-        let _to_addr = self.required_flags[1].clone();
-        let _coin_amount = self.required_flags[2].clone();
+        let _from_key = self.key_name.clone();
+        let _to_addr = self.to_addr.clone();
+        let _coin_amount = self.amount.clone();
 
         abscissa_tokio::run_with_actix(&APP, async { unimplemented!() }).unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

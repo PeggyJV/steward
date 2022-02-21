@@ -23,7 +23,8 @@ impl Runnable for Cosmos {
     long_about = "DESCRIPTION \n\n Query Cosmos balance.\n This command queries the Cosmos balance, taking the name of the key as a String."
 )]
 pub struct Balance {
-    key_name: Vec<String>,
+    /// Cosmos key name.
+    key_name: String,
 
     #[clap(short, long)]
     help: bool,
@@ -32,7 +33,7 @@ pub struct Balance {
 impl Runnable for Balance {
     fn run(&self) {
         assert!(self.key_name.len() == 1);
-        let _key_name = self.key_name[0].clone();
+        let _key_name = self.key_name.clone();
     }
 }
 
@@ -42,7 +43,8 @@ impl Runnable for Balance {
     long_about = "DESCRIPTION \n\n Query the Cosmos Gravity keys.\n This command queries the Cosmos gravity keys, taking the name of the key as a String."
 )]
 pub struct GravityKeys {
-    key_name: Vec<String>,
+    /// Cosmos Gravity key name.
+    key_name: String,
     #[clap(short, long)]
     help: bool,
 }
@@ -51,7 +53,7 @@ impl Runnable for GravityKeys {
     /// Start the application.
     fn run(&self) {
         assert!(self.key_name.len() == 1);
-        let _key_name = self.key_name[0].clone();
+        let _key_name = self.key_name.clone();
 
         abscissa_tokio::run(&APP, async { unimplemented!() }).unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
