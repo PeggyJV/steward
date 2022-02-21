@@ -1,4 +1,4 @@
-use crate::config::CellarRebalancerConfig;
+use crate::config::StewardConfig;
 use crate::{application::APP, prelude::*};
 use abscissa_core::{Command, Clap, Runnable};
 
@@ -11,10 +11,10 @@ pub struct PrintConfigCmd {
 impl Runnable for PrintConfigCmd {
     fn run(&self) {
         let config = if self.show_default {
-            CellarRebalancerConfig::default()
+            StewardConfig::default()
         } else {
             let config = APP.config();
-            CellarRebalancerConfig {
+            StewardConfig {
                 cellars: config.cellars.to_owned(),
                 ethereum: config.ethereum.to_owned(),
                 keys: config.keys.to_owned(),
