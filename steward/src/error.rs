@@ -5,6 +5,7 @@ use deep_space::error::{AddressError, CosmosGrpcError, PrivateKeyError};
 use ethers::prelude::{
     errors::EtherscanError, gas_oracle::GasOracleError, ContractError, Middleware, ProviderError,
 };
+use prost::EncodeError;
 use std::{
     fmt::{self, Display},
     io,
@@ -93,6 +94,12 @@ impl From<AddressError> for Error {
 impl From<AddrParseError> for Error {
     fn from(err: AddrParseError) -> Error {
         ErrorKind::Config.context(err).into()
+    }
+}
+
+impl From<EncodeError> for Error {
+    fn from(err: EncodeError) -> Error {
+        ErrorKind::AllocationError.context(err).into()
     }
 }
 

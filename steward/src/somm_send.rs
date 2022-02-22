@@ -60,7 +60,9 @@ async fn __send_messages(
     fee: Coin,
     messages: Vec<Msg>,
 ) -> Result<TxResponse, CosmosGrpcError> {
-    let cosmos_address = cosmos_key.to_address(&contact.get_prefix()).unwrap();
+    let cosmos_address = cosmos_key
+        .to_address(&contact.get_prefix())
+        .expect("failed to get address from cosmos key");
 
     let fee = Fee {
         amount: vec![fee],
@@ -87,14 +89,18 @@ pub async fn data_hash(
     let mut hasher = sha2::Sha256::new();
     if let Some(vote) = &allocation.clone().vote {
         let mut buf = BytesMut::new();
-        vote.encode(&mut buf).unwrap();
+        vote.encode(&mut buf)?;
         let vote_data = hex::encode(&buf);
         let msg = format!("{}:{}:{}", allocation.salt, vote_data, val_address);
         hasher.update(msg.as_bytes());
 
         return Ok(AllocationPrecommit {
             hash: hasher.finalize().to_vec(),
-            cellar_id: vote.cellar.clone().unwrap().id,
+            cellar_id: vote
+                .cellar
+                .clone()
+                .expect("vote contains no 'cellar' value")
+                .id,
         });
     }
     Err(ErrorKind::AllocationError
