@@ -16,7 +16,10 @@ use gravity_bridge::{
 use rand::{distributions::Alphanumeric, rngs::OsRng, Rng};
 use serde::{Deserialize, Serialize};
 use signatory::FsKeyStore;
-use somm_proto::{somm, somm::query_client::QueryClient as AllocationQueryClient};
+use somm_proto::allocation::{
+    query_client::QueryClient as AllocationQueryClient, Allocation, AllocationPrecommit, Cellar,
+    RebalanceVote, TickRange,
+};
 use std::{convert::TryFrom, path, sync::Arc, time::Duration};
 use steward_abi::cellar_uniswap::CellarTickInfo;
 use tokio::time::{sleep, timeout};
@@ -57,12 +60,12 @@ pub fn get_cellar(address: Address) -> Result<CellarConfig, String> {
 
 pub async fn allocation_precommit(
     validator_address: String,
-    allocation: &somm::Allocation,
+    allocation: &Allocation,
     cellar_address: String,
-) -> Result<somm::AllocationPrecommit, Error> {
+) -> Result<AllocationPrecommit, Error> {
     let hasher = somm_send::data_hash(allocation, validator_address).await?;
 
-    Ok(somm::AllocationPrecommit {
+    Ok(AllocationPrecommit {
         hash: hasher.hash,
         cellar_id: cellar_address,
     })
@@ -80,7 +83,7 @@ pub async fn get_connections() -> Result<Connections, Error> {
 }
 
 pub async fn decide_rebalance(
-    tick_range: Vec<somm::TickRange>,
+    tick_range: Vec<TickRange>,
     cellar_address: String,
 ) -> Result<(), Error> {
     debug!("deciding rebalance for cellar address {}", cellar_address);
@@ -202,13 +205,13 @@ pub async fn decide_rebalance(
 }
 
 pub fn to_allocation(
-    tick_ranges: Vec<somm::TickRange>,
+    tick_ranges: Vec<TickRange>,
     cellar_address: String,
     eth_gas_price: u64,
-) -> somm::Allocation {
-    somm::Allocation {
-        vote: Some(somm::RebalanceVote {
-            cellar: Some(somm::Cellar {
+) -> Allocation {
+    Allocation {
+        vote: Some(RebalanceVote {
+            cellar: Some(Cellar {
                 id: cellar_address,
                 tick_ranges,
             }),

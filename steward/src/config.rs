@@ -20,6 +20,7 @@ pub struct StewardConfig {
     pub metrics: MetricsSection,
     pub cellars: Vec<CellarConfig>,
     pub keys: KeysConfig,
+    pub cork: CorkSection,
 }
 
 impl StewardConfig {
@@ -62,8 +63,14 @@ impl Default for StewardConfig {
             metrics: MetricsSection::default(),
             cellars: vec![CellarConfig::default()],
             keys: KeysConfig::default(),
+            cork: CorkSection::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CorkSection {
+    pub uniswapv3: UniswapV3CellarInfo,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -254,4 +261,10 @@ impl Default for MetricsSection {
             listen_addr: "127.0.0.1:3000".parse().unwrap(),
         }
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct UniswapV3CellarInfo {
+    pub cellar_ids: Vec<String>,
 }

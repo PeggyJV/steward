@@ -2,12 +2,15 @@
 //! Rust Wrapper for cellar functions
 /// This will convert cellar functions from tuples to Rust types
 use crate::{allocation, cellars, error::Error, prelude::*};
-use ethers::prelude::*;
-use somm_proto::somm;
+use ethers::{abi::AbiEncode, prelude::*};
+use somm_proto::allocation::TickRange;
 use std::result::Result;
 use std::sync::Arc;
 use steward_abi::cellar_uniswap::*;
-use steward_proto::uniswapv3::{server, RebalanceRequest, RebalanceResponse};
+use steward_proto::{
+    steward::UniswapV3RebalanceParams,
+    uniswapv3::{server, RebalanceRequest, RebalanceResponse},
+};
 use tonic::async_trait;
 
 // Struct for UniswapV3CellarTickInfo
@@ -41,7 +44,7 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
 
         let gas_price = match self.gas_price {
             Some(gp) => gp,
-            None => cellars::get_gas_price().await?
+            None => cellars::get_gas_price().await?,
         };
 
         let mut call = self.contract.rebalance(ticks, gas_price);
@@ -58,7 +61,7 @@ impl<T: 'static + Middleware> UniswapV3CellarState<T> {
     pub async fn reinvest(&mut self) -> Result<(), Error> {
         let gas_price = match self.gas_price {
             Some(gp) => gp,
-            None => cellars::get_gas_price().await?
+            None => cellars::get_gas_price().await?,
         };
 
         let mut call = self.contract.reinvest(gas_price);
@@ -142,11 +145,11 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
         let request = request.get_ref();
         debug!("received request {:?}", request);
 
-        let tick_ranges: Vec<somm::TickRange> = request
+        let tick_ranges: Vec<TickRange> = request
             .data
             .clone()
             .into_iter()
-            .map(|d| somm::TickRange {
+            .map(|d| TickRange {
                 upper: d.upper_price,
                 lower: d.lower_price,
                 weight: d.weight,
@@ -212,4 +215,23 @@ impl server::UniswapV3CellarAllocator for UniswapV3DirectCellar {
         });
         Ok(tonic::Response::new(RebalanceResponse {}))
     }
+}
+
+pub fn get_encoded_call(params: UniswapV3RebalanceParams) -> Vec<u8> {
+    let tick_infos = params.cellar_tick_info;
+    let tick_infos = tick_infos
+        .iter()
+        .map(|t| CellarTickInfo {
+            token_id: (0 as i32).into(),
+            tick_upper: t.upper_price.into(),
+            tick_lower: t.lower_price.into(),
+            weight: t.weight as u32,
+        })
+        .collect();
+    let call = RebalanceCall {
+        cellar_tick_info: tick_infos,
+        current_price_x96: params.current_price.into(),
+    };
+    let call = UniswapV3CellarCalls::Rebalance(call);
+    call.encode()
 }

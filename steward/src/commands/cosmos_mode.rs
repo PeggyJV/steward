@@ -4,11 +4,14 @@
 /// accessors along with logging macros. Customize as you see fit.
 use crate::{
     application::APP, cellars::uniswapv3::UniswapV3CellarAllocator, config::StewardConfig,
-    prelude::*, server,
+    cork::CorkHandler, prelude::*, server,
 };
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
-use steward_proto::uniswapv3::server::UniswapV3CellarAllocatorServer;
+use steward_proto::{
+    steward::contract_call_server::ContractCallServer,
+    uniswapv3::server::UniswapV3CellarAllocatorServer,
+};
 
 #[derive(Command, Debug, Parser)]
 pub struct CosmosSignerCmd;
@@ -42,6 +45,7 @@ impl Runnable for CosmosSignerCmd {
                 .unwrap_or_else(|err| {
                     panic!("{:?}", err);
                 })
+                .add_service(ContractCallServer::new(CorkHandler))
                 .add_service(UniswapV3CellarAllocatorServer::new(
                     UniswapV3CellarAllocator,
                 ))
