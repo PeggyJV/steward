@@ -7,23 +7,26 @@ use signatory::FsKeyStore;
 use std::path;
 
 #[derive(Command, Debug, Default, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Create a new Cosmos Key.\n This command creates a new Cosmos key when provided an overwrite option, which if set to true, overwrites\n an existing key in the keystore with the same keyname."
+)]
 pub struct AddCosmosKeyCmd {
-    pub args: Vec<String>,
+    /// Cosmos keyname
+    pub name: String,
 
     #[clap(short, long)]
+    /// Overwrite key with the same name in the keystore when set to true. Takes a Boolean.
     pub overwrite: bool,
 }
 
-// `gorc keys cosmos add [name]`
-// - [name] required; key name
+// `steward keys cosmos add [name]`
+// - [name] required; keyname
 impl Runnable for AddCosmosKeyCmd {
     fn run(&self) {
         let config = APP.config();
         let keystore = path::Path::new(&config.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
-
-        let name = self.args.get(0).expect("name is required");
-        let name = name.parse().expect("Could not parse name");
+        let name = self.name.parse().expect("Could not parse name");
         if let Ok(_info) = keystore.info(&name) {
             if !self.overwrite {
                 eprintln!("Key already exists, exiting.");
@@ -50,8 +53,8 @@ impl Runnable for AddCosmosKeyCmd {
 
         keystore.store(&name, &key).expect("Could not store key");
 
-        let args = vec![name.to_string()];
-        let show_cmd = ShowCosmosKeyCmd { args };
+        let name = name.to_string();
+        let show_cmd = ShowCosmosKeyCmd { name };
         show_cmd.run();
     }
 }

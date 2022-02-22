@@ -5,17 +5,23 @@ use chrono::Utc;
 use ethers::prelude::*;
 use signatory::FsKeyStore;
 
-use crate::{cellars::uniswapv3::UniswapV3CellarState, prelude::*};
+use crate::{allocation, cellars::uniswapv3::UniswapV3CellarState, prelude::*};
 use steward_abi::cellar_uniswap::*;
 
 /// Remove funds from Cellars
 #[derive(Command, Debug, Parser)]
-pub struct RemoveFundsCmd {}
+#[clap(
+    long_about = "DESCRIPTION \n\n Remove funds from Cellar.\n This command remove funds from the required Cellar by loading the Cellar config."
+)]
+pub struct RemoveFundsCmd {
+    /// Cellar Address
+    cellar_address: H160,
+}
 
 impl Runnable for RemoveFundsCmd {
     fn run(&self) {
         let config = APP.config();
-        let cellar = config.cellars.get(0).expect("Could not get cellar config");
+        let cellar = allocation::get_cellar(self.cellar_address).unwrap();
 
         let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");

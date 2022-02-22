@@ -18,13 +18,19 @@ use std::{cmp::min, sync::Arc};
 
 /// Start Orchestrator
 #[derive(Command, Debug, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Start the Orchestrator in Sommelier Chain via the Gravity Bridge.\n This command loads a Cosmos and Ethereum key with their keyname from the keystore.\n It also takes an Orchestrator_only field which when set to true, starts the Orchestrator only\n without the relayer and when set to false, starts the Orchestrator with the relayer."
+)]
 pub struct StartCommand {
+    /// Cosmos keyname from keystore.
     #[clap(short = 'c', long)]
     cosmos_key: String,
 
+    /// Ethereum keyname from keystore.
     #[clap(short = 'e', long)]
     ethereum_key: String,
 
+    /// Boolean, when set to true starts the Orchestrator only and false starts Orchestrator and Relayer.
     #[clap(short, long)]
     orchestrator_only: bool,
 }

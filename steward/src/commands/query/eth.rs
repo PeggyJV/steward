@@ -13,9 +13,14 @@ pub enum Eth {
     Pair(Pair),
 }
 
+/// Query Eth balance
 #[derive(Command, Debug, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Query Eth balance.\n This command queries the Eth balance, taking the name of the key."
+)]
 pub struct Balance {
-    free: Vec<String>,
+    /// Eth key name
+    key_name: String,
 
     #[clap(short, long)]
     help: bool,
@@ -23,8 +28,7 @@ pub struct Balance {
 
 impl Runnable for Balance {
     fn run(&self) {
-        assert!(self.free.len() == 1);
-        let _key_name = self.free[0].clone();
+        let _key_name = self.key_name.clone();
 
         abscissa_tokio::run(&APP, async { unimplemented!() }).unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
@@ -34,6 +38,7 @@ impl Runnable for Balance {
 }
 
 #[derive(Command, Debug, Parser)]
+/// Query Eth Contract
 pub struct Contract {
     #[clap(short, long)]
     help: bool,
@@ -44,7 +49,11 @@ impl Runnable for Contract {
     fn run(&self) {}
 }
 
+/// Query Eth pool pair
 #[derive(Command, Debug, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Query Eth pool pair.\n This command queries the Eth pool pair, printing pair addresses. It takes the pool address as H160."
+)]
 pub struct Pair {
     #[clap(short, long)]
     help: bool,

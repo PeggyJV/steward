@@ -6,25 +6,27 @@ use rand_core::OsRng;
 use signatory::FsKeyStore;
 use std::path;
 
-/// Create a new Key
 #[derive(Command, Debug, Default, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Create a new Eth Key.\n This command creates a new Eth key. It has an overwrite option, which if set to true, overwrites\n an existing key in the keystore with the same keyname."
+)]
 pub struct AddKeyCmd {
-    pub args: Vec<String>,
+    /// Eth keyname
+    pub name: String,
 
+    /// Overwrite key with the same name in the keystore when set to true. Takes a Boolean.
     #[clap(short, long)]
     pub overwrite: bool,
 }
 
-// `contract monitor keys add [name]`
-// - [name] required; key name
+// - [name] required; keyname
 impl Runnable for AddKeyCmd {
     fn run(&self) {
         let config = APP.config();
         let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
 
-        let name = self.args.get(0).expect("name is required");
-        let name = name.parse().expect("Could not parse name");
+        let name = self.name.parse().expect("Could not parse name");
         if let Ok(_info) = keystore.info(&name) {
             if !self.overwrite {
                 eprintln!("Key already exists, exiting.");
