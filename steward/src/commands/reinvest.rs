@@ -13,13 +13,13 @@ use crate::{allocation, cellars::uniswapv3::UniswapV3CellarState, gas::CellarGas
 pub struct ReinvestCommand {
     #[clap(short = 'i', long)]
     /// Cellar ID
-    pub cellar_id: H160,
+    pub cellar_address: H160,
 }
 
 impl Runnable for ReinvestCommand {
     fn run(&self) {
         let config = APP.config();
-        let cellar = allocation::get_cellar(self.cellar_id).unwrap();
+        let cellar = allocation::get_cellar(self.cellar_address).unwrap();
 
         let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");

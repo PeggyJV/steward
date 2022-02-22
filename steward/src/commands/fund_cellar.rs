@@ -28,13 +28,13 @@ pub struct FundCellarCmd {
     pub amount_1: f64,
     /// Cellar Address.
     #[clap(short = 'i', long)]
-    pub cellar_id: H160,
+    pub cellar_address: H160,
 }
 
 impl Runnable for FundCellarCmd {
     fn run(&self) {
         let config = APP.config();
-        let cellar = allocation::get_cellar(self.cellar_id).unwrap();
+        let cellar = allocation::get_cellar(self.cellar_address).unwrap();
         let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
 

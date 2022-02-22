@@ -15,13 +15,13 @@ use steward_abi::cellar_uniswap::*;
 )]
 pub struct RemoveFundsCmd {
     /// Cellar Address
-    cellar_id: H160,
+    cellar_address: H160,
 }
 
 impl Runnable for RemoveFundsCmd {
     fn run(&self) {
         let config = APP.config();
-        let cellar = allocation::get_cellar(self.cellar_id).unwrap();
+        let cellar = allocation::get_cellar(self.cellar_address).unwrap();
 
         let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
