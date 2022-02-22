@@ -8,14 +8,14 @@ use std::path;
 
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Create a new Cosmos Key.\n This command creates a new Cosmos key when provided an overwrite option, which if set to true, overwrites\n an existing key in the keystore with similar keyname."
+    long_about = "DESCRIPTION \n\n Create a new Cosmos Key.\n This command creates a new Cosmos key when provided an overwrite option, which if set to true, overwrites\n an existing key in the keystore with the same keyname."
 )]
 pub struct AddCosmosKeyCmd {
-    /// Cosmos keyname, takes a String
+    /// Cosmos keyname
     pub name: String,
 
     #[clap(short, long)]
-    /// Overwrite key with similar name in the keystore when set to true. Takes a Boolean.
+    /// Overwrite key with the same name in the keystore when set to true. Takes a Boolean.
     pub overwrite: bool,
 }
 

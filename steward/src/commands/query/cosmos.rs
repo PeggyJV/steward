@@ -40,7 +40,7 @@ impl Runnable for Balance {
 /// Query Cosmos Gravity keys
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Query the Cosmos Gravity keys.\n This command queries the Cosmos gravity keys, taking the name of the key as a String."
+    long_about = "DESCRIPTION \n\n Query the Cosmos Gravity keys.\n This command queries the Cosmos gravity keys, taking the name of the key."
 )]
 pub struct GravityKeys {
     /// Cosmos Gravity key name.

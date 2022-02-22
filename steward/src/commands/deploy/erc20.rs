@@ -17,10 +17,10 @@ use tokio::time::sleep as delay_for;
     long_about = "DESCRIPTION \n\n Deploy ERC20 tokens to the Sommelier Chain via the Gravity Bridge.\n This command takes a token denom, Ethereum key and gas multiplier."
 )]
 pub struct Erc20 {
-    /// Erc20 token denom, takes String.
+    /// Erc20 token denom.
     #[clap(short, long)]
     denom: String,
-    /// Ethereum ID String representing a Keystore entry, takes String.
+    /// Ethereum ID representing a Keystore entry.
     #[clap(short, long)]
     ethereum_key: String,
     /// Ethereum gas multiplier, default is 1.

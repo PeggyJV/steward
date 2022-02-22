@@ -9,7 +9,7 @@ use crate::{cellars::uniswapv3::UniswapV3CellarState, gas::CellarGas, prelude::*
 /// Set-validator subcommand
 #[derive(Command, Debug, Parser)]
 pub struct SetValidatorCmd {
-    /// H160 Validator Address
+    /// Validator Address
     #[clap(short = 'v', long)]
     validator: H160,
 

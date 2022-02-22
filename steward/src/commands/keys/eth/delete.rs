@@ -8,7 +8,7 @@ use std::path;
     long_about = "DESCRIPTION \n\n Delete an Eth Key.\n This command deletes an Eth key from your keystore when provided with the keyname."
 )]
 pub struct DeleteKeyCmd {
-    /// Eth keyname in keystore, takes a String
+    /// Eth keyname in keystore.
     pub name: String,
 }
 

@@ -10,10 +10,10 @@ use std::path;
     long_about = "DESCRIPTION \n\n Recover an external Cosmos key.\n This command will recover a Cosmos key, storing it in the keystore. \n It takes a keyname and bip39-mnemonic."
 )]
 pub struct RecoverCosmosKeyCmd {
-    /// Cosmos keyname, takes a String
+    /// Cosmos keyname.
     pub name: String,
 
-    /// Overwrite key with similar name in the keystore when set to true. Takes a Boolean.
+    /// Overwrite key with the same name in the keystore when set to true. Takes a Boolean.
     #[clap(short, long)]
     pub overwrite: bool,
 

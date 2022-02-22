@@ -16,7 +16,7 @@ pub enum Eth {
 /// Query Eth balance
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Query Eth balance.\n This command queries the Eth balance, taking the name of the key as a String."
+    long_about = "DESCRIPTION \n\n Query Eth balance.\n This command queries the Eth balance, taking the name of the key."
 )]
 pub struct Balance {
     /// Eth key name

@@ -26,7 +26,7 @@ impl Runnable for Eth {
 /// Send tokens from Ethereum to Cosmos chain
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Send transactions from Ethereum to Cosmos chain.\n This command sends tx from the Eth chain to the Cosmos chain.\n It takes a free vector of strings as required flags for Eth key, Cosmos key and amount."
+    long_about = "DESCRIPTION \n\n Send transactions from Ethereum to Cosmos chain.\n This command sends tx from the Eth chain to the Cosmos chain.\n It takes the Eth keyname, Cosmos address, ERC20 token contract address and amount to be sent."
 )]
 pub struct SendToCosmos {
     /// Eth key name

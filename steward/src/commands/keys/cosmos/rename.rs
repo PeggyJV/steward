@@ -7,13 +7,13 @@ use std::path;
     long_about = "DESCRIPTION \n\n Rename a Cosmos key.\n This command will rename a Cosmos key in the keystore. It takes the existing keyname and new keyname."
 )]
 pub struct RenameCosmosKeyCmd {
-    /// Cosmos keyname in keystore, takes a String
+    /// Cosmos keyname in keystore.
     pub name: String,
 
-    /// New keyname to replace name in keystore, takes a String
+    /// New keyname to replace name in keystore.
     pub new_name: String,
 
-    /// Overwrite key with similar name in the keystore when set to true. Takes a Boolean.
+    /// Overwrite key with the same name in the keystore when set to true. Takes a Boolean.
     #[clap(short, long)]
     pub overwrite: bool,
 }

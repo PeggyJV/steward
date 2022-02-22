@@ -8,7 +8,7 @@ use std::path::Path;
     long_about = "DESCRIPTION \n\n Delete a Cosmos Key.\n This command deletes a Cosmos key from your keystore when provided with the keyname."
 )]
 pub struct DeleteCosmosKeyCmd {
-    /// Cosmos keyname in keystore, takes a String
+    /// Cosmos keyname in keystore.
     pub name: String,
 }
 

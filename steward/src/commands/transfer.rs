@@ -11,6 +11,7 @@ use std::convert::TryFrom;
 
 #[derive(Command, Debug, Parser)]
 pub struct TransferCmd {
+    /// Recipient's address
     recipient: String,
 }
 

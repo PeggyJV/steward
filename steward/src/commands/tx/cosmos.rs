@@ -161,7 +161,7 @@ impl Runnable for SendToEth {
 /// Send tx from across the Cosmos chain
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Send transactions from across the Cosmos chain.\n This command sends tx from across the Cosmos chain.\n It takes a free vector of strings as required flags for sender's key, reciever's key and amount."
+    long_about = "DESCRIPTION \n\n Send transactions from across the Cosmos chain.\n This command sends tx from across the Cosmos chain.\n It takes the sender's keyname, reciever's address and amount to be sent."
 )]
 pub struct Send {
     /// Sender's key name

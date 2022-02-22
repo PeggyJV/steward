@@ -7,15 +7,12 @@ use std::time::Duration;
 #[derive(Command, Debug, Default, Parser)]
 pub struct SignDelegateKeysCmd {
     /// Ethereum keyname
-    #[clap(short, long)]
     ethereum_key: String,
 
-    /// H160 Validator address
-    #[clap(short, long)]
+    /// Validator address
     val_address: String,
 
     /// nonce
-    #[clap(short, long)]
     nonce: Option<u64>,
 }
 

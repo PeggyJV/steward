@@ -12,6 +12,7 @@ use crate::{cellars::uniswapv3::UniswapV3CellarState, gas::CellarGas, prelude::*
 #[derive(Command, Debug, Parser)]
 pub struct ReinvestCommand {
     #[clap(short = 'i', long)]
+    /// Cellar ID
     pub cellar_id: u32,
 }
 

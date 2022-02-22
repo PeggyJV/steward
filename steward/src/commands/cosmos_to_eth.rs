@@ -16,7 +16,7 @@ const TIMEOUT: Duration = Duration::from_secs(60);
     long_about = "DESCRIPTION \n\n Send Cosmos token to Eth chain.\n This command sends Cosmos token to the Eth chain via the Gravity bridge. \n This command takes the Gravity denom, tx amount, Cosmos keyname, Eth destination, number of times \n transaction should be made and if the transaction should be made immediately or wait for the next \n batch."
 )]
 pub struct CosmosToEthCmd {
-    /// Gravity denom, takes a String.
+    /// Gravity denom
     #[clap(short, long)]
     gravity_denom: String,
 
@@ -24,11 +24,11 @@ pub struct CosmosToEthCmd {
     #[clap(short, long)]
     amount: String,
 
-    /// Cosmos keyname, takes a String.
+    /// Cosmos keyname.
     #[clap(short, long)]
     cosmos_key: String,
 
-    /// H160 Ethereum address
+    /// Ethereum address
     #[clap(short, long)]
     eth_dest: String,
 
@@ -38,7 +38,7 @@ pub struct CosmosToEthCmd {
 
     /// Boolean, True if you want to wait until someone requests a batch for this token type and False if you want to request a batch to push transaction along immediately.
     #[clap(short = 'f', long)]
-    pub wait_batch: bool,
+    pub wait_for_batch: bool,
 }
 
 pub fn one_eth() -> f64 {
@@ -171,7 +171,7 @@ impl Runnable for CosmosToEthCmd {
             }
         }
 
-        if !self.wait_batch {
+        if !self.wait_for_batch {
             println!("Requesting a batch to push transaction along immediately");
             send_request_batch_tx(cosmos_key, gravity_denom,config.cosmos.gas_price.as_tuple(), &contact,config.cosmos.gas_adjustment)
                 .await

@@ -10,10 +10,10 @@ use std::path;
     long_about = "DESCRIPTION \n\n Import an external Eth key.\n This command will recover a Eth key, storing it in the keystore. \n It takes a keyname and bip39-mnemonic."
 )]
 pub struct ImportEthKeyCmd {
-    /// Eth keyname, takes a String
+    /// Eth keyname.
     pub name: String,
 
-    /// Overwrite key with similar name in the keystore when set to true. Takes a Boolean.
+    /// Overwrite key with the same name in the keystore when set to true. Takes a Boolean.
     #[clap(short, long)]
     pub overwrite: bool,
 
