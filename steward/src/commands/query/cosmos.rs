@@ -32,7 +32,6 @@ pub struct Balance {
 
 impl Runnable for Balance {
     fn run(&self) {
-        assert!(self.key_name.len() == 1);
         let _key_name = self.key_name.clone();
     }
 }
@@ -52,7 +51,6 @@ pub struct GravityKeys {
 impl Runnable for GravityKeys {
     /// Start the application.
     fn run(&self) {
-        assert!(self.key_name.len() == 1);
         let _key_name = self.key_name.clone();
 
         abscissa_tokio::run(&APP, async { unimplemented!() }).unwrap_or_else(|e| {
