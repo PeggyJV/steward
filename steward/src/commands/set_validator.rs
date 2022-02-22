@@ -4,7 +4,7 @@ use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::prelude::*;
 use signatory::FsKeyStore;
 
-use crate::{cellars::uniswapv3::UniswapV3CellarState, gas::CellarGas, prelude::*};
+use crate::{allocation, cellars::uniswapv3::UniswapV3CellarState, gas::CellarGas, prelude::*};
 
 /// Set-validator subcommand
 #[derive(Command, Debug, Parser)]
@@ -16,12 +16,15 @@ pub struct SetValidatorCmd {
     /// Boolean, true if you want to set validator and false if you don't want to.
     #[clap(short = 'u', long)]
     value: bool,
+
+    /// Cellar Address
+    cellar_id: H160,
 }
 
 impl Runnable for SetValidatorCmd {
     fn run(&self) {
         let config = APP.config();
-        let cellar = config.cellars.get(0).expect("Could not get cellar config");
+        let cellar = allocation::get_cellar(self.cellar_id).unwrap();
 
         let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");

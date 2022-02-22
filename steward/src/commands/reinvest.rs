@@ -6,20 +6,20 @@ use ethers::prelude::*;
 
 use signatory::FsKeyStore;
 
-use crate::{cellars::uniswapv3::UniswapV3CellarState, gas::CellarGas, prelude::*};
+use crate::{allocation, cellars::uniswapv3::UniswapV3CellarState, gas::CellarGas, prelude::*};
 
 /// Cellars reinvest command
 #[derive(Command, Debug, Parser)]
 pub struct ReinvestCommand {
     #[clap(short = 'i', long)]
     /// Cellar ID
-    pub cellar_id: u32,
+    pub cellar_id: H160,
 }
 
 impl Runnable for ReinvestCommand {
     fn run(&self) {
         let config = APP.config();
-        let cellar = config.cellars.get(0).expect("Could not get cellar config");
+        let cellar = allocation::get_cellar(self.cellar_id).unwrap();
 
         let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
