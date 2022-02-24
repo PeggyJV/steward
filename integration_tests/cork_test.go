@@ -140,7 +140,7 @@ func (s *IntegrationTestSuite) TestCork() {
 				return false
 			}
 			return true
-		}, 105*time.Second, 1*time.Second, "new vote period never seen")
+		}, 200*time.Second, 1*time.Second, "new vote period never seen")
 
 		s.T().Logf("submit contract call data to steward")
 		s.Require().Eventually(func() bool {

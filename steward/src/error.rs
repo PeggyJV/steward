@@ -2,13 +2,9 @@
 
 use abscissa_core::error::{BoxError, Context};
 use deep_space::error::{AddressError, CosmosGrpcError, PrivateKeyError};
-<<<<<<< HEAD
 use ethers::prelude::{
-    errors::EtherscanError, gas_oracle::GasOracleError, ContractError, Middleware, ProviderError,
+    errors::EtherscanError, gas_oracle::GasOracleError, ContractError, Middleware, ProviderError, AbiError,
 };
-=======
-use ethers::prelude::{*, errors::EtherscanError, gas_oracle::GasOracleError};
->>>>>>> 33b7071 (cork module and associated changes)
 use std::{
     fmt::{self, Display},
     io,
