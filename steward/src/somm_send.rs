@@ -92,21 +92,20 @@ pub async fn data_hash(
         let msg = format!("{}:{}:{}", allocation.salt, vote_data, val_address);
         hasher.update(msg.as_bytes());
 
+        if vote.cellar.is_none() {
+            return Err(ErrorKind::AllocationError
+                .context("vote has empty cellar field")
+                .into());
+        }
+        let cellar_id = vote.cellar.clone().unwrap().id;
+
         return Ok(AllocationPrecommit {
             hash: hasher.finalize().to_vec(),
-            cellar_id: vote
-                .cellar
-                .clone()
-                .ok_or_else::<Error, _>(|| {
-                    ErrorKind::AllocationError
-                        .context("vote has empty cellar field")
-                        .into()
-                })?
-                .id,
+            cellar_id,
         });
     }
     Err(ErrorKind::AllocationError
-        .context("No cellar".to_string())
+        .context("no vote".to_string())
         .into())
 }
 
