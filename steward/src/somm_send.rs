@@ -60,7 +60,7 @@ async fn __send_messages(
     fee: Coin,
     messages: Vec<Msg>,
 ) -> Result<TxResponse, CosmosGrpcError> {
-    let cosmos_address = cosmos_key.to_address(&contact.get_prefix()).unwrap();
+    let cosmos_address = cosmos_key.to_address(&contact.get_prefix())?;
 
     let fee = Fee {
         amount: vec![fee],
@@ -87,18 +87,25 @@ pub async fn data_hash(
     let mut hasher = sha2::Sha256::new();
     if let Some(vote) = &allocation.clone().vote {
         let mut buf = BytesMut::new();
-        vote.encode(&mut buf).unwrap();
+        vote.encode(&mut buf)?;
         let vote_data = hex::encode(&buf);
         let msg = format!("{}:{}:{}", allocation.salt, vote_data, val_address);
         hasher.update(msg.as_bytes());
 
+        if vote.cellar.is_none() {
+            return Err(ErrorKind::AllocationError
+                .context("vote has empty cellar field")
+                .into());
+        }
+        let cellar_id = vote.cellar.clone().unwrap().id;
+
         return Ok(AllocationPrecommit {
             hash: hasher.finalize().to_vec(),
-            cellar_id: vote.cellar.clone().unwrap().id,
+            cellar_id,
         });
     }
     Err(ErrorKind::AllocationError
-        .context("No cellar".to_string())
+        .context("no vote".to_string())
         .into())
 }
 
