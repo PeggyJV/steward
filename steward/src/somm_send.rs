@@ -60,9 +60,7 @@ async fn __send_messages(
     fee: Coin,
     messages: Vec<Msg>,
 ) -> Result<TxResponse, CosmosGrpcError> {
-    let cosmos_address = cosmos_key
-        .to_address(&contact.get_prefix())
-        .expect("failed to get address from cosmos key");
+    let cosmos_address = cosmos_key.to_address(&contact.get_prefix())?;
 
     let fee = Fee {
         amount: vec![fee],
@@ -99,7 +97,11 @@ pub async fn data_hash(
             cellar_id: vote
                 .cellar
                 .clone()
-                .expect("vote contains no 'cellar' value")
+                .ok_or_else::<Error, _>(||
+                    ErrorKind::AllocationError
+                        .context("vote has empty cellar field")
+                        .into(),
+                )?
                 .id,
         });
     }
