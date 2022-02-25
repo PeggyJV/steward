@@ -97,11 +97,11 @@ pub async fn data_hash(
             cellar_id: vote
                 .cellar
                 .clone()
-                .ok_or_else::<Error, _>(||
+                .ok_or_else::<Error, _>(|| {
                     ErrorKind::AllocationError
                         .context("vote has empty cellar field")
-                        .into(),
-                )?
+                        .into()
+                })?
                 .id,
         });
     }
