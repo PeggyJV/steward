@@ -222,9 +222,9 @@ pub fn get_encoded_call(params: UniswapV3RebalanceParams) -> Vec<u8> {
     let tick_infos = tick_infos
         .iter()
         .map(|t| CellarTickInfo {
-            token_id: (0 as i32).into(),
-            tick_upper: t.upper_price.into(),
-            tick_lower: t.lower_price.into(),
+            token_id: 0_i32.into(),
+            tick_upper: t.upper_price,
+            tick_lower: t.lower_price,
             weight: t.weight as u32,
         })
         .collect();
