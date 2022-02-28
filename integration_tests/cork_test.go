@@ -7,97 +7,20 @@ import (
 	"encoding/pem"
 	"fmt"
 	"io/ioutil"
-	"math/big"
-	"strings"
 	"time"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/ethereum/go-ethereum/accounts/abi"
 	allocationTypes "github.com/peggyjv/sommelier/v3/x/allocation/types"
 	corkTypes "github.com/peggyjv/sommelier/v3/x/cork/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
 
-const CellarABISubset = `
-[
-	{
-		"inputs": [
-		  {
-			"components": [
-			  {
-				"internalType": "uint184",
-				"name": "tokenId",
-				"type": "uint184"
-			  },
-			  {
-				"internalType": "int24",
-				"name": "tickUpper",
-				"type": "int24"
-			  },
-			  {
-				"internalType": "int24",
-				"name": "tickLower",
-				"type": "int24"
-			  },
-			  {
-				"internalType": "uint24",
-				"name": "weight",
-				"type": "uint24"
-			  }
-			],
-			"internalType": "struct ICellarPoolShare.CellarTickInfo[]",
-			"name": "_cellarTickInfo",
-			"type": "tuple[]"
-		  },
-		  {
-			"internalType": "uint256",
-			"name": "currentPriceX96",
-			"type": "uint256"
-		  }
-		],
-		"name": "rebalance",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	  }
-]
-`
-
-type ABIEncodedTickRange struct {
-	TokenID *big.Int `abi:"tokenId"`
-	Upper   *big.Int `abi:"tickUpper"`
-	Lower   *big.Int `abi:"tickLower"`
-	Weight  *big.Int `abi:"weight"`
-}
-
-func ABIEncodedRebalance() []byte {
-	encodedCall, err := abi.JSON(strings.NewReader(CellarABISubset))
-	if err != nil {
-		panic(sdkerrors.Wrap(err, "bad ABI definition in code"))
-	}
-	args := []ABIEncodedTickRange{
-		{
-			TokenID: big.NewInt(int64(0)),
-			Upper:   big.NewInt(int64(12000)),
-			Lower:   big.NewInt(int64(7000)),
-			Weight:  big.NewInt(int64(100)),
-		},
-	}
-	abiEncodedCall, err := encodedCall.Pack("rebalance", args, new(big.Int).SetUint64(100))
-	if err != nil {
-		panic(fmt.Sprintf("this is the error: %s", err))
-	}
-
-	return abiEncodedCall
-}
-
 func (s *IntegrationTestSuite) TestCork() {
 	s.Run("Bring up chain, and submit a cork", func() {
 		expectedTickRange := &allocationTypes.TickRange{
-			Upper:  80085,
-			Lower:  420,
-			Weight: 69,
+			Upper:  12000,
+			Lower:  7000,
+			Weight: 100,
 		}
 
 		s.T().Logf("checking that test cellar exists in the chain")
