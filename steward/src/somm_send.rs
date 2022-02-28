@@ -12,14 +12,9 @@ use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::{
 use prost::Message;
 use sha2::Digest;
 use somm_proto::allocation::{
-    Allocation,
-    AllocationPrecommit,
-    MsgAllocationCommit,
-    MsgAllocationPrecommit,
-    QueryAllocationPrecommitsRequest,
-    QueryCommitPeriodRequest,
-    QueryCommitPeriodResponse,
-    query_client::QueryClient as AllocationQueryClient
+    query_client::QueryClient as AllocationQueryClient, Allocation, AllocationPrecommit,
+    MsgAllocationCommit, MsgAllocationPrecommit, QueryAllocationPrecommitsRequest,
+    QueryCommitPeriodRequest, QueryCommitPeriodResponse,
 };
 use somm_proto::cork::Cork;
 use somm_proto::cork::MsgSubmitCorkRequest;
