@@ -17,9 +17,9 @@ message SubmitRequest {
 message SubmitResponse {}
 
 message UniswapV3Position {
-    int32 upper_price = 2;
-    int32 lower_price = 3;
-    int32 weight = 4;
+    int32 upper_price = 1;
+    int32 lower_price = 2;
+    int32 weight = 3;
 }
 
 message UniswapV3RebalanceParams {

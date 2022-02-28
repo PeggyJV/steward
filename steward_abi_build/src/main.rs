@@ -185,7 +185,10 @@ fn main() {
     }
 
     // Cellar Uniswap
-    let abigen = match Abigen::new("UniswapV3Cellar", "../steward_abi/cellar_uniswap_limit_usdc_eth.json") {
+    let abigen = match Abigen::new(
+        "UniswapV3Cellar",
+        "../steward_abi/cellar_uniswap_limit_usdc_eth.json",
+    ) {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open cellar_uniswap_limit_usdc_eth.json: {}", e);
@@ -200,7 +203,10 @@ fn main() {
     {
         Ok(abi) => abi,
         Err(e) => {
-            println!("Could not generate abi from cellar_uniswap_limit_usdc_eth.json: {}", e);
+            println!(
+                "Could not generate abi from cellar_uniswap_limit_usdc_eth.json: {}",
+                e
+            );
             process::exit(1);
         }
     };
