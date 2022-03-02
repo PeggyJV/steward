@@ -107,3 +107,10 @@ fn eth_keys_add() {
 
     // Check that mnemonic contains 24 words.
 }
+/// Use command-line argument value for eth keys delete #[test]
+fn eth_keys_delete() {
+    let mut runner= RUNNER.clone();
+    let cmd = runner.args(&["keys", "eth", "delete", "sha"]).capture_stdout().run();
+    //check that command executes without error
+    cmd.wait().unwrap().expect_success();
+}
