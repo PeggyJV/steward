@@ -30,7 +30,7 @@ use steward::config::StewardConfig;
 /// invocations as `cargo test` executes tests in parallel by default.
 pub static RUNNER: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
 
-/// Use `CellarRebalancerConfig::default()` value if no config or args
+/// Use `StewardConfig::default()` value if no config or args
 #[test]
 #[ignore]
 fn start_no_args() {
@@ -57,7 +57,7 @@ fn start_with_args() {
 /// Use configured value
 // #[test]
 // fn start_with_config_no_args() {
-//     let mut config = CellarRebalancerConfig::default();
+//     let mut config = StewardConfig::default();
 //     config.hello.recipient = "configured recipient".to_owned();
 //     let expected_line = format!("Hello, {}!", &config.hello.recipient);
 

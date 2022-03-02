@@ -1,4 +1,4 @@
-//! CellarRebalancer Subcommands
+//! Steward Subcommands
 //!
 //! This is where you specify the subcommands of your application.
 //!
@@ -38,12 +38,12 @@ use crate::config::StewardConfig;
 use abscissa_core::{clap::Parser, Command, Configurable, FrameworkError, Runnable};
 use std::path::PathBuf;
 
-/// CellarRebalancer Configuration Filename
+/// Steward Configuration Filename
 pub const CONFIG_FILE: &str = "steward.toml";
 
-/// CellarRebalancer Subcommands
+/// Steward Subcommands
 #[derive(Command, Debug, Parser, Runnable)]
-pub enum CellarRebalancerCmd {
+pub enum StewardCmd {
     SingleSigner(SingleSignerCmd),
     Transfer(TransferCmd),
     #[clap(subcommand)]
@@ -75,7 +75,7 @@ pub enum CellarRebalancerCmd {
 #[clap(author, about, version)]
 pub struct EntryPoint {
     #[clap(subcommand)]
-    cmd: CellarRebalancerCmd,
+    cmd: StewardCmd,
     /// Enable verbose logging
     #[clap(short, long)]
     pub verbose: bool,
