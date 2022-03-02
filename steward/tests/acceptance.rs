@@ -95,7 +95,7 @@ fn version_no_args() {
 
 /// Use command-line argument value
 #[test]
-#[ignore]
+
 fn eth_keys_add() {
     let mut runner = RUNNER.clone();
     let cmd = runner
