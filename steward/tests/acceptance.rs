@@ -109,6 +109,7 @@ fn eth_keys_add() {
 }
 /// Use command-line argument value for eth keys list
 #[test]
+#[ignore]
 fn eth_keys_list() {
     let mut runner = RUNNER.clone();
     let cmd = runner.args(&["keys", "eth", "list"]).capture_stdout().run();
