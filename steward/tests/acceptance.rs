@@ -109,19 +109,34 @@ fn eth_keys_add() {
 }
 /// Use command-line argument value for eth keys list
 #[test]
-fn eth_keys_list(){
+fn eth_keys_list() {
     let mut runner = RUNNER.clone();
     let cmd = runner.args(&["keys", "eth", "list"]).capture_stdout().run();
 
     //check that command executes without error
-cmd.wait().unwrap().expect_success();
+    cmd.wait().unwrap().expect_success();
 }
-/// Use command-line argument value for eth keys delete 
 #[test]
+#[ignore]
+fn eth_keys_show() {
+    let mut runner = RUNNER.clone();
+    let cmd = runner
+        .args(&["keys", "eth", "show", "sha"])
+        .capture_stdout()
+        .run();
 
+    //check that command executes without error
+    cmd.wait().unwrap().expect_success();
+}
+/// Use command-line argument value for eth keys delete
+#[test]
+#[ignore]
 fn eth_keys_delete() {
     let mut runner = RUNNER.clone();
-    let cmd = runner.args(&["keys", "eth", "delete", "sha"]).capture_stdout().run();
+    let cmd = runner
+        .args(&["keys", "eth", "delete", "sha"])
+        .capture_stdout()
+        .run();
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
 }
