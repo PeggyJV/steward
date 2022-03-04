@@ -4,10 +4,13 @@ use ethers::prelude::*;
 use signatory::FsKeyStore;
 use std::path;
 
-/// Show Keys
 #[derive(Command, Debug, Default, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Show details of an Eth key in the keystore.\n This command shows details of an Eth key in the keystore, it takes the name of the key."
+)]
 pub struct ShowKeyCmd {
-    pub args: Vec<String>,
+    /// Eth keyname
+    pub name: String,
 }
 
 // Entry point for `contract monitor keys show [name]`
@@ -16,9 +19,7 @@ impl Runnable for ShowKeyCmd {
         let config = APP.config();
         let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
-
-        let name = self.args.get(0).expect("name is required");
-        let name = name.parse().expect("Could not parse name");
+        let name = self.name.parse().expect("Could not parse name");
 
         let key = keystore.load(&name).expect("Could not load key");
 

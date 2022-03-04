@@ -6,6 +6,7 @@ use signatory::FsKeyStore;
 use std::{convert::TryFrom, ops::Add, path, sync::Arc, time::Duration};
 
 use crate::{
+    allocation,
     cellars::uniswapv3::{UniswapV3CellarState, UniswapV3CellarTickInfo},
     gas::CellarGas,
     prelude::*,
@@ -15,20 +16,25 @@ use steward_abi::cellar_uniswap::*;
 
 /// Command to fund Cellars
 #[derive(Command, Debug, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Fund Cellar.\n This command funds the required Cellar by loading the Cellar config. \n It takes the amounts for the Cellar pool pair."
+)]
 pub struct FundCellarCmd {
-    #[clap(short = 'i', long)]
-    pub cellar_id: u32,
+    /// Amount for first pool pair
     #[clap(short = 'm', long)]
     pub amount_0: f64,
+    /// Amount for second pool pair
     #[clap(short = 'o', long)]
     pub amount_1: f64,
+    /// Cellar Address.
+    #[clap(short = 'i', long)]
+    pub cellar_address: H160,
 }
 
 impl Runnable for FundCellarCmd {
     fn run(&self) {
         let config = APP.config();
-        let cellar = config.cellars.get(0).expect("Could not get cellar config");
-
+        let cellar = allocation::get_cellar(self.cellar_address).unwrap();
         let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
 

@@ -23,9 +23,23 @@ impl Runnable for Eth {
     fn run(&self) {}
 }
 
+/// Send tokens from Ethereum to Cosmos chain
 #[derive(Command, Debug, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Send transactions from Ethereum to Cosmos chain.\n This command sends tx from the Eth chain to the Cosmos chain.\n It takes the Eth keyname, Cosmos address, ERC20 token contract address and amount to be sent."
+)]
 pub struct SendToCosmos {
-    free: Vec<String>,
+    /// Eth key name
+    key_name: String,
+
+    /// Cosmos address
+    cosmos_addr: String,
+
+    /// ERC20 contract address
+    erc20_addr: String,
+
+    /// Amount
+    amount: String,
 
     #[clap(short, long)]
     help: bool,
@@ -38,17 +52,18 @@ fn lookup_eth_key(_key: String) -> LocalWallet {
 
 impl Runnable for SendToCosmos {
     fn run(&self) {
-        assert!(self.free.len() == 4);
-        let from_eth_key = self.free[0].clone();
-        let to_cosmos_addr: CosmosAddress = self.free[1]
+        let from_eth_key = self.key_name.clone();
+        let to_cosmos_addr: CosmosAddress = self
+            .cosmos_addr
             .clone()
             .parse()
             .expect("Expected a valid Cosmos Address");
-        let erc20_contract: EthAddress = self.free[2]
+        let erc20_contract: EthAddress = self
+            .erc20_addr
             .clone()
             .parse()
             .expect("Expected a valid Eth Address");
-        let erc20_amount = self.free[3].clone();
+        let erc20_amount = self.amount.clone();
         let ethereum_wallet = lookup_eth_key(from_eth_key);
 
         println!(
@@ -125,9 +140,10 @@ impl Runnable for SendToCosmos {
     }
 }
 
+/// Send tokens from across Ethereum chain
 #[derive(Command, Debug, Parser)]
 pub struct Send {
-    free: Vec<String>,
+    free: String,
 
     #[clap(short, long)]
     help: bool,

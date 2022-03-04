@@ -10,7 +10,11 @@ use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
 use steward_proto::uniswapv3::server::UniswapV3CellarAllocatorServer;
 
+/// Cosmos Signer, start allocation module
 #[derive(Command, Debug, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Cosmos mode, run Steward as a server.\n This command runs Steward as a server that will send updates to the Sommelier chain."
+)]
 pub struct CosmosSignerCmd;
 
 impl Runnable for CosmosSignerCmd {

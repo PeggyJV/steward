@@ -10,7 +10,11 @@ use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
 use steward_proto::uniswapv3::server::UniswapV3CellarAllocatorServer;
 
+/// Single Signer, start Eth test mode
 #[derive(Command, Debug, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Single Signer, start Ethereum test module.\n This command starts Steward using the Ethereum test mode."
+)]
 pub struct SingleSignerCmd;
 
 impl Runnable for SingleSignerCmd {
