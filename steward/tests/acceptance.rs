@@ -141,3 +141,49 @@ fn eth_keys_delete() {
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
 }
+///use command-line argument value
+#[test]
+fn cosmos_keys_add() {
+    let mut runner = RUNNER.clone();
+    let cmd = runner
+        .args(&["keys", "cosmos", "add", "sha"])
+        .capture_stdout()
+        .run();
+    //check that command executes without error
+    cmd.wait().unwrap().expect_success();
+}
+///use command-line argument value for cosmos keys list
+#[test]
+#[ignore]
+fn cosmos_keys_list() {
+    let mut runner = RUNNER.clone();
+    let cmd = runner
+        .args(&["keys", "cosmos", "list"])
+        .capture_stdout()
+        .run();
+    //check that command executes without error
+    cmd.wait().unwrap().expect_success();
+}
+#[test]
+#[ignore]
+fn cosmos_keys_show() {
+    let mut runner = RUNNER.clone();
+    let cmd = runner
+        .args(&["keys", "cosmos", "show", "sha"])
+        .capture_stdout()
+        .run();
+    //check that command executes without error
+    cmd.wait().unwrap().expect_success();
+}
+///use command-line argument value for cosmos keys delete
+#[test]
+#[ignore]
+fn cosmos_keys_delete() {
+    let mut runner = RUNNER.clone();
+    let cmd = runner
+        .args(&["keys", "cosmos", "delete", "sha"])
+        .capture_stdout()
+        .run();
+    //check that command executes without error
+    cmd.wait().unwrap().expect_success();
+}
