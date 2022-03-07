@@ -15,7 +15,6 @@ use std::process::exit;
 #[derive(Command, Debug, Parser)]
 pub enum Cosmos {
     SendToEth(SendToEth),
-    Send(Send),
 }
 
 impl Runnable for Cosmos {
@@ -152,39 +151,6 @@ impl Runnable for SendToEth {
             }
         })
         .unwrap_or_else(|e| {
-            status_err!("executor exited with error: {}", e);
-            exit(1);
-        });
-    }
-}
-
-/// Send tx from across the Cosmos chain
-#[derive(Command, Debug, Parser)]
-#[clap(
-    long_about = "DESCRIPTION \n\n Send transactions from across the Cosmos chain.\n This command sends tx from across the Cosmos chain.\n It takes the sender's keyname, reciever's address and amount to be sent."
-)]
-pub struct Send {
-    /// Sender's key name
-    key_name: String,
-
-    /// Reciever's address
-    to_addr: String,
-
-    /// amount
-    amount: String,
-
-    #[clap(short, long)]
-    help: bool,
-}
-
-impl Runnable for Send {
-    /// Start the application.
-    fn run(&self) {
-        let _from_key = self.key_name.clone();
-        let _to_addr = self.to_addr.clone();
-        let _coin_amount = self.amount.clone();
-
-        abscissa_tokio::run_with_actix(&APP, async { unimplemented!() }).unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
             exit(1);
         });
