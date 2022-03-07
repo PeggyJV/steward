@@ -8,45 +8,7 @@ use std::{convert::TryFrom, sync::Arc, time::Duration};
 /// Query Eth chain
 #[derive(Command, Debug, Parser, Runnable)]
 pub enum Eth {
-    Balance(Balance),
-    Contract(Contract),
     Pair(Pair),
-}
-
-/// Query Eth balance
-#[derive(Command, Debug, Parser)]
-#[clap(
-    long_about = "DESCRIPTION \n\n Query Eth balance.\n This command queries the Eth balance, taking the name of the key."
-)]
-pub struct Balance {
-    /// Eth key name
-    key_name: String,
-
-    #[clap(short, long)]
-    help: bool,
-}
-
-impl Runnable for Balance {
-    fn run(&self) {
-        let _key_name = self.key_name.clone();
-
-        abscissa_tokio::run(&APP, async { unimplemented!() }).unwrap_or_else(|e| {
-            status_err!("executor exited with error: {}", e);
-            std::process::exit(1);
-        });
-    }
-}
-
-#[derive(Command, Debug, Parser)]
-/// Query Eth Contract
-pub struct Contract {
-    #[clap(short, long)]
-    help: bool,
-}
-
-impl Runnable for Contract {
-    /// Start the application.
-    fn run(&self) {}
 }
 
 /// Query Eth pool pair
