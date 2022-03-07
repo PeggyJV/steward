@@ -1,7 +1,5 @@
 //! `query` subcommand
 
-mod cosmos;
-
 mod eth;
 
 use abscissa_core::{clap::Parser, Command, Runnable};
@@ -10,8 +8,6 @@ use abscissa_core::{clap::Parser, Command, Runnable};
 
 #[derive(Command, Debug, Parser, Runnable)]
 pub enum QueryCmd {
-    #[clap(subcommand)]
-    Cosmos(cosmos::Cosmos),
     #[clap(subcommand)]
     Eth(eth::Eth),
     // Example `--foobar` (with short `-f` argument)
