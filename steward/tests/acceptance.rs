@@ -99,7 +99,15 @@ fn version_no_args() {
 fn eth_keys_add() {
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["keys", "eth", "add", "sha"])
+        .args(&[
+            "--",
+            "-c",
+            "steward/tests/test_config.toml",
+            "keys",
+            "eth",
+            "add",
+            "sha",
+        ])
         .capture_stdout()
         .run();
     // Check that command executes without error.
@@ -109,10 +117,20 @@ fn eth_keys_add() {
 }
 /// Use command-line argument value for eth keys list
 #[test]
-#[ignore]
+
 fn eth_keys_list() {
     let mut runner = RUNNER.clone();
-    let cmd = runner.args(&["keys", "eth", "list"]).capture_stdout().run();
+    let cmd = runner
+        .args(&[
+            "--",
+            "-c",
+            "steward/tests/test_config.toml",
+            "keys",
+            "eth",
+            "list",
+        ])
+        .capture_stdout()
+        .run();
 
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
