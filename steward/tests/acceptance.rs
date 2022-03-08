@@ -100,7 +100,6 @@ fn eth_keys_add() {
     let mut runner = RUNNER.clone();
     let cmd = runner
         .args(&[
-            "--",
             "-c",
             "steward/tests/test_config.toml",
             "keys",
@@ -122,7 +121,6 @@ fn eth_keys_list() {
     let mut runner = RUNNER.clone();
     let cmd = runner
         .args(&[
-            "--",
             "-c",
             "steward/tests/test_config.toml",
             "keys",
@@ -149,11 +147,18 @@ fn eth_keys_show() {
 }
 /// Use command-line argument value for eth keys delete
 #[test]
-#[ignore]
+
 fn eth_keys_delete() {
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["keys", "eth", "delete", "sha"])
+        .args(&[
+            "-c",
+            "steward/tests/test_config.toml",
+            "keys",
+            "eth",
+            "delete",
+            "sha",
+        ])
         .capture_stdout()
         .run();
     //check that command executes without error
@@ -164,7 +169,14 @@ fn eth_keys_delete() {
 fn cosmos_keys_add() {
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["keys", "cosmos", "add", "sha"])
+        .args(&[
+            "-c",
+            "steward/tests/test_config.toml",
+            "keys",
+            "cosmos",
+            "add",
+            "sha",
+        ])
         .capture_stdout()
         .run();
     //check that command executes without error
@@ -172,22 +184,35 @@ fn cosmos_keys_add() {
 }
 ///use command-line argument value for cosmos keys list
 #[test]
-#[ignore]
+
 fn cosmos_keys_list() {
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["keys", "cosmos", "list"])
+        .args(&[
+            "-c",
+            "steward/tests/test_config.toml",
+            "keys",
+            "cosmos",
+            "list",
+        ])
         .capture_stdout()
         .run();
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
 }
 #[test]
-#[ignore]
+
 fn cosmos_keys_show() {
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["keys", "cosmos", "show", "sha"])
+        .args(&[
+            "-c",
+            "steward/tests/test_config.toml",
+            "keys",
+            "cosmos",
+            "show",
+            "sha",
+        ])
         .capture_stdout()
         .run();
     //check that command executes without error
@@ -195,11 +220,18 @@ fn cosmos_keys_show() {
 }
 ///use command-line argument value for cosmos keys delete
 #[test]
-#[ignore]
+
 fn cosmos_keys_delete() {
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["keys", "cosmos", "delete", "sha"])
+        .args(&[
+            "-c",
+            "steward/tests/test_config.toml",
+            "keys",
+            "cosmos",
+            "delete",
+            "sha",
+        ])
         .capture_stdout()
         .run();
     //check that command executes without error
