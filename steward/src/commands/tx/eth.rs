@@ -16,7 +16,6 @@ use gravity_bridge::gravity_utils::ethereum::{downcast_to_u64, format_eth_addres
 #[derive(Command, Debug, Parser)]
 pub enum Eth {
     SendToCosmos(SendToCosmos),
-    Send(Send),
 }
 
 impl Runnable for Eth {
@@ -138,17 +137,4 @@ impl Runnable for SendToCosmos {
             std::process::exit(1);
         });
     }
-}
-
-/// Send tokens from across Ethereum chain
-#[derive(Command, Debug, Parser)]
-pub struct Send {
-    free: String,
-
-    #[clap(short, long)]
-    help: bool,
-}
-
-impl Runnable for Send {
-    fn run(&self) {}
 }
