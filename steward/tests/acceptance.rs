@@ -87,6 +87,7 @@ fn start_with_config_and_args() {
 
 /// Example of a test which matches a regular expression
 #[test]
+#[ignore]
 fn version_no_args() {
     let mut runner = RUNNER.clone();
     let mut cmd = runner.arg("--version").capture_stdout().run();
@@ -101,7 +102,7 @@ fn eth_keys_add() {
     let cmd = runner
         .args(&[
             "-c",
-            "steward/tests/test_config.toml",
+            "test_config.toml",
             "keys",
             "eth",
             "add",
@@ -122,7 +123,7 @@ fn eth_keys_list() {
     let cmd = runner
         .args(&[
             "-c",
-            "steward/tests/test_config.toml",
+            "test_config.toml",
             "keys",
             "eth",
             "list",
@@ -153,7 +154,7 @@ fn eth_keys_delete() {
     let cmd = runner
         .args(&[
             "-c",
-            "steward/tests/test_config.toml",
+            "test_config.toml",
             "keys",
             "eth",
             "delete",
@@ -171,7 +172,7 @@ fn cosmos_keys_add() {
     let cmd = runner
         .args(&[
             "-c",
-            "steward/tests/test_config.toml",
+            "test_config.toml",
             "keys",
             "cosmos",
             "add",
@@ -190,7 +191,7 @@ fn cosmos_keys_list() {
     let cmd = runner
         .args(&[
             "-c",
-            "steward/tests/test_config.toml",
+            "test_config.toml",
             "keys",
             "cosmos",
             "list",
@@ -201,13 +202,13 @@ fn cosmos_keys_list() {
     cmd.wait().unwrap().expect_success();
 }
 #[test]
-
+#[ignore]
 fn cosmos_keys_show() {
     let mut runner = RUNNER.clone();
     let cmd = runner
         .args(&[
             "-c",
-            "steward/tests/test_config.toml",
+            "test_config.toml",
             "keys",
             "cosmos",
             "show",
@@ -226,7 +227,7 @@ fn cosmos_keys_delete() {
     let cmd = runner
         .args(&[
             "-c",
-            "steward/tests/test_config.toml",
+            "test_config.toml",
             "keys",
             "cosmos",
             "delete",
