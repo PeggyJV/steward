@@ -1,0 +1,5 @@
+keystore = "steward/tests"
+
+[keys]
+keystore = "steward/tests"
+rebalancer_key = "cellar"
