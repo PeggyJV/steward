@@ -45,7 +45,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ SOMMELIER_IMAGE }}
+          images: ${{ env.SOMMELIER_IMAGE }}
       - name: build-and-push
         uses: docker/build-push-action@v2
         with:
