@@ -11,8 +11,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  SOMMELIER_IMAGE: ${{ env.REGISTRY }}/sommelier-sommelier
-  HARDHAT_IMAGE: ${{ env.REGISTRY }}/hardhat-sommelier
+  SOMMELIER_IMAGE: ghcr.io/peggyjv/sommelier-sommelier
+  HARDHAT_IMAGE: ghcr.io/peggyjv/hardhat-sommelier
   ORCHESTRATOR_IMAGE_NAME: ghcr.io/peggyjv/gravity-bridge-orchestrator:latest
 
 jobs:
