@@ -60,7 +60,7 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
                 &request.cellar_id
             );
             return Err(Status::new(
-                Code::InvalidArgument,
+                Code::PermissionDenied,
                 format!(
                     "cellar ID {} not approved by governance",
                     &request.cellar_id
