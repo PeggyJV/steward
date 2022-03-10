@@ -22,6 +22,8 @@ use steward_proto::{
 };
 use tonic::{self, async_trait, Code, Request, Response, Status};
 
+const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
+
 pub struct CorkHandler;
 
 #[async_trait]
@@ -78,7 +80,10 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
 
         if let Err(err) = send_cork(cork).await {
             error!("failed to submit cork: {}", err);
-            return Err(Status::new(Code::Internal, "failed to submit transaction"));
+            return Err(Status::new(
+                Code::Internal,
+                "failed to send cork to sommelier",
+            ));
         }
         debug!("sent cork!");
 
@@ -118,8 +123,7 @@ fn get_encoded_call(cellar_id: &CellarId, data: ContractCallData) -> Result<Vec<
 async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
     let config = APP.config();
     debug!("establishing grpc connection");
-    let timeout = Duration::from_secs(10);
-    let contact = Contact::new(&config.cosmos.grpc, timeout, &config.cosmos.prefix)?;
+    let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, &config.cosmos.prefix)?;
 
     debug!("loading the delegate (orchestrator) key and address from config");
     let name = &config.keys.rebalancer_key;

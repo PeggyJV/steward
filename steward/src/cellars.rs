@@ -1,7 +1,6 @@
 use crate::{error::Error, gas::CellarGas, utils::get_eth_provider};
 use abscissa_core::tracing::log::warn;
 use ethers::prelude::*;
-use serde::Deserialize;
 use std::{fmt, result::Result};
 
 pub(crate) mod uniswapv3;
@@ -16,12 +15,6 @@ impl std::fmt::Display for CellarId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}:{}", self.chain, self.address)
     }
-}
-
-#[derive(Debug, Deserialize)]
-pub struct CellarContractCall {
-    pub function: String,
-    pub args: serde_json::Value,
 }
 
 pub async fn get_gas_price() -> Result<U256, Error> {
