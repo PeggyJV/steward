@@ -3,7 +3,7 @@ use std::net::SocketAddr;
 use crate::{config::StewardConfig, error::Error};
 use tonic::transport::{Certificate, Identity, ServerTlsConfig};
 
-pub const DEFAULT_CLIENT_CA: &[u8] = include_bytes!("../../tls/volumefi_ca.crt");
+pub const DEFAULT_CLIENT_CA: &[u8] = include_bytes!("../../tls/peggyjv_ca.crt");
 pub const DEFAULT_STEWARD_PORT: u16 = 5734;
 // for gRPC reflection
 pub const DESCRIPTOR: &[u8] = include_bytes!("../../steward_proto/src/prost/descriptor.bin");
