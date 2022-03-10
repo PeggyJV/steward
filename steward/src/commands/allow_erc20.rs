@@ -6,15 +6,23 @@ use ethers::prelude::*;
 
 use signatory::FsKeyStore;
 
-use crate::{erc20::Erc20State, gas::CellarGas, prelude::*};
+use crate::{allocation, erc20::Erc20State, gas::CellarGas, prelude::*};
 
 /// Allow Erc20 Token to interact with cellar contract
 #[derive(Command, Debug, Default, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Allow ERC20 tokens to interact with Cellar contract.\n This command approves an Eth transaction with a Cellar address. \n It takes the Cellar address, Eth address and transaction amount."
+)]
 pub struct AllowERC20 {
+    /// Cellar address you want to interact with.
     #[clap(short = 'C', long)]
     cellar_address: H160,
+
+    /// Ethereum address to interact with Cellar.
     #[clap(short = 'A', long)]
     address: H160,
+
+    /// Transaction amount.
     #[clap(short = 'a', long)]
     amount: u64,
 }
@@ -22,7 +30,7 @@ pub struct AllowERC20 {
 impl Runnable for AllowERC20 {
     fn run(&self) {
         let config = APP.config();
-        let _cellar = config.cellars.get(0).expect("Could not get cellar config");
+        let _cellar = allocation::get_cellar(self.cellar_address).unwrap();
 
         let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");

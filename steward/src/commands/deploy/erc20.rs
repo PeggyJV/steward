@@ -13,12 +13,17 @@ use tokio::time::sleep as delay_for;
 
 /// Deploy Erc20
 #[derive(Command, Debug, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Deploy ERC20 tokens to the Sommelier Chain via the Gravity Bridge.\n This command takes a token denom, Ethereum key and gas multiplier."
+)]
 pub struct Erc20 {
-    args: Vec<String>,
-
+    /// Erc20 token denom.
+    #[clap(short, long)]
+    denom: String,
+    /// Ethereum ID representing a Keystore entry.
     #[clap(short, long)]
     ethereum_key: String,
-
+    /// Ethereum gas multiplier, default is 1.
     #[clap(short, long, default_value_t = 1.0)]
     gas_multiplier: f64,
 }
@@ -37,8 +42,6 @@ impl Runnable for Erc20 {
 
 impl Erc20 {
     async fn deploy(&self) {
-        let denom = self.args.get(0).expect("denom is required");
-
         let config = APP.config();
 
         let ethereum_wallet = config.load_ethers_wallet(self.ethereum_key.clone());
@@ -72,7 +75,7 @@ impl Erc20 {
         check_for_eth(eth_client.address(), eth_client.clone()).await;
 
         let req = DenomToErc20ParamsRequest {
-            denom: denom.clone(),
+            denom: self.denom.clone(),
         };
 
         let res = grpc
@@ -102,7 +105,7 @@ impl Erc20 {
         match tokio::time::timeout(Duration::from_secs(300), async {
             loop {
                 let req = DenomToErc20Request {
-                    denom: denom.clone(),
+                    denom: self.denom.clone(),
                 };
 
                 let res = grpc.denom_to_erc20(req).await;
@@ -118,7 +121,7 @@ impl Erc20 {
             Ok(val) => {
                 println!(
                     "Asset {} has accepted new ERC20 representation {}",
-                    denom,
+                    self.denom,
                     val.into_inner().erc20
                 );
                 exit(0);

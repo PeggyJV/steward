@@ -249,8 +249,8 @@ pub async fn direct_rebalance(
     let wallet: LocalWallet = Wallet::from(key);
 
     let eth_host = config.ethereum.rpc.clone();
-    let provider = Provider::<Http>::try_from(eth_host.clone()).unwrap();
-
+    let provider = Provider::<Http>::try_from(eth_host.clone())
+        .unwrap_or_else(|_| panic!("could not get provider from eth_host {}", eth_host));
     let chain_id = provider
         .get_chainid()
         .await

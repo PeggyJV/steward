@@ -15,7 +15,6 @@ use std::process::exit;
 #[derive(Command, Debug, Parser)]
 pub enum Cosmos {
     SendToEth(SendToEth),
-    Send(Send),
 }
 
 impl Runnable for Cosmos {
@@ -25,9 +24,20 @@ impl Runnable for Cosmos {
     }
 }
 
+/// Send tx from Cosmos to Ethereum chain
 #[derive(Command, Debug, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Send transactions from Cosmos to Ethereum chain.\n This command sends tx from the Cosmos chain to the Eth chain.\n It takes the Cosmos key, Eth address and amount."
+)]
 pub struct SendToEth {
-    free: Vec<String>,
+    /// Cosmos key name
+    cosmos_key: String,
+
+    /// Eth Address
+    eth_addr: String,
+
+    /// ERC20 coin amount
+    erc20_amount: String,
 
     #[clap(short, long)]
     help: bool,
@@ -53,10 +63,9 @@ fn get_cosmos_key(_key_name: &str) -> CosmosPrivateKey {
 
 impl Runnable for SendToEth {
     fn run(&self) {
-        assert!(self.free.len() == 3);
-        let from_cosmos_key = self.free[0].clone();
-        let to_eth_addr = self.free[1].clone(); //TODO parse this to an Eth Address
-        let erc_20_coin = self.free[2].clone(); // 1231234uatom
+        let from_cosmos_key = self.cosmos_key.clone();
+        let to_eth_addr = self.eth_addr.clone(); //TODO parse this to an Eth Address
+        let erc_20_coin = self.erc20_amount.clone(); // 1231234uatom
         let (amount, denom) = parse_denom(&erc_20_coin);
 
         let amount: Uint256 = amount.parse().expect("Could not parse amount");
@@ -142,29 +151,6 @@ impl Runnable for SendToEth {
             }
         })
         .unwrap_or_else(|e| {
-            status_err!("executor exited with error: {}", e);
-            exit(1);
-        });
-    }
-}
-
-#[derive(Command, Debug, Parser)]
-pub struct Send {
-    free: Vec<String>,
-
-    #[clap(short, long)]
-    help: bool,
-}
-
-impl Runnable for Send {
-    /// Start the application.
-    fn run(&self) {
-        assert!(self.free.len() == 3);
-        let _from_key = self.free[0].clone();
-        let _to_addr = self.free[1].clone();
-        let _coin_amount = self.free[2].clone();
-
-        abscissa_tokio::run_with_actix(&APP, async { unimplemented!() }).unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
             exit(1);
         });

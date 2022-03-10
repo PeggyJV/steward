@@ -3,22 +3,22 @@ use abscissa_core::{clap::Parser, Application, Command, Runnable};
 use signatory::FsKeyStore;
 use std::path;
 
-/// Delete Key
 #[derive(Command, Debug, Default, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Delete an Eth Key.\n This command deletes an Eth key from your keystore when provided with the keyname."
+)]
 pub struct DeleteKeyCmd {
-    pub args: Vec<String>,
+    /// Eth keyname in keystore.
+    pub name: String,
 }
 
-// Entry point for `keys delete [name]`
-// - [name] required; key name
 impl Runnable for DeleteKeyCmd {
     fn run(&self) {
         let config = APP.config();
         let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
 
-        let name = self.args.get(0).expect("name is required");
-        let name = name.parse().expect("Could not parse name");
+        let name = self.name.parse().expect("Could not parse name");
         keystore.delete(&name).expect("Could not delete key");
     }
 }
