@@ -102,7 +102,7 @@ fn eth_keys_add() {
     let cmd = runner
         .args(&[
             "-c",
-            "test_config.toml",
+            "testfile.toml",
             "keys",
             "eth",
             "add",
@@ -123,7 +123,7 @@ fn eth_keys_list() {
     let cmd = runner
         .args(&[
             "-c",
-            "test_config.toml",
+            "testfile.toml",
             "keys",
             "eth",
             "list",
@@ -139,7 +139,7 @@ fn eth_keys_list() {
 fn eth_keys_show() {
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["keys", "eth", "show", "sha"])
+        .args(&["-c", "testfile.toml", "keys", "eth", "show", "sha"])
         .capture_stdout()
         .run();
 
@@ -154,7 +154,7 @@ fn eth_keys_delete() {
     let cmd = runner
         .args(&[
             "-c",
-            "test_config.toml",
+            "testfile.toml",
             "keys",
             "eth",
             "delete",
@@ -172,7 +172,7 @@ fn cosmos_keys_add() {
     let cmd = runner
         .args(&[
             "-c",
-            "test_config.toml",
+            "testfile.toml",
             "keys",
             "cosmos",
             "add",
@@ -191,7 +191,7 @@ fn cosmos_keys_list() {
     let cmd = runner
         .args(&[
             "-c",
-            "test_config.toml",
+            "testfile.toml",
             "keys",
             "cosmos",
             "list",
@@ -208,7 +208,7 @@ fn cosmos_keys_show() {
     let cmd = runner
         .args(&[
             "-c",
-            "test_config.toml",
+            "testfile.toml",
             "keys",
             "cosmos",
             "show",
@@ -227,7 +227,7 @@ fn cosmos_keys_delete() {
     let cmd = runner
         .args(&[
             "-c",
-            "test_config.toml",
+            "testfile.toml",
             "keys",
             "cosmos",
             "delete",
