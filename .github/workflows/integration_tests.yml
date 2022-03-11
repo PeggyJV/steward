@@ -109,7 +109,7 @@ jobs:
 
   integration-tests:
     environment: CI
-    runs-on: ubuntu-lateste
+    runs-on: ubuntu-latest
     needs: [ steward-build, hardhat-build ]
     strategy:
       fail-fast: false
