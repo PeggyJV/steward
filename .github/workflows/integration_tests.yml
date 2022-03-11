@@ -10,8 +10,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-  HARDHAT_IMAGE: ghcr.io/peggyjv/hardhat-steward
+  IMAGE_NAME: ${{ github.repository }}-steward
+  HARDHAT_IMAGE: ghcr.io/peggyjv/steward-hardhat
   ORCHESTRATOR_IMAGE_NAME: ghcr.io/peggyjv/gravity-bridge-orchestrator:latest
   SOMMELIER_IMAGE: ghcr.io/peggyjv/sommelier:latest
 
