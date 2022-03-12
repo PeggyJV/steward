@@ -149,7 +149,7 @@ jobs:
         id: meta-steward
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       - name: pull sommelier image
         run: docker pull ${{ env.SOMMELIER_IMAGE }}
       - name: rename sommelier image
