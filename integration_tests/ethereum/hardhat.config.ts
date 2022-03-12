@@ -79,17 +79,8 @@ task(
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
-const ARCHIVE_NODE_URL = process.env.ARCHIVE_NODE_URL;
 
 module.exports = {
-    networks: {
-        hardhat: {
-            forking: {
-                url: ARCHIVE_NODE_URL,
-                blockNumber: 13405367,
-            },
-        },
-    },
     solidity: {
         compilers: [
             {

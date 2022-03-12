@@ -452,9 +452,6 @@ func (s *IntegrationTestSuite) runEthContainer() {
 	s.T().Log("starting Ethereum container...")
 	var err error
 
-	nodeURL := os.Getenv("ARCHIVE_NODE_URL")
-	s.Require().NotEmptyf(nodeURL, "ARCHIVE_NODE_URL env variable must be set")
-
 	runOpts := dockertest.RunOptions{
 		Name:       "ethereum",
 		Repository: "ethereum",
@@ -464,7 +461,6 @@ func (s *IntegrationTestSuite) runEthContainer() {
 			"8545/tcp": {{HostIP: "", HostPort: "8545"}},
 		},
 		ExposedPorts: []string{"8545/tcp"},
-		Env:          []string{fmt.Sprintf("ARCHIVE_NODE_URL=%s", nodeURL)},
 	}
 
 	s.ethResource, err = s.dockerPool.RunWithOptions(
