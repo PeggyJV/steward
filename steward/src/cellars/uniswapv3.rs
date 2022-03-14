@@ -157,11 +157,10 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
             .collect();
 
         debug!("cellar_id in request: {}", &request.cellar_id);
-        let cellar_address = match cellars::parse_cellar_id(&request.cellar_id) {
-            Ok(addr) => addr,
-            Err(err) => return Err(tonic::Status::invalid_argument(err)),
+        let cellar_address = request.cellar_id.clone();
+        if let Err(err) = cellars::validate_cellar_id(&cellar_address) {
+            return Err(tonic::Status::invalid_argument(err));
         }
-        .address;
 
         debug!("parsed cellar_address: {}", cellar_address);
         tokio::spawn(async move {
@@ -199,11 +198,10 @@ impl server::UniswapV3CellarAllocator for UniswapV3DirectCellar {
             })
             .collect();
 
-        let cellar_address = match cellars::parse_cellar_id(&request.cellar_id) {
-            Ok(addr) => addr,
-            Err(err) => return Err(tonic::Status::invalid_argument(err)),
+        let cellar_address = request.cellar_id.clone();
+        if let Err(err) = cellars::validate_cellar_id(&cellar_address) {
+            return Err(tonic::Status::invalid_argument(err));
         }
-        .address;
 
         tokio::spawn(async move {
             if let Err(err) = allocation::direct_rebalance(cellar_address, tick_weight).await {

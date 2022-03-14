@@ -32,22 +32,12 @@ pub async fn get_gas_price() -> Result<U256, Error> {
     provider.get_gas_price().await.map_err(|r| r.into())
 }
 
-pub fn parse_cellar_id(cellar_id: &str) -> Result<CellarId, String> {
-    let parts: Vec<&str> = cellar_id.split(':').collect();
-    if parts.len() != 2 {
-        return Err(format!(
-            "invalid cellar_id format: {}. proper format is 'chainname:address'",
-            cellar_id
-        ));
-    }
-    if let Err(err) = parts[1].parse::<H160>() {
+pub fn validate_cellar_id(cellar_id: &str) -> Result<(), String> {
+    if let Err(err) = cellar_id.parse::<H160>() {
         return Err(format!("invalid ethereum address: {}", err));
     }
 
-    Ok(CellarId {
-        chain: parts[0].to_string(),
-        address: parts[1].to_string(),
-    })
+    Ok(())
 }
 
 #[cfg(test)]
@@ -57,23 +47,16 @@ mod tests {
     #[test]
     fn invalid_cellar_id_format_errors() {
         let cellar_id = "thisaintright";
-        let result = parse_cellar_id(cellar_id);
+        let result = validate_cellar_id(cellar_id);
 
         assert!(result.is_err())
     }
 
-    #[test]
-    fn invalid_ethereum_address_errors() {
-        let cellar_id = "ethereum:whatever";
-        let result = parse_cellar_id(cellar_id);
-
-        assert!(result.is_err())
-    }
 
     #[test]
     fn valid_cellar_id_works() {
-        let cellar_id = "ethereum:0x0000000000000000000000000000000000000000";
-        let result = parse_cellar_id(cellar_id);
+        let cellar_id = "0x0000000000000000000000000000000000000000";
+        let result = validate_cellar_id(cellar_id);
 
         assert!(result.is_ok());
     }

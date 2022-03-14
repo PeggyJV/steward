@@ -15,6 +15,13 @@ task(
         });
 
         // Send ETH to needed parties
+        const fundSigner = await hre.ethers.getSigner("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266")
+
+        await fundSigner.sendTransaction({
+            to: constants.WHALE,
+            value: hre.ethers.utils.parseEther('1000'),
+        });
+
         const whaleSigner = await hre.ethers.getSigner(constants.WHALE);
 
         for (let addr of constants.VALIDATORS) {
@@ -79,17 +86,8 @@ task(
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
-const ARCHIVE_NODE_URL = process.env.ARCHIVE_NODE_URL;
 
 module.exports = {
-    networks: {
-        hardhat: {
-            forking: {
-                url: ARCHIVE_NODE_URL,
-                blockNumber: 13405367,
-            },
-        },
-    },
     solidity: {
         compilers: [
             {
