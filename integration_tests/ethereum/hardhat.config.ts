@@ -7,21 +7,6 @@ task(
     'integration_test_setup',
     'Sets up contracts for the integration test',
     async (args, hre) => {
-
-        // Take over vitalik.eth
-        await hre.network.provider.request({
-            method: 'hardhat_impersonateAccount',
-            params: [constants.WHALE],
-        });
-
-        // Send ETH to needed parties
-        const fundSigner = await hre.ethers.getSigner("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266")
-
-        await fundSigner.sendTransaction({
-            to: constants.WHALE,
-            value: hre.ethers.utils.parseEther('1000'),
-        });
-
         const whaleSigner = await hre.ethers.getSigner(constants.WHALE);
 
         for (let addr of constants.VALIDATORS) {
