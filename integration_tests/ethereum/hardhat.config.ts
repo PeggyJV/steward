@@ -15,6 +15,13 @@ task(
         });
 
         // Send ETH to needed parties
+        const fundSigner = await hre.ethers.getSigner("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266")
+
+        await fundSigner.sendTransaction({
+            to: constants.WHALE,
+            value: hre.ethers.utils.parseEther('1000'),
+        });
+
         const whaleSigner = await hre.ethers.getSigner(constants.WHALE);
 
         for (let addr of constants.VALIDATORS) {
@@ -48,7 +55,7 @@ task(
             [[0, 600, 300, 900]],
         ));
         await cellar.deployed();
-        console.log(`cellar contract deploy at - ${cellar.address}`);
+        console.log(`cellar contract deployed at - ${cellar.address}`);
 
         let cellarSignerAddress = await cellar.signer.getAddress()
         await hre.network.provider.request({

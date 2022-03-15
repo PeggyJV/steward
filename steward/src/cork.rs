@@ -92,13 +92,13 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
 }
 
 async fn build_cork(request: &SubmitRequest) -> Result<Cork, Error> {
-    let cellar_id = cellars::parse_cellar_id(request.cellar_id.as_str())?;
-    let address = cellar_id.address.clone();
+    cellars::validate_cellar_id(request.cellar_id.as_str())?;
+    let address = request.cellar_id.clone();
     let contract_call_data = match request.contract_call_data.clone() {
         Some(call) => call,
         None => return Err(ErrorKind::Http.context("empty contract call data").into()),
     };
-    let encoded_call = get_encoded_call(&cellar_id, contract_call_data)?;
+    let encoded_call = get_encoded_call(contract_call_data)?;
 
     Ok(Cork {
         encoded_contract_call: encoded_call,
@@ -106,16 +106,10 @@ async fn build_cork(request: &SubmitRequest) -> Result<Cork, Error> {
     })
 }
 
-fn get_encoded_call(cellar_id: &CellarId, data: ContractCallData) -> Result<Vec<u8>, Error> {
-    let config = APP.config();
+fn get_encoded_call(data: ContractCallData) -> Result<Vec<u8>, Error> {
     match data {
         Uniswapv3Rebalance(params) => {
-            let info = config.cork.uniswapv3.clone();
-            if info.cellar_ids.contains(&cellar_id.to_string()) {
                 Ok(uniswapv3::get_encoded_call(params))
-            } else {
-                Err("cellar not found in config".to_string().into())
-            }
         }
     }
 }
