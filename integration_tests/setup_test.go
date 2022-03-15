@@ -61,7 +61,7 @@ func MNEMONICS() []string {
 var (
 	stakeAmount, _  = sdk.NewIntFromString("100000000000")
 	stakeAmountCoin = sdk.NewCoin(bondDenom, stakeAmount)
-	hardhatCellar   = common.HexToAddress("0x4C4a2f8c81640e47606d3fd77B353E87Ba015584")
+	hardhatCellar   = common.HexToAddress("0x0000000000000000000000000000000000000000")
 	gravityContract = common.HexToAddress("0x04C89607413713Ec9775E14b954286519d836FEf")
 )
 
@@ -515,12 +515,17 @@ func (s *IntegrationTestSuite) runEthContainer() {
 			if strings.HasPrefix(s, "gravity contract deployed at") {
 				strSpl := strings.Split(s, "-")
 				gravityContract = common.HexToAddress(strings.ReplaceAll(strSpl[1], " ", ""))
+			}
+			if strings.HasPrefix(s, "cellar contract deployed at") {
+				strSpl := strings.Split(s, "-")
+				hardhatCellar = common.HexToAddress(strings.ReplaceAll(strSpl[1], " ", ""))
 				return true
 			}
 		}
 		return false
 	}, time.Minute*5, time.Second*10, "unable to retrieve gravity address from logs")
 	s.T().Logf("gravity contract deployed at %s", gravityContract.String())
+	s.T().Logf("cellar contract deployed at %s", hardhatCellar.String())
 
 	s.T().Logf("started Ethereum container: %s", s.ethResource.Container.ID)
 }

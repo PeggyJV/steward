@@ -55,7 +55,7 @@ task(
             [[0, 600, 300, 900]],
         ));
         await cellar.deployed();
-        console.log(`cellar contract deploy at - ${cellar.address}`);
+        console.log(`cellar contract deployed at - ${cellar.address}`);
 
         let cellarSignerAddress = await cellar.signer.getAddress()
         await hre.network.provider.request({
