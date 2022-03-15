@@ -1,21 +1,9 @@
 use crate::{error::Error, gas::CellarGas, utils::get_eth_provider};
 use abscissa_core::tracing::log::warn;
 use ethers::prelude::*;
-use std::{fmt, result::Result};
+use std::result::Result;
 
 pub(crate) mod uniswapv3;
-
-#[derive(Debug)]
-pub struct CellarId {
-    pub address: String,
-    pub chain: String,
-}
-
-impl std::fmt::Display for CellarId {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}:{}", self.chain, self.address)
-    }
-}
 
 pub async fn get_gas_price() -> Result<U256, Error> {
     if std::env::var("ETHERSCAN_API_KEY").is_ok() {
@@ -51,7 +39,6 @@ mod tests {
 
         assert!(result.is_err())
     }
-
 
     #[test]
     fn valid_cellar_id_works() {

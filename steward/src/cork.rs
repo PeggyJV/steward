@@ -1,5 +1,5 @@
 use crate::{
-    cellars::{self, uniswapv3, CellarId},
+    cellars::{self, uniswapv3},
     error::{Error, ErrorKind},
     prelude::APP,
     somm_send,
@@ -47,6 +47,7 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
                 ));
             }
         };
+
         debug!("checking if cellar ID is approved");
         let ids = &client
             .query_cellar_i_ds(QueryCellarIDsRequest {})
@@ -108,9 +109,7 @@ async fn build_cork(request: &SubmitRequest) -> Result<Cork, Error> {
 
 fn get_encoded_call(data: ContractCallData) -> Result<Vec<u8>, Error> {
     match data {
-        Uniswapv3Rebalance(params) => {
-                Ok(uniswapv3::get_encoded_call(params))
-        }
+        Uniswapv3Rebalance(params) => Ok(uniswapv3::get_encoded_call(params)),
     }
 }
 
