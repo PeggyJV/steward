@@ -37,7 +37,7 @@ pub async fn send_precommit(
     };
 
     let msg = Msg::new("/allocation.v1.MsgAllocationPrecommit", msg);
-    __send_messages(contact, delegate_key, fee, vec![msg]).await
+    __send_messages(contact, &delegate_key, fee, vec![msg]).await
 }
 
 pub async fn send_allocation(
@@ -53,14 +53,14 @@ pub async fn send_allocation(
     };
 
     let msg = Msg::new("/allocation.v1.MsgAllocationCommit", msg);
-    __send_messages(contact, delegate_key, fee, vec![msg]).await
+    __send_messages(contact, &delegate_key, fee, vec![msg]).await
 }
 
 pub async fn send_cork(
     contact: &Contact,
     cork: Cork,
     delegate_address: String,
-    delegate_key: CosmosPrivateKey,
+    delegate_key: &CosmosPrivateKey,
     fee: Coin,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let msg = MsgSubmitCorkRequest {
@@ -73,7 +73,7 @@ pub async fn send_cork(
 
 async fn __send_messages(
     contact: &Contact,
-    cosmos_key: CosmosPrivateKey,
+    cosmos_key: &CosmosPrivateKey,
     fee: Coin,
     messages: Vec<Msg>,
 ) -> Result<TxResponse, CosmosGrpcError> {

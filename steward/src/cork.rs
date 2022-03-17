@@ -1,5 +1,6 @@
 use crate::{
     cellars::{self, uniswapv3},
+    config,
     error::{Error, ErrorKind},
     prelude::APP,
     somm_send,
@@ -119,8 +120,7 @@ async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
     let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, &config.cosmos.prefix)?;
 
     debug!("loading the delegate (orchestrator) key and address from config");
-    let name = &config.keys.rebalancer_key;
-    let delegate_key = config.load_deep_space_key(name.clone());
+    let delegate_key = &config::DELEGATE_KEY;
     let delegate_address = delegate_key.to_address(&config.cosmos.prefix)?;
 
     debug!("getting cosmos fee");

@@ -3,10 +3,22 @@
 //! See instructions in `commands.rs` to specify the path to your
 //! application's configuration file and/or command-line options
 //! for specifying it.
+use crate::prelude::APP;
+use abscissa_core::Application;
+use deep_space::PrivateKey;
 use ethers::{prelude::H160, signers::LocalWallet as EthWallet};
+use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use signatory::FsKeyStore;
 use std::{net::SocketAddr, path::Path, time::Duration};
+
+lazy_static! {
+    pub static ref DELEGATE_KEY: PrivateKey = {
+        let config = APP.config();
+        let name = &config.keys.rebalancer_key;
+        config.load_deep_space_key(name.clone())
+    };
+}
 
 /// Steward Configuration
 #[derive(Clone, Debug, Deserialize, Serialize)]
