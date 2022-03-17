@@ -5,7 +5,7 @@
 //! for specifying it.
 use crate::prelude::APP;
 use abscissa_core::Application;
-use deep_space::PrivateKey;
+use deep_space::{Address, PrivateKey};
 use ethers::{prelude::H160, signers::LocalWallet as EthWallet};
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
@@ -17,6 +17,12 @@ lazy_static! {
         let config = APP.config();
         let name = &config.keys.rebalancer_key;
         config.load_deep_space_key(name.clone())
+    };
+    pub static ref DELEGATE_ADDRESS: Address = {
+        let config = APP.config();
+        DELEGATE_KEY
+            .to_address(&config.cosmos.prefix)
+            .expect("failed to derive delegate address from key. make sure the cosmos.prefix field is set in your config.")
     };
 }
 

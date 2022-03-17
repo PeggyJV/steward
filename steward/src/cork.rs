@@ -121,7 +121,7 @@ async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
 
     debug!("loading the delegate (orchestrator) key and address from config");
     let delegate_key = &config::DELEGATE_KEY;
-    let delegate_address = delegate_key.to_address(&config.cosmos.prefix)?;
+    let delegate_address = &config::DELEGATE_ADDRESS;
 
     debug!("getting cosmos fee");
     let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
