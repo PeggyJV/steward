@@ -20,7 +20,6 @@ pub struct StewardConfig {
     pub metrics: MetricsSection,
     pub cellars: Vec<CellarConfig>,
     pub keys: KeysConfig,
-    pub cork: CorkSection,
 }
 
 impl StewardConfig {
@@ -63,14 +62,8 @@ impl Default for StewardConfig {
             metrics: MetricsSection::default(),
             cellars: vec![CellarConfig::default()],
             keys: KeysConfig::default(),
-            cork: CorkSection::default(),
         }
     }
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CorkSection {
-    pub uniswapv3: UniswapV3CellarInfo,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
