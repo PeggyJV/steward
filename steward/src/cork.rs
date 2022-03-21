@@ -1,5 +1,5 @@
 use crate::{
-    cellars::{self, uniswapv3},
+    cellars::{self, aave_v2_stablecoin, uniswapv3},
     config,
     error::{Error, ErrorKind},
     prelude::APP,
@@ -17,7 +17,7 @@ use steward_proto::{
     self,
     steward::{
         self,
-        submit_request::ContractCallData::{self, Uniswapv3Rebalance},
+        submit_request::CallData::{self, AaveV2Stablecoin, Uniswapv3Rebalance},
         SubmitRequest, SubmitResponse,
     },
 };
@@ -96,7 +96,7 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
 async fn build_cork(request: &SubmitRequest) -> Result<Cork, Error> {
     cellars::validate_cellar_id(request.cellar_id.as_str())?;
     let address = request.cellar_id.clone();
-    let contract_call_data = match request.contract_call_data.clone() {
+    let contract_call_data = match request.call_data.clone() {
         Some(call) => call,
         None => return Err(ErrorKind::Http.context("empty contract call data").into()),
     };
@@ -108,8 +108,9 @@ async fn build_cork(request: &SubmitRequest) -> Result<Cork, Error> {
     })
 }
 
-fn get_encoded_call(data: ContractCallData) -> Result<Vec<u8>, Error> {
+fn get_encoded_call(data: CallData) -> Result<Vec<u8>, Error> {
     match data {
+        AaveV2Stablecoin(call) => Ok(aave_v2_stablecoin::get_encoded_call(call.function.expect("call data for Aave V2 Stablecoin cellar was empty"))),
         Uniswapv3Rebalance(params) => Ok(uniswapv3::get_encoded_call(params)),
     }
 }
