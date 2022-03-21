@@ -1,15 +1,110 @@
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct AaveV2Stablecoin {
+    #[prost(
+        oneof = "aave_v2_stablecoin::Function",
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11"
+    )]
+    pub function: ::core::option::Option<aave_v2_stablecoin::Function>,
+}
+/// Nested message and enum types in `AaveV2Stablecoin`.
+pub mod aave_v2_stablecoin {
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        #[prost(message, tag = "1")]
+        EnterStrategy(super::EnterStrategy),
+        #[prost(message, tag = "2")]
+        ReinvestAmount(super::ReinvestWithAmount),
+        #[prost(message, tag = "3")]
+        Reinvest(super::Reinvest),
+        #[prost(message, tag = "4")]
+        ClaimAndUnstakeAmount(super::ClaimAndUnstakeWithAmount),
+        #[prost(message, tag = "5")]
+        ClaimAndUnstake(super::ClaimAndUnstake),
+        #[prost(message, tag = "6")]
+        Rebalance(super::Rebalance),
+        #[prost(message, tag = "7")]
+        AccruePlatformFees(super::AccruePlatformFees),
+        #[prost(message, tag = "8")]
+        TransferFees(super::TransferFees),
+        #[prost(message, tag = "9")]
+        SetInputToken(super::SetInputToken),
+        #[prost(message, tag = "10")]
+        RemoveLiquidityRestriction(super::RemoveLiquidityRestriction),
+        #[prost(message, tag = "11")]
+        Sweep(super::Sweep),
+    }
+}
+/// function enterStrategy() external;
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct EnterStrategy {}
+/// function reinvest(uint256 amount, uint256 minAssetsOut) external;
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ReinvestWithAmount {
+    #[prost(uint64, tag = "1")]
+    pub amount: u64,
+    #[prost(uint64, tag = "2")]
+    pub min_assets_out: u64,
+}
+/// function reinvest(uint256 minAssetsOut) external;
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Reinvest {
+    #[prost(uint64, tag = "1")]
+    pub min_assets_out: u64,
+}
+/// function claimAndUnstake(uint256 amount) external returns (uint256 claimed);
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ClaimAndUnstakeWithAmount {
+    #[prost(uint64, tag = "1")]
+    pub amount: u64,
+}
+/// function claimAndUnstake() external returns (uint256);
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ClaimAndUnstake {}
+/// function rebalance(address newLendingToken, uint256 minNewLendingTokenAmount) external;
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Rebalance {
+    #[prost(string, tag = "1")]
+    pub address: ::prost::alloc::string::String,
+    #[prost(uint64, tag = "2")]
+    pub min_new_lending_token_amount: u64,
+}
+/// function accruePlatformFees() external;
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct AccruePlatformFees {}
+/// function transferFees() external;
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct TransferFees {}
+/// function setInputToken(address token, bool isApproved) external;
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SetInputToken {
+    #[prost(string, tag = "1")]
+    pub address: ::prost::alloc::string::String,
+    #[prost(bool, tag = "2")]
+    pub is_approved: bool,
+}
+/// function removeLiquidityRestriction() external;
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct RemoveLiquidityRestriction {}
+/// function sweep(address token) external;
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Sweep {
+    #[prost(string, tag = "1")]
+    pub address: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SubmitRequest {
     #[prost(string, tag = "1")]
     pub cellar_id: ::prost::alloc::string::String,
-    #[prost(oneof = "submit_request::ContractCallData", tags = "2")]
-    pub contract_call_data: ::core::option::Option<submit_request::ContractCallData>,
+    #[prost(oneof = "submit_request::CallData", tags = "2, 100")]
+    pub call_data: ::core::option::Option<submit_request::CallData>,
 }
 /// Nested message and enum types in `SubmitRequest`.
 pub mod submit_request {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
-    pub enum ContractCallData {
+    pub enum CallData {
         #[prost(message, tag = "2")]
+        AaveV2Stablecoin(super::AaveV2Stablecoin),
+        #[prost(message, tag = "100")]
         Uniswapv3Rebalance(super::UniswapV3RebalanceParams),
     }
 }
@@ -17,11 +112,11 @@ pub mod submit_request {
 pub struct SubmitResponse {}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct UniswapV3Position {
-    #[prost(int32, tag = "2")]
+    #[prost(int32, tag = "1")]
     pub upper_price: i32,
-    #[prost(int32, tag = "3")]
+    #[prost(int32, tag = "2")]
     pub lower_price: i32,
-    #[prost(int32, tag = "4")]
+    #[prost(int32, tag = "3")]
     pub weight: i32,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]

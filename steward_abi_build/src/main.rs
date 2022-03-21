@@ -3,10 +3,10 @@ use std::process;
 
 fn main() {
     // Aave
-    let abigen = match Abigen::new("Aave", "../steward_abi/aave_lending_abi.json") {
+    let abigen = match Abigen::new("AaveV2StablecoinCellar", "../steward_abi/cellar_aave_v2_stablecoin_abi.json") {
         Ok(abigen) => abigen,
         Err(e) => {
-            println!("Could not open aave_lending_abi.json: {}", e);
+            println!("Could not open cellar_aave_v2_stablecoin_abi.json: {}", e);
             process::exit(1);
         }
     };
@@ -18,14 +18,14 @@ fn main() {
     {
         Ok(abi) => abi,
         Err(e) => {
-            println!("Could not generate abi from aave_lending_abi.json: {}", e);
+            println!("Could not generate abi from cellar_aave_v2_stablecoin_abi.json: {}", e);
             process::exit(1);
         }
     };
 
-    match abi.write_to_file("../steward_abi/src/aave.rs") {
+    match abi.write_to_file("../steward_abi/src/aave_v2_stablecoin.rs") {
         Ok(_) => (),
-        Err(e) => println!("Error writing aave.rs: {}", e),
+        Err(e) => println!("Error writing aave_v2_stablecoin.rs: {}", e),
     }
 
     // Erc20
@@ -130,32 +130,6 @@ fn main() {
     match abi.write_to_file("../steward_abi/src/weth.rs") {
         Ok(_) => (),
         Err(e) => println!("Error writing weth.rs: {}", e),
-    }
-
-    // Cellar Aave
-    let abigen = match Abigen::new("AaveCellar", "../steward_abi/cellar_aave_abi.json") {
-        Ok(abigen) => abigen,
-        Err(e) => {
-            println!("Could not open cellar_aave_abi.json: {}", e);
-            process::exit(1);
-        }
-    };
-
-    let abi = match abigen
-        .add_event_derive("serde::Deserialize")
-        .add_event_derive("serde::Serialize")
-        .generate()
-    {
-        Ok(abi) => abi,
-        Err(e) => {
-            println!("Could not generate abi from cellar_aave_abi.json: {}", e);
-            process::exit(1);
-        }
-    };
-
-    match abi.write_to_file("../steward_abi/src/cellar_aave.rs") {
-        Ok(_) => (),
-        Err(e) => println!("Error writing cellar_aave.rs: {}", e),
     }
 
     // Cellar Uniswap
