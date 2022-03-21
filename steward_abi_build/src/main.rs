@@ -3,7 +3,10 @@ use std::process;
 
 fn main() {
     // Aave
-    let abigen = match Abigen::new("AaveV2StablecoinCellar", "../steward_abi/cellar_aave_v2_stablecoin_abi.json") {
+    let abigen = match Abigen::new(
+        "AaveV2StablecoinCellar",
+        "../steward_abi/cellar_aave_v2_stablecoin_abi.json",
+    ) {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open cellar_aave_v2_stablecoin_abi.json: {}", e);
@@ -18,7 +21,10 @@ fn main() {
     {
         Ok(abi) => abi,
         Err(e) => {
-            println!("Could not generate abi from cellar_aave_v2_stablecoin_abi.json: {}", e);
+            println!(
+                "Could not generate abi from cellar_aave_v2_stablecoin_abi.json: {}",
+                e
+            );
             process::exit(1);
         }
     };
