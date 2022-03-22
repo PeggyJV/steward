@@ -20,7 +20,9 @@
 
 use abscissa_core::testing::prelude::*;
 use once_cell::sync::Lazy;
-use steward::config::StewardConfig;
+use steward::config::{StewardConfig, KeysConfig};
+use std::{fs::File, io::{self, Write}};
+use tempdir::TempDir;
 
 /// Executes your application binary via `cargo run`.
 ///
@@ -30,161 +32,325 @@ use steward::config::StewardConfig;
 /// invocations as `cargo test` executes tests in parallel by default.
 pub static RUNNER: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
 
-/// Use `StewardConfig::default()` value if no config or args
-#[test]
-#[ignore]
-fn start_no_args() {
-    let mut runner = RUNNER.clone();
-    let mut cmd = runner.arg("start").capture_stdout().run();
-    cmd.stdout().expect_line("Hello, world!");
-    cmd.wait().unwrap().expect_success();
-}
-
 /// Use command-line argument value
 #[test]
-#[ignore]
-fn start_with_args() {
-    let mut runner = RUNNER.clone();
-    let mut cmd = runner
-        .args(&["start", "acceptance", "test"])
-        .capture_stdout()
-        .run();
-
-    cmd.stdout().expect_line("Hello, acceptance test!");
-    cmd.wait().unwrap().expect_success();
-}
-
-/// Use configured value
-// #[test]
-// fn start_with_config_no_args() {
-//     let mut config = StewardConfig::default();
-//     config.hello.recipient = "configured recipient".to_owned();
-//     let expected_line = format!("Hello, {}!", &config.hello.recipient);
-
-//     let mut runner = RUNNER.clone();
-//     let mut cmd = runner.config(&config).arg("start").capture_stdout().run();
-//     cmd.stdout().expect_line(&expected_line);
-//     cmd.wait().unwrap().expect_success();
-// }
-
-/// Override configured value with command-line argument
-#[test]
-#[ignore]
-fn start_with_config_and_args() {
-    let config = StewardConfig::default();
-    // config.hello.recipient = "configured recipient".to_owned();
-
-    let mut runner = RUNNER.clone();
-    let mut cmd = runner
-        .config(&config)
-        .args(&["start", "acceptance", "test"])
-        .capture_stdout()
-        .run();
-
-    cmd.stdout().expect_line("Hello, acceptance test!");
-    cmd.wait().unwrap().expect_success();
-}
-
-/// Example of a test which matches a regular expression
-#[test]
-#[ignore]
-fn version_no_args() {
-    let mut runner = RUNNER.clone();
-    let mut cmd = runner.arg("--version").capture_stdout().run();
-    cmd.stdout().expect_regex(r"\A\w+ [\d\.\-]+\z");
-}
-
-/// Use command-line argument value
-#[test]
-
-fn eth_keys_add() {
+fn eth_keys_add() -> io::Result<()> {
+    let key_dir = TempDir::new("test_key")?;
+    let config_dir = TempDir::new("test_key")?;
+    let config_file_path = config_dir.path().join("config.toml");
+    let mut f = File::create(config_file_path.clone())?;
+    let configu = StewardConfig {
+        cellars: StewardConfig::default().cellars,
+        ethereum: StewardConfig::default().ethereum,
+        keys: KeysConfig {
+            keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+            rebalancer_key: "cellar".to_string(),
+        },
+        keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+        server: StewardConfig::default().server,
+        gravity: StewardConfig::default().gravity,
+        cosmos: StewardConfig::default().cosmos,
+        metrics: StewardConfig::default().metrics,
+    };
+    f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["-c", "testfile.toml", "keys", "eth", "add", "sha"])
+        .args(&["-c", config_file_path.to_str().unwrap(), "keys", "eth", "add", "sha"])
         .capture_stdout()
         .run();
     // Check that command executes without error.
     cmd.wait().unwrap().expect_success();
 
-    // Check that mnemonic contains 24 words.
+    f.sync_all()?;
+
+    Ok(())
 }
-/// Use command-line argument value for eth keys list
+
 #[test]
-fn eth_keys_list() {
+fn eth_keys_delete() -> io::Result<()> {
+    let key_dir = TempDir::new("test_key")?;
+    let key_file_path = key_dir.path().join("ethkey.pem");
+    let mut f = File::create(key_file_path.clone())?;
+    f.write_all(
+        b"-----BEGIN PRIVATE KEY-----
+    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8
+    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU
+    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
+    -----END PRIVATE KEY----",
+    )?;
+
+    let config_dir = TempDir::new("test_key")?;
+    let config_file_path = config_dir.path().join("config.toml");
+    let mut f = File::create(config_file_path.clone())?;
+    let configu = StewardConfig {
+        cellars: StewardConfig::default().cellars,
+        ethereum: StewardConfig::default().ethereum,
+        keys: KeysConfig {
+            keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+            rebalancer_key: "cellar".to_string(),
+        },
+        keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+        server: StewardConfig::default().server,
+        gravity: StewardConfig::default().gravity,
+        cosmos: StewardConfig::default().cosmos,
+        metrics: StewardConfig::default().metrics,
+    };
+    f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
+
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["-c", "testfile.toml", "keys", "eth", "list"])
+        .args(&["-c", config_file_path.to_str().unwrap(), "keys", "eth", "delete", "ethkey"])
+        .capture_stdout()
+        .run();
+    //check that command executes without error
+    cmd.wait().unwrap().expect_success();
+    f.sync_all()?;
+
+    Ok(())
+}
+
+/// Use command-line argument value for eth keys list
+#[test]
+fn eth_keys_list() -> io::Result<()> {
+    let key_dir = TempDir::new("test_key")?;
+    let key_file_path = key_dir.path().join("ethkey");
+    let mut f = File::create(key_file_path.clone())?;
+    f.write_all(
+        b"-----BEGIN PRIVATE KEY-----
+    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8
+    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU
+    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
+    -----END PRIVATE KEY----",
+    )?;
+
+    let config_dir = TempDir::new("test_key")?;
+    let config_file_path = config_dir.path().join("config.toml");
+    let mut f = File::create(config_file_path.clone())?;
+    let configu = StewardConfig {
+        cellars: StewardConfig::default().cellars,
+        ethereum: StewardConfig::default().ethereum,
+        keys: KeysConfig {
+            keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+            rebalancer_key: "cellar".to_string(),
+        },
+        keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+        server: StewardConfig::default().server,
+        gravity: StewardConfig::default().gravity,
+        cosmos: StewardConfig::default().cosmos,
+        metrics: StewardConfig::default().metrics,
+    };
+    f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
+    let mut runner = RUNNER.clone();
+    let cmd = runner
+        .args(&["-c", config_file_path.to_str().unwrap(), "keys", "eth", "list"])
         .capture_stdout()
         .run();
 
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
+    f.sync_all()?;
+    Ok(())
 }
 #[test]
 #[ignore]
-fn eth_keys_show() {
-    let mut runner = RUNNER.clone();
-    let cmd = runner
-        .args(&["-c", "testfile.toml", "keys", "eth", "show", "sha"])
-        .capture_stdout()
-        .run();
+fn eth_keys_show() -> io::Result<()> {
+    let key_dir = TempDir::new("test_key")?;
+    let key_file_path = key_dir.path().join("ethkey.pem");
+    let mut f = File::create(key_file_path.clone())?;
+    f.write_all(
+        b"-----BEGIN PRIVATE KEY-----
+    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8
+    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU
+    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
+    -----END PRIVATE KEY----",
+    )?;
 
-    //check that command executes without error
-    cmd.wait().unwrap().expect_success();
-}
-/// Use command-line argument value for eth keys delete
-#[test]
-fn eth_keys_delete() {
+    let config_dir = TempDir::new("test_key")?;
+    let config_file_path = config_dir.path().join("config.toml");
+    let mut f = File::create(config_file_path.clone())?;
+    let configu = StewardConfig {
+        cellars: StewardConfig::default().cellars,
+        ethereum: StewardConfig::default().ethereum,
+        keys: KeysConfig {
+            keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+            rebalancer_key: "cellar".to_string(),
+        },
+        keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+        server: StewardConfig::default().server,
+        gravity: StewardConfig::default().gravity,
+        cosmos: StewardConfig::default().cosmos,
+        metrics: StewardConfig::default().metrics,
+    };
+    f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["-c", "testfile.toml", "keys", "eth", "delete", "sha"])
+        .args(&["-c", config_file_path.to_str().unwrap(), "keys", "eth", "show", "ethkey"])
         .capture_stdout()
         .run();
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
+    f.sync_all()?;
+
+    Ok(())
 }
 ///use command-line argument value
 #[test]
-fn cosmos_keys_add() {
+fn cosmos_keys_add() -> io::Result<()> {
+    let key_dir = TempDir::new("test_key")?;
+    let config_dir = TempDir::new("test_key")?;
+    let config_file_path = config_dir.path().join("config.toml");
+    let mut f = File::create(config_file_path.clone())?;
+    let configu = StewardConfig {
+        cellars: StewardConfig::default().cellars,
+        ethereum: StewardConfig::default().ethereum,
+        keys: KeysConfig {
+            keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+            rebalancer_key: "cellar".to_string(),
+        },
+        keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+        server: StewardConfig::default().server,
+        gravity: StewardConfig::default().gravity,
+        cosmos: StewardConfig::default().cosmos,
+        metrics: StewardConfig::default().metrics,
+    };
+    f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["-c", "testfile.toml", "keys", "cosmos", "add", "mykey"])
+        .args(&["-c", config_file_path.to_str().unwrap(), "keys", "cosmos", "add", "sha"])
         .capture_stdout()
         .run();
-    //check that command executes without error
+    // Check that command executes without error.
     cmd.wait().unwrap().expect_success();
+
+    f.sync_all()?;
+
+    Ok(())
 }
 ///use command-line argument value for cosmos keys list
 #[test]
+fn cosmos_keys_list() -> io::Result<()> {
+    let key_dir = TempDir::new("test_key")?;
+    let key_file_path = key_dir.path().join("cosmoskey");
+    let mut f = File::create(key_file_path.clone())?;
+    f.write_all(
+        b"-----BEGIN PRIVATE KEY-----
+    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8
+    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU
+    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
+    -----END PRIVATE KEY----",
+    )?;
 
-fn cosmos_keys_list() {
+    let config_dir = TempDir::new("test_key")?;
+    let config_file_path = config_dir.path().join("config.toml");
+    let mut f = File::create(config_file_path.clone())?;
+    let configu = StewardConfig {
+        cellars: StewardConfig::default().cellars,
+        ethereum: StewardConfig::default().ethereum,
+        keys: KeysConfig {
+            keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+            rebalancer_key: "cellar".to_string(),
+        },
+        keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+        server: StewardConfig::default().server,
+        gravity: StewardConfig::default().gravity,
+        cosmos: StewardConfig::default().cosmos,
+        metrics: StewardConfig::default().metrics,
+    };
+    f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["-c", "testfile.toml", "keys", "cosmos", "list"])
+        .args(&["-c", config_file_path.to_str().unwrap(), "keys", "cosmos", "list"])
         .capture_stdout()
         .run();
+
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
+    f.sync_all()?;
+    Ok(())
 }
+
 #[test]
 #[ignore]
-fn cosmos_keys_show() {
+fn cosmos_keys_show() -> io::Result<()> {
+    let key_dir = TempDir::new("test_key")?;
+    let key_file_path = key_dir.path().join("cosmoskey.pem");
+    let mut f = File::create(key_file_path.clone())?;
+    f.write_all(
+        b"-----BEGIN PRIVATE KEY-----
+    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8
+    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU
+    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
+    -----END PRIVATE KEY----",
+    )?;
+
+    let config_dir = TempDir::new("test_key")?;
+    let config_file_path = config_dir.path().join("config.toml");
+    let mut f = File::create(config_file_path.clone())?;
+    let configu = StewardConfig {
+        cellars: StewardConfig::default().cellars,
+        ethereum: StewardConfig::default().ethereum,
+        keys: KeysConfig {
+            keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+            rebalancer_key: "cellar".to_string(),
+        },
+        keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+        server: StewardConfig::default().server,
+        gravity: StewardConfig::default().gravity,
+        cosmos: StewardConfig::default().cosmos,
+        metrics: StewardConfig::default().metrics,
+    };
+    f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["-c", "testfile.toml", "keys", "cosmos", "show", "mykey"])
+        .args(&["-c", config_file_path.to_str().unwrap(), "keys", "cosmos", "show", "cosmoskey"])
         .capture_stdout()
         .run();
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
+    f.sync_all()?;
+
+    Ok(())
 }
 ///use command-line argument value for cosmos keys delete
 #[test]
-fn cosmos_keys_delete() {
+fn cosmos_keys_delete() -> io::Result<()> {
+    let key_dir = TempDir::new("test_key")?;
+    let key_file_path = key_dir.path().join("cosmoskey.pem");
+    let mut f = File::create(key_file_path.clone())?;
+    f.write_all(
+        b"-----BEGIN PRIVATE KEY-----
+    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8
+    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU
+    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
+    -----END PRIVATE KEY----",
+    )?;
+
+    let config_dir = TempDir::new("test_key")?;
+    let config_file_path = config_dir.path().join("config.toml");
+    let mut f = File::create(config_file_path.clone())?;
+    let configu = StewardConfig {
+        cellars: StewardConfig::default().cellars,
+        ethereum: StewardConfig::default().ethereum,
+        keys: KeysConfig {
+            keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+            rebalancer_key: "cellar".to_string(),
+        },
+        keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+        server: StewardConfig::default().server,
+        gravity: StewardConfig::default().gravity,
+        cosmos: StewardConfig::default().cosmos,
+        metrics: StewardConfig::default().metrics,
+    };
+    f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
+
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["-c", "testfile.toml", "keys", "cosmos", "delete", "mykey"])
+        .args(&["-c", config_file_path.to_str().unwrap(), "keys", "cosmos", "delete", "cosmoskey"])
         .capture_stdout()
         .run();
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
+    f.sync_all()?;
+
+    Ok(())
 }

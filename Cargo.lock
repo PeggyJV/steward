@@ -4743,6 +4743,7 @@ dependencies = [
  "somm_proto",
  "steward_abi",
  "steward_proto",
+ "tempdir",
  "thiserror",
  "tokio 1.14.0",
  "toml",
