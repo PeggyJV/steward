@@ -273,9 +273,3 @@ impl Default for MetricsSection {
         }
     }
 }
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-#[serde(default, deny_unknown_fields)]
-pub struct UniswapV3CellarInfo {
-    pub cellar_ids: Vec<String>,
-}

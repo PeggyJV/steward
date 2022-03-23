@@ -123,10 +123,6 @@ async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
     debug!("establishing grpc connection");
     let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, &config.cosmos.prefix)?;
 
-    debug!("loading the delegate (orchestrator) key and address from config");
-    let delegate_key = &config::DELEGATE_KEY;
-    let delegate_address = &config::DELEGATE_ADDRESS;
-
     debug!("getting cosmos fee");
     let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
     let fee = Coin {
@@ -136,8 +132,8 @@ async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
     somm_send::send_cork(
         &contact,
         cork,
-        delegate_address.to_string(),
-        delegate_key,
+        config::DELEGATE_ADDRESS.to_string(),
+        &config::DELEGATE_KEY,
         fee,
     )
     .await
