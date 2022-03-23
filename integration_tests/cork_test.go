@@ -103,7 +103,7 @@ func (s *IntegrationTestSuite) TestCork() {
 				s.Require().NoError(err)
 				defer conn.Close()
 
-				ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
 
 				c := NewContractCallClient(conn)
@@ -125,7 +125,7 @@ func (s *IntegrationTestSuite) TestCork() {
 					},
 				}
 				_, err = c.Submit(ctx, &request)
-				// s.Require().NoError(err)
+				s.Require().NoError(err)
 			}
 
 			return true
