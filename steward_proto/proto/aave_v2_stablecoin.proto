@@ -1,6 +1,8 @@
 syntax = "proto3";
 package steward.v1;
 
+option go_package = "/steward_proto";
+
 message AaveV2Stablecoin {
     oneof function {
         EnterStrategy enter_strategy = 1;

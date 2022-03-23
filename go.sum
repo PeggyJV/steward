@@ -960,6 +960,8 @@ github.com/peggyjv/sommelier/v3 v3.1.2-0.20220223192025-03626fb26af2 h1:pdH3tsBD
 github.com/peggyjv/sommelier/v3 v3.1.2-0.20220223192025-03626fb26af2/go.mod h1:gTpZgChfrQFOqNKaOfleIiYI42sY6fIAFeodAQROmTw=
 github.com/peggyjv/sommelier/v3 v3.1.2-0.20220224184033-89d9ddf9254a h1:PXZH/wKc5L7NDj9XAuM2Q53h0KdXgJdStPZ93CpOCR4=
 github.com/peggyjv/sommelier/v3 v3.1.2-0.20220224184033-89d9ddf9254a/go.mod h1:gTpZgChfrQFOqNKaOfleIiYI42sY6fIAFeodAQROmTw=
+github.com/peggyjv/sommelier/v3 v3.1.2-0.20220318164959-6feb04a85567 h1:+tzucrMgzvdXBWplyvuu7dKhLYfIVFzYm31CmIb0Qk8=
+github.com/peggyjv/sommelier/v3 v3.1.2-0.20220318164959-6feb04a85567/go.mod h1:gTpZgChfrQFOqNKaOfleIiYI42sY6fIAFeodAQROmTw=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
 github.com/pelletier/go-toml v1.9.3/go.mod h1:u1nR/EPcESfeI/szUZKdtJ0xRNbUoANCkoOuaOx1Y+c=
 github.com/pelletier/go-toml v1.9.4 h1:tjENF6MfZAg8e4ZmZTeWaWiT2vXtsoO6+iuOjFhECwM=

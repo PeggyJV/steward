@@ -111,7 +111,7 @@ func (s *IntegrationTestSuite) TestCork() {
 				cellarId := hardhatCellar.String()
 				request := SubmitRequest{
 					CellarId: cellarId,
-					ContractCallData: &SubmitRequest_Uniswapv3Rebalance{
+					CallData: &SubmitRequest_Uniswapv3Rebalance{
 						&UniswapV3RebalanceParams{
 							CellarTickInfo: []*UniswapV3Position{
 								{

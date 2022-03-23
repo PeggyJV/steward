@@ -61,6 +61,8 @@ func MNEMONICS() []string {
 var (
 	stakeAmount, _  = sdk.NewIntFromString("100000000000")
 	stakeAmountCoin = sdk.NewCoin(bondDenom, stakeAmount)
+	// these address variables get overwritten by parsing the hardhat logs for the contract
+	// address once they are launched; therefore their initial values don't matter.
 	hardhatCellar   = common.HexToAddress("0x0000000000000000000000000000000000000000")
 	gravityContract = common.HexToAddress("0x04C89607413713Ec9775E14b954286519d836FEf")
 )
