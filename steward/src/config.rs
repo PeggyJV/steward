@@ -211,7 +211,7 @@ impl Default for CosmosSection {
     fn default() -> Self {
         Self {
             key_derivation_path: "m/44'/118'/0'/0/0".to_owned(),
-            grpc: "http://localhost:9090".to_owned(),
+            grpc: "https://127.0.0.1:9090".to_owned(),
             prefix: "cosmos".to_owned(),
             gas_price: GasPrice::default(),
             gas_adjustment: 1.0f64,

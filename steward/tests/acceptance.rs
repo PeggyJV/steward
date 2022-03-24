@@ -20,8 +20,11 @@
 
 use abscissa_core::testing::prelude::*;
 use once_cell::sync::Lazy;
-use steward::config::{StewardConfig, KeysConfig};
-use std::{fs::File, io::{self, Write}};
+use std::{
+    fs::File,
+    io::{self, Write},
+};
+use steward::config::{KeysConfig, StewardConfig};
 use tempdir::TempDir;
 
 /// Executes your application binary via `cargo run`.
@@ -55,7 +58,14 @@ fn eth_keys_add() -> io::Result<()> {
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["-c", config_file_path.to_str().unwrap(), "keys", "eth", "add", "sha"])
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "eth",
+            "add",
+            "sha",
+        ])
         .capture_stdout()
         .run();
     // Check that command executes without error.
@@ -78,7 +88,6 @@ fn eth_keys_delete() -> io::Result<()> {
     iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
     -----END PRIVATE KEY----",
     )?;
-
     let config_dir = TempDir::new("test_key")?;
     let config_file_path = config_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
@@ -99,7 +108,14 @@ fn eth_keys_delete() -> io::Result<()> {
 
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["-c", config_file_path.to_str().unwrap(), "keys", "eth", "delete", "ethkey"])
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "eth",
+            "delete",
+            "ethkey",
+        ])
         .capture_stdout()
         .run();
     //check that command executes without error
@@ -142,7 +158,13 @@ fn eth_keys_list() -> io::Result<()> {
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["-c", config_file_path.to_str().unwrap(), "keys", "eth", "list"])
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "eth",
+            "list",
+        ])
         .capture_stdout()
         .run();
 
@@ -152,17 +174,16 @@ fn eth_keys_list() -> io::Result<()> {
     Ok(())
 }
 #[test]
-#[ignore]
 fn eth_keys_show() -> io::Result<()> {
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("ethkey.pem");
     let mut f = File::create(key_file_path.clone())?;
     f.write_all(
-        b"-----BEGIN PRIVATE KEY-----
-    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8
-    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU
-    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
-    -----END PRIVATE KEY----",
+        b"-----BEGIN PRIVATE KEY-----\n\
+    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8\n\
+    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU\n\
+    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg\n\
+    -----END PRIVATE KEY-----",
     )?;
 
     let config_dir = TempDir::new("test_key")?;
@@ -184,7 +205,14 @@ fn eth_keys_show() -> io::Result<()> {
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["-c", config_file_path.to_str().unwrap(), "keys", "eth", "show", "ethkey"])
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "eth",
+            "show",
+            "ethkey",
+        ])
         .capture_stdout()
         .run();
     //check that command executes without error
@@ -216,7 +244,14 @@ fn cosmos_keys_add() -> io::Result<()> {
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["-c", config_file_path.to_str().unwrap(), "keys", "cosmos", "add", "sha"])
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "cosmos",
+            "add",
+            "sha",
+        ])
         .capture_stdout()
         .run();
     // Check that command executes without error.
@@ -259,7 +294,13 @@ fn cosmos_keys_list() -> io::Result<()> {
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["-c", config_file_path.to_str().unwrap(), "keys", "cosmos", "list"])
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "cosmos",
+            "list",
+        ])
         .capture_stdout()
         .run();
 
@@ -270,17 +311,16 @@ fn cosmos_keys_list() -> io::Result<()> {
 }
 
 #[test]
-#[ignore]
 fn cosmos_keys_show() -> io::Result<()> {
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("cosmoskey.pem");
     let mut f = File::create(key_file_path.clone())?;
     f.write_all(
-        b"-----BEGIN PRIVATE KEY-----
-    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8
-    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU
-    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
-    -----END PRIVATE KEY----",
+        b"-----BEGIN PRIVATE KEY-----\n\
+    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8\n\
+    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU\n\
+    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg\n\
+    -----END PRIVATE KEY-----",
     )?;
 
     let config_dir = TempDir::new("test_key")?;
@@ -302,7 +342,14 @@ fn cosmos_keys_show() -> io::Result<()> {
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["-c", config_file_path.to_str().unwrap(), "keys", "cosmos", "show", "cosmoskey"])
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "cosmos",
+            "show",
+            "cosmoskey",
+        ])
         .capture_stdout()
         .run();
     //check that command executes without error
@@ -345,7 +392,14 @@ fn cosmos_keys_delete() -> io::Result<()> {
 
     let mut runner = RUNNER.clone();
     let cmd = runner
-        .args(&["-c", config_file_path.to_str().unwrap(), "keys", "cosmos", "delete", "cosmoskey"])
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "cosmos",
+            "delete",
+            "cosmoskey",
+        ])
         .capture_stdout()
         .run();
     //check that command executes without error
@@ -353,4 +407,64 @@ fn cosmos_keys_delete() -> io::Result<()> {
     f.sync_all()?;
 
     Ok(())
+}
+
+#[test]
+#[ignore]
+fn deploy_erc20() -> io::Result<()> {
+    let key_dir = TempDir::new("test_key")?;
+    let key_file_path = key_dir.path().join("cosmoskey.pem");
+    let mut f = File::create(key_file_path.clone())?;
+    f.write_all(
+        b"-----BEGIN PRIVATE KEY-----
+    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8
+    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU
+    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
+    -----END PRIVATE KEY----",
+    )?;
+    let config_dir = TempDir::new("test_key")?;
+    let config_file_path = config_dir.path().join("config.toml");
+    let mut f = File::create(config_file_path.clone())?;
+    let configu = StewardConfig {
+        cellars: StewardConfig::default().cellars,
+        ethereum: StewardConfig::default().ethereum,
+        keys: KeysConfig {
+            keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+            rebalancer_key: "cellar".to_string(),
+        },
+        keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
+        server: StewardConfig::default().server,
+        gravity: StewardConfig::default().gravity,
+        cosmos: StewardConfig::default().cosmos,
+        metrics: StewardConfig::default().metrics,
+    };
+    f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
+
+    let mut runner = RUNNER.clone();
+    let cmd = runner
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "deploy",
+            "erc20",
+            "--denom",
+            "USDT",
+            "--ethereum-key",
+            "cosmoskey",
+        ])
+        .capture_stdout()
+        .run();
+    //check that command executes without error
+    cmd.wait().unwrap().expect_success();
+    f.sync_all()?;
+
+    Ok(())
+}
+
+#[test]
+fn print_config() {
+    let mut runner = RUNNER.clone();
+    let cmd = runner.args(&["print-config"]).capture_stdout().run();
+    //check that command executes without error
+    cmd.wait().unwrap().expect_success();
 }
