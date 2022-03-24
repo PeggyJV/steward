@@ -111,7 +111,7 @@ jobs:
     permissions:
       packages: write
     environment: CI
-    runs-on: ubuntu-latest
+    runs-on: [ self-hosted, linux ]
     needs: [ steward-build, hardhat-build ]
     strategy:
       fail-fast: false
@@ -172,5 +172,3 @@ jobs:
         run: cd integration_tests && go test -c
       - name: Run end to end test
         run: ./integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m Test${{ matrix.test_type }}
-        env:
-          E2E_SKIP_CLEANUP: true
