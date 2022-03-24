@@ -111,7 +111,7 @@ jobs:
     permissions:
       packages: write
     environment: CI
-    runs-on: [ self-hosted, linux ]
+    runs-on: ubuntu-latest
     needs: [ steward-build, hardhat-build ]
     strategy:
       fail-fast: false
