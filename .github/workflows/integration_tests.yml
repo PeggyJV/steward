@@ -110,7 +110,7 @@ jobs:
   integration-tests:
     permissions:
       contents: write
-      packages: read
+      packages: write
     environment: CI
     runs-on: [ self-hosted, linux ]
     needs: [ steward-build, hardhat-build ]
