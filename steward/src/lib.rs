@@ -15,6 +15,7 @@ pub mod cellar_aave_wrapper;
 pub mod cellars;
 pub mod commands;
 pub mod config;
+pub mod cork;
 pub mod erc20;
 pub mod error;
 pub mod gas;

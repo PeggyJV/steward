@@ -1,0 +1,68 @@
+syntax = "proto3";
+package steward.v1;
+
+option go_package = "/steward_proto";
+
+message AaveV2Stablecoin {
+    oneof function {
+        EnterStrategy enter_strategy = 1;
+        ReinvestWithAmount reinvest_amount = 2;
+        Reinvest reinvest = 3;
+        ClaimAndUnstakeWithAmount claim_and_unstake_amount = 4;
+        ClaimAndUnstake claim_and_unstake = 5;
+        Rebalance rebalance = 6;
+        AccruePlatformFees accrue_platform_fees = 7;
+        TransferFees transfer_fees = 8;
+        SetInputToken set_input_token = 9;
+        RemoveLiquidityRestriction remove_liquidity_restriction = 10;
+        Sweep sweep = 11;
+    }
+}
+
+// function enterStrategy() external;
+message EnterStrategy {}
+
+// function reinvest(uint256 amount, uint256 minAssetsOut) external;
+message ReinvestWithAmount {
+    uint64 amount = 1;
+    uint64 min_assets_out = 2;
+}
+
+// function reinvest(uint256 minAssetsOut) external;
+message Reinvest {
+    uint64 min_assets_out = 1;
+}
+
+// function claimAndUnstake(uint256 amount) external returns (uint256 claimed);
+message ClaimAndUnstakeWithAmount {
+    uint64 amount = 1;
+}
+
+// function claimAndUnstake() external returns (uint256);
+message ClaimAndUnstake {}
+
+// function rebalance(address newLendingToken, uint256 minNewLendingTokenAmount) external;
+message Rebalance {
+    string address = 1;
+    uint64 min_new_lending_token_amount = 2;
+}
+
+// function accruePlatformFees() external;
+message AccruePlatformFees {}
+
+// function transferFees() external;
+message TransferFees {}
+
+// function setInputToken(address token, bool isApproved) external;
+message SetInputToken {
+    string address = 1;
+    bool is_approved = 2;
+}
+
+// function removeLiquidityRestriction() external;
+message RemoveLiquidityRestriction {}
+
+// function sweep(address token) external;
+message Sweep {
+    string address = 1;
+}

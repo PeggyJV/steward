@@ -3,7 +3,8 @@
 use abscissa_core::error::{BoxError, Context};
 use deep_space::error::{AddressError, CosmosGrpcError, PrivateKeyError};
 use ethers::prelude::{
-    errors::EtherscanError, gas_oracle::GasOracleError, ContractError, Middleware, ProviderError,
+    errors::EtherscanError, gas_oracle::GasOracleError, AbiError, ContractError, Middleware,
+    ProviderError,
 };
 use prost::EncodeError;
 use std::{
@@ -13,12 +14,14 @@ use std::{
     ops::Deref,
 };
 use thiserror::Error;
-
 use tonic::transport::Error as TonicError;
 
 /// Kinds of errors
 #[derive(Copy, Clone, Debug, Eq, Error, PartialEq)]
 pub enum ErrorKind {
+    /// Abi error
+    #[error("abi error")]
+    AbiError,
     /// Allocation error
     #[error("allocation error")]
     AllocationError,
@@ -82,6 +85,12 @@ impl Display for Error {
 impl std::error::Error for Error {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         self.0.source()
+    }
+}
+
+impl From<AbiError> for Error {
+    fn from(err: AbiError) -> Error {
+        ErrorKind::AbiError.context(err).into()
     }
 }
 

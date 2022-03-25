@@ -35,7 +35,7 @@ fn main() {
     let root = root.parent().unwrap().to_path_buf();
 
     let mut steward_proto_dir = root;
-    steward_proto_dir.push("steward_proto/proto/cellars");
+    steward_proto_dir.push("steward_proto/proto/");
     let steward_proto_dir = [steward_proto_dir];
 
     // List available proto files
