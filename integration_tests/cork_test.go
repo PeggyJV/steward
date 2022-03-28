@@ -147,10 +147,50 @@ func (s *IntegrationTestSuite) TestCork() {
 			return true
 		}, 105*time.Second, 1*time.Second, "new vote period never seen")
 
+		s.T().Logf("waiting for gravity to submit call to cellar")
+		s.Require().Eventuallyf(func() bool {
+			s.T().Log("querying gravity logic call events...")
+			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
+			s.Require().NoError(err)
+
+			query := ethereum.FilterQuery{
+				FromBlock: nil,
+				ToBlock:   nil,
+				Addresses: []common.Address{
+					gravityContract,
+				},
+			}
+			logs, err := ethClient.FilterLogs(context.Background(), query)
+			s.Require().NoError(err)
+			s.T().Logf("got %v logs", len(logs))
+
+			// For non-anonymous events, the first log topic is a keccak256 hash of the
+			// event signature.
+			eventSignature := []byte("LogicCallEvent(bytes32,uint256,bytes,uint256)")
+			signatureTopic := crypto.Keccak256Hash(eventSignature).Hex()
+			s.T().Logf("expected signature topic: %s...", signatureTopic[:10])
+
+			for _, vLog := range logs {
+				var topics [4]string
+				for i := range vLog.Topics {
+					topics[i] = vLog.Topics[i].Hex()
+				}
+
+				s.T().Logf("found signature topic: %s...", topics[0][:10])
+				if topics[0] == signatureTopic {
+					s.T().Logf("gravity logic call event found!")
+					ethClient.Close()
+					return true
+				}
+			}
+
+			ethClient.Close()
+			return false
+		}, 1*time.Minute, 3*time.Second, "cellar event never seen")
+
 		s.T().Logf("checking for cellar event")
 		s.Require().Eventuallyf(func() bool {
-
-			// actualTickRange, err := s.getFirstTickRange()
+			s.T().Log("querying cellar events...")
 			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
 			s.Require().NoError(err)
 
@@ -166,22 +206,27 @@ func (s *IntegrationTestSuite) TestCork() {
 			s.Require().NoError(err)
 			s.T().Logf("got %v logs", len(logs))
 
+			// For non-anonymous events, the first log topic is a keccak256 hash of the
+			// event signature.
 			eventSignature := []byte("mockClaimAndUnstake()")
 			signatureTopic := crypto.Keccak256Hash(eventSignature).Hex()
-			s.T().Logf("signature topic: %s", signatureTopic)
+			s.T().Logf("expected signature topic: %s...", signatureTopic[:10])
 
-			for i, vLog := range logs {
+			for _, vLog := range logs {
 				var topics [4]string
 				for i := range vLog.Topics {
 					topics[i] = vLog.Topics[i].Hex()
 				}
 
-				s.T().Logf("log %v signature topic: %s", i, topics[0])
+				s.T().Logf("found signature topic: %s...", topics[0][:10])
 				if topics[0] == signatureTopic {
+					s.T().Logf("cellar mock event found!")
+					ethClient.Close()
 					return true
 				}
 			}
 
+			ethClient.Close()
 			return false
 		}, 2*time.Minute, 5*time.Second, "cellar event never seen")
 	})

@@ -3,6 +3,9 @@
 
 pragma solidity ^0.8.0;
 
+// interfaces.sol containst OpenZeppelin's Ownable.sol contract and the Context.sol
+// contract it depends on. (v4.4.1)
+
 abstract contract Context {
     function _msgSender() internal view virtual returns (address) {
         return msg.sender;
