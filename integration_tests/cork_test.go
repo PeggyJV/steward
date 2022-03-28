@@ -9,6 +9,10 @@ import (
 	"io/ioutil"
 	"time"
 
+	"github.com/ethereum/go-ethereum"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/ethclient"
 	allocationTypes "github.com/peggyjv/sommelier/v3/x/allocation/types"
 	corkTypes "github.com/peggyjv/sommelier/v3/x/cork/types"
 	"google.golang.org/grpc"
@@ -17,12 +21,6 @@ import (
 
 func (s *IntegrationTestSuite) TestCork() {
 	s.Run("Bring up chain, and submit a cork", func() {
-		expectedTickRange := &allocationTypes.TickRange{
-			Upper:  12000,
-			Lower:  7000,
-			Weight: 100,
-		}
-
 		s.T().Logf("checking that test cellar exists in the chain")
 		val := s.chain.validators[0]
 		s.Require().Eventuallyf(func() bool {
@@ -111,16 +109,11 @@ func (s *IntegrationTestSuite) TestCork() {
 				cellarId := hardhatCellar.String()
 				request := SubmitRequest{
 					CellarId: cellarId,
-					CallData: &SubmitRequest_Uniswapv3Rebalance{
-						&UniswapV3RebalanceParams{
-							CellarTickInfo: []*UniswapV3Position{
-								{
-									UpperPrice: expectedTickRange.Upper,
-									LowerPrice: expectedTickRange.Lower,
-									Weight:     int32(expectedTickRange.Weight),
-								},
+					CallData: &SubmitRequest_AaveV2Stablecoin{
+						&AaveV2Stablecoin{
+							Function: &AaveV2Stablecoin_ClaimAndUnstake{
+								&ClaimAndUnstake{},
 							},
-							CurrentPrice: 10000,
 						},
 					},
 				}
@@ -154,27 +147,42 @@ func (s *IntegrationTestSuite) TestCork() {
 			return true
 		}, 105*time.Second, 1*time.Second, "new vote period never seen")
 
-		s.T().Logf("checking for updated tick ranges in cellar")
+		s.T().Logf("checking for cellar event")
 		s.Require().Eventuallyf(func() bool {
-			actualTickRange, err := s.getFirstTickRange()
-			if err != nil {
-				s.T().Logf("got error %e querying ticks", err)
-				return false
-			}
-			if expectedTickRange.Upper != actualTickRange.Upper {
-				s.T().Logf("wrong upper %s", actualTickRange.String())
-				return false
-			}
-			if expectedTickRange.Lower != actualTickRange.Lower {
-				s.T().Logf("wrong lower %s", actualTickRange.String())
-				return false
-			}
-			if expectedTickRange.Weight != actualTickRange.Weight {
-				s.T().Logf("wrong weight %s", actualTickRange.String())
-				return false
+
+			// actualTickRange, err := s.getFirstTickRange()
+			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
+			s.Require().NoError(err)
+
+			query := ethereum.FilterQuery{
+				FromBlock: nil,
+				ToBlock:   nil,
+				Addresses: []common.Address{
+					hardhatCellar,
+				},
 			}
 
-			return true
-		}, 5*time.Minute, 5*time.Second, "cellar ticks never updated")
+			logs, err := ethClient.FilterLogs(context.Background(), query)
+			s.Require().NoError(err)
+			s.T().Logf("got %v logs", len(logs))
+
+			eventSignature := []byte("mockClaimAndUnstake()")
+			signatureTopic := crypto.Keccak256Hash(eventSignature).Hex()
+			s.T().Logf("signature topic: %s", signatureTopic)
+
+			for i, vLog := range logs {
+				var topics [4]string
+				for i := range vLog.Topics {
+					topics[i] = vLog.Topics[i].Hex()
+				}
+
+				s.T().Logf("log %v signature topic: %s", i, topics[0])
+				if topics[0] == signatureTopic {
+					return true
+				}
+			}
+
+			return false
+		}, 2*time.Minute, 5*time.Second, "cellar event never seen")
 	})
 }
