@@ -18,7 +18,8 @@ import (
 
 	"github.com/ethereum/go-ethereum"
 
-	"github.com/peggyjv/sommelier/x/allocation/types"
+	allocationtypes "github.com/peggyjv/sommelier/v3/x/allocation/types"
+	corktypes "github.com/peggyjv/sommelier/v3/x/cork/types"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -60,7 +61,9 @@ func MNEMONICS() []string {
 var (
 	stakeAmount, _  = sdk.NewIntFromString("100000000000")
 	stakeAmountCoin = sdk.NewCoin(bondDenom, stakeAmount)
-	hardhatCellar   = common.HexToAddress("0x4C4a2f8c81640e47606d3fd77B353E87Ba015584")
+	// these address variables get overwritten by parsing the hardhat logs for the contract
+	// address once they are launched; therefore their initial values don't matter.
+	hardhatCellar   = common.HexToAddress("0x0000000000000000000000000000000000000000")
 	gravityContract = common.HexToAddress("0x04C89607413713Ec9775E14b954286519d836FEf")
 )
 
@@ -86,6 +89,10 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	var err error
 	s.chain, err = newChain()
 	s.Require().NoError(err)
+	s.dockerPool, err = dockertest.NewPool("")
+	s.Require().NoError(err)
+	s.dockerNetwork, err = s.dockerPool.CreateNetwork(fmt.Sprintf("%s-testnet", s.chain.id))
+	s.Require().NoError(err)
 
 	s.T().Logf("starting e2e infrastructure; chain-id: %s; datadir: %s", s.chain.id, s.chain.dataDir)
 
@@ -93,17 +100,15 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	mnemonics := MNEMONICS()
 	s.initNodesWithMnemonics(mnemonics...)
 	s.initEthereumFromMnemonics(mnemonics)
+
+	// run the eth container so that the contract addresses are available
+	s.runEthContainer()
+
+	// continue generating node genesis
 	s.initGenesis()
 	s.initValidatorConfigs()
 
-	s.dockerPool, err = dockertest.NewPool("")
-	s.Require().NoError(err)
-
-	s.dockerNetwork, err = s.dockerPool.CreateNetwork(fmt.Sprintf("%s-testnet", s.chain.id))
-	s.Require().NoError(err)
-
 	// container infrastructure
-	s.runEthContainer()
 	s.runValidators()
 	s.runOrchestrators()
 	s.runStewards()
@@ -346,13 +351,13 @@ func (s *IntegrationTestSuite) initGenesis() {
 	s.Require().NoError(err)
 	appGenState[genutiltypes.ModuleName] = bz
 
-	var allocationGenState types.GenesisState
-	s.Require().NoError(cdc.UnmarshalJSON(appGenState[types.ModuleName], &allocationGenState))
+	var allocationGenState allocationtypes.GenesisState
+	s.Require().NoError(cdc.UnmarshalJSON(appGenState[allocationtypes.ModuleName], &allocationGenState))
 
-	allocationGenState.Cellars = []*types.Cellar{
+	allocationGenState.Cellars = []*allocationtypes.Cellar{
 		{
 			Id: hardhatCellar.String(),
-			TickRanges: []*types.TickRange{
+			TickRanges: []*allocationtypes.TickRange{
 				{Upper: 600, Lower: 300, Weight: 900},
 			},
 		},
@@ -360,7 +365,16 @@ func (s *IntegrationTestSuite) initGenesis() {
 	allocationGenState.Params.VotePeriod = 30
 	bz, err = cdc.MarshalJSON(&allocationGenState)
 	s.Require().NoError(err)
-	appGenState[types.ModuleName] = bz
+	appGenState[allocationtypes.ModuleName] = bz
+
+	var corkGenState corktypes.GenesisState
+	s.Require().NoError(cdc.UnmarshalJSON(appGenState[corktypes.ModuleName], &corkGenState))
+	corkGenState.CellarIds = &corktypes.CellarIDSet{
+		Ids: []string{hardhatCellar.Hex()},
+	}
+	bz, err = cdc.MarshalJSON(&corkGenState)
+	s.Require().NoError(err)
+	appGenState[corktypes.ModuleName] = bz
 
 	// set contract addr
 	var gravityGenState gravitytypes.GenesisState
@@ -440,9 +454,6 @@ func (s *IntegrationTestSuite) runEthContainer() {
 	s.T().Log("starting Ethereum container...")
 	var err error
 
-	nodeURL := os.Getenv("ARCHIVE_NODE_URL")
-	s.Require().NotEmptyf(nodeURL, "ARCHIVE_NODE_URL env variable must be set")
-
 	runOpts := dockertest.RunOptions{
 		Name:       "ethereum",
 		Repository: "ethereum",
@@ -452,7 +463,6 @@ func (s *IntegrationTestSuite) runEthContainer() {
 			"8545/tcp": {{HostIP: "", HostPort: "8545"}},
 		},
 		ExposedPorts: []string{"8545/tcp"},
-		Env:          []string{fmt.Sprintf("ARCHIVE_NODE_URL=%s", nodeURL)},
 	}
 
 	s.ethResource, err = s.dockerPool.RunWithOptions(
@@ -507,12 +517,17 @@ func (s *IntegrationTestSuite) runEthContainer() {
 			if strings.HasPrefix(s, "gravity contract deployed at") {
 				strSpl := strings.Split(s, "-")
 				gravityContract = common.HexToAddress(strings.ReplaceAll(strSpl[1], " ", ""))
+			}
+			if strings.HasPrefix(s, "cellar contract deployed at") {
+				strSpl := strings.Split(s, "-")
+				hardhatCellar = common.HexToAddress(strings.ReplaceAll(strSpl[1], " ", ""))
 				return true
 			}
 		}
 		return false
 	}, time.Minute*5, time.Second*10, "unable to retrieve gravity address from logs")
 	s.T().Logf("gravity contract deployed at %s", gravityContract.String())
+	s.T().Logf("cellar contract deployed at %s", hardhatCellar.String())
 
 	s.T().Logf("started Ethereum container: %s", s.ethResource.Container.ID)
 }
@@ -678,7 +693,7 @@ msg_batch_size = 5
 	// TODO(mvid) Determine if there is a way to check the health or status of
 	// the gorc orchestrator processes. For now, we search the logs to determine
 	// when each orchestrator resource has synced all batches
-	match := "orchestrator::main_loop: No unsigned batches! Everything good!"
+	match := "No unsigned batches! Everything good!"
 	for _, resource := range s.orchResources {
 		resource := resource
 		s.T().Logf("waiting for orchestrator to be healthy: %s", resource.Container.ID)
@@ -834,7 +849,7 @@ func (s *IntegrationTestSuite) logsByContainerID(id string) string {
 	return containerLogsBuf.String()
 }
 
-func (s *IntegrationTestSuite) getFirstTickRange() (*types.TickRange, error) {
+func (s *IntegrationTestSuite) getFirstTickRange() (*allocationtypes.TickRange, error) {
 	ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
 	if err != nil {
 		return nil, err
@@ -844,12 +859,12 @@ func (s *IntegrationTestSuite) getFirstTickRange() (*types.TickRange, error) {
 		From: common.HexToAddress(s.chain.validators[0].ethereumKey.address),
 		To:   &hardhatCellar,
 		Gas:  0,
-		Data: types.ABIEncodedCellarTickInfoBytes(uint(0)),
+		Data: allocationtypes.ABIEncodedCellarTickInfoBytes(uint(0)),
 	}, nil)
 	if err != nil {
 		return nil, err
 	}
-	tr, err := types.BytesToABIEncodedTickRange(bz)
+	tr, err := allocationtypes.BytesToABIEncodedTickRange(bz)
 	if err != nil {
 		return nil, err
 	}

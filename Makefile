@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := e2e_rebalance
 
-VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:v3.0.7"
-ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:v0.3.8"
+VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:latest"
+ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:latest"
 
 e2e_build_images:
 	@docker pull $(VALIDATOR_IMAGE)
@@ -30,6 +30,9 @@ e2e_clean_slate:
 		|| true
 	@docker network prune --force 1>/dev/null 2>/dev/null || true
 	@cd integration_tests && go test -c
+
+e2e_cork_test: e2e_clean_slate
+	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestCork || make -s fail
 
 e2e_rebalance: e2e_clean_slate
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestRebalance || make -s fail

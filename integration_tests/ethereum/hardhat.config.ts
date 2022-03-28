@@ -7,14 +7,6 @@ task(
     'integration_test_setup',
     'Sets up contracts for the integration test',
     async (args, hre) => {
-
-        // Take over vitalik.eth
-        await hre.network.provider.request({
-            method: 'hardhat_impersonateAccount',
-            params: [constants.WHALE],
-        });
-
-        // Send ETH to needed parties
         const whaleSigner = await hre.ethers.getSigner(constants.WHALE);
 
         for (let addr of constants.VALIDATORS) {
@@ -48,7 +40,7 @@ task(
             [[0, 600, 300, 900]],
         ));
         await cellar.deployed();
-        console.log(`cellar contract deploy at - ${cellar.address}`);
+        console.log(`cellar contract deployed at - ${cellar.address}`);
 
         let cellarSignerAddress = await cellar.signer.getAddress()
         await hre.network.provider.request({
@@ -79,17 +71,8 @@ task(
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
-const ARCHIVE_NODE_URL = process.env.ARCHIVE_NODE_URL;
 
 module.exports = {
-    networks: {
-        hardhat: {
-            forking: {
-                url: ARCHIVE_NODE_URL,
-                blockNumber: 13405367,
-            },
-        },
-    },
     solidity: {
         compilers: [
             {

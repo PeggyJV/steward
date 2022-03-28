@@ -2,6 +2,7 @@ target
 **/*.rs.bk
 expanded.rs
 testdata
+testlogs
 *.test
 !integration_tests/ethereum/artifacts
 
