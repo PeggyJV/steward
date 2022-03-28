@@ -56,7 +56,6 @@ pub enum StewardCmd {
     #[clap(subcommand)]
     Orchestrator(orchestrator::OrchestratorCmd),
     /// Print default configurations
-    #[clap(subcommand)]
     Reinvest(reinvest::ReinvestCommand),
     SetValidator(SetValidatorCmd),
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
