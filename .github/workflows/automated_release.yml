@@ -1,0 +1,51 @@
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Automated Release
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    name: build-release-assets
+    runs-on: ubuntu-latest
+    steps:
+      # Setup Rust Environment
+      - name: setup-rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+      # Checkout repository code
+      - name: checkout-code
+        uses: actions/checkout@v2
+        with: 
+          toolchain: 1.56 
+      # Rust Cache
+      - name: rust-cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            steward/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('steward/Cargo.lock') }}
+      # Build Rust Artifacts
+      - name: build-rust
+        run: cd steward && cargo install cross &&  cross build --target x86_64-unknown-linux-musl --release --all
+      # Create Release and Upload artifacts
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            steward/target/'x86_64-unknown-linux-musl'/release/steward
+            LICENSE
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
