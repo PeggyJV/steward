@@ -38,7 +38,7 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('steward/Cargo.lock') }}
       # Build Rust Artifacts
       - name: build-rust
-        run: cd steward && cargo install cross &&  cross build --target x86_64-unknown-linux-musl --release --all
+        run: cargo install cross &&  cross build --target x86_64-unknown-linux-musl --release --all
       # Create Release and Upload artifacts
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -46,6 +46,10 @@ jobs:
         with:
           files: |
             steward/target/'x86_64-unknown-linux-musl'/release/steward
+            steward_abi/target/'x86_64-unknown-linux-musl'/release/steward_abi
+            steward_abi_build/target/'x86_64-unknown-linux-musl'/release/steward_abi_build
+            steward_proto/target/'x86_64-unknown-linux-musl'/release/steward_proto
+            steward_proto_build/target/'x86_64-unknown-linux-musl'/release/steward_proto_build
             LICENSE
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
