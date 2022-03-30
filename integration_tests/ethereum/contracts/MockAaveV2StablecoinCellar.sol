@@ -18,7 +18,7 @@ contract MockAaveV2StablecoinCellar is Ownable {
     /**
      * @notice Take platform fees and performance fees off of cellar's active assets.
      */
-    function accrueFees() external {
+    function accrueFees() external onlyOwner {
         emit mockAccrueFees();
     }
 
@@ -27,7 +27,7 @@ contract MockAaveV2StablecoinCellar is Ownable {
     /**
      * @notice Transfer accrued fees to Cosmos to distribute.
      */
-    function transferFees() external  {
+    function transferFees() external onlyOwner {
         emit mockTransferFees();
     }
 
@@ -36,7 +36,7 @@ contract MockAaveV2StablecoinCellar is Ownable {
     /**
      * @notice Enters into the current Aave stablecoin strategy.
      */
-    function enterStrategy() external  {
+    function enterStrategy() external onlyOwner  {
         emit mockEnterStrategy();
     }
 
@@ -47,7 +47,7 @@ contract MockAaveV2StablecoinCellar is Ownable {
      * @param path path to swap from the current asset to new asset using Uniswap
      * @param amountOutMinimum minimum amount of assets returned after swap
      */
-    function rebalance(address[] memory path, uint256 amountOutMinimum) external  {
+    function rebalance(address[] memory path, uint256 amountOutMinimum) external onlyOwner  {
         emit mockRebalance(path, amountOutMinimum);
     }
 
@@ -81,7 +81,7 @@ contract MockAaveV2StablecoinCellar is Ownable {
      * @dev This may be used in case the wrong tokens are accidentally sent to this contract.
      * @param token address of token to transfer out of this cellar
      */
-    function sweep(address token) external  {
+    function sweep(address token) external onlyOwner  {
         emit mockSweep(token);
     }
 
@@ -90,7 +90,7 @@ contract MockAaveV2StablecoinCellar is Ownable {
     /**
      * @notice Removes initial liquidity restriction.
      */
-    function removeLiquidityRestriction() external  {
+    function removeLiquidityRestriction() external onlyOwner  {
         emit mockRemoveLiquidityRestriction();
     }
 
@@ -100,14 +100,14 @@ contract MockAaveV2StablecoinCellar is Ownable {
      * @notice Pause the contract to prevent deposits.
      * @param _isPaused whether the contract should be paused or unpaused
      */
-    function setPause(bool _isPaused) external  {
+    function setPause(bool _isPaused) external onlyOwner  {
         isPaused = _isPaused;
         emit mockPause(isPaused);
     }
 
     event mockShutdown();
 
-    function shutdown() external  {
+    function shutdown() external onlyOwner  {
         emit mockShutdown();
     }
 }
