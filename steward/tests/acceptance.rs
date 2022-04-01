@@ -35,6 +35,12 @@ use tempdir::TempDir;
 /// invocations as `cargo test` executes tests in parallel by default.
 pub static RUNNER: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
 
+pub const PRIVATE_KEY: &str = "-----BEGIN PRIVATE KEY-----\n\
+MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8\n\
+qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU\n\
+iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg\n\
+-----END PRIVATE KEY-----";
+
 /// Use command-line argument value
 #[test]
 fn eth_keys_add() -> io::Result<()> {
@@ -85,11 +91,7 @@ fn eth_keys_delete() -> io::Result<()> {
     let key_file_path = key_dir.path().join("ethkey.pem");
     let mut f = File::create(key_file_path.clone())?;
     f.write_all(
-        b"-----BEGIN PRIVATE KEY-----
-    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8
-    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU
-    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
-    -----END PRIVATE KEY----",
+        PRIVATE_KEY.as_bytes(),
     )?;
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
@@ -139,11 +141,7 @@ fn eth_keys_list() -> io::Result<()> {
     let key_file_path = key_dir.path().join("ethkey");
     let mut f = File::create(key_file_path.clone())?;
     f.write_all(
-        b"-----BEGIN PRIVATE KEY-----
-    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8
-    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU
-    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
-    -----END PRIVATE KEY----",
+        PRIVATE_KEY.as_bytes(),
     )?;
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
@@ -190,11 +188,7 @@ fn eth_keys_show() -> io::Result<()> {
     let key_file_path = key_dir.path().join("ethkey.pem");
     let mut f = File::create(key_file_path.clone())?;
     f.write_all(
-        b"-----BEGIN PRIVATE KEY-----\n\
-    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8\n\
-    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU\n\
-    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg\n\
-    -----END PRIVATE KEY-----",
+        PRIVATE_KEY.as_bytes(),
     )?;
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
@@ -287,11 +281,7 @@ fn cosmos_keys_list() -> io::Result<()> {
     let key_file_path = key_dir.path().join("cosmoskey");
     let mut f = File::create(key_file_path.clone())?;
     f.write_all(
-        b"-----BEGIN PRIVATE KEY-----
-    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8
-    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU
-    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
-    -----END PRIVATE KEY----",
+        PRIVATE_KEY.as_bytes(),
     )?;
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
@@ -339,11 +329,7 @@ fn cosmos_keys_show() -> io::Result<()> {
     let key_file_path = key_dir.path().join("cosmoskey.pem");
     let mut f = File::create(key_file_path.clone())?;
     f.write_all(
-        b"-----BEGIN PRIVATE KEY-----\n\
-    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8\n\
-    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU\n\
-    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg\n\
-    -----END PRIVATE KEY-----",
+        PRIVATE_KEY.as_bytes(),
     )?;
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
@@ -392,11 +378,7 @@ fn cosmos_keys_delete() -> io::Result<()> {
     let key_file_path = key_dir.path().join("cosmoskey.pem");
     let mut f = File::create(key_file_path.clone())?;
     f.write_all(
-        b"-----BEGIN PRIVATE KEY-----
-    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8
-    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU
-    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
-    -----END PRIVATE KEY----",
+        PRIVATE_KEY.as_bytes(),
     )?;
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
@@ -447,11 +429,7 @@ fn deploy_erc20() -> io::Result<()> {
     let key_file_path = key_dir.path().join("cosmoskey.pem");
     let mut f = File::create(key_file_path.clone())?;
     f.write_all(
-        b"-----BEGIN PRIVATE KEY-----
-    MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8
-    qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU
-    iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
-    -----END PRIVATE KEY----",
+        PRIVATE_KEY.as_bytes(),
     )?;
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
