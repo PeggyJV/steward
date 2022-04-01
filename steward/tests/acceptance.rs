@@ -90,9 +90,7 @@ fn eth_keys_delete() -> io::Result<()> {
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("ethkey.pem");
     let mut f = File::create(key_file_path.clone())?;
-    f.write_all(
-        PRIVATE_KEY.as_bytes(),
-    )?;
+    f.write_all(PRIVATE_KEY.as_bytes())?;
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
@@ -140,9 +138,7 @@ fn eth_keys_list() -> io::Result<()> {
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("ethkey");
     let mut f = File::create(key_file_path.clone())?;
-    f.write_all(
-        PRIVATE_KEY.as_bytes(),
-    )?;
+    f.write_all(PRIVATE_KEY.as_bytes())?;
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
@@ -187,9 +183,7 @@ fn eth_keys_show() -> io::Result<()> {
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("ethkey.pem");
     let mut f = File::create(key_file_path.clone())?;
-    f.write_all(
-        PRIVATE_KEY.as_bytes(),
-    )?;
+    f.write_all(PRIVATE_KEY.as_bytes())?;
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
@@ -280,9 +274,7 @@ fn cosmos_keys_list() -> io::Result<()> {
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("cosmoskey");
     let mut f = File::create(key_file_path.clone())?;
-    f.write_all(
-        PRIVATE_KEY.as_bytes(),
-    )?;
+    f.write_all(PRIVATE_KEY.as_bytes())?;
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
@@ -328,9 +320,7 @@ fn cosmos_keys_show() -> io::Result<()> {
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("cosmoskey.pem");
     let mut f = File::create(key_file_path.clone())?;
-    f.write_all(
-        PRIVATE_KEY.as_bytes(),
-    )?;
+    f.write_all(PRIVATE_KEY.as_bytes())?;
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
@@ -377,9 +367,7 @@ fn cosmos_keys_delete() -> io::Result<()> {
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("cosmoskey.pem");
     let mut f = File::create(key_file_path.clone())?;
-    f.write_all(
-        PRIVATE_KEY.as_bytes(),
-    )?;
+    f.write_all(PRIVATE_KEY.as_bytes())?;
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
@@ -428,9 +416,7 @@ fn deploy_erc20() -> io::Result<()> {
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("cosmoskey.pem");
     let mut f = File::create(key_file_path.clone())?;
-    f.write_all(
-        PRIVATE_KEY.as_bytes(),
-    )?;
+    f.write_all(PRIVATE_KEY.as_bytes())?;
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
