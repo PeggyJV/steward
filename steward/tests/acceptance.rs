@@ -70,6 +70,10 @@ fn eth_keys_add() -> io::Result<()> {
     // Check that command executes without error.
     cmd.wait().unwrap().expect_success();
 
+    let tmp_path = key_dir.path().to_owned();
+
+    // Check that the temp directory actually exists.
+    assert!(tmp_path.exists());
     f.sync_all()?;
 
     Ok(())
@@ -118,6 +122,11 @@ fn eth_keys_delete() -> io::Result<()> {
         .run();
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
+
+    let tmp_path = key_dir.path().to_owned();
+
+    // Check that the temp directory actually exists.
+    assert!(tmp_path.exists());
     f.sync_all()?;
 
     Ok(())
@@ -166,6 +175,12 @@ fn eth_keys_list() -> io::Result<()> {
 
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
+
+    let tmp_path = key_dir.path().to_owned();
+
+    // Check that the temp directory actually exists.
+    assert!(tmp_path.exists());
+
     f.sync_all()?;
     Ok(())
 }
@@ -211,6 +226,12 @@ fn eth_keys_show() -> io::Result<()> {
         .run();
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
+
+    let tmp_path = key_dir.path().to_owned();
+
+    // Check that the temp directory actually exists.
+    assert!(tmp_path.exists());
+
     f.sync_all()?;
 
     Ok(())
@@ -249,6 +270,11 @@ fn cosmos_keys_add() -> io::Result<()> {
         .run();
     // Check that command executes without error.
     cmd.wait().unwrap().expect_success();
+
+    let tmp_path = key_dir.path().to_owned();
+
+    // Check that the temp directory actually exists.
+    assert!(tmp_path.exists());
 
     f.sync_all()?;
 
@@ -297,6 +323,12 @@ fn cosmos_keys_list() -> io::Result<()> {
 
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
+
+    let tmp_path = key_dir.path().to_owned();
+
+    // Check that the temp directory actually exists.
+    assert!(tmp_path.exists());
+
     f.sync_all()?;
     Ok(())
 }
@@ -343,6 +375,12 @@ fn cosmos_keys_show() -> io::Result<()> {
         .run();
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
+
+    let tmp_path = key_dir.path().to_owned();
+
+    // Check that the temp directory actually exists.
+    assert!(tmp_path.exists());
+
     f.sync_all()?;
 
     Ok(())
@@ -391,6 +429,12 @@ fn cosmos_keys_delete() -> io::Result<()> {
         .run();
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
+
+    let tmp_path = key_dir.path().to_owned();
+
+    // Check that the temp directory actually exists.
+    assert!(tmp_path.exists());
+
     f.sync_all()?;
 
     Ok(())
@@ -442,6 +486,12 @@ fn deploy_erc20() -> io::Result<()> {
         .run();
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
+
+    let tmp_path = key_dir.path().to_owned();
+
+    // Check that the temp directory actually exists.
+    assert!(tmp_path.exists());
+
     f.sync_all()?;
 
     Ok(())
