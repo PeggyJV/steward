@@ -94,17 +94,12 @@ fn eth_keys_delete() -> io::Result<()> {
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
-        cellars: StewardConfig::default().cellars,
-        ethereum: StewardConfig::default().ethereum,
         keys: KeysConfig {
             keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
             rebalancer_key: "cellar".to_string(),
         },
         keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
-        server: StewardConfig::default().server,
-        gravity: StewardConfig::default().gravity,
-        cosmos: StewardConfig::default().cosmos,
-        metrics: StewardConfig::default().metrics,
+        ..Default::default()
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
 
@@ -142,17 +137,12 @@ fn eth_keys_list() -> io::Result<()> {
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
-        cellars: StewardConfig::default().cellars,
-        ethereum: StewardConfig::default().ethereum,
         keys: KeysConfig {
             keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
             rebalancer_key: "cellar".to_string(),
         },
         keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
-        server: StewardConfig::default().server,
-        gravity: StewardConfig::default().gravity,
-        cosmos: StewardConfig::default().cosmos,
-        metrics: StewardConfig::default().metrics,
+        ..Default::default()
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
     let mut runner = RUNNER.clone();
@@ -187,17 +177,12 @@ fn eth_keys_show() -> io::Result<()> {
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
-        cellars: StewardConfig::default().cellars,
-        ethereum: StewardConfig::default().ethereum,
         keys: KeysConfig {
             keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
             rebalancer_key: "cellar".to_string(),
         },
         keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
-        server: StewardConfig::default().server,
-        gravity: StewardConfig::default().gravity,
-        cosmos: StewardConfig::default().cosmos,
-        metrics: StewardConfig::default().metrics,
+        ..Default::default()
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
     let mut runner = RUNNER.clone();
@@ -231,17 +216,12 @@ fn cosmos_keys_add() -> io::Result<()> {
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
-        cellars: StewardConfig::default().cellars,
-        ethereum: StewardConfig::default().ethereum,
         keys: KeysConfig {
             keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
             rebalancer_key: "cellar".to_string(),
         },
         keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
-        server: StewardConfig::default().server,
-        gravity: StewardConfig::default().gravity,
-        cosmos: StewardConfig::default().cosmos,
-        metrics: StewardConfig::default().metrics,
+        ..Default::default()
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
     let mut runner = RUNNER.clone();
@@ -278,17 +258,12 @@ fn cosmos_keys_list() -> io::Result<()> {
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
-        cellars: StewardConfig::default().cellars,
-        ethereum: StewardConfig::default().ethereum,
         keys: KeysConfig {
             keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
             rebalancer_key: "cellar".to_string(),
         },
         keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
-        server: StewardConfig::default().server,
-        gravity: StewardConfig::default().gravity,
-        cosmos: StewardConfig::default().cosmos,
-        metrics: StewardConfig::default().metrics,
+        ..Default::default()
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
     let mut runner = RUNNER.clone();
@@ -324,17 +299,12 @@ fn cosmos_keys_show() -> io::Result<()> {
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
-        cellars: StewardConfig::default().cellars,
-        ethereum: StewardConfig::default().ethereum,
         keys: KeysConfig {
             keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
             rebalancer_key: "cellar".to_string(),
         },
         keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
-        server: StewardConfig::default().server,
-        gravity: StewardConfig::default().gravity,
-        cosmos: StewardConfig::default().cosmos,
-        metrics: StewardConfig::default().metrics,
+        ..Default::default()
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
     let mut runner = RUNNER.clone();
@@ -371,17 +341,12 @@ fn cosmos_keys_delete() -> io::Result<()> {
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
-        cellars: StewardConfig::default().cellars,
-        ethereum: StewardConfig::default().ethereum,
         keys: KeysConfig {
             keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
             rebalancer_key: "cellar".to_string(),
         },
         keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
-        server: StewardConfig::default().server,
-        gravity: StewardConfig::default().gravity,
-        cosmos: StewardConfig::default().cosmos,
-        metrics: StewardConfig::default().metrics,
+        ..Default::default()
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
 
@@ -420,17 +385,12 @@ fn deploy_erc20() -> io::Result<()> {
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
-        cellars: StewardConfig::default().cellars,
-        ethereum: StewardConfig::default().ethereum,
         keys: KeysConfig {
             keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
             rebalancer_key: "cellar".to_string(),
         },
         keystore: key_dir.path().as_os_str().to_str().unwrap().to_string(), // fix this before pushing
-        server: StewardConfig::default().server,
-        gravity: StewardConfig::default().gravity,
-        cosmos: StewardConfig::default().cosmos,
-        metrics: StewardConfig::default().metrics,
+        ..Default::default()
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
 
