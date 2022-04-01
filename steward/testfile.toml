@@ -1,5 +1,0 @@
-keystore = "mytest"
-
-[keys]
-keystore = "mytest"
-rebalancer_key = "cellar"
