@@ -39,8 +39,7 @@ pub static RUNNER: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
 #[test]
 fn eth_keys_add() -> io::Result<()> {
     let key_dir = TempDir::new("test_key")?;
-    let config_dir = TempDir::new("test_key")?;
-    let config_file_path = config_dir.path().join("config.toml");
+    let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
         cellars: StewardConfig::default().cellars,
@@ -88,8 +87,7 @@ fn eth_keys_delete() -> io::Result<()> {
     iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
     -----END PRIVATE KEY----",
     )?;
-    let config_dir = TempDir::new("test_key")?;
-    let config_file_path = config_dir.path().join("config.toml");
+    let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
         cellars: StewardConfig::default().cellars,
@@ -138,9 +136,7 @@ fn eth_keys_list() -> io::Result<()> {
     iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
     -----END PRIVATE KEY----",
     )?;
-
-    let config_dir = TempDir::new("test_key")?;
-    let config_file_path = config_dir.path().join("config.toml");
+    let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
         cellars: StewardConfig::default().cellars,
@@ -185,9 +181,7 @@ fn eth_keys_show() -> io::Result<()> {
     iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg\n\
     -----END PRIVATE KEY-----",
     )?;
-
-    let config_dir = TempDir::new("test_key")?;
-    let config_file_path = config_dir.path().join("config.toml");
+    let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
         cellars: StewardConfig::default().cellars,
@@ -225,8 +219,7 @@ fn eth_keys_show() -> io::Result<()> {
 #[test]
 fn cosmos_keys_add() -> io::Result<()> {
     let key_dir = TempDir::new("test_key")?;
-    let config_dir = TempDir::new("test_key")?;
-    let config_file_path = config_dir.path().join("config.toml");
+    let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
         cellars: StewardConfig::default().cellars,
@@ -274,9 +267,7 @@ fn cosmos_keys_list() -> io::Result<()> {
     iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
     -----END PRIVATE KEY----",
     )?;
-
-    let config_dir = TempDir::new("test_key")?;
-    let config_file_path = config_dir.path().join("config.toml");
+    let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
         cellars: StewardConfig::default().cellars,
@@ -322,9 +313,7 @@ fn cosmos_keys_show() -> io::Result<()> {
     iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg\n\
     -----END PRIVATE KEY-----",
     )?;
-
-    let config_dir = TempDir::new("test_key")?;
-    let config_file_path = config_dir.path().join("config.toml");
+    let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
         cellars: StewardConfig::default().cellars,
@@ -371,9 +360,7 @@ fn cosmos_keys_delete() -> io::Result<()> {
     iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
     -----END PRIVATE KEY----",
     )?;
-
-    let config_dir = TempDir::new("test_key")?;
-    let config_file_path = config_dir.path().join("config.toml");
+    let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
         cellars: StewardConfig::default().cellars,
@@ -422,8 +409,7 @@ fn deploy_erc20() -> io::Result<()> {
     iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg
     -----END PRIVATE KEY----",
     )?;
-    let config_dir = TempDir::new("test_key")?;
-    let config_file_path = config_dir.path().join("config.toml");
+    let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
         cellars: StewardConfig::default().cellars,
