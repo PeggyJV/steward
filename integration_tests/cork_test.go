@@ -7,12 +7,15 @@ import (
 	"encoding/pem"
 	"fmt"
 	"io/ioutil"
+	"math/big"
+	"reflect"
 	"time"
 
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
+	gravityTypes "github.com/peggyjv/gravity-bridge/module/x/gravity/types"
 	allocationTypes "github.com/peggyjv/sommelier/v3/x/allocation/types"
 	corkTypes "github.com/peggyjv/sommelier/v3/x/cork/types"
 	"google.golang.org/grpc"
@@ -147,11 +150,48 @@ func (s *IntegrationTestSuite) TestCork() {
 			return true
 		}, 105*time.Second, 1*time.Second, "new vote period never seen")
 
+		s.T().Log("querying gravity module for logic call transaction")
+		aave_abi, err := AaveV2MetaData.GetAbi()
+		s.Require().NoError(err)
+
+		methodName := "claimAndUnstake"
+		method, err := aave_abi.Pack(methodName)
+		invalidationScope := crypto.Keccak256(method)
+		invalidationNonce := 1
+		s.Require().NoError(err)
+
+		kb, err := val.keyring()
+		s.Require().NoError(err)
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		s.Require().NoError(err)
+
+		gravityQueryClient := gravityTypes.NewQueryClient(clientCtx)
+
+		s.Require().Eventuallyf(func() bool {
+			request := &gravityTypes.ContractCallTxRequest{
+				InvalidationNonce: uint64(invalidationNonce),
+				InvalidationScope: invalidationScope,
+			}
+			response, _ := gravityQueryClient.ContractCallTx(context.Background(), request)
+
+			if response != nil {
+				s.T().Logf("found logic call %v!", response.LogicCall)
+				return true
+			}
+
+			return false
+		}, 1*time.Minute, 5*time.Second, "cellar event never seen")
+
 		s.T().Logf("waiting for gravity to submit call to cellar")
 		s.Require().Eventuallyf(func() bool {
 			s.T().Log("querying gravity logic call events...")
 			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
 			s.Require().NoError(err)
+
+			// For non-anonymous events, the first log topic is a keccak256 hash of the
+			// event signature.
+			eventSignature := []byte("LogicCallEvent(bytes32,uint256,bytes,uint256)")
+			logicCallEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
 
 			query := ethereum.FilterQuery{
 				FromBlock: nil,
@@ -159,32 +199,47 @@ func (s *IntegrationTestSuite) TestCork() {
 				Addresses: []common.Address{
 					gravityContract,
 				},
+				Topics: [][]common.Hash{
+					{
+						logicCallEventSignatureTopic,
+					},
+				},
 			}
 			logs, err := ethClient.FilterLogs(context.Background(), query)
 			s.Require().NoError(err)
-			s.T().Logf("got %v logs", len(logs))
+			s.T().Logf("got %v gravity.submitLogicCall logs", len(logs))
+			ethClient.Close()
 
-			// For non-anonymous events, the first log topic is a keccak256 hash of the
-			// event signature.
-			eventSignature := []byte("LogicCallEvent(bytes32,uint256,bytes,uint256)")
-			signatureTopic := crypto.Keccak256Hash(eventSignature).Hex()
-			s.T().Logf("expected signature topic: %s...", signatureTopic[:10])
+			gravity_abi, err := GravityMetaData.GetAbi()
+			s.Require().NoError(err)
 
-			for _, vLog := range logs {
-				var topics [4]string
-				for i := range vLog.Topics {
-					topics[i] = vLog.Topics[i].Hex()
-				}
+			for i, log := range logs {
+				if len(log.Data) > 0 {
+					out, err := gravity_abi.Unpack("LogicCallEvent", log.Data)
+					if err != nil {
+						s.T().Logf("log%v: failed to unpack log (%v) to event structure", i, log.Data)
+						return false
+					}
 
-				s.T().Logf("found signature topic: %s...", topics[0][:10])
-				if topics[0] == signatureTopic {
-					s.T().Logf("gravity logic call event found!")
-					ethClient.Close()
-					return true
+					event := &GravityLogicCallEvent{
+						InvalidationId:    out[0].([32]byte),
+						InvalidationNonce: out[1].(*big.Int),
+						ReturnData:        out[2].([]byte),
+						EventNonce:        out[3].(*big.Int),
+					}
+					s.T().Logf("log%v: comparing invalidation parameters", i)
+					eventInvalidationId := event.InvalidationId[:]
+					if reflect.DeepEqual(eventInvalidationId, invalidationScope) && int(event.InvalidationNonce.Int64()) == invalidationNonce {
+						s.T().Log("logic call executed!")
+						return true
+					}
+
+					s.T().Logf("log%v: invalidation parameters did not match up", i)
+				} else {
+					s.T().Logf("log%v: no data in log", i)
 				}
 			}
 
-			ethClient.Close()
 			return false
 		}, 1*time.Minute, 3*time.Second, "cellar event never seen")
 
@@ -194,39 +249,34 @@ func (s *IntegrationTestSuite) TestCork() {
 			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
 			s.Require().NoError(err)
 
+			// For non-anonymous events, the first log topic is a keccak256 hash of the
+			// event signature.
+			eventSignature := []byte("mockClaimAndUnstake()")
+			mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
+
 			query := ethereum.FilterQuery{
 				FromBlock: nil,
 				ToBlock:   nil,
 				Addresses: []common.Address{
 					hardhatCellar,
 				},
+				Topics: [][]common.Hash{
+					{
+						mockEventSignatureTopic,
+					},
+				},
 			}
 
 			logs, err := ethClient.FilterLogs(context.Background(), query)
 			s.Require().NoError(err)
 			s.T().Logf("got %v logs", len(logs))
+			ethClient.Close()
 
-			// For non-anonymous events, the first log topic is a keccak256 hash of the
-			// event signature.
-			eventSignature := []byte("mockClaimAndUnstake()")
-			signatureTopic := crypto.Keccak256Hash(eventSignature).Hex()
-			s.T().Logf("expected signature topic: %s...", signatureTopic[:10])
-
-			for _, vLog := range logs {
-				var topics [4]string
-				for i := range vLog.Topics {
-					topics[i] = vLog.Topics[i].Hex()
-				}
-
-				s.T().Logf("found signature topic: %s...", topics[0][:10])
-				if topics[0] == signatureTopic {
-					s.T().Logf("cellar mock event found!")
-					ethClient.Close()
-					return true
-				}
+			if len(logs) > 0 {
+				s.T().Log("saw mock function event!")
+				return true
 			}
 
-			ethClient.Close()
 			return false
 		}, 2*time.Minute, 5*time.Second, "cellar event never seen")
 	})
