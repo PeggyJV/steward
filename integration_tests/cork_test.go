@@ -1,6 +1,7 @@
 package integration_tests
 
 import (
+	"bytes"
 	"context"
 	"crypto/tls"
 	"crypto/x509"
@@ -9,6 +10,11 @@ import (
 	"io/ioutil"
 	"time"
 
+	"github.com/ethereum/go-ethereum"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/ethclient"
+	gravityTypes "github.com/peggyjv/gravity-bridge/module/x/gravity/types"
 	allocationTypes "github.com/peggyjv/sommelier/v3/x/allocation/types"
 	corkTypes "github.com/peggyjv/sommelier/v3/x/cork/types"
 	"google.golang.org/grpc"
@@ -17,12 +23,6 @@ import (
 
 func (s *IntegrationTestSuite) TestCork() {
 	s.Run("Bring up chain, and submit a cork", func() {
-		expectedTickRange := &allocationTypes.TickRange{
-			Upper:  12000,
-			Lower:  7000,
-			Weight: 100,
-		}
-
 		s.T().Logf("checking that test cellar exists in the chain")
 		val := s.chain.validators[0]
 		s.Require().Eventuallyf(func() bool {
@@ -111,16 +111,11 @@ func (s *IntegrationTestSuite) TestCork() {
 				cellarId := hardhatCellar.String()
 				request := SubmitRequest{
 					CellarId: cellarId,
-					CallData: &SubmitRequest_Uniswapv3Rebalance{
-						&UniswapV3RebalanceParams{
-							CellarTickInfo: []*UniswapV3Position{
-								{
-									UpperPrice: expectedTickRange.Upper,
-									LowerPrice: expectedTickRange.Lower,
-									Weight:     int32(expectedTickRange.Weight),
-								},
+					CallData: &SubmitRequest_AaveV2Stablecoin{
+						&AaveV2Stablecoin{
+							Function: &AaveV2Stablecoin_ClaimAndUnstake{
+								&ClaimAndUnstake{},
 							},
-							CurrentPrice: 10000,
 						},
 					},
 				}
@@ -154,27 +149,129 @@ func (s *IntegrationTestSuite) TestCork() {
 			return true
 		}, 105*time.Second, 1*time.Second, "new vote period never seen")
 
-		s.T().Logf("checking for updated tick ranges in cellar")
+		s.T().Log("querying gravity module for logic call transaction")
+		aave_abi, err := AaveV2MetaData.GetAbi()
+		s.Require().NoError(err)
+
+		methodName := "claimAndUnstake"
+		method, err := aave_abi.Pack(methodName)
+		invalidationScope := crypto.Keccak256(method)
+		invalidationNonce := 1
+		s.Require().NoError(err)
+
+		kb, err := val.keyring()
+		s.Require().NoError(err)
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		s.Require().NoError(err)
+
+		gravityQueryClient := gravityTypes.NewQueryClient(clientCtx)
+
 		s.Require().Eventuallyf(func() bool {
-			actualTickRange, err := s.getFirstTickRange()
-			if err != nil {
-				s.T().Logf("got error %e querying ticks", err)
-				return false
+			request := &gravityTypes.ContractCallTxRequest{
+				InvalidationNonce: uint64(invalidationNonce),
+				InvalidationScope: invalidationScope,
 			}
-			if expectedTickRange.Upper != actualTickRange.Upper {
-				s.T().Logf("wrong upper %s", actualTickRange.String())
-				return false
+			response, _ := gravityQueryClient.ContractCallTx(context.Background(), request)
+
+			if response != nil {
+				s.T().Logf("found logic call %v!", response.LogicCall)
+				return true
 			}
-			if expectedTickRange.Lower != actualTickRange.Lower {
-				s.T().Logf("wrong lower %s", actualTickRange.String())
-				return false
+
+			return false
+		}, 1*time.Minute, 5*time.Second, "cellar event never seen")
+
+		s.T().Logf("waiting for gravity to submit call to cellar")
+		s.Require().Eventuallyf(func() bool {
+			s.T().Log("querying gravity logic call events...")
+			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
+			s.Require().NoError(err)
+
+			// For non-anonymous events, the first log topic is a keccak256 hash of the
+			// event signature.
+			eventSignature := []byte("LogicCallEvent(bytes32,uint256,bytes,uint256)")
+			logicCallEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
+			query := ethereum.FilterQuery{
+				FromBlock: nil,
+				ToBlock:   nil,
+				Addresses: []common.Address{
+					gravityContract,
+				},
+				Topics: [][]common.Hash{
+					{
+						logicCallEventSignatureTopic,
+					},
+				},
 			}
-			if expectedTickRange.Weight != actualTickRange.Weight {
-				s.T().Logf("wrong weight %s", actualTickRange.String())
+			result, err := ethClient.FilterLogs(context.Background(), query)
+			s.Require().NoError(err)
+			ethClient.Close()
+
+			s.T().Logf("got %v LogicCallEvent logs", len(result))
+			if len(result) == 0 {
 				return false
 			}
 
-			return true
-		}, 5*time.Minute, 5*time.Second, "cellar ticks never updated")
+			// only one LogicCallEvent is expected
+			s.Require().Equal(len(result), 1)
+
+			log := result[0]
+			gravity_abi, err := GravityMetaData.GetAbi()
+			s.Require().NoError(err)
+
+			var event GravityLogicCallEvent
+			if len(log.Data) > 0 {
+				err := gravity_abi.UnpackIntoInterface(&event, "LogicCallEvent", log.Data)
+				s.Require().NoError(err)
+
+				s.T().Log("comparing invalidation parameters")
+				eventInvalidationId := event.InvalidationId[:]
+				if bytes.Equal(eventInvalidationId, invalidationScope) && int(event.InvalidationNonce.Int64()) == invalidationNonce {
+					s.T().Log("logic call executed!")
+					return true
+				}
+				s.T().Log("invalidation parameters did not match up")
+			} else {
+				s.T().Log("no data in log")
+			}
+
+			return false
+		}, 1*time.Minute, 3*time.Second, "cellar event never seen")
+
+		s.T().Logf("checking for cellar event")
+		s.Require().Eventuallyf(func() bool {
+			s.T().Log("querying cellar events...")
+			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
+			s.Require().NoError(err)
+
+			// For non-anonymous events, the first log topic is a keccak256 hash of the
+			// event signature.
+			eventSignature := []byte("mockClaimAndUnstake()")
+			mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
+			query := ethereum.FilterQuery{
+				FromBlock: nil,
+				ToBlock:   nil,
+				Addresses: []common.Address{
+					hardhatCellar,
+				},
+				Topics: [][]common.Hash{
+					{
+						mockEventSignatureTopic,
+					},
+				},
+			}
+
+			logs, err := ethClient.FilterLogs(context.Background(), query)
+			s.Require().NoError(err)
+			ethClient.Close()
+
+			s.T().Logf("got %v logs", len(logs))
+			if len(logs) == 1 {
+				s.T().Log("saw mock function event!")
+				return true
+			}
+
+			return false
+		}, 2*time.Minute, 5*time.Second, "cellar event never seen")
 	})
 }

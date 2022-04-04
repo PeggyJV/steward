@@ -138,6 +138,10 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 		s.Require().NoError(s.dockerPool.Purge(oc))
 	}
 
+	for _, oc := range s.stewResources {
+		s.Require().NoError(s.dockerPool.Purge(oc))
+	}
+
 	s.Require().NoError(s.dockerPool.RemoveNetwork(s.dockerNetwork))
 }
 
