@@ -191,7 +191,6 @@ func (s *IntegrationTestSuite) TestCork() {
 			// event signature.
 			eventSignature := []byte("LogicCallEvent(bytes32,uint256,bytes,uint256)")
 			logicCallEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
-
 			query := ethereum.FilterQuery{
 				FromBlock: nil,
 				ToBlock:   nil,
@@ -207,6 +206,7 @@ func (s *IntegrationTestSuite) TestCork() {
 			result, err := ethClient.FilterLogs(context.Background(), query)
 			s.Require().NoError(err)
 			ethClient.Close()
+
 			s.T().Logf("got %v LogicCallEvent logs", len(result))
 			if len(result) == 0 {
 				return false
@@ -218,6 +218,7 @@ func (s *IntegrationTestSuite) TestCork() {
 			log := result[0]
 			gravity_abi, err := GravityMetaData.GetAbi()
 			s.Require().NoError(err)
+
 			var event GravityLogicCallEvent
 			if len(log.Data) > 0 {
 				err := gravity_abi.UnpackIntoInterface(&event, "LogicCallEvent", log.Data)
@@ -229,7 +230,6 @@ func (s *IntegrationTestSuite) TestCork() {
 					s.T().Log("logic call executed!")
 					return true
 				}
-
 				s.T().Log("invalidation parameters did not match up")
 			} else {
 				s.T().Log("no data in log")
@@ -248,7 +248,6 @@ func (s *IntegrationTestSuite) TestCork() {
 			// event signature.
 			eventSignature := []byte("mockClaimAndUnstake()")
 			mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
-
 			query := ethereum.FilterQuery{
 				FromBlock: nil,
 				ToBlock:   nil,
@@ -264,9 +263,9 @@ func (s *IntegrationTestSuite) TestCork() {
 
 			logs, err := ethClient.FilterLogs(context.Background(), query)
 			s.Require().NoError(err)
-			s.T().Logf("got %v logs", len(logs))
 			ethClient.Close()
 
+			s.T().Logf("got %v logs", len(logs))
 			if len(logs) == 1 {
 				s.T().Log("saw mock function event!")
 				return true
