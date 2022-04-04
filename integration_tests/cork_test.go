@@ -207,7 +207,7 @@ func (s *IntegrationTestSuite) TestCork() {
 			result, err := ethClient.FilterLogs(context.Background(), query)
 			s.Require().NoError(err)
 			ethClient.Close()
-			s.T().Logf("got %v gravity.submitLogicCall logs", len(result))
+			s.T().Logf("got %v LogicCallEvent logs", len(result))
 			if len(result) == 0 {
 				return false
 			}
