@@ -1,14 +1,13 @@
 package integration_tests
 
 import (
+	"bytes"
 	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
 	"io/ioutil"
-	"math/big"
-	"reflect"
 	"time"
 
 	"github.com/ethereum/go-ethereum"
@@ -205,39 +204,29 @@ func (s *IntegrationTestSuite) TestCork() {
 					},
 				},
 			}
-			logs, err := ethClient.FilterLogs(context.Background(), query)
+			result, err := ethClient.FilterLogs(context.Background(), query)
 			s.Require().NoError(err)
-			s.T().Logf("got %v gravity.submitLogicCall logs", len(logs))
+			s.T().Logf("got %v gravity.submitLogicCall logs", len(result))
 			ethClient.Close()
 
+			log := result[0]
 			gravity_abi, err := GravityMetaData.GetAbi()
 			s.Require().NoError(err)
+			var event GravityLogicCallEvent
+			if len(log.Data) > 0 {
+				err := gravity_abi.UnpackIntoInterface(&event, "LogicCallEvent", log.Data)
+				s.Require().NoError(err)
 
-			for i, log := range logs {
-				if len(log.Data) > 0 {
-					out, err := gravity_abi.Unpack("LogicCallEvent", log.Data)
-					if err != nil {
-						s.T().Logf("log%v: failed to unpack log (%v) to event structure", i, log.Data)
-						return false
-					}
-
-					event := &GravityLogicCallEvent{
-						InvalidationId:    out[0].([32]byte),
-						InvalidationNonce: out[1].(*big.Int),
-						ReturnData:        out[2].([]byte),
-						EventNonce:        out[3].(*big.Int),
-					}
-					s.T().Logf("log%v: comparing invalidation parameters", i)
-					eventInvalidationId := event.InvalidationId[:]
-					if reflect.DeepEqual(eventInvalidationId, invalidationScope) && int(event.InvalidationNonce.Int64()) == invalidationNonce {
-						s.T().Log("logic call executed!")
-						return true
-					}
-
-					s.T().Logf("log%v: invalidation parameters did not match up", i)
-				} else {
-					s.T().Logf("log%v: no data in log", i)
+				s.T().Log("comparing invalidation parameters")
+				eventInvalidationId := event.InvalidationId[:]
+				if bytes.Equal(eventInvalidationId, invalidationScope) && int(event.InvalidationNonce.Int64()) == invalidationNonce {
+					s.T().Log("logic call executed!")
+					return true
 				}
+
+				s.T().Log("invalidation parameters did not match up")
+			} else {
+				s.T().Log("no data in log")
 			}
 
 			return false
@@ -272,7 +261,7 @@ func (s *IntegrationTestSuite) TestCork() {
 			s.T().Logf("got %v logs", len(logs))
 			ethClient.Close()
 
-			if len(logs) > 0 {
+			if len(logs) == 1 {
 				s.T().Log("saw mock function event!")
 				return true
 			}
