@@ -206,8 +206,14 @@ func (s *IntegrationTestSuite) TestCork() {
 			}
 			result, err := ethClient.FilterLogs(context.Background(), query)
 			s.Require().NoError(err)
-			s.T().Logf("got %v gravity.submitLogicCall logs", len(result))
 			ethClient.Close()
+			s.T().Logf("got %v gravity.submitLogicCall logs", len(result))
+			if len(result) == 0 {
+				return false
+			}
+
+			// only one LogicCallEvent is expected
+			s.Require().Equal(len(result), 1)
 
 			log := result[0]
 			gravity_abi, err := GravityMetaData.GetAbi()
