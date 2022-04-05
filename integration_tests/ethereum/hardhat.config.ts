@@ -30,15 +30,8 @@ task(
         await gravity.deployed();
         console.log(`gravity contract deployed at - ${gravity.address}`)
 
-        const Cellar = await hre.ethers.getContractFactory("CellarPoolShare");
-        const cellar = (await Cellar.deploy(
-            "mock cellar",
-            "mock",
-            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-            "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-            3000,
-            [[0, 600, 300, 900]],
-        ));
+        const Cellar = await hre.ethers.getContractFactory("MockAaveV2StablecoinCellar");
+        const cellar = (await Cellar.deploy());
         await cellar.deployed();
         console.log(`cellar contract deployed at - ${cellar.address}`);
 
@@ -48,12 +41,6 @@ task(
             params: [cellarSignerAddress],
         });
 
-        let { adjusterHash } = await cellar.setAdjuster(gravity.address, true, {
-            gasPrice: hre.ethers.BigNumber.from('99916001694'),
-        })
-        console.log(
-            `Cellar contract at ${cellar.address} now has adjuster Gravity contract ${gravity.address} with hash ${adjusterHash}`,
-        )
         let { hash } = await cellar.transferOwnership(gravity.address, {
             gasPrice: hre.ethers.BigNumber.from('99916001694'),
             from: cellarSignerAddress
@@ -76,7 +63,7 @@ module.exports = {
     solidity: {
         compilers: [
             {
-                version: '0.7.6',
+                version: '0.8.0',
                 settings: {
                     optimizer: {
                         enabled: true,
