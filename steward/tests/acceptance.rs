@@ -146,7 +146,6 @@ fn eth_keys_list() -> io::Result<()> {
         .capture_stdout()
         .run();
 
-    //check that command executes without error
     cmd.wait().unwrap().expect_success();
 
     f.sync_all()?;
@@ -218,7 +217,7 @@ fn cosmos_keys_add() -> io::Result<()> {
         .run();
     // Check that command executes without error.
     cmd.wait().unwrap().expect_success();
-    assert_eq!(key_file_path.exists(), false);
+    assert!(key_file_path.exists());
 
     f.sync_all()?;
 
