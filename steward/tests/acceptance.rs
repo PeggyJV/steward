@@ -33,7 +33,6 @@ use tempdir::TempDir;
 /// the runner acquire a mutex when executing commands and inspecting
 /// exit statuses, serializing what would otherwise be multithreaded
 /// invocations as `cargo test` executes tests in parallel by default.
-pub static RUNNER: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
 
 pub const PRIVATE_KEY: &str = "-----BEGIN PRIVATE KEY-----\n\
 MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8\n\
@@ -44,6 +43,7 @@ iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg\n\
 /// Use command-line argument value
 #[test]
 fn eth_keys_add() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("sha.pem");
     let config_file_path = key_dir.path().join("config.toml");
@@ -57,7 +57,6 @@ fn eth_keys_add() -> io::Result<()> {
         ..Default::default()
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
-    let mut runner = RUNNER.clone();
     let cmd = runner
         .args(&[
             "-c",
@@ -79,6 +78,7 @@ fn eth_keys_add() -> io::Result<()> {
 
 #[test]
 fn eth_keys_delete() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("ethkey.pem");
     let mut f = File::create(key_file_path.clone())?;
@@ -95,7 +95,6 @@ fn eth_keys_delete() -> io::Result<()> {
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
 
-    let mut runner = RUNNER.clone();
     let cmd = runner
         .args(&[
             "-c",
@@ -119,6 +118,7 @@ fn eth_keys_delete() -> io::Result<()> {
 /// Use command-line argument value for eth keys list
 #[test]
 fn eth_keys_list() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("ethkey");
     let mut f = File::create(key_file_path.clone())?;
@@ -134,8 +134,7 @@ fn eth_keys_list() -> io::Result<()> {
         ..Default::default()
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
-    let mut runner = RUNNER.clone();
-    let cmd = runner
+    let mut cmd = runner
         .args(&[
             "-c",
             config_file_path.to_str().unwrap(),
@@ -146,13 +145,15 @@ fn eth_keys_list() -> io::Result<()> {
         .capture_stdout()
         .run();
 
-    cmd.wait().unwrap().expect_success();
+    cmd.stdout().expect_line("ethkey        0xfa06d54153d56cd7c8fe2141c2bc2e1d43a08286");
 
     f.sync_all()?;
     Ok(())
 }
+
 #[test]
 fn eth_keys_show() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("ethkey.pem");
     let mut f = File::create(key_file_path.clone())?;
@@ -168,8 +169,7 @@ fn eth_keys_show() -> io::Result<()> {
         ..Default::default()
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
-    let mut runner = RUNNER.clone();
-    let cmd = runner
+    let mut cmd = runner
         .args(&[
             "-c",
             config_file_path.to_str().unwrap(),
@@ -180,8 +180,8 @@ fn eth_keys_show() -> io::Result<()> {
         ])
         .capture_stdout()
         .run();
-    //check that command executes without error
-    cmd.wait().unwrap().expect_success();
+
+    cmd.stdout().expect_line("ethkey        0xfa06d54153d56cd7c8fe2141c2bc2e1d43a08286");
 
     f.sync_all()?;
 
@@ -190,6 +190,7 @@ fn eth_keys_show() -> io::Result<()> {
 ///use command-line argument value
 #[test]
 fn cosmos_keys_add() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("sha.pem");
     let config_file_path = key_dir.path().join("config.toml");
@@ -203,7 +204,6 @@ fn cosmos_keys_add() -> io::Result<()> {
         ..Default::default()
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
-    let mut runner = RUNNER.clone();
     let cmd = runner
         .args(&[
             "-c",
@@ -226,6 +226,7 @@ fn cosmos_keys_add() -> io::Result<()> {
 ///use command-line argument value for cosmos keys list
 #[test]
 fn cosmos_keys_list() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("cosmoskey");
     let mut f = File::create(key_file_path.clone())?;
@@ -241,8 +242,7 @@ fn cosmos_keys_list() -> io::Result<()> {
         ..Default::default()
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
-    let mut runner = RUNNER.clone();
-    let cmd = runner
+    let mut cmd = runner
         .args(&[
             "-c",
             config_file_path.to_str().unwrap(),
@@ -253,8 +253,7 @@ fn cosmos_keys_list() -> io::Result<()> {
         .capture_stdout()
         .run();
 
-    //check that command executes without error
-    cmd.wait().unwrap().expect_success();
+        cmd.stdout().expect_line("cosmoskey     cosmos1wzp8pks7hzavh7r4dmenpszxyzfxyk342r55ca");
 
     f.sync_all()?;
     Ok(())
@@ -262,6 +261,7 @@ fn cosmos_keys_list() -> io::Result<()> {
 
 #[test]
 fn cosmos_keys_show() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("cosmoskey.pem");
     let mut f = File::create(key_file_path.clone())?;
@@ -277,8 +277,7 @@ fn cosmos_keys_show() -> io::Result<()> {
         ..Default::default()
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
-    let mut runner = RUNNER.clone();
-    let cmd = runner
+    let mut cmd = runner
         .args(&[
             "-c",
             config_file_path.to_str().unwrap(),
@@ -289,8 +288,8 @@ fn cosmos_keys_show() -> io::Result<()> {
         ])
         .capture_stdout()
         .run();
-    //check that command executes without error
-    cmd.wait().unwrap().expect_success();
+
+        cmd.stdout().expect_line("cosmoskey     cosmos1wzp8pks7hzavh7r4dmenpszxyzfxyk342r55ca");
 
     f.sync_all()?;
 
@@ -299,6 +298,7 @@ fn cosmos_keys_show() -> io::Result<()> {
 ///use command-line argument value for cosmos keys delete
 #[test]
 fn cosmos_keys_delete() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("cosmoskey.pem");
     let mut f = File::create(key_file_path.clone())?;
@@ -314,8 +314,6 @@ fn cosmos_keys_delete() -> io::Result<()> {
         ..Default::default()
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
-
-    let mut runner = RUNNER.clone();
     let cmd = runner
         .args(&[
             "-c",
@@ -340,6 +338,7 @@ fn cosmos_keys_delete() -> io::Result<()> {
 #[test]
 #[ignore]
 fn deploy_erc20() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
     let key_dir = TempDir::new("test_key")?;
     let key_file_path = key_dir.path().join("cosmoskey.pem");
     let mut f = File::create(key_file_path.clone())?;
@@ -356,7 +355,6 @@ fn deploy_erc20() -> io::Result<()> {
     };
     f.write_all(toml::to_string(&configu).unwrap().as_bytes())?;
 
-    let mut runner = RUNNER.clone();
     let cmd = runner
         .args(&[
             "-c",
@@ -380,7 +378,7 @@ fn deploy_erc20() -> io::Result<()> {
 
 #[test]
 fn print_config() {
-    let mut runner = RUNNER.clone();
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
     let cmd = runner.args(&["print-config"]).capture_stdout().run();
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
