@@ -45,6 +45,7 @@ iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg\n\
 #[test]
 fn eth_keys_add() -> io::Result<()> {
     let key_dir = TempDir::new("test_key")?;
+    let key_file_path = key_dir.path().join("sha.pem");
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
@@ -70,11 +71,7 @@ fn eth_keys_add() -> io::Result<()> {
         .run();
     // Check that command executes without error.
     cmd.wait().unwrap().expect_success();
-
-    let tmp_path = key_dir.path().to_owned();
-
-    // Check that the temp directory actually exists.
-    assert!(tmp_path.exists());
+    assert!(key_file_path.exists());
     f.sync_all()?;
 
     Ok(())
@@ -113,10 +110,7 @@ fn eth_keys_delete() -> io::Result<()> {
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
 
-    let tmp_path = key_dir.path().to_owned();
-
-    // Check that the temp directory actually exists.
-    assert!(tmp_path.exists());
+    assert_eq!(key_file_path.exists(), false);
     f.sync_all()?;
 
     Ok(())
@@ -155,11 +149,6 @@ fn eth_keys_list() -> io::Result<()> {
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
 
-    let tmp_path = key_dir.path().to_owned();
-
-    // Check that the temp directory actually exists.
-    assert!(tmp_path.exists());
-
     f.sync_all()?;
     Ok(())
 }
@@ -195,11 +184,6 @@ fn eth_keys_show() -> io::Result<()> {
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
 
-    let tmp_path = key_dir.path().to_owned();
-
-    // Check that the temp directory actually exists.
-    assert!(tmp_path.exists());
-
     f.sync_all()?;
 
     Ok(())
@@ -208,6 +192,7 @@ fn eth_keys_show() -> io::Result<()> {
 #[test]
 fn cosmos_keys_add() -> io::Result<()> {
     let key_dir = TempDir::new("test_key")?;
+    let key_file_path = key_dir.path().join("sha.pem");
     let config_file_path = key_dir.path().join("config.toml");
     let mut f = File::create(config_file_path.clone())?;
     let configu = StewardConfig {
@@ -233,11 +218,7 @@ fn cosmos_keys_add() -> io::Result<()> {
         .run();
     // Check that command executes without error.
     cmd.wait().unwrap().expect_success();
-
-    let tmp_path = key_dir.path().to_owned();
-
-    // Check that the temp directory actually exists.
-    assert!(tmp_path.exists());
+    assert_eq!(key_file_path.exists(), false);
 
     f.sync_all()?;
 
@@ -276,11 +257,6 @@ fn cosmos_keys_list() -> io::Result<()> {
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
 
-    let tmp_path = key_dir.path().to_owned();
-
-    // Check that the temp directory actually exists.
-    assert!(tmp_path.exists());
-
     f.sync_all()?;
     Ok(())
 }
@@ -316,11 +292,6 @@ fn cosmos_keys_show() -> io::Result<()> {
         .run();
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
-
-    let tmp_path = key_dir.path().to_owned();
-
-    // Check that the temp directory actually exists.
-    assert!(tmp_path.exists());
 
     f.sync_all()?;
 
@@ -360,10 +331,7 @@ fn cosmos_keys_delete() -> io::Result<()> {
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
 
-    let tmp_path = key_dir.path().to_owned();
-
-    // Check that the temp directory actually exists.
-    assert!(tmp_path.exists());
+    assert_eq!(key_file_path.exists(), false);
 
     f.sync_all()?;
 
@@ -405,11 +373,6 @@ fn deploy_erc20() -> io::Result<()> {
         .run();
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
-
-    let tmp_path = key_dir.path().to_owned();
-
-    // Check that the temp directory actually exists.
-    assert!(tmp_path.exists());
 
     f.sync_all()?;
 
