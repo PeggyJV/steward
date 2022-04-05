@@ -72,7 +72,7 @@ impl StewardConfig {
 impl Default for StewardConfig {
     fn default() -> Self {
         Self {
-            keystore: "tmp/keystore".to_owned(),
+            keystore: "/tmp/keystore".to_owned(),
             server: ServerSection::default(),
             gravity: GravitySection::default(),
             ethereum: EthereumSection::default(),
@@ -114,7 +114,7 @@ pub struct KeysConfig {
 impl Default for KeysConfig {
     fn default() -> Self {
         Self {
-            keystore: "tmp/keystore".to_owned(),
+            keystore: "/tmp/keystore".to_owned(),
             rebalancer_key: "".to_owned(),
         }
     }

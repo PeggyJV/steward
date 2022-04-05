@@ -145,7 +145,8 @@ fn eth_keys_list() -> io::Result<()> {
         .capture_stdout()
         .run();
 
-    cmd.stdout().expect_line("ethkey        0xfa06d54153d56cd7c8fe2141c2bc2e1d43a08286");
+    cmd.stdout()
+        .expect_line("ethkey        0xfa06d54153d56cd7c8fe2141c2bc2e1d43a08286");
 
     f.sync_all()?;
     Ok(())
@@ -181,7 +182,8 @@ fn eth_keys_show() -> io::Result<()> {
         .capture_stdout()
         .run();
 
-    cmd.stdout().expect_line("ethkey        0xfa06d54153d56cd7c8fe2141c2bc2e1d43a08286");
+    cmd.stdout()
+        .expect_line("ethkey        0xfa06d54153d56cd7c8fe2141c2bc2e1d43a08286");
 
     f.sync_all()?;
 
@@ -253,7 +255,8 @@ fn cosmos_keys_list() -> io::Result<()> {
         .capture_stdout()
         .run();
 
-        cmd.stdout().expect_line("cosmoskey     cosmos1wzp8pks7hzavh7r4dmenpszxyzfxyk342r55ca");
+    cmd.stdout()
+        .expect_line("cosmoskey     cosmos1wzp8pks7hzavh7r4dmenpszxyzfxyk342r55ca");
 
     f.sync_all()?;
     Ok(())
@@ -289,7 +292,8 @@ fn cosmos_keys_show() -> io::Result<()> {
         .capture_stdout()
         .run();
 
-        cmd.stdout().expect_line("cosmoskey     cosmos1wzp8pks7hzavh7r4dmenpszxyzfxyk342r55ca");
+    cmd.stdout()
+        .expect_line("cosmoskey     cosmos1wzp8pks7hzavh7r4dmenpszxyzfxyk342r55ca");
 
     f.sync_all()?;
 
