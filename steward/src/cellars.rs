@@ -1,8 +1,5 @@
 use crate::{
-    cork::{
-        cache::{self, is_approved},
-        client::CORK_QUERY_CLIENT,
-    },
+    cork::{cache::{self, is_approved}},
     error::Error,
     gas::CellarGas,
     utils::get_eth_provider,
@@ -35,8 +32,7 @@ pub async fn validate_cellar_id(cellar_id: &str) -> Result<(), String> {
     }
 
     if !is_approved(cellar_id).await {
-        let wrapper = CORK_QUERY_CLIENT.get().unwrap();
-        if let Err(err) = cache::refresh_approved_cellars(wrapper).await {
+        if let Err(err) = cache::refresh_approved_cellars().await {
             return Err(format!("failed to refresh approved cellar cache while processing SubmitCork request: {}", err));
         }
 

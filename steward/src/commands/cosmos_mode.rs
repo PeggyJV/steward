@@ -8,8 +8,7 @@ use crate::{
     config::StewardConfig,
     cork::{
         cache::start_approved_cellar_cache_thread,
-        client::{CorkClientWrapper, CORK_QUERY_CLIENT},
-        CorkHandler,
+        CorkHandler, client::init_cork_client,
     },
     prelude::*,
     server,
@@ -34,7 +33,7 @@ impl Runnable for CosmosSignerCmd {
         let config = APP.config();
         info!("Starting application");
         abscissa_tokio::run(&APP, async {
-            if let Err(err) = CORK_QUERY_CLIENT.set(CorkClientWrapper::new().await.unwrap()) {
+            if let Err(err) = init_cork_client().await {
                 // SetError<T> does not implement Debug and therefore can't call unwrap() or expect()
                 panic!("{}", err);
             }

@@ -3,15 +3,12 @@ use abscissa_core::{
     Application,
 };
 use lazy_static::lazy_static;
-use somm_proto::cork::QueryCellarIDsRequest;
-use std::{sync::{Arc, RwLock}, time::Duration};
+use std::{sync::RwLock, time::Duration};
 use tokio::task::JoinHandle;
 
-use crate::{error::Error, prelude::APP};
+use crate::{error::Error, prelude::APP, cork::client::get_cork_client_wrapper};
 
-use super::client::{CorkClientWrapper, CORK_QUERY_CLIENT};
-
-pub type ApprovedCellarsCache = Arc<RwLock<Vec<String>>>;
+pub type ApprovedCellarsCache = RwLock<Vec<String>>;
 
 lazy_static! {
     static ref APPROVED_CELLARS: ApprovedCellarsCache = ApprovedCellarsCache::default();
@@ -30,11 +27,10 @@ pub async fn is_approved(cellar_id: &str) -> bool {
 }
 
 /// Flushes and reloads cache with normalized cellar id strings.
-pub async fn refresh_approved_cellars(client_wrapper: &CorkClientWrapper) -> Result<(), Error> {
+pub async fn refresh_approved_cellars() -> Result<(), Error> {
     debug!("refreshing approved cellars cache");
-    let mut client = client_wrapper.get_client().await;
-    let request = QueryCellarIDsRequest {};
-    match client.query_cellar_i_ds(request).await {
+    let client_wrapper = get_cork_client_wrapper().await.unwrap();
+    match client_wrapper.get_approved_cellar_ids().await {
         Ok(res) => {
             let approved_cellars = res
                 .into_inner()
@@ -57,7 +53,6 @@ pub async fn refresh_approved_cellars(client_wrapper: &CorkClientWrapper) -> Res
 /// period can be configured via the `cork.cache_refresh_period` field (in seconds) in the steward
 /// config file. The default period is 60 seconds.
 pub async fn start_approved_cellar_cache_thread() -> JoinHandle<()> {
-    let wrapper = CORK_QUERY_CLIENT.get().unwrap();
     let config = APP.config();
     let query_period = Duration::new(config.cork.cache_refresh_period, 0);
 
@@ -65,7 +60,7 @@ pub async fn start_approved_cellar_cache_thread() -> JoinHandle<()> {
         let mut fail_count = 0;
         loop {
             tokio::time::sleep(query_period).await;
-            if let Err(err) = refresh_approved_cellars(wrapper).await {
+            if let Err(err) = refresh_approved_cellars().await {
                 fail_count += 1;
                 error!("{}", err);
                 warn!("the cache has been unable to refresh for {} minutes (refreshes once per minute).", fail_count)
