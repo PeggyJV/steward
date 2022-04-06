@@ -11,7 +11,7 @@ use abscissa_core::{
 };
 use deep_space::{Coin, Contact};
 use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
-use somm_proto::cork::{query_client::QueryClient as CorkQueryClient, Cork, QueryCellarIDsRequest};
+use somm_proto::cork::Cork;
 use std::time::Duration;
 use steward_proto::{
     self,
@@ -22,6 +22,9 @@ use steward_proto::{
     },
 };
 use tonic::{self, async_trait, Code, Request, Response, Status};
+
+pub mod cache;
+pub mod client;
 
 const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
 
@@ -35,40 +38,6 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
     ) -> Result<Response<SubmitResponse>, Status> {
         debug!("received contract call request");
         let request = request.get_ref();
-
-        // Check if cellar is governance approved before building cork
-        let config = APP.config();
-        let mut client = match CorkQueryClient::connect(config.cosmos.grpc.clone()).await {
-            Ok(c) => c,
-            Err(err) => {
-                error!("cork query client connection failed: {}", err);
-                return Err(Status::new(
-                    Code::Internal,
-                    "failed to query chain to validate cellar id",
-                ));
-            }
-        };
-
-        debug!("checking if cellar ID is approved");
-        let ids = &client
-            .query_cellar_i_ds(QueryCellarIDsRequest {})
-            .await?
-            .get_ref()
-            .cellar_ids
-            .clone();
-        if !ids.contains(&request.cellar_id) {
-            debug!(
-                "cellar ID {} not approved by governance",
-                &request.cellar_id
-            );
-            return Err(Status::new(
-                Code::PermissionDenied,
-                format!(
-                    "cellar ID {} not approved by governance",
-                    &request.cellar_id
-                ),
-            ));
-        }
 
         // Build and send cork
         let cork = match build_cork(request).await {
@@ -94,7 +63,7 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
 }
 
 async fn build_cork(request: &SubmitRequest) -> Result<Cork, Error> {
-    cellars::validate_cellar_id(request.cellar_id.as_str())?;
+    cellars::validate_cellar_id(request.cellar_id.as_str()).await?;
     let address = request.cellar_id.clone();
     let contract_call_data = match request.call_data.clone() {
         Some(call) => call,

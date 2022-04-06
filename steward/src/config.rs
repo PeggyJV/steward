@@ -38,6 +38,7 @@ pub struct StewardConfig {
     pub metrics: MetricsSection,
     pub cellars: Vec<CellarConfig>,
     pub keys: KeysConfig,
+    pub cork: CorkConfig,
 }
 
 impl StewardConfig {
@@ -80,6 +81,7 @@ impl Default for StewardConfig {
             metrics: MetricsSection::default(),
             cellars: vec![CellarConfig::default()],
             keys: KeysConfig::default(),
+            cork: CorkConfig::default(),
         }
     }
 }
@@ -116,6 +118,19 @@ impl Default for KeysConfig {
         Self {
             keystore: "/tmp/keystore".to_owned(),
             rebalancer_key: "".to_owned(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CorkConfig {
+    pub cache_refresh_period: u64,
+}
+
+impl Default for CorkConfig {
+    fn default() -> Self {
+        Self {
+            cache_refresh_period: 60,
         }
     }
 }

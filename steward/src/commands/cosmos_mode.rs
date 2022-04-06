@@ -3,8 +3,16 @@
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::{
-    application::APP, cellars::uniswapv3::UniswapV3CellarAllocator, config::StewardConfig,
-    cork::CorkHandler, prelude::*, server,
+    application::APP,
+    cellars::uniswapv3::UniswapV3CellarAllocator,
+    config::StewardConfig,
+    cork::{
+        cache::start_approved_cellar_cache_thread,
+        client::{CorkClientWrapper, CORK_QUERY_CLIENT},
+        CorkHandler,
+    },
+    prelude::*,
+    server,
 };
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
@@ -26,6 +34,16 @@ impl Runnable for CosmosSignerCmd {
         let config = APP.config();
         info!("Starting application");
         abscissa_tokio::run(&APP, async {
+            if let Err(err) = CORK_QUERY_CLIENT.set(CorkClientWrapper::new().await.unwrap()) {
+                // SetError<T> does not implement Debug and therefore can't call unwrap() or expect()
+                panic!("{}", err);
+            }
+
+            // Start approved cellar caching thread
+            // currently allows the thread to detach since we aren't capturing the JoinHandle
+            // TO-DO: Some kind of keep-alive mechanism in case the thread panics?
+            start_approved_cellar_cache_thread().await;
+
             // Reflection required for certain clients to function... such as grpcurl
             let contents = server::DESCRIPTOR.to_vec();
             let proto_descriptor_service = tonic_reflection::server::Builder::configure()

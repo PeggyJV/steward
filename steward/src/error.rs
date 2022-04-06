@@ -14,7 +14,7 @@ use std::{
     ops::Deref,
 };
 use thiserror::Error;
-use tonic::transport::Error as TonicError;
+use tonic::{transport::Error as TonicError, Status as TonicStatus};
 
 /// Kinds of errors
 #[derive(Copy, Clone, Debug, Eq, Error, PartialEq)]
@@ -182,6 +182,13 @@ impl From<String> for Error {
 
 impl From<TonicError> for Error {
     fn from(err: TonicError) -> Self {
+        let err: BoxError = err.into();
+        ErrorKind::GrpcError.context(err).into()
+    }
+}
+
+impl From<TonicStatus> for Error {
+    fn from(err: TonicStatus) -> Self {
         let err: BoxError = err.into();
         ErrorKind::GrpcError.context(err).into()
     }

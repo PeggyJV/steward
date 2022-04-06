@@ -158,7 +158,7 @@ impl server::UniswapV3CellarAllocator for UniswapV3CellarAllocator {
 
         debug!("cellar_id in request: {}", &request.cellar_id);
         let cellar_address = request.cellar_id.clone();
-        if let Err(err) = cellars::validate_cellar_id(&cellar_address) {
+        if let Err(err) = cellars::validate_cellar_id(&cellar_address).await {
             return Err(tonic::Status::invalid_argument(err));
         }
 
@@ -199,7 +199,7 @@ impl server::UniswapV3CellarAllocator for UniswapV3DirectCellar {
             .collect();
 
         let cellar_address = request.cellar_id.clone();
-        if let Err(err) = cellars::validate_cellar_id(&cellar_address) {
+        if let Err(err) = cellars::validate_cellar_id(&cellar_address).await {
             return Err(tonic::Status::invalid_argument(err));
         }
 
