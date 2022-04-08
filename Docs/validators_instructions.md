@@ -8,9 +8,9 @@ It integrates the full functionality of gorc for operating as an orchestrator an
 
 ## Background
 
-Every automated investing system has a feedback loop where changes in the market must be observed and investments rebalanced in response. 
+Every automated investing system has a feedback loop where changes in the market must be observed and investments rebalanced in response.
 
-Steward closes the loop in the Sommelier chain. For instance, it allows Validators to vote for rebalancing Cellar funds in response to a Data Provider’s recommendation based on market changes. 
+Steward closes the loop in the Sommelier chain. For instance, it allows Validators to vote for rebalancing Cellar funds in response to a Data Provider’s recommendation based on market changes.
 
 Additionally, Steward houses the Orchestrator, which is responsible for interactions with both chains via the Gravity Bridge.
 
@@ -51,7 +51,7 @@ keystore = "/tmp/keystore"
 
 [server]
 address = "0.0.0.0"           // This is an optional feild.
-client_ca_cert_path = ""       // optional, defaults to VolumeFi client cert
+client_ca_cert_path = ""       // optional, defaults to Peggy JV client cert
 port = 5734                  // optional, default is 5734
 server_cert_path = ""
 server_key_path = ""
@@ -120,9 +120,9 @@ steward -c [your_config_file_name.toml] cosmos-signer
 Steward allows you to start the Orchestrator with or without the Relayer. First, you’ll need an Ethereum key and a Cosmos key. Run the command below to create your keys if you don’t have one. Replace `eth` with `cosmos` if you want to create a `cosmos` key instead of an `eth` key.
 
 ```bash
-steward -c [your_config_file_name.toml] keys eth add [key_name] 
+steward -c [your_config_file_name.toml] keys eth add [key_name]
 
-steward -c [your_config_file_name.toml] keys eth import [key_name] 
+steward -c [your_config_file_name.toml] keys eth import [key_name]
 ```
 
 To start the Orchestrator with the Relayer, run the command below:

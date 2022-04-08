@@ -21,6 +21,7 @@ members = [
 	"steward_proto_build",
 ]
 [dependencies]
+lazy_static = "1.4.0"
 steward = { path = "./steward" }
 steward_abi = { path = "./steward_abi" }
 steward_abi_build = { path = "./steward_abi_build" }

@@ -1293,12 +1293,12 @@ dependencies = [
 
 [[package]]
 name = "cosmos-sdk-proto"
-version = "0.8.0"
-source = "git+http://github.com/cosmos/cosmos-rust?branch=main#e5a1872083abb3d88fa62dda966e7f5408deba58"
+version = "0.9.0"
+source = "git+http://github.com/cosmos/cosmos-rust?branch=main#ed05f6909cfdf97609e2f3d8b618fd0244a2d13d"
 dependencies = [
  "prost 0.9.0",
  "prost-types 0.9.0",
- "tendermint-proto 0.23.1",
+ "tendermint-proto 0.23.3",
  "tonic 0.6.2",
 ]
 
@@ -3256,6 +3256,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "num_threads"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "97ba99ba6393e2c3734791401b66902d981cb03bf190af674ca69949b6d5fb15"
+dependencies = [
+ "libc",
+]
+
+[[package]]
 name = "object"
 version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4602,10 +4611,10 @@ dependencies = [
 [[package]]
 name = "somm_proto"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/sommelier#fa1a5e3a441b8ace82aa61350ec23373b6118c7d"
+source = "git+https://github.com/PeggyJV/sommelier#8f51201abc53234eda6544b1a5ff68490ad7fad8"
 dependencies = [
  "bytes 1.1.0",
- "cosmos-sdk-proto 0.8.0",
+ "cosmos-sdk-proto 0.9.0",
  "prost 0.7.0",
  "prost-types 0.7.0",
  "tonic 0.4.3",
@@ -4615,6 +4624,7 @@ dependencies = [
 name = "sommelier_steward"
 version = "0.1.0"
 dependencies = [
+ "lazy_static",
  "steward",
  "steward_abi",
  "steward_abi_build",
@@ -4889,12 +4899,11 @@ dependencies = [
 
 [[package]]
 name = "tendermint-proto"
-version = "0.23.1"
+version = "0.23.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d1b8319fcf0860833eabe3278cf2d94ca20ef04bee6a77d892f986026fb1c252"
+checksum = "a9e0a0251fd81bed7420bea0f4d91c2a58f6c9fa34d5b2f70bed0ba8890de5aa"
 dependencies = [
  "bytes 1.1.0",
- "chrono",
  "flex-error",
  "num-derive",
  "num-traits",
@@ -4903,6 +4912,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "subtle-encoding",
+ "time 0.3.7",
 ]
 
 [[package]]
@@ -5010,9 +5020,20 @@ dependencies = [
  "libc",
  "standback",
  "stdweb",
- "time-macros",
+ "time-macros 0.1.1",
  "version_check",
  "winapi 0.3.9",
+]
+
+[[package]]
+name = "time"
+version = "0.3.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "004cbc98f30fa233c61a38bc77e96a9106e65c88f2d3bef182ae952027e5753d"
+dependencies = [
+ "libc",
+ "num_threads",
+ "time-macros 0.2.3",
 ]
 
 [[package]]
@@ -5024,6 +5045,12 @@ dependencies = [
  "proc-macro-hack",
  "time-macros-impl",
 ]
+
+[[package]]
+name = "time-macros"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "25eb0ca3468fc0acc11828786797f6ef9aa1555e4a211a60d64cc8e4d1be47d6"
 
 [[package]]
 name = "time-macros-impl"
