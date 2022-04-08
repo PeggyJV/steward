@@ -230,7 +230,7 @@ impl Default for CosmosSection {
         Self {
             key_derivation_path: "m/44'/118'/0'/0/0".to_owned(),
             grpc: "http://localhost:9090".to_owned(),
-            prefix: "cosmos".to_owned(),
+            prefix: "somm".to_owned(),
             gas_price: GasPrice::default(),
             gas_adjustment: 1.0f64,
             msg_batch_size: 5,
@@ -248,8 +248,8 @@ pub struct GasPrice {
 impl Default for GasPrice {
     fn default() -> Self {
         Self {
-            amount: 0.001,
-            denom: "stake".to_owned(),
+            amount: 0.0,
+            denom: "usomm".to_owned(),
         }
     }
 }
