@@ -248,8 +248,8 @@ pub struct GasPrice {
 impl Default for GasPrice {
     fn default() -> Self {
         Self {
-            amount: 0.001,
-            denom: "stake".to_owned(),
+            amount: 0.0,
+            denom: "usomm".to_owned(),
         }
     }
 }
