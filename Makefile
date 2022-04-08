@@ -37,7 +37,7 @@ e2e_cork_test: e2e_clean_slate
 fail:
 	@echo 'test failed; dumping container logs into ./testdata for review'
 	@mkdir -p ./testdata
-	@docker logs ethereum > testlogs/ethereum.log 2>&1 || true
+	@docker logs ethereum > testdata/ethereum.log 2>&1 || true
 	@docker logs sommelier0 > testdata/sommelier0.log 2>&1 || true
 	@docker logs sommelier1 > testdata/sommelier1.log 2>&1 || true
 	@docker logs sommelier2 > testdata/sommelier2.log 2>&1 || true

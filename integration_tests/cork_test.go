@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/hex"
 	"encoding/pem"
 	"fmt"
 	"io/ioutil"
@@ -171,6 +172,13 @@ func (s *IntegrationTestSuite) TestCork() {
 				InvalidationScope: invalidationScope,
 			}
 			response, _ := gravityQueryClient.ContractCallTx(context.Background(), request)
+
+			observedCctxReq := &gravityTypes.ContractCallTxsRequest{}
+			observedResponse, _ := gravityQueryClient.ContractCallTxs(context.Background(), observedCctxReq)
+
+			s.T().Logf("expected invalidation scope: %s", hex.EncodeToString(invalidationScope))
+			s.T().Logf("observed cctxs: %v", observedResponse.Calls)
+			s.T().Logf("last observed eth height: ")
 
 			if response != nil {
 				s.T().Logf("found logic call %v!", response.LogicCall)
