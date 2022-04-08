@@ -172,7 +172,7 @@ fn eth_keys_rename() -> io::Result<()> {
             "-c",
             config_file_path.to_str().unwrap(),
             "keys",
-            "cosmos",
+            "eth",
             "rename",
             "ethkey",
             "newethkey",
