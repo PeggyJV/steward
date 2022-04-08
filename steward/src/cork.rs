@@ -1,5 +1,5 @@
 use crate::{
-    cellars::{self, aave_v2_stablecoin, uniswapv3},
+    cellars::{self, aave_v2_stablecoin},
     config,
     error::{Error, ErrorKind},
     prelude::APP,
