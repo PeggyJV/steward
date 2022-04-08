@@ -3,7 +3,7 @@
 VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:main"
 ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:main"
 
-e2e_build_images:
+e2e_build_images: e2e_clean_slate
 	@docker pull $(VALIDATOR_IMAGE)
 	@docker tag $(VALIDATOR_IMAGE) sommelier:prebuilt
 	@docker pull $(ORCHESTRATOR_IMAGE)
