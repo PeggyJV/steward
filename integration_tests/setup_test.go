@@ -16,10 +16,7 @@ import (
 
 	gravitytypes "github.com/peggyjv/gravity-bridge/module/x/gravity/types"
 
-	"github.com/ethereum/go-ethereum"
-
-	allocationtypes "github.com/peggyjv/sommelier/v3/x/allocation/types"
-	corktypes "github.com/peggyjv/sommelier/v3/x/cork/types"
+	corktypes "github.com/peggyjv/sommelier/v4/x/cork/types"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -355,25 +352,9 @@ func (s *IntegrationTestSuite) initGenesis() {
 	s.Require().NoError(err)
 	appGenState[genutiltypes.ModuleName] = bz
 
-	var allocationGenState allocationtypes.GenesisState
-	s.Require().NoError(cdc.UnmarshalJSON(appGenState[allocationtypes.ModuleName], &allocationGenState))
-
-	allocationGenState.Cellars = []*allocationtypes.Cellar{
-		{
-			Id: hardhatCellar.String(),
-			TickRanges: []*allocationtypes.TickRange{
-				{Upper: 600, Lower: 300, Weight: 900},
-			},
-		},
-	}
-	allocationGenState.Params.VotePeriod = 30
-	bz, err = cdc.MarshalJSON(&allocationGenState)
-	s.Require().NoError(err)
-	appGenState[allocationtypes.ModuleName] = bz
-
 	var corkGenState corktypes.GenesisState
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[corktypes.ModuleName], &corkGenState))
-	corkGenState.CellarIds = &corktypes.CellarIDSet{
+	corkGenState.CellarIds = corktypes.CellarIDSet{
 		Ids: []string{hardhatCellar.Hex()},
 	}
 	bz, err = cdc.MarshalJSON(&corkGenState)
@@ -841,29 +822,6 @@ func (s *IntegrationTestSuite) logsByContainerID(id string) string {
 	))
 
 	return containerLogsBuf.String()
-}
-
-func (s *IntegrationTestSuite) getFirstTickRange() (*allocationtypes.TickRange, error) {
-	ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
-	if err != nil {
-		return nil, err
-	}
-
-	bz, err := ethClient.CallContract(context.Background(), ethereum.CallMsg{
-		From: common.HexToAddress(s.chain.validators[0].ethereumKey.address),
-		To:   &hardhatCellar,
-		Gas:  0,
-		Data: allocationtypes.ABIEncodedCellarTickInfoBytes(uint(0)),
-	}, nil)
-	if err != nil {
-		return nil, err
-	}
-	tr, err := allocationtypes.BytesToABIEncodedTickRange(bz)
-	if err != nil {
-		return nil, err
-	}
-
-	return tr, nil
 }
 
 func (s *IntegrationTestSuite) TestBasicChain() {

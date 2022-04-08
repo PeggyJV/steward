@@ -22,9 +22,8 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	gravitytypes "github.com/peggyjv/gravity-bridge/module/x/gravity/types"
-	"github.com/peggyjv/sommelier/v3/app"
-	"github.com/peggyjv/sommelier/v3/app/params"
-	"github.com/peggyjv/sommelier/v3/x/allocation/types"
+	"github.com/peggyjv/sommelier/v4/app"
+	"github.com/peggyjv/sommelier/v4/app/params"
 	tmrand "github.com/tendermint/tendermint/libs/rand"
 	rpchttp "github.com/tendermint/tendermint/rpc/client/http"
 )
@@ -209,8 +208,6 @@ func (c *chain) clientContext(nodeURI string, kb *keyring.Keyring, fromName stri
 	interfaceRegistry.RegisterImplementations((*sdk.Msg)(nil),
 		&stakingtypes.MsgCreateValidator{},
 		&gravitytypes.MsgDelegateKeys{},
-		&types.MsgAllocationCommit{},
-		&types.MsgAllocationPrecommit{},
 	)
 	interfaceRegistry.RegisterImplementations((*cryptotypes.PubKey)(nil), &secp256k1.PubKey{}, &ed25519.PubKey{})
 
