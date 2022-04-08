@@ -729,16 +729,7 @@ func (s *IntegrationTestSuite) runStewards() {
 	s.stewResources = make([]*dockertest.Resource, len(s.chain.stewards))
 	for i, steward := range s.chain.stewards {
 		stewardCfg := fmt.Sprintf(`[cosmos]
-key_derivation_path = "m/44'/118'/1'/0/0"
 grpc = "http://%s:9090"
-prefix = "somm"
-msg_batch_size = 5
-gas_adjustment = 1.0
-
-[ethereum]
-key_derivation_path = "m/44'/60'/0'/0/0"
-rpc = "http://%s:8545"
-gas_price_multiplier = 1.5
 
 [cosmos.gas_price]
 amount = 1000000000
@@ -755,7 +746,6 @@ server_cert_path = "/root/steward/test_server.crt"
 server_key_path = "/root/steward/test_server_key_pkcs8.pem"
 `,
 			s.valResources[i].Container.Name[1:],
-			s.ethResource.Container.Name[1:],
 			testDenom,
 		)
 
