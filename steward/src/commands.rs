@@ -27,7 +27,7 @@ mod transfer;
 mod tx;
 
 use self::{
-    config_cmd::ConfigCmd, cosmos_mode::CosmosSignerCmd,  keys::KeysCmd,
+    config_cmd::ConfigCmd, cosmos_mode::CosmosSignerCmd, keys::KeysCmd,
     remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, single_signer::SingleSignerCmd,
     transfer::TransferCmd,
 };
