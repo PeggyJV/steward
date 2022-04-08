@@ -107,14 +107,12 @@ impl Default for ServerSection {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct KeysConfig {
-    pub keystore: String,
     pub rebalancer_key: String,
 }
 
 impl Default for KeysConfig {
     fn default() -> Self {
         Self {
-            keystore: "/tmp/keystore".to_owned(),
             rebalancer_key: "".to_owned(),
         }
     }

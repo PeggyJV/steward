@@ -58,7 +58,6 @@ fn eth_keys_add() -> io::Result<()> {
 
     let config = StewardConfig {
         keys: KeysConfig {
-            keystore: keystore_dir_string.clone(),
             rebalancer_key: "cellar".to_string(),
         },
         keystore: keystore_dir_string.clone(),
@@ -106,7 +105,6 @@ fn eth_keys_delete() -> io::Result<()> {
 
     let config = StewardConfig {
         keys: KeysConfig {
-            keystore: keystore_dir_string.clone(),
             rebalancer_key: "cellar".to_string(),
         },
         keystore: keystore_dir_string.clone(),
@@ -156,7 +154,6 @@ fn eth_keys_rename() -> io::Result<()> {
 
     let config = StewardConfig {
         keys: KeysConfig {
-            keystore: keystore_dir_string.clone(),
             rebalancer_key: "cellar".to_string(),
         },
         keystore: keystore_dir_string.clone(),
@@ -207,7 +204,6 @@ fn eth_keys_list() -> io::Result<()> {
 
     let config = StewardConfig {
         keys: KeysConfig {
-            keystore: keystore_dir_string.clone(),
             rebalancer_key: "cellar".to_string(),
         },
         keystore: keystore_dir_string.clone(),
@@ -255,7 +251,6 @@ fn eth_keys_show() -> io::Result<()> {
 
     let config = StewardConfig {
         keys: KeysConfig {
-            keystore: keystore_dir_string.clone(),
             rebalancer_key: "cellar".to_string(),
         },
         keystore: keystore_dir_string.clone(),
@@ -302,7 +297,6 @@ fn cosmos_keys_add() -> io::Result<()> {
 
     let config = StewardConfig {
         keys: KeysConfig {
-            keystore: keystore_dir_string.clone(),
             rebalancer_key: "cellar".to_string(),
         },
         keystore: keystore_dir_string.clone(),
@@ -349,7 +343,6 @@ fn eth_keys_import() -> io::Result<()> {
 
     let config = StewardConfig {
         keys: KeysConfig {
-            keystore: keystore_dir_string.clone(),
             rebalancer_key: "cellar".to_string(),
         },
         keystore: keystore_dir_string.clone(),
@@ -398,7 +391,6 @@ fn cosmos_keys_list() -> io::Result<()> {
 
     let config = StewardConfig {
         keys: KeysConfig {
-            keystore: keystore_dir_string.clone(),
             rebalancer_key: "cellar".to_string(),
         },
         keystore: keystore_dir_string.clone(),
@@ -445,7 +437,6 @@ fn cosmos_keys_show() -> io::Result<()> {
 
     let config = StewardConfig {
         keys: KeysConfig {
-            keystore: keystore_dir_string.clone(),
             rebalancer_key: "cellar".to_string(),
         },
         keystore: keystore_dir_string.clone(),
@@ -493,7 +484,6 @@ fn cosmos_keys_delete() -> io::Result<()> {
 
     let config = StewardConfig {
         keys: KeysConfig {
-            keystore: keystore_dir_string.clone(),
             rebalancer_key: "cellar".to_string(),
         },
         keystore: keystore_dir_string.clone(),
@@ -541,7 +531,6 @@ fn cosmos_keys_recover() -> io::Result<()> {
 
     let config = StewardConfig {
         keys: KeysConfig {
-            keystore: keystore_dir_string.clone(),
             rebalancer_key: "cellar".to_string(),
         },
         keystore: keystore_dir_string.clone(),
@@ -591,7 +580,6 @@ fn cosmos_keys_rename() -> io::Result<()> {
 
     let config = StewardConfig {
         keys: KeysConfig {
-            keystore: keystore_dir_string.clone(),
             rebalancer_key: "cellar".to_string(),
         },
         keystore: keystore_dir_string.clone(),
