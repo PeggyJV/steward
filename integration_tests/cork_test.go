@@ -14,7 +14,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
-	gravityTypes "github.com/peggyjv/gravity-bridge/module/x/gravity/types"
+	gravityTypes "github.com/peggyjv/gravity-bridge/module/v2/x/gravity/types"
 	corkTypes "github.com/peggyjv/sommelier/v4/x/cork/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"

@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := e2e_rebalance
 
-VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:latest"
-ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:latest"
+VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:main"
+ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:main"
 
 e2e_build_images:
 	@docker pull $(VALIDATOR_IMAGE)
