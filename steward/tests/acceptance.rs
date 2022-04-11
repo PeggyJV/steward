@@ -20,7 +20,12 @@
 
 use abscissa_core::testing::prelude::*;
 use once_cell::sync::Lazy;
-use steward::config::StewardConfig;
+use std::{
+    fs,
+    io::{self},
+};
+use steward::config::{KeysConfig, StewardConfig};
+use tempdir::TempDir;
 
 /// Executes your application binary via `cargo run`.
 ///
@@ -28,67 +33,589 @@ use steward::config::StewardConfig;
 /// the runner acquire a mutex when executing commands and inspecting
 /// exit statuses, serializing what would otherwise be multithreaded
 /// invocations as `cargo test` executes tests in parallel by default.
-pub static RUNNER: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
 
-/// Use `StewardConfig::default()` value if no config or args
+pub const PRIVATE_KEY: &str = "-----BEGIN PRIVATE KEY-----\n\
+MIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQg4t6AYvfQgwhpq2YAUpG8\n\
+qK43zP8REoo0Ppd9CjN/3rGhRANCAATIY9rZnmtgdkKI5+amFGsorum2Lm8fvHMU\n\
+iCY6boIqnpNo1CR+My92ra3DtCw3O27u5m+IClq7wLwM4YlnLjJg\n\
+-----END PRIVATE KEY-----";
+
+/// Eth add key test
 #[test]
-#[ignore]
-fn start_no_args() {
-    let mut runner = RUNNER.clone();
-    let mut cmd = runner.arg("start").capture_stdout().run();
-    cmd.stdout().expect_line("Hello, world!");
+fn eth_keys_add() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
+    let key_dir = TempDir::new("test_key")?;
+
+    let keystore_dir_path = key_dir.path().join("keystore");
+    let keystore_dir_string = keystore_dir_path
+        .clone()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::create_dir(keystore_dir_path.clone()).expect("could not create keystore dir");
+
+    let key_file_path = keystore_dir_path.join("sha.pem");
+
+    let config = StewardConfig {
+        keys: KeysConfig {
+            delegate_key: "cellar".to_string(),
+        },
+        keystore: keystore_dir_string.clone(),
+        ..Default::default()
+    };
+
+    let config_file_path = key_dir.path().join("config.toml");
+    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
+    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
+
+    let cmd = runner
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "eth",
+            "add",
+            "sha",
+        ])
+        .capture_stdout()
+        .run();
+    // Check that command executes without error.
     cmd.wait().unwrap().expect_success();
+    assert!(key_file_path.exists());
+
+    Ok(())
 }
 
-/// Use command-line argument value
+/// Eth delete key test
 #[test]
-#[ignore]
-fn start_with_args() {
-    let mut runner = RUNNER.clone();
+fn eth_keys_delete() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
+    let key_dir = TempDir::new("test_key")?;
+
+    let keystore_dir_path = key_dir.path().join("keystore");
+    let keystore_dir_string = keystore_dir_path
+        .clone()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::create_dir(keystore_dir_path.clone()).expect("could not create keystore dir");
+
+    let key_file_path = keystore_dir_path.join("ethkey.pem");
+    fs::write(key_file_path.clone(), PRIVATE_KEY).expect("could not write key file");
+
+    let config = StewardConfig {
+        keys: KeysConfig {
+            delegate_key: "cellar".to_string(),
+        },
+        keystore: keystore_dir_string.clone(),
+        ..Default::default()
+    };
+
+    let config_file_path = key_dir.path().join("config.toml");
+    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
+    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
+
+    let cmd = runner
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "eth",
+            "delete",
+            "ethkey",
+        ])
+        .capture_stdout()
+        .run();
+    //check that command executes without error
+    cmd.wait().unwrap().expect_success();
+
+    assert_eq!(key_file_path.exists(), false);
+
+    Ok(())
+}
+
+/// Eth rename key test
+#[test]
+fn eth_keys_rename() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
+    let key_dir = TempDir::new("test_key")?;
+
+    let keystore_dir_path = key_dir.path().join("keystore");
+    let keystore_dir_string = keystore_dir_path
+        .clone()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::create_dir(keystore_dir_path.clone()).expect("could not create keystore dir");
+
+    let key_file_path = keystore_dir_path.join("ethkey.pem");
+    let new_key_file_path = keystore_dir_path.join("newethkey.pem");
+    fs::write(key_file_path.clone(), PRIVATE_KEY).expect("could not write key file");
+
+    let config = StewardConfig {
+        keys: KeysConfig {
+            delegate_key: "cellar".to_string(),
+        },
+        keystore: keystore_dir_string.clone(),
+        ..Default::default()
+    };
+
+    let config_file_path = key_dir.path().join("config.toml");
+    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
+    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
+
+    let cmd = runner
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "eth",
+            "rename",
+            "ethkey",
+            "newethkey",
+        ])
+        .capture_stdout()
+        .run();
+    //check that command executes without error
+    cmd.wait().unwrap().expect_success();
+
+    assert!(new_key_file_path.exists());
+    assert_eq!(key_file_path.exists(), false);
+
+    Ok(())
+}
+
+/// Eth list keys test
+#[test]
+fn eth_keys_list() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
+    let key_dir = TempDir::new("test_key")?;
+
+    let keystore_dir_path = key_dir.path().join("keystore");
+    let keystore_dir_string = keystore_dir_path
+        .clone()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::create_dir(keystore_dir_path.clone()).expect("could not create keystore dir");
+
+    let key_file_path = keystore_dir_path.join("ethkey.pem");
+    fs::write(key_file_path, PRIVATE_KEY).expect("could not write key file");
+
+    let config = StewardConfig {
+        keys: KeysConfig {
+            delegate_key: "cellar".to_string(),
+        },
+        keystore: keystore_dir_string.clone(),
+        ..Default::default()
+    };
+
+    let config_file_path = key_dir.path().join("config.toml");
+    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
+    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
+
     let mut cmd = runner
-        .args(&["start", "acceptance", "test"])
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "eth",
+            "list",
+        ])
         .capture_stdout()
         .run();
 
-    cmd.stdout().expect_line("Hello, acceptance test!");
-    cmd.wait().unwrap().expect_success();
+    // Check that the list keys list keys in the keystore we created.
+    cmd.stdout()
+        .expect_line("ethkey\t0xfa06d54153d56cd7c8fe2141c2bc2e1d43a08286");
+
+    Ok(())
 }
 
-/// Use configured value
-// #[test]
-// fn start_with_config_no_args() {
-//     let mut config = StewardConfig::default();
-//     config.hello.recipient = "configured recipient".to_owned();
-//     let expected_line = format!("Hello, {}!", &config.hello.recipient);
-
-//     let mut runner = RUNNER.clone();
-//     let mut cmd = runner.config(&config).arg("start").capture_stdout().run();
-//     cmd.stdout().expect_line(&expected_line);
-//     cmd.wait().unwrap().expect_success();
-// }
-
-/// Override configured value with command-line argument
+/// Eth show key test
 #[test]
-#[ignore]
-fn start_with_config_and_args() {
-    let config = StewardConfig::default();
-    // config.hello.recipient = "configured recipient".to_owned();
+fn eth_keys_show() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
+    let key_dir = TempDir::new("test_key")?;
 
-    let mut runner = RUNNER.clone();
+    let keystore_dir_path = key_dir.path().join("keystore");
+    let keystore_dir_string = keystore_dir_path
+        .clone()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::create_dir(keystore_dir_path.clone()).expect("could not create keystore dir");
+
+    let key_file_path = keystore_dir_path.join("ethkey.pem");
+    fs::write(key_file_path, PRIVATE_KEY).expect("could not write key file");
+
+    let config = StewardConfig {
+        keys: KeysConfig {
+            delegate_key: "cellar".to_string(),
+        },
+        keystore: keystore_dir_string.clone(),
+        ..Default::default()
+    };
+
+    let config_file_path = key_dir.path().join("config.toml");
+    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
+    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
+
     let mut cmd = runner
-        .config(&config)
-        .args(&["start", "acceptance", "test"])
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "eth",
+            "show",
+            "ethkey",
+        ])
+        .capture_stdout()
+        .run();
+    // Check that the show key command shows the key we created.
+    cmd.stdout()
+        .expect_line("ethkey\t0xfa06d54153d56cd7c8fe2141c2bc2e1d43a08286");
+
+    Ok(())
+}
+
+/// Eth import key test
+#[test]
+fn eth_keys_import() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
+    let key_dir = TempDir::new("test_key")?;
+
+    let keystore_dir_path = key_dir.path().join("keystore");
+    let keystore_dir_string = keystore_dir_path
+        .clone()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::create_dir(keystore_dir_path.clone()).expect("could not create keystore dir");
+
+    let key_file_path = keystore_dir_path.join("mykey.pem");
+
+    let config = StewardConfig {
+        keys: KeysConfig {
+            delegate_key: "cellar".to_string(),
+        },
+        keystore: keystore_dir_string.clone(),
+        ..Default::default()
+    };
+
+    let config_file_path = key_dir.path().join("config.toml");
+    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
+    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
+
+    let cmd = runner
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "eth",
+            "import",
+            "mykey",
+            "movie tumble tape seven tool session relax youth pet situate bone leave ordinary oxygen silly picture thing fortune genuine attend clerk super seven cement",
+        ])
+        .capture_stdout()
+        .run();
+    // Check that command executes without error.
+    cmd.wait().unwrap().expect_success();
+    assert!(key_file_path.exists());
+
+    Ok(())
+}
+
+/// Cosmos add key test
+#[test]
+fn cosmos_keys_add() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
+    let key_dir = TempDir::new("test_key")?;
+
+    let keystore_dir_path = key_dir.path().join("keystore");
+    let keystore_dir_string = keystore_dir_path
+        .clone()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::create_dir(keystore_dir_path.clone()).expect("could not create keystore dir");
+
+    let key_file_path = keystore_dir_path.join("sha.pem");
+
+    let config = StewardConfig {
+        keys: KeysConfig {
+            delegate_key: "cellar".to_string(),
+        },
+        keystore: keystore_dir_string.clone(),
+        ..Default::default()
+    };
+
+    let config_file_path = key_dir.path().join("config.toml");
+    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
+    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
+
+    let cmd = runner
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "cosmos",
+            "add",
+            "sha",
+        ])
+        .capture_stdout()
+        .run();
+    // Check that command executes without error.
+    cmd.wait().unwrap().expect_success();
+    assert!(key_file_path.exists());
+
+    Ok(())
+}
+
+/// Eth list key test
+#[test]
+fn cosmos_keys_list() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
+    let key_dir = TempDir::new("test_key")?;
+
+    let keystore_dir_path = key_dir.path().join("keystore");
+    let keystore_dir_string = keystore_dir_path
+        .clone()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::create_dir(keystore_dir_path.clone()).expect("could not create keystore dir");
+
+    let key_file_path = keystore_dir_path.join("cosmoskey.pem");
+    fs::write(key_file_path, PRIVATE_KEY).expect("could not write key file");
+
+    let config = StewardConfig {
+        keys: KeysConfig {
+            delegate_key: "cellar".to_string(),
+        },
+        keystore: keystore_dir_string.clone(),
+        ..Default::default()
+    };
+
+    let config_file_path = key_dir.path().join("config.toml");
+    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
+    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
+
+    let mut cmd = runner
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "cosmos",
+            "list",
+        ])
+        .capture_stdout()
+        .run();
+    // Check that the list keys list keys in the keystore we created.
+    cmd.stdout()
+        .expect_line("cosmoskey\tsomm1wzp8pks7hzavh7r4dmenpszxyzfxyk34xlmcfh");
+
+    Ok(())
+}
+
+/// Eth show key test
+#[test]
+fn cosmos_keys_show() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
+    let key_dir = TempDir::new("test_key")?;
+
+    let keystore_dir_path = key_dir.path().join("keystore");
+    let keystore_dir_string = keystore_dir_path
+        .clone()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::create_dir(keystore_dir_path.clone()).expect("could not create keystore dir");
+
+    let key_file_path = keystore_dir_path.join("cosmoskey.pem");
+    fs::write(key_file_path, PRIVATE_KEY).expect("could not write key file");
+
+    let config = StewardConfig {
+        keys: KeysConfig {
+            delegate_key: "cellar".to_string(),
+        },
+        keystore: keystore_dir_string.clone(),
+        ..Default::default()
+    };
+
+    let config_file_path = key_dir.path().join("config.toml");
+    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
+    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
+
+    let mut cmd = runner
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "cosmos",
+            "show",
+            "cosmoskey",
+        ])
         .capture_stdout()
         .run();
 
-    cmd.stdout().expect_line("Hello, acceptance test!");
-    cmd.wait().unwrap().expect_success();
+    cmd.stdout()
+        .expect_line("cosmoskey\tsomm1wzp8pks7hzavh7r4dmenpszxyzfxyk34xlmcfh");
+
+    Ok(())
 }
 
-/// Example of a test which matches a regular expression
+/// Eth delete key test
 #[test]
-fn version_no_args() {
-    let mut runner = RUNNER.clone();
-    let mut cmd = runner.arg("--version").capture_stdout().run();
-    cmd.stdout().expect_regex(r"\A\w+ [\d\.\-]+\z");
+fn cosmos_keys_delete() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
+    let key_dir = TempDir::new("test_key")?;
+
+    let keystore_dir_path = key_dir.path().join("keystore");
+    let keystore_dir_string = keystore_dir_path
+        .clone()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::create_dir(keystore_dir_path.clone()).expect("could not create keystore dir");
+
+    let key_file_path = keystore_dir_path.join("cosmoskey.pem");
+    fs::write(key_file_path.clone(), PRIVATE_KEY).expect("could not write key file");
+
+    let config = StewardConfig {
+        keys: KeysConfig {
+            delegate_key: "cellar".to_string(),
+        },
+        keystore: keystore_dir_string.clone(),
+        ..Default::default()
+    };
+
+    let config_file_path = key_dir.path().join("config.toml");
+    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
+    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
+
+    let cmd = runner
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "cosmos",
+            "delete",
+            "cosmoskey",
+        ])
+        .capture_stdout()
+        .run();
+    //check that command executes without error
+    cmd.wait().unwrap().expect_success();
+
+    assert_eq!(key_file_path.exists(), false);
+
+    Ok(())
+}
+
+/// Eth recover key test
+#[test]
+fn cosmos_keys_recover() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
+    let key_dir = TempDir::new("test_key")?;
+
+    let keystore_dir_path = key_dir.path().join("keystore");
+    let keystore_dir_string = keystore_dir_path
+        .clone()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::create_dir(keystore_dir_path.clone()).expect("could not create keystore dir");
+
+    let key_file_path = keystore_dir_path.join("cosmkey.pem");
+
+    let config = StewardConfig {
+        keys: KeysConfig {
+            delegate_key: "cellar".to_string(),
+        },
+        keystore: keystore_dir_string.clone(),
+        ..Default::default()
+    };
+
+    let config_file_path = key_dir.path().join("config.toml");
+    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
+    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
+
+    let cmd = runner
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "cosmos",
+            "recover",
+            "cosmkey",
+            "merry blush enforce kite tired cheap use learn there oyster possible thank woman web midnight december sentence ski throw father scheme element onion talent"
+        ])
+        .capture_stdout()
+        .run();
+    // Check that command executes without error.
+    cmd.wait().unwrap().expect_success();
+    assert!(key_file_path.exists());
+
+    Ok(())
+}
+
+/// Cosmos rename key test
+#[test]
+fn cosmos_keys_rename() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
+    let key_dir = TempDir::new("test_key")?;
+
+    let keystore_dir_path = key_dir.path().join("keystore");
+    let keystore_dir_string = keystore_dir_path
+        .clone()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::create_dir(keystore_dir_path.clone()).expect("could not create keystore dir");
+
+    let key_file_path = keystore_dir_path.join("cosmoskey.pem");
+    let new_key_file_path = keystore_dir_path.join("newcosmoskey.pem");
+    fs::write(key_file_path.clone(), PRIVATE_KEY).expect("could not write key file");
+
+    let config = StewardConfig {
+        keys: KeysConfig {
+            delegate_key: "cellar".to_string(),
+        },
+        keystore: keystore_dir_string.clone(),
+        ..Default::default()
+    };
+
+    let config_file_path = key_dir.path().join("config.toml");
+    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
+    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
+
+    let cmd = runner
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "cosmos",
+            "rename",
+            "cosmoskey",
+            "newcosmoskey",
+        ])
+        .capture_stdout()
+        .run();
+    //check that command executes without error
+    cmd.wait().unwrap().expect_success();
+
+    assert!(new_key_file_path.exists());
+    assert_eq!(key_file_path.exists(), false);
+
+    Ok(())
+}
+
+/// print_config test
+#[test]
+fn print_config() {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
+    let cmd = runner.args(&["print-config"]).capture_stdout().run();
+    //check that command executes without error
+    cmd.wait().unwrap().expect_success();
 }

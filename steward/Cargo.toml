@@ -5,6 +5,7 @@ version = "0.1.0"
 edition = "2018"
 
 [dependencies]
+tempdir = "0.3.7"
 abscissa_tokio = "0.6.0-rc.0"
 bip32 = "0.2"
 bson = { version = "2.0.0-beta.2", features = ["chrono-0_4"] }
