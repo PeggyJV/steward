@@ -740,7 +740,6 @@ keystore = "/tmp/keystore"
 rebalancer_key = "steward-key"
 
 [server]
-address = "0.0.0.0"
 client_ca_cert_path = "/root/steward/test_client_ca.crt"
 server_cert_path = "/root/steward/test_server.crt"
 server_key_path = "/root/steward/test_server_key_pkcs8.pem"

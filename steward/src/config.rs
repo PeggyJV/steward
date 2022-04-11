@@ -85,10 +85,11 @@ impl Default for StewardConfig {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(default)]
 pub struct ServerSection {
-    pub address: Option<String>,
+    pub address: String,
     pub client_ca_cert_path: Option<String>,
-    pub port: Option<u16>,
+    pub port: u16,
     pub server_cert_path: String,
     pub server_key_path: String,
 }
@@ -96,9 +97,9 @@ pub struct ServerSection {
 impl Default for ServerSection {
     fn default() -> Self {
         Self {
-            address: Some("0.0.0.0".to_owned()),
+            address: "0.0.0.0".to_string(),
             client_ca_cert_path: Some("".to_owned()),
-            port: Some(9999),
+            port: 5734,
             server_cert_path: "".to_owned(),
             server_key_path: "".to_owned(),
         }
@@ -125,7 +126,7 @@ impl Default for KeysConfig {
 ///
 /// Delete this and replace it with your actual configuration structs.
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(deny_unknown_fields)]
+#[serde(default, deny_unknown_fields)]
 pub struct CellarConfig {
     /// Example configuration value
     pub pair_id: ethers::types::U256,
