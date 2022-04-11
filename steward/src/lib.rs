@@ -9,7 +9,6 @@
 #![forbid(unsafe_code)]
 #![warn(rust_2018_idioms, trivial_casts)]
 
-pub mod allocation;
 pub mod application;
 pub mod cellar_aave_wrapper;
 pub mod cellars;
