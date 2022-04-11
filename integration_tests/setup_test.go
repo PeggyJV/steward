@@ -357,6 +357,7 @@ func (s *IntegrationTestSuite) initGenesis() {
 	corkGenState.CellarIds = corktypes.CellarIDSet{
 		Ids: []string{hardhatCellar.Hex()},
 	}
+	corkGenState.Params.VotePeriod = 10
 	bz, err = cdc.MarshalJSON(&corkGenState)
 	s.Require().NoError(err)
 	appGenState[corktypes.ModuleName] = bz
