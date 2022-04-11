@@ -2,6 +2,7 @@ mod add;
 mod delete;
 mod import;
 mod list;
+mod rename;
 mod show;
 
 use abscissa_core::{clap::Parser, Command, Runnable};
@@ -17,4 +18,6 @@ pub enum EthKeysCmd {
     List(list::ListKeyCmd),
 
     Show(show::ShowKeyCmd),
+
+    Rename(rename::RenameKeyCmd),
 }
