@@ -1,9 +1,9 @@
 .DEFAULT_GOAL := e2e_rebalance
 
-VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:latest"
-ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:latest"
+VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:main"
+ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:main"
 
-e2e_build_images:
+e2e_build_images: e2e_clean_slate
 	@docker pull $(VALIDATOR_IMAGE)
 	@docker tag $(VALIDATOR_IMAGE) sommelier:prebuilt
 	@docker pull $(ORCHESTRATOR_IMAGE)
@@ -34,13 +34,10 @@ e2e_clean_slate:
 e2e_cork_test: e2e_clean_slate
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestCork || make -s fail
 
-e2e_rebalance: e2e_clean_slate
-	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestRebalance || make -s fail
-
 fail:
 	@echo 'test failed; dumping container logs into ./testdata for review'
 	@mkdir -p ./testdata
-	@docker logs ethereum > testlogs/ethereum.log 2>&1 || true
+	@docker logs ethereum > testdata/ethereum.log 2>&1 || true
 	@docker logs sommelier0 > testdata/sommelier0.log 2>&1 || true
 	@docker logs sommelier1 > testdata/sommelier1.log 2>&1 || true
 	@docker logs sommelier2 > testdata/sommelier2.log 2>&1 || true
