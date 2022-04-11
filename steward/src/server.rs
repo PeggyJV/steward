@@ -26,7 +26,7 @@ pub async fn load_server_config(
     let tls_config = ServerTlsConfig::new()
         .identity(server_identity.clone())
         .client_ca_root(client_ca_cert);
-    let port =  &config.server.port;
+    let port = &config.server.port;
     let address = &config.server.address;
     let address: SocketAddr = format!("{}:{}", address, port).parse()?;
 
