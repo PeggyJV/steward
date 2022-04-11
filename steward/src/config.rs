@@ -228,7 +228,7 @@ impl Default for CosmosSection {
         Self {
             key_derivation_path: "m/44'/118'/0'/0/0".to_owned(),
             grpc: "https://127.0.0.1:9090".to_owned(),
-            prefix: "cosmos".to_owned(),
+            prefix: "somm".to_owned(),
             gas_price: GasPrice::default(),
             gas_adjustment: 1.0f64,
             msg_batch_size: 5,
