@@ -15,7 +15,7 @@ use std::{net::SocketAddr, path::Path, time::Duration};
 lazy_static! {
     pub static ref DELEGATE_KEY: PrivateKey = {
         let config = APP.config();
-        let name = &config.keys.rebalancer_key;
+        let name = &config.keys.delegate_key;
         config.load_deep_space_key(name.clone())
     };
     pub static ref DELEGATE_ADDRESS: Address = {
@@ -106,16 +106,17 @@ impl Default for ServerSection {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(default)]
 pub struct KeysConfig {
     pub keystore: String,
-    pub rebalancer_key: String,
+    pub delegate_key: String,
 }
 
 impl Default for KeysConfig {
     fn default() -> Self {
         Self {
             keystore: "/tmp/keystore".to_owned(),
-            rebalancer_key: "".to_owned(),
+            delegate_key: "".to_owned(),
         }
     }
 }

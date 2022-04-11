@@ -90,7 +90,7 @@ pub async fn decide_rebalance(
     let config = APP.config();
 
     debug!("loading the delegate (orchestrator) key and address from config");
-    let name = &config.keys.rebalancer_key;
+    let name = &config.keys.delegate_key;
     let cosmos_delegate_key = config.load_deep_space_key(name.clone());
     let cosmos_delegate_address = cosmos_delegate_key.to_address(&config.cosmos.prefix)?;
 
@@ -236,7 +236,7 @@ pub async fn direct_rebalance(
 
     let name = &config
         .keys
-        .rebalancer_key
+        .delegate_key
         .parse()
         .expect("Could not parse name");
     let key = keystore.load(name).expect("Could not load key");
