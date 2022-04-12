@@ -154,7 +154,12 @@ func (s *IntegrationTestSuite) TestCork() {
 
 		methodName := "claimAndUnstake"
 		method, err := aave_abi.Pack(methodName)
-		invalidationScope := crypto.Keccak256(method)
+		addr := common.HexToAddress(hardhatCellar.String())
+		invalidationScope := crypto.Keccak256Hash(
+			bytes.Join(
+				[][]byte{addr.Bytes(), method},
+				[]byte{},
+			)).Bytes()
 		invalidationNonce := 1
 		s.Require().NoError(err)
 
