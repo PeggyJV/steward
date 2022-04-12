@@ -18,9 +18,6 @@ mod deploy;
 mod eth_to_cosmos;
 mod keys;
 mod orchestrator;
-mod reinvest;
-mod remove_funds;
-mod set_validator;
 mod sign_delegate_keys;
 mod single_signer;
 mod transfer;
@@ -28,8 +25,7 @@ mod tx;
 
 use self::{
     config_cmd::ConfigCmd, cosmos_mode::CosmosSignerCmd, keys::KeysCmd,
-    remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, single_signer::SingleSignerCmd,
-    transfer::TransferCmd,
+    single_signer::SingleSignerCmd, transfer::TransferCmd,
 };
 
 use crate::config::StewardConfig;
@@ -48,16 +44,12 @@ pub enum StewardCmd {
     Keys(KeysCmd),
     /// Print default configurations
     PrintConfig(ConfigCmd),
-    RemoveFunds(RemoveFundsCmd),
     CosmosToEth(cosmos_to_eth::CosmosToEthCmd),
     #[clap(subcommand)]
     Deploy(deploy::DeployCmd),
     EthToCosmos(eth_to_cosmos::EthToCosmosCmd),
     #[clap(subcommand)]
     Orchestrator(orchestrator::OrchestratorCmd),
-    /// Print default configurations
-    Reinvest(reinvest::ReinvestCommand),
-    SetValidator(SetValidatorCmd),
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
     #[clap(subcommand)]
     Tx(tx::TxCmd),

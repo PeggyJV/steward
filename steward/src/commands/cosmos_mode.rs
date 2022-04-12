@@ -2,16 +2,10 @@
 
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
-use crate::{
-    application::APP, cellars::uniswapv3::UniswapV3CellarAllocator, config::StewardConfig,
-    cork::CorkHandler, prelude::*, server,
-};
+use crate::{application::APP, config::StewardConfig, cork::CorkHandler, prelude::*, server};
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
-use steward_proto::{
-    steward::contract_call_server::ContractCallServer,
-    uniswapv3::server::UniswapV3CellarAllocatorServer,
-};
+use steward_proto::steward::contract_call_server::ContractCallServer;
 
 /// Cosmos Signer, start allocation module
 #[derive(Command, Debug, Parser)]
@@ -50,9 +44,6 @@ impl Runnable for CosmosSignerCmd {
                     panic!("{:?}", err);
                 })
                 .add_service(ContractCallServer::new(CorkHandler))
-                .add_service(UniswapV3CellarAllocatorServer::new(
-                    UniswapV3CellarAllocator,
-                ))
                 .add_service(proto_descriptor_service)
                 .serve(server_config.address)
                 .await

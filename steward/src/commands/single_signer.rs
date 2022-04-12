@@ -1,14 +1,7 @@
-//! Start subcommand - example of how to write a subcommand
-
-/// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
-/// accessors along with logging macros. Customize as you see fit.
-use crate::{
-    application::APP, cellars::uniswapv3::UniswapV3DirectCellar, config::StewardConfig, prelude::*,
-    server,
-};
+use crate::{application::APP, config::StewardConfig, cork::DirectCorkHandler, prelude::*, server};
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
-use steward_proto::uniswapv3::server::UniswapV3CellarAllocatorServer;
+use steward_proto::steward::contract_call_server::ContractCallServer;
 
 /// Single Signer, start Eth test mode
 #[derive(Command, Debug, Parser)]
@@ -30,7 +23,7 @@ impl Runnable for SingleSignerCmd {
                 .build()
                 .unwrap_or_else(|err| {
                     status_err!("failed to build descriptor service: {}", err);
-                    std::process::exit(1);
+                    std::process::exit(1)
                 });
 
             let server_config = server::load_server_config(&config)
@@ -46,7 +39,7 @@ impl Runnable for SingleSignerCmd {
                 .unwrap_or_else(|err| {
                     panic!("{:?}", err);
                 })
-                .add_service(UniswapV3CellarAllocatorServer::new(UniswapV3DirectCellar))
+                .add_service(ContractCallServer::new(DirectCorkHandler))
                 .add_service(proto_descriptor_service)
                 .serve(server_config.address)
                 .await
@@ -57,7 +50,7 @@ impl Runnable for SingleSignerCmd {
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
-            std::process::exit(1);
+            std::process::exit(1)
         });
     }
 }

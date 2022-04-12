@@ -17,7 +17,7 @@ use steward_proto::{
     self,
     steward::{
         self,
-        submit_request::CallData::{self, AaveV2Stablecoin, Uniswapv3Rebalance},
+        submit_request::CallData::{self, AaveV2Stablecoin},
         SubmitRequest, SubmitResponse,
     },
 };
@@ -29,6 +29,74 @@ pub struct CorkHandler;
 
 #[async_trait]
 impl steward::contract_call_server::ContractCall for CorkHandler {
+    async fn submit(
+        &self,
+        request: Request<SubmitRequest>,
+    ) -> Result<Response<SubmitResponse>, Status> {
+        debug!("received contract call request");
+        let request = request.get_ref();
+
+        // Check if cellar is governance approved before building cork
+        let config = APP.config();
+        let mut client = match CorkQueryClient::connect(config.cosmos.grpc.clone()).await {
+            Ok(c) => c,
+            Err(err) => {
+                error!("cork query client connection failed: {}", err);
+                return Err(Status::new(
+                    Code::Internal,
+                    "failed to query chain to validate cellar id",
+                ));
+            }
+        };
+
+        debug!("checking if cellar ID is approved");
+        let ids = &client
+            .query_cellar_i_ds(QueryCellarIDsRequest {})
+            .await?
+            .get_ref()
+            .cellar_ids
+            .clone();
+        if !ids.contains(&request.cellar_id) {
+            debug!(
+                "cellar ID {} not approved by governance",
+                &request.cellar_id
+            );
+            return Err(Status::new(
+                Code::PermissionDenied,
+                format!(
+                    "cellar ID {} not approved by governance",
+                    &request.cellar_id
+                ),
+            ));
+        }
+
+        // Build and send cork
+        let cork = match build_cork(request).await {
+            Ok(c) => c,
+            Err(err) => {
+                warn!("failed to build cork: {}", err);
+                return Err(Status::new(Code::InvalidArgument, err.to_string()));
+            }
+        };
+        debug!("cork: {:?}", cork);
+
+        if let Err(err) = send_cork(cork).await {
+            error!("failed to submit cork: {}", err);
+            return Err(Status::new(
+                Code::Internal,
+                "failed to send cork to sommelier",
+            ));
+        }
+        debug!("sent cork!");
+
+        Ok(Response::new(SubmitResponse {}))
+    }
+}
+
+pub struct DirectCorkHandler;
+
+#[async_trait]
+impl steward::contract_call_server::ContractCall for DirectCorkHandler {
     async fn submit(
         &self,
         request: Request<SubmitRequest>,
@@ -114,7 +182,7 @@ fn get_encoded_call(data: CallData) -> Result<Vec<u8>, Error> {
             call.function
                 .expect("call data for Aave V2 Stablecoin cellar was empty"),
         )),
-        Uniswapv3Rebalance(params) => Ok(uniswapv3::get_encoded_call(params)),
+        _ => Err(ErrorKind::Http.context("empty call data for cellar").into()),
     }
 }
 

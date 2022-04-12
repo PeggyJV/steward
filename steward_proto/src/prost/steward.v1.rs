@@ -95,7 +95,7 @@ pub struct Sweep {
 pub struct SubmitRequest {
     #[prost(string, tag = "1")]
     pub cellar_id: ::prost::alloc::string::String,
-    #[prost(oneof = "submit_request::CallData", tags = "2, 100")]
+    #[prost(oneof = "submit_request::CallData", tags = "2")]
     pub call_data: ::core::option::Option<submit_request::CallData>,
 }
 /// Nested message and enum types in `SubmitRequest`.
@@ -104,28 +104,10 @@ pub mod submit_request {
     pub enum CallData {
         #[prost(message, tag = "2")]
         AaveV2Stablecoin(super::AaveV2Stablecoin),
-        #[prost(message, tag = "100")]
-        Uniswapv3Rebalance(super::UniswapV3RebalanceParams),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SubmitResponse {}
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UniswapV3Position {
-    #[prost(int32, tag = "1")]
-    pub upper_price: i32,
-    #[prost(int32, tag = "2")]
-    pub lower_price: i32,
-    #[prost(int32, tag = "3")]
-    pub weight: i32,
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UniswapV3RebalanceParams {
-    #[prost(message, repeated, tag = "1")]
-    pub cellar_tick_info: ::prost::alloc::vec::Vec<UniswapV3Position>,
-    #[prost(uint64, tag = "2")]
-    pub current_price: u64,
-}
 #[doc = r" Generated client implementations."]
 pub mod contract_call_client {
     #![allow(unused_variables, dead_code, missing_docs)]

@@ -13,20 +13,7 @@ message SubmitRequest {
     string cellar_id = 1;
     oneof call_data {
         AaveV2Stablecoin aave_v2_stablecoin = 2;
-
-        UniswapV3RebalanceParams uniswapv3_rebalance = 100;
     }
 }
 
 message SubmitResponse {}
-
-message UniswapV3Position {
-    int32 upper_price = 1;
-    int32 lower_price = 2;
-    int32 weight = 3;
-}
-
-message UniswapV3RebalanceParams {
-    repeated UniswapV3Position cellar_tick_info = 1;
-    uint64 current_price = 2;
-}
