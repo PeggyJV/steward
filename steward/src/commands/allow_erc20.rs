@@ -31,7 +31,7 @@ impl Runnable for AllowERC20 {
     fn run(&self) {
         let config = APP.config();
 
-        let keystore = path::Path::new(&config.keys.keystore);
+        let keystore = path::Path::new(&config.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
 
         let name = &config

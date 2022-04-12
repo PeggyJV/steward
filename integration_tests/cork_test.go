@@ -14,9 +14,8 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
-	gravityTypes "github.com/peggyjv/gravity-bridge/module/x/gravity/types"
-	allocationTypes "github.com/peggyjv/sommelier/v3/x/allocation/types"
-	corkTypes "github.com/peggyjv/sommelier/v3/x/cork/types"
+	gravityTypes "github.com/peggyjv/gravity-bridge/module/v2/x/gravity/types"
+	corkTypes "github.com/peggyjv/sommelier/v4/x/cork/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
@@ -29,15 +28,15 @@ func (s *IntegrationTestSuite) TestCork() {
 			queryClient, err := val.GetQueryClient()
 			s.Require().NoError(err, "error getting query client")
 
-			res, err := queryClient.QueryCellars(context.Background(), &allocationTypes.QueryCellarsRequest{})
+			res, err := queryClient.QueryCellarIDs(context.Background(), &corkTypes.QueryCellarIDsRequest{})
 			if err != nil {
 				return false
 			}
 			if res == nil {
 				return false
 			}
-			for _, c := range res.Cellars {
-				if c.Id == hardhatCellar.String() {
+			for _, c := range res.CellarIds {
+				if c == hardhatCellar.String() {
 					return true
 				}
 			}
@@ -94,7 +93,7 @@ func (s *IntegrationTestSuite) TestCork() {
 
 			// make it rain
 			for i := range s.chain.stewards {
-				addr := fmt.Sprintf("localhost:%v", port+i)
+				addr := fmt.Sprintf("localhost:%v", 5734+i)
 				conn, err := grpc.Dial(
 					addr,
 					grpc.WithBlock(),
