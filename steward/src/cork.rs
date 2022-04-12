@@ -176,6 +176,7 @@ async fn build_cork(request: &SubmitRequest) -> Result<Cork, Error> {
     })
 }
 
+#[allow(unreachable_patterns)]
 fn get_encoded_call(data: CallData) -> Result<Vec<u8>, Error> {
     match data {
         AaveV2Stablecoin(call) => Ok(aave_v2_stablecoin::get_encoded_call(
