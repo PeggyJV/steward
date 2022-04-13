@@ -277,37 +277,37 @@ This example will not work as is, you'll need to supply your own values.
 ```toml
 keystore = "/tmp/keystore"
 
-[server]
-address = "0.0.0.0"
-client_ca_cert_path = "./path/to/client_ca.crt"
-port = 5734
-server_cert_path = "./path/to/server.crt"
-server_key_path = "./path/to/server_key.crt"
-
-[gravity]
-contract = "0x0000000000000000000000000000000000000000"
-fees_denom = "usomm"
-
-[ethereum]
-key_derivation_path = "m/44'/60'/0'/0/0"
-rpc = "http://localhost:8545"
-gas_price_multiplier = 1.0
-blocks_to_search = 5000
-
 [cosmos]
-key_derivation_path = "m/44'/118'/0'/0/0"
+gas_adjustment = 1.0
 grpc = "https://127.0.0.1:9090"
+key_derivation_path = "m/44'/118'/0'/0/0"
 prefix = "somm"
 msg_batch_size = 5
-gas_adjustment = 1.0
 
 [cosmos.gas_price]
 amount = 0.0
 denom = "usomm"
 
+[ethereum]
+blocks_to_search = 5000
+gas_price_multiplier = 1.0
+key_derivation_path = "m/44'/60'/0'/0/0"
+rpc = "http://localhost:8545"
+
+[gravity]
+contract = "0x0000000000000000000000000000000000000000"
+fees_denom = "stake"
+
+[keys]
+delegate_key = ""
+
 [metrics]
 listen_addr = "127.0.0.1:3000"
 
-[keys]
-delegate_key = "mykey"
+[server]
+address = "0.0.0.0"
+client_ca_cert_path = ""
+port = 5734
+server_cert_path = ""
+server_key_path = ""
 ```
