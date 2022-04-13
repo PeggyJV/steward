@@ -22,7 +22,7 @@ pub struct RenameCosmosKeyCmd {
 impl Runnable for RenameCosmosKeyCmd {
     fn run(&self) {
         let config = APP.config();
-        let keystore = path::Path::new(&config.keystore);
+        let keystore = path::Path::new(&config.keys.keystore);
         let keystore = signatory::FsKeyStore::create_or_open(keystore).unwrap();
 
         let name = self.name.parse().expect("Could not parse name");

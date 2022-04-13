@@ -32,7 +32,7 @@ impl Runnable for AllowERC20 {
         let config = APP.config();
         let _cellar = allocation::get_cellar(self.cellar_address).unwrap();
 
-        let keystore = path::Path::new(&config.keystore);
+        let keystore = path::Path::new(&config.keys.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
 
         let name = &config

@@ -16,7 +16,7 @@ pub struct DeleteCosmosKeyCmd {
 impl Runnable for DeleteCosmosKeyCmd {
     fn run(&self) {
         let config = APP.config();
-        let keystore = Path::new(&config.keystore);
+        let keystore = Path::new(&config.keys.keystore);
         let keystore = signatory::FsKeyStore::create_or_open(keystore).unwrap();
         let name = self.name.parse().expect("Could not parse name");
         let _delete_key = FsKeyStore::delete(&keystore, &name).unwrap();
