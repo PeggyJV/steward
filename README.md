@@ -2,7 +2,7 @@
 
 Steward is an application intended for developers and validators on Sommelier network.
 
-It can run as a voter in the Cosmos Sommelier protocol or in test mode to directly interact with Ethereum contracts as a single signer.
+It can run as a server in the Cosmos Sommelier protocol or in test mode to directly interact with Ethereum contracts as a single signer.
 
 It integrates the full functionality of [Gorc](https://github.com/PeggyJV/gravity-bridge/tree/main/orchestrator/gorc) for operating as an orchestrator and relayer of [Gravity bridge](https://github.com/PeggyJV/gravity-bridge) messages between the Ethereum and Cosmos chains.
 
@@ -12,14 +12,13 @@ Steward is built with the [Abscissa](https://github.com/iqlusioninc/abscissa) ap
 
 Steward is responsible for running the Orchestrator, which handles relaying Cosmos transactions to Ethereum, and co-processing Ethereum transactions on Sommelier. Steward runs the Orchestrator so that Sommelier can manage [Cellars](steward/src/cellars) on Ethereum.
 
-Steward provides a gRPC server to accept recommendations from data providers. Data Provision involves both calculating strategic rebalance recommendations based on market data and relaying that recommendation to the Sommelier Validators via the exposed Steward endpoints. To provide data to Steward, an encrypted and authenticated gRPC connection must be established. The client certificate authority used by the initial Data Provider is included in `tls/`. This is the only client root of trust accepted by default in Steward right now as we are only accepting client certs from one Data Provider, [Peggy JV](https://peggy.cool/).
+Steward provides a gRPC server to accept recommendations from Strategy Providers. Strategy Provision involves both calculating strategic rebalance recommendations based on market data and relaying that recommendation to the Sommelier Validators via the exposed Steward endpoint. To provide data to Steward, an encrypted and authenticated gRPC connection must be established. The client certificate authority used by the initial Strategy Provider is included in `tls/`. This is the only client root of trust accepted by default in Steward right now as we are only accepting client certs from one Strategy Provider, [Peggy JV](https://peggy.cool/).
 
-Strategies determine where to invest funds and how to rebalance them in reaction to market events. When developers want to make their own strategy to run on Sommelier, they need two things:
+Steward also provides a suite of utility functions for interacting with Sommelier and the Gravity bridge.
 
-1. A [Cellar contract](docs/Cellarsetup_instructions) containing a `rebalance` function.
-2. [Data Providers](docs/data_providers)
+## Steward for Validators
 
-Steward also provides a suite of utility functions for interacting with Sommelier and the Gravity bridge. For instance, the last section shows series of subcommands that allows you to interact with the Sommelier chain via Steward.
+Please refer to the [Validator Instructions](Docs/validator_instructions.md).
 
 ## Getting started with the testing mode
 
