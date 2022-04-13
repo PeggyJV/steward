@@ -718,8 +718,7 @@ amount = 1000000000
 denom = "%s"
 
 [keys]
-keystore = "/tmp/keystore"
-rebalancer_key = "steward-key"
+delegate_key = "steward-key"
 
 [server]
 client_ca_cert_path = "/root/steward/test_client_ca.crt"
