@@ -31,13 +31,13 @@ lazy_static! {
 #[serde(default, deny_unknown_fields)]
 pub struct StewardConfig {
     pub keystore: String,
-    pub server: ServerSection,
-    pub gravity: GravitySection,
-    pub ethereum: EthereumSection,
-    pub cosmos: CosmosSection,
-    pub metrics: MetricsSection,
     pub cellars: Vec<CellarConfig>,
+    pub cosmos: CosmosSection,
+    pub ethereum: EthereumSection,
+    pub gravity: GravitySection,
     pub keys: KeysConfig,
+    pub metrics: MetricsSection,
+    pub server: ServerSection,
 }
 
 impl StewardConfig {
@@ -73,13 +73,13 @@ impl Default for StewardConfig {
     fn default() -> Self {
         Self {
             keystore: "/tmp/keystore".to_owned(),
-            server: ServerSection::default(),
-            gravity: GravitySection::default(),
-            ethereum: EthereumSection::default(),
-            cosmos: CosmosSection::default(),
-            metrics: MetricsSection::default(),
             cellars: vec![CellarConfig::default()],
+            cosmos: CosmosSection::default(),
+            ethereum: EthereumSection::default(),
+            gravity: GravitySection::default(),
             keys: KeysConfig::default(),
+            metrics: MetricsSection::default(),
+            server: ServerSection::default(),
         }
     }
 }
@@ -177,23 +177,23 @@ impl Default for TokenInfo {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default)]
 pub struct EthereumSection {
+    /// Declaring EthereumSection blocks to search
+    pub blocks_to_search: u64,
+    /// Declaring EthereumSection gas multiplier
+    pub gas_price_multiplier: f32,
     /// Declaring EthereumSection key_derivation_path
     pub key_derivation_path: String,
     /// Declaring EthereumSection rpc
     pub rpc: String,
-    /// Declaring EthereumSection gas multiplier
-    pub gas_price_multiplier: f32,
-    /// Declaring EthereumSection blocks to search
-    pub blocks_to_search: u64,
 }
 
 impl Default for EthereumSection {
     fn default() -> Self {
         Self {
+            blocks_to_search: 5000,
+            gas_price_multiplier: 1.0f32,
             key_derivation_path: "m/44'/60'/0'/0/0".to_owned(),
             rpc: "http://localhost:8545".to_owned(),
-            gas_price_multiplier: 1.0f32,
-            blocks_to_search: 5000,
         }
     }
 }
@@ -217,23 +217,23 @@ impl Default for GravitySection {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields)]
 pub struct CosmosSection {
-    pub key_derivation_path: String,
+    pub gas_adjustment: f64,
     pub grpc: String,
+    pub key_derivation_path: String,
     pub prefix: String,
     pub msg_batch_size: u32,
-    pub gas_adjustment: f64,
     pub gas_price: GasPrice,
 }
 
 impl Default for CosmosSection {
     fn default() -> Self {
         Self {
-            key_derivation_path: "m/44'/118'/0'/0/0".to_owned(),
-            grpc: "https://127.0.0.1:9090".to_owned(),
-            prefix: "somm".to_owned(),
-            gas_price: GasPrice::default(),
             gas_adjustment: 1.0f64,
+            grpc: "https://127.0.0.1:9090".to_owned(),
+            key_derivation_path: "m/44'/118'/0'/0/0".to_owned(),
+            prefix: "somm".to_owned(),
             msg_batch_size: 5,
+            gas_price: GasPrice::default(),
         }
     }
 }
