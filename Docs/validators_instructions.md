@@ -2,137 +2,136 @@
 
 Steward is an application intended for developers and validators on the Sommelier network.
 
-It can run as a voter in the Cosmos Sommelier protocol or in test mode to directly interact with Ethereum contracts as a single signer.
+It can run as a server for forearding cellar contract calls from Strategy Providers through the Sommelier chain, or it can run in test mode to directly interact with Ethereum contracts as a single signer.
 
 It integrates the full functionality of gorc for operating as an orchestrator and relayer of [Gravity bridge](https://github.com/PeggyJV/gravity-bridge/) messages between the Ethereum and Cosmos chains.
 
-## Background
-
-Every automated investing system has a feedback loop where changes in the market must be observed and investments rebalanced in response.
-
-Steward closes the loop in the Sommelier chain. For instance, it allows Validators to vote for rebalancing Cellar funds in response to a Data Provider’s recommendation based on market changes.
-
-Additionally, Steward houses the Orchestrator, which is responsible for interactions with both chains via the Gravity Bridge.
-
-### **Cellars**
-
-Cellars are smart contracts that are designed to manage funds based on a particular investment strategy.
-
-### **Data Providers**
-
-Data Providers (DPs) are users or organizations who provide recommended rebalance arguments based on price or other market data to the Sommelier validators in exchange for a fee. There can be multiple Data Providers per strategy, and Validators are responsible for deciding which one they pay in exchange for data.
-
-### **Sommelier Chain**
-
-The Sommelier chain is a Cosmos SDK application chain. It is the core of Sommelier that makes decisions about whether to act on DP recommendations and executes Cellar functions. Transactions and function calls are only settled on-chain when the Validators reach consensus. In order to fulfill a strategy, Validators need a way to receive recommendation data from the Data Providers, reach consensus on whether to act on that data, and then call functions on the Cellars with the provided data as parameters. This is where Steward comes in.
-
-### **Steward**
-
-Steward runs on every Validator in the Sommelier Validator set. It runs a server to which Data Providers send recommendations as soon as market data becomes available. This payload contains identifying information about the Cellar which Steward is meant to act on, and the recommended arguments for its rebalance function parameters. When Steward receives a new recommendation, it submits a vote to rebalance the appropriate Cellar based on that data. If Validators reach a quorum, the process of rebalancing begins.
-
-Since Sommelier is a Cosmos chain, in order to provide strategies on Ethereum it needs a way to bridge assets and logic calls. Steward is responsible for running the Orchestrator, which handles relaying Cosmos transactions to Ethereum, and co-processing Ethereum transactions on Sommelier. Steward runs the Orchestrator so that Sommelier can manage Cellars on Ethereum.
+Stewards works in conjunction with the Orchestrator, so both processes must be running to fully participate in Cellar management.
 
 ## Setting Up Steward
 
-In this section, let’s explore setting up steward for validators. First, ensure the sommelier chain is running. Next, create a `toml` file in the root of the application which will hold your configuration. To get a template for your configuration file, run the command below:
+In this section, let’s explore setting up steward for validators. There are two ways that validators will use Steward:
 
-```bash
-steward print-config
-```
+1. Running Steward as a gRPC server for relaying SP contract calls through the chain. If a validator is not running this server, it cannot participate in Cellar management.
+2. Manually scheduling contract calls when the validator set needs to coordinate a function  call on a cellar. An example of this would be transferring a Cellar’s accrued fees to a module account on chain.
 
-Replace the default keys in the template displayed in your terminal with your configuration. Now you have the configurations set up, let’s go through stewards commands.
+### Running Steward as a server
 
-## Start Cosmos Mode
+Steward runs on every Validator in the Sommelier Validator set. It runs a server to which Strategy Providers (SPs) send requests whenever they determine that the market has changed enough to warrant action. The request payload contains everything needed to make a *cork*: a signed combination of a cellar ID and an ABI encoded contract call. When Steward receives a submission from the SP, it validates the target cellar ID, build a cork, and submits it to the Cork module on chain.
 
-To start the Allocation signer mode, ensure that the server section in your config file is set properly as shown below. The `address`, `client_ca_cert_path` and `port` are optional fields.
+Here is an example TOML file with the **Example minimum required configuration** fields to run Steward as a server and facilitate Cellar operations. Please fill in with your own values as needed and save as a .toml file:
 
 ```toml
-keystore = "/tmp/keystore"
-
-[server]
-address = "0.0.0.0"           // This is an optional feild.
-client_ca_cert_path = ""       // optional, defaults to Peggy JV client cert
-port = 5734                  // optional, default is 5734
-server_cert_path = ""
-server_key_path = ""
-
-[gravity]
-contract = "0x0000000000000000000000000000000000000000"
-fees_denom = "usomm"
-
-[ethereum]
-key_derivation_path = "m/44'/60'/0'/0/0"
-rpc = "http://localhost:8545"
-gas_price_multiplier = 1.0
-blocks_to_search = 5000
+[cork]
+# Before Steward forwards a function call to the chain, it checks
+# that the target contract address is in fact a cellar approved
+# by governance. To speed up this check, steward frequently queries
+# and caches a list of all approved cellar addresses. This value
+# determines how frequently (in seconds) steward makes this query.
+cache_refresh_period = 60           # default: 60
 
 [cosmos]
-key_derivation_path = "m/44'/118'/0'/0/0"
-grpc = "http://localhost:9090"
-prefix = "cosmos"
-msg_batch_size = 5
-gas_adjustment = 1.0
+# Your sommelier gRPC endpoint
+grpc = "http://localhost:9090"      # default: "http://localhost:9090"
+
+# The bech32 prefix for address strings
+prefix = "somm"                     # default: "somm"
 
 [cosmos.gas_price]
-amount = 0.001
-denom = "usomm"
-
-[metrics]
-listen_addr = "127.0.0.1:3000"
-
-[[cellars]]
-pair_id = "0x0"
-name = ""
-token_id = "0x0"
-cellar_address = "0x0000000000000000000000000000000000000000"
-pool_address = "0x0000000000000000000000000000000000000000"
-weight_factor = 100
-max_gas_price_gwei = 100
-
-[cellars.token_0]
-decimals = 18
-symbol = "NA"
-address = "0x0000000000000000000000000000000000000000"
-
-[cellars.token_1]
-decimals = 18
-symbol = "NA"
-address = "0x0000000000000000000000000000000000000000"
-
-[cellars.duration]
-secs = 60
-nanos = 0
+amount = 0.0                        # default: 0.0
+denom = "usomm"                     # default "usomm"
 
 [keys]
-keystore = "/tmp/keystore"
-rebalancer_key = ""
+# The name of key in the keystore to be used for signing transactions.
+# This should be the same key for Orchestrator and Steward.
+delegator_key = "mykey"
+
+# The on-disk keystore where Steward-managed keys are stored
+keystore = "/some/path"             # default "/tmp/keystore"
+
+[server]
+# The address of the Steward gRPC server
+address = "0.0.0.0"                 # default "0.0.0.0"
+
+# The port of the Steward gRPC server
+port = 5734                         # default 5734
+
+# The root of trust that signed the Strategy Provider's client certificate.
+client_ca_cert_path = "./truststore/sp_client_ca.crt"
+
+# The server's cert to offer the SP client to establish two-way trust
+server_cert_path = "./server.crt"
+
+# The key used to generate the server cert
+server_key_path = "./server_key_pkcs8.pem"
 ```
 
-All cellar configurations would only be required in the single signer testing mode.
-Next, run the cosmos signer command to start the cosmos mode:
+Then, to start Steward, simply run
 
 ```bash
-steward -c [your_config_file_name.toml] cosmos-signer
+steward -c [path to your config toml] start
 ```
 
 ## Start Orchestrator
 
 Steward allows you to start the Orchestrator with or without the Relayer. First, you’ll need an Ethereum key and a Cosmos key. Run the command below to create your keys if you don’t have one. Replace `eth` with `cosmos` if you want to create a `cosmos` key instead of an `eth` key.
 
-```bash
-steward -c [your_config_file_name.toml] keys eth add [key_name]
+### Create or import an Ethereum key
 
-steward -c [your_config_file_name.toml] keys eth import [key_name]
+Example minimum required config:
+
+```toml
+keystore = /my/keystore/path
+
+[ethereum]
+key_derivation_path = "m/44'/60'/0'/0/0"
 ```
 
-To start the Orchestrator with the Relayer, run the command below:
+To add or import an Ethereum key to your keystore, run either of the following commands respectively:
 
 ```bash
-steward -c [your_config_file_name.toml] orchestrator start cosmos_key=[key_name] ethereum_key=[key_name] orchestrator_only=false
+steward -c [path to your config toml] keys eth add [key_name]
+
+steward -c [path to your config toml] keys eth import [key_name]
 ```
 
-You can start the Orchestrator only by running the command below:
+### Starting both the Orchesatrator and the Relayer
+
+Example minimum required config:
+
+```toml
+keystore = "/my/keystore/path"
+
+[cosmos]
+gas_adjustment = 1.0
+grpc = "http://localhost:9090"
+msg_batch_size = 5
+prefix = "somm"
+
+[cosmos.gas_price]
+amount = 0.0
+demom = "usomm"
+
+[ethereum]
+blocks_to_search = 5000
+gas_price_multiplier = 1.2
+rpc = "http://localhost:8545"
+
+[gravity]
+contract = "0x00000000000000000000000000000000000"
+fees_denom = "usomm"
+```
+
+Start Orchestrator with Relayer command:
 
 ```bash
-steward -c [your_config_file_name.toml] orchestrator start cosmos_key=[key_name] ethereum_key=[key_name] orchestrator_only=true
+steward -c [path to your config toml] orchestrator start cosmos_key=[key_name] ethereum_key=[key_name] orchestrator_only=false
+```
+
+### Starting only the Orchestrator
+
+Minimum configuration is the same it is when starting with the Relayer. Start command:
+
+```bash
+steward -c [path to your config toml] orchestrator start cosmos_key=[key_name] ethereum_key=[key_name] orchestrator_only=true
 ```
