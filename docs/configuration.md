@@ -2,6 +2,8 @@
 
 This document is meant to be an exhaustive reference of all TOML configuration fields available in Steward. Some of these fields are also used by the Orchestrator.
 
+## Default configuration
+
 You can see all available configuration fields with their default values by running
 
 ```bash
@@ -15,7 +17,7 @@ To generate a default config file, simply redirect stdout to a file:
 steward print-config > config.toml
 ```
 
-## Reference by Table
+## Reference
 
 ### `[cosmos]` table
 
