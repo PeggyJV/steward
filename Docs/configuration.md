@@ -4,23 +4,18 @@ This document is meant to be an exhaustive reference of all TOML configuration f
 
 You can see all available configuration fields with their default values by running
 
-```
+```bash
 steward print-config
 ```
 
+To generate a default config file, simply redirect stdout to a file:
+
+```bash
+# You must update these values to your own configuration
+steward print-config > config.toml
+```
+
 ## Reference by Table
-
-### Top-level
-
-#### `keystore`
-
-Type: string
-
-Path to the location where `steward keys` will manage keys on-disk
-
-```
-keystore = "/tmp/keystore"
-```
 
 ### `[cosmos]` table
 
@@ -195,6 +190,18 @@ The name of the key in `keystore` used for delegate signing by both Steward and 
 [keys]
 delegate_key = ""
 ```
+
+#### `keystore`
+
+Type: string
+
+Path to the location where `steward keys` will manage keys on-disk
+
+```
+[keys]
+keystore = "/tmp/keystore"
+```
+
 
 ### [metrics] table
 
