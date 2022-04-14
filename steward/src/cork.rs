@@ -25,11 +25,6 @@ use tonic::{self, async_trait, Code, Request, Response, Status};
 
 const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
 
-pub struct d_Cork {
-    encoded_contract_call: Vec<u8>,
-    target_contract_address: String,
-}
-
 pub struct CorkHandler;
 
 #[async_trait]
@@ -109,16 +104,6 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
         debug!("received contract call request");
         let request = request.get_ref();
 
-        // Build and send cork
-        let cork = match direct_build_cork(request).await {
-            Ok(c) => c,
-            Err(err) => {
-                warn!("failed to build cork: {}", err);
-                return Err(Status::new(Code::InvalidArgument, err.to_string()));
-            }
-        };
-
-
         Ok(Response::new(SubmitResponse {}))
     }
 }
@@ -133,21 +118,6 @@ async fn build_cork(request: &SubmitRequest) -> Result<Cork, Error> {
     let encoded_call = get_encoded_call(contract_call_data)?;
 
     Ok(Cork {
-        encoded_contract_call: encoded_call,
-        target_contract_address: address,
-    })
-}
-
-async fn direct_build_cork(request: &SubmitRequest) -> Result<d_Cork, Error> {
-    cellars::validate_cellar_id(request.cellar_id.as_str())?;
-    let address = request.cellar_id.clone();
-    let contract_call_data = match request.call_data.clone() {
-        Some(call) => call,
-        None => return Err(ErrorKind::Http.context("empty contract call data").into()),
-    };
-    let encoded_call = get_encoded_call(contract_call_data)?;
-
-    Ok(d_Cork {
         encoded_contract_call: encoded_call,
         target_contract_address: address,
     })
