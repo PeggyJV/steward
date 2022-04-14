@@ -29,7 +29,7 @@ Example minimum required config:
 key_derivation_path = "m/44'/60'/0'/0/0"
 
 [keys]
-keystore = /my/keystore/path
+keystore = "/my/keystore/path"
 ```
 
 To add or import an Ethereum key to your keystore, run either of the following commands respectively:
@@ -51,7 +51,7 @@ Example minimum required config:
 key_derivation_path = "m/44'/118'/0'/0/0"
 
 [keys]
-keystore = /my/keystore/path
+keystore = "/my/keystore/path"
 ```
 
 To add a new Cosmos key or recover one from a mnemonic, run either of the following commands respectively:
