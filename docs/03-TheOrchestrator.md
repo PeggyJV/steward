@@ -68,7 +68,7 @@ To confirm it works, check your keystore directory for a file with the key name 
 
 ### Configuration
 
-The following configuration fields are required to run the Orchestrator. Please refer to the [Configuration Referance](./configuration#L20) for explanations of each fields' purpose.
+The following configuration fields are required to run the Orchestrator. Please refer to the [Configuration Reference](./configuration#reference) for explanations of each fields' purpose.
 
 ```toml
 [cosmos]

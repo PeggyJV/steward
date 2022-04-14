@@ -8,6 +8,14 @@ It integrates the full functionality of gorc for operating as an orchestrator an
 
 Stewards works in conjunction with the Orchestrator, so both processes must be running to fully participate in Cellar management.
 
+## Quickstart
+
+To start Steward, simply run
+
+```bash
+steward -c [path to your config toml] start
+```
+
 ## Setting Up Steward
 
 In this section, let’s explore setting up steward for validators. There are two ways that validators will use Steward:
@@ -19,7 +27,7 @@ In this section, let’s explore setting up steward for validators. There are tw
 
 Steward runs on every Validator in the Sommelier Validator set. It runs a server to which Strategy Providers (SPs) send requests whenever they determine that the market has changed enough to warrant action. The request payload contains everything needed to make a *cork*: a signed combination of a cellar ID and an ABI encoded contract call. When Steward receives a submission from the SP, it validates the target cellar ID, build a cork, and submits it to the Cork module on chain.
 
-Here is an example TOML file with the **Example minimum required configuration** fields to run Steward as a server and facilitate Cellar operations. Please fill in with your own values as needed and save as a .toml file:
+Here is an ***example*** TOML file with the minimum required configuration fields to run Steward as a server and facilitate Cellar operations. *Please fill in with your own values*:
 
 ```toml
 [cork]
@@ -65,10 +73,3 @@ server_cert_path = "./server.crt"
 # The key used to generate the server cert
 server_key_path = "./server_key_pkcs8.pem"
 ```
-
-Then, to start Steward, simply run
-
-```bash
-steward -c [path to your config toml] start
-```
-

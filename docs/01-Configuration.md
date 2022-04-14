@@ -284,8 +284,6 @@ server_key_path = ""
 This example will not work as is, you'll need to supply your own values.
 
 ```toml
-keystore = "/tmp/keystore"
-
 [cosmos]
 gas_adjustment = 1.0
 grpc = "https://127.0.0.1:9090"
@@ -309,6 +307,7 @@ fees_denom = "stake"
 
 [keys]
 delegate_key = ""
+keystore = "/tmp/keystore"
 
 [metrics]
 listen_addr = "127.0.0.1:3000"
