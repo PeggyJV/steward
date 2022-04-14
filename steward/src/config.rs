@@ -209,7 +209,7 @@ impl Default for GravitySection {
     fn default() -> Self {
         Self {
             contract: "0x0000000000000000000000000000000000000000".to_owned(),
-            fees_denom: "stake".to_owned(),
+            fees_denom: "usomm".to_owned(),
         }
     }
 }
