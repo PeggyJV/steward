@@ -8,7 +8,7 @@ It integrates the full functionality of [Gorc](https://github.com/PeggyJV/gravit
 
 Steward is built with the [Abscissa](https://github.com/iqlusioninc/abscissa) app micro-framework.
 
-Please also see the [Steward Docs](Docs/).
+Please also see the [Steward Docs](docs/).
 
 ## Steward use case
 
@@ -28,7 +28,7 @@ Steward provides a suite of utility functions for interacting with Sommelier, th
 
 ## Getting Started for Validators
 
-Please refer to the [Validator Instructions](Docs/validator_instructions.md).
+Please refer to the [Steward for Validators](docs/02-StewardForValidators.md) document.
 
 ## Getting Started for Strategists
 
@@ -58,4 +58,4 @@ Below is a list of the Steward's subcommands:
 | tx                | Create transactions on either ethereum or cosmos chains    |
 | allow-erc-2-0     | Allow Erc20 Token to interact with cellar contract         |
 
-If you have any questions, you can ask the community in our [Telegram](https://t.me/getsomm) and [Discord](https://discord.com/invite/ZcAYgSBxvY) group. Also, you can take a look at the [documentation](docs/validators_instructions) for Validators instructions.
+If you have any questions, you can ask the community in our [Telegram](https://t.me/getsomm) and [Discord](https://discord.com/invite/ZcAYgSBxvY) group.
