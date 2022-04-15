@@ -59,8 +59,8 @@ fn eth_keys_add() -> io::Result<()> {
     let config = StewardConfig {
         keys: KeysConfig {
             delegate_key: "cellar".to_string(),
-            keystore: keystore_dir_string.clone(),
         },
+        keystore: keystore_dir_string.clone(),
         ..Default::default()
     };
 
@@ -106,8 +106,8 @@ fn eth_keys_delete() -> io::Result<()> {
     let config = StewardConfig {
         keys: KeysConfig {
             delegate_key: "cellar".to_string(),
-            keystore: keystore_dir_string.clone(),
         },
+        keystore: keystore_dir_string.clone(),
         ..Default::default()
     };
 
@@ -155,8 +155,8 @@ fn eth_keys_rename() -> io::Result<()> {
     let config = StewardConfig {
         keys: KeysConfig {
             delegate_key: "cellar".to_string(),
-            keystore: keystore_dir_string.clone(),
         },
+        keystore: keystore_dir_string.clone(),
         ..Default::default()
     };
 
@@ -205,8 +205,8 @@ fn eth_keys_list() -> io::Result<()> {
     let config = StewardConfig {
         keys: KeysConfig {
             delegate_key: "cellar".to_string(),
-            keystore: keystore_dir_string.clone(),
         },
+        keystore: keystore_dir_string.clone(),
         ..Default::default()
     };
 
@@ -252,8 +252,8 @@ fn eth_keys_show() -> io::Result<()> {
     let config = StewardConfig {
         keys: KeysConfig {
             delegate_key: "cellar".to_string(),
-            keystore: keystore_dir_string.clone(),
         },
+        keystore: keystore_dir_string.clone(),
         ..Default::default()
     };
 
@@ -298,8 +298,8 @@ fn eth_keys_import() -> io::Result<()> {
     let config = StewardConfig {
         keys: KeysConfig {
             delegate_key: "cellar".to_string(),
-            keystore: keystore_dir_string.clone(),
         },
+        keystore: keystore_dir_string.clone(),
         ..Default::default()
     };
 
@@ -345,8 +345,8 @@ fn cosmos_keys_add() -> io::Result<()> {
     let config = StewardConfig {
         keys: KeysConfig {
             delegate_key: "cellar".to_string(),
-            keystore: keystore_dir_string.clone(),
         },
+        keystore: keystore_dir_string.clone(),
         ..Default::default()
     };
 
@@ -392,8 +392,8 @@ fn cosmos_keys_list() -> io::Result<()> {
     let config = StewardConfig {
         keys: KeysConfig {
             delegate_key: "cellar".to_string(),
-            keystore: keystore_dir_string.clone(),
         },
+        keystore: keystore_dir_string.clone(),
         ..Default::default()
     };
 
@@ -438,8 +438,8 @@ fn cosmos_keys_show() -> io::Result<()> {
     let config = StewardConfig {
         keys: KeysConfig {
             delegate_key: "cellar".to_string(),
-            keystore: keystore_dir_string.clone(),
         },
+        keystore: keystore_dir_string.clone(),
         ..Default::default()
     };
 
@@ -485,8 +485,8 @@ fn cosmos_keys_delete() -> io::Result<()> {
     let config = StewardConfig {
         keys: KeysConfig {
             delegate_key: "cellar".to_string(),
-            keystore: keystore_dir_string.clone(),
         },
+        keystore: keystore_dir_string.clone(),
         ..Default::default()
     };
 
@@ -532,8 +532,8 @@ fn cosmos_keys_recover() -> io::Result<()> {
     let config = StewardConfig {
         keys: KeysConfig {
             delegate_key: "cellar".to_string(),
-            keystore: keystore_dir_string.clone(),
         },
+        keystore: keystore_dir_string.clone(),
         ..Default::default()
     };
 
@@ -581,8 +581,8 @@ fn cosmos_keys_rename() -> io::Result<()> {
     let config = StewardConfig {
         keys: KeysConfig {
             delegate_key: "cellar".to_string(),
-            keystore: keystore_dir_string.clone(),
         },
+        keystore: keystore_dir_string.clone(),
         ..Default::default()
     };
 
