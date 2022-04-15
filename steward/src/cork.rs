@@ -16,7 +16,6 @@ use gravity_bridge::{
     gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse,
     gravity_utils::ethereum::downcast_to_u64,
 };
-use prost::Message;
 use signatory::FsKeyStore;
 use somm_proto::cork::{query_client::QueryClient as CorkQueryClient, Cork, QueryCellarIDsRequest};
 use std::{convert::TryFrom, path, time::Duration};
@@ -160,16 +159,19 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
 
         let abi = abi::decode(&[abi_type], &encoded_call).unwrap();
 
-        let abi = abi[0].to_string();
+        for abi in abi {
+            let abi = abi.to_string();
 
-        let abi: abi::Abi = serde_json::from_str(&abi).unwrap();
+            let abi: abi::Abi = serde_json::from_str(&abi).unwrap();
         
-        // create the contract object at the address
-        let contract = Contract::new(address, abi, &client);
-
-        // Calling constant methods is done by calling `call()` on the method builder.
-        // (if the function takes no arguments, then you must use `()` as the argument)
-        let init_value: String = contract.method::<_, String>("getValue", ()).unwrap().call().await.unwrap();
+            // create the contract object at the address
+            let contract = Contract::new(address, abi, &client);
+    
+            // Calling constant methods is done by calling `call()` on the method builder.
+            // (if the function takes no arguments, then you must use `()` as the argument)
+            let init_value: String = contract.method::<_, String>("getValue", ()).unwrap().call().await.unwrap();
+        };
+        
 
         Ok(Response::new(SubmitResponse {}))
     }
