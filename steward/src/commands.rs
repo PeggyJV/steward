@@ -12,7 +12,7 @@
 
 mod allow_erc20;
 mod config_cmd;
-mod cosmos_mode;
+mod start;
 mod cosmos_to_eth;
 mod deploy;
 mod eth_to_cosmos;
@@ -24,7 +24,7 @@ mod transfer;
 mod tx;
 
 use self::{
-    config_cmd::ConfigCmd, cosmos_mode::CosmosSignerCmd, keys::KeysCmd,
+    config_cmd::ConfigCmd, start::StartCmd, keys::KeysCmd,
     single_signer::SingleSignerCmd, transfer::TransferCmd,
 };
 
@@ -54,7 +54,7 @@ pub enum StewardCmd {
     #[clap(subcommand)]
     Tx(tx::TxCmd),
     AllowErc20(allow_erc20::AllowERC20),
-    CosmosSigner(CosmosSignerCmd),
+    Start(StartCmd),
 }
 
 /// Entry point for the application. It needs to be a struct to allow using subcommands!

@@ -12,9 +12,9 @@ use steward_proto::steward::contract_call_server::ContractCallServer;
 #[clap(
     long_about = "DESCRIPTION \n\n Cosmos mode, run Steward as a server.\n This command runs Steward as a server that will send updates to the Sommelier chain."
 )]
-pub struct CosmosSignerCmd;
+pub struct StartCmd;
 
-impl Runnable for CosmosSignerCmd {
+impl Runnable for StartCmd {
     /// Start the application.
     fn run(&self) {
         let config = APP.config();
@@ -59,7 +59,7 @@ impl Runnable for CosmosSignerCmd {
     }
 }
 
-impl config::Override<StewardConfig> for CosmosSignerCmd {
+impl config::Override<StewardConfig> for StartCmd {
     // Process the given command line options, overriding settings from
     // a configuration file using explicit flags taken from command-line
     // arguments.
