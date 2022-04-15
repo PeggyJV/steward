@@ -4760,7 +4760,6 @@ dependencies = [
  "tonic 0.4.3",
  "tonic-reflection",
  "tower",
- "uniswap_v3_sdk",
  "url",
 ]
 
@@ -5563,16 +5562,6 @@ name = "unicode-xid"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ccb82d61f80a663efe1f787a51b16b5a51e3314d6ac365b08639f52387b33f3"
-
-[[package]]
-name = "uniswap_v3_sdk"
-version = "0.1.0"
-source = "git+https://github.com/PeggyJV/uniswap_sdk_rs?branch=main#cf8574b8306001d48cab7be6e788079fa5c1a15f"
-dependencies = [
- "num-bigint 0.4.3",
- "num-rational 0.4.0",
- "num-traits",
-]
 
 [[package]]
 name = "untrusted"
