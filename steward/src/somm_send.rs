@@ -14,7 +14,6 @@ use std::{result::Result, time::Duration};
 pub const TIMEOUT: Duration = Duration::from_secs(60);
 pub const MEMO: &str = "Sent using Somm Orchestrator";
 
-
 pub async fn send_cork(
     contact: &Contact,
     cork: Cork,

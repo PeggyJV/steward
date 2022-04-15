@@ -12,20 +12,20 @@
 
 mod allow_erc20;
 mod config_cmd;
-mod start;
 mod cosmos_to_eth;
 mod deploy;
 mod eth_to_cosmos;
 mod keys;
 mod orchestrator;
 mod sign_delegate_keys;
+mod start;
 mod test_mode;
 mod transfer;
 mod tx;
 
 use self::{
-    config_cmd::ConfigCmd, start::StartCmd, keys::KeysCmd,
-    test_mode::TestModeCmd, transfer::TransferCmd,
+    config_cmd::ConfigCmd, keys::KeysCmd, start::StartCmd, test_mode::TestModeCmd,
+    transfer::TransferCmd,
 };
 
 use crate::config::StewardConfig;
