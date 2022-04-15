@@ -120,13 +120,9 @@ impl Default for KeysConfig {
     }
 }
 
-/// Example configuration section.
-///
-/// Delete this and replace it with your actual configuration structs.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields)]
 pub struct CellarConfig {
-    /// Example configuration value
     pub pair_id: ethers::types::U256,
     pub name: String,
     pub token_id: ethers::types::U256,
@@ -173,17 +169,12 @@ impl Default for TokenInfo {
     }
 }
 
-/// EthereumSection for ethereum rpc and derivation path
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default)]
 pub struct EthereumSection {
-    /// Declaring EthereumSection blocks to search
     pub blocks_to_search: u64,
-    /// Declaring EthereumSection gas multiplier
     pub gas_price_multiplier: f32,
-    /// Declaring EthereumSection key_derivation_path
     pub key_derivation_path: String,
-    /// Declaring EthereumSection rpc
     pub rpc: String,
 }
 
