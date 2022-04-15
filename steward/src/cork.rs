@@ -171,7 +171,7 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
 
             // Calling constant methods is done by calling `call()` on the method builder.
             // (if the function takes no arguments, then you must use `()` as the argument)
-            let contract_call: String = contract
+            contract
                 .method::<_, String>("getValue", ())
                 .unwrap()
                 .call()
