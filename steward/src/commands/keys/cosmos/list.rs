@@ -13,7 +13,7 @@ pub struct ListCosmosKeyCmd {}
 impl Runnable for ListCosmosKeyCmd {
     fn run(&self) {
         let config = APP.config();
-        let keystore = Path::new(&config.keys.keystore);
+        let keystore = Path::new(&config.keystore);
 
         for entry in keystore.read_dir().expect("Could not read keystore") {
             let path = entry.unwrap().path();

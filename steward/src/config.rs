@@ -30,6 +30,7 @@ lazy_static! {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields)]
 pub struct StewardConfig {
+    pub keystore: String,
     pub cellars: Vec<CellarConfig>,
     pub cosmos: CosmosSection,
     pub ethereum: EthereumSection,
@@ -41,7 +42,7 @@ pub struct StewardConfig {
 
 impl StewardConfig {
     fn load_secret_key(&self, name: String) -> k256::elliptic_curve::SecretKey<k256::Secp256k1> {
-        let keystore = Path::new(&self.keys.keystore);
+        let keystore = Path::new(&self.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
         let name = name.parse().expect("Could not parse name");
         let key = keystore.load(&name).expect("Could not load key");
@@ -71,6 +72,7 @@ impl StewardConfig {
 impl Default for StewardConfig {
     fn default() -> Self {
         Self {
+            keystore: String::new(),
             cellars: vec![CellarConfig::default()],
             cosmos: CosmosSection::default(),
             ethereum: EthereumSection::default(),
@@ -108,14 +110,12 @@ impl Default for ServerSection {
 #[serde(default)]
 pub struct KeysConfig {
     pub delegate_key: String,
-    pub keystore: String,
 }
 
 impl Default for KeysConfig {
     fn default() -> Self {
         Self {
             delegate_key: "".to_owned(),
-            keystore: "/tmp/keystore".to_owned(),
         }
     }
 }

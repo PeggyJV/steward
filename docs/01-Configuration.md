@@ -19,6 +19,18 @@ steward print-config > config.toml
 
 ## Reference
 
+### Top-level table
+
+#### `keystore`
+
+Type: string
+
+Path to the location where `steward keys` will manage keys on-disk
+
+```
+keystore = "/tmp/keystore"
+```
+
 ### `[cosmos]` table
 
 Configuration related interactions with the Cosmos chain in question
@@ -193,18 +205,6 @@ The name of the key in `keystore` used for delegate signing by both Steward and 
 delegate_key = ""
 ```
 
-#### `keystore`
-
-Type: string
-
-Path to the location where `steward keys` will manage keys on-disk
-
-```
-[keys]
-keystore = "/tmp/keystore"
-```
-
-
 ### [metrics] table
 
 Config related to the Orchestrator metrics server
@@ -284,6 +284,8 @@ server_key_path = ""
 This example will not work as is, you'll need to supply your own values.
 
 ```toml
+keystore = "/some/path/keystore"
+
 [cosmos]
 gas_adjustment = 1.0
 grpc = "https://127.0.0.1:9090"
@@ -307,7 +309,6 @@ fees_denom = "stake"
 
 [keys]
 delegate_key = ""
-keystore = "/tmp/keystore"
 
 [metrics]
 listen_addr = "127.0.0.1:3000"

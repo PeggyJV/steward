@@ -16,17 +16,21 @@ The `--orchestrator-only` flag prevents the Relayer thread from running, and thi
 
 Before you'll be able to run the start command successfully however, you'll need keys, a configuration file, and a running Cosmos chain. Let's walk through these one at a time.
 
-### Create or import an Ethereum key
+### Key creation config
 
-Example minimum required config:
+Before you attempt to generate keys, be sure your keystore and key derivation paths are configured:
 
 ```toml
+keystore = "/some/path/keystore"
+
+[cosmos]
+key_derivation_path = "m/44'/118'/0'/0/0"
+
 [ethereum]
 key_derivation_path = "m/44'/60'/0'/0/0"
-
-[keys]
-keystore = "/my/keystore/path"
 ```
+
+### Create or import an Ethereum key
 
 To add or import an Ethereum key to your keystore, run either of the following commands respectively:
 
@@ -39,16 +43,6 @@ steward -c <config toml path> keys eth import <key_name>
 To confirm it works, check your keystore directory for a file with the key name you provided.
 
 ### Create or import a Cosmos key
-
-Example minimum required config:
-
-```toml
-[cosmos]
-key_derivation_path = "m/44'/118'/0'/0/0"
-
-[keys]
-keystore = "/my/keystore/path"
-```
 
 To add a new Cosmos key or recover one from a mnemonic, run either of the following commands respectively:
 
