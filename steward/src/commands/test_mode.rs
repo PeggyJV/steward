@@ -8,9 +8,9 @@ use steward_proto::steward::contract_call_server::ContractCallServer;
 #[clap(
     long_about = "DESCRIPTION \n\n Single Signer, start Ethereum test module.\n This command starts Steward using the Ethereum test mode."
 )]
-pub struct SingleSignerCmd;
+pub struct TestModeCmd;
 
-impl Runnable for SingleSignerCmd {
+impl Runnable for TestModeCmd {
     /// Start the application.
     fn run(&self) {
         let config = APP.config();
@@ -55,7 +55,7 @@ impl Runnable for SingleSignerCmd {
     }
 }
 
-impl config::Override<StewardConfig> for SingleSignerCmd {
+impl config::Override<StewardConfig> for TestModeCmd {
     // Process the given command line options, overriding settings from
     // a configuration file using explicit flags taken from command-line
     // arguments.

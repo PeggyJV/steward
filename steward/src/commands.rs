@@ -19,13 +19,13 @@ mod eth_to_cosmos;
 mod keys;
 mod orchestrator;
 mod sign_delegate_keys;
-mod single_signer;
+mod test_mode;
 mod transfer;
 mod tx;
 
 use self::{
     config_cmd::ConfigCmd, start::StartCmd, keys::KeysCmd,
-    single_signer::SingleSignerCmd, transfer::TransferCmd,
+    test_mode::TestModeCmd, transfer::TransferCmd,
 };
 
 use crate::config::StewardConfig;
@@ -38,7 +38,7 @@ pub const CONFIG_FILE: &str = "steward.toml";
 /// Steward Subcommands
 #[derive(Command, Debug, Parser, Runnable)]
 pub enum StewardCmd {
-    SingleSigner(SingleSignerCmd),
+    TestMode(TestModeCmd),
     Transfer(TransferCmd),
     #[clap(subcommand)]
     Keys(KeysCmd),
