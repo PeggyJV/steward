@@ -1,10 +1,10 @@
 use crate::{
     cellars::{self, aave_v2_stablecoin},
     config,
+    cork::abi::ParamType::String as abi_type,
     error::{Error, ErrorKind},
     prelude::APP,
     somm_send,
-    cork::abi::ParamType::String as abi_type,
 };
 use abscissa_core::{
     tracing::log::{debug, error, warn},
@@ -146,7 +146,9 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
             return Err(tonic::Status::invalid_argument(err));
         }
 
-        let address: H160 = cellar_address.parse().expect("could not parse cellar address");
+        let address: H160 = cellar_address
+            .parse()
+            .expect("could not parse cellar address");
 
         let contract_call_data = match request.call_data.clone() {
             Some(call) => call,
@@ -163,15 +165,19 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
             let abi = abi.to_string();
 
             let abi: abi::Abi = serde_json::from_str(&abi).unwrap();
-        
+
             // create the contract object at the address
             let contract = Contract::new(address, abi, &client);
-    
+
             // Calling constant methods is done by calling `call()` on the method builder.
             // (if the function takes no arguments, then you must use `()` as the argument)
-            let init_value: String = contract.method::<_, String>("getValue", ()).unwrap().call().await.unwrap();
-        };
-        
+            let contract_call: String = contract
+                .method::<_, String>("getValue", ())
+                .unwrap()
+                .call()
+                .await
+                .unwrap();
+        }
 
         Ok(Response::new(SubmitResponse {}))
     }
