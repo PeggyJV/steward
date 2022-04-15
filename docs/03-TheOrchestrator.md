@@ -1,20 +1,16 @@
 # Orchestrator
 
-The Orchestrator is a sidecar application to a Cosmos chain responsible for *orchestrating* transactions between Cosmos and Ethereum chains. In the Cosmos -> Ethereum direction, validators running the orchestrator with the Relayer enabled will query the [Gravity Module](https://github.com/peggyjv/gravity-bridge/tree/main/module/x/gravity) for pending transactions, and then send them to the gravity contract. In the Ethereum -> Cosmos direction, the Orchestrator acts as an oracle for the Cosmos chain to inform it of incoming transactions. This allows the coordination of appropriate locking/unlocking/minting/burning of tokens on either side of the bridge. The Orchestrator ensures that Gravity module state on the Cosmos chain is synchronized with the state of the gravity contract.
+The Orchestrator is a sidecar application to a Cosmos chain responsible for *orchestrating* transactions between Cosmos and Ethereum chains. In the Cosmos -> Ethereum direction, validators running the orchestrator with the Relayer enabled will query the [Gravity Module](https://github.com/peggyjv/gravity-bridge/tree/main/module/x/gravity) for pending transactions, and then send them to the gravity contract. In the Ethereum -> Cosmos direction, the Orchestrator acts as an oracle for the Cosmos chain to inform it of incoming transactions. This allows the coordination of appropriate locking/unlocking/minting/burning of tokens on either side of the bridge. The Orchestrator ensures that Gravity module state on the Cosmos chain is synchronized with the state of the gravity contract. Currently we are only asking validators to run the Orchestrator without the Relayer (Ethereum -> Cosmos direction only). 
 
 ## Quickstart
 
-The Orchestrator and Relayer can be started using the following command:
+The Orchestrator can be started using the following command:
 
 ```bash
-steward -c <config toml path> orchestrator start --ethereum-key <eth_key_name> --cosmos-key <cosmos key name>
+steward -c <config toml path> orchestrator start --orchestrator-only --ethereum-key <eth_key_name> --cosmos-key <cosmos key name>
 ```
 
-If you do not wish to participate in Relaying Cosmos -> Ethereum transactions, you can start the orchestrator without the relayer by adding the `--orchestrator-only` flag:
-
-```bash
-steward -c <config toml path> orchestrator start --ethereum-key <eth_key_name> --cosmos-key <cosmos key name> --orchestrator-only
-```
+The `--orchestrator-only` flag prevents the Relayer thread from running, and this is the way in which we encourage validators to run the Orchestrator for now. You will burn gas on failed transactions if you run the Relayer in its current state.  
 
 ## Setup
 
@@ -57,7 +53,7 @@ keystore = "/my/keystore/path"
 To add a new Cosmos key or recover one from a mnemonic, run either of the following commands respectively:
 
 ```bash
-steward -c <config toml path> keys cosmos add <key_name>]
+steward -c <config toml path> keys cosmos add <key_name>
 
 # Omitting the mnemonic argument will provide a prompt for its entry when the
 # command is run.
@@ -68,28 +64,4 @@ To confirm it works, check your keystore directory for a file with the key name 
 
 ### Configuration
 
-The following configuration fields are required to run the Orchestrator. Please refer to the [Configuration Reference](./configuration#reference) for explanations of each fields' purpose.
-
-```toml
-[cosmos]
-gas_adjustment = 1.0
-grpc = "http://localhost:9090"
-msg_batch_size = 5
-prefix = "somm"
-
-[cosmos.gas_price]
-amount = 0.0
-demom = "usomm"
-
-[ethereum]
-blocks_to_search = 5000
-gas_price_multiplier = 1.2
-rpc = "http://localhost:8545"
-
-[gravity]
-contract = "0x00000000000000000000000000000000000"
-fees_denom = "usomm"
-```
-
-You should be ready to go. You'll find the start command in the Quickstart section at the top of this document.
-
+Please refer to this [example configuration](./01-Configuration.md#complete-example-configtoml) and the [configuration reference](./01-Configuration.md#reference).

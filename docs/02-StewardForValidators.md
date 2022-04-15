@@ -2,7 +2,7 @@
 
 Steward is an application intended for developers and validators on the Sommelier network.
 
-It can run as a server for forearding cellar contract calls from Strategy Providers through the Sommelier chain, or it can run in test mode to directly interact with Ethereum contracts as a single signer.
+It can run as a server for forwarding cellar contract calls from Strategy Providers through the Sommelier chain, or it can run in test mode to directly interact with Ethereum contracts as a single signer.
 
 It integrates the full functionality of gorc for operating as an orchestrator and relayer of [Gravity bridge](https://github.com/PeggyJV/gravity-bridge/) messages between the Ethereum and Cosmos chains.
 
@@ -20,56 +20,17 @@ steward -c [path to your config toml] start
 
 In this section, let’s explore setting up steward for validators. There are two ways that validators will use Steward:
 
-1. Running Steward as a gRPC server for relaying SP contract calls through the chain. If a validator is not running this server, it cannot participate in Cellar management.
-2. Manually scheduling contract calls when the validator set needs to coordinate a function  call on a cellar. An example of this would be transferring a Cellar’s accrued fees to a module account on chain.
+1. Running Steward as a gRPC server for relaying Strategy Provider contract calls through the chain. If a validator is not running this server, it cannot participate in Cellar management.
+2. Manually scheduling contract calls when the validator set needs to coordinate administrative function calls on a cellar. An example of this would be shutting down a cellar.
 
 ### Running Steward as a server
 
-Steward runs on every Validator in the Sommelier Validator set. It runs a server to which Strategy Providers (SPs) send requests whenever they determine that the market has changed enough to warrant action. The request payload contains everything needed to make a *cork*: a signed combination of a cellar ID and an ABI encoded contract call. When Steward receives a submission from the SP, it validates the target cellar ID, build a cork, and submits it to the Cork module on chain.
+Steward runs on every Validator in the Sommelier Validator set. It runs a server to which Strategy Providers (SPs) send requests whenever they determine that the market has changed enough to warrant action. The request payload contains everything needed to make a *cork*: a signed combination of a cellar address and an ABI encoded contract call. When Steward receives a submission from the SP, it validates the target cellar address, builds a cork, signs it with the delegate key, and submits it to the Cork module on chain.
 
-Here is an ***example*** TOML file with the minimum required configuration fields to run Steward as a server and facilitate Cellar operations. *Please fill in with your own values*:
+> :bulb:  Steward gatekeeps function calls both by only supporting certain Cellar functions in its API, and by validating the target cellar before forwarding a call.  
 
-```toml
-[cork]
-# Before Steward forwards a function call to the chain, it checks
-# that the target contract address is in fact a cellar approved
-# by governance. To speed up this check, steward frequently queries
-# and caches a list of all approved cellar addresses. This value
-# determines how frequently (in seconds) steward makes this query.
-cache_refresh_period = 60           # default: 60
+Before SPs can establish a connection with your `steward` server, you will need to generate a self-signed CA certificate, a certificate signed by this CA, and you'll need to the SP's client CA. These certificates must be TLS 1.2 compliant. The paths to these values and the key used to create your signed server certificate must be set in the `[server]` table of your config file.
 
-[cosmos]
-# Your sommelier gRPC endpoint
-grpc = "http://localhost:9090"      # default: "http://localhost:9090"
+Here is an [example configuration](./01-Configuration.md#complete-example-configtoml) you can use to get your config file started. Most of the fields have sensible defaults; you can use the [configuration reference](./01-Configuration.md#reference) to determine which fields you don't need to explicity set if you wish.
 
-# The bech32 prefix for address strings
-prefix = "somm"                     # default: "somm"
-
-[cosmos.gas_price]
-amount = 0.0                        # default: 0.0
-denom = "usomm"                     # default "usomm"
-
-[keys]
-# The name of key in the keystore to be used for signing transactions.
-# This should be the same key for Orchestrator and Steward.
-delegator_key = "mykey"
-
-# The on-disk keystore where Steward-managed keys are stored
-keystore = "/some/path"             # default "/tmp/keystore"
-
-[server]
-# The address of the Steward gRPC server
-address = "0.0.0.0"                 # default "0.0.0.0"
-
-# The port of the Steward gRPC server
-port = 5734                         # default 5734
-
-# The root of trust that signed the Strategy Provider's client certificate.
-client_ca_cert_path = "./truststore/sp_client_ca.crt"
-
-# The server's cert to offer the SP client to establish two-way trust
-server_cert_path = "./server.crt"
-
-# The key used to generate the server cert
-server_key_path = "./server_key_pkcs8.pem"
-```
+Once your certs and config file are ready, refer to the [Quickstart section](#quickstart) above to start Steward!
