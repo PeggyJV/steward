@@ -28,7 +28,6 @@ type SubmitRequest struct {
 	CellarId string `protobuf:"bytes,1,opt,name=cellar_id,json=cellarId,proto3" json:"cellar_id,omitempty"`
 	// Types that are assignable to CallData:
 	//	*SubmitRequest_AaveV2Stablecoin
-	//	*SubmitRequest_Uniswapv3Rebalance
 	CallData isSubmitRequest_CallData `protobuf_oneof:"call_data"`
 }
 
@@ -85,13 +84,6 @@ func (x *SubmitRequest) GetAaveV2Stablecoin() *AaveV2Stablecoin {
 	return nil
 }
 
-func (x *SubmitRequest) GetUniswapv3Rebalance() *UniswapV3RebalanceParams {
-	if x, ok := x.GetCallData().(*SubmitRequest_Uniswapv3Rebalance); ok {
-		return x.Uniswapv3Rebalance
-	}
-	return nil
-}
-
 type isSubmitRequest_CallData interface {
 	isSubmitRequest_CallData()
 }
@@ -100,13 +92,7 @@ type SubmitRequest_AaveV2Stablecoin struct {
 	AaveV2Stablecoin *AaveV2Stablecoin `protobuf:"bytes,2,opt,name=aave_v2_stablecoin,json=aaveV2Stablecoin,proto3,oneof"`
 }
 
-type SubmitRequest_Uniswapv3Rebalance struct {
-	Uniswapv3Rebalance *UniswapV3RebalanceParams `protobuf:"bytes,100,opt,name=uniswapv3_rebalance,json=uniswapv3Rebalance,proto3,oneof"`
-}
-
 func (*SubmitRequest_AaveV2Stablecoin) isSubmitRequest_CallData() {}
-
-func (*SubmitRequest_Uniswapv3Rebalance) isSubmitRequest_CallData() {}
 
 type SubmitResponse struct {
 	state         protoimpl.MessageState
@@ -144,124 +130,6 @@ func (x *SubmitResponse) ProtoReflect() protoreflect.Message {
 // Deprecated: Use SubmitResponse.ProtoReflect.Descriptor instead.
 func (*SubmitResponse) Descriptor() ([]byte, []int) {
 	return file_steward_proto_rawDescGZIP(), []int{1}
-}
-
-type UniswapV3Position struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	UpperPrice int32 `protobuf:"varint,1,opt,name=upper_price,json=upperPrice,proto3" json:"upper_price,omitempty"`
-	LowerPrice int32 `protobuf:"varint,2,opt,name=lower_price,json=lowerPrice,proto3" json:"lower_price,omitempty"`
-	Weight     int32 `protobuf:"varint,3,opt,name=weight,proto3" json:"weight,omitempty"`
-}
-
-func (x *UniswapV3Position) Reset() {
-	*x = UniswapV3Position{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_steward_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UniswapV3Position) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UniswapV3Position) ProtoMessage() {}
-
-func (x *UniswapV3Position) ProtoReflect() protoreflect.Message {
-	mi := &file_steward_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UniswapV3Position.ProtoReflect.Descriptor instead.
-func (*UniswapV3Position) Descriptor() ([]byte, []int) {
-	return file_steward_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *UniswapV3Position) GetUpperPrice() int32 {
-	if x != nil {
-		return x.UpperPrice
-	}
-	return 0
-}
-
-func (x *UniswapV3Position) GetLowerPrice() int32 {
-	if x != nil {
-		return x.LowerPrice
-	}
-	return 0
-}
-
-func (x *UniswapV3Position) GetWeight() int32 {
-	if x != nil {
-		return x.Weight
-	}
-	return 0
-}
-
-type UniswapV3RebalanceParams struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	CellarTickInfo []*UniswapV3Position `protobuf:"bytes,1,rep,name=cellar_tick_info,json=cellarTickInfo,proto3" json:"cellar_tick_info,omitempty"`
-	CurrentPrice   uint64               `protobuf:"varint,2,opt,name=current_price,json=currentPrice,proto3" json:"current_price,omitempty"`
-}
-
-func (x *UniswapV3RebalanceParams) Reset() {
-	*x = UniswapV3RebalanceParams{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_steward_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UniswapV3RebalanceParams) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UniswapV3RebalanceParams) ProtoMessage() {}
-
-func (x *UniswapV3RebalanceParams) ProtoReflect() protoreflect.Message {
-	mi := &file_steward_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UniswapV3RebalanceParams.ProtoReflect.Descriptor instead.
-func (*UniswapV3RebalanceParams) Descriptor() ([]byte, []int) {
-	return file_steward_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *UniswapV3RebalanceParams) GetCellarTickInfo() []*UniswapV3Position {
-	if x != nil {
-		return x.CellarTickInfo
-	}
-	return nil
-}
-
-func (x *UniswapV3RebalanceParams) GetCurrentPrice() uint64 {
-	if x != nil {
-		return x.CurrentPrice
-	}
-	return 0
 }
 
 var File_steward_proto protoreflect.FileDescriptor
@@ -327,14 +195,10 @@ var file_steward_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_steward_proto_goTypes = []interface{}{
 	(*SubmitRequest)(nil),            // 0: steward.v1.SubmitRequest
 	(*SubmitResponse)(nil),           // 1: steward.v1.SubmitResponse
-	(*UniswapV3Position)(nil),        // 2: steward.v1.UniswapV3Position
-	(*UniswapV3RebalanceParams)(nil), // 3: steward.v1.UniswapV3RebalanceParams
 	(*AaveV2Stablecoin)(nil),         // 4: steward.v1.AaveV2Stablecoin
 }
 var file_steward_proto_depIdxs = []int32{
 	4, // 0: steward.v1.SubmitRequest.aave_v2_stablecoin:type_name -> steward.v1.AaveV2Stablecoin
-	3, // 1: steward.v1.SubmitRequest.uniswapv3_rebalance:type_name -> steward.v1.UniswapV3RebalanceParams
-	2, // 2: steward.v1.UniswapV3RebalanceParams.cellar_tick_info:type_name -> steward.v1.UniswapV3Position
 	0, // 3: steward.v1.ContractCall.Submit:input_type -> steward.v1.SubmitRequest
 	1, // 4: steward.v1.ContractCall.Submit:output_type -> steward.v1.SubmitResponse
 	4, // [4:5] is the sub-list for method output_type
@@ -375,34 +239,9 @@ func file_steward_proto_init() {
 				return nil
 			}
 		}
-		file_steward_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UniswapV3Position); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_steward_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UniswapV3RebalanceParams); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
 	}
 	file_steward_proto_msgTypes[0].OneofWrappers = []interface{}{
 		(*SubmitRequest_AaveV2Stablecoin)(nil),
-		(*SubmitRequest_Uniswapv3Rebalance)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
