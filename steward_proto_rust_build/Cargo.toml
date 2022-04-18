@@ -1,5 +1,5 @@
 [package]
-name = "steward_proto_build"
+name = "steward_proto_rust_build"
 version = "0.1.0"
 edition = "2021"
 

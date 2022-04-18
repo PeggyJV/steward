@@ -4,14 +4,18 @@ set -e
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
 
-# Build Rust bindings
-cargo run --package steward_proto_build --release
+echo Building Rust bindings. Output will be in ./steward_proto_rust/prost
+cargo run --package steward_proto_rust_build --release
 
-# Build Go bindings
-GO_OUT=$REPO_ROOT/steward_proto/go
+GO_OUT=$REPO_ROOT/steward_proto_go
+PROTO_PATH=$REPO_ROOT/proto
 
-protoc --proto_path=$REPO_ROOT/steward_proto/proto \
-	-I=$GO_OUT \
+echo
+echo Building Go bindings. Output will be in ./steward_proto_go/steward_proto
+protoc --proto_path=$PROTO_PATH \
 	--go_out=$GO_OUT/ \
 	--go-grpc_out=$GO_OUT/ \
-       	steward.proto
+        $PROTO_PATH/steward.proto \
+	$PROTO_PATH/aave_v2_stablecoin.proto
+
+echo Done.

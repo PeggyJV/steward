@@ -16,6 +16,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	gravityTypes "github.com/peggyjv/gravity-bridge/module/v2/x/gravity/types"
 	corkTypes "github.com/peggyjv/sommelier/v4/x/cork/types"
+	"github.com/peggyjv/steward/steward_proto_go/steward_proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
@@ -105,15 +106,15 @@ func (s *IntegrationTestSuite) TestCork() {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
 
-				c := NewContractCallClient(conn)
+				c := steward_proto.NewContractCallClient(conn)
 				s.T().Logf("sending request to %s", s.chain.validators[i].keyInfo.GetAddress())
 				cellarId := hardhatCellar.String()
-				request := SubmitRequest{
+				request := steward_proto.SubmitRequest{
 					CellarId: cellarId,
-					CallData: &SubmitRequest_AaveV2Stablecoin{
-						&AaveV2Stablecoin{
-							Function: &AaveV2Stablecoin_ClaimAndUnstake{
-								&ClaimAndUnstake{},
+					CallData: &steward_proto.SubmitRequest_AaveV2Stablecoin{
+						AaveV2Stablecoin: &steward_proto.AaveV2Stablecoin{
+							Function: &steward_proto.AaveV2Stablecoin_ClaimAndUnstake{
+								ClaimAndUnstake: &steward_proto.ClaimAndUnstake{},
 							},
 						},
 					},

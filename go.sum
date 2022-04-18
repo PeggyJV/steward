@@ -808,8 +808,6 @@ github.com/pborman/uuid v0.0.0-20170112150404-1b00554d8222/go.mod h1:VyrYX9gd7ir
 github.com/pborman/uuid v1.2.0/go.mod h1:X/NO0urCmaxf9VXbdlT7C2Yzkj2IKimNn4k+gtPdI/k=
 github.com/peggyjv/gravity-bridge/module/v2 v2.0.0-20220408050446-0990f54669f9 h1:zAAA3GAhDBtqBmnSc91x8LVOdlUWNTWhW399P5TOlK0=
 github.com/peggyjv/gravity-bridge/module/v2 v2.0.0-20220408050446-0990f54669f9/go.mod h1:XUHyaIYlqo2TgCSY0R4N/geZot6Vks/EZmhJ7Jz4wvQ=
-github.com/peggyjv/sommelier/v3 v3.1.2-0.20220318164959-6feb04a85567 h1:+tzucrMgzvdXBWplyvuu7dKhLYfIVFzYm31CmIb0Qk8=
-github.com/peggyjv/sommelier/v3 v3.1.2-0.20220318164959-6feb04a85567/go.mod h1:gTpZgChfrQFOqNKaOfleIiYI42sY6fIAFeodAQROmTw=
 github.com/peggyjv/sommelier/v4 v4.0.0-20220408170832-484a5286e75b h1:Qp30xmWYrmWEOaztSwE5P8QK7Rg2LVSPaRGk9ghvAgY=
 github.com/peggyjv/sommelier/v4 v4.0.0-20220408170832-484a5286e75b/go.mod h1:prszJbfm71XNM7iTmQgX+PkeOlXzYW1n58+QJvl9b7E=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
@@ -1511,8 +1509,9 @@ google.golang.org/protobuf v1.25.0/go.mod h1:9JNX74DMeImyA3h4bdi1ymwjUzf21/xIlba
 google.golang.org/protobuf v1.25.1-0.20200805231151-a709e31e5d12/go.mod h1:9JNX74DMeImyA3h4bdi1ymwjUzf21/xIlbajtzgsN7c=
 google.golang.org/protobuf v1.26.0-rc.1/go.mod h1:jlhhOSvTdKEhbULTjvd4ARK9grFBp09yW+WbY/TyQbw=
 google.golang.org/protobuf v1.26.0/go.mod h1:9q0QmTI4eRPtz6boOQmLYwt+qCgq0jsYwAQnmE0givc=
-google.golang.org/protobuf v1.27.1 h1:SnqbnDw1V7RiZcXPx5MEeqPv2s79L9i7BJUlG/+RurQ=
 google.golang.org/protobuf v1.27.1/go.mod h1:9q0QmTI4eRPtz6boOQmLYwt+qCgq0jsYwAQnmE0givc=
+google.golang.org/protobuf v1.28.0 h1:w43yiav+6bVFTBQFZX0r7ipe9JQ1QsbMgHwbBziscLw=
+google.golang.org/protobuf v1.28.0/go.mod h1:HV8QOd/L58Z+nl8r43ehVNZIU/HEI6OcFqwMG9pJV4I=
 gopkg.in/alecthomas/kingpin.v2 v2.2.6/go.mod h1:FMv+mEhP44yOT+4EoQTLFTRgOQ1FBLkstjWtayDeSgw=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
