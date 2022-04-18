@@ -6,7 +6,7 @@ use crate::{
     somm_send,
 };
 use abscissa_core::{
-    tracing::log::{debug, error, warn},
+    tracing::log::{debug, error, info, warn},
     Application,
 };
 use deep_space::{Coin, Contact};
@@ -33,8 +33,8 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         &self,
         request: Request<SubmitRequest>,
     ) -> Result<Response<SubmitResponse>, Status> {
-        debug!("received contract call request");
         let request = request.get_ref();
+        info!("handling request for cellar {}", &request.cellar_id);
 
         // Check if cellar is governance approved before building cork
         let config = APP.config();
@@ -57,9 +57,9 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
             .cellar_ids
             .clone();
         if !ids.contains(&request.cellar_id) {
-            debug!(
-                "cellar ID {} not approved by governance",
-                &request.cellar_id
+            info!(
+                "rejecting request for unapproved cellar {}",
+                request.cellar_id
             );
             return Err(Status::new(
                 Code::PermissionDenied,
@@ -74,7 +74,10 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         let cork = match build_cork(request).await {
             Ok(c) => c,
             Err(err) => {
-                warn!("failed to build cork: {}", err);
+                warn!(
+                    "failed to build cork for cellar {}: {}",
+                    request.cellar_id, err
+                );
                 return Err(Status::new(Code::InvalidArgument, err.to_string()));
             }
         };
@@ -87,7 +90,7 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
                 "failed to send cork to sommelier",
             ));
         }
-        debug!("sent cork!");
+        info!("submitted cork for {}!", request.cellar_id);
 
         Ok(Response::new(SubmitResponse {}))
     }
