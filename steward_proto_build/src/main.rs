@@ -15,7 +15,7 @@ use walkdir::WalkDir;
 /// A temporary directory for proto building
 const TMP_PATH: &str = "/tmp/steward/";
 /// the output directory
-const OUT_PATH: &str = "../steward_proto/src/prost/";
+const OUT_PATH: &str = "../steward_proto_rust/src/prost/";
 
 // All paths must end with a / and either be absolute or include a ./ to reference the current
 // working directory.
@@ -35,7 +35,7 @@ fn main() {
     let root = root.parent().unwrap().to_path_buf();
 
     let mut steward_proto_dir = root;
-    steward_proto_dir.push("steward_proto/proto/");
+    steward_proto_dir.push("proto/");
     let steward_proto_dir = [steward_proto_dir];
 
     // List available proto files

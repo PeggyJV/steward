@@ -10,20 +10,21 @@ default-members = [
 	"steward",
 	"steward_abi",
 	"steward_abi_build",
-	"steward_proto",
+	"steward_proto_rust",
 	"steward_proto_build",
 ]
 members = [
 	"steward",
 	"steward_abi",
 	"steward_abi_build",
-	"steward_proto",
+	"steward_proto_rust",
 	"steward_proto_build",
 ]
+
 [dependencies]
 lazy_static = "1.4.0"
 steward = { path = "./steward" }
 steward_abi = { path = "./steward_abi" }
 steward_abi_build = { path = "./steward_abi_build" }
-steward_proto = { path = "./steward_proto" }
+steward_proto = { path = "./steward_proto_rust" }
 steward_proto_build = { path = "./steward_proto_build" }
