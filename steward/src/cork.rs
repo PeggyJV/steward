@@ -111,31 +111,30 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
         debug!("received contract call request");
         let request = request.get_ref();
 
-        
         let contract_call_data = match request.call_data.clone() {
             Some(call) => call,
             None => return Err(tonic::Status::invalid_argument("err")),
         };
-    
+
         let config = APP.config();
-    
+
         let keystore = path::Path::new(&config.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
-    
+
         let name = &config
             .keys
             .rebalancer_key
             .parse()
             .expect("Could not parse name");
         let key = keystore.load(name).expect("Could not load key");
-    
+
         let key = key
             .to_pem()
             .parse::<k256::elliptic_curve::SecretKey<k256::Secp256k1>>()
             .expect("Could not parse key");
-    
+
         let wallet: LocalWallet = Wallet::from(key);
-    
+
         let eth_host = config.ethereum.rpc.clone();
         let provider = Provider::<Http>::try_from(eth_host.clone())
             .unwrap_or_else(|_| panic!("could not get provider from eth_host {}", eth_host));
@@ -143,31 +142,34 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
             .get_chainid()
             .await
             .expect("Could not retrieve chain ID");
-    
-        let chain_id = downcast_to_u64(chain_id).expect("Chain ID overflowed when downcasting to u64");
+
+        let chain_id =
+            downcast_to_u64(chain_id).expect("Chain ID overflowed when downcasting to u64");
         let client = SignerMiddleware::new(provider, wallet.clone().with_chain_id(chain_id));
-    
+
         let cellar_address = request.cellar_id.clone();
-    
+
         if let Err(err) = cellars::validate_cellar_id(&cellar_address) {
             return Err(tonic::Status::invalid_argument(err));
         }
-    
+
         let address: Address = cellar_address
             .parse()
             .expect("could not parse cellar address");
-    
+
         match contract_call_data {
             AaveV2Stablecoin(call) => {
                 let contract = AaveV2StablecoinCellar::new(address, Arc::new(client));
-    
+
                 let call_functions = match call.function.unwrap() {
-                    Function::AccruePlatformFees(_) => contract.accrue_platform_fees(),
-                    Function::ClaimAndUnstake(_) => contract.claim_and_unstake(),
+                    Function::EnterStrategy(_) => contract.enter_strategy(),
+                    Function::ReinvestAmount(params) => contract
+                        .reinvest_with_amount(params.amount.into(), params.min_assets_out.into()),
+                    Function::Reinvest(params) => contract.reinvest(params.min_assets_out.into()),
                     Function::ClaimAndUnstakeAmount(params) => {
                         contract.claim_and_unstake_with_amount(params.amount.into())
                     }
-                    Function::EnterStrategy(_) => contract.enter_strategy(),
+                    Function::ClaimAndUnstake(_) => contract.claim_and_unstake(),
                     Function::Rebalance(params) => contract.rebalance(
                         params
                             .address
@@ -175,10 +177,8 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
                             .expect("failed to parse token address"),
                         params.min_new_lending_token_amount.into(),
                     ),
-                    Function::Reinvest(params) => contract.reinvest(params.min_assets_out.into()),
-                    Function::ReinvestAmount(params) => contract
-                        .reinvest_with_amount(params.amount.into(), params.min_assets_out.into()),
-                    Function::RemoveLiquidityRestriction(_) => contract.remove_liquidity_restriction(),
+                    Function::AccruePlatformFees(_) => contract.accrue_platform_fees(),
+                    Function::TransferFees(_) => contract.transfer_fees(),
                     Function::SetInputToken(params) => contract.set_input_token(
                         params
                             .address
@@ -186,13 +186,15 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
                             .expect("failed to parse token address"),
                         params.is_approved.into(),
                     ),
+                    Function::RemoveLiquidityRestriction(_) => {
+                        contract.remove_liquidity_restriction()
+                    }
                     Function::Sweep(params) => contract.sweep(
                         params
                             .address
                             .parse::<H160>()
                             .expect("failed to parse token address"),
                     ),
-                    Function::TransferFees(_) => contract.transfer_fees(),
                 };
                 call_functions.send();
             }
