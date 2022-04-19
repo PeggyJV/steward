@@ -4,7 +4,6 @@ VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:main"
 ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:main"
 
 build_protos:
-	chmod u+x ./build_protos.sh
 	./build_protos.sh
 
 e2e_build_images: e2e_clean_slate
