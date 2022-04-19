@@ -103,22 +103,21 @@ impl Configurable<StewardConfig> for EntryPoint {
             .map(PathBuf::from)
             .unwrap_or_else(|| CONFIG_FILE.into());
 
-        let config_env_variable = env::var("STW_ENV_VAR").unwrap();
-        let new_filename = self
-            .config
-            .as_ref()
-            .map(PathBuf::from)
-            .unwrap_or_else(|| config_env_variable.into());
+        let config_env_variable = option_env!("CASE_INSENSITIVE");
 
-        if filename.exists() {
-            return Some(filename);
-        } else if new_filename.exists() {
+        if config_env_variable != None {
+            let new_filename = self
+                .config
+                .as_ref()
+                .map(PathBuf::from)
+                .unwrap_or_else(|| config_env_variable.expect("nn").into());
             return Some(new_filename);
+        } else if filename.exists() {
+            return Some(filename);
         } else {
             return None;
         }
     }
-
     /// Apply changes to the config after it's been loaded, e.g. overriding
     /// values in a config file using command-line options.
     ///
