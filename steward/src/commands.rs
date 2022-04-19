@@ -36,7 +36,7 @@ use self::{
 
 use crate::config::StewardConfig;
 use abscissa_core::{clap::Parser, Command, Configurable, FrameworkError, Runnable};
-use std::path::PathBuf;
+use std::{env, path::PathBuf};
 
 /// Steward Configuration Filename
 pub const CONFIG_FILE: &str = "steward.toml";
@@ -103,10 +103,19 @@ impl Configurable<StewardConfig> for EntryPoint {
             .map(PathBuf::from)
             .unwrap_or_else(|| CONFIG_FILE.into());
 
+        let config_env_variable = env::var("CASE_INSENSITIVE").unwrap();
+        let new_filename = self
+            .config
+            .as_ref()
+            .map(PathBuf::from)
+            .unwrap_or_else(|| config_env_variable.into());
+
         if filename.exists() {
-            Some(filename)
+            return Some(filename);
+        } else if new_filename.exists() {
+            return Some(new_filename);
         } else {
-            None
+            return None;
         }
     }
 
