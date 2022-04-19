@@ -3,9 +3,9 @@
 use crate::{application::APP, prelude::*, utils::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use clarity::Uint256;
-use deep_space::{coin::Coin, private_key::PrivateKey as CosmosPrivateKey};
+use deep_space::coin::Coin;
 use ethers::types::Address as EthAddress;
-use gravity_bridge::cosmos_gravity::send::send_to_eth;
+use gravity_bridge::cosmos_gravity::{crypto::PrivateKey as CosmosPrivateKey, send::send_to_eth};
 use gravity_bridge::gravity_proto::gravity::DenomToErc20Request;
 use gravity_bridge::gravity_utils::connection_prep::{check_for_fee_denom, create_rpc_connections};
 use regex::Regex;
