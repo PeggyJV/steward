@@ -103,7 +103,7 @@ impl Configurable<StewardConfig> for EntryPoint {
             .map(PathBuf::from)
             .unwrap_or_else(|| CONFIG_FILE.into());
 
-        let config_env_variable = env::var("CASE_INSENSITIVE").unwrap();
+        let config_env_variable = env::var("STW_ENV_VAR").unwrap();
         let new_filename = self
             .config
             .as_ref()
