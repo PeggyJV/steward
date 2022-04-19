@@ -710,7 +710,9 @@ func (s *IntegrationTestSuite) runStewards() {
 	s.T().Log("starting steward containers...")
 	s.stewResources = make([]*dockertest.Resource, len(s.chain.stewards))
 	for i, steward := range s.chain.stewards {
-		stewardCfg := fmt.Sprintf(`[cosmos]
+		stewardCfg := fmt.Sprintf(`keystore = "/tmp/keystore"
+
+[cosmos]
 grpc = "http://%s:9090"
 
 [cosmos.gas_price]
