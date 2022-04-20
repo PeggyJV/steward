@@ -7,6 +7,7 @@ use crate::prelude::APP;
 use abscissa_core::Application;
 use deep_space::{Address, PrivateKey};
 use ethers::{prelude::H160, signers::LocalWallet as EthWallet};
+use gravity_bridge::cosmos_gravity;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use signatory::FsKeyStore;
@@ -16,7 +17,7 @@ lazy_static! {
     pub static ref DELEGATE_KEY: PrivateKey = {
         let config = APP.config();
         let name = &config.keys.rebalancer_key;
-        config.load_deep_space_key(name.clone())
+        config.load_deep_space_key(name.clone()).into()
     };
     pub static ref DELEGATE_ADDRESS: Address = {
         let config = APP.config();
@@ -54,7 +55,7 @@ impl StewardConfig {
         clarity::PrivateKey::from_slice(&key).expect("Could not convert key")
     }
 
-    pub fn load_deep_space_key(&self, name: String) -> deep_space::private_key::PrivateKey {
+    pub fn load_deep_space_key(&self, name: String) -> cosmos_gravity::crypto::PrivateKey {
         let key = self.load_secret_key(name).to_bytes();
         let key = deep_space::utils::bytes_to_hex_str(&key);
         key.parse().expect("Could not parse private key")
