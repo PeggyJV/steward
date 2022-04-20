@@ -106,16 +106,17 @@ impl Configurable<StewardConfig> for EntryPoint {
         let config_env_variable = option_env!("STW_ENV_VAR");
 
         if config_env_variable != None {
-            let new_filename = self
-                .config
-                .as_ref()
-                .map(PathBuf::from)
-                .unwrap_or_else(|| config_env_variable.expect("nn").into());
-            return Some(new_filename);
+            let new_filename = self.config.as_ref().map(PathBuf::from).unwrap_or_else(|| {
+                config_env_variable
+                    .expect("Can't process config_env_variable")
+                    .into()
+            });
+            println!("{}", new_filename.display());
+            Some(new_filename)
         } else if filename.exists() {
-            return Some(filename);
+            Some(filename)
         } else {
-            return None;
+            None
         }
     }
     /// Apply changes to the config after it's been loaded, e.g. overriding
