@@ -22,6 +22,7 @@ mod orchestrator;
 mod query;
 mod reinvest;
 mod remove_funds;
+mod scheduled_corks;
 mod set_validator;
 mod sign_delegate_keys;
 mod single_signer;
@@ -30,8 +31,8 @@ mod tx;
 
 use self::{
     config_cmd::ConfigCmd, cosmos_mode::CosmosSignerCmd, fund_cellar::FundCellarCmd, keys::KeysCmd,
-    remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, single_signer::SingleSignerCmd,
-    transfer::TransferCmd,
+    remove_funds::RemoveFundsCmd, scheduled_corks::ScheduledCorksCmd,
+    set_validator::SetValidatorCmd, single_signer::SingleSignerCmd, transfer::TransferCmd,
 };
 
 use crate::config::StewardConfig;
@@ -45,6 +46,7 @@ pub const CONFIG_FILE: &str = "steward.toml";
 #[derive(Command, Debug, Parser, Runnable)]
 pub enum StewardCmd {
     SingleSigner(SingleSignerCmd),
+    ScheduledCorks(ScheduledCorksCmd),
     Transfer(TransferCmd),
     #[clap(subcommand)]
     Keys(KeysCmd),
