@@ -4,7 +4,6 @@ use crate::prelude::*;
 use ethers::prelude::*;
 use std::sync::Arc;
 use steward_abi::erc20::Erc20;
-use steward_abi::weth::Weth;
 
 pub struct Erc20State<T> {
     pub contract: Erc20<T>,
@@ -26,9 +25,4 @@ impl<T: 'static + Middleware> Erc20State<T> {
         let pending = gas_increase.send().await.unwrap();
         info!("Approve transaction {:?}", pending);
     }
-}
-
-#[allow(dead_code)]
-pub struct WethState<T> {
-    contract: Weth<T>,
 }
