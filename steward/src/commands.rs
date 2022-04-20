@@ -19,14 +19,10 @@ mod keys;
 mod orchestrator;
 mod sign_delegate_keys;
 mod start;
-mod test_mode;
 mod transfer;
 mod tx;
 
-use self::{
-    config_cmd::ConfigCmd, keys::KeysCmd, start::StartCmd, test_mode::TestModeCmd,
-    transfer::TransferCmd,
-};
+use self::{config_cmd::ConfigCmd, keys::KeysCmd, start::StartCmd, transfer::TransferCmd};
 
 use crate::config::StewardConfig;
 use abscissa_core::{clap::Parser, Command, Configurable, FrameworkError, Runnable};
@@ -38,7 +34,6 @@ pub const CONFIG_FILE: &str = "steward.toml";
 /// Steward Subcommands
 #[derive(Command, Debug, Parser, Runnable)]
 pub enum StewardCmd {
-    TestMode(TestModeCmd),
     Transfer(TransferCmd),
     #[clap(subcommand)]
     Keys(KeysCmd),
