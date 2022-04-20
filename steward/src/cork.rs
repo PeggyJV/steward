@@ -196,7 +196,7 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
                             .expect("failed to parse token address"),
                     ),
                 };
-                call_functions.send();
+                call_functions.send().await;
             }
         }
 
