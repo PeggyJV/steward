@@ -45,7 +45,6 @@ toml = { version = "0.5" }
 tonic = { version = "0.4.3", features = ["codegen", "tls", "transport"] }
 tonic-reflection = "0.1.0"
 tower = { version = "0.4", features = ["buffer", "util"] }
-uniswap_v3_sdk ={ git = "https://github.com/PeggyJV/uniswap_sdk_rs", branch = "main" }
 url = "2.2.2"
 lazy_static = "1.4.0"
 

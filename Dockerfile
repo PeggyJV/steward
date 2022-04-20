@@ -29,4 +29,4 @@ RUN cargo build --release --bin steward
 FROM cargo-chef-rust as runtime
 WORKDIR app
 COPY --from=builder /app/target/release/steward /usr/local/bin
-CMD steward cosmos-signer
+CMD steward start
