@@ -1037,7 +1037,9 @@ mod aavev2stablecoincellar_mod {
                 return Ok(AaveV2StablecoinCellarEvents::DepositToAaveFilter(decoded));
             }
             if let Ok(decoded) = LiquidityRestrictionRemovedFilter::decode_log(log) {
-                return Ok(AaveV2StablecoinCellarEvents::LiquidityRestrictionRemovedFilter(decoded));
+                return Ok(
+                    AaveV2StablecoinCellarEvents::LiquidityRestrictionRemovedFilter(decoded),
+                );
             }
             if let Ok(decoded) = OwnershipTransferredFilter::decode_log(log) {
                 return Ok(AaveV2StablecoinCellarEvents::OwnershipTransferredFilter(
