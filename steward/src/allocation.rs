@@ -154,7 +154,7 @@ pub async fn decide_rebalance(
             let response = somm_send::send_precommit(
                 &contact,
                 cosmos_delegate_address.to_string(),
-                cosmos_delegate_key,
+                cosmos_delegate_key.into(),
                 fee.clone(),
                 vec![allocation_precommit.to_owned()],
             )
@@ -188,7 +188,7 @@ pub async fn decide_rebalance(
             let response = somm_send::send_allocation(
                 &contact,
                 cosmos_delegate_address.to_string(),
-                cosmos_delegate_key,
+                cosmos_delegate_key.into(),
                 fee,
                 vec![allocation],
             )
