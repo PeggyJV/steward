@@ -4,7 +4,6 @@ use ethers::prelude::*;
 use std::result::Result;
 
 pub(crate) mod aave_v2_stablecoin;
-pub(crate) mod uniswapv3;
 
 pub async fn get_gas_price() -> Result<U256, Error> {
     if std::env::var("ETHERSCAN_API_KEY").is_ok() {

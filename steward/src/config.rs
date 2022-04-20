@@ -5,7 +5,7 @@
 //! for specifying it.
 use crate::prelude::APP;
 use abscissa_core::Application;
-use deep_space::{Address, PrivateKey};
+use deep_space::Address;
 use ethers::{prelude::H160, signers::LocalWallet as EthWallet};
 use gravity_bridge::cosmos_gravity;
 use lazy_static::lazy_static;
@@ -14,7 +14,7 @@ use signatory::FsKeyStore;
 use std::{net::SocketAddr, path::Path, time::Duration};
 
 lazy_static! {
-    pub static ref DELEGATE_KEY: PrivateKey = {
+    pub static ref DELEGATE_KEY: cosmos_gravity::crypto::PrivateKey = {
         let config = APP.config();
         let name = &config.keys.delegate_key;
         config.load_deep_space_key(name.clone())

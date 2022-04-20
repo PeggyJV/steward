@@ -1,5 +1,5 @@
 use crate::{
-    cellars::{self, aave_v2_stablecoin, uniswapv3},
+    cellars::{self, aave_v2_stablecoin},
     config,
     error::{Error, ErrorKind},
     prelude::APP,
@@ -17,7 +17,7 @@ use steward_proto::{
     self,
     steward::{
         self,
-        submit_request::CallData::{self, AaveV2Stablecoin, Uniswapv3Rebalance},
+        submit_request::CallData::{self, AaveV2Stablecoin},
         SubmitRequest, SubmitResponse,
     },
 };
@@ -115,7 +115,6 @@ fn get_encoded_call(data: CallData) -> Result<Vec<u8>, Error> {
             call.function
                 .expect("call data for Aave V2 Stablecoin cellar was empty"),
         )),
-        Uniswapv3Rebalance(params) => Ok(uniswapv3::get_encoded_call(params)),
     }
 }
 
