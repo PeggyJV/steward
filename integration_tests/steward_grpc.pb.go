@@ -4,7 +4,7 @@
 // - protoc             v3.6.1
 // source: steward.proto
 
-package steward_proto
+package integration_tests
 
 import (
 	context "context"
