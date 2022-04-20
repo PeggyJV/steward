@@ -713,12 +713,13 @@ func (s *IntegrationTestSuite) runStewards() {
 		stewardCfg := fmt.Sprintf(`[cosmos]
 grpc = "http://%s:9090"
 
+keystore = "/tmp/keystore"
+
 [cosmos.gas_price]
 amount = 1000000000
 denom = "%s"
 
 [keys]
-keystore = "/tmp/keystore"
 rebalancer_key = "steward-key"
 
 [server]
