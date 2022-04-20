@@ -1,14 +1,10 @@
 # Steward
 
-Steward is an application intended for developers and validators in the Sommelier network.
-
-It can run as a server in the Sommelier protocol or in test mode to directly interact with Ethereum contracts.
-
-It integrates the full functionality of [Gorc](https://github.com/PeggyJV/gravity-bridge/tree/main/orchestrator/gorc) for operating the [Gravity bridge](https://github.com/PeggyJV/gravity-bridge), connecting Ethereum and Cosmos chains.
+Steward is a key piece of the Sommelier system. It is a side-car process that connects the Sommelier chain to the outside world. It provides an API for Strategy Providers to rebalance Cellars through the Sommelier validator set based on off-chain calculations. Additionally, it subsumes the functionality of gorc for managing the [Gravity bridge Orchestrator](https://github.com/PeggyJV/gravity-bridge/tree/main/orchestrator), and provides developer tools and features for developing and testing Cellars.
 
 Steward is built with the [Abscissa](https://github.com/iqlusioninc/abscissa) app micro-framework.
 
-Please also see the [Steward Docs](docs/).
+Please refer to the [Steward Docs](docs/) for setup instructions.
 
 ## Steward use case
 
@@ -20,7 +16,7 @@ Steward is responsible for running the Relayer, which handles relaying Cosmos tr
 
 ### 2. Middleman between the Sommelier chain and Strategy Providers
 
-Steward provides a gRPC server to accept recommendations from Strategy Providers. When Strategy Providers submit a Cellar function call to Steward, it validates, encodes, signs, and forwards the call to the [Cork module](https://github.com/PeggyJV/sommelier/tree/main/x/cork) on the Sommelier chain.
+Steward runs on every Validator in the Sommelier Validator set. It runs a server to which Strategy Providers (SPs) send requests whenever they determine that the market has changed enough to warrant action. The request payload contains everything needed to make a *cork*: a signed combination of a cellar address and an ABI encoded contract call. When Steward receives a submission from the SP, it validates the target cellar address, builds a cork, signs it with the delegate key, and submits it to the [Cork module](https://github.com/PeggyJV/sommelier/tree/main/x/cork) on chain, where it will be evaluated before being bridged to the target Cellar contract.
 
 ### 3. Cellar Development Tool
 
