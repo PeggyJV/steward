@@ -68,7 +68,7 @@ impl Runnable for CosmosToEthCmd {
         let is_cosmos_originated = !denom.starts_with("gravity");
 
         let amount: Uint256 = self.amount.parse().expect("cannot parse amount");
-        let cosmos_key = config.load_deep_space_key(self.cosmos_key.to_string());
+        let cosmos_key = config.load_gravity_deep_space_key(self.cosmos_key.to_string());
 
         let cosmos_prefix = config.cosmos.prefix.trim();
         let cosmos_address = cosmos_key.to_address(cosmos_prefix).unwrap();
