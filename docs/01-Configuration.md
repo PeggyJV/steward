@@ -28,7 +28,7 @@ Type: string
 Path to the location where `steward keys` will manage keys on-disk
 
 ```
-keystore = "/tmp/keystore"
+keystore = ""
 ```
 
 ### `[cosmos]` table
@@ -99,6 +99,8 @@ For setting transaction fees
 Type: float
 
 The amount of `denom` you are willing to pay per gas for transactions.
+
+> :warning: This should be kept set to 0.0 for now
 
 ```
 [cosmos.gas_price]
@@ -241,6 +243,8 @@ Type: string
 
 The path to the trusted CA used to sign the Strategy Provider's client certificate
 
+> :warning: Please leave this value unset for now as it defaults to the Peggy JV CA internally
+
 ```
 [server]
 client_ca_cert_path = ""
@@ -294,6 +298,7 @@ prefix = "somm"
 msg_batch_size = 5
 
 [cosmos.gas_price]
+# Please keep amount set to 0.0 at this time
 amount = 0.0
 denom = "usomm"
 
@@ -313,9 +318,9 @@ delegate_key = ""
 [metrics]
 listen_addr = "127.0.0.1:3000"
 
+# Please leave the client_ca_cert_path field unset for now
 [server]
 address = "0.0.0.0"
-client_ca_cert_path = ""
 port = 5734
 server_cert_path = ""
 server_key_path = ""

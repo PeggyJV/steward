@@ -1,22 +1,22 @@
 # Steward
 
-Steward is a key piece of the Sommelier system. It is a side-car process that connects the Sommelier chain to the outside world. It provides an API for Strategy Providers to rebalance Cellars through the Sommelier validator set based on off-chain calculations. Additionally, it subsumes the functionality of gorc for managing the [Gravity bridge Orchestrator](https://github.com/PeggyJV/gravity-bridge/tree/main/orchestrator), and provides developer tools and features for developing and testing Cellars.
+Steward is a key piece of the Sommelier system. It is a side-car process that connects the Sommelier chain to the outside world. It provides an API for Strategy Providers to update Cellars through the Sommelier validator set based on off-chain calculations. Additionally, it subsumes the functionality of gorc for managing the [Gravity bridge Orchestrator](https://github.com/PeggyJV/gravity-bridge/tree/main/orchestrator), and provides developer tools and features for developing and testing Cellars.
+
+It can run as a voter in the Cosmos Sommelier protocol or in test mode to directly interact with Ethereum contracts as a single signer.
+
+It integrates the full functionality of [Gorc](https://github.com/PeggyJV/gravity-bridge/tree/main/orchestrator/gorc) for operating as an orchestrator and relayer of [Gravity bridge](https://github.com/PeggyJV/gravity-bridge) messages between the Ethereum and Cosmos chains.
 
 Steward is built with the [Abscissa](https://github.com/iqlusioninc/abscissa) app micro-framework.
 
-Please refer to the [Steward Docs](docs/) for setup instructions.
-
-## Steward use case
-
-Steward wears several hats:
+## Steward use cases
 
 ###  1. Gravity Bridge Operator
 
-Steward is responsible for running the Relayer, which handles relaying Cosmos transactions to Ethereum, and the Orchestrator, which enables the co-processing of Ethereum transactions on Sommelier. Steward runs the Orchestrator so that Sommelier can manage Cellars on Ethereum. Which brings us to Steward's second responsibility.
+Steward is responsible for running the Relayer, which handles relaying Cosmos transactions to Ethereum, and the Orchestrator, which enables the co-processing of Ethereum transactions on Sommelier. Steward runs the Orchestrator so that Sommelier can manage Cellars on Ethereum.
 
 ### 2. Middleman between the Sommelier chain and Strategy Providers
 
-Steward runs on every Validator in the Sommelier Validator set. It runs a server to which Strategy Providers (SPs) send requests whenever they determine that the market has changed enough to warrant action. The request payload contains everything needed to make a *cork*: a signed combination of a cellar address and an ABI encoded contract call. When Steward receives a submission from the SP, it validates the target cellar address, builds a cork, signs it with the delegate key, and submits it to the [Cork module](https://github.com/PeggyJV/sommelier/tree/main/x/cork) on chain, where it will be evaluated before being bridged to the target Cellar contract.
+Steward runs on every Validator in the Sommelier Validator set. It runs a server to which Strategy Providers (SPs) send requests whenever they determine that the market has changed enough to warrant an update to the Cellar position. The request payload contains everything needed to make a *cork*: a signed combination of a cellar address and an ABI encoded contract call. When Steward receives a submission from the SP, it validates the target cellar address, builds a cork, signs it with the delegate key, and submits it to the [Cork module](https://github.com/PeggyJV/sommelier/tree/main/x/cork) on chain, where it will be bridged to the target Cellar contract if a consensus of validators submit the same cork.
 
 ### 3. Cellar Development Tool
 
@@ -38,20 +38,17 @@ Below is a list of the Steward's subcommands:
 
 | Subcommand        | Description                                                |
 | ----------------- | ---------------------------------------------------------- |
-| help              | Help command to get usage information                      |
-| transfer          | Command to transfer ETH                                    |
-| version           | Display version information                                |
-| predictions       | Display lastest prediction in the application              |
-| keys              | Key management commands for the rebalancer                 |
-| print-config      | Command for printing default configurations                |
-| fund-cellar       | Command to fund the Cellars                                |
+| allow-erc-2-0     | Allow Erc20 Token to interact with cellar contract         |
 | cosmos-to-eth     | This command sends Cosmos to the Eth chain                 |
 | deploy            | Provides tools for contract deployment                     |
 | eth-to-cosmos     | Command to Send Ethereum to Cosmos                         |
+| help              | Help command to get usage information                      |
+| keys              | Key management commands for the rebalancer                 |
 | orchestrator      | The orchestrator management commands                       |
-| query             | Command to query state on either ethereum or cosmos chains |
+| print-config      | Command for printing default configurations                |
 | sign-delegate-key | This command is to sign delegate keys                      |
-| tx                | Create transactions on either ethereum or cosmos chains    |
-| allow-erc-2-0     | Allow Erc20 Token to interact with cellar contract         |
+| transfer          | Command to transfer ETH                                    |
+| version           | Display version information                                |
+
 
 If you have any questions, you can ask the community in our [Telegram](https://t.me/getsomm) and [Discord](https://discord.com/invite/ZcAYgSBxvY) group.

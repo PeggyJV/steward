@@ -1,20 +1,20 @@
 # Orchestrator
 
-The Orchestrator is a sidecar application to a Cosmos chain responsible for *orchestrating* transactions between Cosmos and Ethereum chains. In the Cosmos -> Ethereum direction, validators running the orchestrator with the Relayer enabled will query the [Gravity Module](https://github.com/peggyjv/gravity-bridge/tree/main/module/x/gravity) for pending transactions, and then send them to the gravity contract. In the Ethereum -> Cosmos direction, the Orchestrator acts as an oracle for the Cosmos chain to inform it of incoming transactions. This allows the coordination of appropriate locking/unlocking/minting/burning of tokens on either side of the bridge. The Orchestrator ensures that Gravity module state on the Cosmos chain is synchronized with the state of the gravity contract. Currently we are only asking validators to run the Orchestrator without the Relayer (Ethereum -> Cosmos direction only). 
+The Orchestrator is a sidecar application to a Cosmos chain responsible for *orchestrating* transactions between Cosmos and Ethereum chains. In the Cosmos -> Ethereum direction, validators running the orchestrator with the Relayer enabled will query the [Gravity Module](https://github.com/peggyjv/gravity-bridge/tree/main/module/x/gravity) for pending transactions, and then send them to the gravity contract. In the Ethereum -> Cosmos direction, the Orchestrator acts as an oracle for the Cosmos chain to inform it of incoming transactions. This allows the coordination of appropriate locking/unlocking/minting/burning of tokens on either side of the bridge. The Orchestrator ensures that Gravity module state on the Cosmos chain is synchronized with the state of the gravity contract. Currently we are only asking validators to run the Orchestrator without the Relayer (Ethereum -> Cosmos direction only).
 
 ## Quickstart
 
 The Orchestrator can be started using the following command:
 
 ```bash
-steward -c <config toml path> orchestrator start --orchestrator-only --ethereum-key <eth_key_name> --cosmos-key <cosmos key name>
+steward -c <config_toml_path> orchestrator start --orchestrator-only --ethereum-key <eth_key_name> --cosmos-key <cosmos_key_name>
 ```
 
-The `--orchestrator-only` flag prevents the Relayer thread from running, and this is the way in which we encourage validators to run the Orchestrator for now. You will burn gas on failed transactions if you run the Relayer in its current state.  
+The `--orchestrator-only` flag prevents the Relayer thread from running, and this is the way in which we encourage validators to run the Orchestrator for now. You will burn gas on failed transactions if you run the Relayer in its current state.
 
 ## Setup
 
-Before you'll be able to run the start command successfully however, you'll need keys, a configuration file, and a running Cosmos chain. Let's walk through these one at a time.
+Before you'll be able to run the start command successfully, you'll need keys, a configuration file, and a running Cosmos chain.
 
 ### Key creation config
 
