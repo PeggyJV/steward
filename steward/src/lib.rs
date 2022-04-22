@@ -18,6 +18,7 @@ pub mod cork;
 pub mod erc20;
 pub mod error;
 pub mod gas;
+pub mod grpc_client;
 pub mod prelude;
 pub mod server;
 pub mod somm_send;
