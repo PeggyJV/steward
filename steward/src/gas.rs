@@ -4,7 +4,7 @@ use crate::{
     prelude::APP,
     utils::{get_chain, get_eth_provider},
 };
-use abscissa_core::Application;
+use abscissa_core::{Application, tracing::log::warn};
 use ethers::{
     middleware::gas_oracle::{Etherscan, GasCategory, GasOracle},
     prelude::*,
@@ -46,5 +46,20 @@ impl CellarGas {
         let chain = get_chain(provider.clone()).await?;
 
         Client::new_from_env(chain).map_err(|e| e.into())
+    }
+
+    pub async fn get_gas_price() -> Result<U256, Error> {
+        if std::env::var("ETHERSCAN_API_KEY").is_ok() {
+            match CellarGas::etherscan_standard().await {
+                Ok(gas) => return Ok(gas),
+                Err(err) => {
+                    warn!("failed to retrieve gas estimate from etherscan: {}", err);
+                }
+            }
+        }
+    
+        let provider = get_eth_provider().await?;
+    
+        provider.get_gas_price().await.map_err(|r| r.into())
     }
 }
