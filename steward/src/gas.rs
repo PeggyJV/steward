@@ -4,7 +4,7 @@ use crate::{
     prelude::APP,
     utils::{get_chain, get_eth_provider},
 };
-use abscissa_core::{Application, tracing::log::warn};
+use abscissa_core::{tracing::log::warn, Application};
 use ethers::{
     middleware::gas_oracle::{Etherscan, GasCategory, GasOracle},
     prelude::*,
@@ -57,9 +57,9 @@ impl CellarGas {
                 }
             }
         }
-    
+
         let provider = get_eth_provider().await?;
-    
+
         provider.get_gas_price().await.map_err(|r| r.into())
     }
 }
