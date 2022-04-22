@@ -10,6 +10,7 @@ use abscissa_core::{
     Application,
 };
 use deep_space::{Coin, Contact};
+use ethers::prelude::builders::ContractCall;
 use ethers::prelude::*;
 use gravity_bridge::{
     gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse,
@@ -29,6 +30,8 @@ use steward_proto::{
     },
 };
 use tonic::{self, async_trait, Code, Request, Response, Status};
+pub type EthSignerMiddleware = SignerMiddleware<Provider<Http>, LocalWallet>;
+use ethers::abi::Detokenize;
 
 const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
 
@@ -161,42 +164,41 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
             AaveV2Stablecoin(call) => {
                 let contract = AaveV2StablecoinCellar::new(address, Arc::new(client));
 
-                let call_functions = match call.function.unwrap() {
-                    Function::EnterStrategy(_) => contract.enter_strategy(),
-                    Function::ReinvestAmount(params) => contract
-                        .reinvest_with_amount(params.amount.into(), params.min_assets_out.into()),
-                    Function::Reinvest(params) => contract.reinvest(params.min_assets_out.into()),
-                    Function::ClaimAndUnstakeAmount(params) => {
-                        contract.claim_and_unstake_with_amount(params.amount.into())
-                    }
-                    Function::ClaimAndUnstake(_) => contract.claim_and_unstake(),
-                    Function::Rebalance(params) => contract.rebalance(
+                match call.function.unwrap() {
+                    Function::EnterStrategy(_) => contract_call(contract.enter_strategy()),
+                    Function::ReinvestAmount(params) => contract_call(contract
+                        .reinvest_with_amount(params.amount.into(), params.min_assets_out.into())),
+                    Function::Reinvest(params) => contract_call(contract.reinvest(params.min_assets_out.into())),
+                    Function::Rebalance(params) => contract_call(contract.rebalance(
                         params
                             .address
                             .parse::<H160>()
                             .expect("failed to parse token address"),
                         params.min_new_lending_token_amount.into(),
-                    ),
-                    Function::AccruePlatformFees(_) => contract.accrue_platform_fees(),
-                    Function::TransferFees(_) => contract.transfer_fees(),
-                    Function::SetInputToken(params) => contract.set_input_token(
+                    )),
+                    Function::AccruePlatformFees(_) => contract_call(contract.accrue_platform_fees()),
+                    Function::TransferFees(_) => contract_call(contract.transfer_fees()),
+                    Function::SetInputToken(params) => contract_call(contract.set_input_token(
                         params
                             .address
                             .parse::<H160>()
                             .expect("failed to parse token address"),
                         params.is_approved.into(),
-                    ),
+                    )),
                     Function::RemoveLiquidityRestriction(_) => {
-                        contract.remove_liquidity_restriction()
+                        contract_call(contract.remove_liquidity_restriction())
                     }
-                    Function::Sweep(params) => contract.sweep(
+                    Function::Sweep(params) => contract_call(contract.sweep(
                         params
                             .address
                             .parse::<H160>()
                             .expect("failed to parse token address"),
-                    ),
+                    )),
+                    Function::ClaimAndUnstakeAmount(params) => {
+                        contract_call(contract.claim_and_unstake_with_amount(params.amount.into()))
+                    }
+                    Function::ClaimAndUnstake(_) => contract_call(contract.claim_and_unstake()),
                 };
-                call_functions.send().await;
             }
         }
 
@@ -248,4 +250,8 @@ async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
     )
     .await
     .map_err(|e| e.into())
+}
+
+async fn contract_call<T: Detokenize>(contract_call: ContractCall<EthSignerMiddleware, T>) {
+    contract_call.send().await.unwrap();
 }
