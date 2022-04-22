@@ -165,39 +165,70 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
                 let contract = AaveV2StablecoinCellar::new(address, Arc::new(client));
 
                 match call.function.unwrap() {
-                    Function::EnterStrategy(_) => contract_call(contract.enter_strategy()),
-                    Function::ReinvestAmount(params) => contract_call(contract
-                        .reinvest_with_amount(params.amount.into(), params.min_assets_out.into())),
-                    Function::Reinvest(params) => contract_call(contract.reinvest(params.min_assets_out.into())),
-                    Function::Rebalance(params) => contract_call(contract.rebalance(
-                        params
-                            .address
-                            .parse::<H160>()
-                            .expect("failed to parse token address"),
-                        params.min_new_lending_token_amount.into(),
-                    )),
-                    Function::AccruePlatformFees(_) => contract_call(contract.accrue_platform_fees()),
-                    Function::TransferFees(_) => contract_call(contract.transfer_fees()),
-                    Function::SetInputToken(params) => contract_call(contract.set_input_token(
-                        params
-                            .address
-                            .parse::<H160>()
-                            .expect("failed to parse token address"),
-                        params.is_approved.into(),
-                    )),
+                    Function::EnterStrategy(_) => contract_call(contract.enter_strategy()).await,
+                    Function::ReinvestAmount(params) => {
+                        contract_call(contract.reinvest_with_amount(
+                            params.amount.into(),
+                            params.min_assets_out.into(),
+                        ))
+                        .await
+                    }
+                    Function::Reinvest(params) => {
+                        contract_call(contract.reinvest(params.min_assets_out.into())).await
+                    }
+                    Function::Rebalance(params) => {
+                        contract_call(
+                            contract.rebalance(
+                                params
+                                    .address
+                                    .parse::<H160>()
+                                    .expect("failed to parse token address"),
+                                params.min_new_lending_token_amount.into(),
+                            ),
+                        )
+                        .await
+                    }
+                    Function::AccruePlatformFees(_) => {
+                        contract_call(contract.accrue_platform_fees()).await
+                    }
+                    Function::TransferFees(_) => contract_call(contract.transfer_fees()).await,
+                    Function::SetInputToken(params) => {
+                        contract_call(
+                            contract.set_input_token(
+                                params
+                                    .address
+                                    .parse::<H160>()
+                                    .expect("failed to parse token address"),
+                                params.is_approved,
+                            ),
+                        )
+                        .await
+                    }
                     Function::RemoveLiquidityRestriction(_) => {
-                        contract_call(contract.remove_liquidity_restriction())
+                        { contract_call(contract.remove_liquidity_restriction()) }.await
                     }
-                    Function::Sweep(params) => contract_call(contract.sweep(
-                        params
-                            .address
-                            .parse::<H160>()
-                            .expect("failed to parse token address"),
-                    )),
+                    Function::Sweep(params) => {
+                        contract_call(
+                            contract.sweep(
+                                params
+                                    .address
+                                    .parse::<H160>()
+                                    .expect("failed to parse token address"),
+                            ),
+                        )
+                        .await
+                    }
                     Function::ClaimAndUnstakeAmount(params) => {
-                        contract_call(contract.claim_and_unstake_with_amount(params.amount.into()))
+                        {
+                            contract_call(
+                                contract.claim_and_unstake_with_amount(params.amount.into()),
+                            )
+                        }
+                        .await
                     }
-                    Function::ClaimAndUnstake(_) => contract_call(contract.claim_and_unstake()),
+                    Function::ClaimAndUnstake(_) => {
+                        contract_call(contract.claim_and_unstake()).await
+                    }
                 };
             }
         }
@@ -253,5 +284,6 @@ async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
 }
 
 async fn contract_call<T: Detokenize>(contract_call: ContractCall<EthSignerMiddleware, T>) {
-    contract_call.send().await.unwrap();
+    let contract_call = contract_call.send().await.unwrap();
+    let _tx_hash = *contract_call;
 }
