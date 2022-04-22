@@ -284,6 +284,9 @@ async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
 }
 
 async fn contract_call<T: Detokenize>(contract_call: ContractCall<EthSignerMiddleware, T>) {
+    let gas = contract_call.estimate_gas().await.unwrap();
+    let gas_price = cellars::get_gas_price().await.unwrap();
+    let contract_call = contract_call.gas(gas).gas_price(gas_price);
     let contract_call = contract_call.send().await.unwrap();
     let _tx_hash = *contract_call;
 }
