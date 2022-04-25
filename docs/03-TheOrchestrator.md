@@ -16,6 +16,8 @@ The `--orchestrator-only` flag prevents the Relayer thread from running, and thi
 
 Before you'll be able to run the start command successfully, you'll need keys, a configuration file, and a running Cosmos chain.
 
+> :bulb: If you've generated keys with `gorc` in the past, they can be copied over to your keystore. There is no need to create new ones.
+
 ### Key creation config
 
 Before you attempt to generate keys, be sure your keystore and key derivation paths are configured:
@@ -55,6 +57,10 @@ steward -c <config toml path> keys cosmos recover <key_name> [mnemonic]
 ```
 
 To confirm it works, check your keystore directory for a file with the key name you provided.
+
+### Registering Delegate keys
+
+Before these keys can be used in Sommelier they need to be registered as delegate keys for your validator node. You can find the steps to do this in the [Sommelier installation instructions](https://github.com/PeggyJV/sommelier#installation).
 
 ### Configuration
 

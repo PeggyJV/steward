@@ -322,6 +322,6 @@ listen_addr = "127.0.0.1:3000"
 [server]
 address = "0.0.0.0"
 port = 5734
-server_cert_path = ""
-server_key_path = ""
+server_cert_path = "/server/cert/path"
+server_key_path = "/server/key/path"
 ```

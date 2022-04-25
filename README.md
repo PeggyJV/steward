@@ -38,7 +38,6 @@ Below is a list of the Steward's subcommands:
 
 | Subcommand        | Description                                                |
 | ----------------- | ---------------------------------------------------------- |
-| allow-erc-2-0     | Allow Erc20 Token to interact with cellar contract         |
 | cosmos-to-eth     | This command sends Cosmos to the Eth chain                 |
 | deploy            | Provides tools for contract deployment                     |
 | eth-to-cosmos     | Command to Send Ethereum to Cosmos                         |
@@ -47,7 +46,6 @@ Below is a list of the Steward's subcommands:
 | orchestrator      | The orchestrator management commands                       |
 | print-config      | Command for printing default configurations                |
 | sign-delegate-key | This command is to sign delegate keys                      |
-| transfer          | Command to transfer ETH                                    |
 | version           | Display version information                                |
 
 

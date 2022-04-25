@@ -2,7 +2,8 @@
 
 Steward is a side-car process that connects the Sommelier chain to the outside world. It provides an API for Strategy Providers to rebalance Cellars through the Sommelier validator set based on off-chain calculations. Additionally, it subsumes the functionality of [gorc](https://github.com/PeggyJV/gravity-bridge/tree/main/orchestrator/gorc) for managing the [Gravity bridge Orchestrator](https://github.com/PeggyJV/gravity-bridge/tree/main/orchestrator), and provides developer tools and features for developing and testing Cellars.
 
-Steward runs on every Validator in the Sommelier Validator set. It runs a server to which Strategy Providers (SPs) send requests whenever they determine that the market has changed enough to warrant action. The request payload contains everything needed to make a *cork*: a signed combination of a cellar address and an ABI encoded contract call. When Steward receives a submission from the SP, it validates the target cellar address, builds a cork, signs it with the delegate key, and submits it to the [Cork module](https://github.com/peggyjv/sommelier/tree/main/x/cork) on chain.
+Steward runs on every Validator in the Sommelier Validator set. It runs a server to which Strategy Providers (SPs) send requests whenever they determine that the market has changed enough to warrant an update to the Cellar position. The request payload contains everything needed to make a *cork*: a signed combination of a cellar address and an ABI encoded contract call. When Steward receives a submission from the SP, it validates the target cellar address, builds a cork, signs it with the delegate key, and submits it to the [Cork module](https://github.com/PeggyJV/sommelier/tree/main/x/cork) on chain, where it will be bridged to the target Cellar contract if a consensus of validators submit the same cork.
+
 
 > :bulb:  Steward authorizes function calls both by only supporting certain Cellar functions in its API, and by validating the target cellar before forwarding a call.
 
@@ -21,7 +22,7 @@ See the [Orchestrator Quickstart](./docs/03-TheOrchestrator.md#quickstart) secti
 
 ### TLS Certificates
 
-Before SPs can establish a connection with your `steward` server, you will need to generate a CA, a TLS certificate signed by this CA, and you'll need to the SP's client CA. These certificates must be TLS 1.3 compliant. The paths to these values and the key used to create your signed server certificate must be configured in the `[server]` table of your config file. Starting out, Sommelier will be running the only SP, and Steward will use our client CA cert by default. This CA cert can be found in the `tls/` directory of this repo. There is no need to set the `client_ca_cert_path` configuration field at this time.
+Before SPs can establish a connection with your `steward` server, you will need to generate a CA, a TLS certificate signed by this CA, and the SP's client CA. These certificates must be TLS 1.3 compliant. The paths to these values and the key used to create your signed server certificate must be configured in the `[server]` table of your config file. Starting out, Peggy JV will be the sole SP, and Steward will use our client CA cert by default. This CA cert can be found in the `tls/` directory of this repo. There is no need to set the `client_ca_cert_path` configuration field at this time as it will default to the Peggy JV CA.
 
 ### Cosmos Delegate Key
 
