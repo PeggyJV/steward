@@ -2,9 +2,9 @@ use crate::{
     cellars::{self, aave_v2_stablecoin},
     config,
     error::{Error, ErrorKind},
+    gas::CellarGas,
     prelude::APP,
     somm_send,
-    gas::CellarGas,
 };
 use abscissa_core::{
     tracing::log::{debug, error, warn},
