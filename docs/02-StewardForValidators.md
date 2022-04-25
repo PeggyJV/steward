@@ -21,7 +21,7 @@ See the [Orchestrator Quickstart](./docs/03-TheOrchestrator.md#quickstart) secti
 
 ### TLS Certificates
 
-Before SPs can establish a connection with your `steward` server, you will need to generate a CA, a TLS certificate signed by this CA, and you'll need to the SP's client CA. These certificates must be TLS 1.2 compliant. The paths to these values and the key used to create your signed server certificate must be configured in the `[server]` table of your config file. Starting out, Sommelier will be running the only SP, and Steward will use our client CA cert by default. This CA cert can be found in the `tls/` directory of this repo. There is no need to set the `client_ca_cert_path` configuration field at this time.
+Before SPs can establish a connection with your `steward` server, you will need to generate a CA, a TLS certificate signed by this CA, and you'll need to the SP's client CA. These certificates must be TLS 1.3 compliant. The paths to these values and the key used to create your signed server certificate must be configured in the `[server]` table of your config file. Starting out, Sommelier will be running the only SP, and Steward will use our client CA cert by default. This CA cert can be found in the `tls/` directory of this repo. There is no need to set the `client_ca_cert_path` configuration field at this time.
 
 ### Cosmos Delegate Key
 
