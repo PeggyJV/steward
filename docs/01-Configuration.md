@@ -310,10 +310,10 @@ rpc = "http://localhost:8545"
 
 [gravity]
 contract = "0x0000000000000000000000000000000000000000"
-fees_denom = "stake"
+fees_denom = "usomm"
 
 [keys]
-delegate_key = ""
+delegate_key = "mykey"
 
 [metrics]
 listen_addr = "127.0.0.1:3000"
