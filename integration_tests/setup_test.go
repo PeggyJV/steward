@@ -711,6 +711,7 @@ func (s *IntegrationTestSuite) runStewards() {
 	s.stewResources = make([]*dockertest.Resource, len(s.chain.stewards))
 	for i, steward := range s.chain.stewards {
 		stewardCfg := fmt.Sprintf(`keystore = "/tmp/keystore"
+
 [cosmos]
 grpc = "http://%s:9090"
 
@@ -719,10 +720,9 @@ amount = 1000000000
 denom = "%s"
 
 [keys]
-rebalancer_key = "steward-key"
+delegate_key = "steward-key"
 
 [server]
-address = "0.0.0.0"
 client_ca_cert_path = "/root/steward/test_client_ca.crt"
 server_cert_path = "/root/steward/test_server.crt"
 server_key_path = "/root/steward/test_server_key_pkcs8.pem"
