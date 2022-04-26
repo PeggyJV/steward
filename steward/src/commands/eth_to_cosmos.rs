@@ -15,22 +15,18 @@ const TIMEOUT: Duration = Duration::from_secs(60);
 /// Send Ethereum to Cosmos
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Send Eth token to Cosmos chain.\n This command sends Eth token to the Cosmos chain via the Gravity bridge. \n It takes the tx amount, Eth keyname, contract address, Cosmos token destination, number of times \n and the ERC20 token contract address."
+    long_about = "DESCRIPTION \n\n Send Eth token to Cosmos chain.\n This command sends Eth token to the Cosmos chain via the Gravity bridge. \n It takes the tx amount, Eth key name, Gravity contract address, Cosmos token destination, number of times \n and the ERC20 token contract address."
 )]
 pub struct EthToCosmosCmd {
-    /// Erc20 contract address.
     #[clap(short = 'E', long)]
     erc20_address: String,
 
-    /// Tx amount.
     #[clap(short, long)]
     init_amount: String,
 
-    /// Eth keyname.
     #[clap(short, long)]
     ethereum_key: String,
 
-    /// Cosmos address
     #[clap(short, long)]
     cosmos_dest: String,
 
@@ -38,9 +34,8 @@ pub struct EthToCosmosCmd {
     #[clap(short, long, default_value = "1")]
     times: String,
 
-    /// Contract address.
     #[clap(short = 'C', long)]
-    contract_address: String,
+    gravity_address: String,
 }
 
 impl Runnable for EthToCosmosCmd {
@@ -53,8 +48,8 @@ impl Runnable for EthToCosmosCmd {
 
         let ethereum_wallet = config.load_ethers_wallet(self.ethereum_key.clone());
 
-        let contract_address: EthAddress = self
-            .contract_address
+        let gravity_address: EthAddress = self
+            .gravity_address
             .parse()
             .expect("Invalid contract address!");
 
@@ -98,7 +93,7 @@ impl Runnable for EthToCosmosCmd {
             if erc20_balance == 0u8.into() {
                 panic!(
                     "You have zero {} tokens, please double check your sender and erc20 addresses!",
-                    contract_address
+                    gravity_address
                 );
             } else if amount * times_u256 > erc20_balance {
                 panic!(
@@ -119,7 +114,7 @@ impl Runnable for EthToCosmosCmd {
                 // we send some erc20 tokens to the gravity contract to register a deposit
                 let res = send_to_cosmos(
                     erc20_address,
-                    contract_address,
+                    gravity_address,
                     amount,
                     cosmos_dest,
                     Some(TIMEOUT),

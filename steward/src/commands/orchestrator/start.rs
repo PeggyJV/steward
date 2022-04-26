@@ -42,7 +42,7 @@ impl Runnable for StartCommand {
         let config = APP.config();
         let cosmos_prefix = config.cosmos.prefix.clone();
 
-        let cosmos_key = config.load_deep_space_key(self.cosmos_key.clone());
+        let cosmos_key = config.load_gravity_deep_space_key(self.cosmos_key.clone());
         let cosmos_address = cosmos_key.to_address(&cosmos_prefix).unwrap();
 
         let ethereum_wallet = config.load_ethers_wallet(self.ethereum_key.clone());
