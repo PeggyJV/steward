@@ -15,11 +15,7 @@ use somm_proto::cork::{query_client::QueryClient as CorkQueryClient, Cork, Query
 use std::time::Duration;
 use steward_proto::{
     self,
-    steward::{
-        self,
-        submit_request::CallData::AaveV2Stablecoin,
-        SubmitRequest, SubmitResponse,
-    },
+    steward::{self, submit_request::CallData::AaveV2Stablecoin, SubmitRequest, SubmitResponse},
 };
 use tonic::{self, async_trait, Code, Request, Response, Status};
 
@@ -75,10 +71,7 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         let cork = match build_cork(request).await {
             Ok(c) => c,
             Err(err) => {
-                warn!(
-                    "failed to build cork for cellar {}: {}",
-                    cellar_id, err
-                );
+                warn!("failed to build cork for cellar {}: {}", cellar_id, err);
                 return Err(Status::new(Code::InvalidArgument, err.to_string()));
             }
         };
@@ -120,7 +113,7 @@ fn get_encoded_call(request: SubmitRequest) -> Result<Vec<u8>, Error> {
         AaveV2Stablecoin(call) => Ok(aave_v2_stablecoin::get_encoded_call(
             call.function
                 .expect("call data for Aave V2 Stablecoin cellar was empty"),
-            request.cellar_id
+            request.cellar_id,
         )),
     }
 }
