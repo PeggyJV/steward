@@ -1,7 +1,7 @@
 use crate::error::{Error, ErrorKind};
 use steward_proto::{
     self,
-    steward::{self, contract_call_client::ContractCallClient},
+    steward::{contract_call_client::ContractCallClient, SubmitRequest, SubmitResponse},
 };
 
 use tonic::transport::Channel;
@@ -28,6 +28,15 @@ impl GrpcClient {
         ContractCallGrpcClient::connect(self.grpc_address.clone())
             .await
             .map_err(|e| ErrorKind::GrpcError.context(e).into())
+    }
+
+    pub async fn submit_request(&self, request: SubmitRequest) -> Result<SubmitResponse, Error> {
+        let mut client = self.get_client().await?;
+
+        match client.submit(request).await {
+            Ok(res) => Ok(res.into_inner()),
+            Err(status) => Err(ErrorKind::GrpcError.context(status).into()),
+        }
     }
 }
 
