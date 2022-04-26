@@ -16,9 +16,20 @@ steward -c <config_toml_path> start
 ```
 
 > :warning: If this is production and your node is running, don't forget to make sure the Orchestrator is also running! If you don't, you can be jailed and your submitted corks will not be processed.
+
 See the [Orchestrator Quickstart](./docs/03-TheOrchestrator.md#quickstart) section of the docs.
 
 ## Running Steward as a server
+
+### Setup Checklist
+
+- [ ] Domain name for Strategy Providers to use for requests to Steward
+- [ ] Firewall configured to allow requests to hit the [Steward port](./01-Configuration.md#port) over the internet
+- [ ] Connectivity between Steward and your Sommelier node's gRPC endpoint
+- [ ] On-disk key store containing a [delegate key](./02-StewardForValidators.md#cosmos-delegate-key) in this key store for Steward and Orchestrator to share. This can be generated with Steward, or you may have already done this step with `gorc` in the past. If that's the case you can just use the delegate key you’ve already created.
+- [ ] A TLS 1.3 [server CA and certificate signed with said CA](./02-StewardForValidators.md#tls-certificates)
+- [ ] [TOML config file](./01-Configuration.md#complete-example-configtoml) containing the above values
+- [ ] Add your Steward info (endpoint and CA) to the [Steward registry repository](https://github.com/peggyjv/steward-registry#steward-registry)
 
 ### TLS Certificates
 
