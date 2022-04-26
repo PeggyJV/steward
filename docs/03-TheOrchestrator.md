@@ -12,6 +12,8 @@ steward -c <config_toml_path> orchestrator start --orchestrator-only --ethereum-
 
 The `--orchestrator-only` flag prevents the Relayer thread from running, and this is the way in which we encourage validators to run the Orchestrator for now. You will burn gas on failed transactions if you run the Relayer in its current state.
 
+The values of `--ethereum-key` and `--cosmos-key` must be the keys your validator has registered as delegate keys respectively.
+
 ## Setup
 
 Before you'll be able to run the start command successfully, you'll need keys, a configuration file, and a running Cosmos chain.
