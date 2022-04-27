@@ -1,15 +1,19 @@
 use crate::error::{Error, ErrorKind};
+use somm_proto::cork::{query_client::QueryClient as QClient, QueryCommitPeriodRequest};
 use steward_proto::{
     self,
-    steward::{contract_call_client::ContractCallClient, SubmitRequest, SubmitResponse},
+    steward::{
+        contract_call_client::ContractCallClient as ContractClient, SubmitRequest, SubmitResponse,
+    },
 };
+use tonic::transport::{Channel, Uri};
 
-use tonic::transport::Channel;
-
-pub type ContractCallGrpcClient = ContractCallClient<Channel>;
+pub type ContractCallClient = ContractClient<Channel>;
+pub type QueryClient = QClient<Channel>;
 
 pub struct GrpcClient {
     pub grpc_address: String,
+    pub steward_endpoints: Vec<String>,
 }
 
 impl GrpcClient {
@@ -22,18 +26,69 @@ impl GrpcClient {
 
         Ok(())
     }
-    pub async fn get_client(&self) -> Result<ContractCallGrpcClient, Error> {
+
+    pub fn check_for_steward_addresses(&self) -> Result<(), Error> {
+        if self.steward_endpoints.is_empty() {
+            return Err(ErrorKind::GrpcError
+                .context("no grpc address available")
+                .into());
+        }
+
+        Ok(())
+    }
+
+    pub async fn get_query_client(&self) -> Result<QueryClient, Error> {
         self.check_for_grpc_address()?;
 
-        ContractCallGrpcClient::connect(self.grpc_address.clone())
+        QueryClient::connect(self.grpc_address.clone())
             .await
             .map_err(|e| ErrorKind::GrpcError.context(e).into())
     }
 
-    pub async fn submit_request(&self, request: SubmitRequest) -> Result<SubmitResponse, Error> {
-        let mut client = self.get_client().await?;
+    pub async fn get_contract_clients(&self) -> Result<Vec<ContractCallClient>, Error> {
+        self.check_for_steward_addresses()?;
 
-        match client.submit(request).await {
+        let mut clients = Vec::new();
+
+        for addr in &self.steward_endpoints {
+            let endpoint = Channel::builder(addr.parse::<Uri>().unwrap());
+
+            let client = match ContractCallClient::connect(endpoint).await {
+                Ok(res) => res,
+                Err(err) => return Err(ErrorKind::GrpcError.context(err).into()),
+            };
+
+            clients.push(client);
+        }
+
+        return Ok(clients);
+    }
+
+    pub async fn submit_request(&self, request: SubmitRequest) -> Result<SubmitResponse, Error> {
+        // First verify voting period has started
+        let mut query_client = self.get_query_client().await?;
+
+        loop {
+            let commit_period_response = match query_client
+                .query_commit_period(QueryCommitPeriodRequest {})
+                .await
+            {
+                Ok(res) => res.into_inner(),
+                Err(status) => return Err(ErrorKind::GrpcError.context(status).into()),
+            };
+
+            if commit_period_response.current_height >= commit_period_response.vote_period_start
+                && commit_period_response.current_height < commit_period_response.vote_period_end
+            {
+                break;
+            }
+        }
+
+        // We're now in a voting period, time to send requests.
+
+        let mut contract_clients = self.get_contract_clients().await?;
+
+        match contract_clients[0].submit(request).await {
             Ok(res) => Ok(res.into_inner()),
             Err(status) => Err(ErrorKind::GrpcError.context(status).into()),
         }
@@ -51,14 +106,14 @@ mod tests {
             grpc_address: String::from(""),
         };
 
-        assert!(client.get_client().await.is_err());
+        assert!(client.get_contract_client().await.is_err());
 
         client = GrpcClient {
             grpc_address: String::from("https://google.com"),
         };
 
         client
-            .get_client()
+            .get_contract_client()
             .await
             .expect("Could not retrieve client.");
     }
