@@ -10,29 +10,18 @@
 //! See the `impl Configurable` below for how to specify the path to the
 //! application's configuration file.
 
-mod allow_erc20;
 mod config_cmd;
-mod cosmos_mode;
 mod cosmos_to_eth;
 mod deploy;
 mod eth_to_cosmos;
-mod fund_cellar;
 mod keys;
 mod orchestrator;
-mod query;
-mod reinvest;
-mod remove_funds;
 mod scheduled_corks;
-mod set_validator;
 mod sign_delegate_keys;
-mod single_signer;
-mod transfer;
-mod tx;
+mod start;
 
 use self::{
-    config_cmd::ConfigCmd, cosmos_mode::CosmosSignerCmd, fund_cellar::FundCellarCmd, keys::KeysCmd,
-    remove_funds::RemoveFundsCmd, scheduled_corks::ScheduledCorksCmd,
-    set_validator::SetValidatorCmd, single_signer::SingleSignerCmd, transfer::TransferCmd,
+    config_cmd::ConfigCmd, keys::KeysCmd, scheduled_corks::ScheduledCorksCmd, start::StartCmd,
 };
 
 use crate::config::StewardConfig;
@@ -45,31 +34,19 @@ pub const CONFIG_FILE: &str = "steward.toml";
 /// Steward Subcommands
 #[derive(Command, Debug, Parser, Runnable)]
 pub enum StewardCmd {
-    SingleSigner(SingleSignerCmd),
     ScheduledCorks(ScheduledCorksCmd),
-    Transfer(TransferCmd),
     #[clap(subcommand)]
     Keys(KeysCmd),
     /// Print default configurations
     PrintConfig(ConfigCmd),
-    FundCellar(FundCellarCmd),
-    RemoveFunds(RemoveFundsCmd),
     CosmosToEth(cosmos_to_eth::CosmosToEthCmd),
     #[clap(subcommand)]
     Deploy(deploy::DeployCmd),
     EthToCosmos(eth_to_cosmos::EthToCosmosCmd),
     #[clap(subcommand)]
     Orchestrator(orchestrator::OrchestratorCmd),
-    /// Print default configurations
-    #[clap(subcommand)]
-    Query(query::QueryCmd),
-    Reinvest(reinvest::ReinvestCommand),
-    SetValidator(SetValidatorCmd),
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
-    #[clap(subcommand)]
-    Tx(tx::TxCmd),
-    AllowErc20(allow_erc20::AllowERC20),
-    CosmosSigner(CosmosSignerCmd),
+    Start(StartCmd),
 }
 
 /// Entry point for the application. It needs to be a struct to allow using subcommands!

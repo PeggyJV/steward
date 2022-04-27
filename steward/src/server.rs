@@ -4,7 +4,6 @@ use crate::{config::StewardConfig, error::Error};
 use tonic::transport::{Certificate, Identity, ServerTlsConfig};
 
 pub const DEFAULT_CLIENT_CA: &[u8] = include_bytes!("../../tls/peggyjv_ca.crt");
-pub const DEFAULT_STEWARD_PORT: u16 = 5734;
 // for gRPC reflection
 pub const DESCRIPTOR: &[u8] = include_bytes!("../../steward_proto/src/prost/descriptor.bin");
 
@@ -27,14 +26,8 @@ pub async fn load_server_config(
     let tls_config = ServerTlsConfig::new()
         .identity(server_identity.clone())
         .client_ca_root(client_ca_cert);
-    let port = match config.server.port {
-        Some(p) => p,
-        None => DEFAULT_STEWARD_PORT,
-    };
-    let address = match &config.server.address {
-        Some(a) => a,
-        None => "0.0.0.0",
-    };
+    let port = &config.server.port;
+    let address = &config.server.address;
     let address: SocketAddr = format!("{}:{}", address, port).parse()?;
 
     Ok(ServerConfig {
