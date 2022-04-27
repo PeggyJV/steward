@@ -5,109 +5,129 @@ import "./interfaces.sol";
 
 contract MockAaveV2StablecoinCellar is Ownable {
     /**
-     * @notice Whether or not the contract is paused in case of an emergency.
+     * @notice Whether or not the contract is shutdown in case of an emergency.
      */
-    bool public isPaused;
-
-    constructor() {
-
-    }
+    bool public isShutdown;
 
     event mockAccrueFees();
+    event mockTransferFees();
+    event mockSetFeesDistributor(bytes32 newFeesDistributor);
+    event mockEnterPosition();
+    event mockRebalance(address[9] route, uint256[3][4] swapParams, uint256 minAssetsOut);
+    event mockReinvest(uint256 minAssetsOut);
+    event mockClaimAndUnstake();
+    event mockSweep(address token, address to);
+    event mockSetLiquidityLimit(uint256 limit);
+    event mockSetDepositLimit(uint256 limit);
+    event mockSetTrust(address position, bool trust);
+    event mockSetShutdown(bool shutdown, bool existPosition);
+
+    constructor() {}
 
     /**
      * @notice Take platform fees and performance fees off of cellar's active assets.
      */
-    function accrueFees() external onlyOwner {
+    function accrueFees() external {
         emit mockAccrueFees();
     }
 
-    event mockTransferFees();
-
     /**
-     * @notice Transfer accrued fees to Cosmos to distribute.
+     * @notice Transfer accrued fees to the Sommelier Chain to distribute.
      */
     function transferFees() external onlyOwner {
         emit mockTransferFees();
     }
 
-    event mockEnterStrategy();
+    /**
+     * @notice Update the address of the fee distributor on the Sommelier Chain. IMPORTANT: Ensure
+     *         that the address is formatted in the specific way that the Gravity contract expects
+     *         it to be.
+     */
+    function setFeesDistributor(bytes32 newFeesDistributor) external onlyOwner {
+        emit mockSetFeesDistributor(newFeesDistributor);
+    }
 
     /**
      * @notice Enters into the current Aave stablecoin strategy.
      */
-    function enterStrategy() external onlyOwner  {
-        emit mockEnterStrategy();
+    function enterPosition() external onlyOwner  {
+        emit mockEnterPosition();
     }
 
-    event mockRebalance(address[] path, uint256 amountOutMinimum);
-
     /**
-     * @notice Rebalances current assets into a new asset strategy.
-     * @param path path to swap from the current asset to new asset using Uniswap
-     * @param amountOutMinimum minimum amount of assets returned after swap
+     * @notice Rebalances current assets into a new asset position.
+     * @param route array of [initial token, pool, token, pool, token, ...] that specifies the swap route
+     * @param swapParams multidimensional array of [i, j, swap type] where i and j are the correct
+                         values for the n'th pool in `_route` and swap type should be 1 for a
+                         stableswap `exchange`, 2 for stableswap `exchange_underlying`, 3 for a
+                         cryptoswap `exchange`, 4 for a cryptoswap `exchange_underlying` and 5 for
+                         Polygon factory metapools `exchange_underlying`
+     * @param minAssetsOut minimum amount of assets received from swap
      */
-    function rebalance(address[] memory path, uint256 amountOutMinimum) external onlyOwner  {
-        emit mockRebalance(path, amountOutMinimum);
+    function rebalance(
+        address[9] memory route,
+        uint256[3][4] memory swapParams,
+        uint256 minAssetsOut
+    ) external onlyOwner  {
+        emit mockRebalance(route, swapParams, minAssetsOut);
     }
 
-    event mockReinvest(address[] path, uint256 minAssetsOut);
-
     /**
-     * @notice Reinvest rewards back into cellar's current strategy.
+     * @notice Reinvest rewards back into cellar's current position.
      * @dev Must be called within 2 day unstake period 10 days after `claimAndUnstake` was run.
-     * @param path path to swap from AAVE to the current asset on Sushiswap
-     * @param minAssetsOut minimum amount of assets cellar should receive after swap
+     * @param minAssetsOut minimum amount of assets received after swapping AAVE to the current asset
      */
-    function reinvest(address[] memory path, uint256 minAssetsOut) public  {
-        emit mockReinvest(path, minAssetsOut);
+    function reinvest(uint256 minAssetsOut) external onlyOwner {
+        emit mockReinvest(minAssetsOut);
     }
-
-    event mockClaimAndUnstake();
 
     /**
      * @notice Claim rewards from Aave and begin cooldown period to unstake them.
      * @return claimed amount of rewards claimed from Aave
      */
-    function claimAndUnstake() public  returns (uint256 claimed) {
+    function claimAndUnstake() external onlyOwner returns (uint256 claimed) {
         emit mockClaimAndUnstake();
         return 100;
     }
-
-    event mockSweep(address token);
 
     /**
      * @notice Sweep tokens sent here that are not managed by the cellar.
      * @dev This may be used in case the wrong tokens are accidentally sent to this contract.
      * @param token address of token to transfer out of this cellar
+     * @param to address to transfer sweeped tokens to
      */
-    function sweep(address token) external onlyOwner  {
-        emit mockSweep(token);
+    function sweep(address token, address to) external onlyOwner {
+        emit mockSweep(token, to);
     }
-
-    event mockRemoveLiquidityRestriction();
 
     /**
-     * @notice Removes initial liquidity restriction.
+     * @notice Sets the maximum liquidity that cellar can manage. Careful to use the same decimals as the
+     *         current asset.
      */
-    function removeLiquidityRestriction() external onlyOwner  {
-        emit mockRemoveLiquidityRestriction();
+    function setLiquidityLimit(uint256 limit) external onlyOwner {
+        emit mockSetLiquidityLimit(limit);
     }
-
-    event mockPause(bool isPaused);
 
     /**
-     * @notice Pause the contract to prevent deposits.
-     * @param _isPaused whether the contract should be paused or unpaused
+     * @notice Sets the per-wallet deposit limit. Careful to use the same decimals as the current asset.
      */
-    function setPause(bool _isPaused) external onlyOwner  {
-        isPaused = _isPaused;
-        emit mockPause(isPaused);
+    function setDepositLimit(uint256 limit) external onlyOwner {
+        emit mockSetDepositLimit(limit);
     }
 
-    event mockShutdown();
+    /**
+     * @notice Trust or distrust an asset position on Aave (eg. FRAX, UST, FEI).
+     */
+    function setTrust(address position, bool trust) external onlyOwner {
+        emit mockSetTrust(position, trust);
+    }
 
-    function shutdown() external onlyOwner  {
-        emit mockShutdown();
+    /**
+     * @notice Stop or start the contract. Used in an emergency or if the cellar has been retired.
+     */
+    function setShutdown(bool shutdown, bool exitPosition) external onlyOwner {
+        isShutdown = shutdown;
+
+        emit mockSetShutdown(shutdown, exitPosition);
     }
 }

@@ -1,95 +1,111 @@
+///
+/// Represents a function call to the Aave V2 Stablecoin cellar
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct AaveV2Stablecoin {
-    #[prost(
-        oneof = "aave_v2_stablecoin::Function",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11"
-    )]
+    /// The function you wish to execute on the target cellar
+    #[prost(oneof = "aave_v2_stablecoin::Function", tags = "1, 2, 3, 4, 5, 6, 7")]
     pub function: ::core::option::Option<aave_v2_stablecoin::Function>,
 }
 /// Nested message and enum types in `AaveV2Stablecoin`.
 pub mod aave_v2_stablecoin {
+    ///
+    /// Take platform fees and performance fees off of cellar's active assets.
+    /// Represents function accruePlatformFees()
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct AccrueFees {}
+    ///
+    /// Claim rewards from Aave and begin cooldown period to unstake them.
+    /// Represents function claimAndUnstake()
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct ClaimAndUnstake {}
+    ///
+    /// Enters inactive assets into the current Aave stablecoin position.
+    /// Represents function enterPosition()
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct EnterPosition {}
+    ///
+    /// Rebalances current assets into a new asset position.
+    /// Represents function rebalance(address newLendingToken, uint256 minNewLendingTokenAmount).
+    /// This function is based on the Curve Pool Registry exchange_multiple() function:
+    /// https://github.com/curvefi/curve-pool-registry/blob/16a8664952cf61d7fed06acca79ad5ac696f4b20/contracts/Swaps.vy#L461-L489
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Rebalance {
+        /// An array of up to 9 addresses (4 swaps) representing a token swap route, where each triplet of addresses is a single swap route (ex. in token address, pool address, out token address)
+        #[prost(string, repeated, tag = "1")]
+        pub route: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+        /// An array of up to 4 swap params. Attempting more than four swaps will fail.
+        #[prost(message, repeated, tag = "2")]
+        pub swap_params: ::prost::alloc::vec::Vec<rebalance::SwapParams>,
+        /// Minimum acceptable assets to be received from the swap (slippage parameter)
+        #[prost(uint64, tag = "3")]
+        pub min_assets_out: u64,
+    }
+    /// Nested message and enum types in `Rebalance`.
+    pub mod rebalance {
+        ///
+        /// Represents parameters for a single swap. Each swap needs the indeces in Rebalance.route of the in/out token addresses and the swap type. See the Curve contract linked above for more detail.
+        #[derive(Clone, PartialEq, ::prost::Message)]
+        pub struct SwapParams {
+            /// Index in the `route` array of the swap's input token address
+            #[prost(uint64, tag = "1")]
+            pub in_index: u64,
+            /// Index in the `route` array of the swap's output token address
+            #[prost(uint64, tag = "2")]
+            pub out_index: u64,
+            /// 1 - stableswap `exchange`
+            /// 2 - stableswap `exchange_underlying`
+            /// 3 - cryptoswap `exchange`
+            /// 4 - cryptoswap `exchange_underlying`
+            /// 5 - Polygon factory metapools `exchange_underlying`
+            /// See the Curve Pool Registry exchange_multiple() function for more information.
+            #[prost(uint64, tag = "3")]
+            pub swap_type: u64,
+        }
+    }
+    ///
+    /// Reinvest rewards back into cellar's current position. Must be called within 2 day unstake period 10 days after `claimAndUnstake` was run.
+    /// Represents function reinvest(uint256 minAssetsOut)
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Reinvest {
+        /// Minimum acceptable assets to be received from the swap (slippage parameter)
+        #[prost(uint64, tag = "1")]
+        pub min_assets_out: u64,
+    }
+    ///
+    /// Sweep tokens sent here that are not managed by the cellar. This may be used in case the wrong tokens are accidentally sent to this contract.
+    /// Represents function sweep(address).
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Sweep {
+        /// The address of the token to be transferred out of the Cellar
+        #[prost(string, tag = "1")]
+        pub token: ::prost::alloc::string::String,
+        /// The address to which the tokens should be transferred
+        #[prost(string, tag = "2")]
+        pub to: ::prost::alloc::string::String,
+    }
+    ///
+    /// Transfer accrued fees to the Sommelier Chain to distribute.
+    /// Represents function transferFees()
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct TransferFees {}
+    /// The function you wish to execute on the target cellar
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Function {
         #[prost(message, tag = "1")]
-        EnterStrategy(super::EnterStrategy),
+        AccrueFees(AccrueFees),
         #[prost(message, tag = "2")]
-        ReinvestAmount(super::ReinvestWithAmount),
+        ClaimAndUnstake(ClaimAndUnstake),
         #[prost(message, tag = "3")]
-        Reinvest(super::Reinvest),
+        EnterPosition(EnterPosition),
         #[prost(message, tag = "4")]
-        ClaimAndUnstakeAmount(super::ClaimAndUnstakeWithAmount),
+        Rebalance(Rebalance),
         #[prost(message, tag = "5")]
-        ClaimAndUnstake(super::ClaimAndUnstake),
+        Reinvest(Reinvest),
         #[prost(message, tag = "6")]
-        Rebalance(super::Rebalance),
+        Sweep(Sweep),
         #[prost(message, tag = "7")]
-        AccruePlatformFees(super::AccruePlatformFees),
-        #[prost(message, tag = "8")]
-        TransferFees(super::TransferFees),
-        #[prost(message, tag = "9")]
-        SetInputToken(super::SetInputToken),
-        #[prost(message, tag = "10")]
-        RemoveLiquidityRestriction(super::RemoveLiquidityRestriction),
-        #[prost(message, tag = "11")]
-        Sweep(super::Sweep),
+        TransferFees(TransferFees),
     }
-}
-/// function enterStrategy() external;
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct EnterStrategy {}
-/// function reinvest(uint256 amount, uint256 minAssetsOut) external;
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ReinvestWithAmount {
-    #[prost(uint64, tag = "1")]
-    pub amount: u64,
-    #[prost(uint64, tag = "2")]
-    pub min_assets_out: u64,
-}
-/// function reinvest(uint256 minAssetsOut) external;
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Reinvest {
-    #[prost(uint64, tag = "1")]
-    pub min_assets_out: u64,
-}
-/// function claimAndUnstake(uint256 amount) external returns (uint256 claimed);
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ClaimAndUnstakeWithAmount {
-    #[prost(uint64, tag = "1")]
-    pub amount: u64,
-}
-/// function claimAndUnstake() external returns (uint256);
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ClaimAndUnstake {}
-/// function rebalance(address newLendingToken, uint256 minNewLendingTokenAmount) external;
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Rebalance {
-    #[prost(string, tag = "1")]
-    pub address: ::prost::alloc::string::String,
-    #[prost(uint64, tag = "2")]
-    pub min_new_lending_token_amount: u64,
-}
-/// function accruePlatformFees() external;
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct AccruePlatformFees {}
-/// function transferFees() external;
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct TransferFees {}
-/// function setInputToken(address token, bool isApproved) external;
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct SetInputToken {
-    #[prost(string, tag = "1")]
-    pub address: ::prost::alloc::string::String,
-    #[prost(bool, tag = "2")]
-    pub is_approved: bool,
-}
-/// function removeLiquidityRestriction() external;
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct RemoveLiquidityRestriction {}
-/// function sweep(address token) external;
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Sweep {
-    #[prost(string, tag = "1")]
-    pub address: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SubmitRequest {
