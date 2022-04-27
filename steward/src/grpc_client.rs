@@ -6,7 +6,8 @@ use steward_proto::{
         contract_call_client::ContractCallClient as ContractClient, SubmitRequest, SubmitResponse,
     },
 };
-use tonic::transport::{Channel, Uri};
+use tonic::transport::{Channel, Uri, ClientTlsConfig};
+use std::{thread, time::Duration};
 
 pub type ContractCallClient = ContractClient<Channel>;
 pub type QueryClient = QClient<Channel>;
@@ -14,6 +15,7 @@ pub type QueryClient = QClient<Channel>;
 pub struct GrpcClient {
     pub grpc_address: String,
     pub steward_endpoints: Vec<String>,
+    pub tls_configuration: ClientTlsConfig,
 }
 
 impl GrpcClient {
@@ -51,7 +53,7 @@ impl GrpcClient {
         let mut clients = Vec::new();
 
         for addr in &self.steward_endpoints {
-            let endpoint = Channel::builder(addr.parse::<Uri>().unwrap());
+            let endpoint = Channel::builder(addr.parse::<Uri>().unwrap()).tls_config(self.tls_configuration.clone())?;
 
             let client = match ContractCallClient::connect(endpoint).await {
                 Ok(res) => res,
@@ -82,11 +84,21 @@ impl GrpcClient {
             {
                 break;
             }
+
+            // Wait a few seconds before retrying
+            thread::sleep(Duration::from_secs(10));
         }
 
         // We're now in a voting period, time to send requests.
-
         let mut contract_clients = self.get_contract_clients().await?;
+
+        // Iterate over all requests in (almost) parallel
+
+
+
+
+
+
 
         match contract_clients[0].submit(request).await {
             Ok(res) => Ok(res.into_inner()),
