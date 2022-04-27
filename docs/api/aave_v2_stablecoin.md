@@ -114,17 +114,7 @@ Represents parameters for a single swap. Each swap needs the indeces in Rebalanc
 | ----- | ---- | ----- | ----------- |
 | in_index | [uint64](#uint64) |  | Index in the `route` array of the swap&#39;s input token address |
 | out_index | [uint64](#uint64) |  | Index in the `route` array of the swap&#39;s output token address |
-| swap_type | [uint64](#uint64) |  | 1 - stableswap `exchange`
-
-2 - stableswap `exchange_underlying`
-
-3 - cryptoswap `exchange`
-
-4 - cryptoswap `exchange_underlying`
-
-5 - Polygon factory metapools `exchange_underlying`
-
-See the Curve Pool Registry exchange_multiple() function for more information. |
+| swap_type | [uint64](#uint64) |  | 1 - stableswap `exchange` 2 - stableswap `exchange_underlying` 3 - cryptoswap `exchange` 4 - cryptoswap `exchange_underlying` 5 - Polygon factory metapools `exchange_underlying` See the Curve Pool Registry exchange_multiple() function for more information. |
 
 
 

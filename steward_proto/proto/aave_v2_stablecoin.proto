@@ -70,15 +70,10 @@ message AaveV2Stablecoin {
             // Index in the `route` array of the swap's output token address
             uint64 out_index = 2;
             /* 1 - stableswap `exchange`
-             *
              * 2 - stableswap `exchange_underlying`
-             *
              * 3 - cryptoswap `exchange`
-             *
              * 4 - cryptoswap `exchange_underlying`
-             *
              * 5 - Polygon factory metapools `exchange_underlying`
-             *
              * See the Curve Pool Registry exchange_multiple() function for more information.
              */
             uint64 swap_type = 3;
