@@ -50,7 +50,8 @@ Represents a function call to the Aave V2 Stablecoin cellar
 
 ### AaveV2Stablecoin.AccrueFees
 Take platform fees and performance fees off of cellar&#39;s active assets.
-Represents function accruePlatformFees()
+
+Represents function `accruePlatformFees()``
 
 
 
@@ -61,7 +62,8 @@ Represents function accruePlatformFees()
 
 ### AaveV2Stablecoin.ClaimAndUnstake
 Claim rewards from Aave and begin cooldown period to unstake them.
-Represents function claimAndUnstake()
+
+Represents function `claimAndUnstake()`
 
 
 
@@ -72,7 +74,8 @@ Represents function claimAndUnstake()
 
 ### AaveV2Stablecoin.EnterPosition
 Enters inactive assets into the current Aave stablecoin position.
-Represents function enterPosition()
+
+Represents function `enterPosition()`
 
 
 
@@ -83,7 +86,9 @@ Represents function enterPosition()
 
 ### AaveV2Stablecoin.Rebalance
 Rebalances current assets into a new asset position.
-Represents function rebalance(address newLendingToken, uint256 minNewLendingTokenAmount).
+
+Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`.
+
 This function is based on the Curve Pool Registry exchange_multiple() function:
 https://github.com/curvefi/curve-pool-registry/blob/16a8664952cf61d7fed06acca79ad5ac696f4b20/contracts/Swaps.vy#L461-L489
 
@@ -109,7 +114,17 @@ Represents parameters for a single swap. Each swap needs the indeces in Rebalanc
 | ----- | ---- | ----- | ----------- |
 | in_index | [uint64](#uint64) |  | Index in the `route` array of the swap&#39;s input token address |
 | out_index | [uint64](#uint64) |  | Index in the `route` array of the swap&#39;s output token address |
-| swap_type | [uint64](#uint64) |  | 1 - stableswap `exchange` 2 - stableswap `exchange_underlying` 3 - cryptoswap `exchange` 4 - cryptoswap `exchange_underlying` 5 - Polygon factory metapools `exchange_underlying` See the Curve Pool Registry exchange_multiple() function for more information. |
+| swap_type | [uint64](#uint64) |  | 1 - stableswap `exchange`
+
+2 - stableswap `exchange_underlying`
+
+3 - cryptoswap `exchange`
+
+4 - cryptoswap `exchange_underlying`
+
+5 - Polygon factory metapools `exchange_underlying`
+
+See the Curve Pool Registry exchange_multiple() function for more information. |
 
 
 
@@ -120,7 +135,8 @@ Represents parameters for a single swap. Each swap needs the indeces in Rebalanc
 
 ### AaveV2Stablecoin.Reinvest
 Reinvest rewards back into cellar&#39;s current position. Must be called within 2 day unstake period 10 days after `claimAndUnstake` was run.
-Represents function reinvest(uint256 minAssetsOut)
+
+Represents function `reinvest(uint256 minAssetsOut)`
 
 
 | Field | Type | Label | Description |
@@ -136,7 +152,8 @@ Represents function reinvest(uint256 minAssetsOut)
 
 ### AaveV2Stablecoin.Sweep
 Sweep tokens sent here that are not managed by the cellar. This may be used in case the wrong tokens are accidentally sent to this contract.
-Represents function sweep(address).
+
+Represents function `sweep(address)`.
 
 
 | Field | Type | Label | Description |
@@ -153,7 +170,8 @@ Represents function sweep(address).
 
 ### AaveV2Stablecoin.TransferFees
 Transfer accrued fees to the Sommelier Chain to distribute.
-Represents function transferFees()
+
+Represents function `transferFees()`
 
 
 
