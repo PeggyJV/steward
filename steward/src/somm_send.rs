@@ -8,7 +8,7 @@ use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::{
     base::abci::v1beta1::TxResponse, tx::v1beta1::BroadcastMode,
 };
 use somm_proto::cork::Cork;
-use somm_proto::cork::{MsgSubmitCorkRequest, MsgScheduleCorkRequest};
+use somm_proto::cork::{MsgScheduleCorkRequest, MsgSubmitCorkRequest};
 use std::{result::Result, time::Duration};
 
 pub const TIMEOUT: Duration = Duration::from_secs(60);

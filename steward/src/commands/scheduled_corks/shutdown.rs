@@ -1,11 +1,14 @@
-use crate::{application::APP, prelude::*};
+use crate::{application::APP, config, prelude::*, somm_send};
 use abscissa_core::{clap::Parser, Application, Command, Runnable};
+use deep_space::{Coin, Contact};
 use ethers::prelude::*;
 use gravity_bridge::gravity_utils::ethereum::downcast_to_u64;
 use signatory::FsKeyStore;
-use std::{convert::TryFrom, path, sync::Arc};
-use steward_abi::aave_v2_stablecoin::AaveV2StablecoinCellar;
 use somm_proto::cork::Cork;
+use std::{convert::TryFrom, path, sync::Arc, time::Duration};
+use steward_abi::aave_v2_stablecoin::AaveV2StablecoinCellar;
+const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
+const CHAIN_PREFIX: &str = "somm";
 
 /// Scheduled corks subcommand
 #[derive(Command, Debug, Parser)]
@@ -52,7 +55,7 @@ impl Runnable for Shutdown {
             let contract = AaveV2StablecoinCellar::new(address, Arc::new(client.clone()));
             let call_data = match contract.shutdown().calldata() {
                 Some(call) => call,
-                None => return Err("Invalid Argument").expect("can't find call data")
+                None => return Err("Invalid Argument").expect("can't find call data"),
             };
             let encoded_call = call_data.to_vec();
 
@@ -61,6 +64,25 @@ impl Runnable for Shutdown {
                 target_contract_address: address.to_string(),
             };
 
+            debug!("establishing grpc connection");
+            let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX).unwrap();
+
+            debug!("getting cosmos fee");
+            let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
+            let fee = Coin {
+                amount: (cosmos_gas_price.0 as u64).into(),
+                denom: cosmos_gas_price.1,
+            };
+            somm_send::schedule_cork(
+                &contact,
+                cork,
+                config::DELEGATE_ADDRESS.to_string(),
+                &config::DELEGATE_KEY,
+                fee,
+                self.block_height,
+            )
+            .await
+            .expect("err");
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
