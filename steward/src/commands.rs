@@ -34,6 +34,7 @@ pub const CONFIG_FILE: &str = "steward.toml";
 /// Steward Subcommands
 #[derive(Command, Debug, Parser, Runnable)]
 pub enum StewardCmd {
+    #[clap(subcommand)]
     ScheduledCorks(ScheduledCorksCmd),
     #[clap(subcommand)]
     Keys(KeysCmd),
