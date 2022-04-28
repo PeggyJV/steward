@@ -3,12 +3,14 @@ use abscissa_core::{clap::Parser, Application, Command, Runnable};
 use ethers::prelude::*;
 use gravity_bridge::gravity_utils::ethereum::downcast_to_u64;
 use signatory::FsKeyStore;
-use std::{convert::TryFrom, path};
+use std::{convert::TryFrom, path, sync::Arc};
+use steward_abi::aave_v2_stablecoin::AaveV2StablecoinCellar;
+use somm_proto::cork::Cork;
 
 /// Scheduled corks subcommand
 #[derive(Command, Debug, Parser)]
 pub struct Shutdown {
-    cellar_id: String,
+    cellar_id: H160,
     block_height: u64,
 }
 
@@ -34,7 +36,6 @@ impl Runnable for Shutdown {
         let wallet: LocalWallet = Wallet::from(key);
 
         abscissa_tokio::run_with_actix(&APP, async {
-
             let eth_host = config.ethereum.rpc.clone();
             let provider = Provider::<Http>::try_from(eth_host.clone())
                 .unwrap_or_else(|_| panic!("could not get provider from eth_host {}", eth_host));
@@ -42,13 +43,25 @@ impl Runnable for Shutdown {
                 .get_chainid()
                 .await
                 .expect("Could not retrieve chain ID");
-    
+
             let chain_id =
                 downcast_to_u64(chain_id).expect("Chain ID overflowed when downcasting to u64");
-            let _client = SignerMiddleware::new(provider, wallet.clone().with_chain_id(chain_id));
-    
-            let _address = self.cellar_id.clone();
-        }).unwrap_or_else(|e| {
+            let client = SignerMiddleware::new(provider, wallet.clone().with_chain_id(chain_id));
+
+            let address = self.cellar_id.clone();
+            let contract = AaveV2StablecoinCellar::new(address, Arc::new(client.clone()));
+            let call_data = match contract.shutdown().calldata() {
+                Some(call) => call,
+                None => return Err("Invalid Argument").expect("can't find call data")
+            };
+            let encoded_call = call_data.to_vec();
+            
+            let cork = Cork {
+                encoded_contract_call: encoded_call,
+                target_contract_address: address.to_string(),
+            };
+        })
+        .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
             std::process::exit(1);
         });
