@@ -92,25 +92,25 @@ impl GrpcClient {
         }
 
         // We're now in a voting period, time to send requests.
-        let contract_clients = self.get_contract_clients().await?;
+        let mut contract_clients = self.get_contract_clients().await?;
 
         // Executing all requests in parallel, so need to keep track
         let mut futures = Vec::new();
 
-        for mut client in contract_clients {
-            futures.push(&client.submit(request.clone()));
+        for client in &mut contract_clients {
+            futures.push(client.submit(request.clone()));            
         }
 
         let mut responses = Vec::new();
         let mut failures  = Vec::new();
 
-        for future in futures {
-            match future.await {
+        for future in join_all(futures).await {
+            match future {
                 Ok(res) => responses.push(res.into_inner()),
                 Err(status) => failures.push(ErrorKind::GrpcError.context(status).into()),
             }
         }
-
+ 
         Ok((responses, failures))
     }
 }
