@@ -1,13 +1,10 @@
-use std::convert::TryInto;
 use ethers::{
     abi::AbiEncode,
     prelude::{H160, U256},
 };
+use std::convert::TryInto;
 use steward_abi::aave_v2_stablecoin::*;
-use steward_proto::steward::aave_v2_stablecoin::{
-    rebalance::SwapParams,
-    Function::{self, *},
-};
+use steward_proto::steward::aave_v2_stablecoin::Function::{self, *};
 
 use crate::{error::Error, utils::sp_call_error};
 
