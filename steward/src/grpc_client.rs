@@ -153,6 +153,6 @@ mod tests {
         };
 
         // Expect ConnectionRefused error as this is essentially a mock call without TLS setup
-        assert_eq!("grpc error: transport error: error trying to connect: tcp connect error: Connection refused (os error 61)", client.submit_request(SubmitRequest{cellar_id: String::from("123"), call_data: None}).await.err().expect("Unable to find err.").to_string());
+        assert_eq!("grpc error: transport error: error trying to connect: tcp connect error: Connection refused", &client.submit_request(SubmitRequest{cellar_id: String::from("123"), call_data: None}).await.err().expect("Unable to find err.").to_string()[..91]);
     }
 }
