@@ -15,19 +15,26 @@ option go_package = "/steward_proto";
 message AaveV2Stablecoin {
     // The function you wish to execute on the target cellar
     oneof function {
+        // Represents function `accruePlatformFees()`: [link](https://github.com/PeggyJV/cellar-contracts/blob/b93b4393299aee35421f83ef4ca2689256e5b354/contracts/AaveV2StablecoinCellar.sol#L702)
         AccrueFees accrue_fees = 1;
+        // Represents function `claimAndUnstake()`: [link](https://github.com/PeggyJV/cellar-contracts/blob/b93b4393299aee35421f83ef4ca2689256e5b354/contracts/AaveV2StablecoinCellar.sol#L941)
         ClaimAndUnstake claim_and_unstake = 2;
+        // Represents function `enterPosition()`: [link](https://github.com/PeggyJV/cellar-contracts/blob/b93b4393299aee35421f83ef4ca2689256e5b354/contracts/AaveV2StablecoinCellar.sol#L820)
         EnterPosition enter_position = 3;
+        // Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`: [link](https://github.com/PeggyJV/cellar-contracts/blob/b93b4393299aee35421f83ef4ca2689256e5b354/contracts/AaveV2StablecoinCellar.sol#L844)
         Rebalance rebalance = 4;
+        // Represents function `reinvest(uint256 minAssetsOut)`: [link](https://github.com/PeggyJV/cellar-contracts/blob/b93b4393299aee35421f83ef4ca2689256e5b354/contracts/AaveV2StablecoinCellar.sol#L901)
         Reinvest reinvest = 5;
+        // Represents function `sweep(address)`: [link](https://github.com/PeggyJV/cellar-contracts/blob/b93b4393299aee35421f83ef4ca2689256e5b354/contracts/AaveV2StablecoinCellar.sol#L961)
         Sweep sweep = 6;
+        // Represents function `transferFees()`: [link](https://github.com/PeggyJV/cellar-contracts/blob/b93b4393299aee35421f83ef4ca2689256e5b354/contracts/AaveV2StablecoinCellar.sol#L754)
         TransferFees transfer_fees = 7;
     }
 
     /*
      * Take platform fees and performance fees off of cellar's active assets.
      *
-     * Represents function `accruePlatformFees()``
+     * Represents function `accruePlatformFees()`
      */
     message AccrueFees {}
 
@@ -48,7 +55,7 @@ message AaveV2Stablecoin {
     /*
      * Rebalances current assets into a new asset position.
      *
-     * Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`.
+     * Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`
      *
      * This function is based on the Curve Pool Registry exchange_multiple() function:
      * https://github.com/curvefi/curve-pool-registry/blob/16a8664952cf61d7fed06acca79ad5ac696f4b20/contracts/Swaps.vy#L461-L489
@@ -93,7 +100,7 @@ message AaveV2Stablecoin {
     /*
      * Sweep tokens sent here that are not managed by the cellar. This may be used in case the wrong tokens are accidentally sent to this contract.
      *
-     * Represents function `sweep(address)`.
+     * Represents function `sweep(address)`
      */
     message Sweep {
         // The address of the token to be transferred out of the Cellar
