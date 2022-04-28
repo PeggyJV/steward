@@ -1,4 +1,6 @@
 use crate::error::{Error, ErrorKind};
+use futures::stream::{FuturesUnordered};
+use futures::future::join_all;
 use somm_proto::cork::{query_client::QueryClient as QClient, QueryCommitPeriodRequest};
 use steward_proto::{
     self,
@@ -7,7 +9,7 @@ use steward_proto::{
     },
 };
 use tonic::transport::{Channel, Uri, ClientTlsConfig};
-use std::{thread, time::Duration};
+use std::{thread, time::Duration, sync::Arc};
 
 pub type ContractCallClient = ContractClient<Channel>;
 pub type QueryClient = QClient<Channel>;
@@ -66,7 +68,7 @@ impl GrpcClient {
         return Ok(clients);
     }
 
-    pub async fn submit_request(&self, request: SubmitRequest) -> Result<SubmitResponse, Error> {
+    pub async fn submit_request(&self, request: SubmitRequest) -> Result<(Vec<SubmitResponse>, Vec<Error>), Error> {
         // First verify voting period has started
         let mut query_client = self.get_query_client().await?;
 
@@ -90,20 +92,26 @@ impl GrpcClient {
         }
 
         // We're now in a voting period, time to send requests.
-        let mut contract_clients = self.get_contract_clients().await?;
+        let contract_clients = self.get_contract_clients().await?;
 
-        // Iterate over all requests in (almost) parallel
+        // Executing all requests in parallel, so need to keep track
+        let mut futures = Vec::new();
 
-
-
-
-
-
-
-        match contract_clients[0].submit(request).await {
-            Ok(res) => Ok(res.into_inner()),
-            Err(status) => Err(ErrorKind::GrpcError.context(status).into()),
+        for mut client in contract_clients {
+            futures.push(&client.submit(request.clone()));
         }
+
+        let mut responses = Vec::new();
+        let mut failures  = Vec::new();
+
+        for future in futures {
+            match future.await {
+                Ok(res) => responses.push(res.into_inner()),
+                Err(status) => failures.push(ErrorKind::GrpcError.context(status).into()),
+            }
+        }
+
+        Ok((responses, failures))
     }
 }
 
