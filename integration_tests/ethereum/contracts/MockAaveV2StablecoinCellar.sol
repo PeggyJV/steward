@@ -20,7 +20,7 @@ contract MockAaveV2StablecoinCellar is Ownable {
     event mockSetLiquidityLimit(uint256 limit);
     event mockSetDepositLimit(uint256 limit);
     event mockSetTrust(address position, bool trust);
-    event mockSetShutdown(bool shutdown, bool existPosition);
+    event mockSetShutdown(bool shutdown, bool exitPosition);
 
     constructor() {}
 
