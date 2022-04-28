@@ -35,6 +35,7 @@ pub type EthSignerMiddleware = SignerMiddleware<Provider<Http>, LocalWallet>;
 use ethers::abi::Detokenize;
 
 const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
+const CHAIN_PREFIX: &str = "somm";
 
 pub struct CorkHandler;
 
@@ -265,7 +266,7 @@ fn get_encoded_call(data: CallData) -> Result<Vec<u8>, Error> {
 async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
     let config = APP.config();
     debug!("establishing grpc connection");
-    let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, &config.cosmos.prefix)?;
+    let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX)?;
 
     debug!("getting cosmos fee");
     let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
