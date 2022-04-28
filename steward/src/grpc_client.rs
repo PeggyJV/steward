@@ -1,15 +1,14 @@
 use crate::error::{Error, ErrorKind};
-use futures::stream::{FuturesUnordered};
 use futures::future::join_all;
 use somm_proto::cork::{query_client::QueryClient as QClient, QueryCommitPeriodRequest};
+use std::{thread, time::Duration};
 use steward_proto::{
     self,
     steward::{
         contract_call_client::ContractCallClient as ContractClient, SubmitRequest, SubmitResponse,
     },
 };
-use tonic::transport::{Channel, Uri, ClientTlsConfig};
-use std::{thread, time::Duration, sync::Arc};
+use tonic::transport::{Channel, ClientTlsConfig, Uri};
 
 pub type ContractCallClient = ContractClient<Channel>;
 pub type QueryClient = QClient<Channel>;
@@ -55,7 +54,8 @@ impl GrpcClient {
         let mut clients = Vec::new();
 
         for addr in &self.steward_endpoints {
-            let endpoint = Channel::builder(addr.parse::<Uri>().unwrap()).tls_config(self.tls_configuration.clone())?;
+            let endpoint = Channel::builder(addr.parse::<Uri>().unwrap())
+                .tls_config(self.tls_configuration.clone())?;
 
             let client = match ContractCallClient::connect(endpoint).await {
                 Ok(res) => res,
@@ -65,10 +65,13 @@ impl GrpcClient {
             clients.push(client);
         }
 
-        return Ok(clients);
+        Ok(clients)
     }
 
-    pub async fn submit_request(&self, request: SubmitRequest) -> Result<(Vec<SubmitResponse>, Vec<Error>), Error> {
+    pub async fn submit_request(
+        &self,
+        request: SubmitRequest,
+    ) -> Result<(Vec<SubmitResponse>, Vec<Error>), Error> {
         // First verify voting period has started
         let mut query_client = self.get_query_client().await?;
 
@@ -98,11 +101,11 @@ impl GrpcClient {
         let mut futures = Vec::new();
 
         for client in &mut contract_clients {
-            futures.push(client.submit(request.clone()));            
+            futures.push(client.submit(request.clone()));
         }
 
         let mut responses = Vec::new();
-        let mut failures  = Vec::new();
+        let mut failures = Vec::new();
 
         for future in join_all(futures).await {
             match future {
@@ -110,7 +113,7 @@ impl GrpcClient {
                 Err(status) => failures.push(ErrorKind::GrpcError.context(status).into()),
             }
         }
- 
+
         Ok((responses, failures))
     }
 }
@@ -121,20 +124,35 @@ mod tests {
     use assay::assay;
 
     #[assay]
-    async fn get_grpc_client() {
-        let mut client = GrpcClient {
+    async fn unhappy_grpc_client() {
+        // Unhappy path tests
+        let client = GrpcClient {
             grpc_address: String::from(""),
+            steward_endpoints: Vec::new(),
+            tls_configuration: ClientTlsConfig::new(),
         };
 
-        assert!(client.get_contract_client().await.is_err());
-
-        client = GrpcClient {
-            grpc_address: String::from("https://google.com"),
-        };
-
-        client
-            .get_contract_client()
+        assert!(client.get_query_client().await.is_err());
+        assert!(client.get_contract_clients().await.is_err());
+        assert!(client
+            .submit_request(SubmitRequest {
+                cellar_id: String::from("123"),
+                call_data: None
+            })
             .await
-            .expect("Could not retrieve client.");
+            .is_err());
+    }
+
+    #[assay]
+    async fn happy_grpc_client() {
+        // Happy path
+        let client = GrpcClient {
+            grpc_address: String::from("https://35.230.37.28:9090"),
+            steward_endpoints: vec![String::from("https://google.com")],
+            tls_configuration: ClientTlsConfig::new(),
+        };
+
+        // Expect ConnectionRefused error as this is essentially a mock call without TLS setup
+        assert_eq!("grpc error: transport error: error trying to connect: tcp connect error: Connection refused (os error 61)", client.submit_request(SubmitRequest{cellar_id: String::from("123"), call_data: None}).await.err().expect("Unable to find err.").to_string());
     }
 }
