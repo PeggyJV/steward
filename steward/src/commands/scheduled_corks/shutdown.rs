@@ -51,7 +51,7 @@ impl Runnable for Shutdown {
                 downcast_to_u64(chain_id).expect("Chain ID overflowed when downcasting to u64");
             let client = SignerMiddleware::new(provider, wallet.clone().with_chain_id(chain_id));
 
-            let address = self.cellar_id.clone();
+            let address = self.cellar_id;
             let contract = AaveV2StablecoinCellar::new(address, Arc::new(client.clone()));
             let call_data = match contract.shutdown().calldata() {
                 Some(call) => call,
