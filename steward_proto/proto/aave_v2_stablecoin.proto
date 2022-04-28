@@ -15,19 +15,19 @@ option go_package = "/steward_proto";
 message AaveV2Stablecoin {
     // The function you wish to execute on the target cellar
     oneof function {
-        // Represents function `accruePlatformFees()`: [link](https://github.com/PeggyJV/cellar-contracts/blob/b93b4393299aee35421f83ef4ca2689256e5b354/contracts/AaveV2StablecoinCellar.sol#L702)
+        // Represents function `accruePlatformFees()`
         AccrueFees accrue_fees = 1;
-        // Represents function `claimAndUnstake()`: [link](https://github.com/PeggyJV/cellar-contracts/blob/b93b4393299aee35421f83ef4ca2689256e5b354/contracts/AaveV2StablecoinCellar.sol#L941)
+        // Represents function `claimAndUnstake()`
         ClaimAndUnstake claim_and_unstake = 2;
-        // Represents function `enterPosition()`: [link](https://github.com/PeggyJV/cellar-contracts/blob/b93b4393299aee35421f83ef4ca2689256e5b354/contracts/AaveV2StablecoinCellar.sol#L820)
+        // Represents function `enterPosition()`
         EnterPosition enter_position = 3;
-        // Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`: [link](https://github.com/PeggyJV/cellar-contracts/blob/b93b4393299aee35421f83ef4ca2689256e5b354/contracts/AaveV2StablecoinCellar.sol#L844)
+        // Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`
         Rebalance rebalance = 4;
-        // Represents function `reinvest(uint256 minAssetsOut)`: [link](https://github.com/PeggyJV/cellar-contracts/blob/b93b4393299aee35421f83ef4ca2689256e5b354/contracts/AaveV2StablecoinCellar.sol#L901)
+        // Represents function `reinvest(uint256 minAssetsOut)`
         Reinvest reinvest = 5;
-        // Represents function `sweep(address)`: [link](https://github.com/PeggyJV/cellar-contracts/blob/b93b4393299aee35421f83ef4ca2689256e5b354/contracts/AaveV2StablecoinCellar.sol#L961)
+        // Represents function `sweep(address)`
         Sweep sweep = 6;
-        // Represents function `transferFees()`: [link](https://github.com/PeggyJV/cellar-contracts/blob/b93b4393299aee35421f83ef4ca2689256e5b354/contracts/AaveV2StablecoinCellar.sol#L754)
+        // Represents function `transferFees()`
         TransferFees transfer_fees = 7;
     }
 

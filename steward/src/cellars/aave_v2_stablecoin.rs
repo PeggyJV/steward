@@ -1,5 +1,4 @@
 use std::convert::TryInto;
-
 use ethers::{
     abi::AbiEncode,
     prelude::{H160, U256},
@@ -10,7 +9,7 @@ use steward_proto::steward::aave_v2_stablecoin::{
     Function::{self, *},
 };
 
-use crate::error::{Error, ErrorKind};
+use crate::{error::Error, utils::sp_call_error};
 
 const LOG_PREFIX: &str = "AaveV2StablcoinCellar";
 
@@ -55,7 +54,6 @@ pub fn get_encoded_call(function: Function) -> Result<Vec<u8>, Error> {
                 .collect();
 
             validate_route(results.clone())?;
-            validate_swap_params(params.swap_params.clone())?;
 
             let route = results
                 .iter()
@@ -119,64 +117,18 @@ pub fn get_encoded_call(function: Function) -> Result<Vec<u8>, Error> {
 }
 
 fn validate_route(results: Vec<Result<H160, &String>>) -> Result<(), Error> {
-    let mut bad_addresses = String::new();
+    let mut bad_addresses_string = String::new();
     for r in results {
         if let Err(addr) = r {
-            bad_addresses.push_str(&format!(", {}", addr))
+            bad_addresses_string.push_str(&format!(", {}", addr))
         }
     }
 
-    if !bad_addresses.is_empty() {
+    if !bad_addresses_string.is_empty() {
         let mut err_string = "Rebalance 'route': array contains invalid address(s)".to_string();
-        err_string.push_str(&bad_addresses);
+        err_string.push_str(&bad_addresses_string);
         return Err(sp_call_error(format!("{}: {}", LOG_PREFIX, err_string)));
     }
 
     Ok(())
-}
-
-fn validate_swap_params(swap_params: Vec<SwapParams>) -> Result<(), Error> {
-    for sp in swap_params.iter() {
-        if sp.in_index == 0u64 && sp.out_index == 0u64 && sp.swap_type == 0u64 {
-            continue;
-        }
-
-        if sp.out_index > 8u64 {
-            return Err(sp_call_error(format!(
-                "{}: Rebalance 'swap_params': out_index can't be greater than 8 (the last index of 'route'). {:?}.",
-                LOG_PREFIX,
-                sp
-            )));
-        }
-
-        if sp.in_index % 2 != 0u64 || sp.out_index % 2 != 0u64 {
-            return Err(sp_call_error(format!(
-                "{}: Rebalance 'swap_params': token indeces must be even. {:?}.",
-                LOG_PREFIX, sp
-            )));
-        }
-
-        let diff = sp.out_index.checked_sub(sp.in_index);
-        if diff.is_none() || diff.unwrap() == 0u64 {
-            return Err(sp_call_error(format!(
-                "{}: Rebalance 'swap_params': in_index must be less than out_index. {:?}.",
-                LOG_PREFIX, sp
-            )));
-        }
-
-        let diff = diff.unwrap();
-        if diff != 2 {
-            return Err(sp_call_error(format!(
-                "{}: Rebalance 'swap_params': in_index and out_index must surround a pool address (must 2 apart). {:?}.",
-                LOG_PREFIX,
-                sp
-            )));
-        }
-    }
-
-    Ok(())
-}
-
-fn sp_call_error(message: String) -> Error {
-    ErrorKind::SPCallError.context(message).into()
 }

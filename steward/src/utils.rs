@@ -75,3 +75,7 @@ pub async fn get_eth_provider() -> Result<Provider<Http>, Error> {
 
     Provider::<Http>::try_from(eth_url).map_err(|err| ErrorKind::Config.context(err).into())
 }
+
+pub fn sp_call_error(message: String) -> Error {
+    ErrorKind::SPCallError.context(message).into()
+}
