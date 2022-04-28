@@ -1,9 +1,9 @@
 use deep_space::coin::Coin;
 use deep_space::error::CosmosGrpcError;
-use deep_space::private_key::PrivateKey as CosmosPrivateKey;
 use deep_space::Contact;
 use deep_space::Fee;
 use deep_space::Msg;
+use deep_space::PrivateKey as CosmosPrivateKey;
 use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::{
     base::abci::v1beta1::TxResponse, tx::v1beta1::BroadcastMode,
 };

@@ -10,7 +10,6 @@
 //! See the `impl Configurable` below for how to specify the path to the
 //! application's configuration file.
 
-mod allow_erc20;
 mod config_cmd;
 mod cosmos_to_eth;
 mod deploy;
@@ -19,10 +18,8 @@ mod keys;
 mod orchestrator;
 mod sign_delegate_keys;
 mod start;
-mod transfer;
-mod tx;
 
-use self::{config_cmd::ConfigCmd, keys::KeysCmd, start::StartCmd, transfer::TransferCmd};
+use self::{config_cmd::ConfigCmd, keys::KeysCmd, start::StartCmd};
 
 use crate::config::StewardConfig;
 use abscissa_core::{clap::Parser, Command, Configurable, FrameworkError, Runnable};
@@ -34,7 +31,6 @@ pub const CONFIG_FILE: &str = "steward.toml";
 /// Steward Subcommands
 #[derive(Command, Debug, Parser, Runnable)]
 pub enum StewardCmd {
-    Transfer(TransferCmd),
     #[clap(subcommand)]
     Keys(KeysCmd),
     /// Print default configurations
@@ -46,9 +42,6 @@ pub enum StewardCmd {
     #[clap(subcommand)]
     Orchestrator(orchestrator::OrchestratorCmd),
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
-    #[clap(subcommand)]
-    Tx(tx::TxCmd),
-    AllowErc20(allow_erc20::AllowERC20),
     Start(StartCmd),
 }
 
