@@ -10,11 +10,19 @@ use steward_abi::aave_v2_stablecoin::AaveV2StablecoinCellar;
 const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
 const CHAIN_PREFIX: &str = "somm";
 
-/// Scheduled corks subcommand
+/// Shutdown subcommand
 #[derive(Command, Debug, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Shutdown target Cellar.\n This command schedules the shutdown of a Cellar. This is a validator only \n command and can only be run by validators. It Schedules shutdown based on the height specified by \n the validators. Therefore, it'll execute the function when the chain reaches that height."
+)]
 pub struct Shutdown {
-    cellar_id: H160,
-    block_height: u64,
+    /// Target contract for scheduled cork.
+    #[clap(short, long)]
+    contract: H160,
+
+    /// Block height to schedule cork.
+    #[clap(short = 'b', long)]
+    height: u64,
 }
 
 impl Runnable for Shutdown {
@@ -51,7 +59,7 @@ impl Runnable for Shutdown {
                 downcast_to_u64(chain_id).expect("Chain ID overflowed when downcasting to u64");
             let client = SignerMiddleware::new(provider, wallet.clone().with_chain_id(chain_id));
 
-            let address = self.cellar_id;
+            let address = self.contract;
             let contract = AaveV2StablecoinCellar::new(address, Arc::new(client.clone()));
             let call_data = match contract.shutdown().calldata() {
                 Some(call) => call,
@@ -79,7 +87,7 @@ impl Runnable for Shutdown {
                 config::DELEGATE_ADDRESS.to_string(),
                 &config::DELEGATE_KEY,
                 fee,
-                self.block_height,
+                self.height,
             )
             .await
             .expect("err");
