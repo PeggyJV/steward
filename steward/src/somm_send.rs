@@ -35,10 +35,12 @@ pub async fn schedule_cork(
     delegate_address: String,
     delegate_key: &CosmosPrivateKey,
     fee: Coin,
+    block_height: u64,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let msg = MsgScheduleCorkRequest {
         cork: Some(cork),
         signer: delegate_address,
+        block_height,
     };
     let msg = Msg::new("/cork.v1.MsgSubmitCorkRequest", msg);
     __send_messages(contact, delegate_key, fee, vec![msg]).await

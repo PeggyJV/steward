@@ -55,11 +55,12 @@ impl Runnable for Shutdown {
                 None => return Err("Invalid Argument").expect("can't find call data")
             };
             let encoded_call = call_data.to_vec();
-            
+
             let cork = Cork {
                 encoded_contract_call: encoded_call,
                 target_contract_address: address.to_string(),
             };
+
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
