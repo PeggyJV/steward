@@ -80,10 +80,12 @@ impl Configurable<StewardConfig> for EntryPoint {
 
         let config_env_variable = std::env::var("VARIABLE").is_ok();
 
-        if config_env_variable != false {
-            let new_filename = self.config.as_ref().map(PathBuf::from).unwrap_or_else(|| {
-                config_env_variable.to_string().into()
-            });
+        if config_env_variable {
+            let new_filename = self
+                .config
+                .as_ref()
+                .map(PathBuf::from)
+                .unwrap_or_else(|| config_env_variable.to_string().into());
             Some(new_filename)
         } else if filename.exists() {
             Some(filename)
