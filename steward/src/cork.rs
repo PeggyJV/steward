@@ -128,7 +128,7 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
 
         let name = &config
             .keys
-            .rebalancer_key
+            .delegate_key
             .parse()
             .expect("Could not parse name");
         let key = keystore.load(name).expect("Could not load key");
