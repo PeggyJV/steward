@@ -23,12 +23,12 @@
 <a name="steward-v1-SubmitRequest"></a>
 
 ### SubmitRequest
-
+Represents a single function call on a particular Cellar
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| cellar_id | [string](#string) |  |  |
+| cellar_id | [string](#string) |  | The ID (currently simply an Ethereum address) of the target Cellar |
 | aave_v2_stablecoin | [AaveV2Stablecoin](#steward-v1-AaveV2Stablecoin) |  |  |
 
 
@@ -55,11 +55,11 @@
 <a name="steward-v1-ContractCall"></a>
 
 ### ContractCall
-
+Service for handling Cellar contract calls
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| Submit | [SubmitRequest](#steward-v1-SubmitRequest) | [SubmitResponse](#steward-v1-SubmitResponse) |  |
+| Submit | [SubmitRequest](#steward-v1-SubmitRequest) | [SubmitResponse](#steward-v1-SubmitResponse) | Handles simple contract call submission |
 
  
 
