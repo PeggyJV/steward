@@ -84,6 +84,18 @@ pub fn get_encoded_call(function: Function) -> Result<Vec<u8>, Error> {
             };
             Ok(AaveV2StablecoinCellarCalls::Reinvest(call).encode())
         }
+        SetDepositLimit(params) => {
+            let call = SetDepositLimitCall {
+                limit: params.limit.into(),
+            };
+            Ok(AaveV2StablecoinCellarCalls::SetDepositLimit(call).encode())
+        }
+        SetLiquidityLimit(params) => {
+            let call = SetLiquidityLimitCall {
+                limit: params.limit.into(),
+            };
+            Ok(AaveV2StablecoinCellarCalls::SetLiquidityLimit(call).encode())
+        }
         Sweep(params) => {
             let token = match params.token.parse::<H160>() {
                 Ok(t) => t,

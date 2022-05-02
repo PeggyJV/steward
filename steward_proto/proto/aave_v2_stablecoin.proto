@@ -25,10 +25,14 @@ message AaveV2Stablecoin {
         Rebalance rebalance = 4;
         // Represents function `reinvest(uint256 minAssetsOut)`
         Reinvest reinvest = 5;
+        // Represents function `setDepositLimit(uint256 limit)`
+        SetDepositLimit set_deposit_limit = 6;
+        // Represents function `setLiquidityLimit(uint256 limit)`
+        SetLiquidityLimit set_liquidity_limit = 7;
         // Represents function `sweep(address)`
-        Sweep sweep = 6;
+        Sweep sweep = 8;
         // Represents function `transferFees()`
-        TransferFees transfer_fees = 7;
+        TransferFees transfer_fees = 9;
     }
 
     /*
@@ -95,6 +99,24 @@ message AaveV2Stablecoin {
     message Reinvest {
         // Minimum acceptable assets to be received from the swap (slippage parameter)
         uint64 min_assets_out = 1;
+    }
+
+    /*
+     * Sets the per-wallet deposit limit. Careful to use the same decimals as the current asset.
+     *
+     * Represents function `setDepositLimit(uint256 limit)`
+     */
+    message SetDepositLimit {
+        uint64 limit = 1;
+    }
+
+    /*
+     * Sets the maximum liquidity that cellar can manage. Careful to use the same decimals as the current asset.
+     *
+     * Represents function `setLiquidityLimit(uint256 limit)`
+     */
+     message SetLiquidityLimit {
+        uint64 limit = 1;
     }
 
     /*

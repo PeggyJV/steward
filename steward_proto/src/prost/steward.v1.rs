@@ -3,29 +3,37 @@
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct AaveV2Stablecoin {
     /// The function you wish to execute on the target cellar
-    #[prost(oneof = "aave_v2_stablecoin::Function", tags = "1, 2, 3, 4, 5, 6, 7")]
+    #[prost(
+        oneof = "aave_v2_stablecoin::Function",
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9"
+    )]
     pub function: ::core::option::Option<aave_v2_stablecoin::Function>,
 }
 /// Nested message and enum types in `AaveV2Stablecoin`.
 pub mod aave_v2_stablecoin {
     ///
     /// Take platform fees and performance fees off of cellar's active assets.
-    /// Represents function accruePlatformFees()
+    ///
+    /// Represents function `accruePlatformFees()`
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct AccrueFees {}
     ///
     /// Claim rewards from Aave and begin cooldown period to unstake them.
-    /// Represents function claimAndUnstake()
+    ///
+    /// Represents function `claimAndUnstake()`
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct ClaimAndUnstake {}
     ///
     /// Enters inactive assets into the current Aave stablecoin position.
-    /// Represents function enterPosition()
+    ///
+    /// Represents function `enterPosition()`
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct EnterPosition {}
     ///
     /// Rebalances current assets into a new asset position.
-    /// Represents function rebalance(address newLendingToken, uint256 minNewLendingTokenAmount).
+    ///
+    /// Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`
+    ///
     /// This function is based on the Curve Pool Registry exchange_multiple() function:
     /// https://github.com/curvefi/curve-pool-registry/blob/16a8664952cf61d7fed06acca79ad5ac696f4b20/contracts/Swaps.vy#L461-L489
     #[derive(Clone, PartialEq, ::prost::Message)]
@@ -64,7 +72,8 @@ pub mod aave_v2_stablecoin {
     }
     ///
     /// Reinvest rewards back into cellar's current position. Must be called within 2 day unstake period 10 days after `claimAndUnstake` was run.
-    /// Represents function reinvest(uint256 minAssetsOut)
+    ///
+    /// Represents function `reinvest(uint256 minAssetsOut)`
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Reinvest {
         /// Minimum acceptable assets to be received from the swap (slippage parameter)
@@ -72,8 +81,27 @@ pub mod aave_v2_stablecoin {
         pub min_assets_out: u64,
     }
     ///
+    /// Sets the per-wallet deposit limit. Careful to use the same decimals as the current asset.
+    ///
+    /// Represents function `setDepositLimit(uint256 limit)`
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct SetDepositLimit {
+        #[prost(uint64, tag = "1")]
+        pub limit: u64,
+    }
+    ///
+    /// Sets the maximum liquidity that cellar can manage. Careful to use the same decimals as the current asset.
+    ///
+    /// Represents function `setLiquidityLimit(uint256 limit)`
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct SetLiquidityLimit {
+        #[prost(uint64, tag = "1")]
+        pub limit: u64,
+    }
+    ///
     /// Sweep tokens sent here that are not managed by the cellar. This may be used in case the wrong tokens are accidentally sent to this contract.
-    /// Represents function sweep(address).
+    ///
+    /// Represents function `sweep(address)`
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Sweep {
         /// The address of the token to be transferred out of the Cellar
@@ -85,37 +113,56 @@ pub mod aave_v2_stablecoin {
     }
     ///
     /// Transfer accrued fees to the Sommelier Chain to distribute.
-    /// Represents function transferFees()
+    ///
+    /// Represents function `transferFees()`
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct TransferFees {}
     /// The function you wish to execute on the target cellar
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Function {
+        /// Represents function `accruePlatformFees()`
         #[prost(message, tag = "1")]
         AccrueFees(AccrueFees),
+        /// Represents function `claimAndUnstake()`
         #[prost(message, tag = "2")]
         ClaimAndUnstake(ClaimAndUnstake),
+        /// Represents function `enterPosition()`
         #[prost(message, tag = "3")]
         EnterPosition(EnterPosition),
+        /// Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`
         #[prost(message, tag = "4")]
         Rebalance(Rebalance),
+        /// Represents function `reinvest(uint256 minAssetsOut)`
         #[prost(message, tag = "5")]
         Reinvest(Reinvest),
+        /// Represents function `setDepositLimit(uint256 limit)`
         #[prost(message, tag = "6")]
-        Sweep(Sweep),
+        SetDepositLimit(SetDepositLimit),
+        /// Represents function `setLiquidityLimit(uint256 limit)`
         #[prost(message, tag = "7")]
+        SetLiquidityLimit(SetLiquidityLimit),
+        /// Represents function `sweep(address)`
+        #[prost(message, tag = "8")]
+        Sweep(Sweep),
+        /// Represents function `transferFees()`
+        #[prost(message, tag = "9")]
         TransferFees(TransferFees),
     }
 }
+///
+/// Represents a single function call on a particular Cellar
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SubmitRequest {
+    /// The ID (currently simply an Ethereum address) of the target Cellar
     #[prost(string, tag = "1")]
     pub cellar_id: ::prost::alloc::string::String,
+    /// The data from which the desired contract function will be encoded
     #[prost(oneof = "submit_request::CallData", tags = "2")]
     pub call_data: ::core::option::Option<submit_request::CallData>,
 }
 /// Nested message and enum types in `SubmitRequest`.
 pub mod submit_request {
+    /// The data from which the desired contract function will be encoded
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum CallData {
         #[prost(message, tag = "2")]
@@ -128,6 +175,8 @@ pub struct SubmitResponse {}
 pub mod contract_call_client {
     #![allow(unused_variables, dead_code, missing_docs)]
     use tonic::codegen::*;
+    #[doc = ""]
+    #[doc = " Service for handling Cellar contract calls"]
     pub struct ContractCallClient<T> {
         inner: tonic::client::Grpc<T>,
     }
@@ -157,6 +206,7 @@ pub mod contract_call_client {
             let inner = tonic::client::Grpc::with_interceptor(inner, interceptor);
             Self { inner }
         }
+        #[doc = " Handles simple contract call submission"]
         pub async fn submit(
             &mut self,
             request: impl tonic::IntoRequest<super::SubmitRequest>,
@@ -192,11 +242,14 @@ pub mod contract_call_server {
     #[doc = "Generated trait containing gRPC methods that should be implemented for use with ContractCallServer."]
     #[async_trait]
     pub trait ContractCall: Send + Sync + 'static {
+        #[doc = " Handles simple contract call submission"]
         async fn submit(
             &self,
             request: tonic::Request<super::SubmitRequest>,
         ) -> Result<tonic::Response<super::SubmitResponse>, tonic::Status>;
     }
+    #[doc = ""]
+    #[doc = " Service for handling Cellar contract calls"]
     #[derive(Debug)]
     pub struct ContractCallServer<T: ContractCall> {
         inner: _Inner<T>,

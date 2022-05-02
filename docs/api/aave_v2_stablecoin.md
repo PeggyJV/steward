@@ -11,6 +11,8 @@
     - [AaveV2Stablecoin.Rebalance](#steward-v1-AaveV2Stablecoin-Rebalance)
     - [AaveV2Stablecoin.Rebalance.SwapParams](#steward-v1-AaveV2Stablecoin-Rebalance-SwapParams)
     - [AaveV2Stablecoin.Reinvest](#steward-v1-AaveV2Stablecoin-Reinvest)
+    - [AaveV2Stablecoin.SetDepositLimit](#steward-v1-AaveV2Stablecoin-SetDepositLimit)
+    - [AaveV2Stablecoin.SetLiquidityLimit](#steward-v1-AaveV2Stablecoin-SetLiquidityLimit)
     - [AaveV2Stablecoin.Sweep](#steward-v1-AaveV2Stablecoin-Sweep)
     - [AaveV2Stablecoin.TransferFees](#steward-v1-AaveV2Stablecoin-TransferFees)
   
@@ -38,6 +40,8 @@ Represents a function call to the Aave V2 Stablecoin cellar
 | enter_position | [AaveV2Stablecoin.EnterPosition](#steward-v1-AaveV2Stablecoin-EnterPosition) |  | Represents function `enterPosition()` |
 | rebalance | [AaveV2Stablecoin.Rebalance](#steward-v1-AaveV2Stablecoin-Rebalance) |  | Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)` |
 | reinvest | [AaveV2Stablecoin.Reinvest](#steward-v1-AaveV2Stablecoin-Reinvest) |  | Represents function `reinvest(uint256 minAssetsOut)` |
+| set_deposit_limit | [AaveV2Stablecoin.SetDepositLimit](#steward-v1-AaveV2Stablecoin-SetDepositLimit) |  | Represents function `setDepositLimit(uint256 limit)` |
+| set_liquidity_limit | [AaveV2Stablecoin.SetLiquidityLimit](#steward-v1-AaveV2Stablecoin-SetLiquidityLimit) |  | Represents function `setLiquidityLimit(uint256 limit)` |
 | sweep | [AaveV2Stablecoin.Sweep](#steward-v1-AaveV2Stablecoin-Sweep) |  | Represents function `sweep(address)` |
 | transfer_fees | [AaveV2Stablecoin.TransferFees](#steward-v1-AaveV2Stablecoin-TransferFees) |  | Represents function `transferFees()` |
 
@@ -132,6 +136,40 @@ Represents function `reinvest(uint256 minAssetsOut)`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | min_assets_out | [uint64](#uint64) |  | Minimum acceptable assets to be received from the swap (slippage parameter) |
+
+
+
+
+
+
+<a name="steward-v1-AaveV2Stablecoin-SetDepositLimit"></a>
+
+### AaveV2Stablecoin.SetDepositLimit
+Sets the per-wallet deposit limit. Careful to use the same decimals as the current asset.
+
+Represents function `setDepositLimit(uint256 limit)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| limit | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="steward-v1-AaveV2Stablecoin-SetLiquidityLimit"></a>
+
+### AaveV2Stablecoin.SetLiquidityLimit
+Sets the maximum liquidity that cellar can manage. Careful to use the same decimals as the current asset.
+
+Represents function `setLiquidityLimit(uint256 limit)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| limit | [uint64](#uint64) |  |  |
 
 
 
