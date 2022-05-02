@@ -13,7 +13,6 @@
     - [AaveV2Stablecoin.Reinvest](#steward-v1-AaveV2Stablecoin-Reinvest)
     - [AaveV2Stablecoin.SetDepositLimit](#steward-v1-AaveV2Stablecoin-SetDepositLimit)
     - [AaveV2Stablecoin.SetLiquidityLimit](#steward-v1-AaveV2Stablecoin-SetLiquidityLimit)
-    - [AaveV2Stablecoin.Sweep](#steward-v1-AaveV2Stablecoin-Sweep)
     - [AaveV2Stablecoin.TransferFees](#steward-v1-AaveV2Stablecoin-TransferFees)
   
 - [Scalar Value Types](#scalar-value-types)
@@ -42,7 +41,6 @@ Represents a function call to the Aave V2 Stablecoin cellar
 | reinvest | [AaveV2Stablecoin.Reinvest](#steward-v1-AaveV2Stablecoin-Reinvest) |  | Represents function `reinvest(uint256 minAssetsOut)` |
 | set_deposit_limit | [AaveV2Stablecoin.SetDepositLimit](#steward-v1-AaveV2Stablecoin-SetDepositLimit) |  | Represents function `setDepositLimit(uint256 limit)` |
 | set_liquidity_limit | [AaveV2Stablecoin.SetLiquidityLimit](#steward-v1-AaveV2Stablecoin-SetLiquidityLimit) |  | Represents function `setLiquidityLimit(uint256 limit)` |
-| sweep | [AaveV2Stablecoin.Sweep](#steward-v1-AaveV2Stablecoin-Sweep) |  | Represents function `sweep(address)` |
 | transfer_fees | [AaveV2Stablecoin.TransferFees](#steward-v1-AaveV2Stablecoin-TransferFees) |  | Represents function `transferFees()` |
 
 
@@ -169,25 +167,7 @@ Represents function `setLiquidityLimit(uint256 limit)`
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| limit | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="steward-v1-AaveV2Stablecoin-Sweep"></a>
-
-### AaveV2Stablecoin.Sweep
-Sweep tokens sent here that are not managed by the cellar. This may be used in case the wrong tokens are accidentally sent to this contract.
-
-Represents function `sweep(address)`
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| token | [string](#string) |  | The address of the token to be transferred out of the Cellar |
-| to | [string](#string) |  | The address to which the tokens should be transferred |
+| limit | [uint64](#uint64) |  | The amount |
 
 
 

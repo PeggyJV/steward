@@ -96,28 +96,28 @@ pub fn get_encoded_call(function: Function) -> Result<Vec<u8>, Error> {
             };
             Ok(AaveV2StablecoinCellarCalls::SetLiquidityLimit(call).encode())
         }
-        Sweep(params) => {
-            let token = match params.token.parse::<H160>() {
-                Ok(t) => t,
-                Err(_) => {
-                    return Err(sp_call_error(format!(
-                        "{}: Sweep 'token': argument is an invalid address: {}",
-                        LOG_PREFIX, params.token
-                    )))
-                }
-            };
-            let to = match params.to.parse::<H160>() {
-                Ok(t) => t,
-                Err(_) => {
-                    return Err(sp_call_error(format!(
-                        "{}: Sweep 'to': argument is an invalid address: {}",
-                        LOG_PREFIX, params.to
-                    )))
-                }
-            };
-            let call = SweepCall { token, to };
-            Ok(AaveV2StablecoinCellarCalls::Sweep(call).encode())
-        }
+        // Sweep(params) => {
+        //     let token = match params.token.parse::<H160>() {
+        //         Ok(t) => t,
+        //         Err(_) => {
+        //             return Err(sp_call_error(format!(
+        //                 "{}: Sweep 'token': argument is an invalid address: {}",
+        //                 LOG_PREFIX, params.token
+        //             )))
+        //         }
+        //     };
+        //     let to = match params.to.parse::<H160>() {
+        //         Ok(t) => t,
+        //         Err(_) => {
+        //             return Err(sp_call_error(format!(
+        //                 "{}: Sweep 'to': argument is an invalid address: {}",
+        //                 LOG_PREFIX, params.to
+        //             )))
+        //         }
+        //     };
+        //     let call = SweepCall { token, to };
+        //     Ok(AaveV2StablecoinCellarCalls::Sweep(call).encode())
+        // }
         TransferFees(_) => {
             let call = TransferFeesCall {};
             Ok(AaveV2StablecoinCellarCalls::TransferFees(call).encode())

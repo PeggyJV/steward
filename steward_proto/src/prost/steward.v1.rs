@@ -5,7 +5,7 @@ pub struct AaveV2Stablecoin {
     /// The function you wish to execute on the target cellar
     #[prost(
         oneof = "aave_v2_stablecoin::Function",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9"
+        tags = "1, 2, 3, 4, 5, 6, 7, 9"
     )]
     pub function: ::core::option::Option<aave_v2_stablecoin::Function>,
 }
@@ -95,21 +95,9 @@ pub mod aave_v2_stablecoin {
     /// Represents function `setLiquidityLimit(uint256 limit)`
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct SetLiquidityLimit {
+        /// The amount
         #[prost(uint64, tag = "1")]
         pub limit: u64,
-    }
-    ///
-    /// Sweep tokens sent here that are not managed by the cellar. This may be used in case the wrong tokens are accidentally sent to this contract.
-    ///
-    /// Represents function `sweep(address)`
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct Sweep {
-        /// The address of the token to be transferred out of the Cellar
-        #[prost(string, tag = "1")]
-        pub token: ::prost::alloc::string::String,
-        /// The address to which the tokens should be transferred
-        #[prost(string, tag = "2")]
-        pub to: ::prost::alloc::string::String,
     }
     ///
     /// Transfer accrued fees to the Sommelier Chain to distribute.
@@ -141,9 +129,6 @@ pub mod aave_v2_stablecoin {
         /// Represents function `setLiquidityLimit(uint256 limit)`
         #[prost(message, tag = "7")]
         SetLiquidityLimit(SetLiquidityLimit),
-        /// Represents function `sweep(address)`
-        #[prost(message, tag = "8")]
-        Sweep(Sweep),
         /// Represents function `transferFees()`
         #[prost(message, tag = "9")]
         TransferFees(TransferFees),

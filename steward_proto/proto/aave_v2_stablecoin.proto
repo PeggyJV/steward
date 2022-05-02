@@ -29,8 +29,6 @@ message AaveV2Stablecoin {
         SetDepositLimit set_deposit_limit = 6;
         // Represents function `setLiquidityLimit(uint256 limit)`
         SetLiquidityLimit set_liquidity_limit = 7;
-        // Represents function `sweep(address)`
-        Sweep sweep = 8;
         // Represents function `transferFees()`
         TransferFees transfer_fees = 9;
     }
@@ -116,19 +114,8 @@ message AaveV2Stablecoin {
      * Represents function `setLiquidityLimit(uint256 limit)`
      */
      message SetLiquidityLimit {
+        // The amount
         uint64 limit = 1;
-    }
-
-    /*
-     * Sweep tokens sent here that are not managed by the cellar. This may be used in case the wrong tokens are accidentally sent to this contract.
-     *
-     * Represents function `sweep(address)`
-     */
-    message Sweep {
-        // The address of the token to be transferred out of the Cellar
-        string token = 1;
-        // The address to which the tokens should be transferred
-        string to = 2;
     }
 
     /*
