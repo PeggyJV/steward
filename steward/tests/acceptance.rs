@@ -372,7 +372,7 @@ fn cosmos_keys_add() -> io::Result<()> {
     Ok(())
 }
 
-/// Eth list key test
+/// Cosmos list key test
 #[test]
 fn cosmos_keys_list() -> io::Result<()> {
     let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
@@ -418,7 +418,7 @@ fn cosmos_keys_list() -> io::Result<()> {
     Ok(())
 }
 
-/// Eth show key test
+/// Cosmos show key test
 #[test]
 fn cosmos_keys_show() -> io::Result<()> {
     let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
@@ -465,7 +465,7 @@ fn cosmos_keys_show() -> io::Result<()> {
     Ok(())
 }
 
-/// Eth delete key test
+/// Cosmos delete key test
 #[test]
 fn cosmos_keys_delete() -> io::Result<()> {
     let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
@@ -513,7 +513,7 @@ fn cosmos_keys_delete() -> io::Result<()> {
     Ok(())
 }
 
-/// Eth recover key test
+/// Cosmos recover key test
 #[test]
 fn cosmos_keys_recover() -> io::Result<()> {
     let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
@@ -618,4 +618,50 @@ fn print_config() {
     let cmd = runner.args(&["print-config"]).capture_stdout().run();
     //check that command executes without error
     cmd.wait().unwrap().expect_success();
+}
+
+/// Test config file order
+#[test]
+fn test_configfile_order() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
+    let key_dir = TempDir::new("test_key")?;
+
+    let keystore_dir_path = key_dir.path().join("keystore");
+    let keystore_dir_string = keystore_dir_path
+        .clone()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::create_dir(keystore_dir_path.clone()).expect("could not create keystore dir");
+
+    let key_file_path = keystore_dir_path.join("cosmoskey.pem");
+    fs::write(key_file_path, PRIVATE_KEY).expect("could not write key file");
+
+    let config = StewardConfig {
+        keys: KeysConfig {
+            delegate_key: "cellar".to_string(),
+        },
+        keystore: keystore_dir_string.clone(),
+        ..Default::default()
+    };
+
+    let config_file_path = key_dir.path().join("config.toml");
+    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
+    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
+
+    let mut cmd = runner
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "cosmos",
+            "list",
+        ])
+        .capture_stdout()
+        .run();
+    // Check that the list keys list keys in the keystore we created.
+    cmd.stdout()
+        .expect_line("cosmoskey\tsomm1wzp8pks7hzavh7r4dmenpszxyzfxyk34xlmcfh");
+
+    Ok(())
 }

@@ -72,18 +72,16 @@ impl Configurable<StewardConfig> for EntryPoint {
         // Check if the config file exists, and if it does not, ignore it.
         // If you'd like for a missing configuration file to be a hard error
         // instead, always return `Some(CONFIG_FILE)` here.
-        let config_filename = self.config.as_ref().map(PathBuf::from).unwrap();
+        let config_filename = self.config.as_ref();
 
         let default_filename = PathBuf::from(CONFIG_FILE);
 
-        let config_env_variable = std::env::var("STEWARD_CONFIG").is_ok();
+        let config_env_variable = std::env::var("STEWARD_CONFIG");
 
-        let new_filename = PathBuf::from(config_env_variable.to_string());
-
-        if config_filename.exists() {
-            Some(config_filename)
-        } else if config_env_variable {
-            Some(new_filename)
+        if config_filename.is_some() {
+            Some(PathBuf::from(config_filename.unwrap().to_string()))
+        } else if config_env_variable.is_ok() {
+            Some(PathBuf::from(config_env_variable.unwrap().to_string()))
         } else if default_filename.exists() {
             Some(default_filename)
         } else {
