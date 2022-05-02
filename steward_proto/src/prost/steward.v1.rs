@@ -5,7 +5,7 @@ pub struct AaveV2Stablecoin {
     /// The function you wish to execute on the target cellar
     #[prost(
         oneof = "aave_v2_stablecoin::Function",
-        tags = "1, 2, 3, 4, 5, 6, 7, 9"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8"
     )]
     pub function: ::core::option::Option<aave_v2_stablecoin::Function>,
 }
@@ -130,7 +130,7 @@ pub mod aave_v2_stablecoin {
         #[prost(message, tag = "7")]
         SetLiquidityLimit(SetLiquidityLimit),
         /// Represents function `transferFees()`
-        #[prost(message, tag = "9")]
+        #[prost(message, tag = "8")]
         TransferFees(TransferFees),
     }
 }

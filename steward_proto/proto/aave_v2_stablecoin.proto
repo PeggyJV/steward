@@ -30,7 +30,7 @@ message AaveV2Stablecoin {
         // Represents function `setLiquidityLimit(uint256 limit)`
         SetLiquidityLimit set_liquidity_limit = 7;
         // Represents function `transferFees()`
-        TransferFees transfer_fees = 9;
+        TransferFees transfer_fees = 8;
     }
 
     /*
