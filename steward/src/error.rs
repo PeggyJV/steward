@@ -6,7 +6,6 @@ use ethers::prelude::{
     errors::EtherscanError, gas_oracle::GasOracleError, AbiError, ContractError, Middleware,
     ProviderError,
 };
-use prost::EncodeError;
 use std::{
     fmt::{self, Display},
     io,
@@ -22,9 +21,6 @@ pub enum ErrorKind {
     /// Abi error
     #[error("abi error")]
     AbiError,
-    /// Allocation error
-    #[error("allocation error")]
-    AllocationError,
     /// Error in configuration file
     #[error("config error")]
     Config,
@@ -46,15 +42,15 @@ pub enum ErrorKind {
     /// Cryptographic Keys error
     #[error("key related error")]
     KeysError,
-    /// Miscellaneous error
-    ///
-    /// Errors that are returned with types that provide no
-    /// categorical information, such as String
-    #[error("allocation error")]
-    MiscError,
     /// Provider error
     #[error("provider error")]
     ProviderError,
+    /// Strategy Provider call error
+    #[error("SP call error")]
+    SPCallError,
+    /// Client error
+    #[error("client error")]
+    ClientError,
 }
 
 impl ErrorKind {
@@ -103,12 +99,6 @@ impl From<AddressError> for Error {
 impl From<AddrParseError> for Error {
     fn from(err: AddrParseError) -> Error {
         ErrorKind::Config.context(err).into()
-    }
-}
-
-impl From<EncodeError> for Error {
-    fn from(err: EncodeError) -> Error {
-        ErrorKind::AllocationError.context(err).into()
     }
 }
 
@@ -171,12 +161,6 @@ impl From<ProviderError> for Error {
     fn from(err: ProviderError) -> Self {
         let err: BoxError = err.into();
         ErrorKind::ContractError.context(err).into()
-    }
-}
-
-impl From<String> for Error {
-    fn from(msg: String) -> Self {
-        ErrorKind::MiscError.context(msg).into()
     }
 }
 
