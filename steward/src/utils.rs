@@ -33,7 +33,12 @@ pub async fn get_chain(eth_client: Provider<Http>) -> Result<Chain, Error> {
     let chain_id = downcast_to_u64(chain_id_result);
 
     if chain_id.is_none() {
-        return Err(format!("Chain ID is larger than u64 max: {}", chain_id_result).into());
+        return Err(ErrorKind::ClientError
+            .context(format!(
+                "Chain ID is larger than u64 max: {}",
+                chain_id_result
+            ))
+            .into());
     }
 
     // We're only currently looking for ETHERSCAN_API_KEY, so only support
@@ -69,4 +74,8 @@ pub async fn get_eth_provider() -> Result<Provider<Http>, Error> {
     let eth_url = url.trim_end_matches('/');
 
     Provider::<Http>::try_from(eth_url).map_err(|err| ErrorKind::Config.context(err).into())
+}
+
+pub fn sp_call_error(message: String) -> Error {
+    ErrorKind::SPCallError.context(message).into()
 }

@@ -256,10 +256,10 @@ async fn build_cork(request: &SubmitRequest) -> Result<Cork, Error> {
 
 fn get_encoded_call(data: CallData) -> Result<Vec<u8>, Error> {
     match data {
-        AaveV2Stablecoin(call) => Ok(aave_v2_stablecoin::get_encoded_call(
+        AaveV2Stablecoin(call) => aave_v2_stablecoin::get_encoded_call(
             call.function
                 .expect("call data for Aave V2 Stablecoin cellar was empty"),
-        )),
+        ),
     }
 }
 
