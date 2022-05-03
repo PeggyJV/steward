@@ -19,7 +19,12 @@ use gravity_bridge::{
 };
 use signatory::FsKeyStore;
 use somm_proto::cork::{query_client::QueryClient as CorkQueryClient, Cork, QueryCellarIDsRequest};
-use std::{convert::TryFrom, path, sync::Arc, time::Duration};
+use std::{
+    convert::{TryFrom, TryInto},
+    path,
+    sync::Arc,
+    time::Duration,
+};
 use steward_abi::aave_v2_stablecoin::AaveV2StablecoinCellar;
 use steward_proto::steward::aave_v2_stablecoin::Function;
 use steward_proto::{
@@ -154,8 +159,10 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
 
         let cellar_address = request.cellar_id.clone();
 
-        if let Err(err) = cellars::validate_cellar_id(&cellar_address) {
-            return Err(tonic::Status::invalid_argument(err));
+        if let Err(_) = cellars::validate_cellar_id(&cellar_address) {
+            return Err(tonic::Status::invalid_argument(
+                "Error, can't validate Cellar ID",
+            ));
         }
 
         let address: Address = cellar_address
@@ -167,13 +174,9 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
                 let contract = AaveV2StablecoinCellar::new(address, Arc::new(client));
 
                 match call.function.unwrap() {
-                    Function::EnterStrategy(_) => contract_call(contract.enter_strategy()).await,
-                    Function::ReinvestAmount(params) => {
-                        contract_call(contract.reinvest_with_amount(
-                            params.amount.into(),
-                            params.min_assets_out.into(),
-                        ))
-                        .await
+                    Function::EnterPosition(_) => contract_call(contract.enter_position()).await,
+                    Function::SetDepositLimit(params) => {
+                        contract_call(contract.set_deposit_limit(params.limit.into())).await
                     }
                     Function::Reinvest(params) => {
                         contract_call(contract.reinvest(params.min_assets_out.into())).await
@@ -182,51 +185,41 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
                         contract_call(
                             contract.rebalance(
                                 params
-                                    .address
-                                    .parse::<H160>()
-                                    .expect("failed to parse token address"),
-                                params.min_new_lending_token_amount.into(),
+                                    .route
+                                    .iter()
+                                    .map(|addr| match addr.parse::<H160>() {
+                                        Ok(addr) => Ok(addr),
+                                        Err(_) => Err(addr),
+                                    })
+                                    .collect::<Vec<_>>()
+                                    .iter()
+                                    .map(|r| r.unwrap())
+                                    .collect::<Vec<H160>>()
+                                    .try_into()
+                                    .expect("failed to convert 'route' addresses to array"),
+                                params
+                                    .swap_params
+                                    .iter()
+                                    .map(|sp| {
+                                        let out: [U256; 3] = [
+                                            sp.in_index.into(),
+                                            sp.out_index.into(),
+                                            sp.swap_type.into(),
+                                        ];
+                                        out
+                                    })
+                                    .collect::<Vec<[U256; 3]>>()
+                                    .try_into()
+                                    .expect("failed to convert 'swap_params' vec to array"),
+                                params.min_assets_out.into(),
                             ),
                         )
                         .await
                     }
-                    Function::AccruePlatformFees(_) => {
-                        contract_call(contract.accrue_platform_fees()).await
-                    }
+                    Function::AccrueFees(_) => contract_call(contract.accrue_fees()).await,
                     Function::TransferFees(_) => contract_call(contract.transfer_fees()).await,
-                    Function::SetInputToken(params) => {
-                        contract_call(
-                            contract.set_input_token(
-                                params
-                                    .address
-                                    .parse::<H160>()
-                                    .expect("failed to parse token address"),
-                                params.is_approved,
-                            ),
-                        )
-                        .await
-                    }
-                    Function::RemoveLiquidityRestriction(_) => {
-                        { contract_call(contract.remove_liquidity_restriction()) }.await
-                    }
-                    Function::Sweep(params) => {
-                        contract_call(
-                            contract.sweep(
-                                params
-                                    .address
-                                    .parse::<H160>()
-                                    .expect("failed to parse token address"),
-                            ),
-                        )
-                        .await
-                    }
-                    Function::ClaimAndUnstakeAmount(params) => {
-                        {
-                            contract_call(
-                                contract.claim_and_unstake_with_amount(params.amount.into()),
-                            )
-                        }
-                        .await
+                    Function::SetLiquidityLimit(params) => {
+                        contract_call(contract.set_liquidity_limit(params.limit.into())).await
                     }
                     Function::ClaimAndUnstake(_) => {
                         contract_call(contract.claim_and_unstake()).await
