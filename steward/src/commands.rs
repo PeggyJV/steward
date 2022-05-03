@@ -18,6 +18,7 @@ mod keys;
 mod orchestrator;
 mod sign_delegate_keys;
 mod start;
+mod cork_test;
 
 use self::{config_cmd::ConfigCmd, keys::KeysCmd, start::StartCmd};
 
@@ -43,6 +44,7 @@ pub enum StewardCmd {
     Orchestrator(orchestrator::OrchestratorCmd),
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
     Start(StartCmd),
+    CorkTest(cork_test::CorkTest),
 }
 
 /// Entry point for the application. It needs to be a struct to allow using subcommands!
