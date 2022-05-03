@@ -627,6 +627,80 @@ fn test_configfile_order() -> io::Result<()> {
     let key_dir = TempDir::new("test_key")?;
 
     let keystore_dir_path = key_dir.path().join("keystore");
+    let env_keystore_dir_path = key_dir.path().join("envkeystore");
+    let keystore_dir_string = keystore_dir_path
+        .clone()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::create_dir(keystore_dir_path.clone()).expect("could not create keystore dir");
+    let env_keystore_dir_string = env_keystore_dir_path
+        .clone()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::create_dir(env_keystore_dir_path.clone()).expect("could not create keystore dir");
+
+    let config = StewardConfig {
+        keys: KeysConfig {
+            delegate_key: "cellar".to_string(),
+        },
+        keystore: keystore_dir_string.clone(),
+        ..Default::default()
+    };
+    let key_file_path = keystore_dir_path.join("sha.pem");
+
+    let env_config = StewardConfig {
+        keys: KeysConfig {
+            delegate_key: "cellar".to_string(),
+        },
+        keystore: env_keystore_dir_string.clone(),
+        ..Default::default()
+    };
+    let env_key_file_path = env_keystore_dir_path.join("sha.pem");
+
+    let config_file_path = key_dir.path().join("config.toml");
+    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
+    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
+
+    let env_config_file_path = key_dir.path().join("config.toml");
+    let env_config_string =
+        toml::to_string(&env_config).expect("could not write config to TOML string");
+    fs::write(env_config_file_path.clone(), env_config_string)
+        .expect("could not write config file");
+
+    let config_file_path = key_dir.path().join("config.toml");
+    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
+    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
+
+    std::env::set_var("STEWARD_CONFIG", env_config_file_path.to_str().unwrap());
+
+    let cmd = runner
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "eth",
+            "add",
+            "sha",
+        ])
+        .capture_stdout()
+        .run();
+    // Check that command executes without error.
+    cmd.wait().unwrap().expect_success();
+    assert!(key_file_path.exists());
+    assert_eq!(env_key_file_path.exists(), false);
+
+    Ok(())
+}
+
+/// Test Env Works Appropriately
+#[test]
+fn test_env() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
+    let key_dir = TempDir::new("test_key")?;
+
+    let keystore_dir_path = key_dir.path().join("keystore");
     let keystore_dir_string = keystore_dir_path
         .clone()
         .into_os_string()
@@ -634,8 +708,7 @@ fn test_configfile_order() -> io::Result<()> {
         .unwrap();
     fs::create_dir(keystore_dir_path.clone()).expect("could not create keystore dir");
 
-    let key_file_path = keystore_dir_path.join("cosmoskey.pem");
-    fs::write(key_file_path, PRIVATE_KEY).expect("could not write key file");
+    let key_file_path = keystore_dir_path.join("sha.pem");
 
     let config = StewardConfig {
         keys: KeysConfig {
@@ -649,19 +722,15 @@ fn test_configfile_order() -> io::Result<()> {
     let config_string = toml::to_string(&config).expect("could not write config to TOML string");
     fs::write(config_file_path.clone(), config_string).expect("could not write config file");
 
-    let mut cmd = runner
-        .args(&[
-            "-c",
-            config_file_path.to_str().unwrap(),
-            "keys",
-            "cosmos",
-            "list",
-        ])
+    std::env::set_var("STEWARD_CONFIG", config_file_path.to_str().unwrap());
+
+    let cmd = runner
+        .args(&["keys", "cosmos", "add", "sha"])
         .capture_stdout()
         .run();
-    // Check that the list keys list keys in the keystore we created.
-    cmd.stdout()
-        .expect_line("cosmoskey\tsomm1wzp8pks7hzavh7r4dmenpszxyzfxyk34xlmcfh");
+    // Check that command executes without error.
+    cmd.wait().unwrap().expect_success();
+    assert!(key_file_path.exists());
 
     Ok(())
 }
