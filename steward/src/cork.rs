@@ -17,11 +17,9 @@ use gravity_bridge::{
     gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse,
     gravity_utils::ethereum::downcast_to_u64,
 };
-use signatory::FsKeyStore;
 use somm_proto::cork::{query_client::QueryClient as CorkQueryClient, Cork, QueryCellarIDsRequest};
 use std::{
     convert::{TryFrom, TryInto},
-    path,
     sync::Arc,
     time::Duration,
 };
@@ -123,14 +121,16 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
 
         let contract_call_data = match request.call_data.clone() {
             Some(call) => call,
-            None => return Err(tonic::Status::invalid_argument("Error, can't find call data")),
+            None => {
+                return Err(tonic::Status::invalid_argument(
+                    "Error, can't find call data",
+                ))
+            }
         };
 
         let config = APP.config();
 
-        let name = &config
-            .keys
-            .delegate_key;
+        let name = &config.keys.delegate_key;
         let wallet = config.load_ethers_wallet(name.to_string());
 
         let eth_host = config.ethereum.rpc.clone();
@@ -147,7 +147,7 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
 
         let cellar_address = request.cellar_id.clone();
 
-        if let Err(_) = cellars::validate_cellar_id(&cellar_address) {
+        if cellars::validate_cellar_id(&cellar_address).is_err() {
             return Err(tonic::Status::invalid_argument(
                 "Error, can't validate Cellar ID",
             ));
@@ -212,7 +212,10 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
                     Function::ClaimAndUnstake(_) => {
                         contract_call(contract.claim_and_unstake()).await
                     }
-                };
+                }
+                .unwrap_or_else(|err| {
+                    panic!("{:?}", tonic::Status::invalid_argument(err.to_string()));
+                })
             }
         }
 
@@ -266,11 +269,13 @@ async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
     .map_err(|e| e.into())
 }
 
-async fn contract_call<T: Detokenize>(contract_call: ContractCall<EthSignerMiddleware, T>) -> Result<(), Error> {
+async fn contract_call<T: Detokenize>(
+    contract_call: ContractCall<EthSignerMiddleware, T>,
+) -> Result<(), Error> {
     let gas = contract_call.estimate_gas().await?;
     let gas_price = CellarGas::get_gas_price().await?;
     let contract_call = contract_call.gas(gas).gas_price(gas_price);
     let contract_call = contract_call.send().await?;
     let _tx_hash = *contract_call;
-    return Ok(());
+    Ok(())
 }
