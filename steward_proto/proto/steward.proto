@@ -1,3 +1,10 @@
+/*
+ * Steward Strategy Provider API
+ *
+ * This proto defines the service/methods used by Strategy Providers to interact with Cellars through the Sommelier chain.
+ *
+ */
+
 syntax = "proto3";
 package steward.v1;
 
@@ -5,12 +12,21 @@ option go_package = "/steward_proto";
 
 import "aave_v2_stablecoin.proto";
 
+/*
+ * Service for handling Cellar contract calls
+ */
 service ContractCall {
+    // Handles simple contract call submission
     rpc Submit(SubmitRequest) returns (SubmitResponse) {}
 }
 
+/*
+ * Represents a single function call on a particular Cellar
+ */
 message SubmitRequest {
+    // The ID (currently simply an Ethereum address) of the target Cellar
     string cellar_id = 1;
+    // The data from which the desired contract function will be encoded
     oneof call_data {
         AaveV2Stablecoin aave_v2_stablecoin = 2;
     }

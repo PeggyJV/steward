@@ -112,8 +112,8 @@ func (s *IntegrationTestSuite) TestCork() {
 					CellarId: cellarId,
 					CallData: &SubmitRequest_AaveV2Stablecoin{
 						&AaveV2Stablecoin{
-							Function: &AaveV2Stablecoin_ClaimAndUnstake{
-								&ClaimAndUnstake{},
+							Function: &AaveV2Stablecoin_ClaimAndUnstake_{
+								&AaveV2Stablecoin_ClaimAndUnstake{},
 							},
 						},
 					},
