@@ -34,10 +34,13 @@ impl Runnable for ShutdownCmd {
         let config = APP.config();
 
         abscissa_tokio::run_with_actix(&APP, async {
-            let call = IsShutdownCall {};
-            let encoded_call = AaveV2StablecoinCellarCalls::IsShutdown(call).encode();
+            let call = SetShutdownCall {
+                shutdown: true,
+                exit_position: true,
+            };
+            let encoded_call = AaveV2StablecoinCellarCalls::SetShutdown(call).encode();
 
-            cellars::validate_cellar_id(self.contract.as_str()).unwrap_or_else(|err|{
+            cellars::validate_cellar_id(self.contract.as_str()).unwrap_or_else(|err| {
                 status_err!("Can't validate cellar ID: {}", err);
                 std::process::exit(1);
             });
