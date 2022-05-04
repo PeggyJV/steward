@@ -1,13 +1,14 @@
 use crate::error::{Error, ErrorKind};
 use futures::future::join_all;
 use somm_proto::cork::{query_client::QueryClient as QClient, QueryCommitPeriodRequest};
-use std::{thread, time::Duration};
+use std::time::Duration;
 use steward_proto::{
     self,
     steward::{
         contract_call_client::ContractCallClient as ContractClient, SubmitRequest, SubmitResponse,
     },
 };
+use tokio::time::sleep as delay_for;
 use tonic::transport::{Channel, ClientTlsConfig, Uri};
 
 pub type ContractCallClient = ContractClient<Channel>;
@@ -32,9 +33,7 @@ impl GrpcClient {
 
     pub fn check_for_steward_addresses(&self) -> Result<(), Error> {
         if self.steward_endpoints.is_empty() {
-            return Err(ErrorKind::GrpcError
-                .context("no grpc address available")
-                .into());
+            return Err(ErrorKind::GrpcError.context("No endpoint found").into());
         }
 
         Ok(())
@@ -75,24 +74,39 @@ impl GrpcClient {
         // First verify voting period has started
         let mut query_client = self.get_query_client().await?;
 
-        loop {
-            let commit_period_response = match query_client
-                .query_commit_period(QueryCommitPeriodRequest {})
-                .await
-            {
-                Ok(res) => res.into_inner(),
-                Err(status) => return Err(ErrorKind::GrpcError.context(status).into()),
-            };
+        let _res = match tokio::time::timeout(Duration::from_secs(300), async {
+            loop {
+                let commit_period_response = match query_client
+                    .query_commit_period(QueryCommitPeriodRequest {})
+                    .await
+                {
+                    Ok(res) => res.into_inner(),
+                    Err(status) => break status.to_string(),
+                };
 
-            if commit_period_response.current_height >= commit_period_response.vote_period_start
-                && commit_period_response.current_height < commit_period_response.vote_period_end
-            {
-                break;
+                if commit_period_response.current_height >= commit_period_response.vote_period_start
+                    && commit_period_response.current_height
+                        < commit_period_response.vote_period_end
+                {
+                    break String::from("");
+                }
+
+                // Wait a few seconds before retrying
+                delay_for(Duration::from_secs(10)).await;
             }
-
-            // Wait a few seconds before retrying
-            thread::sleep(Duration::from_secs(10));
-        }
+        })
+        .await
+        {
+            Ok(result) => match result.trim() {
+                "" => (),
+                status => return Err(ErrorKind::GrpcError.context(status).into()),
+            },
+            Err(_) => {
+                return Err(ErrorKind::GrpcError
+                    .context("Timed out waiting for voting period.")
+                    .into());
+            }
+        };
 
         // We're now in a voting period, time to send requests.
         let mut contract_clients = self.get_contract_clients().await?;
