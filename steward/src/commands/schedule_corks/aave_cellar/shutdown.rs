@@ -37,7 +37,10 @@ impl Runnable for ShutdownCmd {
             let call = IsShutdownCall {};
             let encoded_call = AaveV2StablecoinCellarCalls::IsShutdown(call).encode();
 
-            cellars::validate_cellar_id(self.contract.as_str()).unwrap();
+            cellars::validate_cellar_id(self.contract.as_str()).unwrap_or_else(|err|{
+                status_err!("Can't validate cellar ID: {}", err);
+                std::process::exit(1);
+            });
 
             let cork = Cork {
                 encoded_contract_call: encoded_call,
