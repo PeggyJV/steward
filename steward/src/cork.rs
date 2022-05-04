@@ -123,27 +123,15 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
 
         let contract_call_data = match request.call_data.clone() {
             Some(call) => call,
-            None => return Err(tonic::Status::invalid_argument("err")),
+            None => return Err(tonic::Status::invalid_argument("Error, can't find call data")),
         };
 
         let config = APP.config();
 
-        let keystore = path::Path::new(&config.keystore);
-        let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
-
         let name = &config
             .keys
-            .delegate_key
-            .parse()
-            .expect("Could not parse name");
-        let key = keystore.load(name).expect("Could not load key");
-
-        let key = key
-            .to_pem()
-            .parse::<k256::elliptic_curve::SecretKey<k256::Secp256k1>>()
-            .expect("Could not parse key");
-
-        let wallet: LocalWallet = Wallet::from(key);
+            .delegate_key;
+        let wallet = config.load_ethers_wallet(name.to_string());
 
         let eth_host = config.ethereum.rpc.clone();
         let provider = Provider::<Http>::try_from(eth_host.clone())
@@ -278,10 +266,11 @@ async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
     .map_err(|e| e.into())
 }
 
-async fn contract_call<T: Detokenize>(contract_call: ContractCall<EthSignerMiddleware, T>) {
-    let gas = contract_call.estimate_gas().await.unwrap();
-    let gas_price = CellarGas::get_gas_price().await.unwrap();
+async fn contract_call<T: Detokenize>(contract_call: ContractCall<EthSignerMiddleware, T>) -> Result<(), Error> {
+    let gas = contract_call.estimate_gas().await?;
+    let gas_price = CellarGas::get_gas_price().await?;
     let contract_call = contract_call.gas(gas).gas_price(gas_price);
-    let contract_call = contract_call.send().await.unwrap();
+    let contract_call = contract_call.send().await?;
     let _tx_hash = *contract_call;
+    return Ok(());
 }
