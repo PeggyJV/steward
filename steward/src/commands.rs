@@ -18,8 +18,9 @@ mod keys;
 mod orchestrator;
 mod sign_delegate_keys;
 mod start;
+mod test_mode;
 
-use self::{config_cmd::ConfigCmd, keys::KeysCmd, start::StartCmd};
+use self::{config_cmd::ConfigCmd, keys::KeysCmd, start::StartCmd, test_mode::TestModeCmd};
 
 use crate::config::StewardConfig;
 use abscissa_core::{clap::Parser, Command, Configurable, FrameworkError, Runnable};
@@ -43,6 +44,7 @@ pub enum StewardCmd {
     Orchestrator(orchestrator::OrchestratorCmd),
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
     Start(StartCmd),
+    TestMode(TestModeCmd),
 }
 
 /// Entry point for the application. It needs to be a struct to allow using subcommands!
