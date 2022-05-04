@@ -16,13 +16,11 @@ mod deploy;
 mod eth_to_cosmos;
 mod keys;
 mod orchestrator;
-mod scheduled_corks;
+mod schedule_corks;
 mod sign_delegate_keys;
 mod start;
 
-use self::{
-    config_cmd::ConfigCmd, keys::KeysCmd, scheduled_corks::ScheduledCorksCmd, start::StartCmd,
-};
+use self::{config_cmd::ConfigCmd, keys::KeysCmd, schedule_corks::ScheduleCmd, start::StartCmd};
 
 use crate::config::StewardConfig;
 use abscissa_core::{clap::Parser, Command, Configurable, FrameworkError, Runnable};
@@ -35,7 +33,7 @@ pub const CONFIG_FILE: &str = "steward.toml";
 #[derive(Command, Debug, Parser, Runnable)]
 pub enum StewardCmd {
     #[clap(subcommand)]
-    ScheduledCorks(ScheduledCorksCmd),
+    Schedule(ScheduleCmd),
     #[clap(subcommand)]
     Keys(KeysCmd),
     /// Print default configurations

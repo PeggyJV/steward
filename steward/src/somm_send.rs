@@ -42,7 +42,7 @@ pub async fn schedule_cork(
         signer: delegate_address,
         block_height,
     };
-    let msg = Msg::new("/cork.v1.MsgSubmitCorkRequest", msg);
+    let msg = Msg::new("/cork.v1.MsgScheduleCorkRequest", msg);
     __send_messages(contact, delegate_key, fee, vec![msg]).await
 }
 
