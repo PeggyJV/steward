@@ -659,10 +659,6 @@ fn test_configfile_order() -> io::Result<()> {
     };
     let env_key_file_path = env_keystore_dir_path.join("sha.pem");
 
-    let config_file_path = key_dir.path().join("config.toml");
-    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
-    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
-
     let env_config_file_path = key_dir.path().join("config.toml");
     let env_config_string =
         toml::to_string(&env_config).expect("could not write config to TOML string");
