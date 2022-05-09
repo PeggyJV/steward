@@ -77,7 +77,8 @@ impl Runnable for ShutdownCmd {
             )
             .await
             .unwrap_or_else(|err| {
-                panic!("{:?}", err);
+                status_err!("executor exited with error: {}", err);
+                std::process::exit(1);
             })
         })
         .unwrap_or_else(|e| {
