@@ -22,7 +22,7 @@ If you don't set the output path flag, certificates and keys will be created in 
 
 2. Fill out the Server CA information
 
-After running this command you run through a series of prompts. The first will be for information pertaining to the certificate authority like geographical location, email, etc. Set your CN to your domain name, and optionally set the OU for identification purposes. Please leave the password blank. The rest of the fields can also be safely left blank.
+After running this command you run through a series of prompts. The first will be for information pertaining to the certificate authority like geographical location, email, etc. Set your CN to your domain name, and optionally set the OU for identification purposes. The rest of the fields can be safely left blank.
 
 3. Fill out the Server Certificate information
 

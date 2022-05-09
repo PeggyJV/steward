@@ -43,7 +43,6 @@ echo
 echo "You're going to be asked to fill in fields for the server CA."
 echo "Apart from identifying info (CN, OU), these values don't really matter, just go with the defaults."
 echo "Common Name should be your domain name."
-echo "Please leave password blank."
 echo
 read -p "Press enter to continue."
 echo
