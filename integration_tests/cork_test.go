@@ -170,7 +170,8 @@ func (s *IntegrationTestSuite) TestCork() {
 		s.Require().NoError(err)
 
 		methodName := "rebalance"
-		route := [9]common.Address{common.HexToAddress(dai), common.HexToAddress(pool), common.HexToAddress(usdc), common.HexToAddress(zeroAddr), common.HexToAddress(zeroAddr), common.HexToAddress(zeroAddr), common.HexToAddress(zeroAddr), common.HexToAddress(zeroAddr), common.HexToAddress(zeroAddr)}
+		zeroAddress := common.HexToAddress(zeroAddr)
+		route := [9]common.Address{common.HexToAddress(dai), common.HexToAddress(pool), common.HexToAddress(usdc), zeroAddress, zeroAddress, zeroAddress, zeroAddress, zeroAddress, zeroAddress}
 		zero := big.NewInt(0)
 		swapParams := &[4][3]*big.Int{{zero, big.NewInt(2), big.NewInt(1)}, {zero, zero, zero}, {zero, zero, zero}, {zero, zero, zero}}
 		minAssetsOut := big.NewInt(1000)
