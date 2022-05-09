@@ -2,7 +2,7 @@
 
 This document will walk you through one way to generate a CA and self-signed certificate for use with Steward.
 
-Two-way trust must be established between Steward and the Strategy Provider client for each request. To accomplish this, both the Server and Client will need TLS certificates and the CA certificate of the other party (Steward needs the client's CA, and the client needs Steward's CA). To make generating Steward's certificates easier, we've provided a convenience script called `gen-script.sh` which can be found [here](https://github.com/peggyjv/steward/gen-script.sh). The script takes one optional flag for the output location of the certificates and their signing keys. The client CA will be set by default for now/
+Two-way trust must be established between Steward and the Strategy Provider client for each request. To accomplish this, both the Server and Client will need TLS certificates and the CA certificate of the other party (Steward needs the client's CA, and the client needs Steward's CA). To make generating Steward's certificates easier, we've provided a convenience script called `gen-script.sh` which can be found [here](https://github.com/peggyjv/steward/gen-script.sh). The script takes one optional flag for the output location of the certificates and their signing keys. The client CA will be set by default to Peggy JV's CA for now.
 
 ## Steps
 
@@ -10,7 +10,7 @@ Two-way trust must be established between Steward and the Strategy Provider clie
 
 This script requires OpenSSL to be installed; it will not work with LibreSSL.
 
-Note that LibreSSL still uses the binary name `openssl`. You'll know if you have the wrong binary if `openssl version` says "LibreSSL".
+Note that LibreSSL still uses the binary name `openssl`. You'll know if you have the wrong binary if `openssl version` says "LibreSSL". This script was tested against version `OpenSSL 1.1.1n`.
 
 1. Run the following command from the root of this repository
 
@@ -22,11 +22,11 @@ If you don't set the output path flag, certificates and keys will be created in 
 
 2. Fill out the Server CA information
 
-After running this command you run through a series of prompts. The first will be for information pertaining to the certificate authority like geographical location, email, etc. Set your CN to your domain name, and optionally set the OU for identification purposes; the rest of the fields can be safely left blank.
+After running this command you run through a series of prompts. The first will be for information pertaining to the certificate authority like geographical location, email, etc. Set your CN to your domain name, and optionally set the OU for identification purposes. Please leave the password blank. The rest of the fields can also be safely left blank.
 
 3. Fill out the Server Certificate information
 
-A similar set of prompts will ask for the same information for the Server (Steward) certificate which will be signed by the CA. As before, set your CN to your domain name, and optionally set the OU for identification purposes; the rest of the fields can be safely left blank.
+A similar set of prompts will ask for the same information for the Server (Steward) certificate which will be signed by the CA. As before, set your CN to your domain name, and optionally set the OU for identification purposes. Please leave the password blank. The rest of the fields can also be safely left blank.
 
 4. Provide your domain name
 
@@ -40,7 +40,7 @@ You can view your certificate plaintext with the following command:
 openssl x509 -text -in <output_path>/server.crt
 ```
 
-Valid TLS certificates will have "Version 3" near the top of the certificate plaintext. You should also see your IP or domain name as a Subject Alternative Name.
+Valid TLS certificates will have "Version 3" near the top of the certificate plaintext. You should also see your domain name as a Subject Alternative Name.
 
 6. Test Steward with your certificate
 

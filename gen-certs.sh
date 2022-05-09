@@ -43,6 +43,7 @@ echo
 echo "You're going to be asked to fill in fields for the server CA."
 echo "Apart from identifying info (CN, OU), these values don't really matter, just go with the defaults."
 echo "Common Name should be your domain name."
+echo "Please leave password blank."
 echo
 read -p "Press enter to continue."
 echo
@@ -59,6 +60,7 @@ echo
 echo "You're going to be asked to fill in fields for the server certificate."
 echo "Apart from identifying info (CN, OU), these values don't really matter, just go with the defaults."
 echo "Common Name should be your domain name."
+echo "Please leave password blank."
 echo
 read -p "Press enter to continue."
 echo
@@ -80,9 +82,6 @@ ext=$temp/v3.ext
 echo subjectKeyIdentifier=hash > $ext
 echo authorityKeyIdentifier=keyid,issuer >> $ext
 echo basicConstraints=CA:FALSE >> $ext
-if ! [ -z "$ip" ]; then
-	echo subjectAltName=IP:$ip >> $ext
-fi
 echo subjectAltName=DNS:$domain_name >> $ext
 
 openssl x509 \
