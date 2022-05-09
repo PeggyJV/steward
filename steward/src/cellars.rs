@@ -13,7 +13,10 @@ pub fn validate_cellar_id(cellar_id: &str) -> Result<(), String> {
 }
 
 pub fn log_cellar_call(cellar_name: &str, function_name: &str, cellar_id: String) {
-    info!("encoding {}.{} call for cellar {}", cellar_name, function_name, cellar_id);
+    info!(
+        "encoding {}.{} call for cellar {}",
+        cellar_name, function_name, cellar_id
+    );
 }
 
 #[cfg(test)]
