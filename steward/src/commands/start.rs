@@ -1,23 +1,20 @@
-//! Start subcommand - example of how to write a subcommand
+//! `Cosmos mode signer` subcommand - example of how to write a subcommand
 
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
-use crate::{
-    application::APP, cellars::uniswapv3::UniswapV3DirectCellar, config::StewardConfig, prelude::*,
-    server,
-};
+use crate::{application::APP, config::StewardConfig, cork::CorkHandler, prelude::*, server};
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
-use steward_proto::uniswapv3::server::UniswapV3CellarAllocatorServer;
+use steward_proto::steward::contract_call_server::ContractCallServer;
 
-/// Single Signer, start Eth test mode
+/// Cosmos Signer, start allocation module
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Single Signer, start Ethereum test module.\n This command starts Steward using the Ethereum test mode."
+    long_about = "DESCRIPTION \n\n Cosmos mode, run Steward as a server.\n This command runs Steward as a server that will send updates to the Sommelier chain."
 )]
-pub struct SingleSignerCmd;
+pub struct StartCmd;
 
-impl Runnable for SingleSignerCmd {
+impl Runnable for StartCmd {
     /// Start the application.
     fn run(&self) {
         let config = APP.config();
@@ -30,7 +27,7 @@ impl Runnable for SingleSignerCmd {
                 .build()
                 .unwrap_or_else(|err| {
                     status_err!("failed to build descriptor service: {}", err);
-                    std::process::exit(1);
+                    std::process::exit(1)
                 });
 
             let server_config = server::load_server_config(&config)
@@ -46,7 +43,7 @@ impl Runnable for SingleSignerCmd {
                 .unwrap_or_else(|err| {
                     panic!("{:?}", err);
                 })
-                .add_service(UniswapV3CellarAllocatorServer::new(UniswapV3DirectCellar))
+                .add_service(ContractCallServer::new(CorkHandler))
                 .add_service(proto_descriptor_service)
                 .serve(server_config.address)
                 .await
@@ -57,12 +54,12 @@ impl Runnable for SingleSignerCmd {
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
-            std::process::exit(1);
+            std::process::exit(1)
         });
     }
 }
 
-impl config::Override<StewardConfig> for SingleSignerCmd {
+impl config::Override<StewardConfig> for StartCmd {
     // Process the given command line options, overriding settings from
     // a configuration file using explicit flags taken from command-line
     // arguments.

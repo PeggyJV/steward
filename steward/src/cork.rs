@@ -1,5 +1,5 @@
 use crate::{
-    cellars::{self, aave_v2_stablecoin, uniswapv3},
+    cellars::{self, aave_v2_stablecoin},
     config,
     error::{Error, ErrorKind},
     prelude::APP,
@@ -17,13 +17,14 @@ use steward_proto::{
     self,
     steward::{
         self,
-        submit_request::CallData::{self, AaveV2Stablecoin, Uniswapv3Rebalance},
+        submit_request::CallData::{self, AaveV2Stablecoin},
         SubmitRequest, SubmitResponse,
     },
 };
 use tonic::{self, async_trait, Code, Request, Response, Status};
 
 const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
+const CHAIN_PREFIX: &str = "somm";
 
 pub struct CorkHandler;
 
@@ -110,18 +111,17 @@ async fn build_cork(request: &SubmitRequest) -> Result<Cork, Error> {
 
 fn get_encoded_call(data: CallData) -> Result<Vec<u8>, Error> {
     match data {
-        AaveV2Stablecoin(call) => Ok(aave_v2_stablecoin::get_encoded_call(
+        AaveV2Stablecoin(call) => aave_v2_stablecoin::get_encoded_call(
             call.function
                 .expect("call data for Aave V2 Stablecoin cellar was empty"),
-        )),
-        Uniswapv3Rebalance(params) => Ok(uniswapv3::get_encoded_call(params)),
+        ),
     }
 }
 
 async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
     let config = APP.config();
     debug!("establishing grpc connection");
-    let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, &config.cosmos.prefix)?;
+    let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX)?;
 
     debug!("getting cosmos fee");
     let cosmos_gas_price = config.cosmos.gas_price.as_tuple();

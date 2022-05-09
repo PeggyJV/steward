@@ -112,8 +112,8 @@ func (s *IntegrationTestSuite) TestCork() {
 					CellarId: cellarId,
 					CallData: &SubmitRequest_AaveV2Stablecoin{
 						&AaveV2Stablecoin{
-							Function: &AaveV2Stablecoin_ClaimAndUnstake{
-								&ClaimAndUnstake{},
+							Function: &AaveV2Stablecoin_ClaimAndUnstake_{
+								&AaveV2Stablecoin_ClaimAndUnstake{},
 							},
 						},
 					},
@@ -123,7 +123,7 @@ func (s *IntegrationTestSuite) TestCork() {
 			}
 
 			return true
-		}, 100*time.Second, 1*time.Second, "rebalance request took too long")
+		}, 100*time.Second, 1*time.Second, "Cork request took too long")
 
 		s.T().Logf("waiting for end of vote period, endblocker to run")
 		val = s.chain.validators[0]

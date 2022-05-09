@@ -4,9 +4,9 @@ use crate::{
     prelude::APP,
     utils::{get_chain, get_eth_provider},
 };
-use abscissa_core::Application;
+use abscissa_core::{tracing::log::warn, Application};
 use ethers::{
-    middleware::gas_oracle::{Etherchain, Etherscan, GasCategory, GasOracle, GasOracleError},
+    middleware::gas_oracle::{Etherscan, GasCategory, GasOracle},
     prelude::*,
 };
 use gravity_bridge::gravity_utils;
@@ -41,46 +41,25 @@ impl CellarGas {
         gas_estimate.map_err(|e| e.into())
     }
 
-    pub async fn etherscan_safelow() -> Result<U256, Error> {
-        let etherscan_client = CellarGas::get_etherscan_client().await?;
-        let etherscan_oracle = Etherscan::new(etherscan_client).category(GasCategory::SafeLow);
-        let gas_estimate = etherscan_oracle.fetch().await;
-
-        gas_estimate.map_err(|e| e.into())
-    }
-
-    #[allow(dead_code)]
-    async fn etherchain_fastest() -> Result<U256, GasOracleError> {
-        let etherchain_oracle = Etherchain::new().category(GasCategory::Fastest);
-        let data = etherchain_oracle.fetch().await;
-        data
-    }
-
-    #[allow(dead_code)]
-    async fn etherchain_fast() -> Result<U256, GasOracleError> {
-        let etherchain_oracle = Etherchain::new().category(GasCategory::Fast);
-        let data = etherchain_oracle.fetch().await;
-        data
-    }
-
-    #[allow(dead_code)]
-    async fn etherchain_standard() -> Result<U256, GasOracleError> {
-        let etherchain_oracle = Etherchain::new().category(GasCategory::Standard);
-        let data = etherchain_oracle.fetch().await;
-        data
-    }
-
-    #[allow(dead_code)]
-    async fn etherchain_safelow() -> Result<U256, GasOracleError> {
-        let etherchain_oracle = Etherchain::new().category(GasCategory::SafeLow);
-        let data = etherchain_oracle.fetch().await;
-        data
-    }
-
     async fn get_etherscan_client() -> Result<Client, Error> {
         let provider = get_eth_provider().await?;
         let chain = get_chain(provider.clone()).await?;
 
         Client::new_from_env(chain).map_err(|e| e.into())
+    }
+
+    pub async fn get_gas_price() -> Result<U256, Error> {
+        if std::env::var("ETHERSCAN_API_KEY").is_ok() {
+            match CellarGas::etherscan_standard().await {
+                Ok(gas) => return Ok(gas),
+                Err(err) => {
+                    warn!("failed to retrieve gas estimate from etherscan: {}", err);
+                }
+            }
+        }
+
+        let provider = get_eth_provider().await?;
+
+        provider.get_gas_price().await.map_err(|r| r.into())
     }
 }
