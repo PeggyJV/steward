@@ -2,11 +2,15 @@ use abscissa_core::tracing::log::info;
 use ethers::prelude::*;
 use std::result::Result;
 
+use crate::error::{Error, ErrorKind};
+
 pub(crate) mod aave_v2_stablecoin;
 
-pub fn validate_cellar_id(cellar_id: &str) -> Result<(), String> {
+pub fn validate_cellar_id(cellar_id: &str) -> Result<(), Error> {
     if let Err(err) = cellar_id.parse::<H160>() {
-        return Err(format!("invalid ethereum address: {}", err));
+        return Err(ErrorKind::SPCallError
+            .context(format!("invalid ethereum address: {}", err))
+            .into());
     }
 
     Ok(())

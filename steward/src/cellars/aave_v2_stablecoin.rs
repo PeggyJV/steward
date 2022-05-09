@@ -1,92 +1,132 @@
-use ethers::{abi::AbiEncode, prelude::H160};
+use crate::{error::Error, utils::sp_call_error};
+use ethers::{
+    abi::AbiEncode,
+    contract::EthCall,
+    prelude::{H160, U256},
+};
+use std::convert::TryInto;
 use steward_abi::aave_v2_stablecoin::*;
 use steward_proto::steward::aave_v2_stablecoin::Function::{self, *};
 
 use super::log_cellar_call;
 
 const CELLAR_NAME: &str = "aave_v2_stablecoin";
+const LOG_PREFIX: &str = "AaveV2StablcoinCellar";
 
-pub fn get_encoded_call(function: Function, cellar_id: String) -> Vec<u8> {
+pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>, Error> {
     match function {
-        EnterStrategy(_) => {
-            log_cellar_call(CELLAR_NAME, "enterStrategy", cellar_id);
-            let call = EnterStrategyCall {};
-            let call = AaveV2StablecoinCellarCalls::EnterStrategy(call);
-            call.encode()
+        AccrueFees(_) => {
+            log_cellar_call(CELLAR_NAME, &AccrueFeesCall::function_name(), cellar_id);
+            let call = AccrueFeesCall {};
+            Ok(AaveV2StablecoinCellarCalls::AccrueFees(call).encode())
         }
-        ReinvestAmount(params) => {
-            log_cellar_call(CELLAR_NAME, "reinvestAmount", cellar_id);
-            let call = ReinvestWithAmountCall {
-                amount: params.amount.into(),
+        ClaimAndUnstake(_) => {
+            log_cellar_call(CELLAR_NAME, &ClaimAndUnstakeCall::function_name(), cellar_id);
+            let call = ClaimAndUnstakeCall {};
+            Ok(AaveV2StablecoinCellarCalls::ClaimAndUnstake(call).encode())
+        }
+        EnterPosition(_) => {
+            log_cellar_call(CELLAR_NAME, &EnterPositionCall::function_name(), cellar_id);
+            let call = EnterPositionCall {};
+            let call = AaveV2StablecoinCellarCalls::EnterPosition(call);
+            Ok(call.encode())
+        }
+        Rebalance(params) => {
+            // We expect the client to pad the route to length 9
+            if params.route.len() != 9 {
+                return Err(sp_call_error(format!(
+                    "{}: Rebalance 'route': array must contain 9 elements",
+                    LOG_PREFIX
+                )));
+            }
+
+            if params.swap_params.len() != 4 {
+                return Err(sp_call_error(format!(
+                    "{}: Rebalance 'swap_params': array must contain 4 elements",
+                    LOG_PREFIX
+                )));
+            }
+
+            let results: Vec<Result<H160, &String>> = params
+                .route
+                .iter()
+                .map(|addr| match addr.parse::<H160>() {
+                    Ok(addr) => Ok(addr),
+                    Err(_) => Err(addr),
+                })
+                .collect();
+
+            validate_route(results.clone())?;
+
+            let route = results
+                .iter()
+                .map(|r| r.unwrap())
+                .collect::<Vec<H160>>()
+                .try_into()
+                .expect("failed to convert 'route' addresses to array");
+
+            let swap_params = params
+                .swap_params
+                .iter()
+                .map(|sp| {
+                    let out: [U256; 3] =
+                        [sp.in_index.into(), sp.out_index.into(), sp.swap_type.into()];
+                    out
+                })
+                .collect::<Vec<[U256; 3]>>()
+                .try_into()
+                .expect("failed to convert 'swap_params' vec to array");
+
+            log_cellar_call(CELLAR_NAME, &RebalanceCall::function_name(), cellar_id);
+            let call = RebalanceCall {
+                route,
+                swap_params,
                 min_assets_out: params.min_assets_out.into(),
             };
-            AaveV2StablecoinCellarCalls::ReinvestWithAmount(call).encode()
+            Ok(AaveV2StablecoinCellarCalls::Rebalance(call).encode())
         }
         Reinvest(params) => {
-            log_cellar_call(CELLAR_NAME, "reinvest", cellar_id);
+            log_cellar_call(CELLAR_NAME, &ReinvestCall::function_name(), cellar_id);
             let call = ReinvestCall {
                 min_assets_out: params.min_assets_out.into(),
             };
-            AaveV2StablecoinCellarCalls::Reinvest(call).encode()
+            Ok(AaveV2StablecoinCellarCalls::Reinvest(call).encode())
         }
-        ClaimAndUnstakeAmount(params) => {
-            log_cellar_call(CELLAR_NAME, "claimAndUnstakeAmount", cellar_id);
-            let call = ClaimAndUnstakeWithAmountCall {
-                amount: params.amount.into(),
+        SetDepositLimit(params) => {
+            log_cellar_call(CELLAR_NAME, &SetDepositLimitCall::function_name(), cellar_id);
+            let call = SetDepositLimitCall {
+                limit: params.limit.into(),
             };
-            AaveV2StablecoinCellarCalls::ClaimAndUnstakeWithAmount(call).encode()
+            Ok(AaveV2StablecoinCellarCalls::SetDepositLimit(call).encode())
         }
-        ClaimAndUnstake(_) => {
-            log_cellar_call(CELLAR_NAME, "claimAndUnstake", cellar_id);
-            let call = ClaimAndUnstakeCall {};
-            AaveV2StablecoinCellarCalls::ClaimAndUnstake(call).encode()
-        }
-        Rebalance(params) => {
-            log_cellar_call(CELLAR_NAME, "rebalance", cellar_id);
-            let call = RebalanceCall {
-                new_lending_token: params
-                    .address
-                    .parse::<H160>()
-                    .expect("failed to parse token address"),
-                min_new_lending_token_amount: params.min_new_lending_token_amount.into(),
+        SetLiquidityLimit(params) => {
+            log_cellar_call(CELLAR_NAME, &SetLiquidityLimitCall::function_name(), cellar_id);
+            let call = SetLiquidityLimitCall {
+                limit: params.limit.into(),
             };
-            AaveV2StablecoinCellarCalls::Rebalance(call).encode()
-        }
-        AccruePlatformFees(_) => {
-            log_cellar_call(CELLAR_NAME, "accruePlatformFees", cellar_id);
-            let call = AccruePlatformFeesCall {};
-            AaveV2StablecoinCellarCalls::AccruePlatformFees(call).encode()
+            Ok(AaveV2StablecoinCellarCalls::SetLiquidityLimit(call).encode())
         }
         TransferFees(_) => {
-            log_cellar_call(CELLAR_NAME, "transferFees", cellar_id);
+            log_cellar_call(CELLAR_NAME, &TransferFeesCall::function_name(), cellar_id);
             let call = TransferFeesCall {};
-            AaveV2StablecoinCellarCalls::TransferFees(call).encode()
-        }
-        SetInputToken(params) => {
-            log_cellar_call(CELLAR_NAME, "setInputToken", cellar_id);
-            let call = SetInputTokenCall {
-                token: params
-                    .address
-                    .parse::<H160>()
-                    .expect("failed to parse token address"),
-                is_approved: params.is_approved,
-            };
-            AaveV2StablecoinCellarCalls::SetInputToken(call).encode()
-        }
-        RemoveLiquidityRestriction(_) => {
-            log_cellar_call(CELLAR_NAME, "removeLiquidityRestriction", cellar_id);
-            let call = RemoveLiquidityRestrictionCall {};
-            AaveV2StablecoinCellarCalls::RemoveLiquidityRestriction(call).encode()
-        }
-        Sweep(params) => {
-            log_cellar_call(CELLAR_NAME, "sweep", cellar_id);
-            let call = SweepCall {
-                token: params
-                    .address
-                    .parse::<H160>()
-                    .expect("failed to parse token address"),
-            };
-            AaveV2StablecoinCellarCalls::Sweep(call).encode()
+            Ok(AaveV2StablecoinCellarCalls::TransferFees(call).encode())
         }
     }
+}
+
+fn validate_route(results: Vec<Result<H160, &String>>) -> Result<(), Error> {
+    let mut bad_addresses_string = String::new();
+    for r in results {
+        if let Err(addr) = r {
+            bad_addresses_string.push_str(&format!(", {}", addr))
+        }
+    }
+
+    if !bad_addresses_string.is_empty() {
+        let mut err_string = "Rebalance 'route': array contains invalid address(s)".to_string();
+        err_string.push_str(&bad_addresses_string);
+        return Err(sp_call_error(format!("{}: {}", LOG_PREFIX, err_string)));
+    }
+
+    Ok(())
 }
