@@ -15,9 +15,10 @@ To start Steward, simply run
 steward -c <config_toml_path> start
 ```
 
-> :warning: If this is production and your node is running, don't forget to make sure the Orchestrator is also running! If you don't, you can be jailed and your submitted corks will not be processed.
+A few of the necessary fields required in this config TOML file are covered in this document. See the [Configuration](./01-Configuration.md) document for an example config file and field reference.
 
-See the [Orchestrator Quickstart](./docs/03-TheOrchestrator.md#quickstart) section of the docs.
+> :warning: If this is production and your node is running, don't forget to make sure the Orchestrator is also running! If you don't, you can be jailed and your submitted corks will not be processed. See the [Orchestrator Quickstart](./03-TheOrchestrator.md#quickstart) section of the docs.
+
 
 ## Running Steward as a server
 
@@ -33,13 +34,7 @@ See the [Orchestrator Quickstart](./docs/03-TheOrchestrator.md#quickstart) secti
 
 ### TLS Certificates
 
-Before SPs can establish a connection with your `steward` server, you will need to generate a CA, a TLS certificate signed by this CA, and the SP's client CA. These certificates must be TLS 1.3 compliant. To aid with generating these consistently we've provided a simple script, `gen-certs.sh`. You can run it with the `-o` flag to provide an output location for the generated certs and keys:
-
-```bash
-./gen-certs.sh -o some/output/location/
-```
-
-For more detailed steps please see the [Generating Certificates](./04-GeneratingCertificates.md) document.
+Before SPs can establish a connection with your `steward` server, you will need to generate a CA, a TLS certificate signed by this CA, and the SP's client CA. These certificates must be TLS 1.3 compliant. For detailed steps please see the [Generating Certificates](./04-GeneratingCertificates.md) document.
 
 The paths to the generated certificates and the key used to create your signed server certificate must be configured in the `[server]` table of your [config file](./01-Configuration.md#server-table). Starting out, Peggy JV will be the sole SP, and Steward will use our client CA cert by default. This CA cert can be found in the `tls/` directory of this repo. There is no need to set the `client_ca_cert_path` configuration field at this time as it will default to the Peggy JV CA.
 
