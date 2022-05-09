@@ -45,11 +45,11 @@ The paths to the generated certificates and the key used to create your signed s
 
 ### Cosmos Delegate Key
 
-Steward signs corks with the same key that the Orchestrator uses to sign Ethereum -> Cosmos transactions. Therefore, if you have already generated a delegate key for the Orchestrator in the past, you do not need to do it again for Steward. Simply [set the path to this key](./01-Configuration.md#delegatekey) in your Steward config.
+Steward signs corks with the same key that the Orchestrator uses to sign Ethereum -> Cosmos transactions. Therefore, if you have already generated a delegate key for the Orchestrator in the past, you do not need to do it again for Steward. Simply [set the path to this key](./01-Configuration.md#delegate_key) in your Steward config.
 
 If you are a new validator, we recommend following the [Sommelier installation steps](https://github.com/PeggyJV/sommelier#installation) to generate all the keys you need and set them as the delegate keys for your validator. It is ok to use [gorc](https://github.com/PeggyJV/gravity-bridge/tree/main/orchestrator/gorc) for key generation as that document recommends, however you can also generate them using Steward. Examples of the commands used to do this can be found in the [Orchestrator Setup section](./03-TheOrchestrator.md#setup).
 
-The Cosmos delegate key generated (called "orchestrator" in the Sommelier docs) should be set as the [delegate_key field](./01-Configuration.md#delegatekey) under the `[server]` table of your configuration file.
+The Cosmos delegate key generated (called "orchestrator" in the Sommelier docs) should be set as the [delegate_key field](./01-Configuration.md#delegate_key) under the `[server]` table of your configuration file.
 
 > :warning: Remember to set this key as a delegate key in your validator node. The steps to do this are covered in the Sommelier documentaion linked above.
 
