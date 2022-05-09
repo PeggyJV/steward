@@ -27,13 +27,21 @@ See the [Orchestrator Quickstart](./docs/03-TheOrchestrator.md#quickstart) secti
 - [ ] Firewall configured to allow requests to hit the [Steward port](./01-Configuration.md#port) over the internet
 - [ ] Connectivity between Steward and your Sommelier node's gRPC endpoint
 - [ ] On-disk key store containing a [delegate key](./02-StewardForValidators.md#cosmos-delegate-key) in this key store for Steward and Orchestrator to share. This can be generated with Steward, or you may have already done this step with `gorc` in the past. If that's the case you can just use the delegate key you’ve already created.
-- [ ] A TLS 1.3 [server CA and certificate signed with said CA](./02-StewardForValidators.md#tls-certificates)
+- [ ] TLS 1.3 [server CA and certificate signed with said CA](./04-GeneratingCertificates.md)
 - [ ] [TOML config file](./01-Configuration.md#complete-example-configtoml) containing the above values
 - [ ] Add your Steward info (endpoint and CA) to the [Steward registry repository](https://github.com/peggyjv/steward-registry#steward-registry)
 
 ### TLS Certificates
 
-Before SPs can establish a connection with your `steward` server, you will need to generate a CA, a TLS certificate signed by this CA, and the SP's client CA. These certificates must be TLS 1.3 compliant. The paths to these values and the key used to create your signed server certificate must be configured in the `[server]` table of your config file. Starting out, Peggy JV will be the sole SP, and Steward will use our client CA cert by default. This CA cert can be found in the `tls/` directory of this repo. There is no need to set the `client_ca_cert_path` configuration field at this time as it will default to the Peggy JV CA.
+Before SPs can establish a connection with your `steward` server, you will need to generate a CA, a TLS certificate signed by this CA, and the SP's client CA. These certificates must be TLS 1.3 compliant. To aid with generating these consistently we've provided a simple script, `gen-certs.sh`. You can run it with the `-o` flag to provide an output location for the generated certs and keys:
+
+```bash
+./gen-certs.sh -o some/output/location/
+```
+
+For more detailed steps please see the [Generating Certificates](./04-GeneratingCertificates.md) document.
+
+The paths to the generated certificates and the key used to create your signed server certificate must be configured in the `[server]` table of your [config file](./01-Configuration.md#server-table). Starting out, Peggy JV will be the sole SP, and Steward will use our client CA cert by default. This CA cert can be found in the `tls/` directory of this repo. There is no need to set the `client_ca_cert_path` configuration field at this time as it will default to the Peggy JV CA.
 
 ### Cosmos Delegate Key
 
