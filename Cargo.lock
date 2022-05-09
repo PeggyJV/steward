@@ -1314,12 +1314,12 @@ dependencies = [
 
 [[package]]
 name = "cosmos-sdk-proto"
-version = "0.9.0"
-source = "git+http://github.com/cosmos/cosmos-rust?branch=main#ed05f6909cfdf97609e2f3d8b618fd0244a2d13d"
+version = "0.11.0"
+source = "git+http://github.com/cosmos/cosmos-rust?branch=main#efd5ee58d0fa00723b7c62ce876896dd5ec940e0"
 dependencies = [
  "prost 0.9.0",
  "prost-types 0.9.0",
- "tendermint-proto 0.23.3",
+ "tendermint-proto 0.23.6",
  "tonic 0.6.2",
 ]
 
@@ -4674,10 +4674,10 @@ dependencies = [
 [[package]]
 name = "somm_proto"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/sommelier#8f51201abc53234eda6544b1a5ff68490ad7fad8"
+source = "git+https://github.com/PeggyJV/sommelier#e9efe6cff51a2e1e89510db0fad9fa247fb6ffea"
 dependencies = [
  "bytes 1.1.0",
- "cosmos-sdk-proto 0.9.0",
+ "cosmos-sdk-proto 0.11.0",
  "prost 0.7.0",
  "prost-types 0.7.0",
  "tonic 0.4.3",
@@ -4962,9 +4962,9 @@ dependencies = [
 
 [[package]]
 name = "tendermint-proto"
-version = "0.23.3"
+version = "0.23.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a9e0a0251fd81bed7420bea0f4d91c2a58f6c9fa34d5b2f70bed0ba8890de5aa"
+checksum = "b8a65da26cc1f24cd53f40d1267372c22d6ce727d9fd40c6c61b879b26154994"
 dependencies = [
  "bytes 1.1.0",
  "flex-error",
