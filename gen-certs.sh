@@ -9,7 +9,7 @@ set -e
 VERSION=$(openssl version)
 
 if [[ "$VERSION" == *"Libre"* ]]; then
-	echo "This script is not compatable with LibreSSL."
+	echo "This script is not compatible with LibreSSL."
 	exit
 fi
 
@@ -23,9 +23,6 @@ done
 if [ -z "$output_location" ]; then
 	output_location=.
 fi
-echo $output_location
-
-mkdir -p $output_location
 
 temp=$output_location/temp
 mkdir -p $temp
@@ -44,7 +41,8 @@ openssl pkcs8 -in $temp/server_key_non-pkcs8.pem -out $output_location/server_ke
 
 echo
 echo "You're going to be asked to fill in fields for the server CA."
-echo "These values don't really matter, just go with the defaults."
+echo "Apart from identifying info (CN, OU), these values don't really matter, just go with the defaults."
+echo "Common Name should be your domain name."
 echo
 read -p "Press enter to continue."
 echo
@@ -59,6 +57,7 @@ openssl req -x509 -new -key $output_location/server_ca_key_pkcs8.pem -out $outpu
 
 echo
 echo "You're going to be asked to fill in fields for the server certificate."
+echo "Apart from identifying info (CN, OU), these values don't really matter, just go with the defaults."
 echo "Common Name should be your domain name."
 echo
 read -p "Press enter to continue."
@@ -71,10 +70,7 @@ echo
 openssl req -new -sha384 -key $output_location/server_key_pkcs8.pem -out $temp/server.csr
 
 # Collect Subject Alt Name info and create extensions file
-read -p "IP Address where Steward will be hosted (press enter to skip and only use domain name): " ip
-if [ -z "$ip" ]; then	
-	read -p "Domain name where Steward will be hosted: " domain_name
-fi
+read -p "Domain name where Steward will be hosted (please do not use an IP for this value): " domain_name
 
 # Sign the server certificate with the CA
 # the v3.ext file makes sure we include the subjectAltName extensions needed
