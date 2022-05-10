@@ -1,4 +1,7 @@
-use crate::{error::Error, utils::sp_call_error};
+use crate::{
+    error::Error,
+    utils::{sp_call_error, string_to_u256},
+};
 use ethers::{
     abi::AbiEncode,
     contract::EthCall,
@@ -89,6 +92,8 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 .try_into()
                 .expect("failed to convert 'swap_params' vec to array");
 
+            let min_assets_out = string_to_u256(params.min_assets_out)?;
+
             log_cellar_call(
                 CELLAR_NAME,
                 &RebalanceCall::function_name(),
@@ -97,41 +102,38 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
             let call = RebalanceCall {
                 route,
                 swap_params,
-                min_assets_out: params.min_assets_out.into(),
+                min_assets_out,
             };
             Ok(AaveV2StablecoinCellarCalls::Rebalance(call).encode())
         }
         Reinvest(params) => {
+            let min_assets_out = string_to_u256(params.min_assets_out)?;
             log_cellar_call(
                 CELLAR_NAME,
                 &ReinvestCall::function_name(),
                 cellar_id.as_str(),
             );
-            let call = ReinvestCall {
-                min_assets_out: params.min_assets_out.into(),
-            };
+            let call = ReinvestCall { min_assets_out };
             Ok(AaveV2StablecoinCellarCalls::Reinvest(call).encode())
         }
         SetDepositLimit(params) => {
+            let limit = string_to_u256(params.limit)?;
             log_cellar_call(
                 CELLAR_NAME,
                 &SetDepositLimitCall::function_name(),
                 cellar_id.as_str(),
             );
-            let call = SetDepositLimitCall {
-                limit: params.limit.into(),
-            };
+            let call = SetDepositLimitCall { limit };
             Ok(AaveV2StablecoinCellarCalls::SetDepositLimit(call).encode())
         }
         SetLiquidityLimit(params) => {
+            let limit = string_to_u256(params.limit)?;
             log_cellar_call(
                 CELLAR_NAME,
                 &SetLiquidityLimitCall::function_name(),
                 cellar_id.as_str(),
             );
-            let call = SetLiquidityLimitCall {
-                limit: params.limit.into(),
-            };
+            let call = SetLiquidityLimitCall { limit };
             Ok(AaveV2StablecoinCellarCalls::SetLiquidityLimit(call).encode())
         }
         TransferFees(_) => {

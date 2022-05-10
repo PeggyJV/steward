@@ -44,9 +44,9 @@ pub mod aave_v2_stablecoin {
         /// An array of up to 4 swap params. Attempting more than four swaps will fail.
         #[prost(message, repeated, tag = "2")]
         pub swap_params: ::prost::alloc::vec::Vec<rebalance::SwapParams>,
-        /// Minimum acceptable assets to be received from the swap (slippage parameter)
-        #[prost(uint64, tag = "3")]
-        pub min_assets_out: u64,
+        /// Minimum acceptable assets to be received from the swap (slippage parameter).  Must be parsible as an unsigned 256-bit integer.
+        #[prost(string, tag = "3")]
+        pub min_assets_out: ::prost::alloc::string::String,
     }
     /// Nested message and enum types in `Rebalance`.
     pub mod rebalance {
@@ -76,9 +76,9 @@ pub mod aave_v2_stablecoin {
     /// Represents function `reinvest(uint256 minAssetsOut)`
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Reinvest {
-        /// Minimum acceptable assets to be received from the swap (slippage parameter)
-        #[prost(uint64, tag = "1")]
-        pub min_assets_out: u64,
+        /// Minimum acceptable assets to be received from the swap (slippage parameter).  Must be parsible as an unsigned 256-bit integer.
+        #[prost(string, tag = "1")]
+        pub min_assets_out: ::prost::alloc::string::String,
     }
     ///
     /// Sets the per-wallet deposit limit. Careful to use the same decimals as the current asset.
@@ -86,8 +86,9 @@ pub mod aave_v2_stablecoin {
     /// Represents function `setDepositLimit(uint256 limit)`
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct SetDepositLimit {
-        #[prost(uint64, tag = "1")]
-        pub limit: u64,
+        /// The per-wallet deposit limit amount. Must be parsible as an unsigned 256-bit integer.
+        #[prost(string, tag = "1")]
+        pub limit: ::prost::alloc::string::String,
     }
     ///
     /// Sets the maximum liquidity that cellar can manage. Careful to use the same decimals as the current asset.
@@ -95,9 +96,9 @@ pub mod aave_v2_stablecoin {
     /// Represents function `setLiquidityLimit(uint256 limit)`
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct SetLiquidityLimit {
-        /// The amount
-        #[prost(uint64, tag = "1")]
-        pub limit: u64,
+        /// The maximum allowed liquidity amount. Must be parsible as an unsigned 256-bit integer.
+        #[prost(string, tag = "1")]
+        pub limit: ::prost::alloc::string::String,
     }
     ///
     /// Transfer accrued fees to the Sommelier Chain to distribute.
