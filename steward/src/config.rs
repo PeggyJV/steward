@@ -7,7 +7,7 @@ use crate::prelude::APP;
 use abscissa_core::Application;
 use deep_space::{Address, PrivateKey};
 use ethers::signers::LocalWallet as EthWallet;
-use gravity_bridge::cosmos_gravity;
+use cosmos_gravity;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use signatory::FsKeyStore;

@@ -3,9 +3,9 @@ use abscissa_core::{clap::Parser, status_err, Application, Command, Runnable};
 use clarity::Uint256;
 use deep_space::coin::Coin;
 use ethers::types::Address as EthAddress;
-use gravity_bridge::cosmos_gravity::send::{send_request_batch_tx, send_to_eth};
-use gravity_bridge::gravity_proto::gravity::DenomToErc20Request;
-use gravity_bridge::gravity_utils::connection_prep::{check_for_fee_denom, create_rpc_connections};
+use cosmos_gravity::send::{send_request_batch_tx, send_to_eth};
+use gravity_proto::gravity::DenomToErc20Request;
+use gravity_utils::connection_prep::{check_for_fee_denom, create_rpc_connections};
 use std::{process::exit, time::Duration};
 
 const TIMEOUT: Duration = Duration::from_secs(60);

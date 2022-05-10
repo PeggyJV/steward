@@ -6,7 +6,7 @@ edition = "2018"
 
 [dependencies]
 tempdir = "0.3.7"
-abscissa_tokio = "0.6.0"
+abscissa_tokio = { version = "0.6.0", features = ["actix"] }
 bip32 = "0.2"
 bson = { version = "2.0.0-beta.2", features = ["chrono-0_4"] }
 bytes = "1.0"
@@ -16,7 +16,6 @@ clarity = "0.4.12"
 deep_space ={ git = "https://github.com/iqlusioninc/deep_space/", branch = "master" }
 ethers = { git = "https://github.com/iqlusioninc/ethers-rs.git", branch="zaki/error_abi_support", features = ["abigen"] }
 futures = "0.3"
-gravity_bridge = { git = "https://github.com/PeggyJV/gravity-bridge", branch = "main" }
 gumdrop = "0.7"
 hex = "0.4"
 hyper = "0.14.12"
@@ -47,6 +46,13 @@ tonic-reflection = "0.1.0"
 tower = { version = "0.4", features = ["buffer", "util"] }
 url = "2.2.2"
 lazy_static = "1.4.0"
+
+cosmos_gravity = { git = "https://github.com/PeggyJV/gravity-bridge/", branch = "main", package = "cosmos_gravity" }
+ethereum_gravity = { git = "https://github.com/PeggyJV/gravity-bridge", branch = "main", package = "ethereum_gravity" }
+gravity_proto = { git = "https://github.com/PeggyJV/gravity-bridge", branch = "main", package = "gravity_proto" }
+gravity_utils = { git = "https://github.com/PeggyJV/gravity-bridge", branch = "main", package = "gravity_utils" }
+orchestrator = { git = "https://github.com/PeggyJV/gravity-bridge", branch = "main", package = "orchestrator" }
+relayer = { git = "https://github.com/PeggyJV/gravity-bridge", branch = "main", package = "relayer" }
 
 # this is a dirty trick, we depent transitively on OpenSSL it's never
 # called directly in this crate, but if we specify this dep we can enable

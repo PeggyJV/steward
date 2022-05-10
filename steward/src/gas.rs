@@ -9,7 +9,7 @@ use ethers::{
     middleware::gas_oracle::{Etherscan, GasCategory, GasOracle},
     prelude::*,
 };
-use gravity_bridge::gravity_utils;
+use gravity_utils;
 use std::result::Result;
 
 pub struct CellarGas {

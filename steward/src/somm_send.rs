@@ -4,7 +4,7 @@ use deep_space::Contact;
 use deep_space::Fee;
 use deep_space::Msg;
 use deep_space::PrivateKey as CosmosPrivateKey;
-use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::{
+use gravity_proto::cosmos_sdk_proto::cosmos::{
     base::abci::v1beta1::TxResponse, tx::v1beta1::BroadcastMode,
 };
 use somm_proto::cork::Cork;

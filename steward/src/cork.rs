@@ -10,7 +10,7 @@ use abscissa_core::{
     Application,
 };
 use deep_space::{Coin, Contact};
-use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
+use gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
 use somm_proto::cork::{query_client::QueryClient as CorkQueryClient, Cork, QueryCellarIDsRequest};
 use std::time::Duration;
 use steward_proto::{

@@ -2,18 +2,18 @@ use crate::{application::APP, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::prelude::{Middleware, Signer, SignerMiddleware};
 use ethers::types::Address as EthAddress;
-use gravity_bridge::gravity_utils::{
+use gravity_utils::{
     connection_prep::{
         check_delegate_addresses, check_for_eth, check_for_fee_denom, create_rpc_connections,
         wait_for_cosmos_node_ready,
     },
     ethereum::{downcast_to_u64, format_eth_address},
 };
-use gravity_bridge::orchestrator::main_loop::{
+use orchestrator::main_loop::{
     orchestrator_main_loop, ETH_ORACLE_LOOP_SPEED, ETH_SIGNER_LOOP_SPEED,
 };
 
-use gravity_bridge::relayer::main_loop::LOOP_SPEED as RELAYER_LOOP_SPEED;
+use relayer::main_loop::LOOP_SPEED as RELAYER_LOOP_SPEED;
 use std::{cmp::min, sync::Arc};
 
 /// Start Orchestrator

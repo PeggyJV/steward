@@ -5,13 +5,11 @@ use crate::{
 use abscissa_core::Application;
 use deep_space::error::CosmosGrpcError;
 use ethers::prelude::{types::Address as EthAddress, *};
-use gravity_bridge::{
-    gravity_proto::gravity::{
+use gravity_proto::gravity::{
         query_client::QueryClient, DelegateKeysByOrchestratorRequest,
         DelegateKeysByOrchestratorResponse,
-    },
-    gravity_utils::ethereum::downcast_to_u64,
 };
+use gravity_utils::ethereum::downcast_to_u64;
 use std::{convert::TryFrom, time::Duration};
 use tonic::transport::Channel;
 
