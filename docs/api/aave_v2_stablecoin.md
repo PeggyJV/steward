@@ -99,7 +99,7 @@ https://github.com/curvefi/curve-pool-registry/blob/16a8664952cf61d7fed06acca79a
 | ----- | ---- | ----- | ----------- |
 | route | [string](#string) | repeated | An array of up to 9 addresses (4 swaps) representing a token swap route, where each triplet of addresses is a single swap route (ex. in token address, pool address, out token address) |
 | swap_params | [AaveV2Stablecoin.Rebalance.SwapParams](#steward-v1-AaveV2Stablecoin-Rebalance-SwapParams) | repeated | An array of up to 4 swap params. Attempting more than four swaps will fail. |
-| min_assets_out | [uint64](#uint64) |  | Minimum acceptable assets to be received from the swap (slippage parameter) |
+| min_assets_out | [string](#string) |  | Minimum acceptable assets to be received from the swap (slippage parameter). Must be parsable as an unsigned 256-bit integer. |
 
 
 
@@ -133,7 +133,7 @@ Represents function `reinvest(uint256 minAssetsOut)`
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| min_assets_out | [uint64](#uint64) |  | Minimum acceptable assets to be received from the swap (slippage parameter) |
+| min_assets_out | [string](#string) |  | Minimum acceptable assets to be received from the swap (slippage parameter). Must be parsable as an unsigned 256-bit integer. |
 
 
 
@@ -150,7 +150,7 @@ Represents function `setDepositLimit(uint256 limit)`
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| limit | [uint64](#uint64) |  |  |
+| limit | [string](#string) |  | The per-wallet deposit limit amount. Must be parsable as an unsigned 256-bit integer. |
 
 
 
@@ -167,7 +167,7 @@ Represents function `setLiquidityLimit(uint256 limit)`
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| limit | [uint64](#uint64) |  | The amount |
+| limit | [string](#string) |  | The maximum allowed liquidity amount. Must be parsable as an unsigned 256-bit integer. |
 
 
 

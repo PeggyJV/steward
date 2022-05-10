@@ -120,7 +120,8 @@ func (s *IntegrationTestSuite) TestCork() {
 					{InIndex: 0, OutIndex: 0, SwapType: 0},
 					{InIndex: 0, OutIndex: 0, SwapType: 0},
 				}
-				minAssetsOut := uint64(1000)
+				// 1*10^18
+				minAssetsOut := "1000000000000000000"
 				request := SubmitRequest{
 					CellarId: cellarId,
 					CallData: &SubmitRequest_AaveV2Stablecoin{
@@ -174,7 +175,7 @@ func (s *IntegrationTestSuite) TestCork() {
 		route := [9]common.Address{common.HexToAddress(dai), common.HexToAddress(pool), common.HexToAddress(usdc), zeroAddress, zeroAddress, zeroAddress, zeroAddress, zeroAddress, zeroAddress}
 		zero := big.NewInt(0)
 		swapParams := &[4][3]*big.Int{{zero, big.NewInt(2), big.NewInt(1)}, {zero, zero, zero}, {zero, zero, zero}, {zero, zero, zero}}
-		minAssetsOut := big.NewInt(1000)
+		minAssetsOut := big.NewInt(1000000000000000000)
 		method, err := aave_abi.Pack(methodName, route, swapParams, minAssetsOut)
 		addr := common.HexToAddress(hardhatCellar.String())
 		invalidationScope := crypto.Keccak256Hash(
@@ -300,7 +301,7 @@ func (s *IntegrationTestSuite) TestCork() {
 					var event AaveV2MockRebalance
 					err := aave_abi.UnpackIntoInterface(&event, "mockRebalance", log.Data)
 					s.Require().NoError(err, "failed to unpack mockRebalance event from log data")
-					s.Require().Equal(event.MinAssetsOut, big.NewInt(1000))
+					s.Require().Equal(event.MinAssetsOut, minAssetsOut)
 					return true
 				}
 			}

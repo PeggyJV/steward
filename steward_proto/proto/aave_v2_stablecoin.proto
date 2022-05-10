@@ -67,8 +67,8 @@ message AaveV2Stablecoin {
         repeated string route = 1;
         // An array of up to 4 swap params. Attempting more than four swaps will fail.
         repeated SwapParams swap_params = 2;
-        // Minimum acceptable assets to be received from the swap (slippage parameter)
-        uint64 min_assets_out = 3;
+        // Minimum acceptable assets to be received from the swap (slippage parameter).  Must be parsable as an unsigned 256-bit integer.
+        string min_assets_out = 3;
 
         /*
          * Represents parameters for a single swap. Each swap needs the indeces in Rebalance.route of the in/out token addresses and the swap type. See the Curve contract linked above for more detail.
@@ -95,8 +95,8 @@ message AaveV2Stablecoin {
      * Represents function `reinvest(uint256 minAssetsOut)`
      */
     message Reinvest {
-        // Minimum acceptable assets to be received from the swap (slippage parameter)
-        uint64 min_assets_out = 1;
+        // Minimum acceptable assets to be received from the swap (slippage parameter).  Must be parsable as an unsigned 256-bit integer.
+        string min_assets_out = 1;
     }
 
     /*
@@ -105,7 +105,8 @@ message AaveV2Stablecoin {
      * Represents function `setDepositLimit(uint256 limit)`
      */
     message SetDepositLimit {
-        uint64 limit = 1;
+        // The per-wallet deposit limit amount. Must be parsable as an unsigned 256-bit integer.
+        string limit = 1;
     }
 
     /*
@@ -114,8 +115,8 @@ message AaveV2Stablecoin {
      * Represents function `setLiquidityLimit(uint256 limit)`
      */
      message SetLiquidityLimit {
-        // The amount
-        uint64 limit = 1;
+        // The maximum allowed liquidity amount. Must be parsable as an unsigned 256-bit integer.
+        string limit = 1;
     }
 
     /*
