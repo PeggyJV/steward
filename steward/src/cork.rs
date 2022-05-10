@@ -115,10 +115,7 @@ fn get_encoded_call(request: SubmitRequest) -> Result<Vec<u8>, Error> {
                 return Err(ErrorKind::Http.context("empty function data").into());
             }
 
-            aave_v2_stablecoin::get_encoded_call(
-                call.function.unwrap(),
-                request.cellar_id,
-            )
+            aave_v2_stablecoin::get_encoded_call(call.function.unwrap(), request.cellar_id)
         }
     }
 }
