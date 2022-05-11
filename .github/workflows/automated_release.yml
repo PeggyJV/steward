@@ -37,24 +37,24 @@ jobs:
       # Install OpenSSL dependencies
       - name: install-openssl
         run: |
-          apt-get install -y musl-tools wget
-          ln -s /usr/include/x86_64-linux-gnu/asm /usr/include/x86_64-linux-musl/asm
-          ln -s /usr/include/asm-generic /usr/include/x86_64-linux-musl/asm-generic
-          ln -s /usr/include/linux /usr/include/x86_64-linux-musl/linux
-          mkdir /musl
+          sudo apt-get install -y musl-tools wget
+          sudo ln -s /usr/include/x86_64-linux-gnu/asm /usr/include/x86_64-linux-musl/asm
+          sudo ln -s /usr/include/asm-generic /usr/include/x86_64-linux-musl/asm-generic
+          sudo ln -s /usr/include/linux /usr/include/x86_64-linux-musl/linux
+          mkdir musl
           wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_1n.tar.gz
           tar zxvf OpenSSL_1_1_1n.tar.gz
           cd openssl-OpenSSL_1_1_1n/
-          CC="musl-gcc -fPIE -pie" ./Configure no-shared no-async --prefix=/musl --openssldir=/musl/ssl linux-x86_64
+          CC="musl-gcc -fPIE -pie" ./Configure no-shared no-async --prefix=$GITHUB_WORKSPACE/musl --openssldir=$GITHUB_WORKSPACE/musl/ssl linux-x86_64
           make depend
           make -j$(nproc)
           make install
+          echo "OPENSSL_DIR=$GITHUB_WORKSPACE/musl" >> $GITHUB_ENV
       # Build Rust Artifacts
       - name: build-rust
         env:
           PKG_CONFIG_ALLOW_CROSS: 1
           OPENSSL_STATIC: true
-          OPENSSL_DIR: /musl
         run: cargo build --target x86_64-unknown-linux-musl --release --all
       # Create Release and Upload artifacts
       - name: Release
