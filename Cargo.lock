@@ -63,61 +63,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "actix-codec"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "13895df506faee81e423febbae3a33b27fca71831b96bb3d60adf16ebcfea952"
-dependencies = [
- "bitflags",
- "bytes",
- "futures-core",
- "futures-sink",
- "log",
- "memchr",
- "pin-project-lite",
- "tokio",
- "tokio-util",
-]
-
-[[package]]
-name = "actix-http"
-version = "3.0.0-beta.14"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "055b723746f19534fc5c9a210788686542986d6f1b9cb2900a297bb4c6619f3b"
-dependencies = [
- "actix-codec",
- "actix-rt",
- "actix-service",
- "actix-utils",
- "ahash",
- "base64 0.13.0",
- "bitflags",
- "bytes",
- "bytestring",
- "derive_more",
- "encoding_rs",
- "flate2",
- "futures-core",
- "futures-util",
- "h2",
- "http",
- "httparse",
- "httpdate",
- "itoa",
- "language-tags",
- "local-channel",
- "log",
- "mime",
- "percent-encoding",
- "pin-project",
- "pin-project-lite",
- "rand 0.8.4",
- "sha-1",
- "smallvec",
- "zstd",
-]
-
-[[package]]
 name = "actix-macros"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -136,47 +81,6 @@ dependencies = [
  "actix-macros",
  "futures-core",
  "tokio",
-]
-
-[[package]]
-name = "actix-service"
-version = "2.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8d3dc6a618b082974a08d7a4781d24d4691cba51500059bfebe6656a61ebfe1e"
-dependencies = [
- "futures-core",
- "paste",
- "pin-project-lite",
-]
-
-[[package]]
-name = "actix-tls"
-version = "3.0.0-rc.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4a78e066ef965e3501b0710f0722d0741e025b09e01f1af13afba0774efc2f40"
-dependencies = [
- "actix-codec",
- "actix-rt",
- "actix-service",
- "actix-utils",
- "derive_more",
- "futures-core",
- "http",
- "log",
- "openssl",
- "pin-project-lite",
- "tokio-openssl",
- "tokio-util",
-]
-
-[[package]]
-name = "actix-utils"
-version = "3.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e491cbaac2e7fc788dfff99ff48ef317e23b3cf63dbaf7aaab6418f40f92aa94"
-dependencies = [
- "local-waker",
- "pin-project-lite",
 ]
 
 [[package]]
@@ -339,40 +243,6 @@ name = "autocfg"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cdb031dd78e28731d87d56cc8ffef4a8f36ca26c38fe2de700543e627f8a464a"
-
-[[package]]
-name = "awc"
-version = "3.0.0-beta.12"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e9fef22345ed9fc111adf13c3b1e48473136a2669a73680b82d18d6e71e720fe"
-dependencies = [
- "actix-codec",
- "actix-http",
- "actix-rt",
- "actix-service",
- "actix-tls",
- "actix-utils",
- "ahash",
- "base64 0.13.0",
- "bytes",
- "cfg-if",
- "derive_more",
- "futures-core",
- "futures-util",
- "h2",
- "http",
- "itoa",
- "log",
- "mime",
- "openssl",
- "percent-encoding",
- "pin-project-lite",
- "rand 0.8.4",
- "serde",
- "serde_json",
- "serde_urlencoded",
- "tokio",
-]
 
 [[package]]
 name = "axum"
@@ -651,15 +521,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bytestring"
-version = "1.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "90706ba19e97b90786e19dc0d5e2abd80008d99d4c0c5d1ad0b5e72cec7c494d"
-dependencies = [
- "bytes",
-]
-
-[[package]]
 name = "camino"
 version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -701,9 +562,6 @@ name = "cc"
 version = "1.0.72"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "22a9137b95ea06864e018375b72adfb7db6e6f68cfc8df5a04d00288050485ee"
-dependencies = [
- "jobserver",
-]
 
 [[package]]
 name = "cfg-if"
@@ -922,7 +780,7 @@ dependencies = [
 [[package]]
 name = "cosmos_gravity"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge/?branch=main#544af0462287887737b16d6606b6bf5aabcadfde"
+source = "git+https://github.com/PeggyJV/gravity-bridge/?branch=bolten/remove-web30-deps#92a9d3b7ad25492f720581d02a8532823897d43f"
 dependencies = [
  "bytes",
  "clarity",
@@ -939,7 +797,6 @@ dependencies = [
  "sha3",
  "tokio",
  "tonic 0.4.3",
- "web30",
 ]
 
 [[package]]
@@ -949,15 +806,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "95059428f66df56b63431fdb4e1947ed2190586af5c5a8a8b71122bdf5a7f469"
 dependencies = [
  "libc",
-]
-
-[[package]]
-name = "crc32fast"
-version = "1.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "738c290dfaea84fc1ca15ad9c168d083b05a714e1efddd8edaab678dc28d2836"
-dependencies = [
- "cfg-if",
 ]
 
 [[package]]
@@ -1085,19 +933,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6919815d73839e7ad218de758883aae3a257ba6759ce7a9992501efbb53d705c"
 dependencies = [
  "const-oid 0.7.1",
-]
-
-[[package]]
-name = "derive_more"
-version = "0.99.17"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4fb810d30a7c1953f91334de7244731fc3f3c10d7fe163338a35b9f640960321"
-dependencies = [
- "convert_case",
- "proc-macro2",
- "quote",
- "rustc_version",
- "syn",
 ]
 
 [[package]]
@@ -1287,7 +1122,7 @@ dependencies = [
 [[package]]
 name = "ethereum_gravity"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge/?branch=main#544af0462287887737b16d6606b6bf5aabcadfde"
+source = "git+https://github.com/PeggyJV/gravity-bridge/?branch=bolten/remove-web30-deps#92a9d3b7ad25492f720581d02a8532823897d43f"
 dependencies = [
  "clarity",
  "deep_space",
@@ -1297,7 +1132,6 @@ dependencies = [
  "log",
  "sha3",
  "tokio",
- "web30",
 ]
 
 [[package]]
@@ -1550,18 +1384,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "37ab347416e802de484e4d03c7316c48f1ecb56574dfd4a46a80f173ce1de04d"
 
 [[package]]
-name = "flate2"
-version = "1.0.22"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e6988e897c1c9c485f43b47a529cef42fde0547f9d8d41a7062518f1d8fc53f"
-dependencies = [
- "cfg-if",
- "crc32fast",
- "libc",
- "miniz_oxide",
-]
-
-[[package]]
 name = "flex-error"
 version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1774,7 +1596,7 @@ checksum = "9b919933a397b79c37e33b77bb2aa3dc8eb6e165ad809e58ff75bc7db2e34574"
 [[package]]
 name = "gravity_abi"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge/?branch=main#544af0462287887737b16d6606b6bf5aabcadfde"
+source = "git+https://github.com/PeggyJV/gravity-bridge/?branch=bolten/remove-web30-deps#92a9d3b7ad25492f720581d02a8532823897d43f"
 dependencies = [
  "ethers",
  "serde",
@@ -1785,7 +1607,7 @@ dependencies = [
 [[package]]
 name = "gravity_proto"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge/?branch=main#544af0462287887737b16d6606b6bf5aabcadfde"
+source = "git+https://github.com/PeggyJV/gravity-bridge/?branch=bolten/remove-web30-deps#92a9d3b7ad25492f720581d02a8532823897d43f"
 dependencies = [
  "bytes",
  "cosmos-sdk-proto 0.6.3",
@@ -1797,7 +1619,7 @@ dependencies = [
 [[package]]
 name = "gravity_utils"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge/?branch=main#544af0462287887737b16d6606b6bf5aabcadfde"
+source = "git+https://github.com/PeggyJV/gravity-bridge/?branch=bolten/remove-web30-deps#92a9d3b7ad25492f720581d02a8532823897d43f"
 dependencies = [
  "bitcoin",
  "clarity",
@@ -1820,7 +1642,6 @@ dependencies = [
  "tokio",
  "tonic 0.4.3",
  "url",
- "web30",
 ]
 
 [[package]]
@@ -2207,15 +2028,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b71991ff56294aa922b450139ee08b3bfc70982c6b2c7562771375cf73542dd4"
 
 [[package]]
-name = "jobserver"
-version = "0.1.24"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "af25a77299a7f711a01975c35a6a424eb6862092cc2d6c72c4ed6cbc56dfc1fa"
-dependencies = [
- "libc",
-]
-
-[[package]]
 name = "js-sys"
 version = "0.3.55"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2244,12 +2056,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "67c21572b4949434e4fc1e1978b99c5f77064153c59d998bf13ecd96fb5ecba7"
 
 [[package]]
-name = "language-tags"
-version = "0.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d4345964bb142484797b161f473a503a434de77149dd8c7427788c6e13379388"
-
-[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2260,24 +2066,6 @@ name = "libc"
 version = "0.2.108"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8521a1b57e76b1ec69af7599e75e38e7b7fad6610f037db8c79b127201b5d119"
-
-[[package]]
-name = "local-channel"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6246c68cf195087205a0512559c97e15eaf95198bf0e206d662092cdcb03fe9f"
-dependencies = [
- "futures-core",
- "futures-sink",
- "futures-util",
- "local-waker",
-]
-
-[[package]]
-name = "local-waker"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "84f9a2d3e27ce99ce2c3aad0b09b1a7b916293ea9b2bf624c13fe646fadd8da4"
 
 [[package]]
 name = "lock_api"
@@ -2639,7 +2427,7 @@ dependencies = [
 [[package]]
 name = "orchestrator"
 version = "2.0.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge/?branch=main#544af0462287887737b16d6606b6bf5aabcadfde"
+source = "git+https://github.com/PeggyJV/gravity-bridge/?branch=bolten/remove-web30-deps#92a9d3b7ad25492f720581d02a8532823897d43f"
 dependencies = [
  "actix-rt",
  "axum",
@@ -2667,7 +2455,6 @@ dependencies = [
  "serde_json",
  "tokio",
  "tonic 0.4.3",
- "web30",
 ]
 
 [[package]]
@@ -3227,7 +3014,7 @@ checksum = "f497285884f3fcff424ffc933e56d7cbca511def0c9831a7f9b5f6153e3cc89b"
 [[package]]
 name = "relayer"
 version = "2.0.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge/?branch=main#544af0462287887737b16d6606b6bf5aabcadfde"
+source = "git+https://github.com/PeggyJV/gravity-bridge/?branch=bolten/remove-web30-deps#92a9d3b7ad25492f720581d02a8532823897d43f"
 dependencies = [
  "actix-rt",
  "clarity",
@@ -3247,7 +3034,6 @@ dependencies = [
  "serde_derive",
  "tokio",
  "tonic 0.4.3",
- "web30",
 ]
 
 [[package]]
@@ -3654,19 +3440,6 @@ dependencies = [
  "itoa",
  "ryu",
  "serde",
-]
-
-[[package]]
-name = "sha-1"
-version = "0.9.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99cd6713db3cf16b6c84e06321e049a9b9f699826e16096d23bbcc44d15d51a6"
-dependencies = [
- "block-buffer 0.9.0",
- "cfg-if",
- "cpufeatures",
- "digest 0.9.0",
- "opaque-debug 0.3.0",
 ]
 
 [[package]]
@@ -4198,18 +3971,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tokio-openssl"
-version = "0.6.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c08f9ffb7809f1b20c1b398d92acf4cc719874b3b2b2d9ea2f09b4a80350878a"
-dependencies = [
- "futures-util",
- "openssl",
- "openssl-sys",
- "tokio",
-]
-
-[[package]]
 name = "tokio-rustls"
 version = "0.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4711,25 +4472,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "web30"
-version = "0.15.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e2560569747f3bdfe0011ccd2a5a52fd5e3d455de0578a4d6d50ec41ecbb5235"
-dependencies = [
- "awc",
- "clarity",
- "futures",
- "lazy_static",
- "log",
- "num 0.4.0",
- "num256",
- "serde",
- "serde_derive",
- "serde_json",
- "tokio",
-]
-
-[[package]]
 name = "webpki"
 version = "0.21.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4852,33 +4594,4 @@ dependencies = [
  "quote",
  "syn",
  "synstructure",
-]
-
-[[package]]
-name = "zstd"
-version = "0.9.0+zstd.1.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "07749a5dc2cb6b36661290245e350f15ec3bbb304e493db54a1d354480522ccd"
-dependencies = [
- "zstd-safe",
-]
-
-[[package]]
-name = "zstd-safe"
-version = "4.1.1+zstd.1.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c91c90f2c593b003603e5e0493c837088df4469da25aafff8bce42ba48caf079"
-dependencies = [
- "libc",
- "zstd-sys",
-]
-
-[[package]]
-name = "zstd-sys"
-version = "1.6.1+zstd.1.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "615120c7a2431d16cf1cf979e7fc31ba7a5b5e5707b29c8a99e5dbf8a8392a33"
-dependencies = [
- "cc",
- "libc",
 ]
