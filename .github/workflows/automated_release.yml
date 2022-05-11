@@ -23,8 +23,6 @@ jobs:
       # Checkout repository code
       - name: checkout-code
         uses: actions/checkout@v2
-        with: 
-          toolchain: 1.58
       # Rust Cache
       - name: rust-cache
         uses: actions/cache@v2
