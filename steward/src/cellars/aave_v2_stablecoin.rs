@@ -1,26 +1,47 @@
+use crate::{
+    error::Error,
+    utils::{sp_call_error, string_to_u256},
+};
 use ethers::{
     abi::AbiEncode,
+    contract::EthCall,
     prelude::{H160, U256},
 };
 use std::convert::TryInto;
 use steward_abi::aave_v2_stablecoin::*;
 use steward_proto::steward::aave_v2_stablecoin::Function::{self, *};
 
-use crate::{error::Error, utils::sp_call_error};
+use super::log_cellar_call;
 
+const CELLAR_NAME: &str = "aave_v2_stablecoin";
 const LOG_PREFIX: &str = "AaveV2StablcoinCellar";
 
-pub fn get_encoded_call(function: Function) -> Result<Vec<u8>, Error> {
+pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>, Error> {
     match function {
         AccrueFees(_) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &AccrueFeesCall::function_name(),
+                cellar_id.as_str(),
+            );
             let call = AccrueFeesCall {};
             Ok(AaveV2StablecoinCellarCalls::AccrueFees(call).encode())
         }
         ClaimAndUnstake(_) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &ClaimAndUnstakeCall::function_name(),
+                cellar_id.as_str(),
+            );
             let call = ClaimAndUnstakeCall {};
             Ok(AaveV2StablecoinCellarCalls::ClaimAndUnstake(call).encode())
         }
         EnterPosition(_) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &EnterPositionCall::function_name(),
+                cellar_id.as_str(),
+            );
             let call = EnterPositionCall {};
             let call = AaveV2StablecoinCellarCalls::EnterPosition(call);
             Ok(call.encode())
@@ -71,32 +92,56 @@ pub fn get_encoded_call(function: Function) -> Result<Vec<u8>, Error> {
                 .try_into()
                 .expect("failed to convert 'swap_params' vec to array");
 
+            let min_assets_out = string_to_u256(params.min_assets_out)?;
+
+            log_cellar_call(
+                CELLAR_NAME,
+                &RebalanceCall::function_name(),
+                cellar_id.as_str(),
+            );
             let call = RebalanceCall {
                 route,
                 swap_params,
-                min_assets_out: params.min_assets_out.into(),
+                min_assets_out,
             };
             Ok(AaveV2StablecoinCellarCalls::Rebalance(call).encode())
         }
         Reinvest(params) => {
-            let call = ReinvestCall {
-                min_assets_out: params.min_assets_out.into(),
-            };
+            let min_assets_out = string_to_u256(params.min_assets_out)?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &ReinvestCall::function_name(),
+                cellar_id.as_str(),
+            );
+            let call = ReinvestCall { min_assets_out };
             Ok(AaveV2StablecoinCellarCalls::Reinvest(call).encode())
         }
         SetDepositLimit(params) => {
-            let call = SetDepositLimitCall {
-                limit: params.limit.into(),
-            };
+            let limit = string_to_u256(params.limit)?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetDepositLimitCall::function_name(),
+                cellar_id.as_str(),
+            );
+            let call = SetDepositLimitCall { limit };
             Ok(AaveV2StablecoinCellarCalls::SetDepositLimit(call).encode())
         }
         SetLiquidityLimit(params) => {
-            let call = SetLiquidityLimitCall {
-                limit: params.limit.into(),
-            };
+            let limit = string_to_u256(params.limit)?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetLiquidityLimitCall::function_name(),
+                cellar_id.as_str(),
+            );
+            let call = SetLiquidityLimitCall { limit };
             Ok(AaveV2StablecoinCellarCalls::SetLiquidityLimit(call).encode())
         }
         TransferFees(_) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &TransferFeesCall::function_name(),
+                cellar_id.as_str(),
+            );
             let call = TransferFeesCall {};
             Ok(AaveV2StablecoinCellarCalls::TransferFees(call).encode())
         }

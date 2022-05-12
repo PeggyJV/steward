@@ -28,6 +28,15 @@ pub fn bytes_to_hex_str(bytes: &[u8]) -> String {
         .fold(String::new(), |acc, x| acc + &x)
 }
 
+pub fn string_to_u256(value: String) -> Result<U256, Error> {
+    match U256::from_dec_str(value.as_str()) {
+        Ok(v) => Ok(v),
+        Err(_) => Err(ErrorKind::SPCallError
+            .context(format!("failed to parse amount {} to U256", value))
+            .into()),
+    }
+}
+
 pub async fn get_chain(eth_client: Provider<Http>) -> Result<Chain, Error> {
     let chain_id_result = eth_client.get_chainid().await?;
     let chain_id = downcast_to_u64(chain_id_result);

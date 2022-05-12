@@ -8,6 +8,7 @@ import (
 	"encoding/pem"
 	"fmt"
 	"io/ioutil"
+	"math/big"
 	"time"
 
 	"github.com/ethereum/go-ethereum"
@@ -65,6 +66,10 @@ func (s *IntegrationTestSuite) TestCork() {
 		}, 200*time.Second, 1*time.Second, "new vote period never seen")
 
 		s.T().Logf("submit contract call data to steward")
+		dai := "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+		pool := "0xE340B25fE32B1011616bb8EC495A4d503e322177"
+		usdc := "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+		zeroAddr := "0x0000000000000000000000000000000000000000"
 		s.Require().Eventually(func() bool {
 			// Load in client TLS config
 			// client cert
@@ -108,12 +113,25 @@ func (s *IntegrationTestSuite) TestCork() {
 				c := NewContractCallClient(conn)
 				s.T().Logf("sending request to %s", s.chain.validators[i].keyInfo.GetAddress())
 				cellarId := hardhatCellar.String()
+				route := []string{dai, pool, usdc, zeroAddr, zeroAddr, zeroAddr, zeroAddr, zeroAddr, zeroAddr}
+				swapParams := []*AaveV2Stablecoin_Rebalance_SwapParams{
+					{InIndex: 0, OutIndex: 2, SwapType: 1},
+					{InIndex: 0, OutIndex: 0, SwapType: 0},
+					{InIndex: 0, OutIndex: 0, SwapType: 0},
+					{InIndex: 0, OutIndex: 0, SwapType: 0},
+				}
+				// 1*10^18
+				minAssetsOut := "1000000000000000000"
 				request := SubmitRequest{
 					CellarId: cellarId,
 					CallData: &SubmitRequest_AaveV2Stablecoin{
 						&AaveV2Stablecoin{
-							Function: &AaveV2Stablecoin_ClaimAndUnstake_{
-								&AaveV2Stablecoin_ClaimAndUnstake{},
+							Function: &AaveV2Stablecoin_Rebalance_{
+								&AaveV2Stablecoin_Rebalance{
+									Route:        route,
+									SwapParams:   swapParams,
+									MinAssetsOut: minAssetsOut,
+								},
 							},
 						},
 					},
@@ -152,8 +170,13 @@ func (s *IntegrationTestSuite) TestCork() {
 		aave_abi, err := AaveV2MetaData.GetAbi()
 		s.Require().NoError(err)
 
-		methodName := "claimAndUnstake"
-		method, err := aave_abi.Pack(methodName)
+		methodName := "rebalance"
+		zeroAddress := common.HexToAddress(zeroAddr)
+		route := [9]common.Address{common.HexToAddress(dai), common.HexToAddress(pool), common.HexToAddress(usdc), zeroAddress, zeroAddress, zeroAddress, zeroAddress, zeroAddress, zeroAddress}
+		zero := big.NewInt(0)
+		swapParams := &[4][3]*big.Int{{zero, big.NewInt(2), big.NewInt(1)}, {zero, zero, zero}, {zero, zero, zero}, {zero, zero, zero}}
+		minAssetsOut := big.NewInt(1000000000000000000)
+		method, err := aave_abi.Pack(methodName, route, swapParams, minAssetsOut)
 		addr := common.HexToAddress(hardhatCellar.String())
 		invalidationScope := crypto.Keccak256Hash(
 			bytes.Join(
@@ -250,7 +273,7 @@ func (s *IntegrationTestSuite) TestCork() {
 
 			// For non-anonymous events, the first log topic is a keccak256 hash of the
 			// event signature.
-			eventSignature := []byte("mockClaimAndUnstake()")
+			eventSignature := []byte("mockRebalance(address[9],uint256[3][4],uint256)")
 			mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
 			query := ethereum.FilterQuery{
 				FromBlock: nil,
@@ -272,7 +295,15 @@ func (s *IntegrationTestSuite) TestCork() {
 			s.T().Logf("got %v logs", len(logs))
 			if len(logs) == 1 {
 				s.T().Log("saw mock function event!")
-				return true
+
+				log := logs[0]
+				if len(log.Data) > 0 {
+					var event AaveV2MockRebalance
+					err := aave_abi.UnpackIntoInterface(&event, "mockRebalance", log.Data)
+					s.Require().NoError(err, "failed to unpack mockRebalance event from log data")
+					s.Require().Equal(event.MinAssetsOut, minAssetsOut)
+					return true
+				}
 			}
 
 			return false

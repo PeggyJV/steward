@@ -5,6 +5,7 @@ use crate::{
     gas::CellarGas,
     prelude::APP,
     somm_send,
+    utils::string_to_u256,
 };
 use abscissa_core::{
     tracing::log::{debug, error, warn},
@@ -29,7 +30,7 @@ use steward_proto::{
     self,
     steward::{
         self,
-        submit_request::CallData::{self, AaveV2Stablecoin},
+        submit_request::CallData::AaveV2Stablecoin,
         SubmitRequest, SubmitResponse,
     },
 };
@@ -49,7 +50,7 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         request: Request<SubmitRequest>,
     ) -> Result<Response<SubmitResponse>, Status> {
         debug!("received contract call request");
-        let request = request.get_ref();
+        let request = request.get_ref().to_owned();
 
         // Check if cellar is governance approved before building cork
         let config = APP.config();
@@ -164,10 +165,10 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
                 match call.function.unwrap() {
                     Function::EnterPosition(_) => contract_call(contract.enter_position()).await,
                     Function::SetDepositLimit(params) => {
-                        contract_call(contract.set_deposit_limit(params.limit.into())).await
+                        contract_call(contract.set_deposit_limit(string_to_u256(params.limit).unwrap())).await
                     }
                     Function::Reinvest(params) => {
-                        contract_call(contract.reinvest(params.min_assets_out.into())).await
+                        contract_call(contract.reinvest(string_to_u256(params.min_assets_out).unwrap())).await
                     }
                     Function::Rebalance(params) => {
                         contract_call(
@@ -199,7 +200,7 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
                                     .collect::<Vec<[U256; 3]>>()
                                     .try_into()
                                     .expect("failed to convert 'swap_params' vec to array"),
-                                params.min_assets_out.into(),
+                                    string_to_u256(params.min_assets_out).unwrap(),
                             ),
                         )
                         .await
@@ -207,7 +208,7 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
                     Function::AccrueFees(_) => contract_call(contract.accrue_fees()).await,
                     Function::TransferFees(_) => contract_call(contract.transfer_fees()).await,
                     Function::SetLiquidityLimit(params) => {
-                        contract_call(contract.set_liquidity_limit(params.limit.into())).await
+                        contract_call(contract.set_liquidity_limit(string_to_u256(params.limit).unwrap())).await
                     }
                     Function::ClaimAndUnstake(_) => {
                         contract_call(contract.claim_and_unstake()).await
@@ -223,14 +224,14 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
     }
 }
 
-async fn build_cork(request: &SubmitRequest) -> Result<Cork, Error> {
+// Because of Rusts handling of enums, we have no easy way to log what cellar type and function are
+// being requested before we get to the encoding step, so we pass the whole request into this method
+// and the get_encoded_call() methods so logging can happen there.
+async fn build_cork(request: SubmitRequest) -> Result<Cork, Error> {
     cellars::validate_cellar_id(request.cellar_id.as_str())?;
+
     let address = request.cellar_id.clone();
-    let contract_call_data = match request.call_data.clone() {
-        Some(call) => call,
-        None => return Err(ErrorKind::Http.context("empty contract call data").into()),
-    };
-    let encoded_call = get_encoded_call(contract_call_data)?;
+    let encoded_call = get_encoded_call(request)?;
 
     Ok(Cork {
         encoded_contract_call: encoded_call,
@@ -238,12 +239,19 @@ async fn build_cork(request: &SubmitRequest) -> Result<Cork, Error> {
     })
 }
 
-fn get_encoded_call(data: CallData) -> Result<Vec<u8>, Error> {
-    match data {
-        AaveV2Stablecoin(call) => aave_v2_stablecoin::get_encoded_call(
-            call.function
-                .expect("call data for Aave V2 Stablecoin cellar was empty"),
-        ),
+fn get_encoded_call(request: SubmitRequest) -> Result<Vec<u8>, Error> {
+    if request.call_data.is_none() {
+        return Err(ErrorKind::Http.context("empty contract call data").into());
+    }
+
+    match request.call_data.unwrap() {
+        AaveV2Stablecoin(call) => {
+            if call.function.is_none() {
+                return Err(ErrorKind::Http.context("empty function data").into());
+            }
+
+            aave_v2_stablecoin::get_encoded_call(call.function.unwrap(), request.cellar_id)
+        }
     }
 }
 
