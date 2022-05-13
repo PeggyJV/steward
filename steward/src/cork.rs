@@ -160,6 +160,11 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
 
         match contract_call_data {
             AaveV2Stablecoin(call) => {
+                if call.function.is_none() {
+                    return Err(tonic::Status::invalid_argument(
+                        "Error, can't validate Cellar ID",
+                    ));
+                } else {
                 let contract = AaveV2StablecoinCellar::new(address, Arc::new(client));
 
                 match call.function.unwrap() {
@@ -214,11 +219,12 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
                         contract_call(contract.claim_and_unstake()).await
                     }
                 }
-                .unwrap_or_else(|err| {
-                    panic!("{:?}", tonic::Status::invalid_argument(err.to_string()));
-                })
+
             }
         }
+        };
+
+
 
         Ok(Response::new(SubmitResponse {}))
     }
