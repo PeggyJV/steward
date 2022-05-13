@@ -77,7 +77,7 @@ grpcurl -cert integration_tests/tls/client/test_client.crt \
 	-key integration_tests/tls/client/test_client_key_pkcs8.pem \
 	-cacert <output_path>/server_ca.crt \
 	-d '' \
-	localhost:5734 \
+	<fqdn_of_server>:5734 \
 	steward.v1.ContractCall/Submit
 ```
 
