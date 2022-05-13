@@ -2,7 +2,7 @@
 
 This document will walk you through one way to generate a CA and self-signed certificate for use with Steward.
 
-Two-way trust must be established between Steward and the Strategy Provider client for each request. To accomplish this, both the Server and Client will need TLS certificates and the CA certificate of the other party (Steward needs the client's CA, and the client needs Steward's CA). To make generating Steward's certificates easier, we've provided a convenience script called `gen-script.sh` which can be found [here](https://github.com/peggyjv/steward/gen-script.sh). The script takes one optional flag for the output location of the certificates and their signing keys. The client CA will be set by default to Peggy JV's CA for now.
+Two-way trust must be established between Steward and the Strategy Provider client for each request. To accomplish this, both the Server and Client will need TLS certificates and the CA certificate of the other party (Steward needs the client's CA, and the client needs Steward's CA). To make generating Steward's certificates easier, we've provided a convenience script called `gen-script.sh` which can be found [here](https://github.com/PeggyJV/steward/blob/main/gen-certs.sh). The script takes one optional flag for the output location of the certificates and their signing keys. The client CA will be set by default to Peggy JV's CA for now.
 
 ## Steps
 
