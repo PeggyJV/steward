@@ -9,7 +9,7 @@ use steward_proto::steward::contract_call_server::ContractCallServer;
     long_about = "DESCRIPTION \n\n Test mode, start Ethereum test module.\n This command starts Steward using the Ethereum test mode."
 )]
 pub struct TestModeCmd {
-    key_name: String
+    key_name: String,
 }
 
 impl Runnable for TestModeCmd {
@@ -41,7 +41,9 @@ impl Runnable for TestModeCmd {
                 .unwrap_or_else(|err| {
                     panic!("{:?}", err);
                 })
-                .add_service(ContractCallServer::new(DirectCorkHandler))
+                .add_service(ContractCallServer::new(DirectCorkHandler {
+                    name: self.key_name.clone(),
+                }))
                 .add_service(proto_descriptor_service)
                 .serve(server_config.address)
                 .await
@@ -64,5 +66,4 @@ impl config::Override<StewardConfig> for TestModeCmd {
     fn override_config(&self, config: StewardConfig) -> Result<StewardConfig, FrameworkError> {
         Ok(config)
     }
-    
 }

@@ -105,7 +105,9 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
     }
 }
 
-pub struct DirectCorkHandler;
+pub struct DirectCorkHandler {
+    pub name: String,
+}
 
 #[async_trait]
 impl steward::contract_call_server::ContractCall for DirectCorkHandler {
@@ -127,8 +129,8 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
 
         let config = APP.config();
 
-        let name = &config.keys.delegate_key;
-        let wallet = config.load_ethers_wallet(name.to_string());
+        let name = self.name.clone();
+        let wallet = config.load_ethers_wallet(name);
 
         let eth_host = config.ethereum.rpc.clone();
         let provider = Provider::<Http>::try_from(eth_host.clone())
