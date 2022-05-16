@@ -8,7 +8,9 @@ use steward_proto::steward::contract_call_server::ContractCallServer;
 #[clap(
     long_about = "DESCRIPTION \n\n Test mode, start Ethereum test module.\n This command starts Steward using the Ethereum test mode."
 )]
-pub struct TestModeCmd;
+pub struct TestModeCmd {
+    key_name: String
+}
 
 impl Runnable for TestModeCmd {
     /// Start the application.
@@ -62,4 +64,5 @@ impl config::Override<StewardConfig> for TestModeCmd {
     fn override_config(&self, config: StewardConfig) -> Result<StewardConfig, FrameworkError> {
         Ok(config)
     }
+    
 }

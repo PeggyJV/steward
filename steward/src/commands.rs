@@ -21,7 +21,10 @@ mod sign_delegate_keys;
 mod start;
 mod test_mode;
 
-use self::{config_cmd::ConfigCmd, keys::KeysCmd, start::StartCmd, test_mode::TestModeCmd, schedule_corks::ScheduleCmd, };
+use self::{
+    config_cmd::ConfigCmd, keys::KeysCmd, schedule_corks::ScheduleCmd, start::StartCmd,
+    test_mode::TestModeCmd,
+};
 
 use crate::config::StewardConfig;
 use abscissa_core::{clap::Parser, Command, Configurable, FrameworkError, Runnable};

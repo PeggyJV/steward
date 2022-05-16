@@ -8,7 +8,7 @@ use crate::{
     utils::string_to_u256,
 };
 use abscissa_core::{
-    tracing::log::{debug, error, warn},
+    tracing::log::{debug, error, info, warn},
     Application,
 };
 use deep_space::{Coin, Contact};
@@ -28,11 +28,7 @@ use steward_abi::aave_v2_stablecoin::AaveV2StablecoinCellar;
 use steward_proto::steward::aave_v2_stablecoin::Function;
 use steward_proto::{
     self,
-    steward::{
-        self,
-        submit_request::CallData::AaveV2Stablecoin,
-        SubmitRequest, SubmitResponse,
-    },
+    steward::{self, submit_request::CallData::AaveV2Stablecoin, SubmitRequest, SubmitResponse},
 };
 use tonic::{self, async_trait, Code, Request, Response, Status};
 pub type EthSignerMiddleware = SignerMiddleware<Provider<Http>, LocalWallet>;
@@ -158,73 +154,77 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
             .parse()
             .expect("could not parse cellar address");
 
-        match contract_call_data {
+        let function_call = match contract_call_data {
             AaveV2Stablecoin(call) => {
-                if call.function.is_none() {
-                    return Err(tonic::Status::invalid_argument(
-                        "Error, can't validate Cellar ID",
-                    ));
-                } else {
                 let contract = AaveV2StablecoinCellar::new(address, Arc::new(client));
-
                 match call.function.unwrap() {
                     Function::EnterPosition(_) => contract_call(contract.enter_position()).await,
                     Function::SetDepositLimit(params) => {
-                        contract_call(contract.set_deposit_limit(string_to_u256(params.limit).unwrap())).await
-                    }
-                    Function::Reinvest(params) => {
-                        contract_call(contract.reinvest(string_to_u256(params.min_assets_out).unwrap())).await
-                    }
-                    Function::Rebalance(params) => {
                         contract_call(
-                            contract.rebalance(
-                                params
-                                    .route
-                                    .iter()
-                                    .map(|addr| match addr.parse::<H160>() {
-                                        Ok(addr) => Ok(addr),
-                                        Err(_) => Err(addr),
-                                    })
-                                    .collect::<Vec<_>>()
-                                    .iter()
-                                    .map(|r| r.unwrap())
-                                    .collect::<Vec<H160>>()
-                                    .try_into()
-                                    .expect("failed to convert 'route' addresses to array"),
-                                params
-                                    .swap_params
-                                    .iter()
-                                    .map(|sp| {
-                                        let out: [U256; 3] = [
-                                            sp.in_index.into(),
-                                            sp.out_index.into(),
-                                            sp.swap_type.into(),
-                                        ];
-                                        out
-                                    })
-                                    .collect::<Vec<[U256; 3]>>()
-                                    .try_into()
-                                    .expect("failed to convert 'swap_params' vec to array"),
-                                    string_to_u256(params.min_assets_out).unwrap(),
-                            ),
+                            contract.set_deposit_limit(string_to_u256(params.limit).unwrap()),
                         )
                         .await
+                    }
+                    Function::Reinvest(params) => {
+                        contract_call(
+                            contract.reinvest(string_to_u256(params.min_assets_out).unwrap()),
+                        )
+                        .await
+                    }
+                    Function::Rebalance(params) => {
+                        let results: Vec<Result<H160, &String>> = params
+                            .route
+                            .iter()
+                            .map(|addr| match addr.parse::<H160>() {
+                                Ok(addr) => Ok(addr),
+                                Err(_) => Err(addr),
+                            })
+                            .collect();
+
+                        aave_v2_stablecoin::validate_route(results.clone()).unwrap_or_else(|err| {
+                            println!("{}", err);
+                        });
+
+                        let route = results
+                            .iter()
+                            .map(|r| r.unwrap())
+                            .collect::<Vec<H160>>()
+                            .try_into()
+                            .expect("failed to convert 'route' addresses to array");
+
+                        let swap_params = params
+                            .swap_params
+                            .iter()
+                            .map(|sp| {
+                                let out: [U256; 3] =
+                                    [sp.in_index.into(), sp.out_index.into(), sp.swap_type.into()];
+                                out
+                            })
+                            .collect::<Vec<[U256; 3]>>()
+                            .try_into()
+                            .expect("failed to convert 'swap_params' vec to array");
+
+                        let min_assets_out = string_to_u256(params.min_assets_out).unwrap();
+
+                        contract_call(contract.rebalance(route, swap_params, min_assets_out)).await
                     }
                     Function::AccrueFees(_) => contract_call(contract.accrue_fees()).await,
                     Function::TransferFees(_) => contract_call(contract.transfer_fees()).await,
                     Function::SetLiquidityLimit(params) => {
-                        contract_call(contract.set_liquidity_limit(string_to_u256(params.limit).unwrap())).await
+                        contract_call(
+                            contract.set_liquidity_limit(string_to_u256(params.limit).unwrap()),
+                        )
+                        .await
                     }
                     Function::ClaimAndUnstake(_) => {
                         contract_call(contract.claim_and_unstake()).await
                     }
                 }
-
             }
-        }
         };
-
-
+        if function_call.is_err() {
+            return Err(Status::new(Code::Internal, "Function call error"));
+        }
 
         Ok(Response::new(SubmitResponse {}))
     }
@@ -289,7 +289,10 @@ async fn contract_call<T: Detokenize>(
     let gas = contract_call.estimate_gas().await?;
     let gas_price = CellarGas::get_gas_price().await?;
     let contract_call = contract_call.gas(gas).gas_price(gas_price);
-    let contract_call = contract_call.send().await?;
-    let _tx_hash = *contract_call;
+    let pending_tx = contract_call.send().await?;
+    let _tx_hash = *pending_tx;
+    let transaction = pending_tx.await?;
+    info!("{:?}", transaction);
+
     Ok(())
 }
