@@ -106,7 +106,6 @@ impl Runnable for StartCommand {
             check_for_eth(ethereum_address, eth_client.clone()).await;
 
             let gas_price = config.cosmos.gas_price.as_tuple();
-            let relayer_opt_out = !self.relay;
 
             orchestrator_main_loop(
                 cosmos_key,
@@ -119,7 +118,7 @@ impl Runnable for StartCommand {
                 config.ethereum.gas_price_multiplier,
                 config.ethereum.blocks_to_search,
                 config.cosmos.gas_adjustment,
-                relayer_opt_out,
+                !self.relay,
                 config.cosmos.msg_batch_size,
             )
             .await;
