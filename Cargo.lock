@@ -4686,7 +4686,7 @@ dependencies = [
 
 [[package]]
 name = "sommelier_steward"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "lazy_static",
  "steward",
@@ -4777,7 +4777,7 @@ checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
 
 [[package]]
 name = "steward"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "abscissa_core",
  "abscissa_tokio",
