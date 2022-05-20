@@ -16,7 +16,7 @@ clarity = "0.4.12"
 deep_space ={ git = "https://github.com/iqlusioninc/deep_space/", branch = "master" }
 ethers = { git = "https://github.com/iqlusioninc/ethers-rs.git", branch="zaki/error_abi_support", features = ["abigen"] }
 futures = "0.3"
-gravity_bridge = { git = "https://github.com/PeggyJV/gravity-bridge", branch = "main" }
+gravity_bridge = { git = "https://github.com/PeggyJV/gravity-bridge", branch = "bolten/chunky-oracle" }
 gumdrop = "0.7"
 hex = "0.4"
 hyper = "0.14.12"
