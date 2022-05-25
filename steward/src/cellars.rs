@@ -1,32 +1,26 @@
-use crate::{error::Error, gas::CellarGas, utils::get_eth_provider};
-use abscissa_core::tracing::log::warn;
+use abscissa_core::tracing::log::info;
 use ethers::prelude::*;
 use std::result::Result;
 
+use crate::error::{Error, ErrorKind};
+
 pub(crate) mod aave_v2_stablecoin;
-pub(crate) mod uniswapv3;
 
-pub async fn get_gas_price() -> Result<U256, Error> {
-    if std::env::var("ETHERSCAN_API_KEY").is_ok() {
-        match CellarGas::etherscan_standard().await {
-            Ok(gas) => return Ok(gas),
-            Err(err) => {
-                warn!("failed to retrieve gas estimate from etherscan: {}", err);
-            }
-        }
-    }
-
-    let provider = get_eth_provider().await?;
-
-    provider.get_gas_price().await.map_err(|r| r.into())
-}
-
-pub fn validate_cellar_id(cellar_id: &str) -> Result<(), String> {
+pub fn validate_cellar_id(cellar_id: &str) -> Result<(), Error> {
     if let Err(err) = cellar_id.parse::<H160>() {
-        return Err(format!("invalid ethereum address: {}", err));
+        return Err(ErrorKind::SPCallError
+            .context(format!("invalid ethereum address: {}", err))
+            .into());
     }
 
     Ok(())
+}
+
+pub fn log_cellar_call(cellar_name: &str, function_name: &str, cellar_id: &str) {
+    info!(
+        "encoding {}.{} call for cellar {}",
+        cellar_name, function_name, cellar_id
+    );
 }
 
 #[cfg(test)]

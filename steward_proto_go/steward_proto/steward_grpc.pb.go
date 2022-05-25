@@ -22,6 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ContractCallClient interface {
+	// Handles simple contract call submission
 	Submit(ctx context.Context, in *SubmitRequest, opts ...grpc.CallOption) (*SubmitResponse, error)
 }
 
@@ -46,6 +47,7 @@ func (c *contractCallClient) Submit(ctx context.Context, in *SubmitRequest, opts
 // All implementations must embed UnimplementedContractCallServer
 // for forward compatibility
 type ContractCallServer interface {
+	// Handles simple contract call submission
 	Submit(context.Context, *SubmitRequest) (*SubmitResponse, error)
 	mustEmbedUnimplementedContractCallServer()
 }

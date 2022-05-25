@@ -18,7 +18,7 @@ const TIMEOUT: Duration = Duration::from_secs(60);
 pub struct CosmosToEthCmd {
     /// Gravity denom
     #[clap(short, long)]
-    gravity_denom: String,
+    denom: String,
 
     /// Tx amount.
     #[clap(short, long)]
@@ -64,11 +64,11 @@ pub fn print_eth(input: Uint256) -> String {
 impl Runnable for CosmosToEthCmd {
     fn run(&self) {
         let config = APP.config();
-        let gravity_denom = self.gravity_denom.to_string();
-        let is_cosmos_originated = !gravity_denom.starts_with("gravity");
+        let denom = self.denom.to_string();
+        let is_cosmos_originated = !denom.starts_with("gravity");
 
         let amount: Uint256 = self.amount.parse().expect("cannot parse amount");
-        let cosmos_key = config.load_deep_space_key(self.cosmos_key.to_string());
+        let cosmos_key = config.load_gravity_deep_space_key(self.cosmos_key.to_string());
 
         let cosmos_prefix = config.cosmos.prefix.trim();
         let cosmos_address = cosmos_key.to_address(cosmos_prefix).unwrap();
@@ -86,19 +86,19 @@ impl Runnable for CosmosToEthCmd {
         let mut grpc = connections.grpc.unwrap();
         let res = grpc
             .denom_to_erc20(DenomToErc20Request {
-                denom: gravity_denom.clone(),
+                denom: denom.clone(),
             })
             .await;
         match res {
             Ok(val) => println!(
                 "Asset {} has ERC20 representation {}",
-                gravity_denom,
+                denom,
                 val.into_inner().erc20
             ),
             Err(_e) => {
                 println!(
                     "Asset {} has no ERC20 representation, you may need to deploy an ERC20 for it!",
-                    gravity_denom
+                    denom
                 );
                 exit(1);
             }
@@ -106,15 +106,15 @@ impl Runnable for CosmosToEthCmd {
 
         let amount = Coin {
             amount: amount.clone(),
-            denom: gravity_denom.clone(),
+            denom: denom.clone(),
         };
         let bridge_fee = Coin {
             amount: 1u64.into(),
-            denom: gravity_denom.clone(),
+            denom: denom.clone(),
         };
 
         let eth_dest: EthAddress = self.eth_dest.parse().expect("cannot parse ethereum address");
-        check_for_fee_denom(&gravity_denom, cosmos_address, &contact).await;
+        check_for_fee_denom(&denom, cosmos_address, &contact).await;
 
         let balances = contact
             .get_balances(cosmos_address)
@@ -122,7 +122,7 @@ impl Runnable for CosmosToEthCmd {
             .expect("Failed to get balances!");
         let mut found = None;
         for coin in balances.iter() {
-            if coin.denom == gravity_denom {
+            if coin.denom == denom {
                 found = Some(coin);
             }
         }
@@ -131,19 +131,19 @@ impl Runnable for CosmosToEthCmd {
         let times = self.times.parse::<usize>().expect("cannot parse times");
 
         match found {
-            None => panic!("You don't have any {} tokens!", gravity_denom),
+            None => panic!("You don't have any {} tokens!", denom),
             Some(found) => {
                 if amount.amount.clone() * times.into() >= found.amount && times == 1 {
                     if is_cosmos_originated {
-                        panic!("Your transfer of {} {} tokens is greater than your balance of {} tokens. Remember you need some to pay for fees!", print_atom(amount.amount), gravity_denom, print_atom(found.amount.clone()));
+                        panic!("Your transfer of {} {} tokens is greater than your balance of {} tokens. Remember you need some to pay for fees!", print_atom(amount.amount), denom, print_atom(found.amount.clone()));
                     } else {
-                        panic!("Your transfer of {} {} tokens is greater than your balance of {} tokens. Remember you need some to pay for fees!", print_eth(amount.amount), gravity_denom, print_eth(found.amount.clone()));
+                        panic!("Your transfer of {} {} tokens is greater than your balance of {} tokens. Remember you need some to pay for fees!", print_eth(amount.amount), denom, print_eth(found.amount.clone()));
                     }
                 } else if amount.amount.clone() * times.into() >= found.amount {
                     if is_cosmos_originated {
-                        panic!("Your transfer of {} * {} {} tokens is greater than your balance of {} tokens. Try to reduce the amount or the --times parameter", print_atom(amount.amount), times, gravity_denom, print_atom(found.amount.clone()));
+                        panic!("Your transfer of {} * {} {} tokens is greater than your balance of {} tokens. Try to reduce the amount or the --times parameter", print_atom(amount.amount), times, denom, print_atom(found.amount.clone()));
                     } else {
-                        panic!("Your transfer of {} * {} {} tokens is greater than your balance of {} tokens. Try to reduce the amount or the --times parameter", print_eth(amount.amount), times, gravity_denom, print_eth(found.amount.clone()));
+                        panic!("Your transfer of {} * {} {} tokens is greater than your balance of {} tokens. Try to reduce the amount or the --times parameter", print_eth(amount.amount), times, denom, print_eth(found.amount.clone()));
                     }
                 }
             }
@@ -153,7 +153,7 @@ impl Runnable for CosmosToEthCmd {
             println!(
                 "Locking {} / {} into the batch pool",
                 amount.clone(),
-                gravity_denom
+                denom
             );
             let res = send_to_eth(
                 cosmos_key,
@@ -173,7 +173,7 @@ impl Runnable for CosmosToEthCmd {
 
         if !self.wait_for_batch {
             println!("Requesting a batch to push transaction along immediately");
-            send_request_batch_tx(cosmos_key, gravity_denom,config.cosmos.gas_price.as_tuple(), &contact,config.cosmos.gas_adjustment)
+            send_request_batch_tx(cosmos_key, denom,config.cosmos.gas_price.as_tuple(), &contact,config.cosmos.gas_adjustment)
                 .await
                 .expect("Failed to request batch");
         } else {

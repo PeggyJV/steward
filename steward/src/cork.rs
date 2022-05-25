@@ -1,12 +1,12 @@
 use crate::{
-    cellars::{self, aave_v2_stablecoin, uniswapv3},
+    cellars::{self, aave_v2_stablecoin},
     config,
     error::{Error, ErrorKind},
     prelude::APP,
     somm_send,
 };
 use abscissa_core::{
-    tracing::log::{debug, error, warn},
+    tracing::log::{debug, error, info, warn},
     Application,
 };
 use deep_space::{Coin, Contact};
@@ -15,15 +15,12 @@ use somm_proto::cork::{query_client::QueryClient as CorkQueryClient, Cork, Query
 use std::time::Duration;
 use steward_proto::{
     self,
-    steward::{
-        self,
-        submit_request::CallData::{self, AaveV2Stablecoin, Uniswapv3Rebalance},
-        SubmitRequest, SubmitResponse,
-    },
+    steward::{self, submit_request::CallData::AaveV2Stablecoin, SubmitRequest, SubmitResponse},
 };
 use tonic::{self, async_trait, Code, Request, Response, Status};
 
 const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
+const CHAIN_PREFIX: &str = "somm";
 
 pub struct CorkHandler;
 
@@ -33,8 +30,7 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         &self,
         request: Request<SubmitRequest>,
     ) -> Result<Response<SubmitResponse>, Status> {
-        debug!("received contract call request");
-        let request = request.get_ref();
+        let request = request.get_ref().to_owned();
 
         // Check if cellar is governance approved before building cork
         let config = APP.config();
@@ -57,9 +53,9 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
             .cellar_ids
             .clone();
         if !ids.contains(&request.cellar_id) {
-            debug!(
-                "cellar ID {} not approved by governance",
-                &request.cellar_id
+            info!(
+                "rejecting request for unapproved cellar {}",
+                request.cellar_id
             );
             return Err(Status::new(
                 Code::PermissionDenied,
@@ -71,10 +67,11 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         }
 
         // Build and send cork
+        let cellar_id = request.cellar_id.clone();
         let cork = match build_cork(request).await {
             Ok(c) => c,
             Err(err) => {
-                warn!("failed to build cork: {}", err);
+                warn!("failed to build cork for cellar {}: {}", cellar_id, err);
                 return Err(Status::new(Code::InvalidArgument, err.to_string()));
             }
         };
@@ -87,20 +84,19 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
                 "failed to send cork to sommelier",
             ));
         }
-        debug!("sent cork!");
+        info!("submitted cork for {}!", cellar_id);
 
         Ok(Response::new(SubmitResponse {}))
     }
 }
-
-async fn build_cork(request: &SubmitRequest) -> Result<Cork, Error> {
+// Because of Rusts handling of enums, we have no easy way to log what cellar type and function are
+// being requested before we get to the encoding step, so we pass the whole request into this method
+// and the get_encoded_call() methods so logging can happen there.
+async fn build_cork(request: SubmitRequest) -> Result<Cork, Error> {
     cellars::validate_cellar_id(request.cellar_id.as_str())?;
+
     let address = request.cellar_id.clone();
-    let contract_call_data = match request.call_data.clone() {
-        Some(call) => call,
-        None => return Err(ErrorKind::Http.context("empty contract call data").into()),
-    };
-    let encoded_call = get_encoded_call(contract_call_data)?;
+    let encoded_call = get_encoded_call(request)?;
 
     Ok(Cork {
         encoded_contract_call: encoded_call,
@@ -108,20 +104,26 @@ async fn build_cork(request: &SubmitRequest) -> Result<Cork, Error> {
     })
 }
 
-fn get_encoded_call(data: CallData) -> Result<Vec<u8>, Error> {
-    match data {
-        AaveV2Stablecoin(call) => Ok(aave_v2_stablecoin::get_encoded_call(
-            call.function
-                .expect("call data for Aave V2 Stablecoin cellar was empty"),
-        )),
-        Uniswapv3Rebalance(params) => Ok(uniswapv3::get_encoded_call(params)),
+fn get_encoded_call(request: SubmitRequest) -> Result<Vec<u8>, Error> {
+    if request.call_data.is_none() {
+        return Err(ErrorKind::Http.context("empty contract call data").into());
+    }
+
+    match request.call_data.unwrap() {
+        AaveV2Stablecoin(call) => {
+            if call.function.is_none() {
+                return Err(ErrorKind::Http.context("empty function data").into());
+            }
+
+            aave_v2_stablecoin::get_encoded_call(call.function.unwrap(), request.cellar_id)
+        }
     }
 }
 
 async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
     let config = APP.config();
     debug!("establishing grpc connection");
-    let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, &config.cosmos.prefix)?;
+    let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX)?;
 
     debug!("getting cosmos fee");
     let cosmos_gas_price = config.cosmos.gas_price.as_tuple();

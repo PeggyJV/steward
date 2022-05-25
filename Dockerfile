@@ -1,6 +1,6 @@
 # Reference: https://www.lpalmieri.com/posts/fast-rust-docker-builds/
 
-FROM rust:1.56 as cargo-chef-rust
+FROM rust:1.58 as cargo-chef-rust
 RUN cargo install cargo-chef
 
 FROM cargo-chef-rust as planner
@@ -29,4 +29,4 @@ RUN cargo build --release --bin steward
 FROM cargo-chef-rust as runtime
 WORKDIR app
 COPY --from=builder /app/target/release/steward /usr/local/bin
-CMD steward cosmos-signer
+CMD steward start

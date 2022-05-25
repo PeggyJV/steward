@@ -1,12 +1,12 @@
 [package]
 name = "steward"
 authors = []
-version = "0.1.0"
+version = "1.0.1"
 edition = "2018"
 
 [dependencies]
 tempdir = "0.3.7"
-abscissa_tokio = "0.6.0-rc.0"
+abscissa_tokio = "0.6.0"
 bip32 = "0.2"
 bson = { version = "2.0.0-beta.2", features = ["chrono-0_4"] }
 bytes = "1.0"
@@ -45,7 +45,6 @@ toml = { version = "0.5" }
 tonic = { version = "0.4.3", features = ["codegen", "tls", "transport"] }
 tonic-reflection = "0.1.0"
 tower = { version = "0.4", features = ["buffer", "util"] }
-uniswap_v3_sdk ={ git = "https://github.com/PeggyJV/uniswap_sdk_rs", branch = "main" }
 url = "2.2.2"
 lazy_static = "1.4.0"
 
@@ -55,16 +54,17 @@ lazy_static = "1.4.0"
 # this crate. This allows for easy cross compiled builds because the 'vendored'
 # feature includes it's own OpenSSL version that's compiled on the fly
 # If ANY crate in this workspace has this it will work for all of them.
-openssl = { version = "0.10", features = ["vendored"] }
+openssl = { version = "=0.10.33", features = ["vendored"] }
+openssl-sys = "=0.9.61"
 openssl-probe = "0.1.4"
 
 
 [dependencies.abscissa_core]
-version = "0.6.0-rc.0"
+version = "0.6.0"
 # optional: use `gimli` to capture backtraces
 # see https://github.com/rust-lang/backtrace-rs/issues/189
 # features = ["gimli-backtrace"]
 
 [dev-dependencies]
-abscissa_core = { version = "0.6.0-rc.0", features = ["testing"] }
+abscissa_core = { version = "0.6.0", features = ["testing"] }
 once_cell = "1.2"

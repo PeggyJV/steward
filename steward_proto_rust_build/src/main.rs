@@ -25,7 +25,7 @@ fn main() {
     let tmp_dir = Path::new(&TMP_PATH);
 
     println!(
-        "[info] Compiling .proto files to Rust into '{}'...",
+        "Compiling .proto files to Rust into '{}'...",
         out_dir.display()
     );
 
@@ -65,7 +65,7 @@ fn main() {
     config.compile_protos(&protos, &steward_proto_dir).unwrap();
 
     // Compile all proto client for GRPC services
-    println!("[info ] Compiling proto clients for GRPC services!");
+    println!("Compiling proto clients for GRPC services...");
     tonic_build::configure()
         .build_client(true)
         .build_server(true)
@@ -76,7 +76,7 @@ fn main() {
         .unwrap();
 
     copy_generated_files(tmp_dir, out_dir);
-    println!("[info ] => Done!");
+    println!("Done!");
 }
 
 fn copy_generated_files(from_dir: &Path, to_dir: &Path) {

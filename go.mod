@@ -6,6 +6,7 @@ require (
 	github.com/cosmos/cosmos-sdk v0.44.5
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/ethereum/go-ethereum v1.10.16
+	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/miguelmota/go-ethereum-hdwallet v0.1.1
 	github.com/ory/dockertest/v3 v3.8.1
 	github.com/peggyjv/gravity-bridge/module/v2 v2.0.0-20220418171956-7fb1ba7ebc76
