@@ -71,12 +71,4 @@ mod tests {
 
         assert!(result.is_err())
     }
-
-    #[assay]
-    async fn valid_cellar_id_works() {
-        let cellar_id = "0x0000000000000000000000000000000000000000";
-        let result = validate_cellar_id(cellar_id).await;
-
-        assert!(result.is_ok());
-    }
 }
