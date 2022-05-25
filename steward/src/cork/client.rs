@@ -1,8 +1,10 @@
 use crate::{error::Error, prelude::APP};
 use abscissa_core::{tracing::debug, Application};
-use somm_proto::cork::{query_client::QueryClient as CorkQueryClient, QueryCellarIDsRequest, QueryCellarIDsResponse};
+use somm_proto::cork::{
+    query_client::QueryClient as CorkQueryClient, QueryCellarIDsRequest, QueryCellarIDsResponse,
+};
 use tokio::sync::{Mutex, OnceCell, SetError};
-use tonic::{transport::Channel, Status, Response};
+use tonic::{transport::Channel, Response, Status};
 
 static CORK_QUERY_CLIENT_WRAPPER: OnceCell<CorkClientWrapper> = OnceCell::const_new();
 
@@ -21,7 +23,9 @@ impl CorkClientWrapper {
     }
 
     /// Gets a lock on the wrapped query client
-    pub async fn get_approved_cellar_ids(&self) -> Result<Response<QueryCellarIDsResponse>, Status>{
+    pub async fn get_approved_cellar_ids(
+        &self,
+    ) -> Result<Response<QueryCellarIDsResponse>, Status> {
         let mut client = self.inner.lock().await;
         let request = QueryCellarIDsRequest {};
         client.query_cellar_i_ds(request).await

@@ -1,5 +1,5 @@
 use crate::{
-    cork::{cache::{self, is_approved}},
+    cork::cache::{self, is_approved},
     error::Error,
     gas::CellarGas,
     utils::get_eth_provider,
@@ -27,17 +27,23 @@ pub async fn get_gas_price() -> Result<U256, Error> {
 }
 
 pub async fn validate_cellar_id(cellar_id: &str) -> Result<(), String> {
-    if let Err(err) = cellar_id.parse::<H160>()  {
+    if let Err(err) = cellar_id.parse::<H160>() {
         return Err(format!("invalid ethereum address: {}", err));
     }
 
     if !is_approved(cellar_id).await {
         if let Err(err) = cache::refresh_approved_cellars().await {
-            return Err(format!("failed to refresh approved cellar cache while processing SubmitCork request: {}", err));
+            return Err(format!(
+                "failed to refresh approved cellar cache while processing SubmitCork request: {}",
+                err
+            ));
         }
 
         if !is_approved(cellar_id).await {
-            return Err(format!("cellar ID not approved by governance: {}", cellar_id.to_lowercase()));
+            return Err(format!(
+                "cellar ID not approved by governance: {}",
+                cellar_id.to_lowercase()
+            ));
         }
     }
 

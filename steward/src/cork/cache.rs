@@ -3,12 +3,12 @@ use abscissa_core::{
     Application,
 };
 use lazy_static::lazy_static;
-use std::{sync::RwLock, time::Duration};
+use std::{collections::HashSet, sync::RwLock, time::Duration};
 use tokio::task::JoinHandle;
 
-use crate::{error::Error, prelude::APP, cork::client::get_cork_client_wrapper};
+use crate::{cork::client::get_cork_client_wrapper, error::Error, prelude::APP};
 
-pub type ApprovedCellarsCache = RwLock<Vec<String>>;
+pub type ApprovedCellarsCache = RwLock<HashSet<String>>;
 
 lazy_static! {
     static ref APPROVED_CELLARS: ApprovedCellarsCache = ApprovedCellarsCache::default();
@@ -21,9 +21,7 @@ pub async fn is_approved(cellar_id: &str) -> bool {
         .read()
         .unwrap()
         .iter()
-        .any(|id| {
-            id == &cellar_id
-        })
+        .any(|id| id == &cellar_id)
 }
 
 /// Flushes and reloads cache with normalized cellar id strings.

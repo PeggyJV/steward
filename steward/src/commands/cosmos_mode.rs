@@ -6,10 +6,7 @@ use crate::{
     application::APP,
     cellars::uniswapv3::UniswapV3CellarAllocator,
     config::StewardConfig,
-    cork::{
-        cache::start_approved_cellar_cache_thread,
-        CorkHandler, client::init_cork_client,
-    },
+    cork::{cache::start_approved_cellar_cache_thread, client::init_cork_client, CorkHandler},
     prelude::*,
     server,
 };
