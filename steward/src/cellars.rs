@@ -1,15 +1,14 @@
 use crate::{
     cork::cache::{self, is_approved},
-    error::Error,
+    error::{Error, ErrorKind},
     gas::CellarGas,
     utils::get_eth_provider,
 };
-use abscissa_core::tracing::warn;
+use abscissa_core::tracing::{info, warn};
 use ethers::prelude::*;
 use std::result::Result;
 
 pub(crate) mod aave_v2_stablecoin;
-pub(crate) mod uniswapv3;
 
 pub async fn get_gas_price() -> Result<U256, Error> {
     if std::env::var("ETHERSCAN_API_KEY").is_ok() {
@@ -26,28 +25,38 @@ pub async fn get_gas_price() -> Result<U256, Error> {
     provider.get_gas_price().await.map_err(|r| r.into())
 }
 
-pub async fn validate_cellar_id(cellar_id: &str) -> Result<(), String> {
+pub async fn validate_cellar_id(cellar_id: &str) -> Result<(), Error> {
     if let Err(err) = cellar_id.parse::<H160>() {
-        return Err(format!("invalid ethereum address: {}", err));
+        return Err(ErrorKind::SPCall
+            .context(format!("invalid ethereum address: {}", err))
+            .into());
     }
 
-    if !is_approved(cellar_id).await {
+    if !is_approved(cellar_id) {
         if let Err(err) = cache::refresh_approved_cellars().await {
-            return Err(format!(
-                "failed to refresh approved cellar cache while processing SubmitCork request: {}",
-                err
-            ));
+            return Err(ErrorKind::Cache
+                .context(format!("failed to refresh approved cellar cache while processing SubmitCork request: {}", err))
+            .into());
         }
 
-        if !is_approved(cellar_id).await {
-            return Err(format!(
-                "cellar ID not approved by governance: {}",
-                cellar_id.to_lowercase()
-            ));
+        if !is_approved(cellar_id) {
+            return Err(ErrorKind::UnapprovedCellar
+                .context(format!(
+                    "cellar address {} not approved by governance",
+                    cellar_id
+                ))
+                .into());
         }
     }
 
     Ok(())
+}
+
+pub fn log_cellar_call(cellar_name: &str, function_name: &str, cellar_id: &str) {
+    info!(
+        "encoding {}.{} call for cellar {}",
+        cellar_name, function_name, cellar_id
+    );
 }
 
 #[cfg(test)]

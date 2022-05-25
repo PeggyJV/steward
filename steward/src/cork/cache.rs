@@ -15,7 +15,7 @@ lazy_static! {
 }
 
 /// Indicates whether the provided address is contained in the approved cellars cache.
-pub async fn is_approved(cellar_id: &str) -> bool {
+pub fn is_approved(cellar_id: &str) -> bool {
     let cellar_id = cellar_id.trim().to_lowercase();
     APPROVED_CELLARS
         .read()

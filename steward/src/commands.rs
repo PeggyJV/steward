@@ -10,33 +10,21 @@
 //! See the `impl Configurable` below for how to specify the path to the
 //! application's configuration file.
 
-mod allow_erc20;
 mod config_cmd;
-mod cosmos_mode;
 mod cosmos_to_eth;
 mod deploy;
 mod eth_to_cosmos;
-mod fund_cellar;
 mod keys;
 mod orchestrator;
-mod query;
-mod reinvest;
-mod remove_funds;
-mod set_validator;
+mod schedule_corks;
 mod sign_delegate_keys;
-mod single_signer;
-mod transfer;
-mod tx;
+mod start;
 
-use self::{
-    config_cmd::ConfigCmd, cosmos_mode::CosmosSignerCmd, fund_cellar::FundCellarCmd, keys::KeysCmd,
-    remove_funds::RemoveFundsCmd, set_validator::SetValidatorCmd, single_signer::SingleSignerCmd,
-    transfer::TransferCmd,
-};
+use self::{config_cmd::ConfigCmd, keys::KeysCmd, schedule_corks::ScheduleCmd, start::StartCmd};
 
 use crate::config::StewardConfig;
 use abscissa_core::{clap::Parser, Command, Configurable, FrameworkError, Runnable};
-use std::path::PathBuf;
+use std::{env, path::PathBuf};
 
 /// Steward Configuration Filename
 pub const CONFIG_FILE: &str = "steward.toml";
@@ -44,30 +32,20 @@ pub const CONFIG_FILE: &str = "steward.toml";
 /// Steward Subcommands
 #[derive(Command, Debug, Parser, Runnable)]
 pub enum StewardCmd {
-    SingleSigner(SingleSignerCmd),
-    Transfer(TransferCmd),
+    #[clap(subcommand)]
+    Schedule(ScheduleCmd),
     #[clap(subcommand)]
     Keys(KeysCmd),
     /// Print default configurations
     PrintConfig(ConfigCmd),
-    FundCellar(FundCellarCmd),
-    RemoveFunds(RemoveFundsCmd),
     CosmosToEth(cosmos_to_eth::CosmosToEthCmd),
     #[clap(subcommand)]
     Deploy(deploy::DeployCmd),
     EthToCosmos(eth_to_cosmos::EthToCosmosCmd),
     #[clap(subcommand)]
     Orchestrator(orchestrator::OrchestratorCmd),
-    /// Print default configurations
-    #[clap(subcommand)]
-    Query(query::QueryCmd),
-    Reinvest(reinvest::ReinvestCommand),
-    SetValidator(SetValidatorCmd),
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
-    #[clap(subcommand)]
-    Tx(tx::TxCmd),
-    AllowErc20(allow_erc20::AllowERC20),
-    CosmosSigner(CosmosSignerCmd),
+    Start(StartCmd),
 }
 
 /// Entry point for the application. It needs to be a struct to allow using subcommands!
@@ -97,19 +75,22 @@ impl Configurable<StewardConfig> for EntryPoint {
         // Check if the config file exists, and if it does not, ignore it.
         // If you'd like for a missing configuration file to be a hard error
         // instead, always return `Some(CONFIG_FILE)` here.
-        let filename = self
-            .config
-            .as_ref()
-            .map(PathBuf::from)
-            .unwrap_or_else(|| CONFIG_FILE.into());
+        let config_filename = self.config.as_ref();
 
-        if filename.exists() {
-            Some(filename)
+        let default_filename = PathBuf::from(CONFIG_FILE);
+
+        let config_env_variable = std::env::var("STEWARD_CONFIG");
+
+        if let Some(config_filename) = config_filename {
+            Some(PathBuf::from(config_filename.to_string()))
+        } else if let Ok(config_env_variable) = config_env_variable {
+            Some(PathBuf::from(config_env_variable))
+        } else if default_filename.exists() {
+            Some(default_filename)
         } else {
             None
         }
     }
-
     /// Apply changes to the config after it's been loaded, e.g. overriding
     /// values in a config file using command-line options.
     ///

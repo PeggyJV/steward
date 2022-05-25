@@ -14,12 +14,9 @@ import (
 	"testing"
 	"time"
 
-	gravitytypes "github.com/peggyjv/gravity-bridge/module/x/gravity/types"
+	gravitytypes "github.com/peggyjv/gravity-bridge/module/v2/x/gravity/types"
 
-	"github.com/ethereum/go-ethereum"
-
-	allocationtypes "github.com/peggyjv/sommelier/v3/x/allocation/types"
-	corktypes "github.com/peggyjv/sommelier/v3/x/cork/types"
+	corktypes "github.com/peggyjv/sommelier/v4/x/cork/types"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -355,27 +352,12 @@ func (s *IntegrationTestSuite) initGenesis() {
 	s.Require().NoError(err)
 	appGenState[genutiltypes.ModuleName] = bz
 
-	var allocationGenState allocationtypes.GenesisState
-	s.Require().NoError(cdc.UnmarshalJSON(appGenState[allocationtypes.ModuleName], &allocationGenState))
-
-	allocationGenState.Cellars = []*allocationtypes.Cellar{
-		{
-			Id: hardhatCellar.String(),
-			TickRanges: []*allocationtypes.TickRange{
-				{Upper: 600, Lower: 300, Weight: 900},
-			},
-		},
-	}
-	allocationGenState.Params.VotePeriod = 30
-	bz, err = cdc.MarshalJSON(&allocationGenState)
-	s.Require().NoError(err)
-	appGenState[allocationtypes.ModuleName] = bz
-
 	var corkGenState corktypes.GenesisState
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[corktypes.ModuleName], &corkGenState))
-	corkGenState.CellarIds = &corktypes.CellarIDSet{
+	corkGenState.CellarIds = corktypes.CellarIDSet{
 		Ids: []string{hardhatCellar.Hex()},
 	}
+	corkGenState.Params.VotePeriod = 10
 	bz, err = cdc.MarshalJSON(&corkGenState)
 	s.Require().NoError(err)
 	appGenState[corktypes.ModuleName] = bz
@@ -728,34 +710,24 @@ func (s *IntegrationTestSuite) runStewards() {
 	s.T().Log("starting steward containers...")
 	s.stewResources = make([]*dockertest.Resource, len(s.chain.stewards))
 	for i, steward := range s.chain.stewards {
-		stewardCfg := fmt.Sprintf(`[cosmos]
-key_derivation_path = "m/44'/118'/1'/0/0"
-grpc = "http://%s:9090"
-prefix = "somm"
-msg_batch_size = 5
-gas_adjustment = 1.0
+		stewardCfg := fmt.Sprintf(`keystore = "/tmp/keystore"
 
-[ethereum]
-key_derivation_path = "m/44'/60'/0'/0/0"
-rpc = "http://%s:8545"
-gas_price_multiplier = 1.5
+[cosmos]
+grpc = "http://%s:9090"
 
 [cosmos.gas_price]
 amount = 1000000000
 denom = "%s"
 
 [keys]
-keystore = "/tmp/keystore"
-rebalancer_key = "steward-key"
+delegate_key = "steward-key"
 
 [server]
-address = "0.0.0.0"
 client_ca_cert_path = "/root/steward/test_client_ca.crt"
 server_cert_path = "/root/steward/test_server.crt"
 server_key_path = "/root/steward/test_server_key_pkcs8.pem"
 `,
 			s.valResources[i].Container.Name[1:],
-			s.ethResource.Container.Name[1:],
 			testDenom,
 		)
 
@@ -851,29 +823,6 @@ func (s *IntegrationTestSuite) logsByContainerID(id string) string {
 	))
 
 	return containerLogsBuf.String()
-}
-
-func (s *IntegrationTestSuite) getFirstTickRange() (*allocationtypes.TickRange, error) {
-	ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
-	if err != nil {
-		return nil, err
-	}
-
-	bz, err := ethClient.CallContract(context.Background(), ethereum.CallMsg{
-		From: common.HexToAddress(s.chain.validators[0].ethereumKey.address),
-		To:   &hardhatCellar,
-		Gas:  0,
-		Data: allocationtypes.ABIEncodedCellarTickInfoBytes(uint(0)),
-	}, nil)
-	if err != nil {
-		return nil, err
-	}
-	tr, err := allocationtypes.BytesToABIEncodedTickRange(bz)
-	if err != nil {
-		return nil, err
-	}
-
-	return tr, nil
 }
 
 func (s *IntegrationTestSuite) TestBasicChain() {
