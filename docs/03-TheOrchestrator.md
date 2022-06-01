@@ -7,10 +7,10 @@ The Orchestrator is a sidecar application to a Cosmos chain responsible for *orc
 The Orchestrator can be started using the following command:
 
 ```bash
-steward -c <config_toml_path> orchestrator start --orchestrator-only --ethereum-key <eth_key_name> --cosmos-key <cosmos_key_name>
+steward -c <config_toml_path> orchestrator start --ethereum-key <eth_key_name> --cosmos-key <cosmos_key_name>
 ```
 
-The `--orchestrator-only` flag prevents the Relayer thread from running, and this is the way in which we encourage validators to run the Orchestrator for now. You will burn gas on failed transactions if you run the Relayer in its current state.
+The `--relay` flag can be used to opt in to relaying Cosmos -> Ethereum transactions, which costs gas in ETH. We are only asking a couple of validators to run the relayer at this time. 
 
 The values of `--ethereum-key` and `--cosmos-key` must be the keys your validator has registered as delegate keys respectively.
 
