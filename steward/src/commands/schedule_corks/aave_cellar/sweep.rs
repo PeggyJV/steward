@@ -21,15 +21,15 @@ const CHAIN_PREFIX: &str = "somm";
 
 pub struct SweepCmd {
     /// Token address to transfer out of Cellar.
-    #[clap(short = 'e', long)]
+    #[clap(short = 't', long)]
     token: H160,
 
     /// Address to sweep token into
-    #[clap(short = 'e', long)]
+    #[clap(short = 'd', long)]
     destination_address: H160,
 
     /// Target contract for scheduled cork.
-    #[clap(short, long)]
+    #[clap(short = 'c', long)]
     contract: String,
 
     /// Block height to schedule cork.
@@ -42,7 +42,7 @@ impl Runnable for SweepCmd {
         let config = APP.config();
 
         abscissa_tokio::run_with_actix(&APP, async {
-            // Encoded call for fees distributor
+            // Encoded call for sweep
             let call = SweepCall {
                 token: self.token,
                 to: self.destination_address,
