@@ -35,12 +35,17 @@ impl Runnable for FeesDistributorCmd {
         let config = APP.config();
 
         abscissa_tokio::run_with_actix(&APP, async {
-            let mut bytes = [0u8; 32];
-            if let Err(err) = hex::decode_to_slice(self.new_fees_distributor.clone(), &mut bytes) {
-                error!("failed to decode to slice: {}", err);
+            let mut address = self.new_fees_distributor.as_bytes().to_vec();
+
+            while address.len() < 32 {
+                address.insert(0, 0u8);
             }
+
+            let mut address_slice: [u8; 32] = Default::default();
+            address_slice.copy_from_slice(&address[..]);
+
             let call = SetFeesDistributorCall {
-                new_fees_distributor: bytes,
+                new_fees_distributor: address_slice,
             };
 
             let encoded_call = AaveV2StablecoinCellarCalls::SetFeesDistributor(call).encode();
