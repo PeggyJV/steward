@@ -16,6 +16,8 @@ use std::{convert::TryFrom, time::Duration};
 use tonic::transport::Channel;
 
 pub const TIMEOUT: Duration = Duration::from_secs(60);
+pub const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
+pub const CHAIN_PREFIX: &str = "somm";
 
 pub fn format_eth_address(address: EthAddress) -> String {
     format!("0x{}", bytes_to_hex_str(address.as_bytes()))

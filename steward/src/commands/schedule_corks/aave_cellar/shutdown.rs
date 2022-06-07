@@ -4,15 +4,13 @@ use crate::{
     config,
     prelude::*,
     somm_send,
+    utils::{CHAIN_PREFIX, MESSAGE_TIMEOUT},
 };
 use abscissa_core::{clap::Parser, Application, Command, Runnable};
 use deep_space::{Coin, Contact};
 use ethers::abi::AbiEncode;
 use somm_proto::cork::Cork;
-use std::time::Duration;
 use steward_abi::aave_v2_stablecoin::*;
-const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
-const CHAIN_PREFIX: &str = "somm";
 
 /// Shutdown subcommand
 #[derive(Command, Debug, Parser)]
