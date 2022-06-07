@@ -1,16 +1,7 @@
-use crate::{
-    application::APP,
-    cellars::{self},
-    config,
-    prelude::*,
-    somm_send,
-    utils::{CHAIN_PREFIX, MESSAGE_TIMEOUT},
-};
+use crate::{application::APP, prelude::*, utils::SubmitCork};
 use abscissa_core::{clap::Parser, Command, Runnable};
-use deep_space::{Coin, Contact};
 use ethers::abi::AbiEncode;
 use ethers::types::*;
-use somm_proto::cork::Cork;
 use steward_abi::aave_v2_stablecoin::*;
 
 /// Trust subcommand
@@ -35,8 +26,6 @@ pub struct TrustCmd {
 
 impl Runnable for TrustCmd {
     fn run(&self) {
-        let config = APP.config();
-
         abscissa_tokio::run_with_actix(&APP, async {
             // Encoded call for trust
             let call = SetTrustCall {
@@ -46,41 +35,13 @@ impl Runnable for TrustCmd {
 
             let encoded_call = AaveV2StablecoinCellarCalls::SetTrust(call).encode();
 
-            // Validate cellar id
-            cellars::validate_cellar_id(self.contract.as_str()).unwrap_or_else(|err| {
-                status_err!("Can't validate contract address format: {}", err);
-                std::process::exit(1);
-            });
-
-            let cork = Cork {
-                encoded_contract_call: encoded_call,
-                target_contract_address: self.contract.clone(),
+            let submit = SubmitCork {
+                contract: self.contract.clone(),
+                height: self.height,
+                encoded_call,
             };
 
-            // Establish grpc connections
-            debug!("establishing grpc connection");
-            let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX).unwrap();
-
-            // Get cosmos fees
-            debug!("getting cosmos fee");
-            let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
-
-            let fee = Coin {
-                amount: (cosmos_gas_price.0 as u64).into(),
-                denom: cosmos_gas_price.1,
-            };
-
-            // send scheduled cork
-            somm_send::schedule_cork(
-                &contact,
-                cork,
-                config::DELEGATE_ADDRESS.to_string(),
-                &config::DELEGATE_KEY,
-                fee,
-                self.height,
-            )
-            .await
-            .unwrap_or_else(|err| {
+            submit.submit_cork().await.unwrap_or_else(|err| {
                 status_err!("executor exited with error: {}", err);
                 std::process::exit(1);
             })
