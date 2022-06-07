@@ -6,6 +6,9 @@ use steward_abi::aave_v2_stablecoin::*;
 
 /// Trust subcommand
 #[derive(Command, Debug, Parser)]
+#[clap(
+    long_about = "DESCRIPTION \n\n Set trust for target Cellar.\n This command prevents Cellar from rebalancing into an asset that has not been trusted by the users. This is a validator only command and can only be run by validators. It sets trust based on the height specified by the validators. Therefore, it'll execute the function when the chain reaches that height. This command also takes the trust and position flag."
+)]
 
 pub struct TrustCmd {
     /// Asset position
