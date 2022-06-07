@@ -19,6 +19,9 @@ pub struct ImportEthKeyCmd {
 
     /// Eth private key. When absent you'll be prompted to enter it.
     pub key: Option<String>,
+
+    /// bip39-mnemonic optional. When absent you'll be prompted to enter it.
+    pub mnemonic: Option<String>,
 }
 
 // Entry point for `keys eth import [name] (key)`
@@ -38,23 +41,63 @@ impl Runnable for ImportEthKeyCmd {
             }
         }
 
-        let key = match self.key.clone() {
-            Some(private_key) => private_key,
-            None => rpassword::read_password_from_tty(Some("> Enter your private-key:\n"))
-                .expect("Could not read private-key"),
-        };
+        if self.key.is_some() {
+            let key = match self.key.clone() {
+                Some(private_key) => private_key,
+                None => rpassword::read_password_from_tty(Some("> Enter your private-key:\n"))
+                    .expect("Could not read private-key"),
+            };
 
-        let key = key
-            .parse::<clarity::PrivateKey>()
-            .expect("Could not parse private-key");
+            let key = key
+                .parse::<clarity::PrivateKey>()
+                .expect("Could not parse private-key");
 
-        let key = SecretKey::from_bytes(key.to_bytes()).expect("Could not convert private-key");
+            let key = SecretKey::from_bytes(key.to_bytes()).expect("Could not convert private-key");
 
-        let key = key
-            .to_pkcs8_der()
-            .expect("Could not PKCS8 encod private key");
+            let key = key
+                .to_pkcs8_der()
+                .expect("Could not PKCS8 encod private key");
 
-        keystore.store(&name, &key).expect("Could not store key");
+            keystore.store(&name, &key).expect("Could not store key");
+        }
+
+        if self.key.is_none() {
+            let mnemonic = match self.mnemonic.clone() {
+                Some(mnemonic) => mnemonic,
+                None => rpassword::read_password_from_tty(Some("> Enter your bip39 mnemonic:\n"))
+                    .expect("Could not read mnemonic"),
+            };
+
+            let key = match bip32::Mnemonic::new(mnemonic.trim(), Default::default()) {
+                Ok(mnemonic) => {
+                    let seed = mnemonic.to_seed("");
+
+                    let path = config.ethereum.key_derivation_path.trim();
+                    let path = path
+                        .parse::<bip32::DerivationPath>()
+                        .expect("Could not parse derivation path");
+
+                    let key =
+                        bip32::XPrv::derive_from_path(seed, &path).expect("Could not derive key");
+                    let key = k256::SecretKey::from(key.private_key());
+                    key.to_pkcs8_der()
+                        .expect("Could not PKCS8 encod private key")
+                }
+                Err(_) => {
+                    let key =
+                        rpassword::read_password_from_tty(Some("> Enter your private-key:\n"))
+                            .expect("Could not read private-key");
+
+                    let key: ethers::types::H256 =
+                        key.parse().expect("Could not parse private-key");
+
+                    let key = k256::SecretKey::from_bytes(key).expect("Could not make private key");
+                    key.to_pkcs8_der()
+                        .expect("Could not PKCS8 encode private key")
+                }
+            };
+            keystore.store(&name, &key).expect("Could not store key");
+        }
 
         let name = name.to_string();
         let show_cmd = ShowKeyCmd { name };

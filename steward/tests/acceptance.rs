@@ -315,7 +315,7 @@ fn eth_keys_import() -> io::Result<()> {
             "eth",
             "import",
             "mykey",
-            "movie tumble tape seven tool session relax youth pet situate bone leave ordinary oxygen silly picture thing fortune genuine attend clerk super seven cement",
+            "21c055b3ac244b34a3e7e7567558e0ee77e51ede5711088da4ec5c7654a6863c",
         ])
         .capture_stdout()
         .run();
