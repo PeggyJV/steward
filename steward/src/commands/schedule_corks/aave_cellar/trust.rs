@@ -15,6 +15,7 @@ pub struct TrustCmd {
     #[clap(short = 'p', long)]
     position: H160,
 
+    /// Set to true if you trust asset
     #[clap(short = 't', long)]
     trust: bool,
 
