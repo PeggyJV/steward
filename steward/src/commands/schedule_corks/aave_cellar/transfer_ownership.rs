@@ -1,40 +1,39 @@
 use crate::{application::APP, prelude::*, utils::submit_schedule_cork};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::abi::AbiEncode;
+use ethers::types::*;
 use somm_proto::cork::Cork;
 use steward_abi::aave_v2_stablecoin::*;
 
-/// Shutdown subcommand
+/// Transfer Ownership subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Shutdown target Cellar.\n This command schedules the shutdown of a Cellar. This is a validator only \n command and can only be run by validators. It Schedules shutdown based on the height specified by \n the validators. Therefore, it'll execute the function when the chain reaches that height. This command also takes the shutdown and exit position flag."
+    long_about = "DESCRIPTION \n\n Transfer ownership to new owner.\n This command schedules transfer of ownership of a Cellar to a new owner. This is a validator only command and can only be run by validators. It Schedules transfer ownership based on the height specified by the validators. Therefore, it'll execute the function when the chain reaches that height. This command also takes the new owner flag."
 )]
-pub struct ShutdownCmd {
+
+pub struct TransferOwnershipCmd {
+    /// Address of new owner
+    #[clap(short = 'n', long)]
+    new_owner: H160,
+
     /// Target contract for scheduled cork.
-    #[clap(short, long)]
+    #[clap(short = 'c', long)]
     contract: String,
 
     /// Block height to schedule cork.
     #[clap(short = 'b', long)]
     height: u64,
-
-    ///Set to true if you want to shutdown Aave Cellar.
-    #[clap(short = 's', long)]
-    shut_down: bool,
-
-    /// Set to true if you want to exit current position.
-    #[clap(short = 'e', long)]
-    exit_position: bool,
 }
 
-impl Runnable for ShutdownCmd {
+impl Runnable for TransferOwnershipCmd {
     fn run(&self) {
         abscissa_tokio::run_with_actix(&APP, async {
-            let call = SetShutdownCall {
-                shutdown: self.shut_down,
-                exit_position: self.exit_position,
+            // Encoded call for transfer_ownership
+            let call = TransferOwnershipCall {
+                new_owner: self.new_owner,
             };
-            let encoded_call = AaveV2StablecoinCellarCalls::SetShutdown(call).encode();
+
+            let encoded_call = AaveV2StablecoinCellarCalls::TransferOwnership(call).encode();
 
             let cork = Cork {
                 encoded_contract_call: encoded_call,

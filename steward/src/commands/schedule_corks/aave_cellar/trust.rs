@@ -1,40 +1,44 @@
 use crate::{application::APP, prelude::*, utils::submit_schedule_cork};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::abi::AbiEncode;
+use ethers::types::*;
 use somm_proto::cork::Cork;
 use steward_abi::aave_v2_stablecoin::*;
 
-/// Shutdown subcommand
+/// Trust subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Shutdown target Cellar.\n This command schedules the shutdown of a Cellar. This is a validator only \n command and can only be run by validators. It Schedules shutdown based on the height specified by \n the validators. Therefore, it'll execute the function when the chain reaches that height. This command also takes the shutdown and exit position flag."
+    long_about = "DESCRIPTION \n\n Set trust for target Cellar.\n This command prevents Cellar from rebalancing into an asset that has not been trusted by the users. This is a validator only command and can only be run by validators. It sets trust based on the height specified by the validators. Therefore, it'll execute the function when the chain reaches that height. This command also takes the trust and position flag."
 )]
-pub struct ShutdownCmd {
-    /// Target contract for scheduled cork.
-    #[clap(short, long)]
-    contract: String,
+
+pub struct TrustCmd {
+    /// Asset position
+    #[clap(short = 'p', long)]
+    position: H160,
+
+    /// Set to true if you trust asset
+    #[clap(short = 't', long)]
+    trust: bool,
 
     /// Block height to schedule cork.
     #[clap(short = 'b', long)]
     height: u64,
 
-    ///Set to true if you want to shutdown Aave Cellar.
-    #[clap(short = 's', long)]
-    shut_down: bool,
-
-    /// Set to true if you want to exit current position.
-    #[clap(short = 'e', long)]
-    exit_position: bool,
+    /// Target contract for scheduled cork.
+    #[clap(short = 'c', long)]
+    contract: String,
 }
 
-impl Runnable for ShutdownCmd {
+impl Runnable for TrustCmd {
     fn run(&self) {
         abscissa_tokio::run_with_actix(&APP, async {
-            let call = SetShutdownCall {
-                shutdown: self.shut_down,
-                exit_position: self.exit_position,
+            // Encoded call for trust
+            let call = SetTrustCall {
+                position: self.position,
+                trust: self.trust,
             };
-            let encoded_call = AaveV2StablecoinCellarCalls::SetShutdown(call).encode();
+
+            let encoded_call = AaveV2StablecoinCellarCalls::SetTrust(call).encode();
 
             let cork = Cork {
                 encoded_contract_call: encoded_call,
