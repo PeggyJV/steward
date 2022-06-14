@@ -68,17 +68,12 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
             .get_ref()
             .cellar_ids
             .clone();
-        if !ids.contains(&request.cellar_id) {
-            debug!(
-                "cellar ID {} not approved by governance",
-                &request.cellar_id
-            );
+        let cellar_id = &request.cellar_id.clone();
+        if !ids.contains(cellar_id) {
+            info!("cellar ID {} not approved by governance", cellar_id);
             return Err(Status::new(
                 Code::PermissionDenied,
-                format!(
-                    "cellar ID {} not approved by governance",
-                    &request.cellar_id
-                ),
+                format!("cellar ID {} not approved by governance", cellar_id),
             ));
         }
 
@@ -86,7 +81,7 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         let cork = match build_cork(request).await {
             Ok(c) => c,
             Err(err) => {
-                warn!("failed to build cork: {}", err);
+                warn!("failed to build cork for cellar {}: {}", cellar_id, err);
                 return Err(Status::new(Code::InvalidArgument, err.to_string()));
             }
         };
@@ -99,14 +94,13 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
                 "failed to send cork to sommelier",
             ));
         }
-        debug!("sent cork!");
-
+        info!("submitted cork for {}!", cellar_id);
         Ok(Response::new(SubmitResponse {}))
     }
 }
 
 pub struct DirectCorkHandler {
-    pub name: String,
+    pub key_name: String,
 }
 
 #[async_trait]
@@ -129,7 +123,7 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
 
         let config = APP.config();
 
-        let name = self.name.clone();
+        let name = self.key_name.clone();
         let wallet = config.load_ethers_wallet(name);
 
         let eth_host = config.ethereum.rpc.clone();
@@ -184,7 +178,7 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
                             .collect();
 
                         aave_v2_stablecoin::validate_route(results.clone()).unwrap_or_else(|err| {
-                            println!("{}", err);
+                            panic!("{}", err);
                         });
 
                         let route = results
@@ -224,8 +218,8 @@ impl steward::contract_call_server::ContractCall for DirectCorkHandler {
                 }
             }
         };
-        if function_call.is_err() {
-            return Err(Status::new(Code::Internal, "Function call error"));
+        if let Err(err) = function_call {
+            return Err(Status::new(Code::Internal, err.to_string()));
         }
 
         Ok(Response::new(SubmitResponse {}))
@@ -292,9 +286,9 @@ async fn contract_call<T: Detokenize>(
     let gas_price = CellarGas::get_gas_price().await?;
     let contract_call = contract_call.gas(gas).gas_price(gas_price);
     let pending_tx = contract_call.send().await?;
-    let _tx_hash = *pending_tx;
+    let tx_hash = *pending_tx;
+    info!("tx_hash: {}", tx_hash);
     let transaction = pending_tx.await?;
-    info!("{:?}", transaction);
-
+    info!("Contract call transaction reciept: {:?}", transaction);
     Ok(())
 }

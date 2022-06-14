@@ -1,12 +1,11 @@
-use crate::{application::APP, config::StewardConfig, cork::DirectCorkHandler, prelude::*, server};
-use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
-use std::result::Result;
+use crate::{application::APP, cork::DirectCorkHandler, prelude::*, server};
+use abscissa_core::{clap::Parser, Command, Runnable};
 use steward_proto::steward::contract_call_server::ContractCallServer;
 
 /// Test mode, start Eth test mode
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Test mode, start Ethereum test module.\n This command starts Steward using the Ethereum test mode."
+    long_about = "DESCRIPTION \n\n Start Ethereum test module.\n This command starts Steward using the Ethereum test mode."
 )]
 pub struct TestModeCmd {
     key_name: String,
@@ -42,7 +41,7 @@ impl Runnable for TestModeCmd {
                     panic!("{:?}", err);
                 })
                 .add_service(ContractCallServer::new(DirectCorkHandler {
-                    name: self.key_name.clone(),
+                    key_name: self.key_name.clone(),
                 }))
                 .add_service(proto_descriptor_service)
                 .serve(server_config.address)
@@ -56,14 +55,5 @@ impl Runnable for TestModeCmd {
             status_err!("executor exited with error: {}", e);
             std::process::exit(1)
         });
-    }
-}
-
-impl config::Override<StewardConfig> for TestModeCmd {
-    // Process the given command line options, overriding settings from
-    // a configuration file using explicit flags taken from command-line
-    // arguments.
-    fn override_config(&self, config: StewardConfig) -> Result<StewardConfig, FrameworkError> {
-        Ok(config)
     }
 }
