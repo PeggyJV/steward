@@ -1,5 +1,6 @@
 use crate::{application::APP, prelude::*, utils::submit_schedule_cork};
 use abscissa_core::{clap::Parser, Command, Runnable};
+use deep_space::Address;
 use ethers::abi::AbiEncode;
 use somm_proto::cork::Cork;
 use steward_abi::aave_v2_stablecoin::*;
@@ -7,12 +8,12 @@ use steward_abi::aave_v2_stablecoin::*;
 /// Fees Distributor subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Set fees distributor of target Cellar.\n This command will set the fees distributor of a Cellar. This is a validator only command and can only be run by validators. It sets the fees distributor of a Cellar based on the height specified by \n the validators. Therefore, it'll execute the function when the chain reaches that height. This command also takes the fee distributor's address"
+    long_about = "DESCRIPTION \n\n Set fees distributor of target Cellar.\n This command will set the fees distributor of a Cellar to a Cosmos address that the contract will bridge funds to. This is a validator only command and can only be run by validators. It sets the fees distributor of a Cellar based on the height specified by \n the validators. Therefore, it'll execute the function when the chain reaches that height. This command also takes the fee distributor's address"
 )]
 pub struct FeesDistributorCmd {
     #[clap(short = 'n', long)]
     /// Fee distributor's address
-    new_fees_distributor: String,
+    new_fees_distributor: Address,
 
     /// Target contract for scheduled cork.
     #[clap(short = 'c', long)]
