@@ -1,6 +1,5 @@
 use crate::{
     application::APP,
-    cellars::{self},
     config,
     error::{Error, ErrorKind},
     prelude::*,
@@ -100,48 +99,30 @@ pub fn sp_call_error(message: String) -> Error {
     ErrorKind::SPCallError.context(message).into()
 }
 
-pub struct SubmitCork {
-    pub contract: String,
-    pub height: u64,
-    pub encoded_call: Vec<u8>,
-}
+pub async fn submit_schedule_cork(cork: Cork, height: u64) -> Result<TxResponse, CosmosGrpcError> {
+    let config = APP.config();
 
-impl SubmitCork {
-    pub async fn submit_cork(&self) -> Result<TxResponse, CosmosGrpcError> {
-        let config = APP.config();
-        // Validate cellar id
-        cellars::validate_cellar_id(self.contract.as_str()).unwrap_or_else(|err| {
-            status_err!("Can't validate contract address format: {}", err);
-            std::process::exit(1);
-        });
+    // Establish grpc connections
+    debug!("establishing grpc connection");
+    let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX).unwrap();
 
-        let cork = Cork {
-            encoded_contract_call: self.encoded_call.clone(),
-            target_contract_address: self.contract.clone(),
-        };
+    // Get cosmos fees
+    debug!("getting cosmos fee");
+    let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
 
-        // Establish grpc connections
-        debug!("establishing grpc connection");
-        let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX).unwrap();
+    let fee = Coin {
+        amount: (cosmos_gas_price.0 as u64).into(),
+        denom: cosmos_gas_price.1,
+    };
 
-        // Get cosmos fees
-        debug!("getting cosmos fee");
-        let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
-
-        let fee = Coin {
-            amount: (cosmos_gas_price.0 as u64).into(),
-            denom: cosmos_gas_price.1,
-        };
-
-        // send scheduled cork
-        somm_send::schedule_cork(
-            &contact,
-            cork,
-            config::DELEGATE_ADDRESS.to_string(),
-            &config::DELEGATE_KEY,
-            fee,
-            self.height,
-        )
-        .await
-    }
+    // send scheduled cork
+    somm_send::schedule_cork(
+        &contact,
+        cork,
+        config::DELEGATE_ADDRESS.to_string(),
+        &config::DELEGATE_KEY,
+        fee,
+        height,
+    )
+    .await
 }

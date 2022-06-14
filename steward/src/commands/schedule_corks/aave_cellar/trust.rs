@@ -1,7 +1,8 @@
-use crate::{application::APP, prelude::*, utils::SubmitCork};
+use crate::{application::APP, prelude::*, utils::submit_schedule_cork};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::abi::AbiEncode;
 use ethers::types::*;
+use somm_proto::cork::Cork;
 use steward_abi::aave_v2_stablecoin::*;
 
 /// Trust subcommand
@@ -39,16 +40,17 @@ impl Runnable for TrustCmd {
 
             let encoded_call = AaveV2StablecoinCellarCalls::SetTrust(call).encode();
 
-            let submit = SubmitCork {
-                contract: self.contract.clone(),
-                height: self.height,
-                encoded_call,
+            let cork = Cork {
+                encoded_contract_call: encoded_call,
+                target_contract_address: self.contract.clone(),
             };
 
-            submit.submit_cork().await.unwrap_or_else(|err| {
-                status_err!("executor exited with error: {}", err);
-                std::process::exit(1);
-            })
+            submit_schedule_cork(cork, self.height)
+                .await
+                .unwrap_or_else(|err| {
+                    status_err!("executor exited with error: {}", err);
+                    std::process::exit(1);
+                })
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
