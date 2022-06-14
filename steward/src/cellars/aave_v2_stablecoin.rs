@@ -148,7 +148,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
     }
 }
 
-fn validate_route(results: Vec<Result<H160, &String>>) -> Result<(), Error> {
+pub fn validate_route(results: Vec<Result<H160, &String>>) -> Result<(), Error> {
     let mut bad_addresses_string = String::new();
     for r in results {
         if let Err(addr) = r {

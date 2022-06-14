@@ -2,22 +2,37 @@ use crate::{
     cellars::{self, aave_v2_stablecoin},
     config,
     error::{Error, ErrorKind},
+    gas::CellarGas,
     prelude::APP,
     somm_send,
+    utils::string_to_u256,
 };
 use abscissa_core::{
     tracing::log::{debug, error, info, warn},
     Application,
 };
 use deep_space::{Coin, Contact};
-use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
+use ethers::prelude::builders::ContractCall;
+use ethers::prelude::*;
+use gravity_bridge::{
+    gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse,
+    gravity_utils::ethereum::downcast_to_u64,
+};
 use somm_proto::cork::{query_client::QueryClient as CorkQueryClient, Cork, QueryCellarIDsRequest};
-use std::time::Duration;
+use std::{
+    convert::{TryFrom, TryInto},
+    sync::Arc,
+    time::Duration,
+};
+use steward_abi::aave_v2_stablecoin::AaveV2StablecoinCellar;
+use steward_proto::steward::aave_v2_stablecoin::Function;
 use steward_proto::{
     self,
     steward::{self, submit_request::CallData::AaveV2Stablecoin, SubmitRequest, SubmitResponse},
 };
 use tonic::{self, async_trait, Code, Request, Response, Status};
+pub type EthSignerMiddleware = SignerMiddleware<Provider<Http>, LocalWallet>;
+use ethers::abi::Detokenize;
 
 const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
 const CHAIN_PREFIX: &str = "somm";
@@ -30,6 +45,7 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         &self,
         request: Request<SubmitRequest>,
     ) -> Result<Response<SubmitResponse>, Status> {
+        debug!("received contract call request");
         let request = request.get_ref().to_owned();
 
         // Check if cellar is governance approved before building cork
@@ -52,22 +68,16 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
             .get_ref()
             .cellar_ids
             .clone();
-        if !ids.contains(&request.cellar_id) {
-            info!(
-                "rejecting request for unapproved cellar {}",
-                request.cellar_id
-            );
+        let cellar_id = &request.cellar_id.clone();
+        if !ids.contains(cellar_id) {
+            info!("cellar ID {} not approved by governance", cellar_id);
             return Err(Status::new(
                 Code::PermissionDenied,
-                format!(
-                    "cellar ID {} not approved by governance",
-                    &request.cellar_id
-                ),
+                format!("cellar ID {} not approved by governance", cellar_id),
             ));
         }
 
         // Build and send cork
-        let cellar_id = request.cellar_id.clone();
         let cork = match build_cork(request).await {
             Ok(c) => c,
             Err(err) => {
@@ -85,10 +95,137 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
             ));
         }
         info!("submitted cork for {}!", cellar_id);
+        Ok(Response::new(SubmitResponse {}))
+    }
+}
+
+pub struct DirectCorkHandler {
+    pub key_name: String,
+}
+
+#[async_trait]
+impl steward::contract_call_server::ContractCall for DirectCorkHandler {
+    async fn submit(
+        &self,
+        request: Request<SubmitRequest>,
+    ) -> Result<Response<SubmitResponse>, Status> {
+        debug!("received contract call request");
+        let request = request.get_ref();
+
+        let contract_call_data = match request.call_data.clone() {
+            Some(call) => call,
+            None => {
+                return Err(tonic::Status::invalid_argument(
+                    "Error, can't find call data",
+                ))
+            }
+        };
+
+        let config = APP.config();
+
+        let name = self.key_name.clone();
+        let wallet = config.load_ethers_wallet(name);
+
+        let eth_host = config.ethereum.rpc.clone();
+        let provider = Provider::<Http>::try_from(eth_host.clone())
+            .unwrap_or_else(|_| panic!("could not get provider from eth_host {}", eth_host));
+        let chain_id = provider
+            .get_chainid()
+            .await
+            .expect("Could not retrieve chain ID");
+
+        let chain_id =
+            downcast_to_u64(chain_id).expect("Chain ID overflowed when downcasting to u64");
+        let client = SignerMiddleware::new(provider, wallet.clone().with_chain_id(chain_id));
+
+        let cellar_address = request.cellar_id.clone();
+
+        if cellars::validate_cellar_id(&cellar_address).is_err() {
+            return Err(tonic::Status::invalid_argument(
+                "Error, can't validate Cellar ID",
+            ));
+        }
+
+        let address: Address = cellar_address
+            .parse()
+            .expect("could not parse cellar address");
+
+        let function_call = match contract_call_data {
+            AaveV2Stablecoin(call) => {
+                let contract = AaveV2StablecoinCellar::new(address, Arc::new(client));
+                match call.function.unwrap() {
+                    Function::EnterPosition(_) => contract_call(contract.enter_position()).await,
+                    Function::SetDepositLimit(params) => {
+                        contract_call(
+                            contract.set_deposit_limit(string_to_u256(params.limit).unwrap()),
+                        )
+                        .await
+                    }
+                    Function::Reinvest(params) => {
+                        contract_call(
+                            contract.reinvest(string_to_u256(params.min_assets_out).unwrap()),
+                        )
+                        .await
+                    }
+                    Function::Rebalance(params) => {
+                        let results: Vec<Result<H160, &String>> = params
+                            .route
+                            .iter()
+                            .map(|addr| match addr.parse::<H160>() {
+                                Ok(addr) => Ok(addr),
+                                Err(_) => Err(addr),
+                            })
+                            .collect();
+
+                        aave_v2_stablecoin::validate_route(results.clone()).unwrap_or_else(|err| {
+                            panic!("{}", err);
+                        });
+
+                        let route = results
+                            .iter()
+                            .map(|r| r.unwrap())
+                            .collect::<Vec<H160>>()
+                            .try_into()
+                            .expect("failed to convert 'route' addresses to array");
+
+                        let swap_params = params
+                            .swap_params
+                            .iter()
+                            .map(|sp| {
+                                let out: [U256; 3] =
+                                    [sp.in_index.into(), sp.out_index.into(), sp.swap_type.into()];
+                                out
+                            })
+                            .collect::<Vec<[U256; 3]>>()
+                            .try_into()
+                            .expect("failed to convert 'swap_params' vec to array");
+
+                        let min_assets_out = string_to_u256(params.min_assets_out).unwrap();
+
+                        contract_call(contract.rebalance(route, swap_params, min_assets_out)).await
+                    }
+                    Function::AccrueFees(_) => contract_call(contract.accrue_fees()).await,
+                    Function::TransferFees(_) => contract_call(contract.transfer_fees()).await,
+                    Function::SetLiquidityLimit(params) => {
+                        contract_call(
+                            contract.set_liquidity_limit(string_to_u256(params.limit).unwrap()),
+                        )
+                        .await
+                    }
+                    Function::ClaimAndUnstake(_) => {
+                        contract_call(contract.claim_and_unstake()).await
+                    }
+                }
+            }
+        };
+        if let Err(err) = function_call {
+            return Err(Status::new(Code::Internal, err.to_string()));
+        }
 
         Ok(Response::new(SubmitResponse {}))
     }
 }
+
 // Because of Rusts handling of enums, we have no easy way to log what cellar type and function are
 // being requested before we get to the encoding step, so we pass the whole request into this method
 // and the get_encoded_call() methods so logging can happen there.
@@ -140,4 +277,18 @@ async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
     )
     .await
     .map_err(|e| e.into())
+}
+
+async fn contract_call<T: Detokenize>(
+    contract_call: ContractCall<EthSignerMiddleware, T>,
+) -> Result<(), Error> {
+    let gas = contract_call.estimate_gas().await?;
+    let gas_price = CellarGas::get_gas_price().await?;
+    let contract_call = contract_call.gas(gas).gas_price(gas_price);
+    let pending_tx = contract_call.send().await?;
+    let tx_hash = *pending_tx;
+    info!("tx_hash: {}", tx_hash);
+    let transaction = pending_tx.await?;
+    info!("Contract call transaction reciept: {:?}", transaction);
+    Ok(())
 }
