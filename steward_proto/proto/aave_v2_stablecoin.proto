@@ -5,7 +5,7 @@
  */
 
 syntax = "proto3";
-package steward.v1;
+package steward.v2;
 
 option go_package = "/steward_proto";
 

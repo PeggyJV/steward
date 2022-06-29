@@ -4850,7 +4850,7 @@ dependencies = [
 
 [[package]]
 name = "steward_proto"
-version = "1.0.0"
+version = "2.0.0"
 dependencies = [
  "prost 0.7.0",
  "prost-types 0.7.0",

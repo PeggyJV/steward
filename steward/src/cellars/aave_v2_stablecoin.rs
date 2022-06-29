@@ -36,24 +36,26 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
             let call = ClaimAndUnstakeCall {};
             Ok(AaveV2StablecoinCellarCalls::ClaimAndUnstake(call).encode())
         }
-        EnterPosition(_) => {
+        EnterPosition(params) => {
+            let assets = string_to_u256(params.assets)?;
             log_cellar_call(
                 CELLAR_NAME,
-                &EnterPositionCall::function_name(),
+                &EnterPositionWithAssetsCall::function_name(),
                 cellar_id.as_str(),
             );
-            let call = EnterPositionCall {};
-            let call = AaveV2StablecoinCellarCalls::EnterPosition(call);
+            let call = EnterPositionWithAssetsCall { assets };
+            let call = AaveV2StablecoinCellarCalls::EnterPositionWithAssets(call);
             Ok(call.encode())
         }
-        ExitPosition(_) => {
+        ExitPosition(params) => {
+            let assets = string_to_u256(params.assets)?;
             log_cellar_call(
                 CELLAR_NAME,
-                &ExitPositionCall::function_name(),
+                &ExitPositionWithAssetsCall::function_name(),
                 cellar_id.as_str(),
             );
-            let call = ExitPositionCall {};
-            let call = AaveV2StablecoinCellarCalls::ExitPosition(call);
+            let call = ExitPositionWithAssetsCall { assets };
+            let call = AaveV2StablecoinCellarCalls::ExitPositionWithAssets(call);
             Ok(call.encode())
         }
         Rebalance(params) => {

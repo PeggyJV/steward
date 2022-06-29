@@ -1,3 +1,3 @@
 pub mod steward {
-    include!("prost/steward.v1.rs");
+    include!("prost/steward.v2.rs");
 }
