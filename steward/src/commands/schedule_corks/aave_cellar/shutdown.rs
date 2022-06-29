@@ -28,13 +28,9 @@ pub struct ShutdownCmd {
     #[clap(short = 'b', long)]
     height: u64,
 
-    ///Set to true if you want to shutdown Aave Cellar.
-    #[clap(short = 's', long)]
-    shut_down: bool,
-
     /// Set to true if you want to exit current position.
     #[clap(short = 'e', long)]
-    exit_position: bool,
+    empty_position: bool,
 }
 
 impl Runnable for ShutdownCmd {
@@ -42,11 +38,10 @@ impl Runnable for ShutdownCmd {
         let config = APP.config();
 
         abscissa_tokio::run_with_actix(&APP, async {
-            let call = SetShutdownCall {
-                shutdown: self.shut_down,
-                exit_position: self.exit_position,
+            let call = InitiateShutdownCall {
+                empty_position: self.empty_position,
             };
-            let encoded_call = AaveV2StablecoinCellarCalls::SetShutdown(call).encode();
+            let encoded_call = AaveV2StablecoinCellarCalls::InitiateShutdown(call).encode();
 
             cellars::validate_cellar_id(self.contract.as_str()).unwrap_or_else(|err| {
                 status_err!("Can't validate contract address format: {}", err);
