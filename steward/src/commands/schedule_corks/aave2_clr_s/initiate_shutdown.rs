@@ -1,9 +1,4 @@
-use crate::{
-    application::APP,
-    cellars,
-    cork,
-    prelude::*,
-};
+use crate::{application::APP, cellars, cork, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::abi::AbiEncode;
 use steward_abi::aave_v2_stablecoin::*;

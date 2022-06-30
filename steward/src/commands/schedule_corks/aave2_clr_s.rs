@@ -1,5 +1,5 @@
-mod lift_shutdown;
 mod initiate_shutdown;
+mod lift_shutdown;
 
 use abscissa_core::{clap::Parser, Command, Runnable};
 

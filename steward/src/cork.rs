@@ -142,7 +142,11 @@ async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
     .map_err(|e| e.into())
 }
 
-pub async fn schedule_cork(contract: String, encoded_call: Vec<u8>, height: u64) -> Result<TxResponse, Error> {
+pub async fn schedule_cork(
+    contract: String,
+    encoded_call: Vec<u8>,
+    height: u64,
+) -> Result<TxResponse, Error> {
     let config = APP.config();
     debug!("establishing grpc connection");
     let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX).unwrap();
@@ -164,6 +168,7 @@ pub async fn schedule_cork(contract: String, encoded_call: Vec<u8>, height: u64)
         &config::DELEGATE_KEY,
         fee,
         height,
-    ).await
+    )
+    .await
     .map_err(|e| e.into())
 }
