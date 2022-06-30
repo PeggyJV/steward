@@ -9,8 +9,8 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/miguelmota/go-ethereum-hdwallet v0.1.1
 	github.com/ory/dockertest/v3 v3.8.1
-	github.com/peggyjv/gravity-bridge/module/v2 v2.0.0-20220418171956-7fb1ba7ebc76
-	github.com/peggyjv/sommelier/v4 v4.0.0-20220418171902-38ebef682f79
+	github.com/peggyjv/gravity-bridge/module/v2 v2.0.1
+	github.com/peggyjv/sommelier/v4 v4.0.1
 	github.com/peggyjv/steward/steward_proto_go/steward_proto v0.0.0-00010101000000-000000000000
 	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
