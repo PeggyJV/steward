@@ -12,8 +12,8 @@ contract MockAaveV2StablecoinCellar is Ownable {
     event mockAccrue();
     event mockSendFees();
     event mockSetFeesDistributor(bytes32 newFeesDistributor);
-    event mockEnterPosition();
-    event mockExitPosition();
+    event mockEnterPosition(uint256 assets);
+    event mockExitPosition(uint256 assets);
     event mockRebalance(address[9] route, uint256[3][4] swapParams, uint256 minAssetsOut);
     event mockReinvest(uint256 minAssetsOut);
     event mockClaimAndUnstake();
@@ -50,15 +50,15 @@ contract MockAaveV2StablecoinCellar is Ownable {
     /**
      * @notice Pushes assets into the current Aave lending position.
      */
-    function enterPosition() external whenNotShutdown onlyOwner  {
-        emit mockEnterPosition();
+    function enterPosition(uint256 assets) external whenNotShutdown onlyOwner  {
+        emit mockEnterPosition(assets);
     }
 
     /**
      * @notice Pulls assets from the current Aave lending position.
      */
-    function exitPosition() external whenNotShutdown onlyOwner  {
-        emit mockExitPosition();
+    function exitPosition(uint256 assets) external whenNotShutdown onlyOwner  {
+        emit mockExitPosition(assets);
     }
 
     /**
