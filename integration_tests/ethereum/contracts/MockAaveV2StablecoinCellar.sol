@@ -18,6 +18,7 @@ contract MockAaveV2StablecoinCellar is Ownable {
     event mockReinvest(uint256 minAssetsOut);
     event mockClaimAndUnstake();
     event mockSweep(ERC20 token, address to);
+    event mockSetAccrualPeriod(uint32 newAccrualPeriod);
     event mockSetLiquidityLimit(uint256 limit);
     event mockSetDepositLimit(uint256 limit);
     event mockSetTrust(ERC20 position, bool trust);
@@ -38,6 +39,13 @@ contract MockAaveV2StablecoinCellar is Ownable {
      */
     function sendFees() external onlyOwner {
         emit mockSendFees();
+    }
+
+    /**
+     * @notice Set the accrual period over which yield is distributed.
+     */
+    function setAccrualPeriod(uint32 newAccrualPeriod) external onlyOwner {
+        emit mockSetAccrualPeriod(newAccrualPeriod);
     }
 
     /**

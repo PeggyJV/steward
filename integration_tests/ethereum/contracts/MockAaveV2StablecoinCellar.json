@@ -115,6 +115,19 @@
         "inputs": [
             {
                 "indexed": false,
+                "internalType": "uint32",
+                "name": "newAccrualPeriod",
+                "type": "uint32"
+            }
+        ],
+        "name": "mockSetAccrualPeriod",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
                 "internalType": "uint256",
                 "name": "limit",
                 "type": "uint256"
@@ -344,6 +357,19 @@
     {
         "inputs": [],
         "name": "sendFees",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint32",
+                "name": "newAccrualPeriod",
+                "type": "uint32"
+            }
+        ],
+        "name": "setAccrualPeriod",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

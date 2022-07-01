@@ -5,7 +5,7 @@ pub struct AaveV2Stablecoin {
     /// The function you wish to execute on the target cellar
     #[prost(
         oneof = "aave_v2_stablecoin::Function",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12"
     )]
     pub function: ::core::option::Option<aave_v2_stablecoin::Function>,
 }
@@ -24,21 +24,33 @@ pub mod aave_v2_stablecoin {
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct ClaimAndUnstake {}
     ///
+    /// Pushes total assets into the current Aave lending position.
+    ///
+    /// Represents function `enterPosition()`
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct EnterPosition {}
+    ///
     /// Pushes assets into the current Aave lending position.
     ///
     /// Represents function `enterPosition(uint256 assets)`
     #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct EnterPosition {
+    pub struct EnterPositionWithAssets {
         /// amount of assets to enter into the current position
         #[prost(string, tag = "1")]
         pub assets: ::prost::alloc::string::String,
     }
     ///
+    /// Pulls total assets from the current Aave lending position.
+    ///
+    /// Represents function `enterPosition()`
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct ExitPosition {}
+    ///
     /// Pulls assets from the current Aave lending position.
     ///
     /// Represents function `exitPosition(uint256 assets)`
     #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct ExitPosition {
+    pub struct ExitPositionWithAssets {
         /// amount of assets to exit from the current position
         #[prost(string, tag = "1")]
         pub assets: ::prost::alloc::string::String,
@@ -95,6 +107,15 @@ pub mod aave_v2_stablecoin {
         pub min_assets_out: ::prost::alloc::string::String,
     }
     ///
+    /// Set the accrual period over which yield is distributed.
+    ///
+    /// Represents function `setAccrualPeriod(uint32 newAccrualPeriod)`
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct SetAccrualPeriod {
+        #[prost(uint32, tag = "1")]
+        pub new_accrual_period: u32,
+    }
+    ///
     /// Set the per-wallet deposit limit. Uses the same decimals as the current asset.
     ///
     /// Represents function `setDepositLimit(uint256 limit)`
@@ -132,23 +153,32 @@ pub mod aave_v2_stablecoin {
         /// Represents function `enterPosition()`
         #[prost(message, tag = "3")]
         EnterPosition(EnterPosition),
-        /// Represents function `exitPosition()`
+        /// Represents function `enterPosition(uint256 assets)`
         #[prost(message, tag = "4")]
-        ExitPosition(ExitPosition),
-        /// Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`
+        EnterPositionWithAssets(EnterPositionWithAssets),
+        /// Represents function `exitPosition()`
         #[prost(message, tag = "5")]
+        ExitPosition(ExitPosition),
+        /// Represents function `exitPosition(uint256 assets)`
+        #[prost(message, tag = "6")]
+        ExitPositionWithAssets(ExitPositionWithAssets),
+        /// Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`
+        #[prost(message, tag = "7")]
         Rebalance(Rebalance),
         /// Represents function `reinvest(uint256 minAssetsOut)`
-        #[prost(message, tag = "6")]
+        #[prost(message, tag = "8")]
         Reinvest(Reinvest),
+        /// Represents function `setAccrualPeriod(uint32 newAccrualPeriod)`
+        #[prost(message, tag = "9")]
+        SetAccrualPeriod(SetAccrualPeriod),
         /// Represents function `setDepositLimit(uint256 limit)`
-        #[prost(message, tag = "7")]
+        #[prost(message, tag = "10")]
         SetDepositLimit(SetDepositLimit),
         /// Represents function `setLiquidityLimit(uint256 limit)`
-        #[prost(message, tag = "8")]
+        #[prost(message, tag = "11")]
         SetLiquidityLimit(SetLiquidityLimit),
         /// Represents function `transferFees()`
-        #[prost(message, tag = "9")]
+        #[prost(message, tag = "12")]
         SendFees(SendFees),
     }
 }

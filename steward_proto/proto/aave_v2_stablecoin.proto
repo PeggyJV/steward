@@ -21,18 +21,24 @@ message AaveV2Stablecoin {
         ClaimAndUnstake claim_and_unstake = 2;
         // Represents function `enterPosition()`
         EnterPosition enter_position = 3;
+        // Represents function `enterPosition(uint256 assets)`
+        EnterPositionWithAssets enter_position_with_assets = 4;
         // Represents function `exitPosition()`
-        ExitPosition exit_position = 4;
+        ExitPosition exit_position = 5;
+        // Represents function `exitPosition(uint256 assets)`
+        ExitPositionWithAssets exit_position_with_assets = 6;
         // Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`
-        Rebalance rebalance = 5;
+        Rebalance rebalance = 7;
         // Represents function `reinvest(uint256 minAssetsOut)`
-        Reinvest reinvest = 6;
+        Reinvest reinvest = 8;
+        // Represents function `setAccrualPeriod(uint32 newAccrualPeriod)`
+        SetAccrualPeriod set_accrual_period = 9;
         // Represents function `setDepositLimit(uint256 limit)`
-        SetDepositLimit set_deposit_limit = 7;
+        SetDepositLimit set_deposit_limit = 10;
         // Represents function `setLiquidityLimit(uint256 limit)`
-        SetLiquidityLimit set_liquidity_limit = 8;
+        SetLiquidityLimit set_liquidity_limit = 11;
         // Represents function `transferFees()`
-        SendFees send_fees = 9;
+        SendFees send_fees = 12;
     }
 
     /*
@@ -50,21 +56,35 @@ message AaveV2Stablecoin {
     message ClaimAndUnstake {}
 
     /*
+     * Pushes total assets into the current Aave lending position.
+     *
+     * Represents function `enterPosition()`
+     */
+     message EnterPosition {}
+
+    /*
      * Pushes assets into the current Aave lending position.
      *
      * Represents function `enterPosition(uint256 assets)`
      */
-    message EnterPosition {
+    message EnterPositionWithAssets {
         // amount of assets to enter into the current position
         string assets = 1;
     }
+
+    /*
+     * Pulls total assets from the current Aave lending position.
+     *
+     * Represents function `enterPosition()`
+     */
+     message ExitPosition {}
 
     /*
      * Pulls assets from the current Aave lending position.
      *
      * Represents function `exitPosition(uint256 assets)`
      */
-     message ExitPosition {
+     message ExitPositionWithAssets {
         // amount of assets to exit from the current position
         string assets = 1;
     }
@@ -112,6 +132,15 @@ message AaveV2Stablecoin {
     message Reinvest {
         // Minimum acceptable assets to be received from the swap (slippage parameter).  Must be parsable as an unsigned 256-bit integer.
         string min_assets_out = 1;
+    }
+
+    /*
+     * Set the accrual period over which yield is distributed.
+     *
+     * Represents function `setAccrualPeriod(uint32 newAccrualPeriod)`
+     */
+    message SetAccrualPeriod {
+        uint32 new_accrual_period = 1;
     }
 
     /*

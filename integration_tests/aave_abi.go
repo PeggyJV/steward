@@ -30,7 +30,7 @@ var (
 
 // AaveV2MetaData contains all meta data concerning the AaveV2 contract.
 var AaveV2MetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"STATE_ContractShutdown\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockAccrue\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockClaimAndUnstake\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockEnterPosition\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockExitPosition\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address[9]\",\"name\":\"route\",\"type\":\"address[9]\"},{\"indexed\":false,\"internalType\":\"uint256[3][4]\",\"name\":\"swapParams\",\"type\":\"uint256[3][4]\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minAssetsOut\",\"type\":\"uint256\"}],\"name\":\"mockRebalance\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minAssetsOut\",\"type\":\"uint256\"}],\"name\":\"mockReinvest\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockSendFees\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"limit\",\"type\":\"uint256\"}],\"name\":\"mockSetDepositLimit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"newFeesDistributor\",\"type\":\"bytes32\"}],\"name\":\"mockSetFeesDistributor\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"limit\",\"type\":\"uint256\"}],\"name\":\"mockSetLiquidityLimit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"contractERC20\",\"name\":\"position\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"trust\",\"type\":\"bool\"}],\"name\":\"mockSetTrust\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"emptyPosition\",\"type\":\"bool\"}],\"name\":\"mockShutdownInitiated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockShutdownLifted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"contractERC20\",\"name\":\"token\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"mockSweep\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"accrue\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"claimAndUnstake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"claimed\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"enterPosition\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"exitPosition\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bool\",\"name\":\"emptyPosition\",\"type\":\"bool\"}],\"name\":\"initiateShutdown\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isShutdown\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"liftShutdown\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[9]\",\"name\":\"route\",\"type\":\"address[9]\"},{\"internalType\":\"uint256[3][4]\",\"name\":\"swapParams\",\"type\":\"uint256[3][4]\"},{\"internalType\":\"uint256\",\"name\":\"minAssetsOut\",\"type\":\"uint256\"}],\"name\":\"rebalance\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"minAssetsOut\",\"type\":\"uint256\"}],\"name\":\"reinvest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"sendFees\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newLimit\",\"type\":\"uint256\"}],\"name\":\"setDepositLimit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"newFeesDistributor\",\"type\":\"bytes32\"}],\"name\":\"setFeesDistributor\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newLimit\",\"type\":\"uint256\"}],\"name\":\"setLiquidityLimit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractERC20\",\"name\":\"position\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"trust\",\"type\":\"bool\"}],\"name\":\"setTrust\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractERC20\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"sweep\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"STATE_ContractShutdown\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockAccrue\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockClaimAndUnstake\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"name\":\"mockEnterPosition\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"name\":\"mockExitPosition\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address[9]\",\"name\":\"route\",\"type\":\"address[9]\"},{\"indexed\":false,\"internalType\":\"uint256[3][4]\",\"name\":\"swapParams\",\"type\":\"uint256[3][4]\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minAssetsOut\",\"type\":\"uint256\"}],\"name\":\"mockRebalance\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minAssetsOut\",\"type\":\"uint256\"}],\"name\":\"mockReinvest\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockSendFees\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint32\",\"name\":\"newAccrualPeriod\",\"type\":\"uint32\"}],\"name\":\"mockSetAccrualPeriod\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"limit\",\"type\":\"uint256\"}],\"name\":\"mockSetDepositLimit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"newFeesDistributor\",\"type\":\"bytes32\"}],\"name\":\"mockSetFeesDistributor\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"limit\",\"type\":\"uint256\"}],\"name\":\"mockSetLiquidityLimit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"contractERC20\",\"name\":\"position\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"trust\",\"type\":\"bool\"}],\"name\":\"mockSetTrust\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"emptyPosition\",\"type\":\"bool\"}],\"name\":\"mockShutdownInitiated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockShutdownLifted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"contractERC20\",\"name\":\"token\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"mockSweep\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"accrue\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"claimAndUnstake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"claimed\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"name\":\"enterPosition\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"name\":\"exitPosition\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bool\",\"name\":\"emptyPosition\",\"type\":\"bool\"}],\"name\":\"initiateShutdown\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isShutdown\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"liftShutdown\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[9]\",\"name\":\"route\",\"type\":\"address[9]\"},{\"internalType\":\"uint256[3][4]\",\"name\":\"swapParams\",\"type\":\"uint256[3][4]\"},{\"internalType\":\"uint256\",\"name\":\"minAssetsOut\",\"type\":\"uint256\"}],\"name\":\"rebalance\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"minAssetsOut\",\"type\":\"uint256\"}],\"name\":\"reinvest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"sendFees\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"newAccrualPeriod\",\"type\":\"uint32\"}],\"name\":\"setAccrualPeriod\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newLimit\",\"type\":\"uint256\"}],\"name\":\"setDepositLimit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"newFeesDistributor\",\"type\":\"bytes32\"}],\"name\":\"setFeesDistributor\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newLimit\",\"type\":\"uint256\"}],\"name\":\"setLiquidityLimit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractERC20\",\"name\":\"position\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"trust\",\"type\":\"bool\"}],\"name\":\"setTrust\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractERC20\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"sweep\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // AaveV2ABI is the input ABI used to generate the binding from.
@@ -283,46 +283,46 @@ func (_AaveV2 *AaveV2TransactorSession) ClaimAndUnstake() (*types.Transaction, e
 	return _AaveV2.Contract.ClaimAndUnstake(&_AaveV2.TransactOpts)
 }
 
-// EnterPosition is a paid mutator transaction binding the contract method 0x3dc6eabf.
+// EnterPosition is a paid mutator transaction binding the contract method 0x6e08406b.
 //
-// Solidity: function enterPosition() returns()
-func (_AaveV2 *AaveV2Transactor) EnterPosition(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _AaveV2.contract.Transact(opts, "enterPosition")
+// Solidity: function enterPosition(uint256 assets) returns()
+func (_AaveV2 *AaveV2Transactor) EnterPosition(opts *bind.TransactOpts, assets *big.Int) (*types.Transaction, error) {
+	return _AaveV2.contract.Transact(opts, "enterPosition", assets)
 }
 
-// EnterPosition is a paid mutator transaction binding the contract method 0x3dc6eabf.
+// EnterPosition is a paid mutator transaction binding the contract method 0x6e08406b.
 //
-// Solidity: function enterPosition() returns()
-func (_AaveV2 *AaveV2Session) EnterPosition() (*types.Transaction, error) {
-	return _AaveV2.Contract.EnterPosition(&_AaveV2.TransactOpts)
+// Solidity: function enterPosition(uint256 assets) returns()
+func (_AaveV2 *AaveV2Session) EnterPosition(assets *big.Int) (*types.Transaction, error) {
+	return _AaveV2.Contract.EnterPosition(&_AaveV2.TransactOpts, assets)
 }
 
-// EnterPosition is a paid mutator transaction binding the contract method 0x3dc6eabf.
+// EnterPosition is a paid mutator transaction binding the contract method 0x6e08406b.
 //
-// Solidity: function enterPosition() returns()
-func (_AaveV2 *AaveV2TransactorSession) EnterPosition() (*types.Transaction, error) {
-	return _AaveV2.Contract.EnterPosition(&_AaveV2.TransactOpts)
+// Solidity: function enterPosition(uint256 assets) returns()
+func (_AaveV2 *AaveV2TransactorSession) EnterPosition(assets *big.Int) (*types.Transaction, error) {
+	return _AaveV2.Contract.EnterPosition(&_AaveV2.TransactOpts, assets)
 }
 
-// ExitPosition is a paid mutator transaction binding the contract method 0x99729216.
+// ExitPosition is a paid mutator transaction binding the contract method 0x78dc9059.
 //
-// Solidity: function exitPosition() returns()
-func (_AaveV2 *AaveV2Transactor) ExitPosition(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _AaveV2.contract.Transact(opts, "exitPosition")
+// Solidity: function exitPosition(uint256 assets) returns()
+func (_AaveV2 *AaveV2Transactor) ExitPosition(opts *bind.TransactOpts, assets *big.Int) (*types.Transaction, error) {
+	return _AaveV2.contract.Transact(opts, "exitPosition", assets)
 }
 
-// ExitPosition is a paid mutator transaction binding the contract method 0x99729216.
+// ExitPosition is a paid mutator transaction binding the contract method 0x78dc9059.
 //
-// Solidity: function exitPosition() returns()
-func (_AaveV2 *AaveV2Session) ExitPosition() (*types.Transaction, error) {
-	return _AaveV2.Contract.ExitPosition(&_AaveV2.TransactOpts)
+// Solidity: function exitPosition(uint256 assets) returns()
+func (_AaveV2 *AaveV2Session) ExitPosition(assets *big.Int) (*types.Transaction, error) {
+	return _AaveV2.Contract.ExitPosition(&_AaveV2.TransactOpts, assets)
 }
 
-// ExitPosition is a paid mutator transaction binding the contract method 0x99729216.
+// ExitPosition is a paid mutator transaction binding the contract method 0x78dc9059.
 //
-// Solidity: function exitPosition() returns()
-func (_AaveV2 *AaveV2TransactorSession) ExitPosition() (*types.Transaction, error) {
-	return _AaveV2.Contract.ExitPosition(&_AaveV2.TransactOpts)
+// Solidity: function exitPosition(uint256 assets) returns()
+func (_AaveV2 *AaveV2TransactorSession) ExitPosition(assets *big.Int) (*types.Transaction, error) {
+	return _AaveV2.Contract.ExitPosition(&_AaveV2.TransactOpts, assets)
 }
 
 // InitiateShutdown is a paid mutator transaction binding the contract method 0xef465d92.
@@ -449,6 +449,27 @@ func (_AaveV2 *AaveV2Session) SendFees() (*types.Transaction, error) {
 // Solidity: function sendFees() returns()
 func (_AaveV2 *AaveV2TransactorSession) SendFees() (*types.Transaction, error) {
 	return _AaveV2.Contract.SendFees(&_AaveV2.TransactOpts)
+}
+
+// SetAccrualPeriod is a paid mutator transaction binding the contract method 0xef7ac883.
+//
+// Solidity: function setAccrualPeriod(uint32 newAccrualPeriod) returns()
+func (_AaveV2 *AaveV2Transactor) SetAccrualPeriod(opts *bind.TransactOpts, newAccrualPeriod uint32) (*types.Transaction, error) {
+	return _AaveV2.contract.Transact(opts, "setAccrualPeriod", newAccrualPeriod)
+}
+
+// SetAccrualPeriod is a paid mutator transaction binding the contract method 0xef7ac883.
+//
+// Solidity: function setAccrualPeriod(uint32 newAccrualPeriod) returns()
+func (_AaveV2 *AaveV2Session) SetAccrualPeriod(newAccrualPeriod uint32) (*types.Transaction, error) {
+	return _AaveV2.Contract.SetAccrualPeriod(&_AaveV2.TransactOpts, newAccrualPeriod)
+}
+
+// SetAccrualPeriod is a paid mutator transaction binding the contract method 0xef7ac883.
+//
+// Solidity: function setAccrualPeriod(uint32 newAccrualPeriod) returns()
+func (_AaveV2 *AaveV2TransactorSession) SetAccrualPeriod(newAccrualPeriod uint32) (*types.Transaction, error) {
+	return _AaveV2.Contract.SetAccrualPeriod(&_AaveV2.TransactOpts, newAccrualPeriod)
 }
 
 // SetDepositLimit is a paid mutator transaction binding the contract method 0xbdc8144b.
@@ -1065,12 +1086,13 @@ func (it *AaveV2MockEnterPositionIterator) Close() error {
 
 // AaveV2MockEnterPosition represents a MockEnterPosition event raised by the AaveV2 contract.
 type AaveV2MockEnterPosition struct {
-	Raw types.Log // Blockchain specific contextual infos
+	Assets *big.Int
+	Raw    types.Log // Blockchain specific contextual infos
 }
 
-// FilterMockEnterPosition is a free log retrieval operation binding the contract event 0xac91e57d60d4977f906c8747139df337f4553e15652b9306669094fe4f77ac07.
+// FilterMockEnterPosition is a free log retrieval operation binding the contract event 0x2e30008c509340729f747055294e8b7e23a97946c482e19411bc769c5ccbffd1.
 //
-// Solidity: event mockEnterPosition()
+// Solidity: event mockEnterPosition(uint256 assets)
 func (_AaveV2 *AaveV2Filterer) FilterMockEnterPosition(opts *bind.FilterOpts) (*AaveV2MockEnterPositionIterator, error) {
 
 	logs, sub, err := _AaveV2.contract.FilterLogs(opts, "mockEnterPosition")
@@ -1080,9 +1102,9 @@ func (_AaveV2 *AaveV2Filterer) FilterMockEnterPosition(opts *bind.FilterOpts) (*
 	return &AaveV2MockEnterPositionIterator{contract: _AaveV2.contract, event: "mockEnterPosition", logs: logs, sub: sub}, nil
 }
 
-// WatchMockEnterPosition is a free log subscription operation binding the contract event 0xac91e57d60d4977f906c8747139df337f4553e15652b9306669094fe4f77ac07.
+// WatchMockEnterPosition is a free log subscription operation binding the contract event 0x2e30008c509340729f747055294e8b7e23a97946c482e19411bc769c5ccbffd1.
 //
-// Solidity: event mockEnterPosition()
+// Solidity: event mockEnterPosition(uint256 assets)
 func (_AaveV2 *AaveV2Filterer) WatchMockEnterPosition(opts *bind.WatchOpts, sink chan<- *AaveV2MockEnterPosition) (event.Subscription, error) {
 
 	logs, sub, err := _AaveV2.contract.WatchLogs(opts, "mockEnterPosition")
@@ -1117,9 +1139,9 @@ func (_AaveV2 *AaveV2Filterer) WatchMockEnterPosition(opts *bind.WatchOpts, sink
 	}), nil
 }
 
-// ParseMockEnterPosition is a log parse operation binding the contract event 0xac91e57d60d4977f906c8747139df337f4553e15652b9306669094fe4f77ac07.
+// ParseMockEnterPosition is a log parse operation binding the contract event 0x2e30008c509340729f747055294e8b7e23a97946c482e19411bc769c5ccbffd1.
 //
-// Solidity: event mockEnterPosition()
+// Solidity: event mockEnterPosition(uint256 assets)
 func (_AaveV2 *AaveV2Filterer) ParseMockEnterPosition(log types.Log) (*AaveV2MockEnterPosition, error) {
 	event := new(AaveV2MockEnterPosition)
 	if err := _AaveV2.contract.UnpackLog(event, "mockEnterPosition", log); err != nil {
@@ -1198,12 +1220,13 @@ func (it *AaveV2MockExitPositionIterator) Close() error {
 
 // AaveV2MockExitPosition represents a MockExitPosition event raised by the AaveV2 contract.
 type AaveV2MockExitPosition struct {
-	Raw types.Log // Blockchain specific contextual infos
+	Assets *big.Int
+	Raw    types.Log // Blockchain specific contextual infos
 }
 
-// FilterMockExitPosition is a free log retrieval operation binding the contract event 0x32d19b0faee60d6e02184595e013abe9efbb7d053831df5209cc9f2b1defb8fa.
+// FilterMockExitPosition is a free log retrieval operation binding the contract event 0xd844645ac67f0011a3c9effc6288c124029b8087bb66ede20f49f12a750315ab.
 //
-// Solidity: event mockExitPosition()
+// Solidity: event mockExitPosition(uint256 assets)
 func (_AaveV2 *AaveV2Filterer) FilterMockExitPosition(opts *bind.FilterOpts) (*AaveV2MockExitPositionIterator, error) {
 
 	logs, sub, err := _AaveV2.contract.FilterLogs(opts, "mockExitPosition")
@@ -1213,9 +1236,9 @@ func (_AaveV2 *AaveV2Filterer) FilterMockExitPosition(opts *bind.FilterOpts) (*A
 	return &AaveV2MockExitPositionIterator{contract: _AaveV2.contract, event: "mockExitPosition", logs: logs, sub: sub}, nil
 }
 
-// WatchMockExitPosition is a free log subscription operation binding the contract event 0x32d19b0faee60d6e02184595e013abe9efbb7d053831df5209cc9f2b1defb8fa.
+// WatchMockExitPosition is a free log subscription operation binding the contract event 0xd844645ac67f0011a3c9effc6288c124029b8087bb66ede20f49f12a750315ab.
 //
-// Solidity: event mockExitPosition()
+// Solidity: event mockExitPosition(uint256 assets)
 func (_AaveV2 *AaveV2Filterer) WatchMockExitPosition(opts *bind.WatchOpts, sink chan<- *AaveV2MockExitPosition) (event.Subscription, error) {
 
 	logs, sub, err := _AaveV2.contract.WatchLogs(opts, "mockExitPosition")
@@ -1250,9 +1273,9 @@ func (_AaveV2 *AaveV2Filterer) WatchMockExitPosition(opts *bind.WatchOpts, sink 
 	}), nil
 }
 
-// ParseMockExitPosition is a log parse operation binding the contract event 0x32d19b0faee60d6e02184595e013abe9efbb7d053831df5209cc9f2b1defb8fa.
+// ParseMockExitPosition is a log parse operation binding the contract event 0xd844645ac67f0011a3c9effc6288c124029b8087bb66ede20f49f12a750315ab.
 //
-// Solidity: event mockExitPosition()
+// Solidity: event mockExitPosition(uint256 assets)
 func (_AaveV2 *AaveV2Filterer) ParseMockExitPosition(log types.Log) (*AaveV2MockExitPosition, error) {
 	event := new(AaveV2MockExitPosition)
 	if err := _AaveV2.contract.UnpackLog(event, "mockExitPosition", log); err != nil {
@@ -1659,6 +1682,140 @@ func (_AaveV2 *AaveV2Filterer) WatchMockSendFees(opts *bind.WatchOpts, sink chan
 func (_AaveV2 *AaveV2Filterer) ParseMockSendFees(log types.Log) (*AaveV2MockSendFees, error) {
 	event := new(AaveV2MockSendFees)
 	if err := _AaveV2.contract.UnpackLog(event, "mockSendFees", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// AaveV2MockSetAccrualPeriodIterator is returned from FilterMockSetAccrualPeriod and is used to iterate over the raw logs and unpacked data for MockSetAccrualPeriod events raised by the AaveV2 contract.
+type AaveV2MockSetAccrualPeriodIterator struct {
+	Event *AaveV2MockSetAccrualPeriod // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *AaveV2MockSetAccrualPeriodIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(AaveV2MockSetAccrualPeriod)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(AaveV2MockSetAccrualPeriod)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *AaveV2MockSetAccrualPeriodIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *AaveV2MockSetAccrualPeriodIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// AaveV2MockSetAccrualPeriod represents a MockSetAccrualPeriod event raised by the AaveV2 contract.
+type AaveV2MockSetAccrualPeriod struct {
+	NewAccrualPeriod uint32
+	Raw              types.Log // Blockchain specific contextual infos
+}
+
+// FilterMockSetAccrualPeriod is a free log retrieval operation binding the contract event 0x50920586d83ebe16a3d059755c0202d4c58f25dbf6273b5442e0aae9e44f8f33.
+//
+// Solidity: event mockSetAccrualPeriod(uint32 newAccrualPeriod)
+func (_AaveV2 *AaveV2Filterer) FilterMockSetAccrualPeriod(opts *bind.FilterOpts) (*AaveV2MockSetAccrualPeriodIterator, error) {
+
+	logs, sub, err := _AaveV2.contract.FilterLogs(opts, "mockSetAccrualPeriod")
+	if err != nil {
+		return nil, err
+	}
+	return &AaveV2MockSetAccrualPeriodIterator{contract: _AaveV2.contract, event: "mockSetAccrualPeriod", logs: logs, sub: sub}, nil
+}
+
+// WatchMockSetAccrualPeriod is a free log subscription operation binding the contract event 0x50920586d83ebe16a3d059755c0202d4c58f25dbf6273b5442e0aae9e44f8f33.
+//
+// Solidity: event mockSetAccrualPeriod(uint32 newAccrualPeriod)
+func (_AaveV2 *AaveV2Filterer) WatchMockSetAccrualPeriod(opts *bind.WatchOpts, sink chan<- *AaveV2MockSetAccrualPeriod) (event.Subscription, error) {
+
+	logs, sub, err := _AaveV2.contract.WatchLogs(opts, "mockSetAccrualPeriod")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(AaveV2MockSetAccrualPeriod)
+				if err := _AaveV2.contract.UnpackLog(event, "mockSetAccrualPeriod", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseMockSetAccrualPeriod is a log parse operation binding the contract event 0x50920586d83ebe16a3d059755c0202d4c58f25dbf6273b5442e0aae9e44f8f33.
+//
+// Solidity: event mockSetAccrualPeriod(uint32 newAccrualPeriod)
+func (_AaveV2 *AaveV2Filterer) ParseMockSetAccrualPeriod(log types.Log) (*AaveV2MockSetAccrualPeriod, error) {
+	event := new(AaveV2MockSetAccrualPeriod)
+	if err := _AaveV2.contract.UnpackLog(event, "mockSetAccrualPeriod", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log

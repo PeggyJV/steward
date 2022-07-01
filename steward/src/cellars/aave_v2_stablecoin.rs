@@ -36,7 +36,16 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
             let call = ClaimAndUnstakeCall {};
             Ok(AaveV2StablecoinCellarCalls::ClaimAndUnstake(call).encode())
         }
-        EnterPosition(params) => {
+        EnterPosition(_) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &EnterPositionCall::function_name(),
+                cellar_id.as_str(),
+            );
+            let call = EnterPositionCall {};
+            Ok(AaveV2StablecoinCellarCalls::EnterPosition(call).encode())
+        }
+        EnterPositionWithAssets(params) => {
             let assets = string_to_u256(params.assets)?;
             log_cellar_call(
                 CELLAR_NAME,
@@ -44,10 +53,18 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 cellar_id.as_str(),
             );
             let call = EnterPositionWithAssetsCall { assets };
-            let call = AaveV2StablecoinCellarCalls::EnterPositionWithAssets(call);
-            Ok(call.encode())
+            Ok(AaveV2StablecoinCellarCalls::EnterPositionWithAssets(call).encode())
         }
-        ExitPosition(params) => {
+        ExitPosition(_) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &ExitPositionCall::function_name(),
+                cellar_id.as_str(),
+            );
+            let call = ExitPositionCall {};
+            Ok(AaveV2StablecoinCellarCalls::ExitPosition(call).encode())
+        }
+        ExitPositionWithAssets(params) => {
             let assets = string_to_u256(params.assets)?;
             log_cellar_call(
                 CELLAR_NAME,
@@ -55,8 +72,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 cellar_id.as_str(),
             );
             let call = ExitPositionWithAssetsCall { assets };
-            let call = AaveV2StablecoinCellarCalls::ExitPositionWithAssets(call);
-            Ok(call.encode())
+            Ok(AaveV2StablecoinCellarCalls::ExitPositionWithAssets(call).encode())
         }
         Rebalance(params) => {
             // We expect the client to pad the route to length 9
@@ -127,6 +143,16 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
             );
             let call = ReinvestCall { min_assets_out };
             Ok(AaveV2StablecoinCellarCalls::Reinvest(call).encode())
+        }
+        SetAccrualPeriod(params) => {
+            let new_accrual_period = params.new_accrual_period;
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetAccrualPeriodCall::function_name(),
+                cellar_id.as_str(),
+            );
+            let call = SetAccrualPeriodCall { new_accrual_period };
+            Ok(AaveV2StablecoinCellarCalls::SetAccrualPeriod(call).encode())
         }
         SetDepositLimit(params) => {
             let new_limit = string_to_u256(params.limit)?;
