@@ -42,6 +42,12 @@
     },
     {
         "anonymous": false,
+        "inputs": [],
+        "name": "mockEnterPosition",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
         "inputs": [
             {
                 "indexed": false,
@@ -51,6 +57,12 @@
             }
         ],
         "name": "mockEnterPosition",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [],
+        "name": "mockExitPosition",
         "type": "event"
     },
     {
@@ -240,6 +252,13 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "enterPosition",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint256",
@@ -260,6 +279,13 @@
                 "type": "uint256"
             }
         ],
+        "name": "exitPosition",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "exitPosition",
         "outputs": [],
         "stateMutability": "nonpayable",
