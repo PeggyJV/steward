@@ -22,6 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ContractCallClient interface {
+	// Handles simple contract call submission
 	Submit(ctx context.Context, in *SubmitRequest, opts ...grpc.CallOption) (*SubmitResponse, error)
 }
 
@@ -35,7 +36,7 @@ func NewContractCallClient(cc grpc.ClientConnInterface) ContractCallClient {
 
 func (c *contractCallClient) Submit(ctx context.Context, in *SubmitRequest, opts ...grpc.CallOption) (*SubmitResponse, error) {
 	out := new(SubmitResponse)
-	err := c.cc.Invoke(ctx, "/steward.v1.ContractCall/Submit", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/steward.v2.ContractCall/Submit", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,6 +47,7 @@ func (c *contractCallClient) Submit(ctx context.Context, in *SubmitRequest, opts
 // All implementations must embed UnimplementedContractCallServer
 // for forward compatibility
 type ContractCallServer interface {
+	// Handles simple contract call submission
 	Submit(context.Context, *SubmitRequest) (*SubmitResponse, error)
 	mustEmbedUnimplementedContractCallServer()
 }
@@ -80,7 +82,7 @@ func _ContractCall_Submit_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/steward.v1.ContractCall/Submit",
+		FullMethod: "/steward.v2.ContractCall/Submit",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ContractCallServer).Submit(ctx, req.(*SubmitRequest))
@@ -92,7 +94,7 @@ func _ContractCall_Submit_Handler(srv interface{}, ctx context.Context, dec func
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ContractCall_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "steward.v1.ContractCall",
+	ServiceName: "steward.v2.ContractCall",
 	HandlerType: (*ContractCallServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

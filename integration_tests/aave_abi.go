@@ -30,7 +30,7 @@ var (
 
 // AaveV2MetaData contains all meta data concerning the AaveV2 contract.
 var AaveV2MetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockAccrueFees\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockClaimAndUnstake\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockEnterPosition\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address[9]\",\"name\":\"route\",\"type\":\"address[9]\"},{\"indexed\":false,\"internalType\":\"uint256[3][4]\",\"name\":\"swapParams\",\"type\":\"uint256[3][4]\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minAssetsOut\",\"type\":\"uint256\"}],\"name\":\"mockRebalance\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minAssetsOut\",\"type\":\"uint256\"}],\"name\":\"mockReinvest\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"limit\",\"type\":\"uint256\"}],\"name\":\"mockSetDepositLimit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"newFeesDistributor\",\"type\":\"bytes32\"}],\"name\":\"mockSetFeesDistributor\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"limit\",\"type\":\"uint256\"}],\"name\":\"mockSetLiquidityLimit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"shutdown\",\"type\":\"bool\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"exitPosition\",\"type\":\"bool\"}],\"name\":\"mockSetShutdown\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"position\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"trust\",\"type\":\"bool\"}],\"name\":\"mockSetTrust\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"mockSweep\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockTransferFees\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"accrueFees\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"claimAndUnstake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"claimed\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"enterPosition\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isShutdown\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[9]\",\"name\":\"route\",\"type\":\"address[9]\"},{\"internalType\":\"uint256[3][4]\",\"name\":\"swapParams\",\"type\":\"uint256[3][4]\"},{\"internalType\":\"uint256\",\"name\":\"minAssetsOut\",\"type\":\"uint256\"}],\"name\":\"rebalance\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"minAssetsOut\",\"type\":\"uint256\"}],\"name\":\"reinvest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"limit\",\"type\":\"uint256\"}],\"name\":\"setDepositLimit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"newFeesDistributor\",\"type\":\"bytes32\"}],\"name\":\"setFeesDistributor\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"limit\",\"type\":\"uint256\"}],\"name\":\"setLiquidityLimit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bool\",\"name\":\"shutdown\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"exitPosition\",\"type\":\"bool\"}],\"name\":\"setShutdown\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"position\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"trust\",\"type\":\"bool\"}],\"name\":\"setTrust\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"sweep\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"transferFees\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"STATE_ContractShutdown\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockAccrue\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockClaimAndUnstake\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"name\":\"mockEnterPosition\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"name\":\"mockExitPosition\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address[9]\",\"name\":\"route\",\"type\":\"address[9]\"},{\"indexed\":false,\"internalType\":\"uint256[3][4]\",\"name\":\"swapParams\",\"type\":\"uint256[3][4]\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minAssetsOut\",\"type\":\"uint256\"}],\"name\":\"mockRebalance\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minAssetsOut\",\"type\":\"uint256\"}],\"name\":\"mockReinvest\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockSendFees\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint32\",\"name\":\"newAccrualPeriod\",\"type\":\"uint32\"}],\"name\":\"mockSetAccrualPeriod\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"limit\",\"type\":\"uint256\"}],\"name\":\"mockSetDepositLimit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"newFeesDistributor\",\"type\":\"bytes32\"}],\"name\":\"mockSetFeesDistributor\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"limit\",\"type\":\"uint256\"}],\"name\":\"mockSetLiquidityLimit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"contractERC20\",\"name\":\"position\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"trust\",\"type\":\"bool\"}],\"name\":\"mockSetTrust\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"emptyPosition\",\"type\":\"bool\"}],\"name\":\"mockShutdownInitiated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"mockShutdownLifted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"contractERC20\",\"name\":\"token\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"mockSweep\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"accrue\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"claimAndUnstake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"claimed\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"name\":\"enterPosition\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"assets\",\"type\":\"uint256\"}],\"name\":\"exitPosition\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bool\",\"name\":\"emptyPosition\",\"type\":\"bool\"}],\"name\":\"initiateShutdown\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isShutdown\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"liftShutdown\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[9]\",\"name\":\"route\",\"type\":\"address[9]\"},{\"internalType\":\"uint256[3][4]\",\"name\":\"swapParams\",\"type\":\"uint256[3][4]\"},{\"internalType\":\"uint256\",\"name\":\"minAssetsOut\",\"type\":\"uint256\"}],\"name\":\"rebalance\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"minAssetsOut\",\"type\":\"uint256\"}],\"name\":\"reinvest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"sendFees\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"newAccrualPeriod\",\"type\":\"uint32\"}],\"name\":\"setAccrualPeriod\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newLimit\",\"type\":\"uint256\"}],\"name\":\"setDepositLimit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"newFeesDistributor\",\"type\":\"bytes32\"}],\"name\":\"setFeesDistributor\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newLimit\",\"type\":\"uint256\"}],\"name\":\"setLiquidityLimit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractERC20\",\"name\":\"position\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"trust\",\"type\":\"bool\"}],\"name\":\"setTrust\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractERC20\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"sweep\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // AaveV2ABI is the input ABI used to generate the binding from.
@@ -241,25 +241,25 @@ func (_AaveV2 *AaveV2CallerSession) Owner() (common.Address, error) {
 	return _AaveV2.Contract.Owner(&_AaveV2.CallOpts)
 }
 
-// AccrueFees is a paid mutator transaction binding the contract method 0x37a4e834.
+// Accrue is a paid mutator transaction binding the contract method 0xf8ba4cff.
 //
-// Solidity: function accrueFees() returns()
-func (_AaveV2 *AaveV2Transactor) AccrueFees(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _AaveV2.contract.Transact(opts, "accrueFees")
+// Solidity: function accrue() returns()
+func (_AaveV2 *AaveV2Transactor) Accrue(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _AaveV2.contract.Transact(opts, "accrue")
 }
 
-// AccrueFees is a paid mutator transaction binding the contract method 0x37a4e834.
+// Accrue is a paid mutator transaction binding the contract method 0xf8ba4cff.
 //
-// Solidity: function accrueFees() returns()
-func (_AaveV2 *AaveV2Session) AccrueFees() (*types.Transaction, error) {
-	return _AaveV2.Contract.AccrueFees(&_AaveV2.TransactOpts)
+// Solidity: function accrue() returns()
+func (_AaveV2 *AaveV2Session) Accrue() (*types.Transaction, error) {
+	return _AaveV2.Contract.Accrue(&_AaveV2.TransactOpts)
 }
 
-// AccrueFees is a paid mutator transaction binding the contract method 0x37a4e834.
+// Accrue is a paid mutator transaction binding the contract method 0xf8ba4cff.
 //
-// Solidity: function accrueFees() returns()
-func (_AaveV2 *AaveV2TransactorSession) AccrueFees() (*types.Transaction, error) {
-	return _AaveV2.Contract.AccrueFees(&_AaveV2.TransactOpts)
+// Solidity: function accrue() returns()
+func (_AaveV2 *AaveV2TransactorSession) Accrue() (*types.Transaction, error) {
+	return _AaveV2.Contract.Accrue(&_AaveV2.TransactOpts)
 }
 
 // ClaimAndUnstake is a paid mutator transaction binding the contract method 0xad004e20.
@@ -283,25 +283,88 @@ func (_AaveV2 *AaveV2TransactorSession) ClaimAndUnstake() (*types.Transaction, e
 	return _AaveV2.Contract.ClaimAndUnstake(&_AaveV2.TransactOpts)
 }
 
-// EnterPosition is a paid mutator transaction binding the contract method 0x3dc6eabf.
+// EnterPosition is a paid mutator transaction binding the contract method 0x6e08406b.
 //
-// Solidity: function enterPosition() returns()
-func (_AaveV2 *AaveV2Transactor) EnterPosition(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _AaveV2.contract.Transact(opts, "enterPosition")
+// Solidity: function enterPosition(uint256 assets) returns()
+func (_AaveV2 *AaveV2Transactor) EnterPosition(opts *bind.TransactOpts, assets *big.Int) (*types.Transaction, error) {
+	return _AaveV2.contract.Transact(opts, "enterPosition", assets)
 }
 
-// EnterPosition is a paid mutator transaction binding the contract method 0x3dc6eabf.
+// EnterPosition is a paid mutator transaction binding the contract method 0x6e08406b.
 //
-// Solidity: function enterPosition() returns()
-func (_AaveV2 *AaveV2Session) EnterPosition() (*types.Transaction, error) {
-	return _AaveV2.Contract.EnterPosition(&_AaveV2.TransactOpts)
+// Solidity: function enterPosition(uint256 assets) returns()
+func (_AaveV2 *AaveV2Session) EnterPosition(assets *big.Int) (*types.Transaction, error) {
+	return _AaveV2.Contract.EnterPosition(&_AaveV2.TransactOpts, assets)
 }
 
-// EnterPosition is a paid mutator transaction binding the contract method 0x3dc6eabf.
+// EnterPosition is a paid mutator transaction binding the contract method 0x6e08406b.
 //
-// Solidity: function enterPosition() returns()
-func (_AaveV2 *AaveV2TransactorSession) EnterPosition() (*types.Transaction, error) {
-	return _AaveV2.Contract.EnterPosition(&_AaveV2.TransactOpts)
+// Solidity: function enterPosition(uint256 assets) returns()
+func (_AaveV2 *AaveV2TransactorSession) EnterPosition(assets *big.Int) (*types.Transaction, error) {
+	return _AaveV2.Contract.EnterPosition(&_AaveV2.TransactOpts, assets)
+}
+
+// ExitPosition is a paid mutator transaction binding the contract method 0x78dc9059.
+//
+// Solidity: function exitPosition(uint256 assets) returns()
+func (_AaveV2 *AaveV2Transactor) ExitPosition(opts *bind.TransactOpts, assets *big.Int) (*types.Transaction, error) {
+	return _AaveV2.contract.Transact(opts, "exitPosition", assets)
+}
+
+// ExitPosition is a paid mutator transaction binding the contract method 0x78dc9059.
+//
+// Solidity: function exitPosition(uint256 assets) returns()
+func (_AaveV2 *AaveV2Session) ExitPosition(assets *big.Int) (*types.Transaction, error) {
+	return _AaveV2.Contract.ExitPosition(&_AaveV2.TransactOpts, assets)
+}
+
+// ExitPosition is a paid mutator transaction binding the contract method 0x78dc9059.
+//
+// Solidity: function exitPosition(uint256 assets) returns()
+func (_AaveV2 *AaveV2TransactorSession) ExitPosition(assets *big.Int) (*types.Transaction, error) {
+	return _AaveV2.Contract.ExitPosition(&_AaveV2.TransactOpts, assets)
+}
+
+// InitiateShutdown is a paid mutator transaction binding the contract method 0xef465d92.
+//
+// Solidity: function initiateShutdown(bool emptyPosition) returns()
+func (_AaveV2 *AaveV2Transactor) InitiateShutdown(opts *bind.TransactOpts, emptyPosition bool) (*types.Transaction, error) {
+	return _AaveV2.contract.Transact(opts, "initiateShutdown", emptyPosition)
+}
+
+// InitiateShutdown is a paid mutator transaction binding the contract method 0xef465d92.
+//
+// Solidity: function initiateShutdown(bool emptyPosition) returns()
+func (_AaveV2 *AaveV2Session) InitiateShutdown(emptyPosition bool) (*types.Transaction, error) {
+	return _AaveV2.Contract.InitiateShutdown(&_AaveV2.TransactOpts, emptyPosition)
+}
+
+// InitiateShutdown is a paid mutator transaction binding the contract method 0xef465d92.
+//
+// Solidity: function initiateShutdown(bool emptyPosition) returns()
+func (_AaveV2 *AaveV2TransactorSession) InitiateShutdown(emptyPosition bool) (*types.Transaction, error) {
+	return _AaveV2.Contract.InitiateShutdown(&_AaveV2.TransactOpts, emptyPosition)
+}
+
+// LiftShutdown is a paid mutator transaction binding the contract method 0x5e2c576e.
+//
+// Solidity: function liftShutdown() returns()
+func (_AaveV2 *AaveV2Transactor) LiftShutdown(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _AaveV2.contract.Transact(opts, "liftShutdown")
+}
+
+// LiftShutdown is a paid mutator transaction binding the contract method 0x5e2c576e.
+//
+// Solidity: function liftShutdown() returns()
+func (_AaveV2 *AaveV2Session) LiftShutdown() (*types.Transaction, error) {
+	return _AaveV2.Contract.LiftShutdown(&_AaveV2.TransactOpts)
+}
+
+// LiftShutdown is a paid mutator transaction binding the contract method 0x5e2c576e.
+//
+// Solidity: function liftShutdown() returns()
+func (_AaveV2 *AaveV2TransactorSession) LiftShutdown() (*types.Transaction, error) {
+	return _AaveV2.Contract.LiftShutdown(&_AaveV2.TransactOpts)
 }
 
 // Rebalance is a paid mutator transaction binding the contract method 0x15f4c611.
@@ -367,25 +430,67 @@ func (_AaveV2 *AaveV2TransactorSession) RenounceOwnership() (*types.Transaction,
 	return _AaveV2.Contract.RenounceOwnership(&_AaveV2.TransactOpts)
 }
 
-// SetDepositLimit is a paid mutator transaction binding the contract method 0xbdc8144b.
+// SendFees is a paid mutator transaction binding the contract method 0xdff90b5b.
 //
-// Solidity: function setDepositLimit(uint256 limit) returns()
-func (_AaveV2 *AaveV2Transactor) SetDepositLimit(opts *bind.TransactOpts, limit *big.Int) (*types.Transaction, error) {
-	return _AaveV2.contract.Transact(opts, "setDepositLimit", limit)
+// Solidity: function sendFees() returns()
+func (_AaveV2 *AaveV2Transactor) SendFees(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _AaveV2.contract.Transact(opts, "sendFees")
+}
+
+// SendFees is a paid mutator transaction binding the contract method 0xdff90b5b.
+//
+// Solidity: function sendFees() returns()
+func (_AaveV2 *AaveV2Session) SendFees() (*types.Transaction, error) {
+	return _AaveV2.Contract.SendFees(&_AaveV2.TransactOpts)
+}
+
+// SendFees is a paid mutator transaction binding the contract method 0xdff90b5b.
+//
+// Solidity: function sendFees() returns()
+func (_AaveV2 *AaveV2TransactorSession) SendFees() (*types.Transaction, error) {
+	return _AaveV2.Contract.SendFees(&_AaveV2.TransactOpts)
+}
+
+// SetAccrualPeriod is a paid mutator transaction binding the contract method 0xef7ac883.
+//
+// Solidity: function setAccrualPeriod(uint32 newAccrualPeriod) returns()
+func (_AaveV2 *AaveV2Transactor) SetAccrualPeriod(opts *bind.TransactOpts, newAccrualPeriod uint32) (*types.Transaction, error) {
+	return _AaveV2.contract.Transact(opts, "setAccrualPeriod", newAccrualPeriod)
+}
+
+// SetAccrualPeriod is a paid mutator transaction binding the contract method 0xef7ac883.
+//
+// Solidity: function setAccrualPeriod(uint32 newAccrualPeriod) returns()
+func (_AaveV2 *AaveV2Session) SetAccrualPeriod(newAccrualPeriod uint32) (*types.Transaction, error) {
+	return _AaveV2.Contract.SetAccrualPeriod(&_AaveV2.TransactOpts, newAccrualPeriod)
+}
+
+// SetAccrualPeriod is a paid mutator transaction binding the contract method 0xef7ac883.
+//
+// Solidity: function setAccrualPeriod(uint32 newAccrualPeriod) returns()
+func (_AaveV2 *AaveV2TransactorSession) SetAccrualPeriod(newAccrualPeriod uint32) (*types.Transaction, error) {
+	return _AaveV2.Contract.SetAccrualPeriod(&_AaveV2.TransactOpts, newAccrualPeriod)
 }
 
 // SetDepositLimit is a paid mutator transaction binding the contract method 0xbdc8144b.
 //
-// Solidity: function setDepositLimit(uint256 limit) returns()
-func (_AaveV2 *AaveV2Session) SetDepositLimit(limit *big.Int) (*types.Transaction, error) {
-	return _AaveV2.Contract.SetDepositLimit(&_AaveV2.TransactOpts, limit)
+// Solidity: function setDepositLimit(uint256 newLimit) returns()
+func (_AaveV2 *AaveV2Transactor) SetDepositLimit(opts *bind.TransactOpts, newLimit *big.Int) (*types.Transaction, error) {
+	return _AaveV2.contract.Transact(opts, "setDepositLimit", newLimit)
 }
 
 // SetDepositLimit is a paid mutator transaction binding the contract method 0xbdc8144b.
 //
-// Solidity: function setDepositLimit(uint256 limit) returns()
-func (_AaveV2 *AaveV2TransactorSession) SetDepositLimit(limit *big.Int) (*types.Transaction, error) {
-	return _AaveV2.Contract.SetDepositLimit(&_AaveV2.TransactOpts, limit)
+// Solidity: function setDepositLimit(uint256 newLimit) returns()
+func (_AaveV2 *AaveV2Session) SetDepositLimit(newLimit *big.Int) (*types.Transaction, error) {
+	return _AaveV2.Contract.SetDepositLimit(&_AaveV2.TransactOpts, newLimit)
+}
+
+// SetDepositLimit is a paid mutator transaction binding the contract method 0xbdc8144b.
+//
+// Solidity: function setDepositLimit(uint256 newLimit) returns()
+func (_AaveV2 *AaveV2TransactorSession) SetDepositLimit(newLimit *big.Int) (*types.Transaction, error) {
+	return _AaveV2.Contract.SetDepositLimit(&_AaveV2.TransactOpts, newLimit)
 }
 
 // SetFeesDistributor is a paid mutator transaction binding the contract method 0x6e85f183.
@@ -411,44 +516,23 @@ func (_AaveV2 *AaveV2TransactorSession) SetFeesDistributor(newFeesDistributor [3
 
 // SetLiquidityLimit is a paid mutator transaction binding the contract method 0xdf05a52a.
 //
-// Solidity: function setLiquidityLimit(uint256 limit) returns()
-func (_AaveV2 *AaveV2Transactor) SetLiquidityLimit(opts *bind.TransactOpts, limit *big.Int) (*types.Transaction, error) {
-	return _AaveV2.contract.Transact(opts, "setLiquidityLimit", limit)
+// Solidity: function setLiquidityLimit(uint256 newLimit) returns()
+func (_AaveV2 *AaveV2Transactor) SetLiquidityLimit(opts *bind.TransactOpts, newLimit *big.Int) (*types.Transaction, error) {
+	return _AaveV2.contract.Transact(opts, "setLiquidityLimit", newLimit)
 }
 
 // SetLiquidityLimit is a paid mutator transaction binding the contract method 0xdf05a52a.
 //
-// Solidity: function setLiquidityLimit(uint256 limit) returns()
-func (_AaveV2 *AaveV2Session) SetLiquidityLimit(limit *big.Int) (*types.Transaction, error) {
-	return _AaveV2.Contract.SetLiquidityLimit(&_AaveV2.TransactOpts, limit)
+// Solidity: function setLiquidityLimit(uint256 newLimit) returns()
+func (_AaveV2 *AaveV2Session) SetLiquidityLimit(newLimit *big.Int) (*types.Transaction, error) {
+	return _AaveV2.Contract.SetLiquidityLimit(&_AaveV2.TransactOpts, newLimit)
 }
 
 // SetLiquidityLimit is a paid mutator transaction binding the contract method 0xdf05a52a.
 //
-// Solidity: function setLiquidityLimit(uint256 limit) returns()
-func (_AaveV2 *AaveV2TransactorSession) SetLiquidityLimit(limit *big.Int) (*types.Transaction, error) {
-	return _AaveV2.Contract.SetLiquidityLimit(&_AaveV2.TransactOpts, limit)
-}
-
-// SetShutdown is a paid mutator transaction binding the contract method 0xbb27280b.
-//
-// Solidity: function setShutdown(bool shutdown, bool exitPosition) returns()
-func (_AaveV2 *AaveV2Transactor) SetShutdown(opts *bind.TransactOpts, shutdown bool, exitPosition bool) (*types.Transaction, error) {
-	return _AaveV2.contract.Transact(opts, "setShutdown", shutdown, exitPosition)
-}
-
-// SetShutdown is a paid mutator transaction binding the contract method 0xbb27280b.
-//
-// Solidity: function setShutdown(bool shutdown, bool exitPosition) returns()
-func (_AaveV2 *AaveV2Session) SetShutdown(shutdown bool, exitPosition bool) (*types.Transaction, error) {
-	return _AaveV2.Contract.SetShutdown(&_AaveV2.TransactOpts, shutdown, exitPosition)
-}
-
-// SetShutdown is a paid mutator transaction binding the contract method 0xbb27280b.
-//
-// Solidity: function setShutdown(bool shutdown, bool exitPosition) returns()
-func (_AaveV2 *AaveV2TransactorSession) SetShutdown(shutdown bool, exitPosition bool) (*types.Transaction, error) {
-	return _AaveV2.Contract.SetShutdown(&_AaveV2.TransactOpts, shutdown, exitPosition)
+// Solidity: function setLiquidityLimit(uint256 newLimit) returns()
+func (_AaveV2 *AaveV2TransactorSession) SetLiquidityLimit(newLimit *big.Int) (*types.Transaction, error) {
+	return _AaveV2.Contract.SetLiquidityLimit(&_AaveV2.TransactOpts, newLimit)
 }
 
 // SetTrust is a paid mutator transaction binding the contract method 0xcab59238.
@@ -491,27 +575,6 @@ func (_AaveV2 *AaveV2Session) Sweep(token common.Address, to common.Address) (*t
 // Solidity: function sweep(address token, address to) returns()
 func (_AaveV2 *AaveV2TransactorSession) Sweep(token common.Address, to common.Address) (*types.Transaction, error) {
 	return _AaveV2.Contract.Sweep(&_AaveV2.TransactOpts, token, to)
-}
-
-// TransferFees is a paid mutator transaction binding the contract method 0xc2fbe7bc.
-//
-// Solidity: function transferFees() returns()
-func (_AaveV2 *AaveV2Transactor) TransferFees(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _AaveV2.contract.Transact(opts, "transferFees")
-}
-
-// TransferFees is a paid mutator transaction binding the contract method 0xc2fbe7bc.
-//
-// Solidity: function transferFees() returns()
-func (_AaveV2 *AaveV2Session) TransferFees() (*types.Transaction, error) {
-	return _AaveV2.Contract.TransferFees(&_AaveV2.TransactOpts)
-}
-
-// TransferFees is a paid mutator transaction binding the contract method 0xc2fbe7bc.
-//
-// Solidity: function transferFees() returns()
-func (_AaveV2 *AaveV2TransactorSession) TransferFees() (*types.Transaction, error) {
-	return _AaveV2.Contract.TransferFees(&_AaveV2.TransactOpts)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
@@ -688,9 +751,9 @@ func (_AaveV2 *AaveV2Filterer) ParseOwnershipTransferred(log types.Log) (*AaveV2
 	return event, nil
 }
 
-// AaveV2MockAccrueFeesIterator is returned from FilterMockAccrueFees and is used to iterate over the raw logs and unpacked data for MockAccrueFees events raised by the AaveV2 contract.
-type AaveV2MockAccrueFeesIterator struct {
-	Event *AaveV2MockAccrueFees // Event containing the contract specifics and raw log
+// AaveV2MockAccrueIterator is returned from FilterMockAccrue and is used to iterate over the raw logs and unpacked data for MockAccrue events raised by the AaveV2 contract.
+type AaveV2MockAccrueIterator struct {
+	Event *AaveV2MockAccrue // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -704,7 +767,7 @@ type AaveV2MockAccrueFeesIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *AaveV2MockAccrueFeesIterator) Next() bool {
+func (it *AaveV2MockAccrueIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -713,7 +776,7 @@ func (it *AaveV2MockAccrueFeesIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(AaveV2MockAccrueFees)
+			it.Event = new(AaveV2MockAccrue)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -728,7 +791,7 @@ func (it *AaveV2MockAccrueFeesIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(AaveV2MockAccrueFees)
+		it.Event = new(AaveV2MockAccrue)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -744,40 +807,40 @@ func (it *AaveV2MockAccrueFeesIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *AaveV2MockAccrueFeesIterator) Error() error {
+func (it *AaveV2MockAccrueIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *AaveV2MockAccrueFeesIterator) Close() error {
+func (it *AaveV2MockAccrueIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// AaveV2MockAccrueFees represents a MockAccrueFees event raised by the AaveV2 contract.
-type AaveV2MockAccrueFees struct {
+// AaveV2MockAccrue represents a MockAccrue event raised by the AaveV2 contract.
+type AaveV2MockAccrue struct {
 	Raw types.Log // Blockchain specific contextual infos
 }
 
-// FilterMockAccrueFees is a free log retrieval operation binding the contract event 0xeea290d1596cec66f2811f6ec6d4b3e366f8f9b263e15ea87fb624ab69924042.
+// FilterMockAccrue is a free log retrieval operation binding the contract event 0x9c877420cf8c1a98caf5b37763c77f6cdadf3b1e601c75958ab54f780d55ac00.
 //
-// Solidity: event mockAccrueFees()
-func (_AaveV2 *AaveV2Filterer) FilterMockAccrueFees(opts *bind.FilterOpts) (*AaveV2MockAccrueFeesIterator, error) {
+// Solidity: event mockAccrue()
+func (_AaveV2 *AaveV2Filterer) FilterMockAccrue(opts *bind.FilterOpts) (*AaveV2MockAccrueIterator, error) {
 
-	logs, sub, err := _AaveV2.contract.FilterLogs(opts, "mockAccrueFees")
+	logs, sub, err := _AaveV2.contract.FilterLogs(opts, "mockAccrue")
 	if err != nil {
 		return nil, err
 	}
-	return &AaveV2MockAccrueFeesIterator{contract: _AaveV2.contract, event: "mockAccrueFees", logs: logs, sub: sub}, nil
+	return &AaveV2MockAccrueIterator{contract: _AaveV2.contract, event: "mockAccrue", logs: logs, sub: sub}, nil
 }
 
-// WatchMockAccrueFees is a free log subscription operation binding the contract event 0xeea290d1596cec66f2811f6ec6d4b3e366f8f9b263e15ea87fb624ab69924042.
+// WatchMockAccrue is a free log subscription operation binding the contract event 0x9c877420cf8c1a98caf5b37763c77f6cdadf3b1e601c75958ab54f780d55ac00.
 //
-// Solidity: event mockAccrueFees()
-func (_AaveV2 *AaveV2Filterer) WatchMockAccrueFees(opts *bind.WatchOpts, sink chan<- *AaveV2MockAccrueFees) (event.Subscription, error) {
+// Solidity: event mockAccrue()
+func (_AaveV2 *AaveV2Filterer) WatchMockAccrue(opts *bind.WatchOpts, sink chan<- *AaveV2MockAccrue) (event.Subscription, error) {
 
-	logs, sub, err := _AaveV2.contract.WatchLogs(opts, "mockAccrueFees")
+	logs, sub, err := _AaveV2.contract.WatchLogs(opts, "mockAccrue")
 	if err != nil {
 		return nil, err
 	}
@@ -787,8 +850,8 @@ func (_AaveV2 *AaveV2Filterer) WatchMockAccrueFees(opts *bind.WatchOpts, sink ch
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(AaveV2MockAccrueFees)
-				if err := _AaveV2.contract.UnpackLog(event, "mockAccrueFees", log); err != nil {
+				event := new(AaveV2MockAccrue)
+				if err := _AaveV2.contract.UnpackLog(event, "mockAccrue", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -809,12 +872,12 @@ func (_AaveV2 *AaveV2Filterer) WatchMockAccrueFees(opts *bind.WatchOpts, sink ch
 	}), nil
 }
 
-// ParseMockAccrueFees is a log parse operation binding the contract event 0xeea290d1596cec66f2811f6ec6d4b3e366f8f9b263e15ea87fb624ab69924042.
+// ParseMockAccrue is a log parse operation binding the contract event 0x9c877420cf8c1a98caf5b37763c77f6cdadf3b1e601c75958ab54f780d55ac00.
 //
-// Solidity: event mockAccrueFees()
-func (_AaveV2 *AaveV2Filterer) ParseMockAccrueFees(log types.Log) (*AaveV2MockAccrueFees, error) {
-	event := new(AaveV2MockAccrueFees)
-	if err := _AaveV2.contract.UnpackLog(event, "mockAccrueFees", log); err != nil {
+// Solidity: event mockAccrue()
+func (_AaveV2 *AaveV2Filterer) ParseMockAccrue(log types.Log) (*AaveV2MockAccrue, error) {
+	event := new(AaveV2MockAccrue)
+	if err := _AaveV2.contract.UnpackLog(event, "mockAccrue", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -1023,12 +1086,13 @@ func (it *AaveV2MockEnterPositionIterator) Close() error {
 
 // AaveV2MockEnterPosition represents a MockEnterPosition event raised by the AaveV2 contract.
 type AaveV2MockEnterPosition struct {
-	Raw types.Log // Blockchain specific contextual infos
+	Assets *big.Int
+	Raw    types.Log // Blockchain specific contextual infos
 }
 
-// FilterMockEnterPosition is a free log retrieval operation binding the contract event 0xac91e57d60d4977f906c8747139df337f4553e15652b9306669094fe4f77ac07.
+// FilterMockEnterPosition is a free log retrieval operation binding the contract event 0x2e30008c509340729f747055294e8b7e23a97946c482e19411bc769c5ccbffd1.
 //
-// Solidity: event mockEnterPosition()
+// Solidity: event mockEnterPosition(uint256 assets)
 func (_AaveV2 *AaveV2Filterer) FilterMockEnterPosition(opts *bind.FilterOpts) (*AaveV2MockEnterPositionIterator, error) {
 
 	logs, sub, err := _AaveV2.contract.FilterLogs(opts, "mockEnterPosition")
@@ -1038,9 +1102,9 @@ func (_AaveV2 *AaveV2Filterer) FilterMockEnterPosition(opts *bind.FilterOpts) (*
 	return &AaveV2MockEnterPositionIterator{contract: _AaveV2.contract, event: "mockEnterPosition", logs: logs, sub: sub}, nil
 }
 
-// WatchMockEnterPosition is a free log subscription operation binding the contract event 0xac91e57d60d4977f906c8747139df337f4553e15652b9306669094fe4f77ac07.
+// WatchMockEnterPosition is a free log subscription operation binding the contract event 0x2e30008c509340729f747055294e8b7e23a97946c482e19411bc769c5ccbffd1.
 //
-// Solidity: event mockEnterPosition()
+// Solidity: event mockEnterPosition(uint256 assets)
 func (_AaveV2 *AaveV2Filterer) WatchMockEnterPosition(opts *bind.WatchOpts, sink chan<- *AaveV2MockEnterPosition) (event.Subscription, error) {
 
 	logs, sub, err := _AaveV2.contract.WatchLogs(opts, "mockEnterPosition")
@@ -1075,12 +1139,146 @@ func (_AaveV2 *AaveV2Filterer) WatchMockEnterPosition(opts *bind.WatchOpts, sink
 	}), nil
 }
 
-// ParseMockEnterPosition is a log parse operation binding the contract event 0xac91e57d60d4977f906c8747139df337f4553e15652b9306669094fe4f77ac07.
+// ParseMockEnterPosition is a log parse operation binding the contract event 0x2e30008c509340729f747055294e8b7e23a97946c482e19411bc769c5ccbffd1.
 //
-// Solidity: event mockEnterPosition()
+// Solidity: event mockEnterPosition(uint256 assets)
 func (_AaveV2 *AaveV2Filterer) ParseMockEnterPosition(log types.Log) (*AaveV2MockEnterPosition, error) {
 	event := new(AaveV2MockEnterPosition)
 	if err := _AaveV2.contract.UnpackLog(event, "mockEnterPosition", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// AaveV2MockExitPositionIterator is returned from FilterMockExitPosition and is used to iterate over the raw logs and unpacked data for MockExitPosition events raised by the AaveV2 contract.
+type AaveV2MockExitPositionIterator struct {
+	Event *AaveV2MockExitPosition // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *AaveV2MockExitPositionIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(AaveV2MockExitPosition)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(AaveV2MockExitPosition)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *AaveV2MockExitPositionIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *AaveV2MockExitPositionIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// AaveV2MockExitPosition represents a MockExitPosition event raised by the AaveV2 contract.
+type AaveV2MockExitPosition struct {
+	Assets *big.Int
+	Raw    types.Log // Blockchain specific contextual infos
+}
+
+// FilterMockExitPosition is a free log retrieval operation binding the contract event 0xd844645ac67f0011a3c9effc6288c124029b8087bb66ede20f49f12a750315ab.
+//
+// Solidity: event mockExitPosition(uint256 assets)
+func (_AaveV2 *AaveV2Filterer) FilterMockExitPosition(opts *bind.FilterOpts) (*AaveV2MockExitPositionIterator, error) {
+
+	logs, sub, err := _AaveV2.contract.FilterLogs(opts, "mockExitPosition")
+	if err != nil {
+		return nil, err
+	}
+	return &AaveV2MockExitPositionIterator{contract: _AaveV2.contract, event: "mockExitPosition", logs: logs, sub: sub}, nil
+}
+
+// WatchMockExitPosition is a free log subscription operation binding the contract event 0xd844645ac67f0011a3c9effc6288c124029b8087bb66ede20f49f12a750315ab.
+//
+// Solidity: event mockExitPosition(uint256 assets)
+func (_AaveV2 *AaveV2Filterer) WatchMockExitPosition(opts *bind.WatchOpts, sink chan<- *AaveV2MockExitPosition) (event.Subscription, error) {
+
+	logs, sub, err := _AaveV2.contract.WatchLogs(opts, "mockExitPosition")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(AaveV2MockExitPosition)
+				if err := _AaveV2.contract.UnpackLog(event, "mockExitPosition", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseMockExitPosition is a log parse operation binding the contract event 0xd844645ac67f0011a3c9effc6288c124029b8087bb66ede20f49f12a750315ab.
+//
+// Solidity: event mockExitPosition(uint256 assets)
+func (_AaveV2 *AaveV2Filterer) ParseMockExitPosition(log types.Log) (*AaveV2MockExitPosition, error) {
+	event := new(AaveV2MockExitPosition)
+	if err := _AaveV2.contract.UnpackLog(event, "mockExitPosition", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -1351,6 +1549,273 @@ func (_AaveV2 *AaveV2Filterer) WatchMockReinvest(opts *bind.WatchOpts, sink chan
 func (_AaveV2 *AaveV2Filterer) ParseMockReinvest(log types.Log) (*AaveV2MockReinvest, error) {
 	event := new(AaveV2MockReinvest)
 	if err := _AaveV2.contract.UnpackLog(event, "mockReinvest", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// AaveV2MockSendFeesIterator is returned from FilterMockSendFees and is used to iterate over the raw logs and unpacked data for MockSendFees events raised by the AaveV2 contract.
+type AaveV2MockSendFeesIterator struct {
+	Event *AaveV2MockSendFees // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *AaveV2MockSendFeesIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(AaveV2MockSendFees)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(AaveV2MockSendFees)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *AaveV2MockSendFeesIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *AaveV2MockSendFeesIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// AaveV2MockSendFees represents a MockSendFees event raised by the AaveV2 contract.
+type AaveV2MockSendFees struct {
+	Raw types.Log // Blockchain specific contextual infos
+}
+
+// FilterMockSendFees is a free log retrieval operation binding the contract event 0x44eff6d777ad0c8b68c3b6673ea36478ef269c6a33373e23a1a4e48f3f54a871.
+//
+// Solidity: event mockSendFees()
+func (_AaveV2 *AaveV2Filterer) FilterMockSendFees(opts *bind.FilterOpts) (*AaveV2MockSendFeesIterator, error) {
+
+	logs, sub, err := _AaveV2.contract.FilterLogs(opts, "mockSendFees")
+	if err != nil {
+		return nil, err
+	}
+	return &AaveV2MockSendFeesIterator{contract: _AaveV2.contract, event: "mockSendFees", logs: logs, sub: sub}, nil
+}
+
+// WatchMockSendFees is a free log subscription operation binding the contract event 0x44eff6d777ad0c8b68c3b6673ea36478ef269c6a33373e23a1a4e48f3f54a871.
+//
+// Solidity: event mockSendFees()
+func (_AaveV2 *AaveV2Filterer) WatchMockSendFees(opts *bind.WatchOpts, sink chan<- *AaveV2MockSendFees) (event.Subscription, error) {
+
+	logs, sub, err := _AaveV2.contract.WatchLogs(opts, "mockSendFees")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(AaveV2MockSendFees)
+				if err := _AaveV2.contract.UnpackLog(event, "mockSendFees", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseMockSendFees is a log parse operation binding the contract event 0x44eff6d777ad0c8b68c3b6673ea36478ef269c6a33373e23a1a4e48f3f54a871.
+//
+// Solidity: event mockSendFees()
+func (_AaveV2 *AaveV2Filterer) ParseMockSendFees(log types.Log) (*AaveV2MockSendFees, error) {
+	event := new(AaveV2MockSendFees)
+	if err := _AaveV2.contract.UnpackLog(event, "mockSendFees", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// AaveV2MockSetAccrualPeriodIterator is returned from FilterMockSetAccrualPeriod and is used to iterate over the raw logs and unpacked data for MockSetAccrualPeriod events raised by the AaveV2 contract.
+type AaveV2MockSetAccrualPeriodIterator struct {
+	Event *AaveV2MockSetAccrualPeriod // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *AaveV2MockSetAccrualPeriodIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(AaveV2MockSetAccrualPeriod)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(AaveV2MockSetAccrualPeriod)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *AaveV2MockSetAccrualPeriodIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *AaveV2MockSetAccrualPeriodIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// AaveV2MockSetAccrualPeriod represents a MockSetAccrualPeriod event raised by the AaveV2 contract.
+type AaveV2MockSetAccrualPeriod struct {
+	NewAccrualPeriod uint32
+	Raw              types.Log // Blockchain specific contextual infos
+}
+
+// FilterMockSetAccrualPeriod is a free log retrieval operation binding the contract event 0x50920586d83ebe16a3d059755c0202d4c58f25dbf6273b5442e0aae9e44f8f33.
+//
+// Solidity: event mockSetAccrualPeriod(uint32 newAccrualPeriod)
+func (_AaveV2 *AaveV2Filterer) FilterMockSetAccrualPeriod(opts *bind.FilterOpts) (*AaveV2MockSetAccrualPeriodIterator, error) {
+
+	logs, sub, err := _AaveV2.contract.FilterLogs(opts, "mockSetAccrualPeriod")
+	if err != nil {
+		return nil, err
+	}
+	return &AaveV2MockSetAccrualPeriodIterator{contract: _AaveV2.contract, event: "mockSetAccrualPeriod", logs: logs, sub: sub}, nil
+}
+
+// WatchMockSetAccrualPeriod is a free log subscription operation binding the contract event 0x50920586d83ebe16a3d059755c0202d4c58f25dbf6273b5442e0aae9e44f8f33.
+//
+// Solidity: event mockSetAccrualPeriod(uint32 newAccrualPeriod)
+func (_AaveV2 *AaveV2Filterer) WatchMockSetAccrualPeriod(opts *bind.WatchOpts, sink chan<- *AaveV2MockSetAccrualPeriod) (event.Subscription, error) {
+
+	logs, sub, err := _AaveV2.contract.WatchLogs(opts, "mockSetAccrualPeriod")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(AaveV2MockSetAccrualPeriod)
+				if err := _AaveV2.contract.UnpackLog(event, "mockSetAccrualPeriod", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseMockSetAccrualPeriod is a log parse operation binding the contract event 0x50920586d83ebe16a3d059755c0202d4c58f25dbf6273b5442e0aae9e44f8f33.
+//
+// Solidity: event mockSetAccrualPeriod(uint32 newAccrualPeriod)
+func (_AaveV2 *AaveV2Filterer) ParseMockSetAccrualPeriod(log types.Log) (*AaveV2MockSetAccrualPeriod, error) {
+	event := new(AaveV2MockSetAccrualPeriod)
+	if err := _AaveV2.contract.UnpackLog(event, "mockSetAccrualPeriod", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -1759,141 +2224,6 @@ func (_AaveV2 *AaveV2Filterer) ParseMockSetLiquidityLimit(log types.Log) (*AaveV
 	return event, nil
 }
 
-// AaveV2MockSetShutdownIterator is returned from FilterMockSetShutdown and is used to iterate over the raw logs and unpacked data for MockSetShutdown events raised by the AaveV2 contract.
-type AaveV2MockSetShutdownIterator struct {
-	Event *AaveV2MockSetShutdown // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *AaveV2MockSetShutdownIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(AaveV2MockSetShutdown)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(AaveV2MockSetShutdown)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *AaveV2MockSetShutdownIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *AaveV2MockSetShutdownIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// AaveV2MockSetShutdown represents a MockSetShutdown event raised by the AaveV2 contract.
-type AaveV2MockSetShutdown struct {
-	Shutdown     bool
-	ExitPosition bool
-	Raw          types.Log // Blockchain specific contextual infos
-}
-
-// FilterMockSetShutdown is a free log retrieval operation binding the contract event 0x5afb9c112875465fbf21f4b0923a311393e37940d92ea70da88f4f2532cf8e05.
-//
-// Solidity: event mockSetShutdown(bool shutdown, bool exitPosition)
-func (_AaveV2 *AaveV2Filterer) FilterMockSetShutdown(opts *bind.FilterOpts) (*AaveV2MockSetShutdownIterator, error) {
-
-	logs, sub, err := _AaveV2.contract.FilterLogs(opts, "mockSetShutdown")
-	if err != nil {
-		return nil, err
-	}
-	return &AaveV2MockSetShutdownIterator{contract: _AaveV2.contract, event: "mockSetShutdown", logs: logs, sub: sub}, nil
-}
-
-// WatchMockSetShutdown is a free log subscription operation binding the contract event 0x5afb9c112875465fbf21f4b0923a311393e37940d92ea70da88f4f2532cf8e05.
-//
-// Solidity: event mockSetShutdown(bool shutdown, bool exitPosition)
-func (_AaveV2 *AaveV2Filterer) WatchMockSetShutdown(opts *bind.WatchOpts, sink chan<- *AaveV2MockSetShutdown) (event.Subscription, error) {
-
-	logs, sub, err := _AaveV2.contract.WatchLogs(opts, "mockSetShutdown")
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(AaveV2MockSetShutdown)
-				if err := _AaveV2.contract.UnpackLog(event, "mockSetShutdown", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseMockSetShutdown is a log parse operation binding the contract event 0x5afb9c112875465fbf21f4b0923a311393e37940d92ea70da88f4f2532cf8e05.
-//
-// Solidity: event mockSetShutdown(bool shutdown, bool exitPosition)
-func (_AaveV2 *AaveV2Filterer) ParseMockSetShutdown(log types.Log) (*AaveV2MockSetShutdown, error) {
-	event := new(AaveV2MockSetShutdown)
-	if err := _AaveV2.contract.UnpackLog(event, "mockSetShutdown", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
 // AaveV2MockSetTrustIterator is returned from FilterMockSetTrust and is used to iterate over the raw logs and unpacked data for MockSetTrust events raised by the AaveV2 contract.
 type AaveV2MockSetTrustIterator struct {
 	Event *AaveV2MockSetTrust // Event containing the contract specifics and raw log
@@ -2029,6 +2359,273 @@ func (_AaveV2 *AaveV2Filterer) ParseMockSetTrust(log types.Log) (*AaveV2MockSetT
 	return event, nil
 }
 
+// AaveV2MockShutdownInitiatedIterator is returned from FilterMockShutdownInitiated and is used to iterate over the raw logs and unpacked data for MockShutdownInitiated events raised by the AaveV2 contract.
+type AaveV2MockShutdownInitiatedIterator struct {
+	Event *AaveV2MockShutdownInitiated // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *AaveV2MockShutdownInitiatedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(AaveV2MockShutdownInitiated)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(AaveV2MockShutdownInitiated)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *AaveV2MockShutdownInitiatedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *AaveV2MockShutdownInitiatedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// AaveV2MockShutdownInitiated represents a MockShutdownInitiated event raised by the AaveV2 contract.
+type AaveV2MockShutdownInitiated struct {
+	EmptyPosition bool
+	Raw           types.Log // Blockchain specific contextual infos
+}
+
+// FilterMockShutdownInitiated is a free log retrieval operation binding the contract event 0x0d7f1a85948bb0f09be6319e2016fdcf134a8ec36997ddb4c6d3080c43033da8.
+//
+// Solidity: event mockShutdownInitiated(bool emptyPosition)
+func (_AaveV2 *AaveV2Filterer) FilterMockShutdownInitiated(opts *bind.FilterOpts) (*AaveV2MockShutdownInitiatedIterator, error) {
+
+	logs, sub, err := _AaveV2.contract.FilterLogs(opts, "mockShutdownInitiated")
+	if err != nil {
+		return nil, err
+	}
+	return &AaveV2MockShutdownInitiatedIterator{contract: _AaveV2.contract, event: "mockShutdownInitiated", logs: logs, sub: sub}, nil
+}
+
+// WatchMockShutdownInitiated is a free log subscription operation binding the contract event 0x0d7f1a85948bb0f09be6319e2016fdcf134a8ec36997ddb4c6d3080c43033da8.
+//
+// Solidity: event mockShutdownInitiated(bool emptyPosition)
+func (_AaveV2 *AaveV2Filterer) WatchMockShutdownInitiated(opts *bind.WatchOpts, sink chan<- *AaveV2MockShutdownInitiated) (event.Subscription, error) {
+
+	logs, sub, err := _AaveV2.contract.WatchLogs(opts, "mockShutdownInitiated")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(AaveV2MockShutdownInitiated)
+				if err := _AaveV2.contract.UnpackLog(event, "mockShutdownInitiated", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseMockShutdownInitiated is a log parse operation binding the contract event 0x0d7f1a85948bb0f09be6319e2016fdcf134a8ec36997ddb4c6d3080c43033da8.
+//
+// Solidity: event mockShutdownInitiated(bool emptyPosition)
+func (_AaveV2 *AaveV2Filterer) ParseMockShutdownInitiated(log types.Log) (*AaveV2MockShutdownInitiated, error) {
+	event := new(AaveV2MockShutdownInitiated)
+	if err := _AaveV2.contract.UnpackLog(event, "mockShutdownInitiated", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// AaveV2MockShutdownLiftedIterator is returned from FilterMockShutdownLifted and is used to iterate over the raw logs and unpacked data for MockShutdownLifted events raised by the AaveV2 contract.
+type AaveV2MockShutdownLiftedIterator struct {
+	Event *AaveV2MockShutdownLifted // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *AaveV2MockShutdownLiftedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(AaveV2MockShutdownLifted)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(AaveV2MockShutdownLifted)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *AaveV2MockShutdownLiftedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *AaveV2MockShutdownLiftedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// AaveV2MockShutdownLifted represents a MockShutdownLifted event raised by the AaveV2 contract.
+type AaveV2MockShutdownLifted struct {
+	Raw types.Log // Blockchain specific contextual infos
+}
+
+// FilterMockShutdownLifted is a free log retrieval operation binding the contract event 0x566f488445bce32327585e72e3495b7ec0dc01cde8ade976bfdfd5cfc6dfa2f7.
+//
+// Solidity: event mockShutdownLifted()
+func (_AaveV2 *AaveV2Filterer) FilterMockShutdownLifted(opts *bind.FilterOpts) (*AaveV2MockShutdownLiftedIterator, error) {
+
+	logs, sub, err := _AaveV2.contract.FilterLogs(opts, "mockShutdownLifted")
+	if err != nil {
+		return nil, err
+	}
+	return &AaveV2MockShutdownLiftedIterator{contract: _AaveV2.contract, event: "mockShutdownLifted", logs: logs, sub: sub}, nil
+}
+
+// WatchMockShutdownLifted is a free log subscription operation binding the contract event 0x566f488445bce32327585e72e3495b7ec0dc01cde8ade976bfdfd5cfc6dfa2f7.
+//
+// Solidity: event mockShutdownLifted()
+func (_AaveV2 *AaveV2Filterer) WatchMockShutdownLifted(opts *bind.WatchOpts, sink chan<- *AaveV2MockShutdownLifted) (event.Subscription, error) {
+
+	logs, sub, err := _AaveV2.contract.WatchLogs(opts, "mockShutdownLifted")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(AaveV2MockShutdownLifted)
+				if err := _AaveV2.contract.UnpackLog(event, "mockShutdownLifted", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseMockShutdownLifted is a log parse operation binding the contract event 0x566f488445bce32327585e72e3495b7ec0dc01cde8ade976bfdfd5cfc6dfa2f7.
+//
+// Solidity: event mockShutdownLifted()
+func (_AaveV2 *AaveV2Filterer) ParseMockShutdownLifted(log types.Log) (*AaveV2MockShutdownLifted, error) {
+	event := new(AaveV2MockShutdownLifted)
+	if err := _AaveV2.contract.UnpackLog(event, "mockShutdownLifted", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
 // AaveV2MockSweepIterator is returned from FilterMockSweep and is used to iterate over the raw logs and unpacked data for MockSweep events raised by the AaveV2 contract.
 type AaveV2MockSweepIterator struct {
 	Event *AaveV2MockSweep // Event containing the contract specifics and raw log
@@ -2158,139 +2755,6 @@ func (_AaveV2 *AaveV2Filterer) WatchMockSweep(opts *bind.WatchOpts, sink chan<- 
 func (_AaveV2 *AaveV2Filterer) ParseMockSweep(log types.Log) (*AaveV2MockSweep, error) {
 	event := new(AaveV2MockSweep)
 	if err := _AaveV2.contract.UnpackLog(event, "mockSweep", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// AaveV2MockTransferFeesIterator is returned from FilterMockTransferFees and is used to iterate over the raw logs and unpacked data for MockTransferFees events raised by the AaveV2 contract.
-type AaveV2MockTransferFeesIterator struct {
-	Event *AaveV2MockTransferFees // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *AaveV2MockTransferFeesIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(AaveV2MockTransferFees)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(AaveV2MockTransferFees)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *AaveV2MockTransferFeesIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *AaveV2MockTransferFeesIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// AaveV2MockTransferFees represents a MockTransferFees event raised by the AaveV2 contract.
-type AaveV2MockTransferFees struct {
-	Raw types.Log // Blockchain specific contextual infos
-}
-
-// FilterMockTransferFees is a free log retrieval operation binding the contract event 0x9e1dd58aa34e20b52e0befa7246182b86d06fd56ea0a521d4d3dc8d6241cc43a.
-//
-// Solidity: event mockTransferFees()
-func (_AaveV2 *AaveV2Filterer) FilterMockTransferFees(opts *bind.FilterOpts) (*AaveV2MockTransferFeesIterator, error) {
-
-	logs, sub, err := _AaveV2.contract.FilterLogs(opts, "mockTransferFees")
-	if err != nil {
-		return nil, err
-	}
-	return &AaveV2MockTransferFeesIterator{contract: _AaveV2.contract, event: "mockTransferFees", logs: logs, sub: sub}, nil
-}
-
-// WatchMockTransferFees is a free log subscription operation binding the contract event 0x9e1dd58aa34e20b52e0befa7246182b86d06fd56ea0a521d4d3dc8d6241cc43a.
-//
-// Solidity: event mockTransferFees()
-func (_AaveV2 *AaveV2Filterer) WatchMockTransferFees(opts *bind.WatchOpts, sink chan<- *AaveV2MockTransferFees) (event.Subscription, error) {
-
-	logs, sub, err := _AaveV2.contract.WatchLogs(opts, "mockTransferFees")
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(AaveV2MockTransferFees)
-				if err := _AaveV2.contract.UnpackLog(event, "mockTransferFees", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseMockTransferFees is a log parse operation binding the contract event 0x9e1dd58aa34e20b52e0befa7246182b86d06fd56ea0a521d4d3dc8d6241cc43a.
-//
-// Solidity: event mockTransferFees()
-func (_AaveV2 *AaveV2Filterer) ParseMockTransferFees(log types.Log) (*AaveV2MockTransferFees, error) {
-	event := new(AaveV2MockTransferFees)
-	if err := _AaveV2.contract.UnpackLog(event, "mockTransferFees", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log

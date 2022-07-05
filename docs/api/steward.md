@@ -4,10 +4,10 @@
 ## Table of Contents
 
 - [steward.proto](#steward-proto)
-    - [SubmitRequest](#steward-v1-SubmitRequest)
-    - [SubmitResponse](#steward-v1-SubmitResponse)
+    - [SubmitRequest](#steward-v2-SubmitRequest)
+    - [SubmitResponse](#steward-v2-SubmitResponse)
   
-    - [ContractCall](#steward-v1-ContractCall)
+    - [ContractCall](#steward-v2-ContractCall)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -20,7 +20,7 @@
 
 
 
-<a name="steward-v1-SubmitRequest"></a>
+<a name="steward-v2-SubmitRequest"></a>
 
 ### SubmitRequest
 Represents a single function call on a particular Cellar
@@ -29,14 +29,14 @@ Represents a single function call on a particular Cellar
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | cellar_id | [string](#string) |  | The ID (currently simply an Ethereum address) of the target Cellar |
-| aave_v2_stablecoin | [AaveV2Stablecoin](#steward-v1-AaveV2Stablecoin) |  |  |
+| aave_v2_stablecoin | [AaveV2Stablecoin](#steward-v2-AaveV2Stablecoin) |  |  |
 
 
 
 
 
 
-<a name="steward-v1-SubmitResponse"></a>
+<a name="steward-v2-SubmitResponse"></a>
 
 ### SubmitResponse
 
@@ -52,14 +52,14 @@ Represents a single function call on a particular Cellar
  
 
 
-<a name="steward-v1-ContractCall"></a>
+<a name="steward-v2-ContractCall"></a>
 
 ### ContractCall
 Service for handling Cellar contract calls
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| Submit | [SubmitRequest](#steward-v1-SubmitRequest) | [SubmitResponse](#steward-v1-SubmitResponse) | Handles simple contract call submission |
+| Submit | [SubmitRequest](#steward-v2-SubmitRequest) | [SubmitResponse](#steward-v2-SubmitResponse) | Handles simple contract call submission |
 
  
 
