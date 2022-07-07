@@ -243,7 +243,7 @@ Type: string
 
 The path to the trusted CA used to sign the Strategy Provider's client certificate
 
-> :warning: Please leave this value unset for now as it defaults to the Peggy JV CA internally
+> :warning: Please leave this value unset for now as it defaults to the Seven Seas CA internally
 
 ```
 [server]
