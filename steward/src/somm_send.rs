@@ -1,3 +1,4 @@
+use abscissa_core::tracing::info;
 use deep_space::coin::Coin;
 use deep_space::error::CosmosGrpcError;
 use deep_space::Contact;
@@ -68,6 +69,8 @@ async fn __send_messages(
     let response = contact
         .send_transaction(msg_bytes, BroadcastMode::Sync)
         .await?;
+
+    info!("SubmitCork response: {:?}", response);
 
     contact.wait_for_tx(response, TIMEOUT).await
 }
