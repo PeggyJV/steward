@@ -21,11 +21,15 @@ pub async fn send_cork(
     delegate_key: &CosmosPrivateKey,
     fee: Coin,
 ) -> Result<TxResponse, CosmosGrpcError> {
+    println!("Cork: {:?}", &cork);
+    println!("Signer: {:?}", &delegate_address);
     let msg = MsgSubmitCorkRequest {
         cork: Some(cork),
         signer: delegate_address,
     };
     let msg = Msg::new("/cork.v1.MsgSubmitCorkRequest", msg);
+    println!("Sending a cork with Msg: {:?}", msg);
+
     __send_messages(contact, delegate_key, fee, vec![msg]).await
 }
 
@@ -53,21 +57,27 @@ async fn __send_messages(
     messages: Vec<Msg>,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let cosmos_address = cosmos_key.to_address(&contact.get_prefix())?;
+    println!("cosmos_address: {:?}", &cosmos_address);
 
     let fee = Fee {
         amount: vec![fee],
-        gas_limit: 500_000_000u64 * (messages.len() as u64),
+        gas_limit: 500_000u64 * (messages.len() as u64),
         granter: None,
         payer: None,
     };
+    println!("fee: {:?}", &fee);
 
     let args = contact.get_message_args(cosmos_address, fee).await?;
+    println!("args: {:?}", &args);
 
     let msg_bytes = cosmos_key.sign_std_msg(&messages, args, MEMO)?;
+    println!("msg_bytes: {:?}", &msg_bytes);
 
     let response = contact
         .send_transaction(msg_bytes, BroadcastMode::Sync)
         .await?;
+
+    println!("response: {:?}", &response);
 
     contact.wait_for_tx(response, TIMEOUT).await
 }

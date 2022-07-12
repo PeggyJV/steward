@@ -811,12 +811,17 @@ github.com/peggyjv/gravity-bridge/module/v2 v2.0.0-20220408050446-0990f54669f9/g
 github.com/peggyjv/gravity-bridge/module/v2 v2.0.0-20220414233948-fb045a1867b7/go.mod h1:XUHyaIYlqo2TgCSY0R4N/geZot6Vks/EZmhJ7Jz4wvQ=
 github.com/peggyjv/gravity-bridge/module/v2 v2.0.0-20220418171956-7fb1ba7ebc76 h1:3LNJcLyiESmfftpirUF2U9jjLCPoxrfNHcJaVtz24qI=
 github.com/peggyjv/gravity-bridge/module/v2 v2.0.0-20220418171956-7fb1ba7ebc76/go.mod h1:XUHyaIYlqo2TgCSY0R4N/geZot6Vks/EZmhJ7Jz4wvQ=
+github.com/peggyjv/gravity-bridge/module/v2 v2.0.0/go.mod h1:XUHyaIYlqo2TgCSY0R4N/geZot6Vks/EZmhJ7Jz4wvQ=
+github.com/peggyjv/gravity-bridge/module/v2 v2.0.1 h1:FLnb1BUC9iDbM8BQpoOy92+5N5BCw0jbAiwuKz8ZzZM=
+github.com/peggyjv/gravity-bridge/module/v2 v2.0.1/go.mod h1:XUHyaIYlqo2TgCSY0R4N/geZot6Vks/EZmhJ7Jz4wvQ=
 github.com/peggyjv/sommelier/v3 v3.1.2-0.20220318164959-6feb04a85567 h1:+tzucrMgzvdXBWplyvuu7dKhLYfIVFzYm31CmIb0Qk8=
 github.com/peggyjv/sommelier/v3 v3.1.2-0.20220318164959-6feb04a85567/go.mod h1:gTpZgChfrQFOqNKaOfleIiYI42sY6fIAFeodAQROmTw=
 github.com/peggyjv/sommelier/v4 v4.0.0-20220408170832-484a5286e75b h1:Qp30xmWYrmWEOaztSwE5P8QK7Rg2LVSPaRGk9ghvAgY=
 github.com/peggyjv/sommelier/v4 v4.0.0-20220408170832-484a5286e75b/go.mod h1:prszJbfm71XNM7iTmQgX+PkeOlXzYW1n58+QJvl9b7E=
 github.com/peggyjv/sommelier/v4 v4.0.0-20220418171902-38ebef682f79 h1:q9tbcvFQINEkEtTuhCzbGEDTO3oISZogK8Y0KVItx7c=
 github.com/peggyjv/sommelier/v4 v4.0.0-20220418171902-38ebef682f79/go.mod h1:PODTZFws9y/FFb+Jdk3RDYvFV9ZRW9HAnjsmwDvC25o=
+github.com/peggyjv/sommelier/v4 v4.0.1 h1:Le4dTAgrhGXK+XB+h5AIi1g6tta8Jr15QdIbbn5H7lY=
+github.com/peggyjv/sommelier/v4 v4.0.1/go.mod h1:6u1+0S0PA/7Hs4bx2OzD/Qt3NI++WKZQGgdLVbrpAOk=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
 github.com/pelletier/go-toml v1.9.3/go.mod h1:u1nR/EPcESfeI/szUZKdtJ0xRNbUoANCkoOuaOx1Y+c=
 github.com/pelletier/go-toml v1.9.4 h1:tjENF6MfZAg8e4ZmZTeWaWiT2vXtsoO6+iuOjFhECwM=
