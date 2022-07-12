@@ -81,7 +81,7 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
             error!("failed to submit cork: {}", err);
             return Err(Status::new(
                 Code::Internal,
-                "failed to send cork to sommelier",
+                format!("failed to send cork to sommelier: {}", err),
             ));
         }
         info!("submitted cork for {}!", cellar_id);
