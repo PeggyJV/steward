@@ -16,10 +16,10 @@ use gravity_bridge::orchestrator::main_loop::{
 use gravity_bridge::relayer::main_loop::LOOP_SPEED as RELAYER_LOOP_SPEED;
 use std::{cmp::min, sync::Arc};
 
-/// Start Orchestrator
+/// Start the Orchestrator
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Start the Orchestrator in Sommelier Chain via the Gravity Bridge.\n This command loads a Cosmos and Ethereum key with their keyname from the keystore.\n It also takes an Orchestrator_only field which when set to true, starts the Orchestrator only\n without the relayer and when set to false, starts the Orchestrator with the relayer."
+    long_about = "DESCRIPTION\n\nStarts the Gravity Bridge Orchestrator and optionally the Relayer with the --relay flag.\nYou must provide the keys delegated by your validator node for Cosmos and Ethereum signing."
 )]
 pub struct StartCommand {
     /// Cosmos keyname from keystore.
@@ -30,9 +30,9 @@ pub struct StartCommand {
     #[clap(short = 'e', long)]
     ethereum_key: String,
 
-    /// Boolean, when set to true starts the Orchestrator only and false starts Orchestrator and Relayer.
+    /// Enable Ethereum to Cosmos relaying (consumes gas in ETH)
     #[clap(short, long)]
-    orchestrator_only: bool,
+    relay: bool,
 }
 
 impl Runnable for StartCommand {
@@ -119,7 +119,7 @@ impl Runnable for StartCommand {
                 config.ethereum.gas_multiplier,
                 config.ethereum.blocks_to_search,
                 config.cosmos.gas_adjustment,
-                self.orchestrator_only,
+                !self.relay,
                 config.cosmos.msg_batch_size,
             )
             .await;
