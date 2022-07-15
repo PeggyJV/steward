@@ -43,7 +43,7 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
                 error!("cork query client connection failed: {}", err);
                 return Err(Status::new(
                     Code::Internal,
-                    "failed to query chain to validate cellar id",
+                    format!("failed to query chain to validate cellar id: {}", err),
                 ));
             }
         };
@@ -84,10 +84,10 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
             error!("failed to submit cork: {}", err);
             return Err(Status::new(
                 Code::Internal,
-                "failed to send cork to sommelier",
+                format!("failed to send cork to sommelier: {}", err),
             ));
         }
-        info!("submitted cork for {}!", cellar_id);
+        info!("submitted cork for {}", cellar_id);
 
         Ok(Response::new(SubmitResponse {}))
     }
@@ -140,6 +140,37 @@ async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
         config::DELEGATE_ADDRESS.to_string(),
         &config::DELEGATE_KEY,
         fee,
+    )
+    .await
+    .map_err(|e| e.into())
+}
+
+pub async fn schedule_cork(
+    contract: String,
+    encoded_call: Vec<u8>,
+    height: u64,
+) -> Result<TxResponse, Error> {
+    let config = APP.config();
+    debug!("establishing grpc connection");
+    let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX).unwrap();
+
+    debug!("getting cosmos fee");
+    let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
+    let fee = Coin {
+        amount: (cosmos_gas_price.0 as u64).into(),
+        denom: cosmos_gas_price.1,
+    };
+    let cork = Cork {
+        encoded_contract_call: encoded_call,
+        target_contract_address: contract.clone(),
+    };
+    somm_send::schedule_cork(
+        &contact,
+        cork,
+        config::DELEGATE_ADDRESS.to_string(),
+        &config::DELEGATE_KEY,
+        fee,
+        height,
     )
     .await
     .map_err(|e| e.into())

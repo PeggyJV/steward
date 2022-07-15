@@ -5,7 +5,7 @@
  */
 
 syntax = "proto3";
-package steward.v1;
+package steward.v2;
 
 option go_package = "/steward_proto";
 
@@ -16,29 +16,37 @@ message AaveV2Stablecoin {
     // The function you wish to execute on the target cellar
     oneof function {
         // Represents function `accruePlatformFees()`
-        AccrueFees accrue_fees = 1;
+        Accrue accrue = 1;
         // Represents function `claimAndUnstake()`
         ClaimAndUnstake claim_and_unstake = 2;
         // Represents function `enterPosition()`
         EnterPosition enter_position = 3;
+        // Represents function `enterPosition(uint256 assets)`
+        EnterPositionWithAssets enter_position_with_assets = 4;
+        // Represents function `exitPosition()`
+        ExitPosition exit_position = 5;
+        // Represents function `exitPosition(uint256 assets)`
+        ExitPositionWithAssets exit_position_with_assets = 6;
         // Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`
-        Rebalance rebalance = 4;
+        Rebalance rebalance = 7;
         // Represents function `reinvest(uint256 minAssetsOut)`
-        Reinvest reinvest = 5;
+        Reinvest reinvest = 8;
+        // Represents function `setAccrualPeriod(uint32 newAccrualPeriod)`
+        SetAccrualPeriod set_accrual_period = 9;
         // Represents function `setDepositLimit(uint256 limit)`
-        SetDepositLimit set_deposit_limit = 6;
+        SetDepositLimit set_deposit_limit = 10;
         // Represents function `setLiquidityLimit(uint256 limit)`
-        SetLiquidityLimit set_liquidity_limit = 7;
+        SetLiquidityLimit set_liquidity_limit = 11;
         // Represents function `transferFees()`
-        TransferFees transfer_fees = 8;
+        SendFees send_fees = 12;
     }
 
     /*
-     * Take platform fees and performance fees off of cellar's active assets.
+     * Accrue yield, platform fees, and performance fees..
      *
-     * Represents function `accruePlatformFees()`
+     * Represents function `accrue()`
      */
-    message AccrueFees {}
+    message Accrue {}
 
     /*
      * Claim rewards from Aave and begin cooldown period to unstake them.
@@ -48,11 +56,38 @@ message AaveV2Stablecoin {
     message ClaimAndUnstake {}
 
     /*
-     * Enters inactive assets into the current Aave stablecoin position.
+     * Pushes total assets into the current Aave lending position.
      *
      * Represents function `enterPosition()`
      */
-    message EnterPosition {}
+     message EnterPosition {}
+
+    /*
+     * Pushes assets into the current Aave lending position.
+     *
+     * Represents function `enterPosition(uint256 assets)`
+     */
+    message EnterPositionWithAssets {
+        // amount of assets to enter into the current position
+        string assets = 1;
+    }
+
+    /*
+     * Pulls total assets from the current Aave lending position.
+     *
+     * Represents function `enterPosition()`
+     */
+     message ExitPosition {}
+
+    /*
+     * Pulls assets from the current Aave lending position.
+     *
+     * Represents function `exitPosition(uint256 assets)`
+     */
+     message ExitPositionWithAssets {
+        // amount of assets to exit from the current position
+        string assets = 1;
+    }
 
     /*
      * Rebalances current assets into a new asset position.
@@ -63,7 +98,7 @@ message AaveV2Stablecoin {
      * https://github.com/curvefi/curve-pool-registry/blob/16a8664952cf61d7fed06acca79ad5ac696f4b20/contracts/Swaps.vy#L461-L489
      */
     message Rebalance {
-        // An array of up to 9 addresses (4 swaps) representing a token swap route, where each triplet of addresses is a single swap route (ex. in token address, pool address, out token address)
+        // array of [initial token, pool, token, pool, token, ...] that specifies the swap route on Curve.
         repeated string route = 1;
         // An array of up to 4 swap params. Attempting more than four swaps will fail.
         repeated SwapParams swap_params = 2;
@@ -100,29 +135,38 @@ message AaveV2Stablecoin {
     }
 
     /*
-     * Sets the per-wallet deposit limit. Careful to use the same decimals as the current asset.
+     * Set the accrual period over which yield is distributed.
+     *
+     * Represents function `setAccrualPeriod(uint32 newAccrualPeriod)`
+     */
+    message SetAccrualPeriod {
+        uint32 new_accrual_period = 1;
+    }
+
+    /*
+     * Set the per-wallet deposit limit. Uses the same decimals as the current asset.
      *
      * Represents function `setDepositLimit(uint256 limit)`
      */
     message SetDepositLimit {
-        // The per-wallet deposit limit amount. Must be parsable as an unsigned 256-bit integer.
+        // Amount of assets to set as the new limit. Must be parsable as an unsigned 256-bit integer.
         string limit = 1;
     }
 
     /*
-     * Sets the maximum liquidity that cellar can manage. Careful to use the same decimals as the current asset.
+     * Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.
      *
      * Represents function `setLiquidityLimit(uint256 limit)`
      */
      message SetLiquidityLimit {
-        // The maximum allowed liquidity amount. Must be parsable as an unsigned 256-bit integer.
+        // Amount of assets to set as the new limit
         string limit = 1;
     }
 
     /*
      * Transfer accrued fees to the Sommelier Chain to distribute.
      *
-     * Represents function `transferFees()`
+     * Represents function `sendFees()`
      */
-    message TransferFees {}
+    message SendFees {}
 }

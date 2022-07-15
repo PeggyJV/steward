@@ -146,6 +146,7 @@ impl Default for CorkConfig {
 pub struct EthereumSection {
     pub blocks_to_search: u64,
     pub gas_price_multiplier: f32,
+    pub gas_multiplier: f32,
     pub key_derivation_path: String,
     pub rpc: String,
 }
@@ -155,6 +156,7 @@ impl Default for EthereumSection {
         Self {
             blocks_to_search: 5000,
             gas_price_multiplier: 1.0f32,
+            gas_multiplier: 1.0f32,
             key_derivation_path: "m/44'/60'/0'/0/0".to_owned(),
             rpc: "http://localhost:8545".to_owned(),
         }

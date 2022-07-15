@@ -5,18 +5,18 @@ pub struct AaveV2Stablecoin {
     /// The function you wish to execute on the target cellar
     #[prost(
         oneof = "aave_v2_stablecoin::Function",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12"
     )]
     pub function: ::core::option::Option<aave_v2_stablecoin::Function>,
 }
 /// Nested message and enum types in `AaveV2Stablecoin`.
 pub mod aave_v2_stablecoin {
     ///
-    /// Take platform fees and performance fees off of cellar's active assets.
+    /// Accrue yield, platform fees, and performance fees..
     ///
-    /// Represents function `accruePlatformFees()`
+    /// Represents function `accrue()`
     #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct AccrueFees {}
+    pub struct Accrue {}
     ///
     /// Claim rewards from Aave and begin cooldown period to unstake them.
     ///
@@ -24,11 +24,37 @@ pub mod aave_v2_stablecoin {
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct ClaimAndUnstake {}
     ///
-    /// Enters inactive assets into the current Aave stablecoin position.
+    /// Pushes total assets into the current Aave lending position.
     ///
     /// Represents function `enterPosition()`
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct EnterPosition {}
+    ///
+    /// Pushes assets into the current Aave lending position.
+    ///
+    /// Represents function `enterPosition(uint256 assets)`
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct EnterPositionWithAssets {
+        /// amount of assets to enter into the current position
+        #[prost(string, tag = "1")]
+        pub assets: ::prost::alloc::string::String,
+    }
+    ///
+    /// Pulls total assets from the current Aave lending position.
+    ///
+    /// Represents function `enterPosition()`
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct ExitPosition {}
+    ///
+    /// Pulls assets from the current Aave lending position.
+    ///
+    /// Represents function `exitPosition(uint256 assets)`
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct ExitPositionWithAssets {
+        /// amount of assets to exit from the current position
+        #[prost(string, tag = "1")]
+        pub assets: ::prost::alloc::string::String,
+    }
     ///
     /// Rebalances current assets into a new asset position.
     ///
@@ -38,13 +64,13 @@ pub mod aave_v2_stablecoin {
     /// https://github.com/curvefi/curve-pool-registry/blob/16a8664952cf61d7fed06acca79ad5ac696f4b20/contracts/Swaps.vy#L461-L489
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Rebalance {
-        /// An array of up to 9 addresses (4 swaps) representing a token swap route, where each triplet of addresses is a single swap route (ex. in token address, pool address, out token address)
+        /// array of [initial token, pool, token, pool, token, ...] that specifies the swap route on Curve.
         #[prost(string, repeated, tag = "1")]
         pub route: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
         /// An array of up to 4 swap params. Attempting more than four swaps will fail.
         #[prost(message, repeated, tag = "2")]
         pub swap_params: ::prost::alloc::vec::Vec<rebalance::SwapParams>,
-        /// Minimum acceptable assets to be received from the swap (slippage parameter).  Must be parsible as an unsigned 256-bit integer.
+        /// Minimum acceptable assets to be received from the swap (slippage parameter).  Must be parsable as an unsigned 256-bit integer.
         #[prost(string, tag = "3")]
         pub min_assets_out: ::prost::alloc::string::String,
     }
@@ -76,63 +102,84 @@ pub mod aave_v2_stablecoin {
     /// Represents function `reinvest(uint256 minAssetsOut)`
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Reinvest {
-        /// Minimum acceptable assets to be received from the swap (slippage parameter).  Must be parsible as an unsigned 256-bit integer.
+        /// Minimum acceptable assets to be received from the swap (slippage parameter).  Must be parsable as an unsigned 256-bit integer.
         #[prost(string, tag = "1")]
         pub min_assets_out: ::prost::alloc::string::String,
     }
     ///
-    /// Sets the per-wallet deposit limit. Careful to use the same decimals as the current asset.
+    /// Set the accrual period over which yield is distributed.
+    ///
+    /// Represents function `setAccrualPeriod(uint32 newAccrualPeriod)`
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct SetAccrualPeriod {
+        #[prost(uint32, tag = "1")]
+        pub new_accrual_period: u32,
+    }
+    ///
+    /// Set the per-wallet deposit limit. Uses the same decimals as the current asset.
     ///
     /// Represents function `setDepositLimit(uint256 limit)`
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct SetDepositLimit {
-        /// The per-wallet deposit limit amount. Must be parsible as an unsigned 256-bit integer.
+        /// Amount of assets to set as the new limit. Must be parsable as an unsigned 256-bit integer.
         #[prost(string, tag = "1")]
         pub limit: ::prost::alloc::string::String,
     }
     ///
-    /// Sets the maximum liquidity that cellar can manage. Careful to use the same decimals as the current asset.
+    /// Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.
     ///
     /// Represents function `setLiquidityLimit(uint256 limit)`
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct SetLiquidityLimit {
-        /// The maximum allowed liquidity amount. Must be parsible as an unsigned 256-bit integer.
+        /// Amount of assets to set as the new limit
         #[prost(string, tag = "1")]
         pub limit: ::prost::alloc::string::String,
     }
     ///
     /// Transfer accrued fees to the Sommelier Chain to distribute.
     ///
-    /// Represents function `transferFees()`
+    /// Represents function `sendFees()`
     #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct TransferFees {}
+    pub struct SendFees {}
     /// The function you wish to execute on the target cellar
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Function {
         /// Represents function `accruePlatformFees()`
         #[prost(message, tag = "1")]
-        AccrueFees(AccrueFees),
+        Accrue(Accrue),
         /// Represents function `claimAndUnstake()`
         #[prost(message, tag = "2")]
         ClaimAndUnstake(ClaimAndUnstake),
         /// Represents function `enterPosition()`
         #[prost(message, tag = "3")]
         EnterPosition(EnterPosition),
-        /// Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`
+        /// Represents function `enterPosition(uint256 assets)`
         #[prost(message, tag = "4")]
+        EnterPositionWithAssets(EnterPositionWithAssets),
+        /// Represents function `exitPosition()`
+        #[prost(message, tag = "5")]
+        ExitPosition(ExitPosition),
+        /// Represents function `exitPosition(uint256 assets)`
+        #[prost(message, tag = "6")]
+        ExitPositionWithAssets(ExitPositionWithAssets),
+        /// Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`
+        #[prost(message, tag = "7")]
         Rebalance(Rebalance),
         /// Represents function `reinvest(uint256 minAssetsOut)`
-        #[prost(message, tag = "5")]
+        #[prost(message, tag = "8")]
         Reinvest(Reinvest),
+        /// Represents function `setAccrualPeriod(uint32 newAccrualPeriod)`
+        #[prost(message, tag = "9")]
+        SetAccrualPeriod(SetAccrualPeriod),
         /// Represents function `setDepositLimit(uint256 limit)`
-        #[prost(message, tag = "6")]
+        #[prost(message, tag = "10")]
         SetDepositLimit(SetDepositLimit),
         /// Represents function `setLiquidityLimit(uint256 limit)`
-        #[prost(message, tag = "7")]
+        #[prost(message, tag = "11")]
         SetLiquidityLimit(SetLiquidityLimit),
         /// Represents function `transferFees()`
-        #[prost(message, tag = "8")]
-        TransferFees(TransferFees),
+        #[prost(message, tag = "12")]
+        SendFees(SendFees),
     }
 }
 ///
@@ -204,7 +251,7 @@ pub mod contract_call_client {
                 )
             })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/steward.v1.ContractCall/Submit");
+            let path = http::uri::PathAndQuery::from_static("/steward.v2.ContractCall/Submit");
             self.inner.unary(request.into_request(), path, codec).await
         }
     }
@@ -268,7 +315,7 @@ pub mod contract_call_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/steward.v1.ContractCall/Submit" => {
+                "/steward.v2.ContractCall/Submit" => {
                     #[allow(non_camel_case_types)]
                     struct SubmitSvc<T: ContractCall>(pub Arc<T>);
                     impl<T: ContractCall> tonic::server::UnaryService<super::SubmitRequest> for SubmitSvc<T> {
@@ -327,6 +374,6 @@ pub mod contract_call_server {
         }
     }
     impl<T: ContractCall> tonic::transport::NamedService for ContractCallServer<T> {
-        const NAME: &'static str = "steward.v1.ContractCall";
+        const NAME: &'static str = "steward.v2.ContractCall";
     }
 }
