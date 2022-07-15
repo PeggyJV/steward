@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.0;
 
-import "./interfaces.sol";
+import {ERC20, Ownable} from "./interfaces.sol";
 
 contract MockAaveV2StablecoinCellar is Ownable {
     /**
@@ -9,49 +9,80 @@ contract MockAaveV2StablecoinCellar is Ownable {
      */
     bool public isShutdown;
 
-    event mockAccrueFees();
-    event mockTransferFees();
+    event mockAccrue();
+    event mockSendFees();
     event mockSetFeesDistributor(bytes32 newFeesDistributor);
     event mockEnterPosition();
+    event mockEnterPosition(uint256 assets);
+    event mockExitPosition();
+    event mockExitPosition(uint256 assets);
     event mockRebalance(address[9] route, uint256[3][4] swapParams, uint256 minAssetsOut);
     event mockReinvest(uint256 minAssetsOut);
     event mockClaimAndUnstake();
-    event mockSweep(address token, address to);
+    event mockSweep(ERC20 token, address to);
+    event mockSetAccrualPeriod(uint32 newAccrualPeriod);
     event mockSetLiquidityLimit(uint256 limit);
     event mockSetDepositLimit(uint256 limit);
-    event mockSetTrust(address position, bool trust);
-    event mockSetShutdown(bool shutdown, bool exitPosition);
+    event mockSetTrust(ERC20 position, bool trust);
+    event mockShutdownInitiated(bool emptyPosition);
+    event mockShutdownLifted();
 
     constructor() {}
 
     /**
-     * @notice Take platform fees and performance fees off of cellar's active assets.
+     * @notice Accrue yield, platform fees, and performance fees.
      */
-    function accrueFees() external {
-        emit mockAccrueFees();
+    function accrue() external {
+        emit mockAccrue();
     }
 
     /**
      * @notice Transfer accrued fees to the Sommelier Chain to distribute.
      */
-    function transferFees() external onlyOwner {
-        emit mockTransferFees();
+    function sendFees() external onlyOwner {
+        emit mockSendFees();
     }
 
     /**
-     * @notice Update the address of the fee distributor on the Sommelier Chain. IMPORTANT: Ensure
-     *         that the address is formatted in the specific way that the Gravity contract expects
-     *         it to be.
+     * @notice Set the accrual period over which yield is distributed.
+     */
+    function setAccrualPeriod(uint32 newAccrualPeriod) external onlyOwner {
+        emit mockSetAccrualPeriod(newAccrualPeriod);
+    }
+
+    /**
+     * @notice Set the address of the fee distributor on the Sommelier chain.
      */
     function setFeesDistributor(bytes32 newFeesDistributor) external onlyOwner {
         emit mockSetFeesDistributor(newFeesDistributor);
     }
 
     /**
-     * @notice Enters into the current Aave stablecoin strategy.
+     * @notice Pushes total assets into the current Aave lending position.
      */
-    function enterPosition() external onlyOwner  {
+    function enterPosition() external whenNotShutdown onlyOwner  {
         emit mockEnterPosition();
+    }
+
+    /**
+     * @notice Pushes assets into the current Aave lending position.
+     */
+    function enterPosition(uint256 assets) external whenNotShutdown onlyOwner  {
+        emit mockEnterPosition(assets);
+    }
+
+    /**
+     * @notice Pulls total assets from the current Aave lending position.
+     */
+    function exitPosition() external whenNotShutdown onlyOwner  {
+        emit mockExitPosition();
+    }
+
+    /**
+     * @notice Pulls assets from the current Aave lending position.
+     */
+    function exitPosition(uint256 assets) external whenNotShutdown onlyOwner  {
+        emit mockExitPosition(assets);
     }
 
     /**
@@ -68,7 +99,7 @@ contract MockAaveV2StablecoinCellar is Ownable {
         address[9] memory route,
         uint256[3][4] memory swapParams,
         uint256 minAssetsOut
-    ) external onlyOwner  {
+    ) external whenNotShutdown onlyOwner  {
         emit mockRebalance(route, swapParams, minAssetsOut);
     }
 
@@ -96,7 +127,7 @@ contract MockAaveV2StablecoinCellar is Ownable {
      * @param token address of token to transfer out of this cellar
      * @param to address to transfer sweeped tokens to
      */
-    function sweep(address token, address to) external onlyOwner {
+    function sweep(ERC20 token, address to) external onlyOwner {
         emit mockSweep(token, to);
     }
 
@@ -104,30 +135,53 @@ contract MockAaveV2StablecoinCellar is Ownable {
      * @notice Sets the maximum liquidity that cellar can manage. Careful to use the same decimals as the
      *         current asset.
      */
-    function setLiquidityLimit(uint256 limit) external onlyOwner {
-        emit mockSetLiquidityLimit(limit);
+    function setLiquidityLimit(uint256 newLimit) external onlyOwner {
+        emit mockSetLiquidityLimit(newLimit);
     }
 
     /**
      * @notice Sets the per-wallet deposit limit. Careful to use the same decimals as the current asset.
      */
-    function setDepositLimit(uint256 limit) external onlyOwner {
-        emit mockSetDepositLimit(limit);
+    function setDepositLimit(uint256 newLimit) external onlyOwner {
+        emit mockSetDepositLimit(newLimit);
     }
 
     /**
      * @notice Trust or distrust an asset position on Aave (eg. FRAX, UST, FEI).
      */
-    function setTrust(address position, bool trust) external onlyOwner {
+    function setTrust(ERC20 position, bool trust) external onlyOwner {
         emit mockSetTrust(position, trust);
+    }
+
+    /**
+    * @notice Attempted action was prevented due to contract being shutdown.
+    */
+    error STATE_ContractShutdown();
+
+    /**
+     * @notice Prevent a function from being called during a shutdown.
+     */
+    modifier whenNotShutdown() {
+        if (isShutdown) revert STATE_ContractShutdown();
+
+        _;
     }
 
     /**
      * @notice Stop or start the contract. Used in an emergency or if the cellar has been retired.
      */
-    function setShutdown(bool shutdown, bool exitPosition) external onlyOwner {
-        isShutdown = shutdown;
+    function initiateShutdown(bool emptyPosition) external whenNotShutdown onlyOwner {
+        isShutdown = true;
 
-        emit mockSetShutdown(shutdown, exitPosition);
+        emit mockShutdownInitiated(emptyPosition);
+    }
+
+    /**
+     * @notice Restart the cellar.
+     */
+    function liftShutdown() external onlyOwner {
+        isShutdown = false;
+
+        emit mockShutdownLifted();
     }
 }
