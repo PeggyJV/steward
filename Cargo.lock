@@ -4693,7 +4693,7 @@ dependencies = [
  "steward_abi",
  "steward_abi_build",
  "steward_proto",
- "steward_proto_build",
+ "steward_proto_rust_build",
 ]
 
 [[package]]
@@ -4858,7 +4858,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "steward_proto_build"
+name = "steward_proto_rust_build"
 version = "1.0.0"
 dependencies = [
  "prost 0.7.0",
