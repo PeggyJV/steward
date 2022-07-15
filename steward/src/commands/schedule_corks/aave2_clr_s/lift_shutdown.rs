@@ -24,10 +24,12 @@ impl Runnable for LiftShutdownCmd {
             let call = LiftShutdownCall {};
             let encoded_call = AaveV2StablecoinCellarCalls::LiftShutdown(call).encode();
 
-            cellars::validate_cellar_id(self.contract.as_str()).await.unwrap_or_else(|err| {
-                status_err!("Can't validate contract address format: {}", err);
-                std::process::exit(1);
-            });
+            cellars::validate_cellar_id(self.contract.as_str())
+                .await
+                .unwrap_or_else(|err| {
+                    status_err!("Can't validate contract address format: {}", err);
+                    std::process::exit(1);
+                });
 
             cork::schedule_cork(self.contract.clone(), encoded_call, self.height)
                 .await
