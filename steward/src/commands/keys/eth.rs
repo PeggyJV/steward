@@ -1,6 +1,7 @@
 mod add;
 mod delete;
-mod import;
+mod import_from_key;
+mod import_from_mnemonic;
 mod list;
 mod rename;
 mod show;
@@ -13,7 +14,9 @@ pub enum EthKeysCmd {
 
     Delete(delete::DeleteKeyCmd),
 
-    Import(import::ImportEthKeyCmd),
+    ImportFromKey(import_from_key::ImportFromKeyCmd),
+
+    ImportFromMnemonic(import_from_mnemonic::ImportFromMnemonicCmd),
 
     List(list::ListKeyCmd),
 
