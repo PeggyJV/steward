@@ -7,9 +7,9 @@ use std::path;
 
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Import an external Eth key.\n This command will recover a Eth key, storing it in the keystore. \n It takes a keyname and bip39-mnemonic."
+    long_about = "DESCRIPTION \n\n Import an external Eth key via bip39-mnemonic.\n This command will recover a Eth key, storing it in the keystore. \n It takes a keyname and bip39-mnemonic."
 )]
-pub struct ImportEthKeyCmd {
+pub struct ImportFromMnemonicCmd {
     /// Eth keyname.
     pub name: String,
 
@@ -24,7 +24,7 @@ pub struct ImportEthKeyCmd {
 // Entry point for `keys eth import [name] (bip39-mnemonic)`
 // - [name] required; keyname
 // - (bip39-mnemonic) optional; when absent the user will be prompted to enter it
-impl Runnable for ImportEthKeyCmd {
+impl Runnable for ImportFromMnemonicCmd {
     fn run(&self) {
         let config = APP.config();
         let keystore = path::Path::new(&config.keystore);
@@ -44,33 +44,20 @@ impl Runnable for ImportEthKeyCmd {
                 .expect("Could not read mnemonic"),
         };
 
-        let key = match bip32::Mnemonic::new(mnemonic.trim(), Default::default()) {
-            Ok(mnemonic) => {
-                let seed = mnemonic.to_seed("");
+        if let Ok(mnemonic) = bip32::Mnemonic::new(mnemonic.trim(), Default::default()) {
+            let seed = mnemonic.to_seed("");
+            let path = config.ethereum.key_derivation_path.trim();
+            let path = path
+                .parse::<bip32::DerivationPath>()
+                .expect("Could not parse derivation path");
 
-                let path = config.ethereum.key_derivation_path.trim();
-                let path = path
-                    .parse::<bip32::DerivationPath>()
-                    .expect("Could not parse derivation path");
-
-                let key = bip32::XPrv::derive_from_path(seed, &path).expect("Could not derive key");
-                let key = k256::SecretKey::from(key.private_key());
-                key.to_pkcs8_der()
-                    .expect("Could not PKCS8 encod private key")
-            }
-            Err(_) => {
-                let key = rpassword::read_password_from_tty(Some("> Enter your private-key:\n"))
-                    .expect("Could not read private-key");
-
-                let key: ethers::types::H256 = key.parse().expect("Could not parse private-key");
-
-                let key = k256::SecretKey::from_bytes(key).expect("Could not make private key");
-                key.to_pkcs8_der()
-                    .expect("Could not PKCS8 encode private key")
-            }
-        };
-
-        keystore.store(&name, &key).expect("Could not store key");
+            let key = bip32::XPrv::derive_from_path(seed, &path).expect("Could not derive key");
+            let key = k256::SecretKey::from(key.private_key());
+            let key = key
+                .to_pkcs8_der()
+                .expect("Could not PKCS8 encod private key");
+            keystore.store(&name, &key).expect("Could not store key");
+        }
 
         let name = name.to_string();
         let show_cmd = ShowKeyCmd { name };
