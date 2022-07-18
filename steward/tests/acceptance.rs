@@ -279,9 +279,9 @@ fn eth_keys_show() -> io::Result<()> {
     Ok(())
 }
 
-/// Eth import key test
+/// Eth import from key test
 #[test]
-fn eth_keys_import() -> io::Result<()> {
+fn eth_keys_import_from_key() -> io::Result<()> {
     let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
     let key_dir = TempDir::new("test_key")?;
 
@@ -313,9 +313,56 @@ fn eth_keys_import() -> io::Result<()> {
             config_file_path.to_str().unwrap(),
             "keys",
             "eth",
-            "import",
+            "import-from-key",
             "mykey",
             "21c055b3ac244b34a3e7e7567558e0ee77e51ede5711088da4ec5c7654a6863c",
+        ])
+        .capture_stdout()
+        .run();
+    // Check that command executes without error.
+    cmd.wait().unwrap().expect_success();
+    assert!(key_file_path.exists());
+
+    Ok(())
+}
+
+/// Eth import from key test
+#[test]
+fn eth_keys_import_from_mnemonic() -> io::Result<()> {
+    let mut runner: Lazy<CmdRunner> = Lazy::new(|| CmdRunner::default());
+    let key_dir = TempDir::new("test_key")?;
+
+    let keystore_dir_path = key_dir.path().join("keystore");
+    let keystore_dir_string = keystore_dir_path
+        .clone()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::create_dir(keystore_dir_path.clone()).expect("could not create keystore dir");
+
+    let key_file_path = keystore_dir_path.join("mykey.pem");
+
+    let config = StewardConfig {
+        keys: KeysConfig {
+            delegate_key: "cellar".to_string(),
+        },
+        keystore: keystore_dir_string.clone(),
+        ..Default::default()
+    };
+
+    let config_file_path = key_dir.path().join("config.toml");
+    let config_string = toml::to_string(&config).expect("could not write config to TOML string");
+    fs::write(config_file_path.clone(), config_string).expect("could not write config file");
+
+    let cmd = runner
+        .args(&[
+            "-c",
+            config_file_path.to_str().unwrap(),
+            "keys",
+            "eth",
+            "import-from-mnemonic",
+            "mykey",
+            "movie tumble tape seven tool session relax youth pet situate bone leave ordinary oxygen silly picture thing fortune genuine attend clerk super seven cement",
         ])
         .capture_stdout()
         .run();
