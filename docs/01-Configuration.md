@@ -144,6 +144,17 @@ Multiplied by estimated gas fee per transaction. If your Ethereum transactions a
 gas_price_multiplier = 1.0
 ```
 
+#### `gas_multiplier`
+
+Type: float
+
+Multiplied by estimated gas limit per transaction. If your Ethereum transactions are failing due to insufficient gas, try increasing this value.
+
+```
+[ethereum]
+gas_multiplier = 1.0
+```
+
 #### `key_derivation_path`
 
 Type: string
@@ -243,7 +254,7 @@ Type: string
 
 The path to the trusted CA used to sign the Strategy Provider's client certificate
 
-> :warning: Please leave this value unset for now as it defaults to the Peggy JV CA internally
+> :warning: Please leave this value unset for now as it defaults to the Seven Seas CA internally
 
 ```
 [server]
@@ -305,6 +316,7 @@ denom = "usomm"
 [ethereum]
 blocks_to_search = 5000
 gas_price_multiplier = 1.0
+gas_multiplier = 1.1
 key_derivation_path = "m/44'/60'/0'/0/0"
 rpc = "http://localhost:8545"
 
