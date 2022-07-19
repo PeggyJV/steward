@@ -25,6 +25,9 @@ pub async fn get_gas_price() -> Result<U256, Error> {
     provider.get_gas_price().await.map_err(|r| r.into())
 }
 
+/// Checks that a cellar ID is a valid Ethereum address and that it is approved by governance. If it is not found in the
+/// approved cellar cache initially, we force a cache refresh and check again in case the cellar was approved on-chain
+/// since the last automatic refresh.
 pub async fn validate_cellar_id(cellar_id: &str) -> Result<(), Error> {
     if let Err(err) = cellar_id.parse::<H160>() {
         return Err(ErrorKind::SPCall
@@ -42,7 +45,7 @@ pub async fn validate_cellar_id(cellar_id: &str) -> Result<(), Error> {
         if !is_approved(cellar_id) {
             return Err(ErrorKind::UnapprovedCellar
                 .context(format!(
-                    "cellar address {} not approved by governance",
+                    "cellar ID {} is not approved by governance",
                     cellar_id
                 ))
                 .into());

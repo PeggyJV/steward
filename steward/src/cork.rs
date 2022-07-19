@@ -1,7 +1,10 @@
 use crate::{
     cellars::{self, aave_v2_stablecoin},
     config,
-    error::{Error, ErrorKind},
+    error::{
+        Error,
+        ErrorKind::{self, *},
+    },
     prelude::APP,
     somm_send,
 };
@@ -11,7 +14,7 @@ use abscissa_core::{
 };
 use deep_space::{Coin, Contact};
 use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
-use somm_proto::cork::{query_client::QueryClient as CorkQueryClient, Cork, QueryCellarIDsRequest};
+use somm_proto::cork::Cork;
 use std::time::Duration;
 use steward_proto::{
     self,
@@ -34,43 +37,17 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         request: Request<SubmitRequest>,
     ) -> Result<Response<SubmitResponse>, Status> {
         let request = request.get_ref().to_owned();
-
-        // Check if cellar is governance approved before building cork
-        let config = APP.config();
-        let mut client = match CorkQueryClient::connect(config.cosmos.grpc.clone()).await {
-            Ok(c) => c,
-            Err(err) => {
-                error!("cork query client connection failed: {}", err);
-                return Err(Status::new(
-                    Code::Internal,
-                    format!("failed to query chain to validate cellar id: {}", err),
-                ));
+        let cellar_id = request.cellar_id.clone();
+        if let Err(err) = cellars::validate_cellar_id(&cellar_id).await {
+            let message = format!("cellar ID validation failed: {}", err);
+            match err.kind() {
+                Cache => return Err(Status::new(Code::Internal, message)),
+                SPCall => return Err(Status::new(Code::InvalidArgument, message)),
+                UnapprovedCellar => return Err(Status::new(Code::InvalidArgument, message)),
+                _ => return Err(Status::new(Code::Unknown, message)),
             }
-        };
-
-        debug!("checking if cellar ID is approved");
-        let ids = &client
-            .query_cellar_i_ds(QueryCellarIDsRequest {})
-            .await?
-            .get_ref()
-            .cellar_ids
-            .clone();
-        if !ids.contains(&request.cellar_id) {
-            info!(
-                "rejecting request for unapproved cellar {}",
-                request.cellar_id
-            );
-            return Err(Status::new(
-                Code::PermissionDenied,
-                format!(
-                    "cellar ID {} not approved by governance",
-                    &request.cellar_id
-                ),
-            ));
         }
 
-        // Build and send cork
-        let cellar_id = request.cellar_id.clone();
         let cork = match build_cork(request).await {
             Ok(c) => c,
             Err(err) => {
@@ -96,8 +73,6 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
 // being requested before we get to the encoding step, so we pass the whole request into this method
 // and the get_encoded_call() methods so logging can happen there.
 async fn build_cork(request: SubmitRequest) -> Result<Cork, Error> {
-    cellars::validate_cellar_id(request.cellar_id.as_str()).await?;
-
     let address = request.cellar_id.clone();
     let encoded_call = get_encoded_call(request)?;
 
