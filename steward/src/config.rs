@@ -36,6 +36,7 @@ pub struct StewardConfig {
     pub ethereum: EthereumSection,
     pub gravity: GravitySection,
     pub keys: KeysConfig,
+    pub cork: CorkConfig,
     pub metrics: MetricsSection,
     pub server: ServerSection,
 }
@@ -83,6 +84,7 @@ impl Default for StewardConfig {
             ethereum: EthereumSection::default(),
             gravity: GravitySection::default(),
             keys: KeysConfig::default(),
+            cork: CorkConfig::default(),
             metrics: MetricsSection::default(),
             server: ServerSection::default(),
         }
@@ -125,6 +127,20 @@ impl Default for KeysConfig {
     }
 }
 
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CorkConfig {
+    pub cache_refresh_period: u64,
+}
+
+impl Default for CorkConfig {
+    fn default() -> Self {
+        Self {
+            cache_refresh_period: 60,
+        }
+    }
+}
+
+/// EthereumSection for ethereum rpc and derivation path
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default)]
 pub struct EthereumSection {

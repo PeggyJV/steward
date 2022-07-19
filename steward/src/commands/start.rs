@@ -2,7 +2,13 @@
 
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
-use crate::{application::APP, config::StewardConfig, cork::CorkHandler, prelude::*, server};
+use crate::{
+    application::APP,
+    config::StewardConfig,
+    cork::{cache::start_approved_cellar_cache_thread, CorkHandler},
+    prelude::*,
+    server,
+};
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
 use steward_proto::steward::contract_call_server::ContractCallServer;
@@ -20,6 +26,9 @@ impl Runnable for StartCmd {
         let config = APP.config();
         info!("Starting application");
         abscissa_tokio::run(&APP, async {
+            // currently allows the thread to detach since we aren't capturing the JoinHandle
+            start_approved_cellar_cache_thread().await;
+
             // Reflection required for certain clients to function... such as grpcurl
             let contents = server::DESCRIPTOR.to_vec();
             let proto_descriptor_service = tonic_reflection::server::Builder::configure()

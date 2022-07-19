@@ -31,7 +31,7 @@ pub fn bytes_to_hex_str(bytes: &[u8]) -> String {
 pub fn string_to_u256(value: String) -> Result<U256, Error> {
     match U256::from_dec_str(value.as_str()) {
         Ok(v) => Ok(v),
-        Err(_) => Err(ErrorKind::SPCallError
+        Err(_) => Err(ErrorKind::SPCall
             .context(format!("failed to parse amount {} to U256", value))
             .into()),
     }
@@ -86,5 +86,5 @@ pub async fn get_eth_provider() -> Result<Provider<Http>, Error> {
 }
 
 pub fn sp_call_error(message: String) -> Error {
-    ErrorKind::SPCallError.context(message).into()
+    ErrorKind::SPCall.context(message).into()
 }
