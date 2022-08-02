@@ -770,11 +770,7 @@ type AaveV2Stablecoin_SetLiquidityLimit struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-<<<<<<< HEAD:steward_proto_go/steward_proto/aave_v2_stablecoin.pb.go
-	// The maximum allowed liquidity amount. Must be parsable as an unsigned 256-bit integer.
-=======
 	// Amount of assets to set as the new limit
->>>>>>> main:integration_tests/aave_v2_stablecoin.pb.go
 	Limit string `protobuf:"bytes,1,opt,name=limit,proto3" json:"limit,omitempty"`
 }
 
