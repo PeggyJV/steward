@@ -315,7 +315,7 @@ fn eth_keys_import_from_key() -> io::Result<()> {
             "eth",
             "import-from-key",
             "mykey",
-            "21c055b3ac244b34a3e7e7567558e0ee77e51ede5711088da4ec5c7654a6863c",
+            "0x21c055b3ac244b34a3e7e7567558e0ee77e51ede5711088da4ec5c7654a6863c",
         ])
         .capture_stdout()
         .run();

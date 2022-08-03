@@ -7,7 +7,7 @@ use std::path;
 
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Import an external Eth key via private key.\n This command will recover a Eth key, storing it in the keystore. \n It takes a keyname and private key."
+    long_about = "DESCRIPTION \n\n Import an external Eth key via private key.\n This command will recover a Eth key, storing it in the keystore. \n It takes a keyname and private key. The Ethereum private key should be in the 0x0000 format"
 )]
 
 pub struct ImportFromKeyCmd {
@@ -18,7 +18,7 @@ pub struct ImportFromKeyCmd {
     #[clap(short, long)]
     pub overwrite: bool,
 
-    /// private-key optional. When absent you'll be prompted to enter it.
+    /// private-key optional, it should be in the 0x0000 format. When absent you'll be prompted to enter it. 
     pub key: Option<String>,
 }
 
@@ -32,7 +32,7 @@ impl Runnable for ImportFromKeyCmd {
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
 
         let name = self.name.parse().expect("Could not parse name");
-        if let Ok(_info) = keystore.info(&name) {
+        if let Ok(_) = keystore.info(&name) {
             if !self.overwrite {
                 eprintln!("Key already exists, exiting.");
                 return;

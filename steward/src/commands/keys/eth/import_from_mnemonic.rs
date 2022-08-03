@@ -1,6 +1,6 @@
 use super::show::ShowKeyCmd;
 use crate::application::APP;
-use abscissa_core::{clap::Parser, Application, Command, Runnable};
+use abscissa_core::{clap::Parser, Application, Command, Runnable, prelude::error};
 use k256::pkcs8::ToPrivateKey;
 use signatory::FsKeyStore;
 use std::path;
@@ -57,6 +57,8 @@ impl Runnable for ImportFromMnemonicCmd {
                 .to_pkcs8_der()
                 .expect("Could not PKCS8 encod private key");
             keystore.store(&name, &key).expect("Could not store key");
+        } else {
+            error!("can't retrieve mnemonic");
         }
 
         let name = name.to_string();
