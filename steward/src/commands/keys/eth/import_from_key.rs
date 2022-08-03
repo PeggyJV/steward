@@ -18,7 +18,7 @@ pub struct ImportFromKeyCmd {
     #[clap(short, long)]
     pub overwrite: bool,
 
-    /// private-key optional, it should be in the 0x0000 format. When absent you'll be prompted to enter it. 
+    /// private-key optional, it should be in the 0x0000 format. When absent you'll be prompted to enter it.
     pub key: Option<String>,
 }
 
@@ -32,11 +32,9 @@ impl Runnable for ImportFromKeyCmd {
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
 
         let name = self.name.parse().expect("Could not parse name");
-        if let Ok(_) = keystore.info(&name) {
-            if !self.overwrite {
-                eprintln!("Key already exists, exiting.");
-                return;
-            }
+        if keystore.info(&name).is_ok() && !self.overwrite {
+            eprintln!("Key already exists, exiting.");
+            return;
         }
 
         let private_key = match self.key.clone() {

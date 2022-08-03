@@ -1,6 +1,6 @@
 use super::show::ShowKeyCmd;
 use crate::application::APP;
-use abscissa_core::{clap::Parser, Application, Command, Runnable, prelude::error};
+use abscissa_core::{clap::Parser, prelude::error, Application, Command, Runnable};
 use k256::pkcs8::ToPrivateKey;
 use signatory::FsKeyStore;
 use std::path;
