@@ -1,9 +1,9 @@
+mod fees_distributor;
 mod initiate_shutdown;
 mod lift_shutdown;
-mod fees_distributor;
 mod sweep;
-mod trust;
 mod transfer_ownership;
+mod trust;
 
 use abscissa_core::{clap::Parser, Command, Runnable};
 

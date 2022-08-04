@@ -1,4 +1,4 @@
-use crate::{application::APP, prelude::*, utils::submit_schedule_cork};
+use crate::{application::APP, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::abi::AbiEncode;
 use ethers::types::*;
@@ -40,12 +40,12 @@ impl Runnable for TrustCmd {
 
             let encoded_call = AaveV2StablecoinCellarCalls::SetTrust(call).encode();
 
-            let cork = Cork {
-                encoded_contract_call: encoded_call,
-                target_contract_address: self.contract.clone(),
-            };
+            cellars::validate_cellar_id(self.contract.as_str()).unwrap_or_else(|err| {
+                status_err!("Can't validate contract address format: {}", err);
+                std::process::exit(1);
+            });
 
-            submit_schedule_cork(cork, self.height)
+            cork::schedule_cork(self.contract.clone(), encoded_call, self.height)
                 .await
                 .unwrap_or_else(|err| {
                     status_err!("executor exited with error: {}", err);
