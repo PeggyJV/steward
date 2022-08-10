@@ -1,4 +1,4 @@
-use crate::{application::APP, prelude::*, cellars, cork};
+use crate::{application::APP, cellars, cork, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::abi::AbiEncode;
 use ethers::types::*;
