@@ -1,8 +1,7 @@
-use crate::{application::APP, prelude::*};
+use crate::{application::APP, prelude::*, cellars, cork};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::abi::AbiEncode;
 use ethers::types::*;
-use somm_proto::cork::Cork;
 use steward_abi::aave_v2_stablecoin::*;
 
 /// Sweep subcommand
