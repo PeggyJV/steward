@@ -51,6 +51,9 @@ pub enum ErrorKind {
     /// Client error
     #[error("client error")]
     ClientError,
+    /// Certificate parse error
+    #[error("cert parsing error")]
+    CertfificateParsingError,
 }
 
 impl ErrorKind {

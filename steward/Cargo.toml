@@ -32,6 +32,7 @@ rand_core = { version = "0.6", features = ["std"] }
 rand = "0.8.0"
 regex = "1.5.4"
 rpassword = "5"
+rustls = "0.19.0"
 serde = { version = "1", features = ["serde_derive"] }
 serde_json = "1.0.64"
 sha2 = "0.9"
@@ -40,7 +41,7 @@ somm_proto = { git = "https://github.com/PeggyJV/sommelier" }
 steward_abi = { path = "../steward_abi" }
 steward_proto = { path = "../steward_proto" }
 thiserror = "1"
-tokio ={ version = "1", features = ["macros", "fs"] }
+tokio = { version = "1", features = ["macros", "fs"] }
 toml = { version = "0.5" }
 tonic = { version = "0.4.3", features = ["codegen", "tls", "transport"] }
 tonic-reflection = "0.1.0"
