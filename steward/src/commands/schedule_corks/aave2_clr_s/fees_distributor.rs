@@ -7,7 +7,7 @@ use steward_abi::aave_v2_stablecoin::*;
 /// Fees Distributor subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Set fees distributor of target Cellar.\n This command will set the fees distributor of a Cellar to a Cosmos address that the contract will bridge funds to. This is a validator only command and can only be run by validators. It sets the fees distributor of a Cellar based on the height specified by \n the validators. Therefore, it'll execute the function when the chain reaches that height. This command also takes the fee distributor's address"
+    long_about = "DESCRIPTION \n\n Set fees distributor Cosmos address of target cellar when chain reaches specified height"
 )]
 pub struct FeesDistributorCmd {
     #[clap(short = 'n', long)]

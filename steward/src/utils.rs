@@ -1,25 +1,17 @@
 use crate::{
     application::APP,
-    config,
     error::{Error, ErrorKind},
-    prelude::*,
-    somm_send,
 };
 use abscissa_core::Application;
 use deep_space::error::CosmosGrpcError;
-use deep_space::{Coin, Contact};
 use ethers::prelude::{types::Address as EthAddress, *};
 use gravity_bridge::{
-    gravity_proto::{
-        cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse,
-        gravity::{
-            query_client::QueryClient, DelegateKeysByOrchestratorRequest,
-            DelegateKeysByOrchestratorResponse,
-        },
+    gravity_proto::gravity::{
+        query_client::QueryClient, DelegateKeysByOrchestratorRequest,
+        DelegateKeysByOrchestratorResponse,
     },
     gravity_utils::ethereum::downcast_to_u64,
 };
-use somm_proto::cork::Cork;
 use std::{convert::TryFrom, time::Duration};
 use tonic::transport::Channel;
 
@@ -97,32 +89,4 @@ pub async fn get_eth_provider() -> Result<Provider<Http>, Error> {
 
 pub fn sp_call_error(message: String) -> Error {
     ErrorKind::SPCallError.context(message).into()
-}
-
-pub async fn submit_schedule_cork(cork: Cork, height: u64) -> Result<TxResponse, CosmosGrpcError> {
-    let config = APP.config();
-
-    // Establish grpc connections
-    debug!("establishing grpc connection");
-    let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX).unwrap();
-
-    // Get cosmos fees
-    debug!("getting cosmos fee");
-    let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
-
-    let fee = Coin {
-        amount: (cosmos_gas_price.0 as u64).into(),
-        denom: cosmos_gas_price.1,
-    };
-
-    // send scheduled cork
-    somm_send::schedule_cork(
-        &contact,
-        cork,
-        config::DELEGATE_ADDRESS.to_string(),
-        &config::DELEGATE_KEY,
-        fee,
-        height,
-    )
-    .await
 }

@@ -7,7 +7,7 @@ use steward_abi::aave_v2_stablecoin::*;
 /// Transfer Ownership subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Transfer ownership to new owner.\n This command schedules transfer of ownership of a Cellar to a new owner. This is a validator only command and can only be run by validators. It Schedules transfer ownership based on the height specified by the validators. Therefore, it'll execute the function when the chain reaches that height. This command also takes the new owner flag."
+    long_about = "DESCRIPTION \n\n Transfer ownership to new owner when chain reaches specified height"
 )]
 
 pub struct TransferOwnershipCmd {

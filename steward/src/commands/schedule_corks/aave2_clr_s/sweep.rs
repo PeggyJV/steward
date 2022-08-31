@@ -7,7 +7,7 @@ use steward_abi::aave_v2_stablecoin::*;
 /// Sweep subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Sweep token from target Cellar.\n This command sweep tokens sent here that are not managed by the Cellar. This is useful in case the wrong tokens are accidentally sent to this contract. This is a validator only command and can only be run by validators. It Schedules sweep based on the height specified by the validators. Therefore, it'll execute the function when the chain reaches that height. This command also takes the token address and the address to sweep token into."
+    long_about = "DESCRIPTION \n\n Schedule sweep Cosmos address of target cellar when chain reaches specified height"
 )]
 
 pub struct SweepCmd {
