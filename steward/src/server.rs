@@ -4,7 +4,8 @@ use crate::{
     config::StewardConfig,
     error::{Error, ErrorKind},
 };
-use tonic::transport::{Certificate, Identity, ServerTlsConfig};
+use rustls::internal::pemfile;
+use tonic::transport::{Certificate, ServerTlsConfig};
 
 pub const DEFAULT_CLIENT_CA: &[u8] = include_bytes!("../../tls/sevenseas_ca.crt");
 // for gRPC reflection
@@ -18,11 +19,6 @@ pub struct ServerConfig {
 pub async fn load_server_config(
     config: &std::sync::Arc<StewardConfig>,
 ) -> Result<ServerConfig, Error> {
-    // server identity
-    let cert = tokio::fs::read(&config.server.server_cert_path).await?;
-    let key = tokio::fs::read(&config.server.server_key_path).await?;
-    let server_identity = Identity::from_pem(cert, key);
-
     // client authentication
     let client_ca = match &config.server.client_ca_cert_path {
         Some(path) => tokio::fs::read(path).await?,
@@ -40,11 +36,31 @@ pub async fn load_server_config(
             .into());
     }
     let client_auth = rustls::AllowAnyAuthenticatedClient::new(client_root_cert_store);
+    let mut server_config = rustls::ServerConfig::new(client_auth);
+
+    // server identity. code taken and modified from tonic::transport::server::tls module internals
+    let cert = tokio::fs::read(&config.server.server_cert_path).await?;
+    let key = tokio::fs::read(&config.server.server_key_path).await?;
+    let cert = {
+        let mut cert = std::io::Cursor::new(cert);
+        match pemfile::certs(&mut cert) {
+            Ok(certs) => certs,
+            Err(_) => return Err(ErrorKind::CertfificateParsingError.context(format!("failed to parse server cert")).into())
+        }
+    };
+    let key = {
+        let mut key = std::io::Cursor::new(key);
+        match pemfile::pkcs8_private_keys(&mut key) {
+            Ok(k) => k,
+            Err(_) => return Err(ErrorKind::CertfificateParsingError.context(format!("failed to parse server private key as pkcs8")).into())
+        }
+        .remove(0)
+    };
+    server_config.set_single_cert(cert, key).unwrap();
+    server_config.set_protocols(&[Vec::from(&"h2"[..])]);
 
     // steward server config
-    let server_config = rustls::ServerConfig::new(client_auth);
     let tls_config = ServerTlsConfig::new()
-        .identity(server_identity.clone())
         .rustls_server_config(server_config)
         .to_owned();
     let port = &config.server.port;
