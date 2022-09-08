@@ -267,8 +267,8 @@ pub struct PushPosition {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RemovePosition {
     /// Index at which to remove the position
-    #[prost(string, tag = "1")]
-    pub index: ::prost::alloc::string::String,
+    #[prost(uint64, tag = "1")]
+    pub index: u64,
 }
 ///
 /// Replace a position at a given index with a new position.
@@ -277,8 +277,8 @@ pub struct RemovePosition {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ReplacePosition {
     /// Index of the position to replace
-    #[prost(string, tag = "1")]
-    pub index: ::prost::alloc::string::String,
+    #[prost(uint64, tag = "1")]
+    pub index: u64,
     /// Address of the new position
     #[prost(string, tag = "2")]
     pub new_position: ::prost::alloc::string::String,

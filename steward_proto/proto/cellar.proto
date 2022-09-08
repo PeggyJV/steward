@@ -79,7 +79,7 @@ message PushPosition {
 */
 message RemovePosition {
     // Index at which to remove the position
-    string index = 1;
+    uint64 index = 1;
 }
 
 /*
@@ -89,7 +89,7 @@ message RemovePosition {
 */
 message ReplacePosition {
     // Index of the position to replace
-    string index = 1;
+    uint64 index = 1;
     // Address of the new position
     string new_position = 2;
 }
