@@ -5,6 +5,7 @@ use std::result::Result;
 use crate::error::{Error, ErrorKind};
 
 pub(crate) mod aave_v2_stablecoin;
+pub(crate) mod cellar;
 
 pub fn validate_cellar_id(cellar_id: &str) -> Result<(), Error> {
     if let Err(err) = cellar_id.parse::<H160>() {
