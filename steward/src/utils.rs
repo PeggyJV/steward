@@ -92,6 +92,6 @@ pub fn sp_call_error(message: String) -> Error {
 pub fn sp_call_parse_address(address: String) -> Result<H160, Error> {
     match address.parse::<H160>() {
         Ok(addr) => Ok(addr),
-        Err(err) => return Err(sp_call_error(err.to_string())),
+        Err(err) => Err(sp_call_error(err.to_string())),
     }
 }

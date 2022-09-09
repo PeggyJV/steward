@@ -85,7 +85,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
             let swap_params = encode_swap_params(
                 params
                     .params
-                    .ok_or(ErrorKind::SPCallError.context("swap params cannot be empty"))?,
+                    .ok_or_else(|| ErrorKind::SPCallError.context("swap params cannot be empty"))?,
             )?;
             let call = RebalanceCall {
                 from_position: sp_call_parse_address(params.from_position)?,
@@ -134,7 +134,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
 }
 
 fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
-    match params.params.ok_or(sp_call_error(
+    match params.params.ok_or_else(|| sp_call_error(
         "swap params cannot be unspecified".to_string(),
     ))? {
         Univ2Params(p) => {

@@ -123,7 +123,7 @@ fn get_encoded_call(request: SubmitRequest) -> Result<Vec<u8>, Error> {
             }
 
             cellar::get_encoded_call(call.function.unwrap(), request.cellar_id)
-        },
+        }
     }
 }
 
