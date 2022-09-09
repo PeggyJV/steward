@@ -1,34 +1,43 @@
 use crate::{application::APP, cellars, cork, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::abi::AbiEncode;
+use ethers::types::*;
 use steward_abi::aave_v2_stablecoin::*;
 
-/// Shutdown subcommand
+/// Sweep subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Initiate shutdown of target cellar when chain reaches specified height"
+    long_about = "DESCRIPTION \n\n Schedule sweep Cosmos address of target cellar when chain reaches specified height"
 )]
-pub struct InitiateShutdownCmd {
+
+pub struct SweepCmd {
+    /// Token address to transfer out of Cellar.
+    #[clap(short = 't', long)]
+    token: H160,
+
+    /// Address to sweep token into
+    #[clap(short = 'd', long)]
+    destination_address: H160,
+
     /// Target contract for scheduled cork.
-    #[clap(short, long)]
+    #[clap(short = 'c', long)]
     contract: String,
 
     /// Block height to schedule cork.
     #[clap(short = 'b', long)]
     height: u64,
-
-    /// Set to true if you want to exit current position.
-    #[clap(short = 'e', long)]
-    empty_position: bool,
 }
 
-impl Runnable for InitiateShutdownCmd {
+impl Runnable for SweepCmd {
     fn run(&self) {
         abscissa_tokio::run_with_actix(&APP, async {
-            let call = InitiateShutdownCall {
-                empty_position: self.empty_position,
+            // Encoded call for sweep
+            let call = SweepCall {
+                token: self.token,
+                to: self.destination_address,
             };
-            let encoded_call = AaveV2StablecoinCellarCalls::InitiateShutdown(call).encode();
+
+            let encoded_call = AaveV2StablecoinCellarCalls::Sweep(call).encode();
 
             cellars::validate_cellar_id(self.contract.as_str()).unwrap_or_else(|err| {
                 status_err!("Can't validate contract address format: {}", err);

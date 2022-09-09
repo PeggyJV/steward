@@ -1,6 +1,6 @@
 use crate::{
+    application::APP,
     error::{Error, ErrorKind},
-    prelude::APP,
 };
 use abscissa_core::Application;
 use deep_space::error::CosmosGrpcError;
