@@ -183,6 +183,238 @@ pub mod aave_v2_stablecoin {
     }
 }
 ///
+/// Represents a function call to a cellar that implements Cellar.sol
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Cellar {
+    /// The function you wish to execute on the target cellar
+    #[prost(oneof = "cellar::Function", tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10")]
+    pub function: ::core::option::Option<cellar::Function>,
+}
+/// Nested message and enum types in `Cellar`.
+pub mod cellar {
+    /// The function you wish to execute on the target cellar
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `addPosition(uint256 index, address position)`
+        #[prost(message, tag = "1")]
+        AddPosition(super::AddPosition),
+        /// Represents function `popPosition()`
+        #[prost(message, tag = "2")]
+        PopPosition(super::PopPosition),
+        /// Represents function `pushPosition(address position)`
+        #[prost(message, tag = "3")]
+        PushPosition(super::PushPosition),
+        /// Represents function `removePosition(uint256 index)`
+        #[prost(message, tag = "4")]
+        RemovePosition(super::RemovePosition),
+        /// Represents function `replacePosition(uint256, address newPosition)`
+        #[prost(message, tag = "5")]
+        ReplacePosition(super::ReplacePosition),
+        /// Represents function `setHoldingPosition(address newHoldingPosition)`
+        #[prost(message, tag = "6")]
+        SetHoldingPosition(super::SetHoldingPosition),
+        ///
+        /// Represents function `rebalance(address fromPosition, address toPosition,
+        ///uint256 assetsFrom, SwapRouter.Exchange exchange, bytes calldata params)`
+        #[prost(message, tag = "7")]
+        Rebalance(super::Rebalance),
+        /// Represents function `setStrategistPayoutAddress(address payout)`
+        #[prost(message, tag = "8")]
+        SetStrategistPayoutAddress(super::SetStrategistPayoutAddress),
+        /// Represents function `setWithdrawType(WithdrawType newWithdrawType)`
+        #[prost(message, tag = "9")]
+        SetWithdrawType(super::SetWithdrawType),
+        /// Represents function `swapPositions(uint256 index1, uint256 index2)`
+        #[prost(message, tag = "10")]
+        SwapPositions(super::SwapPositions),
+    }
+}
+///
+/// Insert a trusted position to the list of positions used by the cellar at a given index.
+///
+/// Represents function `addPosition(uint256 index, address position)`
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct AddPosition {
+    /// Index at which to add the position
+    #[prost(uint64, tag = "1")]
+    pub index: u64,
+    /// Address of the position to add
+    #[prost(string, tag = "2")]
+    pub position: ::prost::alloc::string::String,
+}
+///
+/// Remove the last position in the list of positions used by the cellar.
+///
+/// Represents function `popPosition()`
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct PopPosition {}
+///
+/// Push a trusted position to the end of the list of positions used by the cellar. If you
+///know you are going to add a position to the end of the array, this is more efficient then
+///`addPosition`.
+///
+/// Represents function `pushPosition(address position)`
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct PushPosition {
+    /// Address of the position to push
+    #[prost(string, tag = "1")]
+    pub position: ::prost::alloc::string::String,
+}
+///
+/// Remove the position at a given index from the list of positions used by the cellar.
+///
+/// Represents function `removePosition(uint256 index)`
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct RemovePosition {
+    /// Index at which to remove the position
+    #[prost(uint64, tag = "1")]
+    pub index: u64,
+}
+///
+/// Replace a position at a given index with a new position.
+///
+/// Represents function `replacePosition(uint256 index, address newPosition)`
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ReplacePosition {
+    /// Index of the position to replace
+    #[prost(uint64, tag = "1")]
+    pub index: u64,
+    /// Address of the new position
+    #[prost(string, tag = "2")]
+    pub new_position: ::prost::alloc::string::String,
+}
+///
+/// Set the holding position used by the cellar.
+///
+/// Represents function `setHoldingPosition(address newHoldingPosition)`
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SetHoldingPosition {
+    /// Address of the new holding position to use
+    #[prost(string, tag = "1")]
+    pub new_holding_position: ::prost::alloc::string::String,
+}
+///
+/// Represents swap parameters for UniswapV2
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UniV2SwapParams {
+    /// Array of addresses dictating what swap path to follow
+    #[prost(string, repeated, tag = "1")]
+    pub path: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    /// Amount of the first asset in the path to swap
+    #[prost(string, tag = "2")]
+    pub amount: ::prost::alloc::string::String,
+    /// The minimum amount of the last asset in the path to receive
+    #[prost(string, tag = "3")]
+    pub amount_out_min: ::prost::alloc::string::String,
+}
+///
+/// Represents swap parameters for UniswapV3
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UniV3SwapParams {
+    /// Array of addresses dictating what swap path to follow
+    #[prost(string, repeated, tag = "1")]
+    pub path: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    /// Array of pool fees dictating what swap pools to use
+    #[prost(uint32, repeated, tag = "2")]
+    pub pool_fees: ::prost::alloc::vec::Vec<u32>,
+    /// Amount of the first asset in the path to swap
+    #[prost(string, tag = "3")]
+    pub amount: ::prost::alloc::string::String,
+    /// The minimum amount of the last asset in the path to receive
+    #[prost(string, tag = "4")]
+    pub amount_out_min: ::prost::alloc::string::String,
+}
+///
+/// Represents swap parameters for an exchange
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SwapParams {
+    #[prost(oneof = "swap_params::Params", tags = "1, 2")]
+    pub params: ::core::option::Option<swap_params::Params>,
+}
+/// Nested message and enum types in `SwapParams`.
+pub mod swap_params {
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Params {
+        /// Params for a Uniswap V2 swap
+        #[prost(message, tag = "1")]
+        Univ2Params(super::UniV2SwapParams),
+        /// Params for a Uniswap V3 swap
+        #[prost(message, tag = "2")]
+        Univ3Params(super::UniV3SwapParams),
+    }
+}
+///
+/// Move assets between positions. To move assets from/to this cellar's holdings, specify
+///the address of this cellar as the `fromPosition`/`toPosition`.
+///
+/// Represents function `rebalance(address fromPosition, address toPosition,
+///  uint256 assetsFrom, SwapRouter.Exchange exchange, bytes calldata params)
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Rebalance {
+    #[prost(string, tag = "1")]
+    pub from_position: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub to_position: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub assets_from: ::prost::alloc::string::String,
+    #[prost(enumeration = "Exchange", tag = "4")]
+    pub exchange: i32,
+    #[prost(message, optional, tag = "5")]
+    pub params: ::core::option::Option<SwapParams>,
+}
+///
+/// Sets the Strategists payout address.
+///
+/// Represents function `setStrategistPayoutAddress(address payout)`
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SetStrategistPayoutAddress {
+    #[prost(string, tag = "1")]
+    pub payout: ::prost::alloc::string::String,
+}
+///
+/// Set the withdraw type used by the cellar.
+///
+/// Represents function `setWithdrawType(WithdrawType newWithdrawType)`
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SetWithdrawType {
+    /// The withdraw type to use for the cellar
+    #[prost(enumeration = "WithdrawType", tag = "1")]
+    pub new_withdraw_type: i32,
+}
+///
+/// Swap the positions at two given indeces.
+///
+/// Represents function `swapPositions(uint256 index1, uint256 index2)`
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SwapPositions {
+    /// Index of the first position
+    #[prost(uint64, tag = "1")]
+    pub index_1: u64,
+    /// Index of the second position
+    #[prost(uint64, tag = "2")]
+    pub index_2: u64,
+}
+///
+/// Exchange selector
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum Exchange {
+    Unspecified = 0,
+    /// Represents Uniswap V2
+    Univ2 = 1,
+    /// Represents Uniswap V3
+    Univ3 = 2,
+}
+///
+/// Represents the withdraw type to use for the cellar
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum WithdrawType {
+    Unspecified = 0,
+    Orderly = 1,
+    Proportional = 2,
+}
+///
 /// Represents a single function call on a particular Cellar
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SubmitRequest {
@@ -190,7 +422,7 @@ pub struct SubmitRequest {
     #[prost(string, tag = "1")]
     pub cellar_id: ::prost::alloc::string::String,
     /// The data from which the desired contract function will be encoded
-    #[prost(oneof = "submit_request::CallData", tags = "2")]
+    #[prost(oneof = "submit_request::CallData", tags = "2, 3")]
     pub call_data: ::core::option::Option<submit_request::CallData>,
 }
 /// Nested message and enum types in `SubmitRequest`.
@@ -200,6 +432,8 @@ pub mod submit_request {
     pub enum CallData {
         #[prost(message, tag = "2")]
         AaveV2Stablecoin(super::AaveV2Stablecoin),
+        #[prost(message, tag = "3")]
+        Cellar(super::Cellar),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
