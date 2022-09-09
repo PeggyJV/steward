@@ -19,6 +19,7 @@ impl Runnable for DeleteCosmosKeyCmd {
         let keystore = Path::new(&config.keystore);
         let keystore = signatory::FsKeyStore::create_or_open(keystore).unwrap();
         let name = self.name.parse().expect("Could not parse name");
-        let _delete_key = FsKeyStore::delete(&keystore, &name).unwrap();
+
+        FsKeyStore::delete(&keystore, &name).unwrap();
     }
 }

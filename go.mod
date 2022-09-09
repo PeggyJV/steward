@@ -9,15 +9,18 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/miguelmota/go-ethereum-hdwallet v0.1.1
 	github.com/ory/dockertest/v3 v3.8.1
-	github.com/peggyjv/gravity-bridge/module/v2 v2.0.0-20220418171956-7fb1ba7ebc76 // indirect
-	github.com/peggyjv/sommelier/v4 v4.0.0-20220418171902-38ebef682f79 // indirect
+	github.com/peggyjv/gravity-bridge/module/v2 v2.0.1
+	github.com/peggyjv/sommelier/v4 v4.0.1
+	github.com/peggyjv/steward/steward_proto_go/steward_proto v0.0.0-00010101000000-000000000000
 	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
 	github.com/tendermint/tendermint v0.34.14
-	google.golang.org/grpc v1.42.0
+	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0
 )
 
 replace google.golang.org/grpc => google.golang.org/grpc v1.33.2
 
 replace github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
+
+replace github.com/peggyjv/steward/steward_proto_go/steward_proto => ./steward_proto_go/steward_proto

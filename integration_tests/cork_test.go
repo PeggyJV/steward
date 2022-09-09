@@ -17,6 +17,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	gravityTypes "github.com/peggyjv/gravity-bridge/module/v2/x/gravity/types"
 	corkTypes "github.com/peggyjv/sommelier/v4/x/cork/types"
+	"github.com/peggyjv/steward/steward_proto_go/steward_proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
@@ -110,11 +111,11 @@ func (s *IntegrationTestSuite) TestCork() {
 				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 				defer cancel()
 
-				c := NewContractCallClient(conn)
+				c := steward_proto.NewContractCallClient(conn)
 				s.T().Logf("sending request to %s", s.chain.validators[i].keyInfo.GetAddress())
 				cellarId := hardhatCellar.String()
 				route := []string{dai, pool, usdc, zeroAddr, zeroAddr, zeroAddr, zeroAddr, zeroAddr, zeroAddr}
-				swapParams := []*AaveV2Stablecoin_Rebalance_SwapParams{
+				swapParams := []*steward_proto.AaveV2Stablecoin_Rebalance_SwapParams{
 					{InIndex: 0, OutIndex: 2, SwapType: 1},
 					{InIndex: 0, OutIndex: 0, SwapType: 0},
 					{InIndex: 0, OutIndex: 0, SwapType: 0},
@@ -122,12 +123,12 @@ func (s *IntegrationTestSuite) TestCork() {
 				}
 				// 1*10^18
 				minAssetsOut := "1000000000000000000"
-				request := SubmitRequest{
+				request := steward_proto.SubmitRequest{
 					CellarId: cellarId,
-					CallData: &SubmitRequest_AaveV2Stablecoin{
-						&AaveV2Stablecoin{
-							Function: &AaveV2Stablecoin_Rebalance_{
-								&AaveV2Stablecoin_Rebalance{
+					CallData: &steward_proto.SubmitRequest_AaveV2Stablecoin{
+						AaveV2Stablecoin: &steward_proto.AaveV2Stablecoin{
+							Function: &steward_proto.AaveV2Stablecoin_Rebalance_{
+								Rebalance: &steward_proto.AaveV2Stablecoin_Rebalance{
 									Route:        route,
 									SwapParams:   swapParams,
 									MinAssetsOut: minAssetsOut,
