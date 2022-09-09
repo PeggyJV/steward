@@ -88,3 +88,10 @@ pub async fn get_eth_provider() -> Result<Provider<Http>, Error> {
 pub fn sp_call_error(message: String) -> Error {
     ErrorKind::SPCallError.context(message).into()
 }
+
+pub fn sp_call_parse_address(address: String) -> Result<H160, Error> {
+    match address.parse::<H160>() {
+        Ok(addr) => Ok(addr),
+        Err(err) => return Err(sp_call_error(err.to_string())),
+    }
+}
