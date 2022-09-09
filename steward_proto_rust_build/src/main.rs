@@ -15,7 +15,7 @@ use walkdir::WalkDir;
 /// A temporary directory for proto building
 const TMP_PATH: &str = "/tmp/steward/";
 /// the output directory
-const OUT_PATH: &str = "../steward_proto/src/prost/";
+const OUT_PATH: &str = "../steward_proto_rust/src/prost/";
 
 // All paths must end with a / and either be absolute or include a ./ to reference the current
 // working directory.
@@ -25,7 +25,7 @@ fn main() {
     let tmp_dir = Path::new(&TMP_PATH);
 
     println!(
-        "[info] Compiling .proto files to Rust into '{}'...",
+        "Compiling .proto files to Rust into '{}'...",
         out_dir.display()
     );
 
@@ -35,7 +35,7 @@ fn main() {
     let root = root.parent().unwrap().to_path_buf();
 
     let mut steward_proto_dir = root;
-    steward_proto_dir.push("steward_proto/proto/");
+    steward_proto_dir.push("proto/");
     let steward_proto_dir = [steward_proto_dir];
 
     // List available proto files
@@ -65,7 +65,7 @@ fn main() {
     config.compile_protos(&protos, &steward_proto_dir).unwrap();
 
     // Compile all proto client for GRPC services
-    println!("[info ] Compiling proto clients for GRPC services!");
+    println!("Compiling proto clients for GRPC services...");
     tonic_build::configure()
         .build_client(true)
         .build_server(true)
@@ -76,7 +76,7 @@ fn main() {
         .unwrap();
 
     copy_generated_files(tmp_dir, out_dir);
-    println!("[info ] => Done!");
+    println!("Done!");
 }
 
 fn copy_generated_files(from_dir: &Path, to_dir: &Path) {
