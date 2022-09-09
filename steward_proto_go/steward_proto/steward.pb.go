@@ -10,7 +10,7 @@
 // 	protoc        v3.19.4
 // source: steward.proto
 
-package integration_tests
+package steward_proto
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
