@@ -63,18 +63,22 @@ jobs:
         with:
           command: fmt
           args: --all -- --check
-  clippy:
-    name: Clippy
+          
+  cargo-clippy:
     runs-on: ubuntu-latest
-    steps:  
+    steps:
       - name: Checkout branch
         uses: actions/checkout@v2
+      - name: Set up Rust caches
+        uses: actions/cache@v2
+        id: rust-cache
         with:
-          profile: minimal
-          toolchain: stable
-          override: true
-      - run: rustup component add clippy
-      - uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: -- -D warnings
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+      - name: Run Cargo build
+        run: cargo clippy
