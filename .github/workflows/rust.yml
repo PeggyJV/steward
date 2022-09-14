@@ -73,11 +73,11 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-          paths-ignore: |
-            steward_abi/**
-            steward_proto_rust/**
       - run: rustup component add clippy
       - uses: actions-rs/cargo@v1
         with:
+          paths-ignore: |
+            steward_abi/**
+            steward_proto_rust/**
           command: clippy
           args: -- -D warnings
