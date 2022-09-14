@@ -78,6 +78,6 @@ jobs:
         with:
           paths-ignore: |
             steward_abi/**
-            steward_proto_rust/**
+            steward_proto_rust/
           command: clippy
           args: -- -D warnings
