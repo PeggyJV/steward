@@ -2,11 +2,11 @@ name: Rust tests
 
 on:
   push:
-    paths-ignore:
-      - 'docs/**'
     branches:
       - main
   pull_request:
+    paths-ignore:
+      - steward_proto_rust_build/**
 
 env:
   CARGO_TERM_COLOR: always
@@ -71,12 +71,15 @@ jobs:
     steps:
       - name: Checkout branch
         uses: actions/checkout@v2
-      - name: Set up Rust caches
-        uses: actions/cache@v2
-        id: rust-cache
         with:
-          path: |
-            !steward_proto_rust/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
-      - name: Run Cargo build
-        run: cargo clippy -- -D warnings
+          profile: minimal
+          toolchain: stable
+          override: true
+      - run: rustup component add clippy
+      - uses: actions-rs/cargo@v1
+        with:
+          paths-ignore: |
+            steward_abi/**
+            steward_proto_rust/src/prost/steward.v2.rs
+          command: clippy
+          args: -- -D warnings
