@@ -5,8 +5,7 @@ on:
     branches:
       - main
   pull_request:
-    paths-ignore:
-      - steward_proto_rust_build/**
+    
 
 env:
   CARGO_TERM_COLOR: always
@@ -74,6 +73,8 @@ jobs:
         uses: actions/cache@v2
         id: rust-cache
         with:
+          paths-ignore: |
+             steward_proto_rust_build/**
           path: |
             ~/.cargo/bin/
             ~/.cargo/registry/index/
@@ -82,4 +83,4 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
       - name: Run Cargo build
-        run: cargo clippy -p steward -- -D warnings --no-deps
+        run: cargo clippy -- -D warnings --no-deps
