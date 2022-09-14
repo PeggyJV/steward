@@ -76,8 +76,8 @@ jobs:
       - run: rustup component add clippy
       - uses: actions-rs/cargo@v1
         with:
-          path: |
-            !steward_abi/**
-            !steward_proto_rust/**
+          paths-ignore: |
+            steward_abi/**
+            steward_proto_rust/src/prost/steward.v2.rs
           command: clippy
           args: -- -D warnings
