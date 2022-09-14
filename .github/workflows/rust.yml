@@ -82,4 +82,4 @@ jobs:
             steward_abi/**
             steward_proto_rust/src/prost/steward.v2.rs
           command: clippy
-          args: -- -D warnings
+          args: -- -D warnings --no-deps
