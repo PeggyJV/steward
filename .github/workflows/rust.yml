@@ -2,6 +2,9 @@ name: Rust tests
 
 on:
   push:
+    paths-ignore:
+      - steward_abi/**
+      - steward_proto_rust/**
     branches:
       - main
   pull_request:
@@ -26,7 +29,7 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
-      - name: Run Cellar_Rebalancer acceptance tests
+      - name: Run Steward acceptance tests
         run: cargo test --all --verbose
 
   rust-build:
@@ -78,6 +81,6 @@ jobs:
         with:
           paths-ignore: |
             steward_abi/**
-            steward_proto_rust/src/prost/steward.v2.rs
+            steward_proto_rust/**
           command: clippy
           args: -- -D warnings
