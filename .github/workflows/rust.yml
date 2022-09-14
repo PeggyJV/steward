@@ -66,20 +66,20 @@ jobs:
           command: fmt
           args: --all -- --check
   clippy:
-    name: Clippy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
         uses: actions/checkout@v2
+      - name: Set up Rust caches
+        uses: actions/cache@v2
+        id: rust-cache
         with:
-          profile: minimal
-          toolchain: stable
-          override: true
-      - run: rustup component add clippy
-      - uses: actions-rs/cargo@v1
-        with:
-          paths-ignore: |
-            steward_abi/**
-            steward_proto_rust/src/prost/steward.v2.rs
-          command: clippy
-          args: --no-deps -- -D warnings
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+      - name: Run Cargo build
+        run: cargo clippy --no-deps -- -D warnings
