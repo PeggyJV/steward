@@ -82,4 +82,4 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
       - name: Run Cargo build
-        run: cargo clippy --no-deps -- -D warnings
+        run: cargo clippy -p steward -- -D warnings --no-deps
