@@ -79,4 +79,4 @@ jobs:
             !steward_proto_rust/
           key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
       - name: Run Cargo build
-        run: cargo build
+        run: cargo clippy -- -D warnings
