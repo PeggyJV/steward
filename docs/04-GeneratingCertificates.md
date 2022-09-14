@@ -48,7 +48,7 @@ You can use the test client certificates included in this repo to simulate a cli
 
 ```toml
 [server]
-client_ca_cert_path = "integration_tests/tls/client/test_client_ca.crt"
+client_ca_cert_path = "integration_tests/tls/client/test_client_ca.crt" # this path is relative to the steward repository root
 server_cert_path = "<output_path>/server.crt"
 server_key_path = "<output_path>/server_key_pkcs8.pem"
 ```
@@ -73,6 +73,8 @@ Then you'll need to send a gRPC request to the endpoint (in the case above, 0.0.
 You can use your client of preference. Here is an example using `grpcurl` with the test client certs from this repo:
 
 ```bash
+# execute with the steward repo root as your current working directory for the
+# test cert relative paths to work
 grpcurl -cert integration_tests/tls/client/test_client.crt \
 	-key integration_tests/tls/client/test_client_key_pkcs8.pem \
 	-cacert <output_path>/server_ca.crt \
