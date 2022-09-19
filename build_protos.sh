@@ -16,6 +16,7 @@ protoc --proto_path=$PROTO_PATH \
 	--go_out=$GO_OUT/ \
 	--go-grpc_out=$GO_OUT/ \
     $PROTO_PATH/steward.proto \
-	$PROTO_PATH/aave_v2_stablecoin.proto
+	$PROTO_PATH/aave_v2_stablecoin.proto \
+	$PROTO_PATH/cellar.proto
 
 echo Done!
