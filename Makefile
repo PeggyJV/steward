@@ -15,6 +15,7 @@ e2e_build_images: e2e_clean_slate
 	@docker build -t ethereum:prebuilt -f integration_tests/ethereum/Dockerfile integration_tests/ethereum/
 
 e2e_clean_slate:
+	@echo Cleaning up test environment
 	@docker rm --force \
 		$(shell docker ps -qa --filter="name=ethereum") \
 		$(shell docker ps -qa --filter="name=sommelier") \
@@ -34,8 +35,13 @@ e2e_clean_slate:
 	@docker network prune --force 1>/dev/null 2>/dev/null || true
 	@cd integration_tests && go test -c
 
-e2e_cork_test: e2e_clean_slate
-	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestCork || make -s fail
+e2e_cork_test: e2e_aave_v2_stablecoin_test e2e_vault_cellar_test
+
+e2e_aave_v2_stablecoin_test: e2e_clean_slate
+	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestAaveV2Stablecoin || make -s fail
+
+e2e_vault_cellar_test: e2e_clean_slate
+	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestVaultCellar || make -s fail
 
 fail:
 	@echo 'test failed; dumping container logs into ./testdata for review'

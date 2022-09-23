@@ -1,7 +1,8 @@
 //! Handlers for the Cellar.sol vault interface contract functions
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
-use ethers::{abi::AbiEncode, contract::EthCall, types::H160};
+use abscissa_core::tracing::info;
+use ethers::{abi::{AbiEncode, Token, self}, contract::EthCall, types::H160};
 use steward_abi::cellar::{
     AddPositionCall, CellarCalls, PopPositionCall, PushPositionCall, RebalanceCall,
     RemovePositionCall, ReplacePositionCall, SetHoldingPositionCall,
@@ -87,15 +88,19 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                     .params
                     .ok_or_else(|| ErrorKind::SPCallError.context("swap params cannot be empty"))?,
             )?;
+
+            info!("encoded: {:?}", hex::encode(&swap_params));
+
             let call = RebalanceCall {
                 from_position: sp_call_parse_address(params.from_position)?,
                 to_position: sp_call_parse_address(params.to_position)?,
                 assets_from: string_to_u256(params.assets_from)?,
-                exchange: params.exchange as u8,
+                exchange: (params.exchange - 1) as u8,
                 params: swap_params.into(),
             };
-
-            Ok(CellarCalls::Rebalance(call).encode())
+            let call = CellarCalls::Rebalance(call).encode();
+            info!("final call: {:?}", hex::encode(&call));
+            Ok(call)
         }
         Function::SetStrategistPayoutAddress(params) => {
             log_cellar_call(
@@ -133,12 +138,15 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
     }
 }
 
+/// Encodes the swap params as ABI-encoded bytes to me passed as args to the underlying
+/// swap function
 fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
     match params.params.ok_or_else(|| sp_call_error(
         "swap params cannot be unspecified".to_string(),
     ))? {
         Univ2Params(p) => {
-            let mut path = Vec::<H160>::new();
+            let mut path = Vec::<Token>::new();
+
             for a in p.path {
                 let address = a.parse::<H160>();
                 if address.is_err() {
@@ -148,17 +156,16 @@ fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
                     )));
                 }
 
-                path.push(address.unwrap())
+                path.push(Token::Address(address.unwrap()))
             }
 
-            let path = AbiEncode::encode(path);
-            let amount = AbiEncode::encode(string_to_u256(p.amount)?);
-            let amount_out_min = AbiEncode::encode(string_to_u256(p.amount_out_min)?);
-
-            Ok([path, amount, amount_out_min].concat())
+            let path = Token::Array(path);
+            let amount = Token::Uint(string_to_u256(p.amount)?);
+            let amount_out_min = Token::Uint(string_to_u256(p.amount_out_min)?);
+            Ok(abi::encode(&[path, amount, amount_out_min]))
         }
         Univ3Params(p) => {
-            let mut path = Vec::<H160>::new();
+            let mut path = Vec::<Token>::new();
             for a in p.path {
                 let address = a.parse::<H160>();
                 if address.is_err() {
@@ -168,15 +175,21 @@ fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
                     )));
                 }
 
-                path.push(address.unwrap())
+                path.push(Token::Address(address.unwrap()))
             }
 
-            let path = AbiEncode::encode(path);
-            let pool = AbiEncode::encode(p.pool_fees);
-            let amount = AbiEncode::encode(string_to_u256(p.amount)?);
-            let amount_out_min = AbiEncode::encode(string_to_u256(p.amount_out_min)?);
+            let path = Token::Array(path);
 
-            Ok([path, pool, amount, amount_out_min].concat())
+            let mut pool = Vec::<Token>::new();
+            for f in p.pool_fees {
+                pool.push(Token::Uint(f.into()))
+            }
+
+            let pool = Token::Array(pool);
+            let amount = Token::Uint(string_to_u256(p.amount)?);
+            let amount_out_min = Token::Uint(string_to_u256(p.amount_out_min)?);
+
+            Ok(abi::encode(&[path, pool, amount, amount_out_min]))
         }
     }
 }

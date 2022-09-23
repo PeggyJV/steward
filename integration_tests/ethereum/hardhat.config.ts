@@ -30,23 +30,36 @@ task(
         await gravity.deployed();
         console.log(`gravity contract deployed at - ${gravity.address}`)
 
-        const Cellar = await hre.ethers.getContractFactory("MockAaveV2StablecoinCellar");
-        const cellar = (await Cellar.deploy());
-        await cellar.deployed();
-        console.log(`cellar contract deployed at - ${cellar.address}`);
+        const AaveCellar = await hre.ethers.getContractFactory("MockAaveV2StablecoinCellar");
+        const aaveCellar = (await AaveCellar.deploy());
+        await aaveCellar.deployed();
+        console.log(`aave contract deployed at - ${aaveCellar.address}`);
 
-        let cellarSignerAddress = await cellar.signer.getAddress()
+        const VaultCellar = await hre.ethers.getContractFactory("Cellar");
+        const vaultCellar = (await VaultCellar.deploy());
+        await vaultCellar.deployed();
+        console.log(`vault cellar contract deployed at - ${vaultCellar.address}`);
+
+        let cellarSignerAddress = await aaveCellar.signer.getAddress()
         await hre.network.provider.request({
             method: 'hardhat_impersonateAccount',
             params: [cellarSignerAddress],
         });
 
-        let { hash } = await cellar.transferOwnership(gravity.address, {
+        let { aaveHash } = await aaveCellar.transferOwnership(gravity.address, {
             gasPrice: hre.ethers.BigNumber.from('99916001694'),
             from: cellarSignerAddress
         });
         console.log(
-            `Cellar contract at ${cellar.address} is now owned by Gravity contract at ${gravity.address} with hash ${hash}`,
+            `Aave Cellar contract at ${aaveCellar.address} is now owned by Gravity contract at ${gravity.address} with hash ${aaveHash}`,
+        );
+
+        let { vaultHash } = await vaultCellar.transferOwnership(gravity.address, {
+            gasPrice: hre.ethers.BigNumber.from('99916001694'),
+            from: cellarSignerAddress
+        });
+        console.log(
+            `Vault Cellar contract at ${vaultCellar.address} is now owned by Gravity contract at ${gravity.address} with hash ${vaultHash}`,
         );
 
         await hre.network.provider.send("evm_setIntervalMining", [1000]);
@@ -72,7 +85,7 @@ module.exports = {
                 },
             },
             {
-                version: '0.8.10',
+                version: '0.8.16',
                 settings: {
                     optimizer: {
                         enabled: true,

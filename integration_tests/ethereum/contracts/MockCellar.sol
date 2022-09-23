@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.16;
+pragma solidity ^0.8.0;
+
+import {ERC20, Ownable} from "./interfaces.sol";
 
 /**
  * @title Sommelier Cellar
  * @notice A composable ERC4626 that can use a set of other ERC4626 or ERC20 positions to earn yield.
  * @author Brian Le
  */
-contract Cellar {
+contract Cellar is Ownable {
     constructor() {}
 
     // =========================================== POSITION LOGIC ===========================================
