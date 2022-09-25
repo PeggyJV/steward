@@ -2,7 +2,11 @@
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
 use abscissa_core::tracing::info;
-use ethers::{abi::{AbiEncode, Token, self}, contract::EthCall, types::H160};
+use ethers::{
+    abi::{self, AbiEncode, Token},
+    contract::EthCall,
+    types::H160,
+};
 use steward_abi::cellar::{
     AddPositionCall, CellarCalls, PopPositionCall, PushPositionCall, RebalanceCall,
     RemovePositionCall, ReplacePositionCall, SetHoldingPositionCall,
@@ -83,11 +87,10 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
         }
         Function::Rebalance(params) => {
             log_cellar_call(CELLAR_NAME, &RebalanceCall::function_name(), &cellar_id);
-            let swap_params = encode_swap_params(
-                params
-                    .params
-                    .ok_or_else(|| ErrorKind::SPCallError.context("swap params cannot be empty"))?,
-            )?;
+            let swap_params =
+                encode_swap_params(params.params.ok_or_else(|| {
+                    ErrorKind::SPCallError.context("swap params cannot be empty")
+                })?)?;
 
             info!("encoded: {:?}", hex::encode(&swap_params));
 
@@ -141,9 +144,10 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
 /// Encodes the swap params as ABI-encoded bytes to me passed as args to the underlying
 /// swap function
 fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
-    match params.params.ok_or_else(|| sp_call_error(
-        "swap params cannot be unspecified".to_string(),
-    ))? {
+    match params
+        .params
+        .ok_or_else(|| sp_call_error("swap params cannot be unspecified".to_string()))?
+    {
         Univ2Params(p) => {
             let mut path = Vec::<Token>::new();
 
