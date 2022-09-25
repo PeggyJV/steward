@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := e2e_rebalance
+.DEFAULT_GOAL := e2e_cork_test
 
 VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:main"
 ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:main"
@@ -15,32 +15,19 @@ e2e_build_images: e2e_clean_slate
 	@docker build -t ethereum:prebuilt -f integration_tests/ethereum/Dockerfile integration_tests/ethereum/
 
 e2e_clean_slate:
-	@echo Cleaning up test environment
-	@docker rm --force \
-		$(shell docker ps -qa --filter="name=ethereum") \
-		$(shell docker ps -qa --filter="name=sommelier") \
-		$(shell docker ps -qa --filter="name=orchestrator") \
-		$(shell docker ps -qa --filter="name=steward") \
-		1>/dev/null \
-		2>/dev/null \
-		|| true
-	@docker wait \
-		$(shell docker ps -qa --filter="name=ethereum") \
-		$(shell docker ps -qa --filter="name=sommelier") \
-		$(shell docker ps -qa --filter="name=orchestrator") \
-		$(shell docker ps -qa --filter="name=steward") \
-		1>/dev/null \
-		2>/dev/null \
-		|| true
-	@docker network prune --force 1>/dev/null 2>/dev/null || true
-	@cd integration_tests && go test -c
+	@./clean_slate.sh
 
 e2e_cork_test: e2e_aave_v2_stablecoin_test e2e_vault_cellar_test
 
-e2e_aave_v2_stablecoin_test: e2e_clean_slate
+# Because of the way `make` works, using the e2e_clean_slate target twice as prerequisites
+# for the individual tests doesn't work when `e2e_cork_test` runs the test targets in series,
+# so we explicitly call the cleanup script in each test target.
+e2e_aave_v2_stablecoin_test:
+	@./clean_slate.sh
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestAaveV2Stablecoin || make -s fail
 
-e2e_vault_cellar_test: e2e_clean_slate
+e2e_vault_cellar_test:
+	@./clean_slate.sh
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestVaultCellar || make -s fail
 
 fail:
