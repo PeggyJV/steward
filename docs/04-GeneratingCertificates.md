@@ -44,9 +44,9 @@ Valid TLS certificates will have "Version 3" near the top of the certificate pla
 
 6. Test Steward with your certificate
 
-A temporary test client certificate can be used verify your steward process is connectable from the network.  The test certificate MUST BE REMOVED prior to running in production.
+A temporary test client CA can be used verify your steward process is connectable from the network.  The test client CA MUST BE REMOVED prior to running in production.
 
-The test certificate is included in this repo at:
+The test client CA is included in this repo at:
 ```
 integration_tests/tls/client/test_client_ca.crt
 ```
