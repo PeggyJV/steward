@@ -17,27 +17,23 @@ message Cellar {
     oneof function {
         // Represents function `addPosition(uint256 index, address position)`
         AddPosition add_position = 1;
-        // Represents function `popPosition()`
-        PopPosition pop_position = 2;
         // Represents function `pushPosition(address position)`
-        PushPosition push_position = 3;
+        PushPosition push_position = 2;
         // Represents function `removePosition(uint256 index)`
-        RemovePosition remove_position = 4;
-        // Represents function `replacePosition(uint256, address newPosition)`
-        ReplacePosition replace_position = 5;
+        RemovePosition remove_position = 3;
         // Represents function `setHoldingPosition(address newHoldingPosition)`
-        SetHoldingPosition set_holding_position = 6;
+        SetHoldingPosition set_holding_position = 4;
         /*
         * Represents function `rebalance(address fromPosition, address toPosition,
             uint256 assetsFrom, SwapRouter.Exchange exchange, bytes calldata params)`
         */
-        Rebalance rebalance = 7;
+        Rebalance rebalance = 5;
         // Represents function `setStrategistPayoutAddress(address payout)`
-        SetStrategistPayoutAddress set_strategist_payout_address = 8;
+        SetStrategistPayoutAddress set_strategist_payout_address = 6;
         // Represents function `setWithdrawType(WithdrawType newWithdrawType)`
-        SetWithdrawType set_withdraw_type = 9;
+        SetWithdrawType set_withdraw_type = 7;
         // Represents function `swapPositions(uint256 index1, uint256 index2)`
-        SwapPositions swap_positions = 10;
+        SwapPositions swap_positions = 8;
     }
 }
 
@@ -52,13 +48,6 @@ message AddPosition {
     // Address of the position to add
     string position = 2;
 }
-
-/*
-* Remove the last position in the list of positions used by the cellar.
-*
-* Represents function `popPosition()`
-*/
-message PopPosition {}
 
 /*
 * Push a trusted position to the end of the list of positions used by the cellar. If you
@@ -80,18 +69,6 @@ message PushPosition {
 message RemovePosition {
     // Index at which to remove the position
     uint64 index = 1;
-}
-
-/*
-* Replace a position at a given index with a new position.
-*
-* Represents function `replacePosition(uint256 index, address newPosition)`
-*/
-message ReplacePosition {
-    // Index of the position to replace
-    uint64 index = 1;
-    // Address of the new position
-    string new_position = 2;
 }
 
 /*

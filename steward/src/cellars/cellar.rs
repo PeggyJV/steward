@@ -8,8 +8,8 @@ use ethers::{
     types::H160,
 };
 use steward_abi::cellar::{
-    AddPositionCall, CellarCalls, PopPositionCall, PushPositionCall, RebalanceCall,
-    RemovePositionCall, ReplacePositionCall, SetHoldingPositionCall,
+    AddPositionCall, CellarCalls, PushPositionCall, RebalanceCall,
+    RemovePositionCall, SetHoldingPositionCall,
     SetStrategistPayoutAddressCall, SetWithdrawTypeCall, SwapPositionsCall,
 };
 use steward_proto::steward::{cellar::Function, swap_params::Params::*, SwapParams};
@@ -34,12 +34,6 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
 
             Ok(CellarCalls::AddPosition(call).encode())
         }
-        Function::PopPosition(_) => {
-            log_cellar_call(CELLAR_NAME, &PopPositionCall::function_name(), &cellar_id);
-            let call = PopPositionCall {};
-
-            Ok(CellarCalls::PopPosition(call).encode())
-        }
         Function::PushPosition(params) => {
             log_cellar_call(CELLAR_NAME, &PushPositionCall::function_name(), &cellar_id);
             let call = PushPositionCall {
@@ -59,19 +53,6 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
             };
 
             Ok(CellarCalls::RemovePosition(call).encode())
-        }
-        Function::ReplacePosition(params) => {
-            log_cellar_call(
-                CELLAR_NAME,
-                &ReplacePositionCall::function_name(),
-                &cellar_id,
-            );
-            let call = ReplacePositionCall {
-                index: params.index.into(),
-                new_position: sp_call_parse_address(params.new_position)?,
-            };
-
-            Ok(CellarCalls::ReplacePosition(call).encode())
         }
         Function::SetHoldingPosition(params) => {
             log_cellar_call(

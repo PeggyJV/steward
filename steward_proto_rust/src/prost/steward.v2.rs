@@ -187,7 +187,7 @@ pub mod aave_v2_stablecoin {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Cellar {
     /// The function you wish to execute on the target cellar
-    #[prost(oneof = "cellar::Function", tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10")]
+    #[prost(oneof = "cellar::Function", tags = "1, 2, 3, 4, 5, 6, 7, 8")]
     pub function: ::core::option::Option<cellar::Function>,
 }
 /// Nested message and enum types in `Cellar`.
@@ -198,34 +198,28 @@ pub mod cellar {
         /// Represents function `addPosition(uint256 index, address position)`
         #[prost(message, tag = "1")]
         AddPosition(super::AddPosition),
-        /// Represents function `popPosition()`
-        #[prost(message, tag = "2")]
-        PopPosition(super::PopPosition),
         /// Represents function `pushPosition(address position)`
-        #[prost(message, tag = "3")]
+        #[prost(message, tag = "2")]
         PushPosition(super::PushPosition),
         /// Represents function `removePosition(uint256 index)`
-        #[prost(message, tag = "4")]
+        #[prost(message, tag = "3")]
         RemovePosition(super::RemovePosition),
-        /// Represents function `replacePosition(uint256, address newPosition)`
-        #[prost(message, tag = "5")]
-        ReplacePosition(super::ReplacePosition),
         /// Represents function `setHoldingPosition(address newHoldingPosition)`
-        #[prost(message, tag = "6")]
+        #[prost(message, tag = "4")]
         SetHoldingPosition(super::SetHoldingPosition),
         ///
         /// Represents function `rebalance(address fromPosition, address toPosition,
         ///uint256 assetsFrom, SwapRouter.Exchange exchange, bytes calldata params)`
-        #[prost(message, tag = "7")]
+        #[prost(message, tag = "5")]
         Rebalance(super::Rebalance),
         /// Represents function `setStrategistPayoutAddress(address payout)`
-        #[prost(message, tag = "8")]
+        #[prost(message, tag = "6")]
         SetStrategistPayoutAddress(super::SetStrategistPayoutAddress),
         /// Represents function `setWithdrawType(WithdrawType newWithdrawType)`
-        #[prost(message, tag = "9")]
+        #[prost(message, tag = "7")]
         SetWithdrawType(super::SetWithdrawType),
         /// Represents function `swapPositions(uint256 index1, uint256 index2)`
-        #[prost(message, tag = "10")]
+        #[prost(message, tag = "8")]
         SwapPositions(super::SwapPositions),
     }
 }
@@ -242,12 +236,6 @@ pub struct AddPosition {
     #[prost(string, tag = "2")]
     pub position: ::prost::alloc::string::String,
 }
-///
-/// Remove the last position in the list of positions used by the cellar.
-///
-/// Represents function `popPosition()`
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct PopPosition {}
 ///
 /// Push a trusted position to the end of the list of positions used by the cellar. If you
 ///know you are going to add a position to the end of the array, this is more efficient then
@@ -269,19 +257,6 @@ pub struct RemovePosition {
     /// Index at which to remove the position
     #[prost(uint64, tag = "1")]
     pub index: u64,
-}
-///
-/// Replace a position at a given index with a new position.
-///
-/// Represents function `replacePosition(uint256 index, address newPosition)`
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ReplacePosition {
-    /// Index of the position to replace
-    #[prost(uint64, tag = "1")]
-    pub index: u64,
-    /// Address of the new position
-    #[prost(string, tag = "2")]
-    pub new_position: ::prost::alloc::string::String,
 }
 ///
 /// Set the holding position used by the cellar.
