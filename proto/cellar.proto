@@ -34,6 +34,12 @@ message Cellar {
         SetWithdrawType set_withdraw_type = 7;
         // Represents function `swapPositions(uint256 index1, uint256 index2)`
         SwapPositions swap_positions = 8;
+        // Represents function `setDepositLimit()`
+        SetDepositLimit set_deposit_limit = 9;
+        // Represents function `setLiquidityLimit()`
+        SetLiquidityLimit set_liquidity_limit = 10;
+        // Represents function `setShareLockPeriod()`
+        SetShareLockPeriod set_share_lock_period = 11;
     }
 }
 
@@ -183,4 +189,31 @@ message SwapPositions {
     uint64 index_1 = 1;
     // Index of the second position
     uint64 index_2 = 2;
+}
+
+/*
+* Set the per-wallet deposit limit. Uses the same decimals as the current asset.
+*
+* Represents function `setDepositLimit()`
+*/
+message SetDepositLimit {
+    string new_limit = 1;
+}
+
+/*
+* Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.
+*
+* Represents function `setLiquidityLimit()`
+*/
+message SetLiquidityLimit {
+    string new_limit = 1;
+}
+
+/*
+* Allows share lock period to be updated.
+*
+* Represents function `setShareLockPeriod()`
+*/
+message SetShareLockPeriod {
+    string new_lock = 1;
 }

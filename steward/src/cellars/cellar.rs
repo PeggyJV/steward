@@ -8,15 +8,15 @@ use ethers::{
     types::H160,
 };
 use steward_abi::cellar::{
-    AddPositionCall, CellarCalls, PushPositionCall, RebalanceCall,
-    RemovePositionCall, SetHoldingPositionCall,
+    AddPositionCall, CellarCalls, PushPositionCall, RebalanceCall, RemovePositionCall,
+    SetDepositLimitCall, SetHoldingPositionCall, SetLiquidityLimitCall, SetShareLockPeriodCall,
     SetStrategistPayoutAddressCall, SetWithdrawTypeCall, SwapPositionsCall,
 };
 use steward_proto::steward::{cellar::Function, swap_params::Params::*, SwapParams};
 
 use crate::{
     error::{Error, ErrorKind},
-    utils::{sp_call_error, sp_call_parse_address, string_to_u256},
+    utils::{self, sp_call_error, sp_call_parse_address, string_to_u256},
 };
 
 use super::log_cellar_call;
@@ -118,6 +118,42 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
             };
 
             Ok(CellarCalls::SwapPositions(call).encode())
+        }
+        Function::SetDepositLimit(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetDepositLimitCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetDepositLimitCall {
+                new_limit: utils::string_to_u256(params.new_limit)?,
+            };
+
+            Ok(CellarCalls::SetDepositLimit(call).encode())
+        }
+        Function::SetLiquidityLimit(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetLiquidityLimitCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetLiquidityLimitCall {
+                new_limit: utils::string_to_u256(params.new_limit)?,
+            };
+
+            Ok(CellarCalls::SetLiquidityLimit(call).encode())
+        }
+        Function::SetShareLockPeriod(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetShareLockPeriodCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetShareLockPeriodCall {
+                new_lock: utils::string_to_u256(params.new_lock)?,
+            };
+
+            Ok(CellarCalls::SetShareLockPeriod(call).encode())
         }
     }
 }

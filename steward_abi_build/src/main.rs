@@ -32,7 +32,6 @@ fn main() {
         Err(e) => println!("Error writing aave_v2_stablecoin.rs: {}", e),
     }
 
-
     // Cellar.sol
     let cellar_contract = "Cellar";
     let abigen = match Abigen::new(
@@ -53,7 +52,10 @@ fn main() {
     {
         Ok(abi) => abi,
         Err(e) => {
-            println!("Could not generate abi from {}.json: {}", cellar_contract, e);
+            println!(
+                "Could not generate abi from {}.json: {}",
+                cellar_contract, e
+            );
             process::exit(1);
         }
     };

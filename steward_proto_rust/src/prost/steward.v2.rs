@@ -187,7 +187,7 @@ pub mod aave_v2_stablecoin {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Cellar {
     /// The function you wish to execute on the target cellar
-    #[prost(oneof = "cellar::Function", tags = "1, 2, 3, 4, 5, 6, 7, 8")]
+    #[prost(oneof = "cellar::Function", tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11")]
     pub function: ::core::option::Option<cellar::Function>,
 }
 /// Nested message and enum types in `Cellar`.
@@ -221,6 +221,15 @@ pub mod cellar {
         /// Represents function `swapPositions(uint256 index1, uint256 index2)`
         #[prost(message, tag = "8")]
         SwapPositions(super::SwapPositions),
+        /// Represents function `setDepositLimit()`
+        #[prost(message, tag = "9")]
+        SetDepositLimit(super::SetDepositLimit),
+        /// Represents function `setLiquidityLimit()`
+        #[prost(message, tag = "10")]
+        SetLiquidityLimit(super::SetLiquidityLimit),
+        /// Represents function `setShareLockPeriod()`
+        #[prost(message, tag = "11")]
+        SetShareLockPeriod(super::SetShareLockPeriod),
     }
 }
 ///
@@ -368,6 +377,33 @@ pub struct SwapPositions {
     /// Index of the second position
     #[prost(uint64, tag = "2")]
     pub index_2: u64,
+}
+///
+/// Set the per-wallet deposit limit. Uses the same decimals as the current asset.
+///
+/// Represents function `setDepositLimit()`
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SetDepositLimit {
+    #[prost(string, tag = "1")]
+    pub new_limit: ::prost::alloc::string::String,
+}
+///
+/// Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.
+///
+/// Represents function `setLiquidityLimit()`
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SetLiquidityLimit {
+    #[prost(string, tag = "1")]
+    pub new_limit: ::prost::alloc::string::String,
+}
+///
+/// Allows share lock period to be updated.
+///
+/// Represents function `setShareLockPeriod()`
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SetShareLockPeriod {
+    #[prost(string, tag = "1")]
+    pub new_lock: ::prost::alloc::string::String,
 }
 ///
 /// Exchange selector
