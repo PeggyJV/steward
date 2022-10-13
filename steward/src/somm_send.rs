@@ -8,26 +8,11 @@ use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::{
     base::abci::v1beta1::TxResponse, tx::v1beta1::BroadcastMode,
 };
 use somm_proto::cork::Cork;
-use somm_proto::cork::{MsgScheduleCorkRequest, MsgSubmitCorkRequest};
+use somm_proto::cork::{MsgScheduleCorkRequest};
 use std::{result::Result, time::Duration};
 
 pub const TIMEOUT: Duration = Duration::from_secs(60);
 pub const MEMO: &str = "Sent using Somm Orchestrator";
-
-pub async fn send_cork(
-    contact: &Contact,
-    cork: Cork,
-    delegate_address: String,
-    delegate_key: &CosmosPrivateKey,
-    fee: Coin,
-) -> Result<TxResponse, CosmosGrpcError> {
-    let msg = MsgSubmitCorkRequest {
-        cork: Some(cork),
-        signer: delegate_address,
-    };
-    let msg = Msg::new("/cork.v1.MsgSubmitCorkRequest", msg);
-    __send_messages(contact, delegate_key, fee, vec![msg]).await
-}
 
 pub async fn schedule_cork(
     contact: &Contact,
@@ -42,7 +27,7 @@ pub async fn schedule_cork(
         signer: delegate_address,
         block_height,
     };
-    let msg = Msg::new("/cork.v1.MsgScheduleCorkRequest", msg);
+    let msg = Msg::new("/cork.v2.MsgScheduleCorkRequest", msg);
     __send_messages(contact, delegate_key, fee, vec![msg]).await
 }
 
