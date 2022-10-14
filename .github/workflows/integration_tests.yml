@@ -66,15 +66,6 @@ jobs:
     permissions:
       contents: write
       packages: write
-      actions: write
-      checks: write
-      deployments: write
-      discussions: write
-      issues: write
-      pull-requests: write
-      repository-projects: write
-      security-events: write
-      statuses: write
     runs-on: [ self-hosted, linux ]
     steps:
       - name: checkout
@@ -94,7 +85,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
+          username: ${{ github.owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: labels
         id: meta
