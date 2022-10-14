@@ -66,6 +66,15 @@ jobs:
     permissions:
       contents: write
       packages: write
+      actions: write
+      checks: write
+      deployments: write
+      discussions: write
+      issues: write
+      pull-requests: write
+      repository-projects: write
+      security-events: write
+      statuses: write
     runs-on: [ self-hosted, linux ]
     steps:
       - name: checkout
@@ -96,7 +105,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           file: Dockerfile
-          push: false
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           builder: ${{ steps.buildx.outputs.name }}
