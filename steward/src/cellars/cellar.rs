@@ -10,9 +10,9 @@ use ethers::{
 use steward_abi::cellar::{
     AddPositionCall, CellarCalls, PushPositionCall, RebalanceCall, RemovePositionCall,
     SetDepositLimitCall, SetHoldingPositionCall, SetLiquidityLimitCall, SetShareLockPeriodCall,
-    SetStrategistPayoutAddressCall, SetWithdrawTypeCall, SwapPositionsCall,
+    SetStrategistPayoutAddressCall, SetWithdrawTypeCall, SwapPositionsCall, SetRebalanceDeviationCall,
 };
-use steward_proto::steward::{cellar::Function, swap_params::Params::*, SwapParams};
+use steward_proto::steward::{cellar::{Function, swap_params::Params::*, SwapParams}};
 
 use crate::{
     error::{Error, ErrorKind},
@@ -154,6 +154,18 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
             };
 
             Ok(CellarCalls::SetShareLockPeriod(call).encode())
+        }
+        Function::SetRebalanceDeviation(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetRebalanceDeviationCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetRebalanceDeviationCall {
+                new_deviation: utils::string_to_u256(params.new_deviation)?,
+            };
+
+            Ok(CellarCalls::SetRebalanceDeviation(call).encode())
         }
     }
 }

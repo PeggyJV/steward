@@ -4,21 +4,25 @@
 ## Table of Contents
 
 - [cellar.proto](#cellar-proto)
-    - [AddPosition](#steward-v2-AddPosition)
     - [Cellar](#steward-v2-Cellar)
-    - [PushPosition](#steward-v2-PushPosition)
-    - [Rebalance](#steward-v2-Rebalance)
-    - [RemovePosition](#steward-v2-RemovePosition)
-    - [SetHoldingPosition](#steward-v2-SetHoldingPosition)
-    - [SetStrategistPayoutAddress](#steward-v2-SetStrategistPayoutAddress)
-    - [SetWithdrawType](#steward-v2-SetWithdrawType)
-    - [SwapParams](#steward-v2-SwapParams)
-    - [SwapPositions](#steward-v2-SwapPositions)
-    - [UniV2SwapParams](#steward-v2-UniV2SwapParams)
-    - [UniV3SwapParams](#steward-v2-UniV3SwapParams)
+    - [Cellar.AddPosition](#steward-v2-Cellar-AddPosition)
+    - [Cellar.PushPosition](#steward-v2-Cellar-PushPosition)
+    - [Cellar.Rebalance](#steward-v2-Cellar-Rebalance)
+    - [Cellar.RemovePosition](#steward-v2-Cellar-RemovePosition)
+    - [Cellar.SetDepositLimit](#steward-v2-Cellar-SetDepositLimit)
+    - [Cellar.SetHoldingPosition](#steward-v2-Cellar-SetHoldingPosition)
+    - [Cellar.SetLiquidityLimit](#steward-v2-Cellar-SetLiquidityLimit)
+    - [Cellar.SetRebalanceDeviation](#steward-v2-Cellar-SetRebalanceDeviation)
+    - [Cellar.SetShareLockPeriod](#steward-v2-Cellar-SetShareLockPeriod)
+    - [Cellar.SetStrategistPayoutAddress](#steward-v2-Cellar-SetStrategistPayoutAddress)
+    - [Cellar.SetWithdrawType](#steward-v2-Cellar-SetWithdrawType)
+    - [Cellar.SwapParams](#steward-v2-Cellar-SwapParams)
+    - [Cellar.SwapPositions](#steward-v2-Cellar-SwapPositions)
+    - [Cellar.UniV2SwapParams](#steward-v2-Cellar-UniV2SwapParams)
+    - [Cellar.UniV3SwapParams](#steward-v2-Cellar-UniV3SwapParams)
   
-    - [Exchange](#steward-v2-Exchange)
-    - [WithdrawType](#steward-v2-WithdrawType)
+    - [Cellar.Exchange](#steward-v2-Cellar-Exchange)
+    - [Cellar.WithdrawType](#steward-v2-Cellar-WithdrawType)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -31,9 +35,35 @@
 
 
 
-<a name="steward-v2-AddPosition"></a>
+<a name="steward-v2-Cellar"></a>
 
-### AddPosition
+### Cellar
+Represents a function call to a cellar that implements Cellar.sol
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| add_position | [Cellar.AddPosition](#steward-v2-Cellar-AddPosition) |  | Represents function `addPosition(uint256 index, address position)` |
+| push_position | [Cellar.PushPosition](#steward-v2-Cellar-PushPosition) |  | Represents function `pushPosition(address position)` |
+| remove_position | [Cellar.RemovePosition](#steward-v2-Cellar-RemovePosition) |  | Represents function `removePosition(uint256 index)` |
+| set_holding_position | [Cellar.SetHoldingPosition](#steward-v2-Cellar-SetHoldingPosition) |  | Represents function `setHoldingPosition(address newHoldingPosition)` |
+| rebalance | [Cellar.Rebalance](#steward-v2-Cellar-Rebalance) |  | Represents function `rebalance(address fromPosition, address toPosition, uint256 assetsFrom, SwapRouter.Exchange exchange, bytes calldata params)` |
+| set_strategist_payout_address | [Cellar.SetStrategistPayoutAddress](#steward-v2-Cellar-SetStrategistPayoutAddress) |  | Represents function `setStrategistPayoutAddress(address payout)` |
+| set_withdraw_type | [Cellar.SetWithdrawType](#steward-v2-Cellar-SetWithdrawType) |  | Represents function `setWithdrawType(WithdrawType newWithdrawType)` |
+| swap_positions | [Cellar.SwapPositions](#steward-v2-Cellar-SwapPositions) |  | Represents function `swapPositions(uint256 index1, uint256 index2)` |
+| set_deposit_limit | [Cellar.SetDepositLimit](#steward-v2-Cellar-SetDepositLimit) |  | Represents function `setDepositLimit()` |
+| set_liquidity_limit | [Cellar.SetLiquidityLimit](#steward-v2-Cellar-SetLiquidityLimit) |  | Represents function `setLiquidityLimit()` |
+| set_share_lock_period | [Cellar.SetShareLockPeriod](#steward-v2-Cellar-SetShareLockPeriod) |  | Represents function `setShareLockPeriod()` |
+| set_rebalance_deviation | [Cellar.SetRebalanceDeviation](#steward-v2-Cellar-SetRebalanceDeviation) |  | Represents function `setRebalanceDeviation(uint265)` |
+
+
+
+
+
+
+<a name="steward-v2-Cellar-AddPosition"></a>
+
+### Cellar.AddPosition
 Insert a trusted position to the list of positions used by the cellar at a given index.
 
 Represents function `addPosition(uint256 index, address position)`
@@ -49,31 +79,9 @@ Represents function `addPosition(uint256 index, address position)`
 
 
 
-<a name="steward-v2-Cellar"></a>
+<a name="steward-v2-Cellar-PushPosition"></a>
 
-### Cellar
-Represents a function call to a cellar that implements Cellar.sol
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| add_position | [AddPosition](#steward-v2-AddPosition) |  | Represents function `addPosition(uint256 index, address position)` |
-| push_position | [PushPosition](#steward-v2-PushPosition) |  | Represents function `pushPosition(address position)` |
-| remove_position | [RemovePosition](#steward-v2-RemovePosition) |  | Represents function `removePosition(uint256 index)` |
-| set_holding_position | [SetHoldingPosition](#steward-v2-SetHoldingPosition) |  | Represents function `setHoldingPosition(address newHoldingPosition)` |
-| rebalance | [Rebalance](#steward-v2-Rebalance) |  | Represents function `rebalance(address fromPosition, address toPosition, uint256 assetsFrom, SwapRouter.Exchange exchange, bytes calldata params)` |
-| set_strategist_payout_address | [SetStrategistPayoutAddress](#steward-v2-SetStrategistPayoutAddress) |  | Represents function `setStrategistPayoutAddress(address payout)` |
-| set_withdraw_type | [SetWithdrawType](#steward-v2-SetWithdrawType) |  | Represents function `setWithdrawType(WithdrawType newWithdrawType)` |
-| swap_positions | [SwapPositions](#steward-v2-SwapPositions) |  | Represents function `swapPositions(uint256 index1, uint256 index2)` |
-
-
-
-
-
-
-<a name="steward-v2-PushPosition"></a>
-
-### PushPosition
+### Cellar.PushPosition
 Push a trusted position to the end of the list of positions used by the cellar. If you
 know you are going to add a position to the end of the array, this is more efficient then
 `addPosition`.
@@ -90,9 +98,9 @@ Represents function `pushPosition(address position)`
 
 
 
-<a name="steward-v2-Rebalance"></a>
+<a name="steward-v2-Cellar-Rebalance"></a>
 
-### Rebalance
+### Cellar.Rebalance
 Move assets between positions. To move assets from/to this cellar&#39;s holdings, specify
 the address of this cellar as the `fromPosition`/`toPosition`.
 
@@ -105,17 +113,17 @@ Represents function `rebalance(address fromPosition, address toPosition,
 | from_position | [string](#string) |  |  |
 | to_position | [string](#string) |  |  |
 | assets_from | [string](#string) |  |  |
-| exchange | [Exchange](#steward-v2-Exchange) |  |  |
-| params | [SwapParams](#steward-v2-SwapParams) |  |  |
+| exchange | [Cellar.Exchange](#steward-v2-Cellar-Exchange) |  |  |
+| params | [Cellar.SwapParams](#steward-v2-Cellar-SwapParams) |  |  |
 
 
 
 
 
 
-<a name="steward-v2-RemovePosition"></a>
+<a name="steward-v2-Cellar-RemovePosition"></a>
 
-### RemovePosition
+### Cellar.RemovePosition
 Remove the position at a given index from the list of positions used by the cellar.
 
 Represents function `removePosition(uint256 index)`
@@ -130,9 +138,26 @@ Represents function `removePosition(uint256 index)`
 
 
 
-<a name="steward-v2-SetHoldingPosition"></a>
+<a name="steward-v2-Cellar-SetDepositLimit"></a>
 
-### SetHoldingPosition
+### Cellar.SetDepositLimit
+Set the per-wallet deposit limit. Uses the same decimals as the current asset.
+
+Represents function `setDepositLimit()`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_limit | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v2-Cellar-SetHoldingPosition"></a>
+
+### Cellar.SetHoldingPosition
 Set the holding position used by the cellar.
 
 Represents function `setHoldingPosition(address newHoldingPosition)`
@@ -147,9 +172,58 @@ Represents function `setHoldingPosition(address newHoldingPosition)`
 
 
 
-<a name="steward-v2-SetStrategistPayoutAddress"></a>
+<a name="steward-v2-Cellar-SetLiquidityLimit"></a>
 
-### SetStrategistPayoutAddress
+### Cellar.SetLiquidityLimit
+Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.
+
+Represents function `setLiquidityLimit()`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_limit | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v2-Cellar-SetRebalanceDeviation"></a>
+
+### Cellar.SetRebalanceDeviation
+Represents function `setRebalanceDeviation(uint256)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_deviation | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v2-Cellar-SetShareLockPeriod"></a>
+
+### Cellar.SetShareLockPeriod
+Allows share lock period to be updated.
+
+Represents function `setShareLockPeriod()`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_lock | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v2-Cellar-SetStrategistPayoutAddress"></a>
+
+### Cellar.SetStrategistPayoutAddress
 Sets the Strategists payout address.
 
 Represents function `setStrategistPayoutAddress(address payout)`
@@ -164,9 +238,9 @@ Represents function `setStrategistPayoutAddress(address payout)`
 
 
 
-<a name="steward-v2-SetWithdrawType"></a>
+<a name="steward-v2-Cellar-SetWithdrawType"></a>
 
-### SetWithdrawType
+### Cellar.SetWithdrawType
 Set the withdraw type used by the cellar.
 
 Represents function `setWithdrawType(WithdrawType newWithdrawType)`
@@ -174,32 +248,32 @@ Represents function `setWithdrawType(WithdrawType newWithdrawType)`
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| new_withdraw_type | [WithdrawType](#steward-v2-WithdrawType) |  | The withdraw type to use for the cellar |
+| new_withdraw_type | [Cellar.WithdrawType](#steward-v2-Cellar-WithdrawType) |  | The withdraw type to use for the cellar |
 
 
 
 
 
 
-<a name="steward-v2-SwapParams"></a>
+<a name="steward-v2-Cellar-SwapParams"></a>
 
-### SwapParams
+### Cellar.SwapParams
 Represents swap parameters for an exchange
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| univ2_params | [UniV2SwapParams](#steward-v2-UniV2SwapParams) |  | Params for a Uniswap V2 swap |
-| univ3_params | [UniV3SwapParams](#steward-v2-UniV3SwapParams) |  | Params for a Uniswap V3 swap |
+| univ2_params | [Cellar.UniV2SwapParams](#steward-v2-Cellar-UniV2SwapParams) |  | Params for a Uniswap V2 swap |
+| univ3_params | [Cellar.UniV3SwapParams](#steward-v2-Cellar-UniV3SwapParams) |  | Params for a Uniswap V3 swap |
 
 
 
 
 
 
-<a name="steward-v2-SwapPositions"></a>
+<a name="steward-v2-Cellar-SwapPositions"></a>
 
-### SwapPositions
+### Cellar.SwapPositions
 Swap the positions at two given indeces.
 
 Represents function `swapPositions(uint256 index1, uint256 index2)`
@@ -215,9 +289,9 @@ Represents function `swapPositions(uint256 index1, uint256 index2)`
 
 
 
-<a name="steward-v2-UniV2SwapParams"></a>
+<a name="steward-v2-Cellar-UniV2SwapParams"></a>
 
-### UniV2SwapParams
+### Cellar.UniV2SwapParams
 Represents swap parameters for UniswapV2
 
 
@@ -232,9 +306,9 @@ Represents swap parameters for UniswapV2
 
 
 
-<a name="steward-v2-UniV3SwapParams"></a>
+<a name="steward-v2-Cellar-UniV3SwapParams"></a>
 
-### UniV3SwapParams
+### Cellar.UniV3SwapParams
 Represents swap parameters for UniswapV3
 
 
@@ -252,9 +326,9 @@ Represents swap parameters for UniswapV3
  
 
 
-<a name="steward-v2-Exchange"></a>
+<a name="steward-v2-Cellar-Exchange"></a>
 
-### Exchange
+### Cellar.Exchange
 Exchange selector
 
 | Name | Number | Description |
@@ -265,9 +339,9 @@ Exchange selector
 
 
 
-<a name="steward-v2-WithdrawType"></a>
+<a name="steward-v2-Cellar-WithdrawType"></a>
 
-### WithdrawType
+### Cellar.WithdrawType
 Represents the withdraw type to use for the cellar
 
 | Name | Number | Description |
