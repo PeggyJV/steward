@@ -85,7 +85,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.owner }}
+          username: ${{ github.repo.owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: labels
         id: meta
