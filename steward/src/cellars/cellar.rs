@@ -9,10 +9,10 @@ use ethers::{
 };
 use steward_abi::cellar::{
     AddPositionCall, CellarCalls, PushPositionCall, RebalanceCall, RemovePositionCall,
-    SetDepositLimitCall, SetHoldingPositionCall, SetLiquidityLimitCall, SetShareLockPeriodCall,
-    SetStrategistPayoutAddressCall, SetWithdrawTypeCall, SwapPositionsCall, SetRebalanceDeviationCall,
+    SetDepositLimitCall, SetHoldingPositionCall, SetLiquidityLimitCall, SetRebalanceDeviationCall,
+    SetShareLockPeriodCall, SetStrategistPayoutAddressCall, SetWithdrawTypeCall, SwapPositionsCall,
 };
-use steward_proto::steward::{cellar::{Function, swap_params::Params::*, SwapParams}};
+use steward_proto::steward::cellar::{swap_params::Params::*, Function, SwapParams};
 
 use crate::{
     error::{Error, ErrorKind},
