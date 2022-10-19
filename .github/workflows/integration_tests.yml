@@ -117,7 +117,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test_type: [ "Cork" ]
+        test_type: [ "AaveV2Stablecoin", "VaultCellar" ]
     steps:
       - name: checkout
         uses: actions/checkout@v2

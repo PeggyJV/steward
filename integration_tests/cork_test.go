@@ -8,10 +8,13 @@ import (
 	"encoding/pem"
 	"fmt"
 	"io/ioutil"
+	"math/big"
 	"time"
 
 	"github.com/ethereum/go-ethereum"
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	gravityTypes "github.com/peggyjv/gravity-bridge/module/v2/x/gravity/types"
 	corkTypes "github.com/peggyjv/sommelier/v4/x/cork/types"
@@ -42,242 +45,242 @@ const T_AAVE_USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
 const T_AAVE_MIN_ASSETS_OUT = "1000000000000000000"
 
 func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
-	// s.Run("Submit rebalance request to MockAaveV2Stablecoin", func() {
-	// 	s.checkCellarExists(aaveCellar)
-	// 	s.waitForVotePeriod()
+	s.Run("Submit rebalance request to MockAaveV2Stablecoin", func() {
+		s.checkCellarExists(aaveCellar)
+		s.waitForVotePeriod()
 
-	// 	cellarId := aaveCellar.String()
+		cellarId := aaveCellar.String()
 
-	// 	// Create the cork request to send to Steward
-	// 	route := []string{T_AAVE_DAI, T_AAVE_POOL, T_AAVE_USDC, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS}
-	// 	swapParams := []*steward_proto.AaveV2Stablecoin_Rebalance_SwapParams{
-	// 		{InIndex: 0, OutIndex: 2, SwapType: 1},
-	// 		{InIndex: 0, OutIndex: 0, SwapType: 0},
-	// 		{InIndex: 0, OutIndex: 0, SwapType: 0},
-	// 		{InIndex: 0, OutIndex: 0, SwapType: 0},
-	// 	}
-	// 	request := &steward_proto.SubmitRequest{
-	// 		CellarId: cellarId,
-	// 		CallData: &steward_proto.SubmitRequest_AaveV2Stablecoin{
-	// 			AaveV2Stablecoin: &steward_proto.AaveV2Stablecoin{
-	// 				Function: &steward_proto.AaveV2Stablecoin_Rebalance_{
-	// 					Rebalance: &steward_proto.AaveV2Stablecoin_Rebalance{
-	// 						Route:        route,
-	// 						SwapParams:   swapParams,
-	// 						MinAssetsOut: T_AAVE_MIN_ASSETS_OUT,
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	}
-	// 	s.executeStewardCalls(request)
-	// 	s.waitForEndOfVotePeriod()
+		// Create the cork request to send to Steward
+		route := []string{T_AAVE_DAI, T_AAVE_POOL, T_AAVE_USDC, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS}
+		swapParams := []*steward_proto.AaveV2Stablecoin_Rebalance_SwapParams{
+			{InIndex: 0, OutIndex: 2, SwapType: 1},
+			{InIndex: 0, OutIndex: 0, SwapType: 0},
+			{InIndex: 0, OutIndex: 0, SwapType: 0},
+			{InIndex: 0, OutIndex: 0, SwapType: 0},
+		}
+		request := &steward_proto.SubmitRequest{
+			CellarId: cellarId,
+			CallData: &steward_proto.SubmitRequest_AaveV2Stablecoin{
+				AaveV2Stablecoin: &steward_proto.AaveV2Stablecoin{
+					Function: &steward_proto.AaveV2Stablecoin_Rebalance_{
+						Rebalance: &steward_proto.AaveV2Stablecoin_Rebalance{
+							Route:        route,
+							SwapParams:   swapParams,
+							MinAssetsOut: T_AAVE_MIN_ASSETS_OUT,
+						},
+					},
+				},
+			},
+		}
+		s.executeStewardCalls(request)
+		s.waitForVotePeriod()
 
-	// 	// Construct invalidation scope and nonce for gravity query
-	// 	aave_abi, err := AaveV2MetaData.GetAbi()
-	// 	s.Require().NoError(err)
+		// Construct invalidation scope and nonce for gravity query
+		aave_abi, err := AaveV2MetaData.GetAbi()
+		s.Require().NoError(err)
 
-	// 	methodName := "rebalance"
-	// 	zeroAddress := common.HexToAddress(ZERO_ADDRESS)
-	// 	solRoute := [9]common.Address{common.HexToAddress(T_AAVE_DAI), common.HexToAddress(T_AAVE_POOL), common.HexToAddress(T_AAVE_USDC), zeroAddress, zeroAddress, zeroAddress, zeroAddress, zeroAddress, zeroAddress}
-	// 	zero := big.NewInt(0)
-	// 	solSwapParams := &[4][3]*big.Int{{zero, big.NewInt(2), big.NewInt(1)}, {zero, zero, zero}, {zero, zero, zero}, {zero, zero, zero}}
-	// 	minAssetsOut := big.NewInt(1000000000000000000)
-	// 	method, err := aave_abi.Pack(methodName, solRoute, solSwapParams, minAssetsOut)
-	// 	addr := common.HexToAddress(aaveCellar.String())
-	// 	invalidationScope := crypto.Keccak256Hash(
-	// 		bytes.Join(
-	// 			[][]byte{addr.Bytes(), method},
-	// 			[]byte{},
-	// 		)).Bytes()
-	// 	invalidationNonce := 1
-	// 	s.Require().NoError(err)
+		methodName := "rebalance"
+		zeroAddress := common.HexToAddress(ZERO_ADDRESS)
+		solRoute := [9]common.Address{common.HexToAddress(T_AAVE_DAI), common.HexToAddress(T_AAVE_POOL), common.HexToAddress(T_AAVE_USDC), zeroAddress, zeroAddress, zeroAddress, zeroAddress, zeroAddress, zeroAddress}
+		zero := big.NewInt(0)
+		solSwapParams := &[4][3]*big.Int{{zero, big.NewInt(2), big.NewInt(1)}, {zero, zero, zero}, {zero, zero, zero}, {zero, zero, zero}}
+		minAssetsOut := big.NewInt(1000000000000000000)
+		method, err := aave_abi.Pack(methodName, solRoute, solSwapParams, minAssetsOut)
+		addr := common.HexToAddress(aaveCellar.String())
+		invalidationScope := crypto.Keccak256Hash(
+			bytes.Join(
+				[][]byte{addr.Bytes(), method},
+				[]byte{},
+			)).Bytes()
+		invalidationNonce := 1
+		s.Require().NoError(err)
 
-	// 	s.queryLogicCallTransaction(invalidationScope, invalidationNonce)
+		s.queryLogicCallTransaction(invalidationScope, invalidationNonce)
 
-	// 	// For non-anonymous events, the first log topic is a keccak256 hash o	f the
-	// 	// event signature.
-	// 	eventSignature := []byte("LogicCallEvent(bytes32,uint256,bytes,uint256)")
-	// 	logicCallEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
-	// 	s.waitForLogicCallEvent(logicCallEventSignatureTopic, invalidationScope, invalidationNonce)
+		// For non-anonymous events, the first log topic is a keccak256 hash o	f the
+		// event signature.
+		eventSignature := []byte("LogicCallEvent(bytes32,uint256,bytes,uint256)")
+		logicCallEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
+		s.waitForGravityLogicCallEvent(logicCallEventSignatureTopic, invalidationScope, invalidationNonce)
 
-	// 	s.T().Logf("checking for cellar event")
-	// 	s.Require().Eventuallyf(func() bool {
-	// 		s.T().Log("querying cellar events...")
-	// 		ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
-	// 		s.Require().NoError(err)
+		s.T().Logf("checking for cellar event")
+		s.Require().Eventuallyf(func() bool {
+			s.T().Log("querying cellar events...")
+			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
+			s.Require().NoError(err)
 
-	// 		// For non-anonymous events, the first log topic is a keccak256 hash of the
-	// 		// event signature.
-	// 		eventSignature := []byte("mockRebalance(address[9],uint256[3][4],uint256)")
-	// 		mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
-	// 		query := ethereum.FilterQuery{
-	// 			FromBlock: nil,
-	// 			ToBlock:   nil,
-	// 			Addresses: []common.Address{
-	// 				aaveCellar,
-	// 			},
-	// 			Topics: [][]common.Hash{
-	// 				{
-	// 					mockEventSignatureTopic,
-	// 				},
-	// 			},
-	// 		}
+			// For non-anonymous events, the first log topic is a keccak256 hash of the
+			// event signature.
+			eventSignature := []byte("mockRebalance(address[9],uint256[3][4],uint256)")
+			mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
+			query := ethereum.FilterQuery{
+				FromBlock: nil,
+				ToBlock:   nil,
+				Addresses: []common.Address{
+					aaveCellar,
+				},
+				Topics: [][]common.Hash{
+					{
+						mockEventSignatureTopic,
+					},
+				},
+			}
 
-	// 		logs, err := ethClient.FilterLogs(context.Background(), query)
-	// 		s.Require().NoError(err)
-	// 		ethClient.Close()
+			logs, err := ethClient.FilterLogs(context.Background(), query)
+			s.Require().NoError(err)
+			ethClient.Close()
 
-	// 		s.T().Logf("got %v logs", len(logs))
-	// 		if len(logs) == 1 {
-	// 			s.T().Log("saw mock function event!")
+			s.T().Logf("got %v logs", len(logs))
+			if len(logs) == 1 {
+				s.T().Log("saw mock function event!")
 
-	// 			log := logs[0]
-	// 			if len(log.Data) > 0 {
-	// 				var event AaveV2MockRebalance
-	// 				err := aave_abi.UnpackIntoInterface(&event, "mockRebalance", log.Data)
-	// 				s.Require().NoError(err, "failed to unpack mockRebalance event from log data")
-	// 				s.Require().Equal(event.MinAssetsOut, minAssetsOut)
-	// 				return true
-	// 			}
-	// 		}
+				log := logs[0]
+				if len(log.Data) > 0 {
+					var event AaveV2MockRebalance
+					err := aave_abi.UnpackIntoInterface(&event, "mockRebalance", log.Data)
+					s.Require().NoError(err, "failed to unpack mockRebalance event from log data")
+					s.Require().Equal(event.MinAssetsOut, minAssetsOut)
+					return true
+				}
+			}
 
-	// 		return false
-	// 	}, 2*time.Minute, 5*time.Second, "cellar event never seen")
-	// })
+			return false
+		}, 2*time.Minute, 5*time.Second, "cellar event never seen")
+	})
 }
 
 func (s *IntegrationTestSuite) TestVaultCellar() {
-	// s.Run("Submit rebalance to MockCellar", func() {
-	// 	s.checkCellarExists(vaultCellar)
-	// 	s.waitForVotePeriod()
+	s.Run("Submit rebalance to MockCellar", func() {
+		s.checkCellarExists(vaultCellar)
+		s.waitForVotePeriod()
 
-	// 	// Create the cork request to send to Steward
-	// 	from := ZERO_ADDRESS
-	// 	to := ONE_ADDRESS
-	// 	assetsFrom := "1000"
-	// 	exchange := steward_proto.Exchange_EXCHANGE_UNIV2
-	// 	swapParams := &steward_proto.SwapParams{
-	// 		Params: &steward_proto.SwapParams_Univ2Params{
-	// 			Univ2Params: &steward_proto.UniV2SwapParams{
-	// 				Path:         []string{ZERO_ADDRESS, ONE_ADDRESS},
-	// 				Amount:       "1000",
-	// 				AmountOutMin: "2000",
-	// 			},
-	// 		},
-	// 	}
+		// Create the cork request to send to Steward
+		from := ZERO_ADDRESS
+		to := ONE_ADDRESS
+		assetsFrom := "1000"
+		exchange := steward_proto.Cellar_EXCHANGE_UNIV2
+		swapParams := &steward_proto.Cellar_SwapParams{
+			Params: &steward_proto.Cellar_SwapParams_Univ2Params{
+				Univ2Params: &steward_proto.Cellar_UniV2SwapParams{
+					Path:         []string{ZERO_ADDRESS, ONE_ADDRESS},
+					Amount:       "1000",
+					AmountOutMin: "2000",
+				},
+			},
+		}
 
-	// 	cellarId := vaultCellar.String()
-	// 	request := &steward_proto.SubmitRequest{
-	// 		CellarId: cellarId,
-	// 		CallData: &steward_proto.SubmitRequest_Cellar{
-	// 			Cellar: &steward_proto.Cellar{
-	// 				Function: &steward_proto.Cellar_Rebalance{
-	// 					Rebalance: &steward_proto.Rebalance{
-	// 						FromPosition: from,
-	// 						ToPosition:   to,
-	// 						AssetsFrom:   assetsFrom,
-	// 						Exchange:     exchange,
-	// 						Params:       swapParams,
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	}
-	// 	s.executeStewardCalls(request)
-	// 	s.waitForEndOfVotePeriod()
+		cellarId := vaultCellar.String()
+		request := &steward_proto.SubmitRequest{
+			CellarId: cellarId,
+			CallData: &steward_proto.SubmitRequest_Cellar{
+				Cellar: &steward_proto.Cellar{
+					Function: &steward_proto.Cellar_Rebalance_{
+						Rebalance: &steward_proto.Cellar_Rebalance{
+							FromPosition: from,
+							ToPosition:   to,
+							AssetsFrom:   assetsFrom,
+							Exchange:     exchange,
+							Params:       swapParams,
+						},
+					},
+				},
+			},
+		}
+		s.executeStewardCalls(request)
+		s.waitForVotePeriod()
 
-	// 	// Construct invalidation scope and nonce for gravity query
-	// 	vault_abi, err := CellarMetaData.GetAbi()
-	// 	s.Require().NoError(err)
+		// Construct invalidation scope and nonce for gravity query
+		vault_abi, err := CellarMetaData.GetAbi()
+		s.Require().NoError(err)
 
-	// 	methodName := "rebalance"
-	// 	addressArrayT, _ := abi.NewType("address[]", "address[]", nil)
-	// 	uint256T, _ := abi.NewType("uint256", "uint256", nil)
-	// 	args := abi.Arguments{
-	// 		{
-	// 			Type: addressArrayT,
-	// 		},
-	// 		{
-	// 			Type: uint256T,
-	// 		},
-	// 		{
-	// 			Type: uint256T,
-	// 		},
-	// 	}
+		methodName := "rebalance"
+		addressArrayT, _ := abi.NewType("address[]", "address[]", nil)
+		uint256T, _ := abi.NewType("uint256", "uint256", nil)
+		args := abi.Arguments{
+			{
+				Type: addressArrayT,
+			},
+			{
+				Type: uint256T,
+			},
+			{
+				Type: uint256T,
+			},
+		}
 
-	// 	params, err := args.Pack(
-	// 		[]common.Address{
-	// 			common.HexToAddress(ZERO_ADDRESS),
-	// 			common.HexToAddress(ONE_ADDRESS),
-	// 		},
-	// 		big.NewInt(1000),
-	// 		big.NewInt(2000),
-	// 	)
-	// 	s.Require().NoError(err)
+		params, err := args.Pack(
+			[]common.Address{
+				common.HexToAddress(ZERO_ADDRESS),
+				common.HexToAddress(ONE_ADDRESS),
+			},
+			big.NewInt(1000),
+			big.NewInt(2000),
+		)
+		s.Require().NoError(err)
 
-	// 	method, err := vault_abi.Pack(methodName, common.HexToAddress(from), common.HexToAddress(to), big.NewInt(1000), uint8(0), params)
-	// 	s.Require().NoError(err)
+		method, err := vault_abi.Pack(methodName, common.HexToAddress(from), common.HexToAddress(to), big.NewInt(1000), uint8(0), params)
+		s.Require().NoError(err)
 
-	// 	addr := common.HexToAddress(vaultCellar.String())
-	// 	invalidationScope := crypto.Keccak256Hash(
-	// 		bytes.Join(
-	// 			[][]byte{addr.Bytes(), method},
-	// 			[]byte{},
-	// 		)).Bytes()
-	// 	invalidationNonce := 1
-	// 	s.queryLogicCallTransaction(invalidationScope, invalidationNonce)
+		addr := common.HexToAddress(vaultCellar.String())
+		invalidationScope := crypto.Keccak256Hash(
+			bytes.Join(
+				[][]byte{addr.Bytes(), method},
+				[]byte{},
+			)).Bytes()
+		invalidationNonce := 1
+		s.queryLogicCallTransaction(invalidationScope, invalidationNonce)
 
-	// 	// For non-anonymous events, the first log topic is a keccak256 hash of the
-	// 	// event signature.
-	// 	eventSignature := []byte("LogicCallEvent(bytes32,uint256,bytes,uint256)")
-	// 	logicCallEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
-	// 	s.waitForLogicCallEvent(logicCallEventSignatureTopic, invalidationScope, invalidationNonce)
+		// For non-anonymous events, the first log topic is a keccak256 hash of the
+		// event signature.
+		eventSignature := []byte("LogicCallEvent(bytes32,uint256,bytes,uint256)")
+		logicCallEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
+		s.waitForGravityLogicCallEvent(logicCallEventSignatureTopic, invalidationScope, invalidationNonce)
 
-	// 	s.T().Logf("checking for cellar event")
-	// 	s.Require().Eventuallyf(func() bool {
-	// 		s.T().Log("querying cellar events...")
-	// 		ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
-	// 		s.Require().NoError(err)
+		s.T().Logf("checking for cellar event")
+		s.Require().Eventuallyf(func() bool {
+			s.T().Log("querying cellar events...")
+			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
+			s.Require().NoError(err)
 
-	// 		// For non-anonymous events, the first log topic is a keccak256 hash of the
-	// 		// event signature.
-	// 		eventSignature := []byte("Rebalance(address,address,uint256)")
-	// 		mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
-	// 		query := ethereum.FilterQuery{
-	// 			FromBlock: nil,
-	// 			ToBlock:   nil,
-	// 			Addresses: []common.Address{
-	// 				vaultCellar,
-	// 			},
-	// 			Topics: [][]common.Hash{
-	// 				{
-	// 					mockEventSignatureTopic,
-	// 				},
-	// 			},
-	// 		}
+			// For non-anonymous events, the first log topic is a keccak256 hash of the
+			// event signature.
+			eventSignature := []byte("Rebalance(address,address,uint256)")
+			mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
+			query := ethereum.FilterQuery{
+				FromBlock: nil,
+				ToBlock:   nil,
+				Addresses: []common.Address{
+					vaultCellar,
+				},
+				Topics: [][]common.Hash{
+					{
+						mockEventSignatureTopic,
+					},
+				},
+			}
 
-	// 		logs, err := ethClient.FilterLogs(context.Background(), query)
-	// 		s.Require().NoError(err)
-	// 		ethClient.Close()
+			logs, err := ethClient.FilterLogs(context.Background(), query)
+			s.Require().NoError(err)
+			ethClient.Close()
 
-	// 		s.T().Logf("got %v logs: %v", len(logs), logs)
-	// 		if len(logs) == 1 {
-	// 			s.T().Log("saw mock function event!")
+			s.T().Logf("got %v logs: %v", len(logs), logs)
+			if len(logs) == 1 {
+				s.T().Log("saw mock function event!")
 
-	// 			log := logs[0]
-	// 			if len(log.Data) > 0 {
-	// 				var event CellarRebalance
-	// 				err := vault_abi.UnpackIntoInterface(&event, "Rebalance", log.Data)
-	// 				s.Require().NoError(err, "failed to unpack Rebalance event from log data")
-	// 				s.Require().Equal(event.FromPosition, common.HexToAddress(from))
-	// 				return true
-	// 			}
-	// 		}
+				log := logs[0]
+				if len(log.Data) > 0 {
+					var event CellarRebalance
+					err := vault_abi.UnpackIntoInterface(&event, "Rebalance", log.Data)
+					s.Require().NoError(err, "failed to unpack Rebalance event from log data")
+					s.Require().Equal(event.FromPosition, common.HexToAddress(from))
+					return true
+				}
+			}
 
-	// 		return false
-	// 	}, 2*time.Minute, 10*time.Second, "cellar event never seen")
-	// })
+			return false
+		}, 2*time.Minute, 10*time.Second, "cellar event never seen")
+	})
 }
 
 func (s *IntegrationTestSuite) checkCellarExists(cellar common.Address) {
@@ -302,26 +305,6 @@ func (s *IntegrationTestSuite) checkCellarExists(cellar common.Address) {
 
 func (s *IntegrationTestSuite) waitForVotePeriod() {
 	s.T().Logf("wait for new vote period start")
-	queryClient, err := s.chain.validators[0].GetQueryClient()
-	s.Require().NoError(err, "error getting query client")
-	s.Require().Eventuallyf(func() bool {
-		res, err := queryClient.QueryCommitPeriod(context.Background(), &corkTypes.QueryCommitPeriodRequest{})
-		if err != nil {
-			return false
-		}
-		if res.VotePeriodStart != res.CurrentHeight {
-			if res.CurrentHeight%10 == 0 {
-				s.T().Logf("current height: %d, period end: %d", res.CurrentHeight, res.VotePeriodEnd)
-			}
-			return false
-		}
-
-		return true
-	}, 30*time.Second, 1*time.Second, "new vote period never seen")
-}
-
-func (s *IntegrationTestSuite) waitForEndOfVotePeriod() {
-	s.T().Logf("waiting for end of vote period, endblocker to run")
 	queryClient, err := s.chain.validators[0].GetQueryClient()
 	s.Require().NoError(err, "error getting query client")
 	s.Require().Eventuallyf(func() bool {
@@ -419,7 +402,7 @@ func (s *IntegrationTestSuite) queryLogicCallTransaction(invalidationScope []byt
 	time.Sleep(time.Duration(2000000000))
 }
 
-func (s *IntegrationTestSuite) waitForLogicCallEvent(topic common.Hash, invalidationScope []byte, invalidationNonce int) {
+func (s *IntegrationTestSuite) waitForGravityLogicCallEvent(topic common.Hash, invalidationScope []byte, invalidationNonce int) {
 	s.T().Logf("waiting for gravity to submit call to cellar")
 	s.Require().Eventuallyf(func() bool {
 		s.T().Log("querying gravity logic call events...")

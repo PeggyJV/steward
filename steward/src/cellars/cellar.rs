@@ -5,7 +5,7 @@ use abscissa_core::tracing::info;
 use ethers::{
     abi::{self, AbiEncode, Token},
     contract::EthCall,
-    types::H160,
+    types::Address,
 };
 use steward_abi::cellar::{
     AddPositionCall, CellarCalls, PushPositionCall, RebalanceCall, RemovePositionCall,
@@ -105,7 +105,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 &cellar_id,
             );
             let call = SetWithdrawTypeCall {
-                new_withdraw_type: params.new_withdraw_type as u8,
+                new_withdraw_type: (params.new_withdraw_type - 1) as u8,
             };
 
             Ok(CellarCalls::SetWithdrawType(call).encode())
@@ -181,7 +181,7 @@ fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
             let mut path = Vec::<Token>::new();
 
             for a in p.path {
-                let address = a.parse::<H160>();
+                let address = a.parse::<Address>();
                 if address.is_err() {
                     return Err(sp_call_error(format!(
                         "could not parse swap params path address: {}",
@@ -200,7 +200,7 @@ fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
         Univ3Params(p) => {
             let mut path = Vec::<Token>::new();
             for a in p.path {
-                let address = a.parse::<H160>();
+                let address = a.parse::<Address>();
                 if address.is_err() {
                     return Err(sp_call_error(format!(
                         "could not parse swap params path address: {}",

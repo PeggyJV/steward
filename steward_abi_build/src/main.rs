@@ -1,3 +1,4 @@
+#![allow(clippy::all)]
 use ethers::contract::Abigen;
 use std::process;
 

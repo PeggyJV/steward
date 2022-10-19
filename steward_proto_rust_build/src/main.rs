@@ -1,3 +1,4 @@
+#![allow(clippy::all)]
 //! Protobuf files in the steward repo, copying the result to the steward_proto crate for import
 //! and use. While this builder generates about a dozen files only one contains all the steward
 //! proto info and the rest are discarded in favor of upstream cosmos-sdk-proto
