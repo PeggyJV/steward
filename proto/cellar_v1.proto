@@ -12,7 +12,7 @@ option go_package = "/steward_proto";
 /*
 * Represents a function call to a cellar that implements Cellar.sol
 */
-message Cellar {
+message CellarV1 {
     // The function you wish to execute on the target cellar
     oneof function {
         // Represents function `addPosition(uint256 index, address position)`

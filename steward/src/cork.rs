@@ -1,5 +1,5 @@
 use crate::{
-    cellars::{self, aave_v2_stablecoin, cellar},
+    cellars::{self, aave_v2_stablecoin, cellar_v1},
     config,
     error::{Error, ErrorKind},
     prelude::APP,
@@ -117,12 +117,12 @@ fn get_encoded_call(request: SubmitRequest) -> Result<Vec<u8>, Error> {
 
             aave_v2_stablecoin::get_encoded_call(call.function.unwrap(), request.cellar_id)
         }
-        Cellar(call) => {
+        CellarV1(call) => {
             if call.function.is_none() {
                 return Err(ErrorKind::Http.context("empty function data").into());
             }
 
-            cellar::get_encoded_call(call.function.unwrap(), request.cellar_id)
+            cellar_v1::get_encoded_call(call.function.unwrap(), request.cellar_id)
         }
     }
 }

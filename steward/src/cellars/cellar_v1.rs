@@ -12,7 +12,7 @@ use steward_abi::cellar::{
     SetDepositLimitCall, SetHoldingPositionCall, SetLiquidityLimitCall, SetRebalanceDeviationCall,
     SetShareLockPeriodCall, SetStrategistPayoutAddressCall, SetWithdrawTypeCall, SwapPositionsCall,
 };
-use steward_proto::steward::cellar::{swap_params::Params::*, Function, SwapParams};
+use steward_proto::steward::cellar_v1::{swap_params::Params::*, Function, SwapParams};
 
 use crate::{
     error::{Error, ErrorKind},

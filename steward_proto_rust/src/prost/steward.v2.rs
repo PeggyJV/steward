@@ -185,16 +185,16 @@ pub mod aave_v2_stablecoin {
 ///
 /// Represents a function call to a cellar that implements Cellar.sol
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Cellar {
+pub struct CellarV1 {
     /// The function you wish to execute on the target cellar
     #[prost(
-        oneof = "cellar::Function",
+        oneof = "cellar_v1::Function",
         tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12"
     )]
-    pub function: ::core::option::Option<cellar::Function>,
+    pub function: ::core::option::Option<cellar_v1::Function>,
 }
-/// Nested message and enum types in `Cellar`.
-pub mod cellar {
+/// Nested message and enum types in `CellarV1`.
+pub mod cellar_v1 {
     ///
     /// Insert a trusted position to the list of positions used by the cellar at a given index.
     ///
@@ -459,7 +459,7 @@ pub mod submit_request {
         #[prost(message, tag = "2")]
         AaveV2Stablecoin(super::AaveV2Stablecoin),
         #[prost(message, tag = "3")]
-        Cellar(super::Cellar),
+        CellarV1(super::CellarV1),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]

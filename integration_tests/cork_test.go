@@ -159,10 +159,10 @@ func (s *IntegrationTestSuite) TestVaultCellar() {
 		from := ZERO_ADDRESS
 		to := ONE_ADDRESS
 		assetsFrom := "1000"
-		exchange := steward_proto.Cellar_EXCHANGE_UNIV2
-		swapParams := &steward_proto.Cellar_SwapParams{
-			Params: &steward_proto.Cellar_SwapParams_Univ2Params{
-				Univ2Params: &steward_proto.Cellar_UniV2SwapParams{
+		exchange := steward_proto.CellarV1_EXCHANGE_UNIV2
+		swapParams := &steward_proto.CellarV1_SwapParams{
+			Params: &steward_proto.CellarV1_SwapParams_Univ2Params{
+				Univ2Params: &steward_proto.CellarV1_UniV2SwapParams{
 					Path:         []string{ZERO_ADDRESS, ONE_ADDRESS},
 					Amount:       "1000",
 					AmountOutMin: "2000",
@@ -173,10 +173,10 @@ func (s *IntegrationTestSuite) TestVaultCellar() {
 		cellarId := vaultCellar.String()
 		request := &steward_proto.SubmitRequest{
 			CellarId: cellarId,
-			CallData: &steward_proto.SubmitRequest_Cellar{
-				Cellar: &steward_proto.Cellar{
-					Function: &steward_proto.Cellar_Rebalance_{
-						Rebalance: &steward_proto.Cellar_Rebalance{
+			CallData: &steward_proto.SubmitRequest_CellarV1{
+				CellarV1: &steward_proto.CellarV1{
+					Function: &steward_proto.CellarV1_Rebalance_{
+						Rebalance: &steward_proto.CellarV1_Rebalance{
 							FromPosition: from,
 							ToPosition:   to,
 							AssetsFrom:   assetsFrom,
