@@ -28,7 +28,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
         Function::AddPosition(params) => {
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
             let call = AddPositionCall {
-                index: utils::string_to_u256(params.index)?,
+                index: string_to_u256(params.index)?,
                 position: sp_call_parse_address(params.position)?,
             };
 
@@ -49,7 +49,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 &cellar_id,
             );
             let call = RemovePositionCall {
-                index: utils::string_to_u256(params.index)?,
+                index: string_to_u256(params.index)?,
             };
 
             Ok(CellarCalls::RemovePosition(call).encode())
@@ -117,8 +117,8 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
         Function::SwapPositions(params) => {
             log_cellar_call(CELLAR_NAME, &SwapPositionsCall::function_name(), &cellar_id);
             let call = SwapPositionsCall {
-                index_1: utils::string_to_u256(params.index_1)?,
-                index_2: utils::string_to_u256(params.index_2)?,
+                index_1: string_to_u256(params.index_1)?,
+                index_2: string_to_u256(params.index_2)?,
             };
 
             Ok(CellarCalls::SwapPositions(call).encode())
@@ -130,7 +130,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 &cellar_id,
             );
             let call = SetDepositLimitCall {
-                new_limit: utils::string_to_u256(params.new_limit)?,
+                new_limit: string_to_u256(params.new_limit)?,
             };
 
             Ok(CellarCalls::SetDepositLimit(call).encode())
@@ -142,7 +142,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 &cellar_id,
             );
             let call = SetLiquidityLimitCall {
-                new_limit: utils::string_to_u256(params.new_limit)?,
+                new_limit: string_to_u256(params.new_limit)?,
             };
 
             Ok(CellarCalls::SetLiquidityLimit(call).encode())
@@ -154,7 +154,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 &cellar_id,
             );
             let call = SetShareLockPeriodCall {
-                new_lock: utils::string_to_u256(params.new_lock)?,
+                new_lock: string_to_u256(params.new_lock)?,
             };
 
             Ok(CellarCalls::SetShareLockPeriod(call).encode())
@@ -166,7 +166,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 &cellar_id,
             );
             let call = SetRebalanceDeviationCall {
-                new_deviation: utils::string_to_u256(params.new_deviation)?,
+                new_deviation: string_to_u256(params.new_deviation)?,
             };
 
             Ok(CellarCalls::SetRebalanceDeviation(call).encode())
