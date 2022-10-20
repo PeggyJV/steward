@@ -19,7 +19,7 @@ contract Cellar is Ownable {
      * @param toPosition the address of the position rebalanced to
      * @param assetsFrom the amount of assets withdrawn from the position rebalanced from
      */
-    event Rebalance(address indexed fromPosition, address indexed toPosition, uint256 assetsFrom);
+    event Rebalance(address indexed fromPosition, address indexed toPosition, uint256 assetsFrom, Exchange exchange);
 
     enum Exchange {
         UNIV2,
@@ -52,6 +52,6 @@ contract Cellar is Ownable {
                 (address[], uint24[], uint256, uint256)
             );
         }
-        emit Rebalance(fromPosition, toPosition, assetsFrom);
+        emit Rebalance(fromPosition, toPosition, assetsFrom, exchange);
     }
 }

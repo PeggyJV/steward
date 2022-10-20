@@ -11,6 +11,7 @@ import (
 	"math/big"
 	"time"
 
+	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
@@ -150,17 +151,16 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 	})
 }
 
-func (s *IntegrationTestSuite) TestVaultCellar() {
+func (s *IntegrationTestSuite) TestCellarV1() {
 	s.Run("Submit rebalance to MockCellar", func() {
 		s.checkCellarExists(vaultCellar)
-		s.waitForVotePeriod()
 
-		// Create the cork request to send to Steward
+		// Create the cork requests to send to Steward
 		from := ZERO_ADDRESS
 		to := ONE_ADDRESS
 		assetsFrom := "1000"
-		exchange := steward_proto.CellarV1_EXCHANGE_UNIV2
-		swapParams := &steward_proto.CellarV1_SwapParams{
+		cellarId := vaultCellar.String()
+		swapParamsUniV2 := &steward_proto.CellarV1_SwapParams{
 			Params: &steward_proto.CellarV1_SwapParams_Univ2Params{
 				Univ2Params: &steward_proto.CellarV1_UniV2SwapParams{
 					Path:         []string{ZERO_ADDRESS, ONE_ADDRESS},
@@ -169,9 +169,7 @@ func (s *IntegrationTestSuite) TestVaultCellar() {
 				},
 			},
 		}
-
-		cellarId := vaultCellar.String()
-		request := &steward_proto.SubmitRequest{
+		requestUniV2 := &steward_proto.SubmitRequest{
 			CellarId: cellarId,
 			CallData: &steward_proto.SubmitRequest_CellarV1{
 				CellarV1: &steward_proto.CellarV1{
@@ -180,106 +178,180 @@ func (s *IntegrationTestSuite) TestVaultCellar() {
 							FromPosition: from,
 							ToPosition:   to,
 							AssetsFrom:   assetsFrom,
-							Exchange:     exchange,
-							Params:       swapParams,
+							Exchange:     steward_proto.CellarV1_EXCHANGE_UNIV2,
+							Params:       swapParamsUniV2,
 						},
 					},
 				},
 			},
 		}
-		s.executeStewardCalls(request)
-		s.waitForVotePeriod()
-
-		// Construct invalidation scope and nonce for gravity query
-		vault_abi, err := CellarMetaData.GetAbi()
-		s.Require().NoError(err)
-
-		methodName := "rebalance"
-		addressArrayT, _ := abi.NewType("address[]", "address[]", nil)
-		uint256T, _ := abi.NewType("uint256", "uint256", nil)
-		args := abi.Arguments{
-			{
-				Type: addressArrayT,
+		swapParamsUniV3 := &steward_proto.CellarV1_SwapParams{
+			Params: &steward_proto.CellarV1_SwapParams_Univ3Params{
+				Univ3Params: &steward_proto.CellarV1_UniV3SwapParams{
+					Path:         []string{ZERO_ADDRESS, ONE_ADDRESS},
+					PoolFees:     []uint32{0, 0},
+					Amount:       "1000",
+					AmountOutMin: "2000",
+				},
 			},
-			{
-				Type: uint256T,
-			},
-			{
-				Type: uint256T,
+		}
+		requestUniV3 := &steward_proto.SubmitRequest{
+			CellarId: cellarId,
+			CallData: &steward_proto.SubmitRequest_CellarV1{
+				CellarV1: &steward_proto.CellarV1{
+					Function: &steward_proto.CellarV1_Rebalance_{
+						Rebalance: &steward_proto.CellarV1_Rebalance{
+							FromPosition: from,
+							ToPosition:   to,
+							AssetsFrom:   assetsFrom,
+							Exchange:     steward_proto.CellarV1_EXCHANGE_UNIV3,
+							Params:       swapParamsUniV3,
+						},
+					},
+				},
 			},
 		}
 
-		params, err := args.Pack(
-			[]common.Address{
-				common.HexToAddress(ZERO_ADDRESS),
-				common.HexToAddress(ONE_ADDRESS),
-			},
-			big.NewInt(1000),
-			big.NewInt(2000),
-		)
-		s.Require().NoError(err)
+		s.T().Log("running through two sequences to test rebalance with both UniV2 and Univ3 swap params")
+		for sequence, request := range []*steward_proto.SubmitRequest{requestUniV2, requestUniV3} {
+			s.T().Log("starting sequence")
+			s.waitForVotePeriod()
+			s.executeStewardCalls(request)
+			s.waitForVotePeriod()
 
-		method, err := vault_abi.Pack(methodName, common.HexToAddress(from), common.HexToAddress(to), big.NewInt(1000), uint8(0), params)
-		s.Require().NoError(err)
-
-		addr := common.HexToAddress(vaultCellar.String())
-		invalidationScope := crypto.Keccak256Hash(
-			bytes.Join(
-				[][]byte{addr.Bytes(), method},
-				[]byte{},
-			)).Bytes()
-		invalidationNonce := 1
-		s.queryLogicCallTransaction(invalidationScope, invalidationNonce)
-
-		// For non-anonymous events, the first log topic is a keccak256 hash of the
-		// event signature.
-		eventSignature := []byte("LogicCallEvent(bytes32,uint256,bytes,uint256)")
-		logicCallEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
-		s.waitForGravityLogicCallEvent(logicCallEventSignatureTopic, invalidationScope, invalidationNonce)
-
-		s.T().Logf("checking for cellar event")
-		s.Require().Eventuallyf(func() bool {
-			s.T().Log("querying cellar events...")
-			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
+			// Construct invalidation scope and nonce for gravity query
+			vault_abi, err := CellarMetaData.GetAbi()
 			s.Require().NoError(err)
+
+			methodName := "rebalance"
+			addressArrayT, _ := abi.NewType("address[]", "address[]", nil)
+			feeArrayT, _ := abi.NewType("uint32[]", "uint32[]", nil)
+			uint256T, _ := abi.NewType("uint256", "uint256", nil)
+
+			var args abi.Arguments
+			var params []byte
+			if sequence == 0 {
+				args = abi.Arguments{
+					{
+						Type: addressArrayT,
+					},
+					{
+						Type: uint256T,
+					},
+					{
+						Type: uint256T,
+					},
+				}
+
+				params, err = args.Pack(
+					[]common.Address{
+						common.HexToAddress(ZERO_ADDRESS),
+						common.HexToAddress(ONE_ADDRESS),
+					},
+					big.NewInt(1000),
+					big.NewInt(2000),
+				)
+				s.Require().NoError(err)
+			} else {
+				args = abi.Arguments{
+					{
+						Type: addressArrayT,
+					},
+					{
+						Type: feeArrayT,
+					},
+					{
+						Type: uint256T,
+					},
+					{
+						Type: uint256T,
+					},
+				}
+
+				params, err = args.Pack(
+					[]common.Address{
+						common.HexToAddress(ZERO_ADDRESS),
+						common.HexToAddress(ONE_ADDRESS),
+					},
+					[]uint32{0, 0},
+					big.NewInt(1000),
+					big.NewInt(2000),
+				)
+				s.Require().NoError(err)
+			}
+			method, err := vault_abi.Pack(methodName, common.HexToAddress(from), common.HexToAddress(to), big.NewInt(1000), uint8(sequence), params)
+			s.Require().NoError(err)
+
+			addr := common.HexToAddress(vaultCellar.String())
+			invalidationScope := crypto.Keccak256Hash(
+				bytes.Join(
+					[][]byte{addr.Bytes(), method},
+					[]byte{},
+				)).Bytes()
+			invalidationNonce := sequence + 1
+			s.queryLogicCallTransaction(invalidationScope, invalidationNonce)
 
 			// For non-anonymous events, the first log topic is a keccak256 hash of the
 			// event signature.
-			eventSignature := []byte("Rebalance(address,address,uint256)")
-			mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
-			query := ethereum.FilterQuery{
-				FromBlock: nil,
-				ToBlock:   nil,
-				Addresses: []common.Address{
-					vaultCellar,
-				},
-				Topics: [][]common.Hash{
-					{
-						mockEventSignatureTopic,
+			eventSignature := []byte("LogicCallEvent(bytes32,uint256,bytes,uint256)")
+			logicCallEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
+			s.waitForGravityLogicCallEvent(logicCallEventSignatureTopic, invalidationScope, invalidationNonce)
+
+			s.T().Logf("checking for cellar event")
+			s.Require().Eventuallyf(func() bool {
+				s.T().Log("querying cellar events...")
+				ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
+				s.Require().NoError(err)
+
+				// For non-anonymous events, the first log topic is a keccak256 hash of the
+				// event signature.
+				eventSignature := []byte("Rebalance(address,address,uint256,uint8)")
+				mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
+				query := ethereum.FilterQuery{
+					FromBlock: nil,
+					ToBlock:   nil,
+					Addresses: []common.Address{
+						vaultCellar,
 					},
-				},
-			}
-
-			logs, err := ethClient.FilterLogs(context.Background(), query)
-			s.Require().NoError(err)
-			ethClient.Close()
-
-			s.T().Logf("got %v logs: %v", len(logs), logs)
-			if len(logs) == 1 {
-				s.T().Log("saw mock function event!")
-
-				log := logs[0]
-				if len(log.Data) > 0 {
-					var event CellarRebalance
-					err := vault_abi.UnpackIntoInterface(&event, "Rebalance", log.Data)
-					s.Require().NoError(err, "failed to unpack Rebalance event from log data")
-					s.Require().Equal(event.FromPosition, common.HexToAddress(from))
-					return true
+					Topics: [][]common.Hash{
+						{
+							mockEventSignatureTopic,
+						},
+					},
 				}
-			}
 
-			return false
-		}, 2*time.Minute, 10*time.Second, "cellar event never seen")
+				logs, err := ethClient.FilterLogs(context.Background(), query)
+				s.Require().NoError(err)
+				ethClient.Close()
+
+				s.T().Logf("got %v logs: %v", len(logs), logs)
+				if len(logs) > 0 {
+					for _, log := range logs {
+						if len(log.Data) > 0 {
+							var event CellarRebalance
+							err := vault_abi.UnpackIntoInterface(&event, "Rebalance", log.Data)
+							s.Require().NoError(err, "failed to unpack Rebalance event from log data")
+
+							if sequence == 0 {
+								if event.Exchange == 0 {
+									s.T().Log("saw mock function event!")
+									return true
+								}
+							} else {
+								if event.Exchange == 1 {
+									s.T().Log("saw mock function event!")
+									return true
+								}
+							}
+						}
+					}
+				}
+
+				return false
+			}, 2*time.Minute, 10*time.Second, "cellar event never seen")
+
+			s.T().Log("sequence complete!")
+		}
 	})
 }
 
@@ -386,15 +458,17 @@ func (s *IntegrationTestSuite) queryLogicCallTransaction(invalidationScope []byt
 
 	gravityQueryClient := gravityTypes.NewQueryClient(clientCtx)
 	s.Require().Eventuallyf(func() bool {
-		request := &gravityTypes.ContractCallTxRequest{
-			InvalidationNonce: uint64(invalidationNonce),
-			InvalidationScope: invalidationScope,
+		request := &gravityTypes.ContractCallTxsRequest{
+			Pagination: &query.PageRequest{},
 		}
-		response, _ := gravityQueryClient.ContractCallTx(context.Background(), request)
-
+		response, _ := gravityQueryClient.ContractCallTxs(context.Background(), request)
 		if response != nil {
-			s.T().Logf("found logic call %v!", response.LogicCall)
-			return true
+			for _, call := range response.Calls {
+				if bytes.Equal(call.InvalidationScope, invalidationScope) && call.InvalidationNonce == uint64(invalidationNonce) {
+					s.T().Log("logic call found in the gravity module!")
+					return true
+				}
+			}
 		}
 
 		return false
@@ -404,6 +478,8 @@ func (s *IntegrationTestSuite) queryLogicCallTransaction(invalidationScope []byt
 
 func (s *IntegrationTestSuite) waitForGravityLogicCallEvent(topic common.Hash, invalidationScope []byte, invalidationNonce int) {
 	s.T().Logf("waiting for gravity to submit call to cellar")
+	gravity_abi, err := GravityMetaData.GetAbi()
+	s.Require().NoError(err)
 	s.Require().Eventuallyf(func() bool {
 		s.T().Log("querying gravity logic call events...")
 		ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
@@ -421,38 +497,32 @@ func (s *IntegrationTestSuite) waitForGravityLogicCallEvent(topic common.Hash, i
 				},
 			},
 		}
-		result, err := ethClient.FilterLogs(context.Background(), query)
+		logs, err := ethClient.FilterLogs(context.Background(), query)
 		s.Require().NoError(err)
 		ethClient.Close()
 
-		s.T().Logf("got %v LogicCallEvent logs", len(result))
-		if len(result) == 0 {
+		s.T().Logf("got %v LogicCallEvent logs", len(logs))
+		if len(logs) == 0 {
 			return false
 		}
 
-		// only one LogicCallEvent is expected
-		s.Require().Equal(len(result), 1)
-
-		log := result[0]
-		gravity_abi, err := GravityMetaData.GetAbi()
-		s.Require().NoError(err)
-
 		var event GravityLogicCallEvent
-		if len(log.Data) > 0 {
-			err := gravity_abi.UnpackIntoInterface(&event, "LogicCallEvent", log.Data)
-			s.Require().NoError(err)
+		for _, log := range logs {
+			if len(log.Data) > 0 {
+				err := gravity_abi.UnpackIntoInterface(&event, "LogicCallEvent", log.Data)
+				if err != nil {
+					continue
+				}
 
-			s.T().Log("comparing invalidation parameters")
-			eventInvalidationId := event.InvalidationId[:]
-			if bytes.Equal(eventInvalidationId, invalidationScope) && int(event.InvalidationNonce.Int64()) == invalidationNonce {
-				s.T().Log("logic call executed!")
-				return true
+				eventInvalidationId := event.InvalidationId[:]
+				if bytes.Equal(eventInvalidationId, invalidationScope) && int(event.InvalidationNonce.Int64()) == invalidationNonce {
+					s.T().Log("logic call executed!")
+					return true
+				}
+			} else {
+				s.T().Log("no data in log")
 			}
-			s.T().Log("invalidation parameters did not match up")
-		} else {
-			s.T().Log("no data in log")
 		}
-
 		return false
-	}, 1*time.Minute, 3*time.Second, "cellar event never seen")
+	}, 1*time.Minute, 5*time.Second, "cellar event never seen")
 }
