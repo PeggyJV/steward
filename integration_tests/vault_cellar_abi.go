@@ -30,7 +30,7 @@ var (
 
 // CellarMetaData contains all meta data concerning the Cellar contract.
 var CellarMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"fromPosition\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"toPosition\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"assetsFrom\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumCellar.Exchange\",\"name\":\"exchange\",\"type\":\"uint8\"}],\"name\":\"Rebalance\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"fromPosition\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"toPosition\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"assetsFrom\",\"type\":\"uint256\"},{\"internalType\":\"enumCellar.Exchange\",\"name\":\"exchange\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"params\",\"type\":\"bytes\"}],\"name\":\"rebalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"assetsTo\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnerUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"fromPosition\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"toPosition\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"assetsFrom\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumCellar.Exchange\",\"name\":\"exchange\",\"type\":\"uint8\"}],\"name\":\"Rebalance\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"fromPosition\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"toPosition\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"assetsFrom\",\"type\":\"uint256\"},{\"internalType\":\"enumCellar.Exchange\",\"name\":\"exchange\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"params\",\"type\":\"bytes\"}],\"name\":\"rebalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"assetsTo\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"setOwner\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // CellarABI is the input ABI used to generate the binding from.
@@ -231,51 +231,30 @@ func (_Cellar *CellarTransactorSession) Rebalance(fromPosition common.Address, t
 	return _Cellar.Contract.Rebalance(&_Cellar.TransactOpts, fromPosition, toPosition, assetsFrom, exchange, params)
 }
 
-// RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
+// SetOwner is a paid mutator transaction binding the contract method 0x13af4035.
 //
-// Solidity: function renounceOwnership() returns()
-func (_Cellar *CellarTransactor) RenounceOwnership(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _Cellar.contract.Transact(opts, "renounceOwnership")
+// Solidity: function setOwner(address newOwner) returns()
+func (_Cellar *CellarTransactor) SetOwner(opts *bind.TransactOpts, newOwner common.Address) (*types.Transaction, error) {
+	return _Cellar.contract.Transact(opts, "setOwner", newOwner)
 }
 
-// RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
+// SetOwner is a paid mutator transaction binding the contract method 0x13af4035.
 //
-// Solidity: function renounceOwnership() returns()
-func (_Cellar *CellarSession) RenounceOwnership() (*types.Transaction, error) {
-	return _Cellar.Contract.RenounceOwnership(&_Cellar.TransactOpts)
+// Solidity: function setOwner(address newOwner) returns()
+func (_Cellar *CellarSession) SetOwner(newOwner common.Address) (*types.Transaction, error) {
+	return _Cellar.Contract.SetOwner(&_Cellar.TransactOpts, newOwner)
 }
 
-// RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
+// SetOwner is a paid mutator transaction binding the contract method 0x13af4035.
 //
-// Solidity: function renounceOwnership() returns()
-func (_Cellar *CellarTransactorSession) RenounceOwnership() (*types.Transaction, error) {
-	return _Cellar.Contract.RenounceOwnership(&_Cellar.TransactOpts)
+// Solidity: function setOwner(address newOwner) returns()
+func (_Cellar *CellarTransactorSession) SetOwner(newOwner common.Address) (*types.Transaction, error) {
+	return _Cellar.Contract.SetOwner(&_Cellar.TransactOpts, newOwner)
 }
 
-// TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
-//
-// Solidity: function transferOwnership(address newOwner) returns()
-func (_Cellar *CellarTransactor) TransferOwnership(opts *bind.TransactOpts, newOwner common.Address) (*types.Transaction, error) {
-	return _Cellar.contract.Transact(opts, "transferOwnership", newOwner)
-}
-
-// TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
-//
-// Solidity: function transferOwnership(address newOwner) returns()
-func (_Cellar *CellarSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
-	return _Cellar.Contract.TransferOwnership(&_Cellar.TransactOpts, newOwner)
-}
-
-// TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
-//
-// Solidity: function transferOwnership(address newOwner) returns()
-func (_Cellar *CellarTransactorSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
-	return _Cellar.Contract.TransferOwnership(&_Cellar.TransactOpts, newOwner)
-}
-
-// CellarOwnershipTransferredIterator is returned from FilterOwnershipTransferred and is used to iterate over the raw logs and unpacked data for OwnershipTransferred events raised by the Cellar contract.
-type CellarOwnershipTransferredIterator struct {
-	Event *CellarOwnershipTransferred // Event containing the contract specifics and raw log
+// CellarOwnerUpdatedIterator is returned from FilterOwnerUpdated and is used to iterate over the raw logs and unpacked data for OwnerUpdated events raised by the Cellar contract.
+type CellarOwnerUpdatedIterator struct {
+	Event *CellarOwnerUpdated // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -289,7 +268,7 @@ type CellarOwnershipTransferredIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *CellarOwnershipTransferredIterator) Next() bool {
+func (it *CellarOwnerUpdatedIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -298,7 +277,7 @@ func (it *CellarOwnershipTransferredIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(CellarOwnershipTransferred)
+			it.Event = new(CellarOwnerUpdated)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -313,7 +292,7 @@ func (it *CellarOwnershipTransferredIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(CellarOwnershipTransferred)
+		it.Event = new(CellarOwnerUpdated)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -329,60 +308,60 @@ func (it *CellarOwnershipTransferredIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *CellarOwnershipTransferredIterator) Error() error {
+func (it *CellarOwnerUpdatedIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *CellarOwnershipTransferredIterator) Close() error {
+func (it *CellarOwnerUpdatedIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// CellarOwnershipTransferred represents a OwnershipTransferred event raised by the Cellar contract.
-type CellarOwnershipTransferred struct {
-	PreviousOwner common.Address
-	NewOwner      common.Address
-	Raw           types.Log // Blockchain specific contextual infos
+// CellarOwnerUpdated represents a OwnerUpdated event raised by the Cellar contract.
+type CellarOwnerUpdated struct {
+	User     common.Address
+	NewOwner common.Address
+	Raw      types.Log // Blockchain specific contextual infos
 }
 
-// FilterOwnershipTransferred is a free log retrieval operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
+// FilterOwnerUpdated is a free log retrieval operation binding the contract event 0x8292fce18fa69edf4db7b94ea2e58241df0ae57f97e0a6c9b29067028bf92d76.
 //
-// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
-func (_Cellar *CellarFilterer) FilterOwnershipTransferred(opts *bind.FilterOpts, previousOwner []common.Address, newOwner []common.Address) (*CellarOwnershipTransferredIterator, error) {
+// Solidity: event OwnerUpdated(address indexed user, address indexed newOwner)
+func (_Cellar *CellarFilterer) FilterOwnerUpdated(opts *bind.FilterOpts, user []common.Address, newOwner []common.Address) (*CellarOwnerUpdatedIterator, error) {
 
-	var previousOwnerRule []interface{}
-	for _, previousOwnerItem := range previousOwner {
-		previousOwnerRule = append(previousOwnerRule, previousOwnerItem)
+	var userRule []interface{}
+	for _, userItem := range user {
+		userRule = append(userRule, userItem)
 	}
 	var newOwnerRule []interface{}
 	for _, newOwnerItem := range newOwner {
 		newOwnerRule = append(newOwnerRule, newOwnerItem)
 	}
 
-	logs, sub, err := _Cellar.contract.FilterLogs(opts, "OwnershipTransferred", previousOwnerRule, newOwnerRule)
+	logs, sub, err := _Cellar.contract.FilterLogs(opts, "OwnerUpdated", userRule, newOwnerRule)
 	if err != nil {
 		return nil, err
 	}
-	return &CellarOwnershipTransferredIterator{contract: _Cellar.contract, event: "OwnershipTransferred", logs: logs, sub: sub}, nil
+	return &CellarOwnerUpdatedIterator{contract: _Cellar.contract, event: "OwnerUpdated", logs: logs, sub: sub}, nil
 }
 
-// WatchOwnershipTransferred is a free log subscription operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
+// WatchOwnerUpdated is a free log subscription operation binding the contract event 0x8292fce18fa69edf4db7b94ea2e58241df0ae57f97e0a6c9b29067028bf92d76.
 //
-// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
-func (_Cellar *CellarFilterer) WatchOwnershipTransferred(opts *bind.WatchOpts, sink chan<- *CellarOwnershipTransferred, previousOwner []common.Address, newOwner []common.Address) (event.Subscription, error) {
+// Solidity: event OwnerUpdated(address indexed user, address indexed newOwner)
+func (_Cellar *CellarFilterer) WatchOwnerUpdated(opts *bind.WatchOpts, sink chan<- *CellarOwnerUpdated, user []common.Address, newOwner []common.Address) (event.Subscription, error) {
 
-	var previousOwnerRule []interface{}
-	for _, previousOwnerItem := range previousOwner {
-		previousOwnerRule = append(previousOwnerRule, previousOwnerItem)
+	var userRule []interface{}
+	for _, userItem := range user {
+		userRule = append(userRule, userItem)
 	}
 	var newOwnerRule []interface{}
 	for _, newOwnerItem := range newOwner {
 		newOwnerRule = append(newOwnerRule, newOwnerItem)
 	}
 
-	logs, sub, err := _Cellar.contract.WatchLogs(opts, "OwnershipTransferred", previousOwnerRule, newOwnerRule)
+	logs, sub, err := _Cellar.contract.WatchLogs(opts, "OwnerUpdated", userRule, newOwnerRule)
 	if err != nil {
 		return nil, err
 	}
@@ -392,8 +371,8 @@ func (_Cellar *CellarFilterer) WatchOwnershipTransferred(opts *bind.WatchOpts, s
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(CellarOwnershipTransferred)
-				if err := _Cellar.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
+				event := new(CellarOwnerUpdated)
+				if err := _Cellar.contract.UnpackLog(event, "OwnerUpdated", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -414,12 +393,12 @@ func (_Cellar *CellarFilterer) WatchOwnershipTransferred(opts *bind.WatchOpts, s
 	}), nil
 }
 
-// ParseOwnershipTransferred is a log parse operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
+// ParseOwnerUpdated is a log parse operation binding the contract event 0x8292fce18fa69edf4db7b94ea2e58241df0ae57f97e0a6c9b29067028bf92d76.
 //
-// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
-func (_Cellar *CellarFilterer) ParseOwnershipTransferred(log types.Log) (*CellarOwnershipTransferred, error) {
-	event := new(CellarOwnershipTransferred)
-	if err := _Cellar.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
+// Solidity: event OwnerUpdated(address indexed user, address indexed newOwner)
+func (_Cellar *CellarFilterer) ParseOwnerUpdated(log types.Log) (*CellarOwnerUpdated, error) {
+	event := new(CellarOwnerUpdated)
+	if err := _Cellar.contract.UnpackLog(event, "OwnerUpdated", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log

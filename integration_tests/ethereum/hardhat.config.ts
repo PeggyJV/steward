@@ -54,7 +54,7 @@ task(
             `Aave Cellar contract at ${aaveCellar.address} is now owned by Gravity contract at ${gravity.address} with hash ${aaveHash}`,
         );
 
-        let { vaultHash } = await vaultCellar.transferOwnership(gravity.address, {
+        let { vaultHash } = await vaultCellar.setOwner(gravity.address, {
             gasPrice: hre.ethers.BigNumber.from('99916001694'),
             from: cellarSignerAddress
         });

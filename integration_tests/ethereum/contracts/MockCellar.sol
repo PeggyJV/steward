@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.0;
 
-import {ERC20, Ownable} from "./interfaces.sol";
+import {ERC20, Owned} from "./interfaces.sol";
 
 /**
  * @title Sommelier Cellar
  * @notice A composable ERC4626 that can use a set of other ERC4626 or ERC20 positions to earn yield.
  * @author Brian Le
  */
-contract Cellar is Ownable {
+abstract contract Cellar is Owned {
     constructor() {}
 
     // =========================================== POSITION LOGIC ===========================================
@@ -39,7 +39,7 @@ contract Cellar is Ownable {
         uint256 assetsFrom,
         Exchange exchange,
         bytes calldata params
-    ) external returns (uint256 assetsTo) {
+    ) external onlyOwner returns (uint256 assetsTo) {
         if (exchange == Exchange.UNIV2) {
             (address[] memory path, uint256 amount, uint256 amountOutMin) = abi.decode(
                 params,
