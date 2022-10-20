@@ -16,7 +16,7 @@ use steward_proto::steward::cellar_v1::{swap_params::Params::*, Function, SwapPa
 
 use crate::{
     error::{Error, ErrorKind},
-    utils::{self, sp_call_error, sp_call_parse_address, string_to_u256},
+    utils::{sp_call_error, sp_call_parse_address, string_to_u256},
 };
 
 use super::log_cellar_call;
