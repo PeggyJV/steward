@@ -1,7 +1,7 @@
 mod aave2_clr_s;
 mod cellar_v1;
 
-use crate::{commands::schedule_corks::aave2_clr_s::AaveV2StablecoinCellarCmd};
+use crate::commands::schedule_corks::aave2_clr_s::AaveV2StablecoinCellarCmd;
 use abscissa_core::{clap::Parser, Command, Runnable};
 
 use self::cellar_v1::CellarV1Cmd;
