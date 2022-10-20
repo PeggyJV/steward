@@ -8,8 +8,8 @@ import {ERC20, Owned} from "./interfaces.sol";
  * @notice A composable ERC4626 that can use a set of other ERC4626 or ERC20 positions to earn yield.
  * @author Brian Le
  */
-abstract contract Cellar is Owned {
-    constructor() {}
+contract Cellar is Owned {
+    constructor() Owned(msg.sender) {}
 
     // =========================================== POSITION LOGIC ===========================================
 
