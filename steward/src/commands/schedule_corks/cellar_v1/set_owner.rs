@@ -10,7 +10,7 @@ use steward_abi::cellar::*;
 )]
 pub struct SetOwnerCmd {
     #[clap(short = 'n', long)]
-    /// Fee distributor's address
+    /// New contract owner's address
     new_owner: Address,
 
     /// Target cellar for scheduled cork.

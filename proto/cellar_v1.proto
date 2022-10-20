@@ -51,7 +51,7 @@ message CellarV1 {
     */
     message AddPosition {
         // Index at which to add the position
-        uint64 index = 1;
+        string index = 1;
         // Address of the position to add
         string position = 2;
     }
@@ -75,7 +75,7 @@ message CellarV1 {
     */
     message RemovePosition {
         // Index at which to remove the position
-        uint64 index = 1;
+        string index = 1;
     }
 
     /*
@@ -187,9 +187,9 @@ message CellarV1 {
     */
     message SwapPositions {
         // Index of the first position
-        uint64 index_1 = 1;
+        string index_1 = 1;
         // Index of the second position
-        uint64 index_2 = 2;
+        string index_2 = 2;
     }
 
     /*

@@ -28,7 +28,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
         Function::AddPosition(params) => {
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
             let call = AddPositionCall {
-                index: params.index.into(),
+                index: utils::string_to_u256(params.index)?,
                 position: sp_call_parse_address(params.position)?,
             };
 
@@ -49,7 +49,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 &cellar_id,
             );
             let call = RemovePositionCall {
-                index: params.index.into(),
+                index: utils::string_to_u256(params.index)?,
             };
 
             Ok(CellarCalls::RemovePosition(call).encode())
@@ -117,8 +117,8 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
         Function::SwapPositions(params) => {
             log_cellar_call(CELLAR_NAME, &SwapPositionsCall::function_name(), &cellar_id);
             let call = SwapPositionsCall {
-                index_1: params.index_1.into(),
-                index_2: params.index_2.into(),
+                index_1: utils::string_to_u256(params.index_1)?,
+                index_2: utils::string_to_u256(params.index_2)?,
             };
 
             Ok(CellarCalls::SwapPositions(call).encode())

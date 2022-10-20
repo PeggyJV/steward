@@ -71,7 +71,7 @@ Represents function `addPosition(uint256 index, address position)`
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| index | [uint64](#uint64) |  | Index at which to add the position |
+| index | [string](#string) |  | Index at which to add the position |
 | position | [string](#string) |  | Address of the position to add |
 
 
@@ -131,7 +131,7 @@ Represents function `removePosition(uint256 index)`
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| index | [uint64](#uint64) |  | Index at which to remove the position |
+| index | [string](#string) |  | Index at which to remove the position |
 
 
 
@@ -281,8 +281,8 @@ Represents function `swapPositions(uint256 index1, uint256 index2)`
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| index_1 | [uint64](#uint64) |  | Index of the first position |
-| index_2 | [uint64](#uint64) |  | Index of the second position |
+| index_1 | [string](#string) |  | Index of the first position |
+| index_2 | [string](#string) |  | Index of the second position |
 
 
 

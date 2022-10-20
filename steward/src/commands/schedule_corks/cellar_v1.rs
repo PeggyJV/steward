@@ -11,7 +11,6 @@ mod set_strategist_performance_cut;
 mod set_strategist_platform_cut;
 mod trust_position;
 
-/// Schedule shutdown commands
 #[derive(Command, Debug, Parser, Runnable)]
 pub enum CellarV1Cmd {
     InitiateShutdown(initiate_shutdown::InitiateShutdownCmd),

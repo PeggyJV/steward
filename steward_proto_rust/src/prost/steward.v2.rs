@@ -202,8 +202,8 @@ pub mod cellar_v1 {
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct AddPosition {
         /// Index at which to add the position
-        #[prost(uint64, tag = "1")]
-        pub index: u64,
+        #[prost(string, tag = "1")]
+        pub index: ::prost::alloc::string::String,
         /// Address of the position to add
         #[prost(string, tag = "2")]
         pub position: ::prost::alloc::string::String,
@@ -227,8 +227,8 @@ pub mod cellar_v1 {
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct RemovePosition {
         /// Index at which to remove the position
-        #[prost(uint64, tag = "1")]
-        pub index: u64,
+        #[prost(string, tag = "1")]
+        pub index: ::prost::alloc::string::String,
     }
     ///
     /// Set the holding position used by the cellar.
@@ -335,11 +335,11 @@ pub mod cellar_v1 {
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct SwapPositions {
         /// Index of the first position
-        #[prost(uint64, tag = "1")]
-        pub index_1: u64,
+        #[prost(string, tag = "1")]
+        pub index_1: ::prost::alloc::string::String,
         /// Index of the second position
-        #[prost(uint64, tag = "2")]
-        pub index_2: u64,
+        #[prost(string, tag = "2")]
+        pub index_2: ::prost::alloc::string::String,
     }
     ///
     /// Set the per-wallet deposit limit. Uses the same decimals as the current asset.

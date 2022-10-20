@@ -1,6 +1,7 @@
 use crate::{application::APP, cellars, cork, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
-use ethers::abi::{AbiEncode, Address};
+use deep_space::Address;
+use ethers::abi::AbiEncode;
 use steward_abi::cellar::*;
 
 /// Fees Distributor subcommand
