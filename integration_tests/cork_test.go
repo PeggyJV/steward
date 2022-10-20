@@ -109,7 +109,9 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 		s.Require().Eventuallyf(func() bool {
 			s.T().Log("querying cellar events...")
 			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
-			s.Require().NoError(err)
+			if err != nil {
+				return false
+			}
 
 			// For non-anonymous events, the first log topic is a keccak256 hash of the
 			// event signature.
@@ -129,8 +131,10 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 			}
 
 			logs, err := ethClient.FilterLogs(context.Background(), query)
-			s.Require().NoError(err)
-			ethClient.Close()
+			if err != nil {
+				ethClient.Close()
+				return false
+			}
 
 			s.T().Logf("got %v logs", len(logs))
 			if len(logs) == 1 {
@@ -301,7 +305,9 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 			s.Require().Eventuallyf(func() bool {
 				s.T().Log("querying cellar events...")
 				ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
-				s.Require().NoError(err)
+				if err != nil {
+					return false
+				}
 
 				// For non-anonymous events, the first log topic is a keccak256 hash of the
 				// event signature.
@@ -321,8 +327,10 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 				}
 
 				logs, err := ethClient.FilterLogs(context.Background(), query)
-				s.Require().NoError(err)
-				ethClient.Close()
+				if err != nil {
+					ethClient.Close()
+					return false
+				}
 
 				s.T().Logf("got %v logs: %v", len(logs), logs)
 				if len(logs) > 0 {
@@ -483,7 +491,9 @@ func (s *IntegrationTestSuite) waitForGravityLogicCallEvent(topic common.Hash, i
 	s.Require().Eventuallyf(func() bool {
 		s.T().Log("querying gravity logic call events...")
 		ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
-		s.Require().NoError(err)
+		if err != nil {
+			return false
+		}
 
 		query := ethereum.FilterQuery{
 			FromBlock: nil,
@@ -498,8 +508,10 @@ func (s *IntegrationTestSuite) waitForGravityLogicCallEvent(topic common.Hash, i
 			},
 		}
 		logs, err := ethClient.FilterLogs(context.Background(), query)
-		s.Require().NoError(err)
-		ethClient.Close()
+		if err != nil {
+			ethClient.Close()
+			return false
+		}
 
 		s.T().Logf("got %v LogicCallEvent logs", len(logs))
 		if len(logs) == 0 {
