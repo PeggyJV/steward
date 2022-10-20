@@ -4,6 +4,8 @@ import (
 	"fmt"
 )
 
+const STEWARD_PORT = 5734
+
 type steward struct {
 	chain    *chain
 	index    int

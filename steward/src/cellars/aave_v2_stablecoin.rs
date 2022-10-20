@@ -5,7 +5,7 @@ use crate::{
 use ethers::{
     abi::AbiEncode,
     contract::EthCall,
-    prelude::{H160, U256},
+    prelude::{Address, U256},
 };
 use std::convert::TryInto;
 use steward_abi::aave_v2_stablecoin::*;
@@ -90,10 +90,10 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 )));
             }
 
-            let results: Vec<Result<H160, &String>> = params
+            let results: Vec<Result<Address, &String>> = params
                 .route
                 .iter()
-                .map(|addr| match addr.parse::<H160>() {
+                .map(|addr| match addr.parse::<Address>() {
                     Ok(addr) => Ok(addr),
                     Err(_) => Err(addr),
                 })
@@ -104,7 +104,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
             let route = results
                 .iter()
                 .map(|r| r.unwrap())
-                .collect::<Vec<H160>>()
+                .collect::<Vec<Address>>()
                 .try_into()
                 .expect("failed to convert 'route' addresses to array");
 
@@ -186,7 +186,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
     }
 }
 
-fn validate_route(results: Vec<Result<H160, &String>>) -> Result<(), Error> {
+fn validate_route(results: Vec<Result<Address, &String>>) -> Result<(), Error> {
     let mut bad_addresses_string = String::new();
     for r in results {
         if let Err(addr) = r {
