@@ -79,6 +79,8 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 from_position: sp_call_parse_address(params.from_position)?,
                 to_position: sp_call_parse_address(params.to_position)?,
                 assets_from: string_to_u256(params.assets_from)?,
+                // to account for protobuf's requirement that an UNSPECIFIED enum variant be defined
+                // as 0, we subtract 1 from the value
                 exchange: (params.exchange - 1) as u8,
                 params: swap_params.into(),
             };
@@ -105,6 +107,8 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 &cellar_id,
             );
             let call = SetWithdrawTypeCall {
+                // to account for protobuf's requirement that an UNSPECIFIED enum variant be defined
+                // as 0, we subtract 1 from the value
                 new_withdraw_type: (params.new_withdraw_type - 1) as u8,
             };
 
