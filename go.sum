@@ -812,10 +812,13 @@ github.com/peggyjv/gravity-bridge/module/v2 v2.0.0-20220418171956-7fb1ba7ebc76/g
 github.com/peggyjv/gravity-bridge/module/v2 v2.0.0/go.mod h1:XUHyaIYlqo2TgCSY0R4N/geZot6Vks/EZmhJ7Jz4wvQ=
 github.com/peggyjv/gravity-bridge/module/v2 v2.0.1 h1:FLnb1BUC9iDbM8BQpoOy92+5N5BCw0jbAiwuKz8ZzZM=
 github.com/peggyjv/gravity-bridge/module/v2 v2.0.1/go.mod h1:XUHyaIYlqo2TgCSY0R4N/geZot6Vks/EZmhJ7Jz4wvQ=
+github.com/peggyjv/gravity-bridge/module/v2 v2.0.2/go.mod h1:gKOqaz8xccgMEmWaH53n6uCIvRxqPFgya4aHrMi78Fs=
 github.com/peggyjv/sommelier/v4 v4.0.0-20220418171902-38ebef682f79 h1:q9tbcvFQINEkEtTuhCzbGEDTO3oISZogK8Y0KVItx7c=
 github.com/peggyjv/sommelier/v4 v4.0.0-20220418171902-38ebef682f79/go.mod h1:PODTZFws9y/FFb+Jdk3RDYvFV9ZRW9HAnjsmwDvC25o=
 github.com/peggyjv/sommelier/v4 v4.0.1 h1:Le4dTAgrhGXK+XB+h5AIi1g6tta8Jr15QdIbbn5H7lY=
 github.com/peggyjv/sommelier/v4 v4.0.1/go.mod h1:6u1+0S0PA/7Hs4bx2OzD/Qt3NI++WKZQGgdLVbrpAOk=
+github.com/peggyjv/sommelier/v4 v4.0.2 h1:q7rfwjAVtVhh1E7kVlH1iHS6Y+JO8UQD/2aQ43yS8Pk=
+github.com/peggyjv/sommelier/v4 v4.0.2/go.mod h1:0YvTb2SCmN7CIUVzfq+xtF+cu9OmTlyRy6F78BcO0iE=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
 github.com/pelletier/go-toml v1.9.3/go.mod h1:u1nR/EPcESfeI/szUZKdtJ0xRNbUoANCkoOuaOx1Y+c=
 github.com/pelletier/go-toml v1.9.4 h1:tjENF6MfZAg8e4ZmZTeWaWiT2vXtsoO6+iuOjFhECwM=
@@ -961,6 +964,7 @@ github.com/spf13/viper v1.7.0/go.mod h1:8WkrPz2fc9jxqZNCJI/76HCieCp4Q8HaLFoCha5q
 github.com/spf13/viper v1.7.1/go.mod h1:8WkrPz2fc9jxqZNCJI/76HCieCp4Q8HaLFoCha5qpdg=
 github.com/spf13/viper v1.8.1 h1:Kq1fyeebqsBfbjZj4EL7gj2IO0mMaiyjYUWcUsl2O44=
 github.com/spf13/viper v1.8.1/go.mod h1:o0Pch8wJ9BVSWGQMbra6iw0oQ5oktSIBaujf1rJH9Ns=
+github.com/spf13/viper v1.10.1/go.mod h1:IGlFPqhNAPKRxohIzWpI5QEy4kuI7tcl5WvR+8qy1rU=
 github.com/status-im/keycard-go v0.0.0-20190316090335-8537d3370df4 h1:Gb2Tyox57NRNuZ2d3rmvB3pcmbu7O1RS3m8WRx7ilrg=
 github.com/status-im/keycard-go v0.0.0-20190316090335-8537d3370df4/go.mod h1:RZLeN1LMWmRsyYjvAu+I6Dm9QmlDaIIt+Y+4Kd7Tp+Q=
 github.com/steakknife/bloomfilter v0.0.0-20180922174646-6819c0d2a570/go.mod h1:8OR4w3TdeIHIh1g6EMY5p0gVNOovcWC+1vpc7naMuAw=
@@ -980,6 +984,7 @@ github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.7.0 h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5CcY=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
+github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
 github.com/subosito/gotenv v1.2.0 h1:Slr1R9HxAlEKefgq5jn9U+DnETlIUa6HfgEzj0g5d7s=
 github.com/subosito/gotenv v1.2.0/go.mod h1:N0PQaV/YGNqwC0u51sEeR/aUtSLEXKX9iv69rRypqCw=
 github.com/syndtr/gocapability v0.0.0-20200815063812-42c35b437635/go.mod h1:hkRG7XYTFWNJGYcbNJQlaLq0fg1yr4J4t/NcTQtrfww=
