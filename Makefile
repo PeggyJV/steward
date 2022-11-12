@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := e2e_cork_test
 
-VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:main"
+VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:latest"
 ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:main"
 
 build_protos:
