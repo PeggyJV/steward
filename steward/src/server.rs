@@ -9,7 +9,7 @@ use tonic::transport::{Certificate, ServerTlsConfig};
 
 pub const DEFAULT_CLIENT_CA: &[u8] = include_bytes!("../../tls/sevenseas_ca.crt");
 // for gRPC reflection
-pub const DESCRIPTOR: &[u8] = include_bytes!("../../steward_proto/src/prost/descriptor.bin");
+pub const DESCRIPTOR: &[u8] = include_bytes!("../../steward_proto_rust/src/prost/descriptor.bin");
 
 pub struct ServerConfig {
     pub tls_config: ServerTlsConfig,

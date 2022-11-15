@@ -1,0 +1,230 @@
+/*
+* An API for cellars that implement the EIP4626-compatible Cellar.sol contract.
+*
+* See [Cellar.sol](https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol)
+*/
+
+syntax = "proto3";
+package steward.v2;
+
+option go_package = "/steward_proto";
+
+/*
+* Represents a function call to a cellar that implements Cellar.sol
+*/
+message CellarV1 {
+    // The function you wish to execute on the target cellar
+    oneof function {
+        // Represents function `addPosition(uint256 index, address position)`
+        AddPosition add_position = 1;
+        // Represents function `pushPosition(address position)`
+        PushPosition push_position = 2;
+        // Represents function `removePosition(uint256 index)`
+        RemovePosition remove_position = 3;
+        // Represents function `setHoldingPosition(address newHoldingPosition)`
+        SetHoldingPosition set_holding_position = 4;
+        /*
+        * Represents function `rebalance(address fromPosition, address toPosition,
+            uint256 assetsFrom, SwapRouter.Exchange exchange, bytes calldata params)`
+        */
+        Rebalance rebalance = 5;
+        // Represents function `setStrategistPayoutAddress(address payout)`
+        SetStrategistPayoutAddress set_strategist_payout_address = 6;
+        // Represents function `setWithdrawType(WithdrawType newWithdrawType)`
+        SetWithdrawType set_withdraw_type = 7;
+        // Represents function `swapPositions(uint256 index1, uint256 index2)`
+        SwapPositions swap_positions = 8;
+        // Represents function `setDepositLimit()`
+        SetDepositLimit set_deposit_limit = 9;
+        // Represents function `setLiquidityLimit()`
+        SetLiquidityLimit set_liquidity_limit = 10;
+        // Represents function `setShareLockPeriod()`
+        SetShareLockPeriod set_share_lock_period = 11;
+        // Represents function `setRebalanceDeviation(uint265)`
+        SetRebalanceDeviation set_rebalance_deviation = 12;
+    }
+
+    /*
+    * Insert a trusted position to the list of positions used by the cellar at a given index.
+    *
+    * Represents function `addPosition(uint256 index, address position)`
+    */
+    message AddPosition {
+        // Index at which to add the position
+        string index = 1;
+        // Address of the position to add
+        string position = 2;
+    }
+
+    /*
+    * Push a trusted position to the end of the list of positions used by the cellar. If you
+    know you are going to add a position to the end of the array, this is more efficient then
+    `addPosition`.
+    *
+    * Represents function `pushPosition(address position)`
+    */
+    message PushPosition {
+        // Address of the position to push
+        string position = 1;
+    }
+
+    /*
+    * Remove the position at a given index from the list of positions used by the cellar.
+    *
+    * Represents function `removePosition(uint256 index)`
+    */
+    message RemovePosition {
+        // Index at which to remove the position
+        string index = 1;
+    }
+
+    /*
+    * Set the holding position used by the cellar.
+    *
+    * Represents function `setHoldingPosition(address newHoldingPosition)`
+    */
+    message SetHoldingPosition {
+        // Address of the new holding position to use
+        string new_holding_position = 1;
+    }
+
+    /*
+    * Exchange selector
+    */
+    enum Exchange {
+        EXCHANGE_UNSPECIFIED = 0;
+        // Represents Uniswap V2
+        EXCHANGE_UNIV2 = 1;
+        // Represents Uniswap V3
+        EXCHANGE_UNIV3 = 2;
+    }
+
+    /*
+    * Represents swap parameters for UniswapV2
+    */
+    message UniV2SwapParams {
+        // Array of addresses dictating what swap path to follow
+        repeated string path = 1;
+        // Amount of the first asset in the path to swap
+        string amount = 2;
+        // The minimum amount of the last asset in the path to receive
+        string amount_out_min = 3;
+    }
+
+    /*
+    * Represents swap parameters for UniswapV3
+    */
+    message UniV3SwapParams {
+        // Array of addresses dictating what swap path to follow
+        repeated string path = 1;
+        // Array of pool fees dictating what swap pools to use
+        repeated uint32 pool_fees = 2;
+        // Amount of the first asset in the path to swap
+        string amount = 3;
+        // The minimum amount of the last asset in the path to receive
+        string amount_out_min = 4;
+    }
+
+    /*
+    * Represents swap parameters for an exchange
+    */
+    message SwapParams {
+        oneof params {
+            // Params for a Uniswap V2 swap
+            UniV2SwapParams univ2_params = 1;
+            // Params for a Uniswap V3 swap
+            UniV3SwapParams univ3_params = 2;
+        }
+    }
+
+    /*
+    * Move assets between positions. To move assets from/to this cellar's holdings, specify
+    the address of this cellar as the `fromPosition`/`toPosition`.
+    *
+    * Represents function `rebalance(address fromPosition, address toPosition,
+    *  uint256 assetsFrom, SwapRouter.Exchange exchange, bytes calldata params)
+    */
+    message Rebalance {
+        string from_position = 1;
+        string to_position = 2;
+        string assets_from = 3;
+        Exchange exchange = 4;
+        SwapParams params = 5;
+    }
+
+    /*
+    * Sets the Strategists payout address.
+    *
+    * Represents function `setStrategistPayoutAddress(address payout)`
+    */
+    message SetStrategistPayoutAddress {
+        string payout = 1;
+    }
+
+    /*
+    * Represents the withdraw type to use for the cellar
+    */
+    enum WithdrawType {
+        WITHDRAW_TYPE_UNSPECIFIED = 0;
+        WITHDRAW_TYPE_ORDERLY = 1;
+        WITHDRAW_TYPE_PROPORTIONAL = 2;
+    }
+
+    /*
+    * Set the withdraw type used by the cellar.
+    *
+    * Represents function `setWithdrawType(WithdrawType newWithdrawType)`
+    */
+    message SetWithdrawType {
+        // The withdraw type to use for the cellar
+        WithdrawType new_withdraw_type = 1;
+    }
+
+    /*
+    * Swap the positions at two given indeces.
+    *
+    * Represents function `swapPositions(uint256 index1, uint256 index2)`
+    */
+    message SwapPositions {
+        // Index of the first position
+        string index_1 = 1;
+        // Index of the second position
+        string index_2 = 2;
+    }
+
+    /*
+    * Set the per-wallet deposit limit. Uses the same decimals as the current asset.
+    *
+    * Represents function `setDepositLimit()`
+    */
+    message SetDepositLimit {
+        string new_limit = 1;
+    }
+
+    /*
+    * Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.
+    *
+    * Represents function `setLiquidityLimit()`
+    */
+    message SetLiquidityLimit {
+        string new_limit = 1;
+    }
+
+    /*
+    * Allows share lock period to be updated.
+    *
+    * Represents function `setShareLockPeriod()`
+    */
+    message SetShareLockPeriod {
+        string new_lock = 1;
+    }
+
+    /*
+    *
+    *
+    * Represents function `setRebalanceDeviation(uint256)`
+    */
+    message SetRebalanceDeviation {
+        string new_deviation = 1;
+    }
+}

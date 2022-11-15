@@ -26,7 +26,7 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
-      - name: Run Cellar_Rebalancer acceptance tests
+      - name: Run steward acceptance tests
         run: cargo test --all --verbose
   
   rust-build:
@@ -77,4 +77,4 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: -- -D warnings
+          args: -p steward -- -D warnings --no-deps
