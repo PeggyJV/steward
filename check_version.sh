@@ -4,7 +4,7 @@ set -e
 
 # this is a little fragile because it assumes the [package] section will be at the
 # top of the Cargo.toml
-BINARY_VERSION_STRING=$(cat steward/Cargo.toml | grep "^(version = \")([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?" | head -1)
+BINARY_VERSION_STRING=$(cat steward/Cargo.toml | grep "^\(version = \"\)\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\)\(?:-\([0-9A-Za-z-]\+\(?:\.[0-9A-Za-z-]\+\)*\)\)\?\(?:\+[0-9A-Za-z-]\+\)\?" | head -1)
 # above output is 'version = "x.x.x"' so we trim the leading and trailing characters
 BINARY_VERSION=${BINARY_VERSION_STRING:11:-1}
 # trim the leading 'v' from the tag
