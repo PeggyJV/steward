@@ -68,9 +68,9 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
 
         // Build and send cork
         let cellar_id = request.cellar_id.clone();
-        let height = request.block_height.clone();
+        let height = request.block_height;
         if let Err(err) = cellars::validate_cellar_id(&request.cellar_id) {
-            return Err(Status::new(Code::InvalidArgument, err.to_string()))
+            return Err(Status::new(Code::InvalidArgument, err.to_string()));
         }
         let encoded_call = match get_encoded_call(request) {
             Ok(c) => c,
