@@ -15,7 +15,7 @@ use somm_proto::cork::{query_client::QueryClient as CorkQueryClient, Cork, Query
 use std::time::Duration;
 use steward_proto::{
     self,
-    steward::{self, submit_request::CallData::*, SubmitRequest, SubmitResponse},
+    steward::{self, schedule_request::CallData::*, ScheduleRequest, ScheduleResponse},
 };
 use tonic::{self, async_trait, Code, Request, Response, Status};
 
@@ -26,10 +26,10 @@ pub struct CorkHandler;
 
 #[async_trait]
 impl steward::contract_call_server::ContractCall for CorkHandler {
-    async fn submit(
+    async fn schedule(
         &self,
-        request: Request<SubmitRequest>,
-    ) -> Result<Response<SubmitResponse>, Status> {
+        request: Request<ScheduleRequest>,
+    ) -> Result<Response<ScheduleResponse>, Status> {
         let request = request.get_ref().to_owned();
 
         // Check if cellar is governance approved before building cork
@@ -68,16 +68,20 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
 
         // Build and send cork
         let cellar_id = request.cellar_id.clone();
-        let cork = match build_cork(request).await {
+        let height = request.block_height.clone();
+        if let Err(err) = cellars::validate_cellar_id(&request.cellar_id) {
+            return Err(Status::new(Code::InvalidArgument, err.to_string()))
+        }
+        let encoded_call = match get_encoded_call(request) {
             Ok(c) => c,
             Err(err) => {
-                warn!("failed to build cork for cellar {}: {}", cellar_id, err);
+                warn!("failed to get encoded call for {}: {}", cellar_id, err);
                 return Err(Status::new(Code::InvalidArgument, err.to_string()));
             }
         };
-        debug!("cork: {:?}", cork);
+        debug!("cork: {:?}", encoded_call);
 
-        if let Err(err) = send_cork(cork).await {
+        if let Err(err) = schedule_cork(&cellar_id, encoded_call, height).await {
             error!("failed to submit cork: {}", err);
             return Err(Status::new(
                 Code::Internal,
@@ -86,25 +90,11 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         }
         info!("submitted cork for {}", cellar_id);
 
-        Ok(Response::new(SubmitResponse {}))
+        Ok(Response::new(ScheduleResponse {}))
     }
 }
-// Because of Rusts handling of enums, we have no easy way to log what cellar type and function are
-// being requested before we get to the encoding step, so we pass the whole request into this method
-// and the get_encoded_call() methods so logging can happen there.
-async fn build_cork(request: SubmitRequest) -> Result<Cork, Error> {
-    cellars::validate_cellar_id(request.cellar_id.as_str())?;
 
-    let address = request.cellar_id.clone();
-    let encoded_call = get_encoded_call(request)?;
-
-    Ok(Cork {
-        encoded_contract_call: encoded_call,
-        target_contract_address: address,
-    })
-}
-
-fn get_encoded_call(request: SubmitRequest) -> Result<Vec<u8>, Error> {
+fn get_encoded_call(request: ScheduleRequest) -> Result<Vec<u8>, Error> {
     if request.call_data.is_none() {
         return Err(ErrorKind::Http.context("empty contract call data").into());
     }
@@ -127,30 +117,8 @@ fn get_encoded_call(request: SubmitRequest) -> Result<Vec<u8>, Error> {
     }
 }
 
-async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
-    let config = APP.config();
-    debug!("establishing grpc connection");
-    let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX)?;
-
-    debug!("getting cosmos fee");
-    let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
-    let fee = Coin {
-        amount: (cosmos_gas_price.0 as u64).into(),
-        denom: cosmos_gas_price.1,
-    };
-    somm_send::send_cork(
-        &contact,
-        cork,
-        config::DELEGATE_ADDRESS.to_string(),
-        &config::DELEGATE_KEY,
-        fee,
-    )
-    .await
-    .map_err(|e| e.into())
-}
-
 pub async fn schedule_cork(
-    contract: String,
+    contract: &str,
     encoded_call: Vec<u8>,
     height: u64,
 ) -> Result<TxResponse, Error> {
@@ -166,7 +134,7 @@ pub async fn schedule_cork(
     };
     let cork = Cork {
         encoded_contract_call: encoded_call,
-        target_contract_address: contract.clone(),
+        target_contract_address: contract.to_string(),
     };
     somm_send::schedule_cork(
         &contact,

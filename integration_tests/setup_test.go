@@ -353,12 +353,11 @@ func (s *IntegrationTestSuite) initGenesis() {
 	s.Require().NoError(err)
 	appGenState[genutiltypes.ModuleName] = bz
 
-	var corkGenState corktypes.GenesisState
+	corkGenState := corktypes.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[corktypes.ModuleName], &corkGenState))
 	corkGenState.CellarIds = corktypes.CellarIDSet{
 		Ids: []string{aaveCellar.Hex(), vaultCellar.Hex()},
 	}
-	corkGenState.Params.VotePeriod = 10
 	bz, err = cdc.MarshalJSON(&corkGenState)
 	s.Require().NoError(err)
 	appGenState[corktypes.ModuleName] = bz

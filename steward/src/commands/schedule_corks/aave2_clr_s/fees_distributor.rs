@@ -46,7 +46,7 @@ impl Runnable for FeesDistributorCmd {
                 std::process::exit(1);
             });
 
-            cork::schedule_cork(self.contract.clone(), encoded_call, self.height)
+            cork::schedule_cork(&self.contract, encoded_call, self.height)
                 .await
                 .unwrap_or_else(|err| {
                     status_err!("executor exited with error: {}", err);
