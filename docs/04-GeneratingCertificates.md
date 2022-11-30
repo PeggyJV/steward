@@ -44,11 +44,18 @@ Valid TLS certificates will have "Version 3" near the top of the certificate pla
 
 6. Test Steward with your certificate
 
-You can use the test client certificates included in this repo to simulate a client connection to Steward. You'll need to create a TOML config file with the `[server]` section containing the paths to your generated artifacts. See the configuration reference for more info. Your file will need to look something like this:
+A temporary test client CA can be used to verify your steward process is connectable from the network.  The test client CA MUST BE REMOVED prior to running in production.
+
+The test client CA is included in this repo at:
+```
+integration_tests/tls/client/test_client_ca.crt
+```
+
+Create a TOML config file with the `[server]` section containing the paths to your generated artifacts. See the configuration reference for more info. Your file will need to look something like this:
 
 ```toml
 [server]
-client_ca_cert_path = "integration_tests/tls/client/test_client_ca.crt"
+client_ca_cert_path = "integration_tests/tls/client/test_client_ca.crt" # this path is relative to the steward repository root
 server_cert_path = "<output_path>/server.crt"
 server_key_path = "<output_path>/server_key_pkcs8.pem"
 ```
@@ -73,15 +80,38 @@ Then you'll need to send a gRPC request to the endpoint (in the case above, 0.0.
 You can use your client of preference. Here is an example using `grpcurl` with the test client certs from this repo:
 
 ```bash
+# execute with the steward repo root as your current working directory for the
+# test cert relative paths to work
 grpcurl -cert integration_tests/tls/client/test_client.crt \
 	-key integration_tests/tls/client/test_client_key_pkcs8.pem \
 	-cacert <output_path>/server_ca.crt \
 	-d '' \
 	<fqdn_of_server>:5734 \
-	steward.v1.ContractCall/Submit
+	steward.v2.ContractCall/Submit
 ```
 
-When you send this request, if you get an error to establishing a connection, there is probably something wrong with your configuration or your certificates. If you get an error internal to the business logic of Steward, you know it's working.
+If you see a response like the following, then your process is accepting connections properly.
+```
+Resolved method descriptor:
+// Handles simple contract call submission
+rpc Submit ( .steward.v2.SubmitRequest ) returns ( .steward.v2.SubmitResponse );
+
+Request metadata to send:
+(empty)
+
+Response headers received:
+(empty)
+
+Response trailers received:
+content-type: application/grpc
+date: Mon, 03 Oct 2022 19:00:02 GMT
+Sent 0 requests and received 0 responses
+ERROR:
+  Code: PermissionDenied
+  Message: cellar ID  not approved by governance
+```
+
+When you send this request, if you get an error to establishing a connection, there is probably something wrong with your configuration or your certificates. 
 
 An error like this one means the connection was established successfully:
 
@@ -97,7 +127,15 @@ ERROR:
   Message: failed to query chain to validate cellar id
 ```
 
-7. Provide your CA to the Strategy Provider
+7. Remove testing configuration
+
+In Production, steward must run without the client_ca_cert_path set.  If you edited your production TOML file for testing, remove the client_ca_cert_path value from the [server] section.
+
+```toml
+client_ca_cert_path = "..." # remove this temporary line
+```
+
+8. Provide your CA to the Strategy Provider
 
 Add your information to the [Steward Registry](https://github.com/peggyjv/steward-registry) by following the steps outlined in the README there.
 

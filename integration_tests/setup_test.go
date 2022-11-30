@@ -60,7 +60,8 @@ var (
 	stakeAmountCoin = sdk.NewCoin(bondDenom, stakeAmount)
 	// these address variables get overwritten by parsing the hardhat logs for the contract
 	// address once they are launched; therefore their initial values don't matter.
-	hardhatCellar   = common.HexToAddress("0x0000000000000000000000000000000000000000")
+	aaveCellar      = common.HexToAddress("0x0000000000000000000000000000000000000000")
+	vaultCellar     = common.HexToAddress("0x0000000000000000000000000000000000000000")
 	gravityContract = common.HexToAddress("0x04C89607413713Ec9775E14b954286519d836FEf")
 )
 
@@ -355,7 +356,7 @@ func (s *IntegrationTestSuite) initGenesis() {
 	var corkGenState corktypes.GenesisState
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[corktypes.ModuleName], &corkGenState))
 	corkGenState.CellarIds = corktypes.CellarIDSet{
-		Ids: []string{hardhatCellar.Hex()},
+		Ids: []string{aaveCellar.Hex(), vaultCellar.Hex()},
 	}
 	corkGenState.Params.VotePeriod = 10
 	bz, err = cdc.MarshalJSON(&corkGenState)
@@ -503,17 +504,39 @@ func (s *IntegrationTestSuite) runEthContainer() {
 			if strings.HasPrefix(s, "gravity contract deployed at") {
 				strSpl := strings.Split(s, "-")
 				gravityContract = common.HexToAddress(strings.ReplaceAll(strSpl[1], " ", ""))
+				return true
 			}
-			if strings.HasPrefix(s, "cellar contract deployed at") {
+		}
+
+		return false
+	}, time.Minute*5, time.Second*10, "unable to retrieve gravity address from logs")
+
+	s.Require().Eventuallyf(func() bool {
+
+		for _, s := range strings.Split(ethereumLogOutput.String(), "\n") {
+			if strings.HasPrefix(s, "aave contract deployed at") {
 				strSpl := strings.Split(s, "-")
-				hardhatCellar = common.HexToAddress(strings.ReplaceAll(strSpl[1], " ", ""))
+				aaveCellar = common.HexToAddress(strings.ReplaceAll(strSpl[1], " ", ""))
 				return true
 			}
 		}
 		return false
-	}, time.Minute*5, time.Second*10, "unable to retrieve gravity address from logs")
+	}, time.Minute*5, time.Second*10, "unable to retrieve aave address from logs")
+
+	s.Require().Eventuallyf(func() bool {
+
+		for _, s := range strings.Split(ethereumLogOutput.String(), "\n") {
+			if strings.HasPrefix(s, "vault cellar contract deployed at") {
+				strSpl := strings.Split(s, "-")
+				vaultCellar = common.HexToAddress(strings.ReplaceAll(strSpl[1], " ", ""))
+				return true
+			}
+		}
+		return false
+	}, time.Minute*5, time.Second*10, "unable to retrieve vault contract address from logs")
 	s.T().Logf("gravity contract deployed at %s", gravityContract.String())
-	s.T().Logf("cellar contract deployed at %s", hardhatCellar.String())
+	s.T().Logf("aave contract deployed at %s", aaveCellar.String())
+	s.T().Logf("vault cellar contract deployed at %s", aaveCellar.String())
 
 	s.T().Logf("started Ethereum container: %s", s.ethResource.Container.ID)
 }
@@ -823,10 +846,4 @@ func (s *IntegrationTestSuite) logsByContainerID(id string) string {
 	))
 
 	return containerLogsBuf.String()
-}
-
-func (s *IntegrationTestSuite) TestBasicChain() {
-	// this test verifies that the setup functions all operate as expected
-	s.Run("bring up basic chain", func() {
-	})
 }

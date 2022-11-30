@@ -6,7 +6,7 @@ use steward_abi::aave_v2_stablecoin::*;
 /// Shutdown subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "\nSchedules a call to the target cellar's initiateShutdown() function, specifying whether to remove assets from their Aave lending position in the process."
+    long_about = "DESCRIPTION \n\n Initiate shutdown of target cellar when chain reaches specified height"
 )]
 pub struct InitiateShutdownCmd {
     /// Target contract for scheduled cork.

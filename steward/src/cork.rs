@@ -1,5 +1,5 @@
 use crate::{
-    cellars::{self, aave_v2_stablecoin},
+    cellars::{self, aave_v2_stablecoin, cellar_v1},
     config,
     error::{
         Error,
@@ -18,7 +18,7 @@ use somm_proto::cork::Cork;
 use std::time::Duration;
 use steward_proto::{
     self,
-    steward::{self, submit_request::CallData::AaveV2Stablecoin, SubmitRequest, SubmitResponse},
+    steward::{self, submit_request::CallData::*, SubmitRequest, SubmitResponse},
 };
 use tonic::{self, async_trait, Code, Request, Response, Status};
 
@@ -94,6 +94,13 @@ fn get_encoded_call(request: SubmitRequest) -> Result<Vec<u8>, Error> {
             }
 
             aave_v2_stablecoin::get_encoded_call(call.function.unwrap(), request.cellar_id)
+        }
+        CellarV1(call) => {
+            if call.function.is_none() {
+                return Err(ErrorKind::Http.context("empty function data").into());
+            }
+
+            cellar_v1::get_encoded_call(call.function.unwrap(), request.cellar_id)
         }
     }
 }

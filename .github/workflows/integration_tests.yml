@@ -13,7 +13,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}-steward
   HARDHAT_IMAGE: ghcr.io/peggyjv/steward-hardhat
   ORCHESTRATOR_IMAGE_NAME: ghcr.io/peggyjv/gravity-bridge-orchestrator:main
-  SOMMELIER_IMAGE: ghcr.io/peggyjv/sommelier-sommelier:main
+  SOMMELIER_IMAGE: ghcr.io/peggyjv/sommelier-sommelier:latest
 
 jobs:
   hardhat-build:
@@ -117,7 +117,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test_type: [ "Cork" ]
+        test_type: [ "AaveV2Stablecoin", "CellarV1" ]
     steps:
       - name: checkout
         uses: actions/checkout@v2

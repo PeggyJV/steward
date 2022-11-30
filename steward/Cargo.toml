@@ -1,7 +1,7 @@
 [package]
 name = "steward"
 authors = []
-version = "2.0.1"
+version = "2.1.0"
 edition = "2018"
 
 [dependencies]
@@ -38,7 +38,7 @@ sha2 = "0.9"
 signatory = "0.23.0-pre"
 somm_proto = { git = "https://github.com/PeggyJV/sommelier" }
 steward_abi = { path = "../steward_abi" }
-steward_proto = { path = "../steward_proto" }
+steward_proto = { path = "../steward_proto_rust" }
 thiserror = "1"
 tokio ={ version = "1", features = ["macros", "fs"] }
 toml = { version = "0.5" }
