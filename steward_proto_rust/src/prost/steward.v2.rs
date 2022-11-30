@@ -441,18 +441,21 @@ pub mod cellar_v1 {
     }
 }
 ///
-/// Represents a single function call on a particular Cellar
+/// Represents a single, scheduled function call to a particular Cellar
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct SubmitRequest {
+pub struct ScheduleRequest {
     /// The ID (currently simply an Ethereum address) of the target Cellar
     #[prost(string, tag = "1")]
     pub cellar_id: ::prost::alloc::string::String,
+    /// The block height at which to schedule the contract call
+    #[prost(uint64, tag = "4")]
+    pub block_height: u64,
     /// The data from which the desired contract function will be encoded
-    #[prost(oneof = "submit_request::CallData", tags = "2, 3")]
-    pub call_data: ::core::option::Option<submit_request::CallData>,
+    #[prost(oneof = "schedule_request::CallData", tags = "2, 3")]
+    pub call_data: ::core::option::Option<schedule_request::CallData>,
 }
-/// Nested message and enum types in `SubmitRequest`.
-pub mod submit_request {
+/// Nested message and enum types in `ScheduleRequest`.
+pub mod schedule_request {
     /// The data from which the desired contract function will be encoded
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum CallData {
@@ -463,7 +466,7 @@ pub mod submit_request {
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct SubmitResponse {}
+pub struct ScheduleResponse {}
 #[doc = r" Generated client implementations."]
 pub mod contract_call_client {
     #![allow(unused_variables, dead_code, missing_docs)]
@@ -499,11 +502,11 @@ pub mod contract_call_client {
             let inner = tonic::client::Grpc::with_interceptor(inner, interceptor);
             Self { inner }
         }
-        #[doc = " Handles simple contract call submission"]
-        pub async fn submit(
+        #[doc = " Handles scheduled contract call submission"]
+        pub async fn schedule(
             &mut self,
-            request: impl tonic::IntoRequest<super::SubmitRequest>,
-        ) -> Result<tonic::Response<super::SubmitResponse>, tonic::Status> {
+            request: impl tonic::IntoRequest<super::ScheduleRequest>,
+        ) -> Result<tonic::Response<super::ScheduleResponse>, tonic::Status> {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -511,7 +514,7 @@ pub mod contract_call_client {
                 )
             })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/steward.v2.ContractCall/Submit");
+            let path = http::uri::PathAndQuery::from_static("/steward.v2.ContractCall/Schedule");
             self.inner.unary(request.into_request(), path, codec).await
         }
     }
@@ -535,11 +538,11 @@ pub mod contract_call_server {
     #[doc = "Generated trait containing gRPC methods that should be implemented for use with ContractCallServer."]
     #[async_trait]
     pub trait ContractCall: Send + Sync + 'static {
-        #[doc = " Handles simple contract call submission"]
-        async fn submit(
+        #[doc = " Handles scheduled contract call submission"]
+        async fn schedule(
             &self,
-            request: tonic::Request<super::SubmitRequest>,
-        ) -> Result<tonic::Response<super::SubmitResponse>, tonic::Status>;
+            request: tonic::Request<super::ScheduleRequest>,
+        ) -> Result<tonic::Response<super::ScheduleResponse>, tonic::Status>;
     }
     #[doc = ""]
     #[doc = " Service for handling Cellar contract calls"]
@@ -575,18 +578,18 @@ pub mod contract_call_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/steward.v2.ContractCall/Submit" => {
+                "/steward.v2.ContractCall/Schedule" => {
                     #[allow(non_camel_case_types)]
-                    struct SubmitSvc<T: ContractCall>(pub Arc<T>);
-                    impl<T: ContractCall> tonic::server::UnaryService<super::SubmitRequest> for SubmitSvc<T> {
-                        type Response = super::SubmitResponse;
+                    struct ScheduleSvc<T: ContractCall>(pub Arc<T>);
+                    impl<T: ContractCall> tonic::server::UnaryService<super::ScheduleRequest> for ScheduleSvc<T> {
+                        type Response = super::ScheduleResponse;
                         type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::SubmitRequest>,
+                            request: tonic::Request<super::ScheduleRequest>,
                         ) -> Self::Future {
                             let inner = self.0.clone();
-                            let fut = async move { (*inner).submit(request).await };
+                            let fut = async move { (*inner).schedule(request).await };
                             Box::pin(fut)
                         }
                     }
@@ -594,7 +597,7 @@ pub mod contract_call_server {
                     let fut = async move {
                         let interceptor = inner.1.clone();
                         let inner = inner.0;
-                        let method = SubmitSvc(inner);
+                        let method = ScheduleSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = if let Some(interceptor) = interceptor {
                             tonic::server::Grpc::with_interceptor(codec, interceptor)

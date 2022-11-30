@@ -48,9 +48,21 @@ const T_AAVE_MIN_ASSETS_OUT = "1000000000000000000"
 func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 	s.Run("Submit rebalance request to MockAaveV2Stablecoin", func() {
 		s.checkCellarExists(aaveCellar)
-		s.waitForVotePeriod()
 
 		cellarId := aaveCellar.String()
+
+		val := s.chain.validators[0]
+		kb, err := val.keyring()
+		s.Require().NoError(err)
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		s.Require().NoError(err)
+
+		node, err := clientCtx.GetNode()
+		s.Require().NoError(err)
+		status, err := node.Status(context.Background())
+		s.Require().NoError(err)
+		currentHeight := status.SyncInfo.LatestBlockHeight
+		scheduledHeight := currentHeight + 10
 
 		// Create the cork request to send to Steward
 		route := []string{T_AAVE_DAI, T_AAVE_POOL, T_AAVE_USDC, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS}
@@ -60,9 +72,9 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 			{InIndex: 0, OutIndex: 0, SwapType: 0},
 			{InIndex: 0, OutIndex: 0, SwapType: 0},
 		}
-		request := &steward_proto.SubmitRequest{
+		request := &steward_proto.ScheduleRequest{
 			CellarId: cellarId,
-			CallData: &steward_proto.SubmitRequest_AaveV2Stablecoin{
+			CallData: &steward_proto.ScheduleRequest_AaveV2Stablecoin{
 				AaveV2Stablecoin: &steward_proto.AaveV2Stablecoin{
 					Function: &steward_proto.AaveV2Stablecoin_Rebalance_{
 						Rebalance: &steward_proto.AaveV2Stablecoin_Rebalance{
@@ -73,9 +85,11 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 					},
 				},
 			},
+			BlockHeight: uint64(scheduledHeight),
 		}
+
 		s.executeStewardCalls(request)
-		s.waitForVotePeriod()
+		s.waitForScheduledHeight(scheduledHeight)
 
 		// Construct invalidation scope and nonce for gravity query
 		aave_abi, err := AaveV2MetaData.GetAbi()
@@ -159,6 +173,15 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 	s.Run("Submit rebalance to MockCellar", func() {
 		s.checkCellarExists(vaultCellar)
 
+		val := s.chain.validators[0]
+		kb, err := val.keyring()
+		s.Require().NoError(err)
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		s.Require().NoError(err)
+
+		node, err := clientCtx.GetNode()
+		s.Require().NoError(err)
+
 		// Create the cork requests to send to Steward
 		from := ZERO_ADDRESS
 		to := ONE_ADDRESS
@@ -173,9 +196,9 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 				},
 			},
 		}
-		requestUniV2 := &steward_proto.SubmitRequest{
+		requestUniV2 := &steward_proto.ScheduleRequest{
 			CellarId: cellarId,
-			CallData: &steward_proto.SubmitRequest_CellarV1{
+			CallData: &steward_proto.ScheduleRequest_CellarV1{
 				CellarV1: &steward_proto.CellarV1{
 					Function: &steward_proto.CellarV1_Rebalance_{
 						Rebalance: &steward_proto.CellarV1_Rebalance{
@@ -199,9 +222,9 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 				},
 			},
 		}
-		requestUniV3 := &steward_proto.SubmitRequest{
+		requestUniV3 := &steward_proto.ScheduleRequest{
 			CellarId: cellarId,
-			CallData: &steward_proto.SubmitRequest_CellarV1{
+			CallData: &steward_proto.ScheduleRequest_CellarV1{
 				CellarV1: &steward_proto.CellarV1{
 					Function: &steward_proto.CellarV1_Rebalance_{
 						Rebalance: &steward_proto.CellarV1_Rebalance{
@@ -217,11 +240,15 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 		}
 
 		s.T().Log("running through two sequences to test rebalance with both UniV2 and Univ3 swap params")
-		for sequence, request := range []*steward_proto.SubmitRequest{requestUniV2, requestUniV3} {
+		for sequence, request := range []*steward_proto.ScheduleRequest{requestUniV2, requestUniV3} {
 			s.T().Log("starting sequence")
-			s.waitForVotePeriod()
+			status, err := node.Status(context.Background())
+			s.Require().NoError(err)
+			currentHeight := status.SyncInfo.LatestBlockHeight
+			scheduledHeight := currentHeight + 10
+			request.BlockHeight = uint64(scheduledHeight)
 			s.executeStewardCalls(request)
-			s.waitForVotePeriod()
+			s.waitForScheduledHeight(scheduledHeight)
 
 			// Construct invalidation scope and nonce for gravity query
 			vault_abi, err := CellarMetaData.GetAbi()
@@ -383,27 +410,26 @@ func (s *IntegrationTestSuite) checkCellarExists(cellar common.Address) {
 	}, 60*time.Second, 5*time.Second, "cellar %s not found in approved cellars list", cellar.String())
 }
 
-func (s *IntegrationTestSuite) waitForVotePeriod() {
-	s.T().Logf("wait for new vote period start")
-	queryClient, err := s.chain.validators[0].GetQueryClient()
-	s.Require().NoError(err, "error getting query client")
+func (s *IntegrationTestSuite) waitForScheduledHeight(height int64) {
+	s.T().Logf("wait for height %d", height)
+	val := s.chain.validators[0]
+	kb, err := val.keyring()
+	s.Require().NoError(err)
+	clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+	s.Require().NoError(err)
+	node, err := clientCtx.GetNode()
+	s.Require().NoError(err)
 	s.Require().Eventuallyf(func() bool {
-		res, err := queryClient.QueryCommitPeriod(context.Background(), &corkTypes.QueryCommitPeriodRequest{})
+		status, err := node.Status(context.Background())
 		if err != nil {
 			return false
 		}
-		if res.VotePeriodStart != res.CurrentHeight {
-			if res.CurrentHeight%10 == 0 {
-				s.T().Logf("current height: %d, period end: %d", res.CurrentHeight, res.VotePeriodEnd)
-			}
-			return false
-		}
-
-		return true
-	}, 30*time.Second, 1*time.Second, "new vote period never seen")
+		currentHeight := status.SyncInfo.LatestBlockHeight
+		return currentHeight >= height
+	}, 30*time.Second, 1*time.Second, "scheduled height never reached")
 }
 
-func (s *IntegrationTestSuite) executeStewardCalls(request *steward_proto.SubmitRequest) {
+func (s *IntegrationTestSuite) executeStewardCalls(request *steward_proto.ScheduleRequest) {
 	s.T().Logf("submit contract call data to steward")
 	s.Require().Eventually(func() bool {
 		// Load in client TLS config
@@ -447,7 +473,7 @@ func (s *IntegrationTestSuite) executeStewardCalls(request *steward_proto.Submit
 
 			c := steward_proto.NewContractCallClient(conn)
 			s.T().Logf("sending request to %s", s.chain.validators[i].keyInfo.GetAddress())
-			_, err = c.Submit(ctx, request)
+			_, err = c.Schedule(ctx, request)
 			s.Require().NoError(err)
 		}
 

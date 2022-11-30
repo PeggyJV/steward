@@ -17,14 +17,14 @@ import "cellar_v1.proto";
  * Service for handling Cellar contract calls
  */
 service ContractCall {
-    // Handles simple contract call submission
-    rpc Submit(SubmitRequest) returns (SubmitResponse) {}
+    // Handles scheduled contract call submission
+    rpc Schedule(ScheduleRequest) returns (ScheduleResponse) {}
 }
 
 /*
- * Represents a single function call on a particular Cellar
+ * Represents a single, scheduled function call to a particular Cellar
  */
-message SubmitRequest {
+message ScheduleRequest {
     // The ID (currently simply an Ethereum address) of the target Cellar
     string cellar_id = 1;
     // The data from which the desired contract function will be encoded
@@ -32,6 +32,8 @@ message SubmitRequest {
         AaveV2Stablecoin aave_v2_stablecoin = 2;
         CellarV1 cellar_v1 = 3;
     }
+    // The block height at which to schedule the contract call
+    uint64 block_height = 4;
 }
 
-message SubmitResponse {}
+message ScheduleResponse {}

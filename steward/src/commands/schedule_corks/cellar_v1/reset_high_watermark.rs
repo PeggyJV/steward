@@ -29,7 +29,7 @@ impl Runnable for ResetHighWatermarkCmd {
                 std::process::exit(1);
             });
 
-            cork::schedule_cork(self.cellar_id.clone(), encoded_call, self.height)
+            cork::schedule_cork(&self.cellar_id, encoded_call, self.height)
                 .await
                 .unwrap_or_else(|err| {
                     status_err!("error while submitting scheduled cork. please verify that the scheduling failed before attempting again: {}", err);

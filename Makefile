@@ -7,8 +7,10 @@ build_protos:
 	./build_protos.sh
 
 e2e_build_images: e2e_clean_slate
-	@docker pull $(VALIDATOR_IMAGE)
-	@docker tag $(VALIDATOR_IMAGE) sommelier:prebuilt
+	# TO-DO: Change back when cork v2 is merged in sommelier
+	# @docker pull $(VALIDATOR_IMAGE)
+	# @docker tag $(VALIDATOR_IMAGE) sommelier:prebuilt
+	docker build -t sommelier:prebuilt -f ../sommelier/Dockerfile ../sommelier
 	@docker pull $(ORCHESTRATOR_IMAGE)
 	@docker tag $(ORCHESTRATOR_IMAGE) orchestrator:prebuilt
 	@docker build -t steward:prebuilt -f Dockerfile .
