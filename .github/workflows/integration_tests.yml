@@ -179,3 +179,5 @@ jobs:
         run: ./integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m Test${{ matrix.test_type }}
         env:
           E2E_SKIP_CLEANUP: true
+      - name: Clean up docker images
+        run: ./clean_slate.sh
