@@ -20,7 +20,7 @@ jobs:
     permissions:
       contents: write
       packages: write
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -66,11 +66,8 @@ jobs:
     permissions:
       contents: write
       packages: write
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
-      # Install OpenSSL dependencies
-      - name: install-packages
-        run: sudo apt-get install -y pkg-config libssl-dev
       - name: checkout
         uses: actions/checkout@v2
       - name: Set up Docker Buildx
@@ -115,7 +112,7 @@ jobs:
       contents: write
       packages: write
     environment: CI
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: [ steward-build, hardhat-build ]
     strategy:
       fail-fast: false
