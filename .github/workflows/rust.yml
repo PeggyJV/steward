@@ -13,6 +13,9 @@ jobs:
   rust-test:
     runs-on: ubuntu-latest
     steps:
+      # install openssl dependencies
+      - name: install-packages
+        run: sudo apt-get install -y libssl-dev
       - name: Checkout branch
         uses: actions/checkout@v2
       - name: Set up Rust caches
@@ -32,6 +35,9 @@ jobs:
   rust-build:
     runs-on: ubuntu-latest
     steps:
+      # install openssl dependencies
+      - name: install-packages
+        run: sudo apt-get install -y libssl-dev
       - name: Checkout branch
         uses: actions/checkout@v2
       - name: Set up Rust caches
@@ -67,6 +73,9 @@ jobs:
     name: Clippy
     runs-on: ubuntu-latest
     steps:  
+      # install openssl dependencies
+      - name: install-packages
+        run: sudo apt-get install -y libssl-dev
       - name: Checkout branch
         uses: actions/checkout@v2
         with:
