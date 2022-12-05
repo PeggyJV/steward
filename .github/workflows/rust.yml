@@ -11,7 +11,7 @@ env:
 
 jobs:
   rust-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       # install openssl dependencies
       - name: install-packages
