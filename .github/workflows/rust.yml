@@ -15,7 +15,7 @@ jobs:
     steps:
       # install openssl dependencies
       - name: install-packages
-        run: sudo apt-get install -y libssl-dev
+        run: sudo apt-get install -y pkg-config libssl-dev
       - name: Checkout branch
         uses: actions/checkout@v2
       - name: Set up Rust caches
@@ -37,7 +37,7 @@ jobs:
     steps:
       # install openssl dependencies
       - name: install-packages
-        run: sudo apt-get install -y libssl-dev
+        run: sudo apt-get install -y pkg-config libssl-dev
       - name: Checkout branch
         uses: actions/checkout@v2
       - name: Set up Rust caches
@@ -75,7 +75,7 @@ jobs:
     steps:  
       # install openssl dependencies
       - name: install-packages
-        run: sudo apt-get install -y libssl-dev
+        run: sudo apt-get install -y pkg-config libssl-dev
       - name: Checkout branch
         uses: actions/checkout@v2
         with:
