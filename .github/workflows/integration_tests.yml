@@ -181,5 +181,5 @@ jobs:
           E2E_SKIP_CLEANUP: true
       - name: Clean up docker images
         run: ./clean_slate.sh
-      - name: Print file permissions
-        run: ls -halR
+      - name: Remove testnet tempdir
+        run: rm -rf somm-e2e-testnet*
