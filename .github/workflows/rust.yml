@@ -59,11 +59,11 @@ jobs:
           toolchain: stable
           override: true
       - name: Rust format
-        - run: rustup component add rustfmt
-        - uses: actions-rs/cargo@v1
-          with:
-            command: fmt
-            args: --all -- --check
+        run: rustup component add rustfmt
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
 
   clippy:
     name: Clippy
@@ -76,8 +76,8 @@ jobs:
           toolchain: stable
           override: true
       - name: Run clippy
-        - run: rustup component add clippy
-        - uses: actions-rs/cargo@v1
-          with:
-            command: clippy
-            args: -p steward -- -D warnings --no-deps
+        run: rustup component add clippy
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: -p steward -- -D warnings --no-deps
