@@ -182,4 +182,4 @@ jobs:
       - name: Clean up docker images
         run: ./clean_slate.sh
       - name: Remove testnet tempdir
-        run: rm -rf somm-e2e-testnet*
+        run: sudo rm -rf somm-e2e-testnet*
