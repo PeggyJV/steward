@@ -20,7 +20,7 @@ jobs:
     permissions:
       contents: write
       packages: write
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -66,7 +66,7 @@ jobs:
     permissions:
       contents: write
       packages: write
-    runs-on: [ self-hosted, linux ]
+    runs-on: ubuntu-20.04
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -112,13 +112,17 @@ jobs:
       contents: write
       packages: write
     environment: CI
-    runs-on: [ self-hosted, linux ]
+    runs-on: ubuntu-20.04
     needs: [ steward-build, hardhat-build ]
     strategy:
       fail-fast: false
       matrix:
         test_type: [ "AaveV2Stablecoin", "CellarV1" ]
     steps:
+      - name: Set up Go 1.15
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
       - name: checkout
         uses: actions/checkout@v2
       - name: go-cache
@@ -173,3 +177,9 @@ jobs:
         run: cd integration_tests && go test -c
       - name: Run end to end test
         run: ./integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m Test${{ matrix.test_type }}
+        env:
+          E2E_SKIP_CLEANUP: true
+      - name: Clean up docker images
+        run: ./clean_slate.sh
+      - name: Remove testnet tempdir
+        run: sudo rm -rf somm-e2e-testnet*
