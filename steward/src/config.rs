@@ -177,7 +177,7 @@ pub struct CosmosSection {
 impl Default for CosmosSection {
     fn default() -> Self {
         Self {
-            gas_adjustment: 1.0f64,
+            gas_adjustment: 1.1f64,
             grpc: "https://127.0.0.1:9090".to_owned(),
             key_derivation_path: "m/44'/118'/0'/0/0".to_owned(),
             prefix: "somm".to_owned(),
