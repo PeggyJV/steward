@@ -13,7 +13,7 @@ use steward_proto::steward::{
     long_about = "DESCRIPTION\n\nCalls setFeesDistributor() on the target cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol"
 )]
 pub struct SetFeesDistributorCmd {
-    #[clap(short = 'n', long)]
+    #[clap(short, long)]
     /// Fee distributor's address
     new_fees_distributor: Address,
 
@@ -40,10 +40,15 @@ impl Runnable for SetFeesDistributorCmd {
                     std::process::exit(1);
                 });
 
+            if self.new_fees_distributor.get_prefix().ne("somm") {
+                status_err!("new fees distributor address must have a 'somm' prefix!");
+                std::process::exit(1)
+            }
+
             let governance_call = GovernanceCall {
                 call: Some(Call::CellarV1(CellarV1Governance {
                     function: Some(Function::SetFeesDistributor(SetFeesDistributor {
-                        new_fees_distributor: self.new_fees_distributor.to_bech32("somm").unwrap(),
+                        new_fees_distributor: self.new_fees_distributor.to_string(),
                     })),
                 })),
             };

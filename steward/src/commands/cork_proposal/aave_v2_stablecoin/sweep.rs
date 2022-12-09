@@ -1,6 +1,6 @@
 use crate::{application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
-use ethers::types::H160;
+use ethers::types::Address;
 use steward_proto::steward::{
     aave_v2_stablecoin_governance::{Function, Sweep},
     governance_call::Call,
@@ -12,15 +12,14 @@ use steward_proto::steward::{
 #[clap(
     long_about = "DESCRIPTION\n\nSchedule sweep Cosmos address of target cellar when chain reaches specified height"
 )]
-
 pub struct SweepCmd {
     /// Token address to transfer out of Cellar.
     #[clap(short = 't', long)]
-    token: H160,
+    token: Address,
 
     /// Address to sweep token into
     #[clap(short = 'd', long)]
-    destination_address: H160,
+    destination_address: Address,
 
     /// Target contract for scheduled cork.
     #[clap(short, long)]
@@ -38,10 +37,10 @@ pub struct SweepCmd {
 impl Runnable for SweepCmd {
     fn run(&self) {
         abscissa_tokio::run_with_actix(&APP, async {
-            cellars::validate_cellar_id(self.cellar_id.as_str())
+            cellars::validate_cellar_id(&self.cellar_id)
                 .await
                 .unwrap_or_else(|err| {
-                    status_err!("Can't validate contract address format: {}", err);
+                    status_err!("cellar ID validation error:: {}", err);
                     std::process::exit(1);
                 });
 

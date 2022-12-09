@@ -32,10 +32,10 @@ pub struct InitiateShutdownCmd {
 impl Runnable for InitiateShutdownCmd {
     fn run(&self) {
         abscissa_tokio::run_with_actix(&APP, async {
-            cellars::validate_cellar_id(self.cellar_id.as_str())
+            cellars::validate_cellar_id(&self.cellar_id)
                 .await
                 .unwrap_or_else(|err| {
-                    status_err!("Can't validate contract address format: {}", err);
+                    status_err!("cellar ID validation error:: {}", err);
                     std::process::exit(1);
                 });
 

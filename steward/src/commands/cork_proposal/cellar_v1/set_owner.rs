@@ -1,6 +1,6 @@
 use crate::{application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
-use ethers::types::H160;
+use ethers::types::Address;
 use steward_proto::steward::{
     cellar_v1_governance::{Function, SetOwner},
     governance_call::Call,
@@ -15,7 +15,7 @@ use steward_proto::steward::{
 pub struct SetOwnerCmd {
     #[clap(short = 'n', long)]
     /// New contract owner's address
-    new_owner: H160,
+    new_owner: Address,
 
     /// Target contract for scheduled cork.
     #[clap(short, long)]

@@ -31,29 +31,31 @@ pub async fn get_gas_price() -> Result<U256, Error> {
 /// since the last automatic refresh.
 pub async fn validate_cellar_id(cellar_id: &str) -> Result<(), Error> {
     if let Err(err) = cellar_id.parse::<H160>() {
-        return Err(ErrorKind::SPCall
-            .context(format!("invalid ethereum address: {}", err))
-            .into());
+        return error_unapproved(cellar_id);
     }
 
     if !is_approved(cellar_id) {
         if let Err(err) = cache::refresh_approved_cellars().await {
             return Err(ErrorKind::Cache
-                .context(format!("failed to refresh approved cellar cache while processing SubmitCork request: {}", err))
+                .context(format!("failed to refresh approved cellar cache: {}", err))
             .into());
         }
 
         if !is_approved(cellar_id) {
-            return Err(ErrorKind::UnapprovedCellar
-                .context(format!(
-                    "cellar ID {} is not approved by governance",
-                    cellar_id
-                ))
-                .into());
+            return error_unapproved(cellar_id);
         }
     }
 
     Ok(())
+}
+
+pub fn error_unapproved(cellar_id: &str) -> Result<(), Error> {
+    return Err(ErrorKind::UnapprovedCellar
+        .context(format!(
+            "cellar ID {} is not approved by governance",
+            cellar_id
+        ))
+        .into())
 }
 
 pub fn log_cellar_call(cellar_name: &str, function_name: &str, cellar_id: &str) {

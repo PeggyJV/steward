@@ -32,7 +32,7 @@ rand_core = { version = "0.6", features = ["std"] }
 rand = "0.8.0"
 regex = "1.5.4"
 rpassword = "5"
-serde = { version = "1", features = ["serde_derive"] }
+serde = { version = "1.0.149", features = ["serde_derive"] }
 serde_json = "1.0.64"
 sha2 = "0.9"
 signatory = "0.23.0-pre"

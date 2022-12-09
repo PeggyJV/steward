@@ -11,7 +11,7 @@ mod set_strategist_performance_cut;
 mod set_strategist_platform_cut;
 mod trust_position;
 
-/// Generates scheduled cork proposal templates containing calls to V1 cellars
+/// Generates scheduled cork proposal templates containing function call data for V1 cellars
 #[derive(Command, Debug, Parser, Runnable)]
 pub enum CellarV1Cmd {
     InitiateShutdown(initiate_shutdown::InitiateShutdownCmd),
