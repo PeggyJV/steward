@@ -1,0 +1,18 @@
+/*
+ * Protos for governance-executed scheduled corks.
+*/
+
+syntax = "proto3";
+package steward.v2;
+
+option go_package = "/steward_proto";
+
+import "aave_v2_stablecoin.proto";
+import "cellar_v1.proto";
+
+message GovernanceCall {
+    oneof call {
+        AaveV2StablecoinGovernance aave_v2_stablecoin = 2;
+        CellarV1Governance cellar_v1 = 3;
+    }
+}
