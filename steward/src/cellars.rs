@@ -5,7 +5,7 @@ use crate::{
     utils::get_eth_provider,
 };
 use abscissa_core::tracing::{info, warn};
-use ethers::prelude::*;
+use ethers::{abi::Address, prelude::*};
 use std::result::Result;
 
 pub(crate) mod aave_v2_stablecoin;
@@ -30,38 +30,48 @@ pub async fn get_gas_price() -> Result<U256, Error> {
 /// approved cellar cache initially, we force a cache refresh and check again in case the cellar was approved on-chain
 /// since the last automatic refresh.
 pub async fn validate_cellar_id(cellar_id: &str) -> Result<(), Error> {
-    if let Err(err) = cellar_id.parse::<H160>() {
-        return error_unapproved(cellar_id);
+    if let Err(err) = cellar_id.parse::<Address>() {
+        return Err(ErrorKind::InvalidEthereumAddress
+            .context(format!("invalid cellar ID format {}: {}", cellar_id, err))
+            .into());
     }
 
     if !is_approved(cellar_id) {
         if let Err(err) = cache::refresh_approved_cellars().await {
             return Err(ErrorKind::Cache
                 .context(format!("failed to refresh approved cellar cache: {}", err))
-            .into());
+                .into());
         }
 
         if !is_approved(cellar_id) {
-            return error_unapproved(cellar_id);
+            return Err(ErrorKind::UnapprovedCellar
+                .context(format!(
+                    "cellar ID {} is not approved by governance",
+                    cellar_id
+                ))
+                .into());
         }
     }
 
     Ok(())
 }
 
-pub fn error_unapproved(cellar_id: &str) -> Result<(), Error> {
-    return Err(ErrorKind::UnapprovedCellar
-        .context(format!(
-            "cellar ID {} is not approved by governance",
-            cellar_id
-        ))
-        .into())
-}
-
 pub fn log_cellar_call(cellar_name: &str, function_name: &str, cellar_id: &str) {
     info!(
         "encoding {}.{} call for cellar {}",
         cellar_name, function_name, cellar_id
+    );
+}
+
+pub fn log_governance_cellar_call(
+    proposal_id: u64,
+    cellar_name: &str,
+    function_name: &str,
+    cellar_id: &str,
+) {
+    info!(
+        "[Proposal {}]: encoding {}.{} call for cellar {}",
+        proposal_id, cellar_name, function_name, cellar_id
     );
 }
 

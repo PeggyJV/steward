@@ -24,6 +24,7 @@ use tonic::{self, async_trait, Code, Request, Response, Status};
 
 pub mod cache;
 pub mod client;
+pub mod proposals;
 
 const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
 const CHAIN_PREFIX: &str = "somm";
@@ -51,7 +52,7 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         // Build and send cork
         let cellar_id = request.cellar_id.clone();
         let height = request.block_height;
-        if let Err(err) = cellars::validate_cellar_id(&request.cellar_id) {
+        if let Err(err) = cellars::validate_cellar_id(&request.cellar_id).await {
             return Err(Status::new(Code::InvalidArgument, err.to_string()));
         }
         let encoded_call = match get_encoded_call(request) {
@@ -104,8 +105,8 @@ pub async fn schedule_cork(
     encoded_call: Vec<u8>,
     height: u64,
 ) -> Result<TxResponse, Error> {
-    let config = APP.config();
     debug!("establishing grpc connection");
+    let config = APP.config();
     let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX).unwrap();
 
     debug!("getting cosmos fee");

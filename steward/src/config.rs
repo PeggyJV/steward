@@ -129,13 +129,20 @@ impl Default for KeysConfig {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CorkConfig {
+    /// Cache refresh period in seconds
     pub cache_refresh_period: u64,
+    /// Proposal polling period in seconds
+    pub proposal_poll_period: u64,
+    /// Number of retries for failed scheduling for proposals
+    pub max_scheduling_retries: u64,
 }
 
 impl Default for CorkConfig {
     fn default() -> Self {
         Self {
             cache_refresh_period: 60,
+            proposal_poll_period: 300,
+            max_scheduling_retries: 3,
         }
     }
 }

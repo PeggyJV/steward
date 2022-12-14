@@ -5,7 +5,7 @@ use std::path;
 
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Rename an Eth key.\n This command will rename an Eth key in the keystore. It takes the existing keyname and new keyname."
+    long_about = "DESCRIPTION\n\nRename an Eth key.\n This command will rename an Eth key in the keystore. It takes the existing keyname and new keyname."
 )]
 pub struct RenameKeyCmd {
     /// Eth keyname in keystore.

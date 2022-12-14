@@ -1,31 +1,36 @@
 //! Handlers for the Cellar.sol vault interface contract functions
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
+use std::convert::TryInto;
+
 use abscissa_core::tracing::info;
+use deep_space::Address as CosmosAddress;
 use ethers::{
     abi::{self, AbiEncode, Token},
     contract::EthCall,
     types::Address,
 };
-use steward_abi::cellar::{
-    AddPositionCall, CellarCalls, PushPositionCall, RebalanceCall, RemovePositionCall,
-    SetDepositLimitCall, SetHoldingPositionCall, SetLiquidityLimitCall, SetRebalanceDeviationCall,
-    SetShareLockPeriodCall, SetStrategistPayoutAddressCall, SetWithdrawTypeCall, SwapPositionsCall,
+use steward_abi::cellar::*;
+use steward_proto::steward::{
+    cellar_v1::{swap_params::Params::*, Function as StrategyFunction, SwapParams},
+    cellar_v1_governance::{trust_position::Position, Function as GovernanceFunction},
 };
-use steward_proto::steward::cellar_v1::{swap_params::Params::*, Function, SwapParams};
+use GovernanceFunction::*;
+use StrategyFunction::*;
 
 use crate::{
     error::{Error, ErrorKind},
-    utils::{sp_call_error, sp_call_parse_address, string_to_u256},
+    utils::{governance_call_error, sp_call_error, sp_call_parse_address, string_to_u256},
 };
 
-use super::log_cellar_call;
+use super::{log_cellar_call, log_governance_cellar_call};
 
-const CELLAR_NAME: &str = "Cellar";
+const CELLAR_NAME: &str = "CellarV1";
+const LOG_PREFIX: &str = CELLAR_NAME;
 
-pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>, Error> {
+pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {
     match function {
-        Function::AddPosition(params) => {
+        AddPosition(params) => {
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
             let call = AddPositionCall {
                 index: string_to_u256(params.index)?,
@@ -34,7 +39,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
 
             Ok(CellarCalls::AddPosition(call).encode())
         }
-        Function::PushPosition(params) => {
+        PushPosition(params) => {
             log_cellar_call(CELLAR_NAME, &PushPositionCall::function_name(), &cellar_id);
             let call = PushPositionCall {
                 position: sp_call_parse_address(params.position)?,
@@ -42,7 +47,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
 
             Ok(CellarCalls::PushPosition(call).encode())
         }
-        Function::RemovePosition(params) => {
+        RemovePosition(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &RemovePositionCall::function_name(),
@@ -54,7 +59,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
 
             Ok(CellarCalls::RemovePosition(call).encode())
         }
-        Function::SetHoldingPosition(params) => {
+        SetHoldingPosition(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetHoldingPositionCall::function_name(),
@@ -66,12 +71,13 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
 
             Ok(CellarCalls::SetHoldingPosition(call).encode())
         }
-        Function::Rebalance(params) => {
+        Rebalance(params) => {
             log_cellar_call(CELLAR_NAME, &RebalanceCall::function_name(), &cellar_id);
-            let swap_params =
-                encode_swap_params(params.params.ok_or_else(|| {
-                    ErrorKind::SPCallError.context("swap params cannot be empty")
-                })?)?;
+            let swap_params = encode_swap_params(
+                params
+                    .params
+                    .ok_or_else(|| ErrorKind::SPCall.context("swap params cannot be empty"))?,
+            )?;
 
             info!("encoded: {:?}", hex::encode(&swap_params));
 
@@ -88,7 +94,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
             info!("final call: {:?}", hex::encode(&call));
             Ok(call)
         }
-        Function::SetStrategistPayoutAddress(params) => {
+        SetStrategistPayoutAddress(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetStrategistPayoutAddressCall::function_name(),
@@ -100,7 +106,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
 
             Ok(CellarCalls::SetStrategistPayoutAddress(call).encode())
         }
-        Function::SetWithdrawType(params) => {
+        SetWithdrawType(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetWithdrawTypeCall::function_name(),
@@ -114,7 +120,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
 
             Ok(CellarCalls::SetWithdrawType(call).encode())
         }
-        Function::SwapPositions(params) => {
+        SwapPositions(params) => {
             log_cellar_call(CELLAR_NAME, &SwapPositionsCall::function_name(), &cellar_id);
             let call = SwapPositionsCall {
                 index_1: string_to_u256(params.index_1)?,
@@ -123,7 +129,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
 
             Ok(CellarCalls::SwapPositions(call).encode())
         }
-        Function::SetDepositLimit(params) => {
+        SetDepositLimit(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetDepositLimitCall::function_name(),
@@ -135,7 +141,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
 
             Ok(CellarCalls::SetDepositLimit(call).encode())
         }
-        Function::SetLiquidityLimit(params) => {
+        SetLiquidityLimit(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetLiquidityLimitCall::function_name(),
@@ -147,7 +153,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
 
             Ok(CellarCalls::SetLiquidityLimit(call).encode())
         }
-        Function::SetShareLockPeriod(params) => {
+        SetShareLockPeriod(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetShareLockPeriodCall::function_name(),
@@ -159,7 +165,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
 
             Ok(CellarCalls::SetShareLockPeriod(call).encode())
         }
-        Function::SetRebalanceDeviation(params) => {
+        SetRebalanceDeviation(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetRebalanceDeviationCall::function_name(),
@@ -227,6 +233,169 @@ fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
             let amount_out_min = Token::Uint(string_to_u256(p.amount_out_min)?);
 
             Ok(abi::encode(&[path, pool, amount, amount_out_min]))
+        }
+    }
+}
+
+pub fn get_encoded_governance_call(
+    function: GovernanceFunction,
+    cellar_id: &str,
+    proposal_id: u64,
+) -> Result<Vec<u8>, Error> {
+    match function {
+        SetFeesDistributor(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &SetFeesDistributorCall::function_name(),
+                cellar_id,
+            );
+            let address: CosmosAddress = params.new_fees_distributor.parse().map_err(|err| {
+                governance_call_error(format!(
+                    "{}: SetFeesDistibutor invalid address: {}",
+                    LOG_PREFIX, err
+                ))
+            })?;
+            let new_fees_distributor: [u8; 32] = address
+                .as_bytes()
+                .try_into()
+                .expect("failed to convert address from slice to byte array");
+            let call = SetFeesDistributorCall {
+                new_fees_distributor,
+            };
+            Ok(CellarCalls::SetFeesDistributor(call).encode())
+        }
+        InitiateShutdown(_) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &InitiateShutdownCall::function_name(),
+                cellar_id,
+            );
+            let call = InitiateShutdownCall {};
+            Ok(CellarCalls::InitiateShutdown(call).encode())
+        }
+        LiftShutdown(_) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &LiftShutdownCall::function_name(),
+                cellar_id,
+            );
+            let call = LiftShutdownCall {};
+            Ok(CellarCalls::LiftShutdown(call).encode())
+        }
+        ResetHighWatermark(_) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &ResetHighWatermarkCall::function_name(),
+                cellar_id,
+            );
+            let call = ResetHighWatermarkCall {};
+            Ok(CellarCalls::ResetHighWatermark(call).encode())
+        }
+        SetOwner(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &SetOwnerCall::function_name(),
+                cellar_id,
+            );
+            let call = SetOwnerCall {
+                new_owner: params.new_owner.parse::<Address>().map_err(|err| {
+                    governance_call_error(format!(
+                        "{}: SetOwner: invalid address: {}",
+                        LOG_PREFIX, err
+                    ))
+                })?,
+            };
+            Ok(CellarCalls::SetOwner(call).encode())
+        }
+        SetPerformanceFee(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &SetPerformanceFeeCall::function_name(),
+                cellar_id,
+            );
+            let call = SetPerformanceFeeCall {
+                new_performance_fee: params.amount,
+            };
+            Ok(CellarCalls::SetPerformanceFee(call).encode())
+        }
+        SetPlatformFee(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &SetPlatformFeeCall::function_name(),
+                cellar_id,
+            );
+            let call = SetPlatformFeeCall {
+                new_platform_fee: params.amount,
+            };
+            Ok(CellarCalls::SetPlatformFee(call).encode())
+        }
+        SetStrategistPerformanceCut(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &SetStrategistPerformanceCutCall::function_name(),
+                cellar_id,
+            );
+            let call = SetStrategistPerformanceCutCall { cut: params.amount };
+            Ok(CellarCalls::SetStrategistPerformanceCut(call).encode())
+        }
+        SetStrategistPlatformCut(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &SetStrategistPlatformCutCall::function_name(),
+                cellar_id,
+            );
+            let call = SetStrategistPlatformCutCall { cut: params.amount };
+            Ok(CellarCalls::SetStrategistPlatformCut(call).encode())
+        }
+        TrustPosition(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &TrustPositionCall::function_name(),
+                cellar_id,
+            );
+            if params.position.is_none() {
+                return Err(governance_call_error(format!(
+                    "{}: TrustPosition: position is required",
+                    LOG_PREFIX
+                )));
+            }
+            let position = params.position.unwrap();
+            let position_address: String;
+            // a little weird but necessary to avoid adding an overly complex enum to the proto
+            let position_type: u8 = match position {
+                Position::Erc20Address(address) => {
+                    position_address = address;
+                    0
+                }
+                Position::Erc4626Address(address) => {
+                    position_address = address;
+                    1
+                }
+                Position::CellarAddress(address) => {
+                    position_address = address;
+                    2
+                }
+            };
+            let call = TrustPositionCall {
+                position: position_address.parse::<Address>().map_err(|err| {
+                    governance_call_error(format!(
+                        "{}: TrustPosition: invalid address: {}",
+                        LOG_PREFIX, err
+                    ))
+                })?,
+                position_type: position_type,
+            };
+            Ok(CellarCalls::TrustPosition(call).encode())
         }
     }
 }

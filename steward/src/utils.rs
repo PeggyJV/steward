@@ -95,3 +95,7 @@ pub fn sp_call_parse_address(address: String) -> Result<H160, Error> {
         Err(err) => Err(sp_call_error(err.to_string())),
     }
 }
+
+pub fn governance_call_error(message: String) -> Error {
+    ErrorKind::GovernanceCall.context(message).into()
+}

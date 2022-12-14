@@ -5,7 +5,7 @@
 use crate::{
     application::APP,
     config::StewardConfig,
-    cork::{cache::start_approved_cellar_cache_thread, CorkHandler},
+    cork::{cache::start_approved_cellar_cache_thread, CorkHandler, proposals::start_scheduled_cork_proposal_polling_thread},
     prelude::*,
     server,
 };
@@ -16,7 +16,7 @@ use steward_proto::steward::contract_call_server::ContractCallServer;
 /// Cosmos Signer, start allocation module
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Cosmos mode, run Steward as a server.\n This command runs Steward as a server that will send updates to the Sommelier chain."
+    long_about = "DESCRIPTION\n\nCosmos mode, run Steward as a server.\n This command runs Steward as a server that will send updates to the Sommelier chain."
 )]
 pub struct StartCmd;
 
@@ -26,8 +26,9 @@ impl Runnable for StartCmd {
         let config = APP.config();
         info!("Starting application");
         abscissa_tokio::run(&APP, async {
-            // currently allows the thread to detach since we aren't capturing the JoinHandle
+            // currently allows the threads to detach since we aren't capturing the JoinHandle
             start_approved_cellar_cache_thread().await;
+            start_scheduled_cork_proposal_polling_thread().await;
 
             // Reflection required for certain clients to function... such as grpcurl
             let contents = server::DESCRIPTOR.to_vec();
