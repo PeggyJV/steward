@@ -66,6 +66,7 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 
 	s.T().Log("Check proposal was submitted correctly")
 	govQueryClient := govtypes.NewQueryClient(orchClientCtx)
+	var proposalID uint64
 	s.Require().Eventually(func() bool {
 		proposalsQueryResponse, err := govQueryClient.Proposals(context.Background(), &govtypes.QueryProposalsRequest{})
 		if err != nil {
@@ -74,10 +75,15 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 		}
 
 		s.Require().NotEmpty(proposalsQueryResponse.Proposals)
-		s.Require().Equal(uint64(1), proposalsQueryResponse.Proposals[0].ProposalId, "not proposal id 1")
-		s.Require().Equal(govtypes.StatusVotingPeriod, proposalsQueryResponse.Proposals[0].Status, "proposal not in voting period")
+		for _, p := range proposalsQueryResponse.Proposals {
+			if p.Content.TypeUrl == "/cork.v2.ScheduledCorkProposal" {
+				s.Require().Equal(govtypes.StatusVotingPeriod, p.Status, "proposal not in voting period")
+				proposalID = p.ProposalId
+				return true
+			}
+		}
 
-		return true
+		return false
 	}, time.Second*30, time.Second*5, "proposal submission was never found")
 
 	s.T().Log("Vote for proposal")
@@ -95,7 +101,7 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 
 	s.T().Log("Waiting for proposal to be approved..")
 	s.Require().Eventually(func() bool {
-		proposalQueryResponse, _ := govQueryClient.Proposal(context.Background(), &govtypes.QueryProposalRequest{ProposalId: 1})
+		proposalQueryResponse, _ := govQueryClient.Proposal(context.Background(), &govtypes.QueryProposalRequest{ProposalId: proposalID})
 		return govtypes.StatusPassed == proposalQueryResponse.Proposal.Status
 	}, time.Second*30, time.Second*5, "proposal was never accepted")
 	s.T().Log("Proposal approved!")

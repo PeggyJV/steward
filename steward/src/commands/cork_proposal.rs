@@ -19,6 +19,7 @@ pub enum CorkProposalCmd {
     CellarV1(CellarV1Cmd),
 }
 
+/// Outputs the JSON formatted scheduled cork data for submitting a Scheduled Cork Proposal to Sommelier
 fn print_proposal(height: u64, contract: String, governance_call: GovernanceCall, quiet: bool) {
     let json =
         serde_json::to_string(&governance_call).expect("failed to serialize governance call");

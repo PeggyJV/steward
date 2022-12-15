@@ -5016,7 +5016,7 @@ dependencies = [
 
 [[package]]
 name = "sommelier_steward"
-version = "2.1.0"
+version = "3.0.0"
 dependencies = [
  "lazy_static",
  "steward",
@@ -5107,7 +5107,7 @@ checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
 
 [[package]]
 name = "steward"
-version = "2.1.0"
+version = "3.0.0"
 dependencies = [
  "abscissa_core",
  "abscissa_tokio",
@@ -5178,7 +5178,7 @@ dependencies = [
 
 [[package]]
 name = "steward_proto"
-version = "2.0.0"
+version = "3.0.0"
 dependencies = [
  "prost",
  "prost-types",
@@ -5192,8 +5192,6 @@ version = "1.0.0"
 dependencies = [
  "prost",
  "prost-build",
- "tempdir",
- "tonic",
  "tonic-build",
  "walkdir",
 ]

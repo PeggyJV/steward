@@ -3,45 +3,30 @@
 
 ## Table of Contents
 
-- [steward.proto](#steward-proto)
-    - [ScheduleRequest](#steward-v3-ScheduleRequest)
-    - [ScheduleResponse](#steward-v3-ScheduleResponse)
-  
-    - [ContractCall](#steward-v3-ContractCall)
+- [governance.proto](#governance-proto)
+    - [GovernanceCall](#steward-v3-GovernanceCall)
   
 - [Scalar Value Types](#scalar-value-types)
 
 
 
-<a name="steward-proto"></a>
+<a name="governance-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## steward.proto
+## governance.proto
 
 
 
-<a name="steward-v3-ScheduleRequest"></a>
+<a name="steward-v3-GovernanceCall"></a>
 
-### ScheduleRequest
-Represents a single, scheduled function call to a particular Cellar
+### GovernanceCall
+Represents a governance-executed cellar function call. Used for Scheduled Cork Proposals in Sommelier.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| cellar_id | [string](#string) |  | The ID (currently simply an Ethereum address) of the target Cellar |
-| aave_v2_stablecoin | [AaveV2Stablecoin](#steward-v3-AaveV2Stablecoin) |  |  |
-| cellar_v1 | [CellarV1](#steward-v3-CellarV1) |  |  |
-| block_height | [uint64](#uint64) |  | The block height at which to schedule the contract call |
-
-
-
-
-
-
-<a name="steward-v3-ScheduleResponse"></a>
-
-### ScheduleResponse
-
+| aave_v2_stablecoin | [AaveV2StablecoinGovernance](#steward-v3-AaveV2StablecoinGovernance) |  | Governance function calls to the AaveV2Stablecoin cellar |
+| cellar_v1 | [CellarV1Governance](#steward-v3-CellarV1Governance) |  | Governance function calls to V1 cellars |
 
 
 
@@ -52,16 +37,6 @@ Represents a single, scheduled function call to a particular Cellar
  
 
  
-
-
-<a name="steward-v3-ContractCall"></a>
-
-### ContractCall
-Service for handling Cellar contract calls
-
-| Method Name | Request Type | Response Type | Description |
-| ----------- | ------------ | ------------- | ------------|
-| Schedule | [ScheduleRequest](#steward-v3-ScheduleRequest) | [ScheduleResponse](#steward-v3-ScheduleResponse) | Handles scheduled contract call submission |
 
  
 

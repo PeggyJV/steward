@@ -878,7 +878,9 @@ func (s *IntegrationTestSuite) logsByContainerID(id string) string {
 
 func (s *IntegrationTestSuite) GetLatestBlockHeight(clientCtx *client.Context) (int64, error) {
 	node, err := clientCtx.GetNode()
-	s.Require().NoError(err)
+	if err != nil {
+		return 0, err
+	}
 	status, err := node.Status(context.Background())
 	if err != nil {
 		return 0, err

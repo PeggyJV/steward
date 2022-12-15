@@ -5,7 +5,7 @@
 */
 
 syntax = "proto3";
-package steward.v2;
+package steward.v3;
 
 option go_package = "/steward_proto";
 
@@ -230,7 +230,7 @@ message CellarV1 {
 }
 
 /*
-* Represent a function call initiated through a governance proposal or manually by validators
+* Represent a function call initiated through a governance proposal
 */
 message CellarV1Governance {
     // The function to call on the target cellar

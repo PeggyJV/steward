@@ -183,7 +183,7 @@ pub mod aave_v2_stablecoin {
     }
 }
 ///
-/// Represents a function call initiated by governance or manually by the validator set
+/// Represents a function call initiated by governance
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct AaveV2StablecoinGovernance {
     /// The function to call on the target cellar
@@ -535,7 +535,7 @@ pub mod cellar_v1 {
     }
 }
 ///
-/// Represent a function call initiated through a governance proposal or manually by validators
+/// Represent a function call initiated through a governance proposal
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct CellarV1Governance {
     /// The function to call on the target cellar
@@ -651,17 +651,23 @@ pub mod cellar_v1_governance {
         TrustPosition(TrustPosition),
     }
 }
+///
+/// Represents a governance-executed cellar function call. Used for Scheduled Cork Proposals in Sommelier.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct GovernanceCall {
+    /// The type of Cellar to call
     #[prost(oneof = "governance_call::Call", tags = "2, 3")]
     pub call: ::core::option::Option<governance_call::Call>,
 }
 /// Nested message and enum types in `GovernanceCall`.
 pub mod governance_call {
+    /// The type of Cellar to call
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum Call {
+        /// Governance function calls to the AaveV2Stablecoin cellar
         #[prost(message, tag = "2")]
         AaveV2Stablecoin(super::AaveV2StablecoinGovernance),
+        /// Governance function calls to V1 cellars
         #[prost(message, tag = "3")]
         CellarV1(super::CellarV1Governance),
     }
@@ -740,7 +746,7 @@ pub mod contract_call_client {
                 )
             })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/steward.v2.ContractCall/Schedule");
+            let path = http::uri::PathAndQuery::from_static("/steward.v3.ContractCall/Schedule");
             self.inner.unary(request.into_request(), path, codec).await
         }
     }
@@ -804,7 +810,7 @@ pub mod contract_call_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/steward.v2.ContractCall/Schedule" => {
+                "/steward.v3.ContractCall/Schedule" => {
                     #[allow(non_camel_case_types)]
                     struct ScheduleSvc<T: ContractCall>(pub Arc<T>);
                     impl<T: ContractCall> tonic::server::UnaryService<super::ScheduleRequest> for ScheduleSvc<T> {
@@ -863,6 +869,6 @@ pub mod contract_call_server {
         }
     }
     impl<T: ContractCall> tonic::transport::NamedService for ContractCallServer<T> {
-        const NAME: &'static str = "steward.v2.ContractCall";
+        const NAME: &'static str = "steward.v3.ContractCall";
     }
 }

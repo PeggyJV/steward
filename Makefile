@@ -1,13 +1,14 @@
 .DEFAULT_GOAL := e2e_cork_test
 
-VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:latest"
+VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:main"
 ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:main"
 
 build_protos:
 	./build_protos.sh
 
 e2e_build_images: e2e_clean_slate
-	docker build -t sommelier:prebuilt -f ../sommelier/Dockerfile ../sommelier
+	@docker pull $(VALIDATOR_IMAGE)
+	@docker tag $(VALIDATOR_IMAGE) sommelier:prebuilt
 	@docker pull $(ORCHESTRATOR_IMAGE)
 	@docker tag $(ORCHESTRATOR_IMAGE) orchestrator:prebuilt
 	@docker build -t steward:prebuilt -f Dockerfile .

@@ -36,7 +36,7 @@ func NewContractCallClient(cc grpc.ClientConnInterface) ContractCallClient {
 
 func (c *contractCallClient) Schedule(ctx context.Context, in *ScheduleRequest, opts ...grpc.CallOption) (*ScheduleResponse, error) {
 	out := new(ScheduleResponse)
-	err := c.cc.Invoke(ctx, "/steward.v2.ContractCall/Schedule", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/steward.v3.ContractCall/Schedule", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func _ContractCall_Schedule_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/steward.v2.ContractCall/Schedule",
+		FullMethod: "/steward.v3.ContractCall/Schedule",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ContractCallServer).Schedule(ctx, req.(*ScheduleRequest))
@@ -94,7 +94,7 @@ func _ContractCall_Schedule_Handler(srv interface{}, ctx context.Context, dec fu
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ContractCall_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "steward.v2.ContractCall",
+	ServiceName: "steward.v3.ContractCall",
 	HandlerType: (*ContractCallServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
