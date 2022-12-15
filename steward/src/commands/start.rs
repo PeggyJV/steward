@@ -5,7 +5,10 @@
 use crate::{
     application::APP,
     config::StewardConfig,
-    cork::{cache::start_approved_cellar_cache_thread, CorkHandler, proposals::start_scheduled_cork_proposal_polling_thread},
+    cork::{
+        cache::start_approved_cellar_cache_thread,
+        proposals::start_scheduled_cork_proposal_polling_thread, CorkHandler,
+    },
     prelude::*,
     server,
 };

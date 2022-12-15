@@ -1,8 +1,8 @@
 mod initiate_shutdown;
 mod lift_shutdown;
 mod set_fees_distributor;
-mod trust_position;
 mod sweep;
+mod trust_position;
 
 use abscissa_core::{clap::Parser, Command, Runnable};
 

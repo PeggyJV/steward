@@ -393,7 +393,7 @@ pub fn get_encoded_governance_call(
                         LOG_PREFIX, err
                     ))
                 })?,
-                position_type: position_type,
+                position_type,
             };
             Ok(CellarCalls::TrustPosition(call).encode())
         }
