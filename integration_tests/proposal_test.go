@@ -18,18 +18,11 @@ import (
 func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 	s.checkCellarExists(vaultCellar)
 
-	val := s.chain.validators[0]
 	orch := s.chain.orchestrators[0]
 	orchClientCtx, err := s.chain.clientContext("tcp://localhost:26657", orch.keyring, "orch", orch.keyInfo.GetAddress())
 	s.Require().NoError(err)
-	kb, err := val.keyring()
+	currentHeight, err := s.GetLatestBlockHeight(orchClientCtx)
 	s.Require().NoError(err)
-	clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
-	s.Require().NoError(err)
-	node, err := clientCtx.GetNode()
-	s.Require().NoError(err)
-	status, err := node.Status(context.Background())
-	currentHeight := status.SyncInfo.LatestBlockHeight
 	protoJson := `
 	{
 		"call": {
@@ -116,20 +109,11 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 
 	s.T().Log("wait for scheduled height")
 	s.Require().Eventuallyf(func() bool {
-		kb, err := val.keyring()
+		currentHeight, err := s.GetLatestBlockHeight(orchClientCtx)
 		s.Require().NoError(err)
-		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
-		s.Require().NoError(err)
-
-		node, err := clientCtx.GetNode()
-		s.Require().NoError(err)
-		status, err := node.Status(context.Background())
-		s.Require().NoError(err)
-
-		currentHeight := status.SyncInfo.LatestBlockHeight
-		if currentHeight > (targetBlockHeight + 1) {
+		if currentHeight >= targetBlockHeight {
 			return true
-		} else if currentHeight < targetBlockHeight {
+		} else {
 			res, err := corkQueryClient.QueryScheduledCorks(context.Background(), &types.QueryScheduledCorksRequest{})
 			if err != nil {
 				s.T().Logf("error: %s", err)

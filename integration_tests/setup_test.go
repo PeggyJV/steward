@@ -21,6 +21,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/server"
 	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -873,4 +874,14 @@ func (s *IntegrationTestSuite) logsByContainerID(id string) string {
 	))
 
 	return containerLogsBuf.String()
+}
+
+func (s *IntegrationTestSuite) GetLatestBlockHeight(clientCtx *client.Context) (int64, error) {
+	node, err := clientCtx.GetNode()
+	s.Require().NoError(err)
+	status, err := node.Status(context.Background())
+	if err != nil {
+		return 0, err
+	}
+	return status.SyncInfo.LatestBlockHeight, nil
 }

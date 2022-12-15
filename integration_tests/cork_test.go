@@ -11,6 +11,7 @@ import (
 	"math/big"
 	"time"
 
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -56,12 +57,8 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 		s.Require().NoError(err)
 		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
 		s.Require().NoError(err)
-
-		node, err := clientCtx.GetNode()
+		currentHeight, err := s.GetLatestBlockHeight(clientCtx)
 		s.Require().NoError(err)
-		status, err := node.Status(context.Background())
-		s.Require().NoError(err)
-		currentHeight := status.SyncInfo.LatestBlockHeight
 		scheduledHeight := currentHeight + 10
 
 		// Create the cork request to send to Steward
@@ -89,7 +86,7 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 		}
 
 		s.executeStewardCalls(request)
-		s.waitForScheduledHeight(scheduledHeight)
+		s.waitForScheduledHeight(clientCtx, scheduledHeight)
 
 		// Construct invalidation scope and nonce for gravity query
 		aave_abi, err := AaveV2MetaData.GetAbi()
@@ -111,7 +108,7 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 		invalidationNonce := 1
 		s.Require().NoError(err)
 
-		s.queryLogicCallTransaction(invalidationScope, invalidationNonce)
+		s.queryLogicCallTransaction(clientCtx, invalidationScope, invalidationNonce)
 
 		// For non-anonymous events, the first log topic is a keccak256 hash o	f the
 		// event signature.
@@ -179,9 +176,6 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
 		s.Require().NoError(err)
 
-		node, err := clientCtx.GetNode()
-		s.Require().NoError(err)
-
 		// Create the cork requests to send to Steward
 		from := ZERO_ADDRESS
 		to := ONE_ADDRESS
@@ -242,13 +236,12 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 		s.T().Log("running through two sequences to test rebalance with both UniV2 and Univ3 swap params")
 		for sequence, request := range []*steward_proto.ScheduleRequest{requestUniV2, requestUniV3} {
 			s.T().Log("starting sequence")
-			status, err := node.Status(context.Background())
+			currentHeight, err := s.GetLatestBlockHeight(clientCtx)
 			s.Require().NoError(err)
-			currentHeight := status.SyncInfo.LatestBlockHeight
 			scheduledHeight := currentHeight + 10
 			request.BlockHeight = uint64(scheduledHeight)
 			s.executeStewardCalls(request)
-			s.waitForScheduledHeight(scheduledHeight)
+			s.waitForScheduledHeight(clientCtx, scheduledHeight)
 
 			// Construct invalidation scope and nonce for gravity query
 			vault_abi, err := CellarMetaData.GetAbi()
@@ -320,7 +313,7 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 					[]byte{},
 				)).Bytes()
 			invalidationNonce := sequence + 1
-			s.queryLogicCallTransaction(invalidationScope, invalidationNonce)
+			s.queryLogicCallTransaction(clientCtx, invalidationScope, invalidationNonce)
 
 			// For non-anonymous events, the first log topic is a keccak256 hash of the
 			// event signature.
@@ -410,21 +403,11 @@ func (s *IntegrationTestSuite) checkCellarExists(cellar common.Address) {
 	}, 60*time.Second, 5*time.Second, "cellar %s not found in approved cellars list", cellar.String())
 }
 
-func (s *IntegrationTestSuite) waitForScheduledHeight(height int64) {
+func (s *IntegrationTestSuite) waitForScheduledHeight(clientCtx *client.Context, height int64) {
 	s.T().Logf("wait for height %d", height)
-	val := s.chain.validators[0]
-	kb, err := val.keyring()
-	s.Require().NoError(err)
-	clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
-	s.Require().NoError(err)
-	node, err := clientCtx.GetNode()
-	s.Require().NoError(err)
 	s.Require().Eventuallyf(func() bool {
-		status, err := node.Status(context.Background())
-		if err != nil {
-			return false
-		}
-		currentHeight := status.SyncInfo.LatestBlockHeight
+		currentHeight, err := s.GetLatestBlockHeight(clientCtx)
+		s.Require().NoError(err)
 		return currentHeight >= height
 	}, 30*time.Second, 1*time.Second, "scheduled height never reached")
 }
@@ -481,15 +464,8 @@ func (s *IntegrationTestSuite) executeStewardCalls(request *steward_proto.Schedu
 	}, 100*time.Second, 1*time.Second, "Cork request took too long")
 }
 
-func (s *IntegrationTestSuite) queryLogicCallTransaction(invalidationScope []byte, invalidationNonce int) {
+func (s *IntegrationTestSuite) queryLogicCallTransaction(clientCtx *client.Context, invalidationScope []byte, invalidationNonce int) {
 	s.T().Log("querying gravity module for logic call transaction")
-	val := s.chain.validators[0]
-	kb, err := val.keyring()
-	s.Require().NoError(err)
-
-	clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
-	s.Require().NoError(err)
-
 	gravityQueryClient := gravityTypes.NewQueryClient(clientCtx)
 	s.Require().Eventuallyf(func() bool {
 		request := &gravityTypes.ContractCallTxsRequest{
