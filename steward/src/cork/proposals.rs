@@ -28,9 +28,7 @@ pub async fn start_scheduled_cork_proposal_polling_thread() -> JoinHandle<()> {
     let config = APP.config();
     let mut state = ProposalThreadState::default();
 
-    // let query_period = Duration::from_secs(config.cork.proposal_poll_period);
-    // Collin: This is only for testing
-    let query_period = Duration::from_secs(10);
+    let query_period = Duration::from_secs(config.cork.proposal_poll_period);
 
     tokio::spawn(async move {
         let mut fail_count = 0;

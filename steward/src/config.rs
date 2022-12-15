@@ -128,6 +128,7 @@ impl Default for KeysConfig {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(default)]
 pub struct CorkConfig {
     /// Cache refresh period in seconds
     pub cache_refresh_period: u64,

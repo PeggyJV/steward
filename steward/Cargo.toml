@@ -33,8 +33,7 @@ serde = { version = "1.0.149", features = ["serde_derive"] }
 serde_json = "1.0.64"
 sha2 = "0.9"
 signatory = "0.23.0-pre"
-# TO-DO: Change back when cork v2 is merged in sommelier
-somm_proto = { git = "https://github.com/PeggyJV/sommelier", branch = "corkv2-dev", ref = "0ea225227454b877351bcf40581ab55de242c5e6" }
+somm_proto = { git = "https://github.com/PeggyJV/sommelier" }
 steward_abi = { path = "../steward_abi" }
 steward_proto = { path = "../steward_proto_rust" }
 thiserror = "1"

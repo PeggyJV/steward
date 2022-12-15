@@ -759,6 +759,8 @@ func (s *IntegrationTestSuite) runStewards() {
 	s.stewResources = make([]*dockertest.Resource, len(s.chain.stewards))
 	for i, steward := range s.chain.stewards {
 		stewardCfg := fmt.Sprintf(`keystore = "/tmp/keystore"
+[cork]
+proposal_poll_period = 10
 
 [cosmos]
 grpc = "http://%s:9090"
