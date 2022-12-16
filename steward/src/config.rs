@@ -5,7 +5,7 @@
 //! for specifying it.
 use crate::prelude::APP;
 use abscissa_core::Application;
-use deep_space::{Address, PrivateKey};
+use deep_space::{Address as CosmosAddress, PrivateKey};
 use ethers::signers::LocalWallet as EthWallet;
 use gravity_bridge::cosmos_gravity;
 use lazy_static::lazy_static;
@@ -19,7 +19,7 @@ lazy_static! {
         let name = &config.keys.delegate_key;
         config.load_deep_space_key(name.clone())
     };
-    pub static ref DELEGATE_ADDRESS: Address = {
+    pub static ref DELEGATE_ADDRESS: CosmosAddress = {
         let config = APP.config();
         DELEGATE_KEY
             .to_address(&config.cosmos.prefix)

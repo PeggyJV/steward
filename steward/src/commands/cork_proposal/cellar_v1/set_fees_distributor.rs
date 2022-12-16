@@ -1,6 +1,6 @@
 use crate::{application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
-use deep_space::Address;
+use deep_space::Address as CosmosAddress;
 use steward_proto::steward::{
     cellar_v1_governance::{Function, SetFeesDistributor},
     governance_call::Call,
@@ -15,7 +15,7 @@ use steward_proto::steward::{
 pub struct SetFeesDistributorCmd {
     #[clap(short, long)]
     /// Fee distributor's address
-    new_fees_distributor: Address,
+    new_fees_distributor: CosmosAddress,
 
     /// Target contract for scheduled cork.
     #[clap(short, long)]
