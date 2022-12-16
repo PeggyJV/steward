@@ -119,7 +119,7 @@ async fn poll_approved_cork_proposals(state: &mut ProposalThreadState) -> Result
                 if err.code() == Code::NotFound {
                     info!(
                         "no new proposals. last processed proposal ID: {}",
-                        proposal_id
+                        state.last_processed_proposal_id
                     );
 
                     break;
