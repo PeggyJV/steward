@@ -47,7 +47,7 @@ pub enum ErrorKind {
     ProviderError,
     /// Strategy Provider call error
     #[error("SP call error")]
-    SPCall,
+    SPCallError,
     /// Governance call error
     #[error("SP call error")]
     GovernanceCall,
@@ -56,13 +56,16 @@ pub enum ErrorKind {
     ClientError,
     /// Cache error
     #[error("cache error")]
-    Cache,
+    CacheError,
     /// Unapproved cellar error
     #[error("unapproved cellar error")]
     UnapprovedCellar,
     /// Invalid ethereum address
     #[error("invalid ethereum address")]
     InvalidEthereumAddress,
+    /// Proposal processing error
+    #[error("proposal processing error")]
+    ProposalProcessingError,
 }
 
 impl ErrorKind {

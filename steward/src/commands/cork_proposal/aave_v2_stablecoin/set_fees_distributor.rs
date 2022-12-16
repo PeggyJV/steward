@@ -1,6 +1,6 @@
 use crate::{application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
-use deep_space::Address;
+use deep_space::Address as CosmosAddress;
 use steward_proto::steward::{
     aave_v2_stablecoin_governance::{Function, SetFeesDistributor},
     governance_call::Call,
@@ -10,12 +10,12 @@ use steward_proto::steward::{
 /// Fees Distributor subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION\n\nSet fees distributor Cosmos address of target cellar when chain reaches specified height"
+    long_about = "DESCRIPTION\n\nSet fees distributor Cosmos address of target cellar when chain reaches specified height.\nFor more information see https://github.com/PeggyJV/aave-v2-cellar/blob/main/src/AaveV2StablecoinCellar.sol."
 )]
 pub struct FeesDistributorCmd {
     #[clap(short, long)]
     /// Fee distributor's address
-    new_fees_distributor: Address,
+    new_fees_distributor: CosmosAddress,
 
     /// Target contract for scheduled cork.
     #[clap(short, long)]

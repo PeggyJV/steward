@@ -9,7 +9,7 @@ use steward_proto::steward::{
 /// Fees Distributor subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION\n\nCalls setStrategistPlatformCut() on the target cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol"
+    long_about = "DESCRIPTION\n\nCalls setStrategistPlatformCut() on the target cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-v1_5/blob/release/src/base/Cellar.sol"
 )]
 pub struct SetStrategistPlatformCutCmd {
     #[clap(short = 'n', long)]

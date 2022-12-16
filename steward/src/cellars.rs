@@ -38,7 +38,7 @@ pub async fn validate_cellar_id(cellar_id: &str) -> Result<(), Error> {
 
     if !is_approved(cellar_id) {
         if let Err(err) = cache::refresh_approved_cellars().await {
-            return Err(ErrorKind::Cache
+            return Err(ErrorKind::CacheError
                 .context(format!("failed to refresh approved cellar cache: {}", err))
                 .into());
         }

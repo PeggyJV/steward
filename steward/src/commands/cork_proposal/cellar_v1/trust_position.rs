@@ -1,6 +1,6 @@
 use crate::{application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
-use ethers::types::Address;
+use ethers::types::Address as EthereumAddress;
 use steward_proto::steward::{
     cellar_v1_governance::{trust_position::Position, Function, TrustPosition},
     governance_call::Call,
@@ -10,12 +10,12 @@ use steward_proto::steward::{
 /// Fees Distributor subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION\n\nCalls trustPosition() on the target cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol"
+    long_about = "DESCRIPTION\n\nCalls trustPosition() on the target cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-v1_5/blob/release/src/base/Cellar.sol"
 )]
 pub struct TrustPositionCmd {
     #[clap(short, long)]
     /// Address of the contract (position) to trust
-    position: Address,
+    position: EthereumAddress,
 
     /// The position type, where 0 = ERC20, 1 = ER4626, 2 = Cellar
     #[clap(short = 't', long)]

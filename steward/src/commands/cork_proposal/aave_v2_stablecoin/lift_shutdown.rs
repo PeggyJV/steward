@@ -9,7 +9,7 @@ use steward_proto::steward::{
 /// Shutdown subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION\n\nLift shutdown of target cellar when chain reaches specified height"
+    long_about = "DESCRIPTION\n\nLift shutdown of target cellar when chain reaches specified height.\nFor more information see https://github.com/PeggyJV/aave-v2-cellar/blob/main/src/AaveV2StablecoinCellar.sol."
 )]
 pub struct LiftShutdownCmd {
     /// Target contract for scheduled cork.

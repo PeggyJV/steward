@@ -8,7 +8,7 @@ use steward_proto::steward::{
 
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION\n\nCalls initiateShutdown() on the target cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol"
+    long_about = "DESCRIPTION\n\nCalls initiateShutdown() on the target cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-v1_5/blob/release/src/base/Cellar.sol"
 )]
 pub struct InitiateShutdownCmd {
     /// Target contract for scheduled cork.

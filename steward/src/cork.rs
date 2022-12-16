@@ -13,7 +13,9 @@ use abscissa_core::{
     Application,
 };
 use deep_space::{Coin, Contact};
+use ethers::types::H160;
 use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
+use sha3::{Digest, Keccak256};
 use somm_proto::cork::Cork;
 use std::time::Duration;
 use steward_proto::{
@@ -42,8 +44,8 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         if let Err(err) = cellars::validate_cellar_id(&cellar_id).await {
             let message = format!("cellar ID validation failed: {}", err);
             match err.kind() {
-                Cache => return Err(Status::new(Code::Internal, message)),
-                SPCall => return Err(Status::new(Code::InvalidArgument, message)),
+                CacheError => return Err(Status::new(Code::Internal, message)),
+                SPCallError => return Err(Status::new(Code::InvalidArgument, message)),
                 UnapprovedCellar => return Err(Status::new(Code::InvalidArgument, message)),
                 _ => return Err(Status::new(Code::Unknown, message)),
             }
@@ -52,9 +54,6 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         // Build and send cork
         let cellar_id = request.cellar_id.clone();
         let height = request.block_height;
-        if let Err(err) = cellars::validate_cellar_id(&request.cellar_id).await {
-            return Err(Status::new(Code::InvalidArgument, err.to_string()));
-        }
         let encoded_call = match get_encoded_call(request) {
             Ok(c) => c,
             Err(err) => {
@@ -64,7 +63,7 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         };
         debug!("cork: {:?}", encoded_call);
 
-        if let Err(err) = schedule_cork(&cellar_id, encoded_call, height).await {
+        if let Err(err) = schedule_cork(&cellar_id, encoded_call.clone(), height).await {
             error!("failed to submit cork: {}", err);
             return Err(Status::new(
                 Code::Internal,
@@ -73,7 +72,9 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         }
         info!("submitted cork for {}", cellar_id);
 
-        Ok(Response::new(ScheduleResponse {}))
+        Ok(Response::new(ScheduleResponse {
+            id: id_hash(height, &cellar_id, encoded_call),
+        }))
     }
 }
 
@@ -129,4 +130,36 @@ pub async fn schedule_cork(
     )
     .await
     .map_err(|e| e.into())
+}
+
+pub fn id_hash(block_height: u64, contract_address: &str, encoded_call: Vec<u8>) -> String {
+    let mut hasher = Keccak256::new();
+    let address = contract_address
+        .parse::<H160>()
+        .expect("failed to parse cellar ID. it should have been validated before now.");
+    let input = [
+        (block_height).to_be_bytes().as_slice(),
+        address.as_bytes(),
+        &encoded_call,
+    ]
+    .concat();
+    hasher.update(input);
+
+    format!("{:x}", hasher.finalize())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_id_hash() {
+        // inputs and expected output from an integration test run
+        let expected =
+            "fca62587f984a777a25ff1a45c2178066c82f8631f9bf54046943604c8805c84".to_string();
+        let call = hex::decode("fc4d43be00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
+        let actual = id_hash(193, "0x0165878A594ca255338adfa4d48449f69242Eb8F", call);
+
+        assert_eq!(expected, actual);
+    }
 }

@@ -27,13 +27,16 @@ service ContractCall {
 message ScheduleRequest {
     // The ID (currently simply an Ethereum address) of the target Cellar
     string cellar_id = 1;
+    // The block height at which to schedule the contract call
+    uint64 block_height = 2;
     // The data from which the desired contract function will be encoded
     oneof call_data {
-        AaveV2Stablecoin aave_v2_stablecoin = 2;
-        CellarV1 cellar_v1 = 3;
+        AaveV2Stablecoin aave_v2_stablecoin = 3;
+        CellarV1 cellar_v1 = 4;
     }
-    // The block height at which to schedule the contract call
-    uint64 block_height = 4;
 }
 
-message ScheduleResponse {}
+message ScheduleResponse {
+    // The hex encoded ID of the scheduled cork
+    string id = 1;
+}

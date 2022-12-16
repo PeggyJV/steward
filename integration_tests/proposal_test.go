@@ -2,6 +2,7 @@ package integration_tests
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 	"time"
 
@@ -126,6 +127,7 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 				return false
 			}
 
+			s.T().Logf("call: %s, height: %d, address: %s", hex.EncodeToString(res.Corks[0].Cork.EncodedContractCall), res.Corks[0].BlockHeight, res.Corks[0].Cork.TargetContractAddress)
 			// verify that the scheduled corks have not yet been consumed
 			s.Require().Len(res.Corks, len(s.chain.validators))
 		}

@@ -1,6 +1,6 @@
 use crate::{application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
-use ethers::types::Address;
+use ethers::types::Address as EthereumAddress;
 use steward_proto::steward::{
     aave_v2_stablecoin_governance::{Function, Sweep},
     governance_call::Call,
@@ -10,16 +10,16 @@ use steward_proto::steward::{
 /// Sweep subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION\n\nSchedule sweep Cosmos address of target cellar when chain reaches specified height"
+    long_about = "DESCRIPTION\n\nSchedule sweep Cosmos address of target cellar when chain reaches specified height.\nFor more information see https://github.com/PeggyJV/aave-v2-cellar/blob/main/src/AaveV2StablecoinCellar.sol."
 )]
 pub struct SweepCmd {
     /// Token address to transfer out of Cellar.
     #[clap(short = 't', long)]
-    token: Address,
+    token: EthereumAddress,
 
     /// Address to sweep token into
     #[clap(short = 'd', long)]
-    destination_address: Address,
+    destination_address: EthereumAddress,
 
     /// Target contract for scheduled cork.
     #[clap(short, long)]

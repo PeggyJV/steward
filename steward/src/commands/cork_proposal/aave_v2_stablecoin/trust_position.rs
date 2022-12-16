@@ -1,6 +1,6 @@
 use crate::{application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
-use ethers::types::Address;
+use ethers::types::Address as EthereumAddress;
 use steward_proto::steward::{
     aave_v2_stablecoin_governance::{Function, SetTrust},
     governance_call::Call,
@@ -10,12 +10,12 @@ use steward_proto::steward::{
 /// TrustPosition subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION\n\nSet trust for target Cellar when chain reaches specified height, to prevent Cellar from rebalancing into an asset that has not been trusted by the users."
+    long_about = "DESCRIPTION\n\nSet trust for target Cellar when chain reaches specified height, to prevent Cellar from rebalancing into an asset that has not been trusted by the users.\nFor more information see https://github.com/PeggyJV/aave-v2-cellar/blob/main/src/AaveV2StablecoinCellar.sol."
 )]
 pub struct TrustPositionCmd {
     /// Asset position
     #[clap(short, long)]
-    position: Address,
+    position: EthereumAddress,
 
     /// Target contract for scheduled cork.
     #[clap(short, long)]

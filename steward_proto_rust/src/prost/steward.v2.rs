@@ -541,7 +541,7 @@ pub struct CellarV1Governance {
     /// The function to call on the target cellar
     #[prost(
         oneof = "cellar_v1_governance::Function",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
     )]
     pub function: ::core::option::Option<cellar_v1_governance::Function>,
 }
@@ -562,6 +562,13 @@ pub mod cellar_v1_governance {
         /// Cosmos address of the new fees distributor
         #[prost(string, tag = "1")]
         pub new_fees_distributor: ::prost::alloc::string::String,
+    }
+    /// Represents function `setOwner(address)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SetOwner {
+        /// Address of the new owner
+        #[prost(string, tag = "1")]
+        pub new_owner: ::prost::alloc::string::String,
     }
     /// Represents function `setPerformanceFee(uint64)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -624,20 +631,23 @@ pub mod cellar_v1_governance {
         /// Represents function `setFeesDistributor(address)`
         #[prost(message, tag = "4")]
         SetFeesDistributor(SetFeesDistributor),
-        /// Represents function `setPerformanceFee(uint256)`
+        /// Represents function `setOwner(address)`
         #[prost(message, tag = "5")]
+        SetOwner(SetOwner),
+        /// Represents function `setPerformanceFee(uint256)`
+        #[prost(message, tag = "6")]
         SetPerformanceFee(SetPerformanceFee),
         /// Represents function `setPlatformFee(uint256)`
-        #[prost(message, tag = "6")]
+        #[prost(message, tag = "7")]
         SetPlatformFee(SetPlatformFee),
         /// Represents function `setStrategistPerformanceCut(uint256)`
-        #[prost(message, tag = "7")]
+        #[prost(message, tag = "8")]
         SetStrategistPerformanceCut(SetStrategistPerformanceCut),
         /// Represents function `setStrategistPlatformCut(address)`
-        #[prost(message, tag = "8")]
+        #[prost(message, tag = "9")]
         SetStrategistPlatformCut(SetStrategistPlatformCut),
         /// Represents function `trustPosition(address)`
-        #[prost(message, tag = "9")]
+        #[prost(message, tag = "10")]
         TrustPosition(TrustPosition),
     }
 }
@@ -670,10 +680,10 @@ pub struct ScheduleRequest {
     #[prost(string, tag = "1")]
     pub cellar_id: ::prost::alloc::string::String,
     /// The block height at which to schedule the contract call
-    #[prost(uint64, tag = "2")]
+    #[prost(uint64, tag = "4")]
     pub block_height: u64,
     /// The data from which the desired contract function will be encoded
-    #[prost(oneof = "schedule_request::CallData", tags = "3, 4")]
+    #[prost(oneof = "schedule_request::CallData", tags = "2, 3")]
     pub call_data: ::core::option::Option<schedule_request::CallData>,
 }
 /// Nested message and enum types in `ScheduleRequest`.
@@ -681,18 +691,14 @@ pub mod schedule_request {
     /// The data from which the desired contract function will be encoded
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum CallData {
-        #[prost(message, tag = "3")]
+        #[prost(message, tag = "2")]
         AaveV2Stablecoin(super::AaveV2Stablecoin),
-        #[prost(message, tag = "4")]
+        #[prost(message, tag = "3")]
         CellarV1(super::CellarV1),
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct ScheduleResponse {
-    /// The hex encoded ID of the scheduled cork
-    #[prost(string, tag = "1")]
-    pub id: ::prost::alloc::string::String,
-}
+pub struct ScheduleResponse {}
 #[doc = r" Generated client implementations."]
 pub mod contract_call_client {
     #![allow(unused_variables, dead_code, missing_docs)]
@@ -740,7 +746,7 @@ pub mod contract_call_client {
                 )
             })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/steward.v3.ContractCall/Schedule");
+            let path = http::uri::PathAndQuery::from_static("/steward.v2.ContractCall/Schedule");
             self.inner.unary(request.into_request(), path, codec).await
         }
     }
@@ -804,7 +810,7 @@ pub mod contract_call_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/steward.v3.ContractCall/Schedule" => {
+                "/steward.v2.ContractCall/Schedule" => {
                     #[allow(non_camel_case_types)]
                     struct ScheduleSvc<T: ContractCall>(pub Arc<T>);
                     impl<T: ContractCall> tonic::server::UnaryService<super::ScheduleRequest> for ScheduleSvc<T> {
@@ -863,6 +869,6 @@ pub mod contract_call_server {
         }
     }
     impl<T: ContractCall> tonic::transport::NamedService for ContractCallServer<T> {
-        const NAME: &'static str = "steward.v3.ContractCall";
+        const NAME: &'static str = "steward.v2.ContractCall";
     }
 }

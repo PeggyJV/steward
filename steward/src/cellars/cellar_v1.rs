@@ -73,11 +73,10 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
         }
         Rebalance(params) => {
             log_cellar_call(CELLAR_NAME, &RebalanceCall::function_name(), &cellar_id);
-            let swap_params = encode_swap_params(
-                params
-                    .params
-                    .ok_or_else(|| ErrorKind::SPCall.context("swap params cannot be empty"))?,
-            )?;
+            let swap_params =
+                encode_swap_params(params.params.ok_or_else(|| {
+                    ErrorKind::SPCallError.context("swap params cannot be empty")
+                })?)?;
 
             info!("encoded: {:?}", hex::encode(&swap_params));
 
@@ -294,23 +293,6 @@ pub fn get_encoded_governance_call(
             );
             let call = ResetHighWatermarkCall {};
             Ok(CellarCalls::ResetHighWatermark(call).encode())
-        }
-        SetOwner(params) => {
-            log_governance_cellar_call(
-                proposal_id,
-                CELLAR_NAME,
-                &SetOwnerCall::function_name(),
-                cellar_id,
-            );
-            let call = SetOwnerCall {
-                new_owner: params.new_owner.parse::<Address>().map_err(|err| {
-                    governance_call_error(format!(
-                        "{}: SetOwner: invalid address: {}",
-                        LOG_PREFIX, err
-                    ))
-                })?,
-            };
-            Ok(CellarCalls::SetOwner(call).encode())
         }
         SetPerformanceFee(params) => {
             log_governance_cellar_call(

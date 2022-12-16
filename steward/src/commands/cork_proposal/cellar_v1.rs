@@ -4,7 +4,6 @@ mod initiate_shutdown;
 mod lift_shutdown;
 mod reset_high_watermark;
 mod set_fees_distributor;
-mod set_owner;
 mod set_performance_fee;
 mod set_platform_fee;
 mod set_strategist_performance_cut;
@@ -18,7 +17,6 @@ pub enum CellarV1Cmd {
     LiftShutdown(lift_shutdown::LiftShutdownCmd),
     ResetHighWatermark(reset_high_watermark::ResetHighWatermarkCmd),
     SetFeesDistributor(set_fees_distributor::SetFeesDistributorCmd),
-    SetOwner(set_owner::SetOwnerCmd),
     SetPerformanceFee(set_performance_fee::SetPerformanceFeeCmd),
     SetPlatformFee(set_platform_fee::SetPlatformFeeCmd),
     SetStrategistPerformanceCut(set_strategist_performance_cut::SetStrategistPerformanceCutCmd),

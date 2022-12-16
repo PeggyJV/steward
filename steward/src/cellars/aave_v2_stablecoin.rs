@@ -1,6 +1,6 @@
 use crate::{
     error::Error,
-    utils::{sp_call_error, string_to_u256},
+    utils::{governance_call_error, sp_call_error, string_to_u256},
 };
 use deep_space::Address as CosmosAddress;
 use ethers::{
@@ -223,7 +223,7 @@ pub fn get_encoded_governance_call(
                 cellar_id,
             );
             let address: CosmosAddress = params.new_fees_distributor.parse().map_err(|err| {
-                sp_call_error(format!(
+                governance_call_error(format!(
                     "{}: SetFeesDistibutor invalid address: {}",
                     LOG_PREFIX, err
                 ))
@@ -269,7 +269,7 @@ pub fn get_encoded_governance_call(
             let call = SetTrustCall {
                 trust: params.trust,
                 position: params.position.parse::<Address>().map_err(|err| {
-                    sp_call_error(format!(
+                    governance_call_error(format!(
                         "{}: SetTrust: invalid address: {}",
                         LOG_PREFIX, err
                     ))
@@ -286,13 +286,13 @@ pub fn get_encoded_governance_call(
             );
             let call = SweepCall {
                 token: params.token.parse::<Address>().map_err(|err| {
-                    sp_call_error(format!(
+                    governance_call_error(format!(
                         "{}: Sweep: invalid token address: {}",
                         LOG_PREFIX, err
                     ))
                 })?,
                 to: params.recipient.parse::<Address>().map_err(|err| {
-                    sp_call_error(format!(
+                    governance_call_error(format!(
                         "{}: Sweep: invalid recipient address: {}",
                         LOG_PREFIX, err
                     ))

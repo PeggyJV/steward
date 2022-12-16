@@ -243,18 +243,16 @@ message CellarV1Governance {
         ResetHighWatermark reset_high_watermark = 3;
         // Represents function `setFeesDistributor(address)`
         SetFeesDistributor set_fees_distributor = 4;
-        // Represents function `setOwner(address)`
-        SetOwner set_owner = 5;
         // Represents function `setPerformanceFee(uint256)`
-        SetPerformanceFee set_performance_fee = 6;
+        SetPerformanceFee set_performance_fee = 5;
         // Represents function `setPlatformFee(uint256)`
-        SetPlatformFee set_platform_fee = 7;
+        SetPlatformFee set_platform_fee = 6;
         // Represents function `setStrategistPerformanceCut(uint256)`
-        SetStrategistPerformanceCut set_strategist_performance_cut = 8;
+        SetStrategistPerformanceCut set_strategist_performance_cut = 7;
         // Represents function `setStrategistPlatformCut(address)`
-        SetStrategistPlatformCut set_strategist_platform_cut = 9;
+        SetStrategistPlatformCut set_strategist_platform_cut = 8;
         // Represents function `trustPosition(address)`
-        TrustPosition trust_position = 10;
+        TrustPosition trust_position = 9;
     }
 
     // Represents function `initiateShutdown()`
@@ -273,12 +271,6 @@ message CellarV1Governance {
     message SetFeesDistributor {
         // Cosmos address of the new fees distributor
         string new_fees_distributor = 1;
-    }
-
-    // Represents function `setOwner(address)`
-    message SetOwner {
-        // Address of the new owner
-        string new_owner = 1;
     }
 
     // Represents function `setPerformanceFee(uint64)`

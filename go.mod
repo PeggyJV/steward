@@ -9,8 +9,7 @@ require (
 	github.com/miguelmota/go-ethereum-hdwallet v0.1.1
 	github.com/ory/dockertest/v3 v3.8.1
 	github.com/peggyjv/gravity-bridge/module/v2 v2.0.2
-	// TO-DO: Change back when cork v2 is merge in sommelier
-	github.com/peggyjv/sommelier/v4 v4.0.2-0.20221202205228-cc28bb733ded
+	github.com/peggyjv/sommelier/v4 v4.0.2-0.20221215203732-63059ce05fcc
 	github.com/peggyjv/steward/steward_proto_go/steward_proto v0.0.0-00010101000000-000000000000
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.8.0
