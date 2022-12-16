@@ -1,0 +1,134 @@
+/*
+* An API for cellars that implement the EIP4626-compatible Cellar.sol contract.
+*
+* See [Cellar.sol](https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol)
+*/
+
+syntax = "proto3";
+package steward.v2;
+
+option go_package = "/steward_proto";
+
+/*
+* Represents a function call to a cellar that implements Cellar.sol
+*/
+message CellarV2 {
+    // The function you wish to execute on the target cellar
+    oneof function {
+        // Represents function `addPosition(uint256 index, address position)`
+        AddPosition add_position = 1;
+        // Represents function `removePosition(uint256 index)`
+        RemovePosition remove_position = 3;
+        // Represents function `setHoldingIndex(uint8 index)`
+        SetHoldingIndex set_holding_index = 4;
+        SetStrategistPayoutAddress set_strategist_payout_address = 6;
+        // Represents function `swapPositions(uint256 index1, uint256 index2)`
+        SwapPositions swap_positions = 8;
+        // Represents function `setDepositLimit()`
+        SetDepositLimit set_deposit_limit = 9;
+        // Represents function `setLiquidityLimit()`
+        SetLiquidityLimit set_liquidity_limit = 10;
+        // Represents function `setShareLockPeriod()`
+        SetShareLockPeriod set_share_lock_period = 11;
+        // Represents function `setRebalanceDeviation(uint265)`
+        SetRebalanceDeviation set_rebalance_deviation = 12;
+    }
+
+    /*
+    * Insert a trusted position to the list of positions used by the cellar at a given index.
+    *
+    * Represents function `addPosition(uint32 index, uint32 positionId, bytes configurationData, bool inDebtArray)`
+    */
+    message AddPosition {
+        // Index at which to add the position
+        uint32 index = 1;
+        // The position's ID in the cellar registry
+        uint32 position_id = 2;
+        // Data used to configure how the position behaves
+        // TODO: break this out into protos and let steward serialize the bytes
+        bytes configuration_data = 3;
+        // Whether to add position in the debt array, or the credit array.
+        bool in_debt_array = 4;
+    }
+
+    /*
+    * Remove the position at a given index from the list of positions used by the cellar.
+    *
+    * Represents function `removePosition(uint32 index, bool inDebtArray)`
+    */
+    message RemovePosition {
+        // Index at which to remove the position
+        uint32 index = 1;
+        // Whether to remove position from the debt array, or the credit array.
+        bool in_debt_array = 2;
+    }
+
+    /*
+    * Set the holding position used of the cellar.
+    *
+    * Represents function `setHoldingIndex(uint8 index)`
+    */
+    message SetHoldingIndex {
+        // Index of the new holding position to use
+        uint32 index = 1;
+    }
+
+    /*
+    * Sets the Strategists payout address.
+    *
+    * Represents function `setStrategistPayoutAddress(address payout)`
+    */
+    message SetStrategistPayoutAddress {
+        string payout = 1;
+    }
+
+    /*
+    * Swap the positions at two given indeces.
+    *
+    * Represents function `swapPositions(uint32 index1, uint32 index2)`
+    */
+    message SwapPositions {
+        // Index of the first position
+        uint32 index_1 = 1;
+        // Index of the second position
+        uint32 index_2 = 2;
+        // Whether to switch positions in the debt array, or the credit array.
+        bool in_debt_array = 3;
+    }
+
+    /*
+    * Set the per-wallet deposit limit. Uses the same decimals as the current asset.
+    *
+    * Represents function `setDepositLimit()`
+    */
+    message SetDepositLimit {
+        string new_limit = 1;
+    }
+
+    /*
+    * Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.
+    *
+    * Represents function `setLiquidityLimit()`
+    */
+    message SetLiquidityLimit {
+        string new_limit = 1;
+    }
+
+    /*
+    * Allows share lock period to be updated.
+    *
+    * Represents function `setShareLockPeriod()`
+    */
+    message SetShareLockPeriod {
+        string new_lock = 1;
+    }
+
+    /*
+    *
+    *
+    * Represents function `setRebalanceDeviation(uint256)`
+    */
+    message SetRebalanceDeviation {
+        string new_deviation = 1;
+    }
+}
