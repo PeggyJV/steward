@@ -4,6 +4,7 @@ use crate::{
 };
 use abscissa_core::Application;
 use deep_space::error::CosmosGrpcError;
+use deep_space::Address as CosmosAddress;
 use ethers::prelude::{types::Address as EthAddress, *};
 use gravity_bridge::{
     gravity_proto::gravity::{
@@ -98,4 +99,13 @@ pub fn sp_call_parse_address(address: String) -> Result<H160, Error> {
 
 pub fn governance_call_error(message: String) -> Error {
     ErrorKind::GovernanceCall.context(message).into()
+}
+
+/// Encodes the Cosmos address into a big-endian 32 byte array pre-padded with zeros. Since a Cosmos address is 20
+/// bytes, we copy it into a zeroed-out 32 byte array starting at index 12.
+pub fn encode_fees_distributor_address(address: CosmosAddress) -> [u8; 32] {
+    let mut address_bytes_slice: [u8; 32] = Default::default();
+    address_bytes_slice[12..].copy_from_slice(address.as_bytes());
+
+    address_bytes_slice
 }

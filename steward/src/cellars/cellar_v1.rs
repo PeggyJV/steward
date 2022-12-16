@@ -1,14 +1,12 @@
 //! Handlers for the Cellar.sol vault interface contract functions
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
-use std::convert::TryInto;
-
 use abscissa_core::tracing::info;
 use deep_space::Address as CosmosAddress;
 use ethers::{
     abi::{self, AbiEncode, Token},
     contract::EthCall,
-    types::Address,
+    types::Address as EthereumAddress,
 };
 use steward_abi::cellar::*;
 use steward_proto::steward::{
@@ -20,7 +18,10 @@ use StrategyFunction::*;
 
 use crate::{
     error::{Error, ErrorKind},
-    utils::{governance_call_error, sp_call_error, sp_call_parse_address, string_to_u256},
+    utils::{
+        encode_fees_distributor_address, governance_call_error, sp_call_error,
+        sp_call_parse_address, string_to_u256,
+    },
 };
 
 use super::{log_cellar_call, log_governance_cellar_call};
@@ -190,7 +191,7 @@ fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
             let mut path = Vec::<Token>::new();
 
             for a in p.path {
-                let address = a.parse::<Address>();
+                let address = a.parse::<EthereumAddress>();
                 if address.is_err() {
                     return Err(sp_call_error(format!(
                         "could not parse swap params path address: {}",
@@ -209,7 +210,7 @@ fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
         Univ3Params(p) => {
             let mut path = Vec::<Token>::new();
             for a in p.path {
-                let address = a.parse::<Address>();
+                let address = a.parse::<EthereumAddress>();
                 if address.is_err() {
                     return Err(sp_call_error(format!(
                         "could not parse swap params path address: {}",
@@ -255,12 +256,8 @@ pub fn get_encoded_governance_call(
                     LOG_PREFIX, err
                 ))
             })?;
-            let new_fees_distributor: [u8; 32] = address
-                .as_bytes()
-                .try_into()
-                .expect("failed to convert address from slice to byte array");
             let call = SetFeesDistributorCall {
-                new_fees_distributor,
+                new_fees_distributor: encode_fees_distributor_address(address),
             };
             Ok(CellarCalls::SetFeesDistributor(call).encode())
         }
@@ -369,7 +366,7 @@ pub fn get_encoded_governance_call(
                 }
             };
             let call = TrustPositionCall {
-                position: position_address.parse::<Address>().map_err(|err| {
+                position: position_address.parse::<EthereumAddress>().map_err(|err| {
                     governance_call_error(format!(
                         "{}: TrustPosition: invalid address: {}",
                         LOG_PREFIX, err

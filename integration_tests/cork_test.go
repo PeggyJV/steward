@@ -405,11 +405,15 @@ func (s *IntegrationTestSuite) checkCellarExists(cellar common.Address) {
 
 func (s *IntegrationTestSuite) waitForScheduledHeight(clientCtx *client.Context, height int64) {
 	s.T().Logf("wait for height %d", height)
+	startingHeight, err := s.GetLatestBlockHeight(clientCtx)
+	s.Require().NoError(err)
+	delta := height - startingHeight
 	s.Require().Eventuallyf(func() bool {
 		currentHeight, err := s.GetLatestBlockHeight(clientCtx)
 		s.Require().NoError(err)
 		return currentHeight >= height
-	}, 30*time.Second, 1*time.Second, "scheduled height never reached")
+		// block time in tests is usually ~1 second so this gives some cushion
+	}, time.Duration(delta*3)*time.Second, 1*time.Second, "scheduled height never reached")
 }
 
 func (s *IntegrationTestSuite) executeStewardCalls(request *steward_proto.ScheduleRequest) {

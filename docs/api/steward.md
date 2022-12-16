@@ -29,9 +29,9 @@ Represents a single, scheduled function call to a particular Cellar
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | cellar_id | [string](#string) |  | The ID (currently simply an Ethereum address) of the target Cellar |
+| block_height | [uint64](#uint64) |  | The block height at which to schedule the contract call |
 | aave_v2_stablecoin | [AaveV2Stablecoin](#steward-v3-AaveV2Stablecoin) |  |  |
 | cellar_v1 | [CellarV1](#steward-v3-CellarV1) |  |  |
-| block_height | [uint64](#uint64) |  | The block height at which to schedule the contract call |
 
 
 
@@ -42,6 +42,11 @@ Represents a single, scheduled function call to a particular Cellar
 
 ### ScheduleResponse
 
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  | The hex encoded ID of the scheduled cork |
 
 
 

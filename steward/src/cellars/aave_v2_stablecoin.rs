@@ -1,12 +1,14 @@
 use crate::{
     error::Error,
-    utils::{governance_call_error, sp_call_error, string_to_u256},
+    utils::{
+        encode_fees_distributor_address, governance_call_error, sp_call_error, string_to_u256,
+    },
 };
 use deep_space::Address as CosmosAddress;
 use ethers::{
     abi::AbiEncode,
     contract::EthCall,
-    prelude::{Address, U256},
+    prelude::{Address as EthereumAddress, U256},
 };
 use std::convert::TryInto;
 use steward_abi::aave_v2_stablecoin::*;
@@ -96,10 +98,10 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 )));
             }
 
-            let results: Vec<Result<Address, &String>> = params
+            let results: Vec<Result<EthereumAddress, &String>> = params
                 .route
                 .iter()
-                .map(|addr| match addr.parse::<Address>() {
+                .map(|addr| match addr.parse::<EthereumAddress>() {
                     Ok(addr) => Ok(addr),
                     Err(_) => Err(addr),
                 })
@@ -110,7 +112,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
             let route = results
                 .iter()
                 .map(|r| r.unwrap())
-                .collect::<Vec<Address>>()
+                .collect::<Vec<EthereumAddress>>()
                 .try_into()
                 .expect("failed to convert 'route' addresses to array");
 
@@ -192,7 +194,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
     }
 }
 
-fn validate_route(results: Vec<Result<Address, &String>>) -> Result<(), Error> {
+fn validate_route(results: Vec<Result<EthereumAddress, &String>>) -> Result<(), Error> {
     let mut bad_addresses_string = String::new();
     for r in results {
         if let Err(addr) = r {
@@ -228,12 +230,8 @@ pub fn get_encoded_governance_call(
                     LOG_PREFIX, err
                 ))
             })?;
-            let new_fees_distributor: [u8; 32] = address
-                .as_bytes()
-                .try_into()
-                .expect("failed to convert address from slice to byte array");
             let call = SetFeesDistributorCall {
-                new_fees_distributor,
+                new_fees_distributor: encode_fees_distributor_address(address),
             };
             Ok(AaveV2StablecoinCellarCalls::SetFeesDistributor(call).encode())
         }
@@ -268,7 +266,7 @@ pub fn get_encoded_governance_call(
             );
             let call = SetTrustCall {
                 trust: params.trust,
-                position: params.position.parse::<Address>().map_err(|err| {
+                position: params.position.parse::<EthereumAddress>().map_err(|err| {
                     governance_call_error(format!(
                         "{}: SetTrust: invalid address: {}",
                         LOG_PREFIX, err
@@ -285,13 +283,13 @@ pub fn get_encoded_governance_call(
                 cellar_id,
             );
             let call = SweepCall {
-                token: params.token.parse::<Address>().map_err(|err| {
+                token: params.token.parse::<EthereumAddress>().map_err(|err| {
                     governance_call_error(format!(
                         "{}: Sweep: invalid token address: {}",
                         LOG_PREFIX, err
                     ))
                 })?,
-                to: params.recipient.parse::<Address>().map_err(|err| {
+                to: params.recipient.parse::<EthereumAddress>().map_err(|err| {
                     governance_call_error(format!(
                         "{}: Sweep: invalid recipient address: {}",
                         LOG_PREFIX, err

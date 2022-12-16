@@ -51,7 +51,6 @@ pub async fn start_scheduled_cork_proposal_polling_thread() -> JoinHandle<()> {
         .validator_address;
 
     tokio::spawn(async move {
-        let mut fail_count = 0;
         loop {
             tokio::time::sleep(query_period).await;
 
@@ -60,15 +59,11 @@ pub async fn start_scheduled_cork_proposal_polling_thread() -> JoinHandle<()> {
                 .update_last_observed_height(config.cosmos.grpc.clone())
                 .await;
             if let Err(err) = poll_approved_cork_proposals(&mut state).await {
-                fail_count += 1;
                 error!(
-                    "proposal {} failed to process {} time(s). latest error: {}",
+                    "failed to process proposal {}: {}",
                     state.last_processed_proposal_id + 1,
-                    fail_count,
                     err
                 );
-            } else {
-                fail_count = 0;
             }
         }
     })
@@ -261,36 +256,43 @@ async fn poll_approved_cork_proposals(state: &mut ProposalThreadState) -> Result
             proposal.proposal_id, encoded_call
         );
 
-        if let Err(err) = schedule_cork(&cellar_id, encoded_call.clone(), block_height).await {
-            match confirm_sheduling(state, &cellar_id, encoded_call, block_height).await {
-                Ok(confirmed) => {
-                    if confirmed {
-                        info!(
-                            "call for cellar {} scheduled for block {} by proposal {}",
-                            cellar_id, block_height, proposal.proposal_id
-                        );
-                        state.increment_proposal_id();
-                        continue;
+        // retry scheduling call on errors up to configured amount of retries
+        let mut attempts = 0;
+        loop {
+            if let Err(err) = schedule_cork(&cellar_id, encoded_call.clone(), block_height).await {
+                error!("error scheduling cork. confirming if the cork was scheduled in case this is a timeout bug: {}", err);
+                match confirm_sheduling(state, &cellar_id, encoded_call.clone(), block_height).await
+                {
+                    Ok(confirmed) => {
+                        if confirmed {
+                            info!(
+                                "call for cellar {} scheduled for block {} by proposal {}",
+                                cellar_id, block_height, proposal.proposal_id
+                            );
+                            state.increment_proposal_id();
+                            break;
+                        }
                     }
-                }
-                Err(err) => {
-                    return Err(proposal_processing_error(format!(
-                        "failed to confirm cork scheduling for proposal {} reason: {}",
-                        proposal.proposal_id, err
-                    )))
-                }
-            };
+                    Err(err) => {
+                        attempts += 1;
+                        if attempts > config.cork.max_scheduling_retries {
+                            return Err(proposal_processing_error(format!(
+                                "failed to schedule cork for proposal {} reason: {}",
+                                proposal.proposal_id, err
+                            )));
+                        }
 
-            return Err(proposal_processing_error(format!(
-                "failed to schedule cork for proposal {} reason: {}",
-                proposal.proposal_id, err
-            )));
-        } else {
-            info!(
-                "call for cellar {} scheduled for block {} by proposal {}",
-                cellar_id, block_height, proposal.proposal_id
-            );
-            state.increment_proposal_id();
+                        tokio::time::sleep(Duration::from_secs(5)).await;
+                    }
+                };
+            } else {
+                info!(
+                    "call for cellar {} scheduled for block {} by proposal {}",
+                    cellar_id, block_height, proposal.proposal_id
+                );
+                state.increment_proposal_id();
+                break;
+            }
         }
     }
 
@@ -298,7 +300,7 @@ async fn poll_approved_cork_proposals(state: &mut ProposalThreadState) -> Result
 }
 
 async fn confirm_sheduling(
-    state: &mut ProposalThreadState,
+    state: &ProposalThreadState,
     cellar_id: &str,
     encoded_call: Vec<u8>,
     block_height: u64,

@@ -25,7 +25,6 @@
     - [CellarV1Governance.LiftShutdown](#steward-v3-CellarV1Governance-LiftShutdown)
     - [CellarV1Governance.ResetHighWatermark](#steward-v3-CellarV1Governance-ResetHighWatermark)
     - [CellarV1Governance.SetFeesDistributor](#steward-v3-CellarV1Governance-SetFeesDistributor)
-    - [CellarV1Governance.SetOwner](#steward-v3-CellarV1Governance-SetOwner)
     - [CellarV1Governance.SetPerformanceFee](#steward-v3-CellarV1Governance-SetPerformanceFee)
     - [CellarV1Governance.SetPlatformFee](#steward-v3-CellarV1Governance-SetPlatformFee)
     - [CellarV1Governance.SetStrategistPerformanceCut](#steward-v3-CellarV1Governance-SetStrategistPerformanceCut)
@@ -347,7 +346,6 @@ Represent a function call initiated through a governance proposal
 | lift_shutdown | [CellarV1Governance.LiftShutdown](#steward-v3-CellarV1Governance-LiftShutdown) |  | Represents function `liftShutdown()` |
 | reset_high_watermark | [CellarV1Governance.ResetHighWatermark](#steward-v3-CellarV1Governance-ResetHighWatermark) |  | Represents function `resetHighWatermark()` |
 | set_fees_distributor | [CellarV1Governance.SetFeesDistributor](#steward-v3-CellarV1Governance-SetFeesDistributor) |  | Represents function `setFeesDistributor(address)` |
-| set_owner | [CellarV1Governance.SetOwner](#steward-v3-CellarV1Governance-SetOwner) |  | Represents function `setOwner(address)` |
 | set_performance_fee | [CellarV1Governance.SetPerformanceFee](#steward-v3-CellarV1Governance-SetPerformanceFee) |  | Represents function `setPerformanceFee(uint256)` |
 | set_platform_fee | [CellarV1Governance.SetPlatformFee](#steward-v3-CellarV1Governance-SetPlatformFee) |  | Represents function `setPlatformFee(uint256)` |
 | set_strategist_performance_cut | [CellarV1Governance.SetStrategistPerformanceCut](#steward-v3-CellarV1Governance-SetStrategistPerformanceCut) |  | Represents function `setStrategistPerformanceCut(uint256)` |
@@ -398,21 +396,6 @@ Represents function `setFeesDistributor(bytes32)`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | new_fees_distributor | [string](#string) |  | Cosmos address of the new fees distributor |
-
-
-
-
-
-
-<a name="steward-v3-CellarV1Governance-SetOwner"></a>
-
-### CellarV1Governance.SetOwner
-Represents function `setOwner(address)`
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| new_owner | [string](#string) |  | Address of the new owner |
 
 
 
