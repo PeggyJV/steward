@@ -289,6 +289,8 @@ async fn poll_approved_cork_proposals(state: &mut ProposalThreadState) -> Result
                                 state.increment_proposal_id();
                                 break;
                             }
+
+                            tokio::time::sleep(Duration::from_secs(RETRY_SLEEP)).await;
                         }
                     }
                     Err(confirm_err) => {
@@ -306,6 +308,8 @@ async fn poll_approved_cork_proposals(state: &mut ProposalThreadState) -> Result
                             state.increment_proposal_id();
                             break;
                         }
+
+                        tokio::time::sleep(Duration::from_secs(RETRY_SLEEP)).await;
                     }
                 };
             } else {
@@ -361,5 +365,4 @@ async fn log_schedule_failure(
             confirm_err.unwrap()
         );
     }
-    tokio::time::sleep(Duration::from_secs(RETRY_SLEEP)).await;
 }
