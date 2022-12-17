@@ -64,13 +64,13 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         debug!("cork: {:?}", encoded_call);
 
         if let Err(err) = schedule_cork(&cellar_id, encoded_call.clone(), height).await {
-            error!("failed to submit cork: {}", err);
+            error!("failed to schedule cork for cellar {}: {}", cellar_id, err);
             return Err(Status::new(
                 Code::Internal,
                 format!("failed to send cork to sommelier: {}", err),
             ));
         }
-        info!("submitted cork for {}", cellar_id);
+        info!("scheduled cork for cellar {} at height {}", cellar_id, height);
 
         Ok(Response::new(ScheduleResponse {
             id: id_hash(height, &cellar_id, encoded_call),

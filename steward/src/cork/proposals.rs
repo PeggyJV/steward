@@ -276,6 +276,7 @@ async fn poll_approved_cork_proposals(state: &mut ProposalThreadState) -> Result
                     Err(err) => {
                         attempts += 1;
                         if attempts > config.cork.max_scheduling_retries {
+                            state.increment_proposal_id();
                             return Err(proposal_processing_error(format!(
                                 "failed to schedule cork for proposal {} reason: {}",
                                 proposal.proposal_id, err
