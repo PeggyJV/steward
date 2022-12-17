@@ -70,7 +70,10 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
                 format!("failed to send cork to sommelier: {}", err),
             ));
         }
-        info!("scheduled cork for cellar {} at height {}", cellar_id, height);
+        info!(
+            "scheduled cork for cellar {} at height {}",
+            cellar_id, height
+        );
 
         Ok(Response::new(ScheduleResponse {
             id: id_hash(height, &cellar_id, encoded_call),

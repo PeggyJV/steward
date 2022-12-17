@@ -30,6 +30,8 @@ type GravityQueryClient =
     gravity_bridge::gravity_proto::gravity::query_client::QueryClient<Channel>;
 type TendermintQueryClient = gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::tendermint::v1beta1::service_client::ServiceClient<Channel>;
 
+const RETRY_SLEEP: u64 = 5;
+
 pub async fn start_scheduled_cork_proposal_polling_thread() -> JoinHandle<()> {
     debug!("starting cork proposal polling thread");
     let config = APP.config();
@@ -259,8 +261,9 @@ async fn poll_approved_cork_proposals(state: &mut ProposalThreadState) -> Result
         // retry scheduling call on errors up to configured amount of retries
         let mut attempts = 0;
         loop {
-            if let Err(err) = schedule_cork(&cellar_id, encoded_call.clone(), block_height).await {
-                error!("error scheduling cork. confirming if the cork was scheduled in case this is a timeout bug: {}", err);
+            if let Err(schedule_err) =
+                schedule_cork(&cellar_id, encoded_call.clone(), block_height).await
+            {
                 match confirm_sheduling(state, &cellar_id, encoded_call.clone(), block_height).await
                 {
                     Ok(confirmed) => {
@@ -271,19 +274,38 @@ async fn poll_approved_cork_proposals(state: &mut ProposalThreadState) -> Result
                             );
                             state.increment_proposal_id();
                             break;
+                        } else {
+                            log_schedule_failure(
+                                proposal.proposal_id,
+                                attempts,
+                                config.cork.max_scheduling_retries,
+                                schedule_err,
+                                None,
+                            )
+                            .await;
+
+                            attempts += 1;
+                            if attempts > config.cork.max_scheduling_retries {
+                                state.increment_proposal_id();
+                                break;
+                            }
                         }
                     }
-                    Err(err) => {
+                    Err(confirm_err) => {
+                        log_schedule_failure(
+                            proposal.proposal_id,
+                            attempts,
+                            config.cork.max_scheduling_retries,
+                            schedule_err,
+                            Some(confirm_err),
+                        )
+                        .await;
+
                         attempts += 1;
                         if attempts > config.cork.max_scheduling_retries {
                             state.increment_proposal_id();
-                            return Err(proposal_processing_error(format!(
-                                "failed to schedule cork for proposal {} reason: {}",
-                                proposal.proposal_id, err
-                            )));
+                            break;
                         }
-
-                        tokio::time::sleep(Duration::from_secs(5)).await;
                     }
                 };
             } else {
@@ -320,4 +342,24 @@ async fn confirm_sheduling(
 
 fn proposal_processing_error(message: String) -> Error {
     ErrorKind::ProposalProcessingError.context(message).into()
+}
+
+async fn log_schedule_failure(
+    proposal_id: u64,
+    attempts: u64,
+    max_retries: u64,
+    schedule_err: Error,
+    confirm_err: Option<Error>,
+) {
+    error!(
+        "failed to schedule cork for proposal {}. attempt {}/{}. reason: {}",
+        proposal_id, attempts, max_retries, schedule_err
+    );
+    if confirm_err.is_some() {
+        warn!(
+            "failed to confirm if cork was scheduled in spite of error: {}",
+            confirm_err.unwrap()
+        );
+    }
+    tokio::time::sleep(Duration::from_secs(RETRY_SLEEP)).await;
 }
