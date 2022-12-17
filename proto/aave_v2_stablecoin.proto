@@ -5,7 +5,7 @@
  */
 
 syntax = "proto3";
-package steward.v2;
+package steward.v3;
 
 option go_package = "/steward_proto";
 
@@ -170,3 +170,54 @@ message AaveV2Stablecoin {
      */
     message SendFees {}
 }
+
+/*
+ * Represents a function call initiated by governance
+ */
+ message AaveV2StablecoinGovernance {
+    // The function to call on the target cellar
+    oneof function {
+        // Represents function `setFeesDistributor(bytes32)`
+        SetFeesDistributor set_fees_distributor = 1;
+        // Represents function `initiateShutdown(bool)`
+        InitiateShutdown initiate_shutdown = 2;
+        // Represents function `liftShutdown()`
+        LiftShutdown lift_shutdown = 3;
+        // Represents function `setTrust(address, bool)`
+        SetTrust set_trust = 4;
+        // Represents function `sweep(address, address)`
+        Sweep sweep = 5;
+    }
+
+
+    // Represents function `setFeesDistributor(bytes32)`
+    message SetFeesDistributor {
+        // The new fees distributor
+        string new_fees_distributor = 1;
+    }
+
+    // Represents function `initiateShutdown(bool)`
+    message InitiateShutdown {
+        // Whether to empty the position
+        bool empty_position = 1;
+    }
+
+    // Represents function `liftShutdown()`
+    message LiftShutdown {}
+
+    // Represents function `setTrust(address, bool)`
+    message SetTrust {
+        // The position to set trust for
+        string position = 1;
+        // Whether to trust the address
+        bool trust = 2;
+    }
+
+    // Represents function `sweep(address, address)`
+    message Sweep {
+        // The address of the ERC20 token to sweep
+        string token = 1;
+        // The recipient of the sweep
+        string recipient = 2;
+    }
+ }

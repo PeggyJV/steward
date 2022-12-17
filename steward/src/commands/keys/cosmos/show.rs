@@ -3,7 +3,7 @@ use abscissa_core::{clap::Parser, Application, Command, Runnable};
 
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Show details of a Cosmos key in the keystore.\n This command shows details of a Cosmos key in the keystore, it takes the name of the key."
+    long_about = "DESCRIPTION\n\nShow details of a Cosmos key in the keystore.\n This command shows details of a Cosmos key in the keystore, it takes the name of the key."
 )]
 pub struct ShowCosmosKeyCmd {
     /// Cosmos key name

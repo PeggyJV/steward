@@ -4,10 +4,10 @@
 ## Table of Contents
 
 - [steward.proto](#steward-proto)
-    - [SubmitRequest](#steward-v2-SubmitRequest)
-    - [SubmitResponse](#steward-v2-SubmitResponse)
+    - [ScheduleRequest](#steward-v3-ScheduleRequest)
+    - [ScheduleResponse](#steward-v3-ScheduleResponse)
   
-    - [ContractCall](#steward-v2-ContractCall)
+    - [ContractCall](#steward-v3-ContractCall)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -20,27 +20,33 @@
 
 
 
-<a name="steward-v2-SubmitRequest"></a>
+<a name="steward-v3-ScheduleRequest"></a>
 
-### SubmitRequest
-Represents a single function call on a particular Cellar
+### ScheduleRequest
+Represents a single, scheduled function call to a particular Cellar
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | cellar_id | [string](#string) |  | The ID (currently simply an Ethereum address) of the target Cellar |
-| aave_v2_stablecoin | [AaveV2Stablecoin](#steward-v2-AaveV2Stablecoin) |  |  |
-| cellar_v1 | [CellarV1](#steward-v2-CellarV1) |  |  |
+| block_height | [uint64](#uint64) |  | The block height at which to schedule the contract call |
+| aave_v2_stablecoin | [AaveV2Stablecoin](#steward-v3-AaveV2Stablecoin) |  |  |
+| cellar_v1 | [CellarV1](#steward-v3-CellarV1) |  |  |
 
 
 
 
 
 
-<a name="steward-v2-SubmitResponse"></a>
+<a name="steward-v3-ScheduleResponse"></a>
 
-### SubmitResponse
+### ScheduleResponse
 
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  | The hex encoded ID of the scheduled cork |
 
 
 
@@ -53,14 +59,14 @@ Represents a single function call on a particular Cellar
  
 
 
-<a name="steward-v2-ContractCall"></a>
+<a name="steward-v3-ContractCall"></a>
 
 ### ContractCall
 Service for handling Cellar contract calls
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| Submit | [SubmitRequest](#steward-v2-SubmitRequest) | [SubmitResponse](#steward-v2-SubmitResponse) | Handles simple contract call submission |
+| Schedule | [ScheduleRequest](#steward-v3-ScheduleRequest) | [ScheduleResponse](#steward-v3-ScheduleResponse) | Handles scheduled contract call submission |
 
  
 

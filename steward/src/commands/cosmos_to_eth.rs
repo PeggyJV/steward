@@ -13,7 +13,7 @@ const TIMEOUT: Duration = Duration::from_secs(60);
 /// Send Cosmos to the Eth chain.
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Send Cosmos token to Eth chain.\n This command sends Cosmos token to the Eth chain via the Gravity bridge. \n This command takes the Gravity denom, tx amount, Cosmos keyname, Eth destination, number of times \n transaction should be made and if the transaction should be made immediately or wait for the next \n batch."
+    long_about = "DESCRIPTION\n\nSend Cosmos token to Eth chain.\n This command sends Cosmos token to the Eth chain via the Gravity bridge. \n This command takes the Gravity denom, tx amount, Cosmos keyname, Eth destination, number of times \n transaction should be made and if the transaction should be made immediately or wait for the next \n batch."
 )]
 pub struct CosmosToEthCmd {
     /// Gravity denom

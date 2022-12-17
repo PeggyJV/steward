@@ -5,7 +5,7 @@ use std::path::Path;
 
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Delete a Cosmos Key.\n This command deletes a Cosmos key from your keystore when provided with the keyname."
+    long_about = "DESCRIPTION\n\nDelete a Cosmos Key.\n This command deletes a Cosmos key from your keystore when provided with the keyname."
 )]
 pub struct DeleteCosmosKeyCmd {
     /// Cosmos keyname in keystore.
@@ -19,7 +19,6 @@ impl Runnable for DeleteCosmosKeyCmd {
         let keystore = Path::new(&config.keystore);
         let keystore = signatory::FsKeyStore::create_or_open(keystore).unwrap();
         let name = self.name.parse().expect("Could not parse name");
-
         FsKeyStore::delete(&keystore, &name).unwrap();
     }
 }

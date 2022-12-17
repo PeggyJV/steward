@@ -262,6 +262,137 @@ func (*AaveV2Stablecoin_SetLiquidityLimit_) isAaveV2Stablecoin_Function() {}
 func (*AaveV2Stablecoin_SendFees_) isAaveV2Stablecoin_Function() {}
 
 //
+// Represents a function call initiated by governance
+type AaveV2StablecoinGovernance struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The function to call on the target cellar
+	//
+	// Types that are assignable to Function:
+	//	*AaveV2StablecoinGovernance_SetFeesDistributor_
+	//	*AaveV2StablecoinGovernance_InitiateShutdown_
+	//	*AaveV2StablecoinGovernance_LiftShutdown_
+	//	*AaveV2StablecoinGovernance_SetTrust_
+	//	*AaveV2StablecoinGovernance_Sweep_
+	Function isAaveV2StablecoinGovernance_Function `protobuf_oneof:"function"`
+}
+
+func (x *AaveV2StablecoinGovernance) Reset() {
+	*x = AaveV2StablecoinGovernance{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AaveV2StablecoinGovernance) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AaveV2StablecoinGovernance) ProtoMessage() {}
+
+func (x *AaveV2StablecoinGovernance) ProtoReflect() protoreflect.Message {
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AaveV2StablecoinGovernance.ProtoReflect.Descriptor instead.
+func (*AaveV2StablecoinGovernance) Descriptor() ([]byte, []int) {
+	return file_aave_v2_stablecoin_proto_rawDescGZIP(), []int{1}
+}
+
+func (m *AaveV2StablecoinGovernance) GetFunction() isAaveV2StablecoinGovernance_Function {
+	if m != nil {
+		return m.Function
+	}
+	return nil
+}
+
+func (x *AaveV2StablecoinGovernance) GetSetFeesDistributor() *AaveV2StablecoinGovernance_SetFeesDistributor {
+	if x, ok := x.GetFunction().(*AaveV2StablecoinGovernance_SetFeesDistributor_); ok {
+		return x.SetFeesDistributor
+	}
+	return nil
+}
+
+func (x *AaveV2StablecoinGovernance) GetInitiateShutdown() *AaveV2StablecoinGovernance_InitiateShutdown {
+	if x, ok := x.GetFunction().(*AaveV2StablecoinGovernance_InitiateShutdown_); ok {
+		return x.InitiateShutdown
+	}
+	return nil
+}
+
+func (x *AaveV2StablecoinGovernance) GetLiftShutdown() *AaveV2StablecoinGovernance_LiftShutdown {
+	if x, ok := x.GetFunction().(*AaveV2StablecoinGovernance_LiftShutdown_); ok {
+		return x.LiftShutdown
+	}
+	return nil
+}
+
+func (x *AaveV2StablecoinGovernance) GetSetTrust() *AaveV2StablecoinGovernance_SetTrust {
+	if x, ok := x.GetFunction().(*AaveV2StablecoinGovernance_SetTrust_); ok {
+		return x.SetTrust
+	}
+	return nil
+}
+
+func (x *AaveV2StablecoinGovernance) GetSweep() *AaveV2StablecoinGovernance_Sweep {
+	if x, ok := x.GetFunction().(*AaveV2StablecoinGovernance_Sweep_); ok {
+		return x.Sweep
+	}
+	return nil
+}
+
+type isAaveV2StablecoinGovernance_Function interface {
+	isAaveV2StablecoinGovernance_Function()
+}
+
+type AaveV2StablecoinGovernance_SetFeesDistributor_ struct {
+	// Represents function `setFeesDistributor(bytes32)`
+	SetFeesDistributor *AaveV2StablecoinGovernance_SetFeesDistributor `protobuf:"bytes,1,opt,name=set_fees_distributor,json=setFeesDistributor,proto3,oneof"`
+}
+
+type AaveV2StablecoinGovernance_InitiateShutdown_ struct {
+	// Represents function `initiateShutdown(bool)`
+	InitiateShutdown *AaveV2StablecoinGovernance_InitiateShutdown `protobuf:"bytes,2,opt,name=initiate_shutdown,json=initiateShutdown,proto3,oneof"`
+}
+
+type AaveV2StablecoinGovernance_LiftShutdown_ struct {
+	// Represents function `liftShutdown()`
+	LiftShutdown *AaveV2StablecoinGovernance_LiftShutdown `protobuf:"bytes,3,opt,name=lift_shutdown,json=liftShutdown,proto3,oneof"`
+}
+
+type AaveV2StablecoinGovernance_SetTrust_ struct {
+	// Represents function `setTrust(address, bool)`
+	SetTrust *AaveV2StablecoinGovernance_SetTrust `protobuf:"bytes,4,opt,name=set_trust,json=setTrust,proto3,oneof"`
+}
+
+type AaveV2StablecoinGovernance_Sweep_ struct {
+	// Represents function `sweep(address, address)`
+	Sweep *AaveV2StablecoinGovernance_Sweep `protobuf:"bytes,5,opt,name=sweep,proto3,oneof"`
+}
+
+func (*AaveV2StablecoinGovernance_SetFeesDistributor_) isAaveV2StablecoinGovernance_Function() {}
+
+func (*AaveV2StablecoinGovernance_InitiateShutdown_) isAaveV2StablecoinGovernance_Function() {}
+
+func (*AaveV2StablecoinGovernance_LiftShutdown_) isAaveV2StablecoinGovernance_Function() {}
+
+func (*AaveV2StablecoinGovernance_SetTrust_) isAaveV2StablecoinGovernance_Function() {}
+
+func (*AaveV2StablecoinGovernance_Sweep_) isAaveV2StablecoinGovernance_Function() {}
+
+//
 // Accrue yield, platform fees, and performance fees..
 //
 // Represents function `accrue()`
@@ -274,7 +405,7 @@ type AaveV2Stablecoin_Accrue struct {
 func (x *AaveV2Stablecoin_Accrue) Reset() {
 	*x = AaveV2Stablecoin_Accrue{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_aave_v2_stablecoin_proto_msgTypes[1]
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -287,7 +418,7 @@ func (x *AaveV2Stablecoin_Accrue) String() string {
 func (*AaveV2Stablecoin_Accrue) ProtoMessage() {}
 
 func (x *AaveV2Stablecoin_Accrue) ProtoReflect() protoreflect.Message {
-	mi := &file_aave_v2_stablecoin_proto_msgTypes[1]
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -316,7 +447,7 @@ type AaveV2Stablecoin_ClaimAndUnstake struct {
 func (x *AaveV2Stablecoin_ClaimAndUnstake) Reset() {
 	*x = AaveV2Stablecoin_ClaimAndUnstake{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_aave_v2_stablecoin_proto_msgTypes[2]
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -329,7 +460,7 @@ func (x *AaveV2Stablecoin_ClaimAndUnstake) String() string {
 func (*AaveV2Stablecoin_ClaimAndUnstake) ProtoMessage() {}
 
 func (x *AaveV2Stablecoin_ClaimAndUnstake) ProtoReflect() protoreflect.Message {
-	mi := &file_aave_v2_stablecoin_proto_msgTypes[2]
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -358,7 +489,7 @@ type AaveV2Stablecoin_EnterPosition struct {
 func (x *AaveV2Stablecoin_EnterPosition) Reset() {
 	*x = AaveV2Stablecoin_EnterPosition{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_aave_v2_stablecoin_proto_msgTypes[3]
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -371,7 +502,7 @@ func (x *AaveV2Stablecoin_EnterPosition) String() string {
 func (*AaveV2Stablecoin_EnterPosition) ProtoMessage() {}
 
 func (x *AaveV2Stablecoin_EnterPosition) ProtoReflect() protoreflect.Message {
-	mi := &file_aave_v2_stablecoin_proto_msgTypes[3]
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -403,7 +534,7 @@ type AaveV2Stablecoin_EnterPositionWithAssets struct {
 func (x *AaveV2Stablecoin_EnterPositionWithAssets) Reset() {
 	*x = AaveV2Stablecoin_EnterPositionWithAssets{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_aave_v2_stablecoin_proto_msgTypes[4]
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -416,7 +547,7 @@ func (x *AaveV2Stablecoin_EnterPositionWithAssets) String() string {
 func (*AaveV2Stablecoin_EnterPositionWithAssets) ProtoMessage() {}
 
 func (x *AaveV2Stablecoin_EnterPositionWithAssets) ProtoReflect() protoreflect.Message {
-	mi := &file_aave_v2_stablecoin_proto_msgTypes[4]
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -452,7 +583,7 @@ type AaveV2Stablecoin_ExitPosition struct {
 func (x *AaveV2Stablecoin_ExitPosition) Reset() {
 	*x = AaveV2Stablecoin_ExitPosition{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_aave_v2_stablecoin_proto_msgTypes[5]
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -465,7 +596,7 @@ func (x *AaveV2Stablecoin_ExitPosition) String() string {
 func (*AaveV2Stablecoin_ExitPosition) ProtoMessage() {}
 
 func (x *AaveV2Stablecoin_ExitPosition) ProtoReflect() protoreflect.Message {
-	mi := &file_aave_v2_stablecoin_proto_msgTypes[5]
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -497,7 +628,7 @@ type AaveV2Stablecoin_ExitPositionWithAssets struct {
 func (x *AaveV2Stablecoin_ExitPositionWithAssets) Reset() {
 	*x = AaveV2Stablecoin_ExitPositionWithAssets{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_aave_v2_stablecoin_proto_msgTypes[6]
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -510,7 +641,7 @@ func (x *AaveV2Stablecoin_ExitPositionWithAssets) String() string {
 func (*AaveV2Stablecoin_ExitPositionWithAssets) ProtoMessage() {}
 
 func (x *AaveV2Stablecoin_ExitPositionWithAssets) ProtoReflect() protoreflect.Message {
-	mi := &file_aave_v2_stablecoin_proto_msgTypes[6]
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -556,7 +687,7 @@ type AaveV2Stablecoin_Rebalance struct {
 func (x *AaveV2Stablecoin_Rebalance) Reset() {
 	*x = AaveV2Stablecoin_Rebalance{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_aave_v2_stablecoin_proto_msgTypes[7]
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -569,7 +700,7 @@ func (x *AaveV2Stablecoin_Rebalance) String() string {
 func (*AaveV2Stablecoin_Rebalance) ProtoMessage() {}
 
 func (x *AaveV2Stablecoin_Rebalance) ProtoReflect() protoreflect.Message {
-	mi := &file_aave_v2_stablecoin_proto_msgTypes[7]
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -622,7 +753,7 @@ type AaveV2Stablecoin_Reinvest struct {
 func (x *AaveV2Stablecoin_Reinvest) Reset() {
 	*x = AaveV2Stablecoin_Reinvest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_aave_v2_stablecoin_proto_msgTypes[8]
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -635,7 +766,7 @@ func (x *AaveV2Stablecoin_Reinvest) String() string {
 func (*AaveV2Stablecoin_Reinvest) ProtoMessage() {}
 
 func (x *AaveV2Stablecoin_Reinvest) ProtoReflect() protoreflect.Message {
-	mi := &file_aave_v2_stablecoin_proto_msgTypes[8]
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -673,7 +804,7 @@ type AaveV2Stablecoin_SetAccrualPeriod struct {
 func (x *AaveV2Stablecoin_SetAccrualPeriod) Reset() {
 	*x = AaveV2Stablecoin_SetAccrualPeriod{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_aave_v2_stablecoin_proto_msgTypes[9]
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -686,7 +817,7 @@ func (x *AaveV2Stablecoin_SetAccrualPeriod) String() string {
 func (*AaveV2Stablecoin_SetAccrualPeriod) ProtoMessage() {}
 
 func (x *AaveV2Stablecoin_SetAccrualPeriod) ProtoReflect() protoreflect.Message {
-	mi := &file_aave_v2_stablecoin_proto_msgTypes[9]
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -725,7 +856,7 @@ type AaveV2Stablecoin_SetDepositLimit struct {
 func (x *AaveV2Stablecoin_SetDepositLimit) Reset() {
 	*x = AaveV2Stablecoin_SetDepositLimit{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_aave_v2_stablecoin_proto_msgTypes[10]
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -738,7 +869,7 @@ func (x *AaveV2Stablecoin_SetDepositLimit) String() string {
 func (*AaveV2Stablecoin_SetDepositLimit) ProtoMessage() {}
 
 func (x *AaveV2Stablecoin_SetDepositLimit) ProtoReflect() protoreflect.Message {
-	mi := &file_aave_v2_stablecoin_proto_msgTypes[10]
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -777,7 +908,7 @@ type AaveV2Stablecoin_SetLiquidityLimit struct {
 func (x *AaveV2Stablecoin_SetLiquidityLimit) Reset() {
 	*x = AaveV2Stablecoin_SetLiquidityLimit{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_aave_v2_stablecoin_proto_msgTypes[11]
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -790,7 +921,7 @@ func (x *AaveV2Stablecoin_SetLiquidityLimit) String() string {
 func (*AaveV2Stablecoin_SetLiquidityLimit) ProtoMessage() {}
 
 func (x *AaveV2Stablecoin_SetLiquidityLimit) ProtoReflect() protoreflect.Message {
-	mi := &file_aave_v2_stablecoin_proto_msgTypes[11]
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -826,7 +957,7 @@ type AaveV2Stablecoin_SendFees struct {
 func (x *AaveV2Stablecoin_SendFees) Reset() {
 	*x = AaveV2Stablecoin_SendFees{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_aave_v2_stablecoin_proto_msgTypes[12]
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -839,7 +970,7 @@ func (x *AaveV2Stablecoin_SendFees) String() string {
 func (*AaveV2Stablecoin_SendFees) ProtoMessage() {}
 
 func (x *AaveV2Stablecoin_SendFees) ProtoReflect() protoreflect.Message {
-	mi := &file_aave_v2_stablecoin_proto_msgTypes[12]
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -878,7 +1009,7 @@ type AaveV2Stablecoin_Rebalance_SwapParams struct {
 func (x *AaveV2Stablecoin_Rebalance_SwapParams) Reset() {
 	*x = AaveV2Stablecoin_Rebalance_SwapParams{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_aave_v2_stablecoin_proto_msgTypes[13]
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -891,7 +1022,7 @@ func (x *AaveV2Stablecoin_Rebalance_SwapParams) String() string {
 func (*AaveV2Stablecoin_Rebalance_SwapParams) ProtoMessage() {}
 
 func (x *AaveV2Stablecoin_Rebalance_SwapParams) ProtoReflect() protoreflect.Message {
-	mi := &file_aave_v2_stablecoin_proto_msgTypes[13]
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -928,76 +1059,329 @@ func (x *AaveV2Stablecoin_Rebalance_SwapParams) GetSwapType() uint64 {
 	return 0
 }
 
+// Represents function `setFeesDistributor(bytes32)`
+type AaveV2StablecoinGovernance_SetFeesDistributor struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The new fees distributor
+	NewFeesDistributor string `protobuf:"bytes,1,opt,name=new_fees_distributor,json=newFeesDistributor,proto3" json:"new_fees_distributor,omitempty"`
+}
+
+func (x *AaveV2StablecoinGovernance_SetFeesDistributor) Reset() {
+	*x = AaveV2StablecoinGovernance_SetFeesDistributor{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AaveV2StablecoinGovernance_SetFeesDistributor) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AaveV2StablecoinGovernance_SetFeesDistributor) ProtoMessage() {}
+
+func (x *AaveV2StablecoinGovernance_SetFeesDistributor) ProtoReflect() protoreflect.Message {
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AaveV2StablecoinGovernance_SetFeesDistributor.ProtoReflect.Descriptor instead.
+func (*AaveV2StablecoinGovernance_SetFeesDistributor) Descriptor() ([]byte, []int) {
+	return file_aave_v2_stablecoin_proto_rawDescGZIP(), []int{1, 0}
+}
+
+func (x *AaveV2StablecoinGovernance_SetFeesDistributor) GetNewFeesDistributor() string {
+	if x != nil {
+		return x.NewFeesDistributor
+	}
+	return ""
+}
+
+// Represents function `initiateShutdown(bool)`
+type AaveV2StablecoinGovernance_InitiateShutdown struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Whether to empty the position
+	EmptyPosition bool `protobuf:"varint,1,opt,name=empty_position,json=emptyPosition,proto3" json:"empty_position,omitempty"`
+}
+
+func (x *AaveV2StablecoinGovernance_InitiateShutdown) Reset() {
+	*x = AaveV2StablecoinGovernance_InitiateShutdown{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AaveV2StablecoinGovernance_InitiateShutdown) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AaveV2StablecoinGovernance_InitiateShutdown) ProtoMessage() {}
+
+func (x *AaveV2StablecoinGovernance_InitiateShutdown) ProtoReflect() protoreflect.Message {
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AaveV2StablecoinGovernance_InitiateShutdown.ProtoReflect.Descriptor instead.
+func (*AaveV2StablecoinGovernance_InitiateShutdown) Descriptor() ([]byte, []int) {
+	return file_aave_v2_stablecoin_proto_rawDescGZIP(), []int{1, 1}
+}
+
+func (x *AaveV2StablecoinGovernance_InitiateShutdown) GetEmptyPosition() bool {
+	if x != nil {
+		return x.EmptyPosition
+	}
+	return false
+}
+
+// Represents function `liftShutdown()`
+type AaveV2StablecoinGovernance_LiftShutdown struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *AaveV2StablecoinGovernance_LiftShutdown) Reset() {
+	*x = AaveV2StablecoinGovernance_LiftShutdown{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AaveV2StablecoinGovernance_LiftShutdown) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AaveV2StablecoinGovernance_LiftShutdown) ProtoMessage() {}
+
+func (x *AaveV2StablecoinGovernance_LiftShutdown) ProtoReflect() protoreflect.Message {
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AaveV2StablecoinGovernance_LiftShutdown.ProtoReflect.Descriptor instead.
+func (*AaveV2StablecoinGovernance_LiftShutdown) Descriptor() ([]byte, []int) {
+	return file_aave_v2_stablecoin_proto_rawDescGZIP(), []int{1, 2}
+}
+
+// Represents function `setTrust(address, bool)`
+type AaveV2StablecoinGovernance_SetTrust struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The position to set trust for
+	Position string `protobuf:"bytes,1,opt,name=position,proto3" json:"position,omitempty"`
+	// Whether to trust the address
+	Trust bool `protobuf:"varint,2,opt,name=trust,proto3" json:"trust,omitempty"`
+}
+
+func (x *AaveV2StablecoinGovernance_SetTrust) Reset() {
+	*x = AaveV2StablecoinGovernance_SetTrust{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[18]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AaveV2StablecoinGovernance_SetTrust) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AaveV2StablecoinGovernance_SetTrust) ProtoMessage() {}
+
+func (x *AaveV2StablecoinGovernance_SetTrust) ProtoReflect() protoreflect.Message {
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[18]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AaveV2StablecoinGovernance_SetTrust.ProtoReflect.Descriptor instead.
+func (*AaveV2StablecoinGovernance_SetTrust) Descriptor() ([]byte, []int) {
+	return file_aave_v2_stablecoin_proto_rawDescGZIP(), []int{1, 3}
+}
+
+func (x *AaveV2StablecoinGovernance_SetTrust) GetPosition() string {
+	if x != nil {
+		return x.Position
+	}
+	return ""
+}
+
+func (x *AaveV2StablecoinGovernance_SetTrust) GetTrust() bool {
+	if x != nil {
+		return x.Trust
+	}
+	return false
+}
+
+// Represents function `sweep(address, address)`
+type AaveV2StablecoinGovernance_Sweep struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The address of the ERC20 token to sweep
+	Token string `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	// The recipient of the sweep
+	Recipient string `protobuf:"bytes,2,opt,name=recipient,proto3" json:"recipient,omitempty"`
+}
+
+func (x *AaveV2StablecoinGovernance_Sweep) Reset() {
+	*x = AaveV2StablecoinGovernance_Sweep{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_aave_v2_stablecoin_proto_msgTypes[19]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AaveV2StablecoinGovernance_Sweep) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AaveV2StablecoinGovernance_Sweep) ProtoMessage() {}
+
+func (x *AaveV2StablecoinGovernance_Sweep) ProtoReflect() protoreflect.Message {
+	mi := &file_aave_v2_stablecoin_proto_msgTypes[19]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AaveV2StablecoinGovernance_Sweep.ProtoReflect.Descriptor instead.
+func (*AaveV2StablecoinGovernance_Sweep) Descriptor() ([]byte, []int) {
+	return file_aave_v2_stablecoin_proto_rawDescGZIP(), []int{1, 4}
+}
+
+func (x *AaveV2StablecoinGovernance_Sweep) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+func (x *AaveV2StablecoinGovernance_Sweep) GetRecipient() string {
+	if x != nil {
+		return x.Recipient
+	}
+	return ""
+}
+
 var File_aave_v2_stablecoin_proto protoreflect.FileDescriptor
 
 var file_aave_v2_stablecoin_proto_rawDesc = []byte{
 	0x0a, 0x18, 0x61, 0x61, 0x76, 0x65, 0x5f, 0x76, 0x32, 0x5f, 0x73, 0x74, 0x61, 0x62, 0x6c, 0x65,
 	0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0a, 0x73, 0x74, 0x65, 0x77,
-	0x61, 0x72, 0x64, 0x2e, 0x76, 0x32, 0x22, 0xaf, 0x0d, 0x0a, 0x10, 0x41, 0x61, 0x76, 0x65, 0x56,
+	0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x22, 0xaf, 0x0d, 0x0a, 0x10, 0x41, 0x61, 0x76, 0x65, 0x56,
 	0x32, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x63, 0x6f, 0x69, 0x6e, 0x12, 0x3d, 0x0a, 0x06, 0x61,
 	0x63, 0x63, 0x72, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x23, 0x2e, 0x73, 0x74,
-	0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x32, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53,
+	0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53,
 	0x74, 0x61, 0x62, 0x6c, 0x65, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x41, 0x63, 0x63, 0x72, 0x75, 0x65,
 	0x48, 0x00, 0x52, 0x06, 0x61, 0x63, 0x63, 0x72, 0x75, 0x65, 0x12, 0x5a, 0x0a, 0x11, 0x63, 0x6c,
 	0x61, 0x69, 0x6d, 0x5f, 0x61, 0x6e, 0x64, 0x5f, 0x75, 0x6e, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x18,
 	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2c, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e,
-	0x76, 0x32, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x63,
+	0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x63,
 	0x6f, 0x69, 0x6e, 0x2e, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x41, 0x6e, 0x64, 0x55, 0x6e, 0x73, 0x74,
 	0x61, 0x6b, 0x65, 0x48, 0x00, 0x52, 0x0f, 0x63, 0x6c, 0x61, 0x69, 0x6d, 0x41, 0x6e, 0x64, 0x55,
 	0x6e, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x12, 0x53, 0x0a, 0x0e, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x5f,
 	0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2a,
-	0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x32, 0x2e, 0x41, 0x61, 0x76, 0x65,
+	0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65,
 	0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x45, 0x6e, 0x74,
 	0x65, 0x72, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x0d, 0x65, 0x6e,
 	0x74, 0x65, 0x72, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x73, 0x0a, 0x1a, 0x65,
 	0x6e, 0x74, 0x65, 0x72, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x77, 0x69,
 	0x74, 0x68, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x34, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x32, 0x2e, 0x41, 0x61, 0x76,
+	0x34, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76,
 	0x65, 0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x45, 0x6e,
 	0x74, 0x65, 0x72, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x57, 0x69, 0x74, 0x68, 0x41,
 	0x73, 0x73, 0x65, 0x74, 0x73, 0x48, 0x00, 0x52, 0x17, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x50, 0x6f,
 	0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x57, 0x69, 0x74, 0x68, 0x41, 0x73, 0x73, 0x65, 0x74, 0x73,
 	0x12, 0x50, 0x0a, 0x0d, 0x65, 0x78, 0x69, 0x74, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f,
 	0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x29, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72,
-	0x64, 0x2e, 0x76, 0x32, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c,
+	0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c,
 	0x65, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69,
 	0x6f, 0x6e, 0x48, 0x00, 0x52, 0x0c, 0x65, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69,
 	0x6f, 0x6e, 0x12, 0x70, 0x0a, 0x19, 0x65, 0x78, 0x69, 0x74, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74,
 	0x69, 0x6f, 0x6e, 0x5f, 0x77, 0x69, 0x74, 0x68, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x73, 0x18,
 	0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x33, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e,
-	0x76, 0x32, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x63,
+	0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x63,
 	0x6f, 0x69, 0x6e, 0x2e, 0x45, 0x78, 0x69, 0x74, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e,
 	0x57, 0x69, 0x74, 0x68, 0x41, 0x73, 0x73, 0x65, 0x74, 0x73, 0x48, 0x00, 0x52, 0x16, 0x65, 0x78,
 	0x69, 0x74, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x57, 0x69, 0x74, 0x68, 0x41, 0x73,
 	0x73, 0x65, 0x74, 0x73, 0x12, 0x46, 0x0a, 0x09, 0x72, 0x65, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63,
 	0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72,
-	0x64, 0x2e, 0x76, 0x32, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c,
+	0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c,
 	0x65, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x52, 0x65, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x48,
 	0x00, 0x52, 0x09, 0x72, 0x65, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x12, 0x43, 0x0a, 0x08,
 	0x72, 0x65, 0x69, 0x6e, 0x76, 0x65, 0x73, 0x74, 0x18, 0x08, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x25,
-	0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x32, 0x2e, 0x41, 0x61, 0x76, 0x65,
+	0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65,
 	0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x52, 0x65, 0x69,
 	0x6e, 0x76, 0x65, 0x73, 0x74, 0x48, 0x00, 0x52, 0x08, 0x72, 0x65, 0x69, 0x6e, 0x76, 0x65, 0x73,
 	0x74, 0x12, 0x5d, 0x0a, 0x12, 0x73, 0x65, 0x74, 0x5f, 0x61, 0x63, 0x63, 0x72, 0x75, 0x61, 0x6c,
 	0x5f, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x18, 0x09, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2d, 0x2e,
-	0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x32, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56,
+	0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56,
 	0x32, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x53, 0x65, 0x74, 0x41,
 	0x63, 0x63, 0x72, 0x75, 0x61, 0x6c, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x48, 0x00, 0x52, 0x10,
 	0x73, 0x65, 0x74, 0x41, 0x63, 0x63, 0x72, 0x75, 0x61, 0x6c, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64,
 	0x12, 0x5a, 0x0a, 0x11, 0x73, 0x65, 0x74, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f,
 	0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2c, 0x2e, 0x73, 0x74,
-	0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x32, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53,
+	0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53,
 	0x74, 0x61, 0x62, 0x6c, 0x65, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x53, 0x65, 0x74, 0x44, 0x65, 0x70,
 	0x6f, 0x73, 0x69, 0x74, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x48, 0x00, 0x52, 0x0f, 0x73, 0x65, 0x74,
 	0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x60, 0x0a, 0x13,
 	0x73, 0x65, 0x74, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x6c, 0x69,
 	0x6d, 0x69, 0x74, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2e, 0x2e, 0x73, 0x74, 0x65, 0x77,
-	0x61, 0x72, 0x64, 0x2e, 0x76, 0x32, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53, 0x74, 0x61,
+	0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53, 0x74, 0x61,
 	0x62, 0x6c, 0x65, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x53, 0x65, 0x74, 0x4c, 0x69, 0x71, 0x75, 0x69,
 	0x64, 0x69, 0x74, 0x79, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x48, 0x00, 0x52, 0x11, 0x73, 0x65, 0x74,
 	0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x44,
 	0x0a, 0x09, 0x73, 0x65, 0x6e, 0x64, 0x5f, 0x66, 0x65, 0x65, 0x73, 0x18, 0x0c, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x25, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x32, 0x2e, 0x41,
+	0x0b, 0x32, 0x25, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41,
 	0x61, 0x76, 0x65, 0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x63, 0x6f, 0x69, 0x6e, 0x2e,
 	0x53, 0x65, 0x6e, 0x64, 0x46, 0x65, 0x65, 0x73, 0x48, 0x00, 0x52, 0x08, 0x73, 0x65, 0x6e, 0x64,
 	0x46, 0x65, 0x65, 0x73, 0x1a, 0x08, 0x0a, 0x06, 0x41, 0x63, 0x63, 0x72, 0x75, 0x65, 0x1a, 0x11,
@@ -1014,7 +1398,7 @@ var file_aave_v2_stablecoin_proto_rawDesc = []byte{
 	0x6c, 0x61, 0x6e, 0x63, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x18, 0x01,
 	0x20, 0x03, 0x28, 0x09, 0x52, 0x05, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x12, 0x52, 0x0a, 0x0b, 0x73,
 	0x77, 0x61, 0x70, 0x5f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b,
-	0x32, 0x31, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x32, 0x2e, 0x41, 0x61,
+	0x32, 0x31, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61,
 	0x76, 0x65, 0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x52,
 	0x65, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x2e, 0x53, 0x77, 0x61, 0x70, 0x50, 0x61, 0x72,
 	0x61, 0x6d, 0x73, 0x52, 0x0a, 0x73, 0x77, 0x61, 0x70, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12,
@@ -1040,9 +1424,57 @@ var file_aave_v2_stablecoin_proto_rawDesc = []byte{
 	0x69, 0x64, 0x69, 0x74, 0x79, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x69,
 	0x6d, 0x69, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74,
 	0x1a, 0x0a, 0x0a, 0x08, 0x53, 0x65, 0x6e, 0x64, 0x46, 0x65, 0x65, 0x73, 0x42, 0x0a, 0x0a, 0x08,
-	0x66, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x10, 0x5a, 0x0e, 0x2f, 0x73, 0x74, 0x65,
-	0x77, 0x61, 0x72, 0x64, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x66, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0xff, 0x05, 0x0a, 0x1a, 0x41, 0x61, 0x76,
+	0x65, 0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x63, 0x6f, 0x69, 0x6e, 0x47, 0x6f, 0x76,
+	0x65, 0x72, 0x6e, 0x61, 0x6e, 0x63, 0x65, 0x12, 0x6d, 0x0a, 0x14, 0x73, 0x65, 0x74, 0x5f, 0x66,
+	0x65, 0x65, 0x73, 0x5f, 0x64, 0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x6f, 0x72, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x39, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e,
+	0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x63,
+	0x6f, 0x69, 0x6e, 0x47, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x61, 0x6e, 0x63, 0x65, 0x2e, 0x53, 0x65,
+	0x74, 0x46, 0x65, 0x65, 0x73, 0x44, 0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x6f, 0x72,
+	0x48, 0x00, 0x52, 0x12, 0x73, 0x65, 0x74, 0x46, 0x65, 0x65, 0x73, 0x44, 0x69, 0x73, 0x74, 0x72,
+	0x69, 0x62, 0x75, 0x74, 0x6f, 0x72, 0x12, 0x66, 0x0a, 0x11, 0x69, 0x6e, 0x69, 0x74, 0x69, 0x61,
+	0x74, 0x65, 0x5f, 0x73, 0x68, 0x75, 0x74, 0x64, 0x6f, 0x77, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x37, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41,
+	0x61, 0x76, 0x65, 0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x63, 0x6f, 0x69, 0x6e, 0x47,
+	0x6f, 0x76, 0x65, 0x72, 0x6e, 0x61, 0x6e, 0x63, 0x65, 0x2e, 0x49, 0x6e, 0x69, 0x74, 0x69, 0x61,
+	0x74, 0x65, 0x53, 0x68, 0x75, 0x74, 0x64, 0x6f, 0x77, 0x6e, 0x48, 0x00, 0x52, 0x10, 0x69, 0x6e,
+	0x69, 0x74, 0x69, 0x61, 0x74, 0x65, 0x53, 0x68, 0x75, 0x74, 0x64, 0x6f, 0x77, 0x6e, 0x12, 0x5a,
+	0x0a, 0x0d, 0x6c, 0x69, 0x66, 0x74, 0x5f, 0x73, 0x68, 0x75, 0x74, 0x64, 0x6f, 0x77, 0x6e, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x33, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e,
+	0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x63,
+	0x6f, 0x69, 0x6e, 0x47, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x61, 0x6e, 0x63, 0x65, 0x2e, 0x4c, 0x69,
+	0x66, 0x74, 0x53, 0x68, 0x75, 0x74, 0x64, 0x6f, 0x77, 0x6e, 0x48, 0x00, 0x52, 0x0c, 0x6c, 0x69,
+	0x66, 0x74, 0x53, 0x68, 0x75, 0x74, 0x64, 0x6f, 0x77, 0x6e, 0x12, 0x4e, 0x0a, 0x09, 0x73, 0x65,
+	0x74, 0x5f, 0x74, 0x72, 0x75, 0x73, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2f, 0x2e,
+	0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56,
+	0x32, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x63, 0x6f, 0x69, 0x6e, 0x47, 0x6f, 0x76, 0x65, 0x72,
+	0x6e, 0x61, 0x6e, 0x63, 0x65, 0x2e, 0x53, 0x65, 0x74, 0x54, 0x72, 0x75, 0x73, 0x74, 0x48, 0x00,
+	0x52, 0x08, 0x73, 0x65, 0x74, 0x54, 0x72, 0x75, 0x73, 0x74, 0x12, 0x44, 0x0a, 0x05, 0x73, 0x77,
+	0x65, 0x65, 0x70, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2c, 0x2e, 0x73, 0x74, 0x65, 0x77,
+	0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x53, 0x74, 0x61,
+	0x62, 0x6c, 0x65, 0x63, 0x6f, 0x69, 0x6e, 0x47, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x61, 0x6e, 0x63,
+	0x65, 0x2e, 0x53, 0x77, 0x65, 0x65, 0x70, 0x48, 0x00, 0x52, 0x05, 0x73, 0x77, 0x65, 0x65, 0x70,
+	0x1a, 0x46, 0x0a, 0x12, 0x53, 0x65, 0x74, 0x46, 0x65, 0x65, 0x73, 0x44, 0x69, 0x73, 0x74, 0x72,
+	0x69, 0x62, 0x75, 0x74, 0x6f, 0x72, 0x12, 0x30, 0x0a, 0x14, 0x6e, 0x65, 0x77, 0x5f, 0x66, 0x65,
+	0x65, 0x73, 0x5f, 0x64, 0x69, 0x73, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x6f, 0x72, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x12, 0x6e, 0x65, 0x77, 0x46, 0x65, 0x65, 0x73, 0x44, 0x69, 0x73,
+	0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x6f, 0x72, 0x1a, 0x39, 0x0a, 0x10, 0x49, 0x6e, 0x69, 0x74,
+	0x69, 0x61, 0x74, 0x65, 0x53, 0x68, 0x75, 0x74, 0x64, 0x6f, 0x77, 0x6e, 0x12, 0x25, 0x0a, 0x0e,
+	0x65, 0x6d, 0x70, 0x74, 0x79, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x08, 0x52, 0x0d, 0x65, 0x6d, 0x70, 0x74, 0x79, 0x50, 0x6f, 0x73, 0x69, 0x74,
+	0x69, 0x6f, 0x6e, 0x1a, 0x0e, 0x0a, 0x0c, 0x4c, 0x69, 0x66, 0x74, 0x53, 0x68, 0x75, 0x74, 0x64,
+	0x6f, 0x77, 0x6e, 0x1a, 0x3c, 0x0a, 0x08, 0x53, 0x65, 0x74, 0x54, 0x72, 0x75, 0x73, 0x74, 0x12,
+	0x1a, 0x0a, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x74,
+	0x72, 0x75, 0x73, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x05, 0x74, 0x72, 0x75, 0x73,
+	0x74, 0x1a, 0x3b, 0x0a, 0x05, 0x53, 0x77, 0x65, 0x65, 0x70, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
+	0x12, 0x1c, 0x0a, 0x09, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x09, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x42, 0x0a,
+	0x0a, 0x08, 0x66, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x10, 0x5a, 0x0e, 0x2f, 0x73,
+	0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1057,42 +1489,53 @@ func file_aave_v2_stablecoin_proto_rawDescGZIP() []byte {
 	return file_aave_v2_stablecoin_proto_rawDescData
 }
 
-var file_aave_v2_stablecoin_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_aave_v2_stablecoin_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_aave_v2_stablecoin_proto_goTypes = []interface{}{
-	(*AaveV2Stablecoin)(nil),                         // 0: steward.v2.AaveV2Stablecoin
-	(*AaveV2Stablecoin_Accrue)(nil),                  // 1: steward.v2.AaveV2Stablecoin.Accrue
-	(*AaveV2Stablecoin_ClaimAndUnstake)(nil),         // 2: steward.v2.AaveV2Stablecoin.ClaimAndUnstake
-	(*AaveV2Stablecoin_EnterPosition)(nil),           // 3: steward.v2.AaveV2Stablecoin.EnterPosition
-	(*AaveV2Stablecoin_EnterPositionWithAssets)(nil), // 4: steward.v2.AaveV2Stablecoin.EnterPositionWithAssets
-	(*AaveV2Stablecoin_ExitPosition)(nil),            // 5: steward.v2.AaveV2Stablecoin.ExitPosition
-	(*AaveV2Stablecoin_ExitPositionWithAssets)(nil),  // 6: steward.v2.AaveV2Stablecoin.ExitPositionWithAssets
-	(*AaveV2Stablecoin_Rebalance)(nil),               // 7: steward.v2.AaveV2Stablecoin.Rebalance
-	(*AaveV2Stablecoin_Reinvest)(nil),                // 8: steward.v2.AaveV2Stablecoin.Reinvest
-	(*AaveV2Stablecoin_SetAccrualPeriod)(nil),        // 9: steward.v2.AaveV2Stablecoin.SetAccrualPeriod
-	(*AaveV2Stablecoin_SetDepositLimit)(nil),         // 10: steward.v2.AaveV2Stablecoin.SetDepositLimit
-	(*AaveV2Stablecoin_SetLiquidityLimit)(nil),       // 11: steward.v2.AaveV2Stablecoin.SetLiquidityLimit
-	(*AaveV2Stablecoin_SendFees)(nil),                // 12: steward.v2.AaveV2Stablecoin.SendFees
-	(*AaveV2Stablecoin_Rebalance_SwapParams)(nil),    // 13: steward.v2.AaveV2Stablecoin.Rebalance.SwapParams
+	(*AaveV2Stablecoin)(nil),                              // 0: steward.v3.AaveV2Stablecoin
+	(*AaveV2StablecoinGovernance)(nil),                    // 1: steward.v3.AaveV2StablecoinGovernance
+	(*AaveV2Stablecoin_Accrue)(nil),                       // 2: steward.v3.AaveV2Stablecoin.Accrue
+	(*AaveV2Stablecoin_ClaimAndUnstake)(nil),              // 3: steward.v3.AaveV2Stablecoin.ClaimAndUnstake
+	(*AaveV2Stablecoin_EnterPosition)(nil),                // 4: steward.v3.AaveV2Stablecoin.EnterPosition
+	(*AaveV2Stablecoin_EnterPositionWithAssets)(nil),      // 5: steward.v3.AaveV2Stablecoin.EnterPositionWithAssets
+	(*AaveV2Stablecoin_ExitPosition)(nil),                 // 6: steward.v3.AaveV2Stablecoin.ExitPosition
+	(*AaveV2Stablecoin_ExitPositionWithAssets)(nil),       // 7: steward.v3.AaveV2Stablecoin.ExitPositionWithAssets
+	(*AaveV2Stablecoin_Rebalance)(nil),                    // 8: steward.v3.AaveV2Stablecoin.Rebalance
+	(*AaveV2Stablecoin_Reinvest)(nil),                     // 9: steward.v3.AaveV2Stablecoin.Reinvest
+	(*AaveV2Stablecoin_SetAccrualPeriod)(nil),             // 10: steward.v3.AaveV2Stablecoin.SetAccrualPeriod
+	(*AaveV2Stablecoin_SetDepositLimit)(nil),              // 11: steward.v3.AaveV2Stablecoin.SetDepositLimit
+	(*AaveV2Stablecoin_SetLiquidityLimit)(nil),            // 12: steward.v3.AaveV2Stablecoin.SetLiquidityLimit
+	(*AaveV2Stablecoin_SendFees)(nil),                     // 13: steward.v3.AaveV2Stablecoin.SendFees
+	(*AaveV2Stablecoin_Rebalance_SwapParams)(nil),         // 14: steward.v3.AaveV2Stablecoin.Rebalance.SwapParams
+	(*AaveV2StablecoinGovernance_SetFeesDistributor)(nil), // 15: steward.v3.AaveV2StablecoinGovernance.SetFeesDistributor
+	(*AaveV2StablecoinGovernance_InitiateShutdown)(nil),   // 16: steward.v3.AaveV2StablecoinGovernance.InitiateShutdown
+	(*AaveV2StablecoinGovernance_LiftShutdown)(nil),       // 17: steward.v3.AaveV2StablecoinGovernance.LiftShutdown
+	(*AaveV2StablecoinGovernance_SetTrust)(nil),           // 18: steward.v3.AaveV2StablecoinGovernance.SetTrust
+	(*AaveV2StablecoinGovernance_Sweep)(nil),              // 19: steward.v3.AaveV2StablecoinGovernance.Sweep
 }
 var file_aave_v2_stablecoin_proto_depIdxs = []int32{
-	1,  // 0: steward.v2.AaveV2Stablecoin.accrue:type_name -> steward.v2.AaveV2Stablecoin.Accrue
-	2,  // 1: steward.v2.AaveV2Stablecoin.claim_and_unstake:type_name -> steward.v2.AaveV2Stablecoin.ClaimAndUnstake
-	3,  // 2: steward.v2.AaveV2Stablecoin.enter_position:type_name -> steward.v2.AaveV2Stablecoin.EnterPosition
-	4,  // 3: steward.v2.AaveV2Stablecoin.enter_position_with_assets:type_name -> steward.v2.AaveV2Stablecoin.EnterPositionWithAssets
-	5,  // 4: steward.v2.AaveV2Stablecoin.exit_position:type_name -> steward.v2.AaveV2Stablecoin.ExitPosition
-	6,  // 5: steward.v2.AaveV2Stablecoin.exit_position_with_assets:type_name -> steward.v2.AaveV2Stablecoin.ExitPositionWithAssets
-	7,  // 6: steward.v2.AaveV2Stablecoin.rebalance:type_name -> steward.v2.AaveV2Stablecoin.Rebalance
-	8,  // 7: steward.v2.AaveV2Stablecoin.reinvest:type_name -> steward.v2.AaveV2Stablecoin.Reinvest
-	9,  // 8: steward.v2.AaveV2Stablecoin.set_accrual_period:type_name -> steward.v2.AaveV2Stablecoin.SetAccrualPeriod
-	10, // 9: steward.v2.AaveV2Stablecoin.set_deposit_limit:type_name -> steward.v2.AaveV2Stablecoin.SetDepositLimit
-	11, // 10: steward.v2.AaveV2Stablecoin.set_liquidity_limit:type_name -> steward.v2.AaveV2Stablecoin.SetLiquidityLimit
-	12, // 11: steward.v2.AaveV2Stablecoin.send_fees:type_name -> steward.v2.AaveV2Stablecoin.SendFees
-	13, // 12: steward.v2.AaveV2Stablecoin.Rebalance.swap_params:type_name -> steward.v2.AaveV2Stablecoin.Rebalance.SwapParams
-	13, // [13:13] is the sub-list for method output_type
-	13, // [13:13] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	2,  // 0: steward.v3.AaveV2Stablecoin.accrue:type_name -> steward.v3.AaveV2Stablecoin.Accrue
+	3,  // 1: steward.v3.AaveV2Stablecoin.claim_and_unstake:type_name -> steward.v3.AaveV2Stablecoin.ClaimAndUnstake
+	4,  // 2: steward.v3.AaveV2Stablecoin.enter_position:type_name -> steward.v3.AaveV2Stablecoin.EnterPosition
+	5,  // 3: steward.v3.AaveV2Stablecoin.enter_position_with_assets:type_name -> steward.v3.AaveV2Stablecoin.EnterPositionWithAssets
+	6,  // 4: steward.v3.AaveV2Stablecoin.exit_position:type_name -> steward.v3.AaveV2Stablecoin.ExitPosition
+	7,  // 5: steward.v3.AaveV2Stablecoin.exit_position_with_assets:type_name -> steward.v3.AaveV2Stablecoin.ExitPositionWithAssets
+	8,  // 6: steward.v3.AaveV2Stablecoin.rebalance:type_name -> steward.v3.AaveV2Stablecoin.Rebalance
+	9,  // 7: steward.v3.AaveV2Stablecoin.reinvest:type_name -> steward.v3.AaveV2Stablecoin.Reinvest
+	10, // 8: steward.v3.AaveV2Stablecoin.set_accrual_period:type_name -> steward.v3.AaveV2Stablecoin.SetAccrualPeriod
+	11, // 9: steward.v3.AaveV2Stablecoin.set_deposit_limit:type_name -> steward.v3.AaveV2Stablecoin.SetDepositLimit
+	12, // 10: steward.v3.AaveV2Stablecoin.set_liquidity_limit:type_name -> steward.v3.AaveV2Stablecoin.SetLiquidityLimit
+	13, // 11: steward.v3.AaveV2Stablecoin.send_fees:type_name -> steward.v3.AaveV2Stablecoin.SendFees
+	15, // 12: steward.v3.AaveV2StablecoinGovernance.set_fees_distributor:type_name -> steward.v3.AaveV2StablecoinGovernance.SetFeesDistributor
+	16, // 13: steward.v3.AaveV2StablecoinGovernance.initiate_shutdown:type_name -> steward.v3.AaveV2StablecoinGovernance.InitiateShutdown
+	17, // 14: steward.v3.AaveV2StablecoinGovernance.lift_shutdown:type_name -> steward.v3.AaveV2StablecoinGovernance.LiftShutdown
+	18, // 15: steward.v3.AaveV2StablecoinGovernance.set_trust:type_name -> steward.v3.AaveV2StablecoinGovernance.SetTrust
+	19, // 16: steward.v3.AaveV2StablecoinGovernance.sweep:type_name -> steward.v3.AaveV2StablecoinGovernance.Sweep
+	14, // 17: steward.v3.AaveV2Stablecoin.Rebalance.swap_params:type_name -> steward.v3.AaveV2Stablecoin.Rebalance.SwapParams
+	18, // [18:18] is the sub-list for method output_type
+	18, // [18:18] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_aave_v2_stablecoin_proto_init() }
@@ -1114,7 +1557,7 @@ func file_aave_v2_stablecoin_proto_init() {
 			}
 		}
 		file_aave_v2_stablecoin_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AaveV2Stablecoin_Accrue); i {
+			switch v := v.(*AaveV2StablecoinGovernance); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1126,7 +1569,7 @@ func file_aave_v2_stablecoin_proto_init() {
 			}
 		}
 		file_aave_v2_stablecoin_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AaveV2Stablecoin_ClaimAndUnstake); i {
+			switch v := v.(*AaveV2Stablecoin_Accrue); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1138,7 +1581,7 @@ func file_aave_v2_stablecoin_proto_init() {
 			}
 		}
 		file_aave_v2_stablecoin_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AaveV2Stablecoin_EnterPosition); i {
+			switch v := v.(*AaveV2Stablecoin_ClaimAndUnstake); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1150,7 +1593,7 @@ func file_aave_v2_stablecoin_proto_init() {
 			}
 		}
 		file_aave_v2_stablecoin_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AaveV2Stablecoin_EnterPositionWithAssets); i {
+			switch v := v.(*AaveV2Stablecoin_EnterPosition); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1162,7 +1605,7 @@ func file_aave_v2_stablecoin_proto_init() {
 			}
 		}
 		file_aave_v2_stablecoin_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AaveV2Stablecoin_ExitPosition); i {
+			switch v := v.(*AaveV2Stablecoin_EnterPositionWithAssets); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1174,7 +1617,7 @@ func file_aave_v2_stablecoin_proto_init() {
 			}
 		}
 		file_aave_v2_stablecoin_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AaveV2Stablecoin_ExitPositionWithAssets); i {
+			switch v := v.(*AaveV2Stablecoin_ExitPosition); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1186,7 +1629,7 @@ func file_aave_v2_stablecoin_proto_init() {
 			}
 		}
 		file_aave_v2_stablecoin_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AaveV2Stablecoin_Rebalance); i {
+			switch v := v.(*AaveV2Stablecoin_ExitPositionWithAssets); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1198,7 +1641,7 @@ func file_aave_v2_stablecoin_proto_init() {
 			}
 		}
 		file_aave_v2_stablecoin_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AaveV2Stablecoin_Reinvest); i {
+			switch v := v.(*AaveV2Stablecoin_Rebalance); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1210,7 +1653,7 @@ func file_aave_v2_stablecoin_proto_init() {
 			}
 		}
 		file_aave_v2_stablecoin_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AaveV2Stablecoin_SetAccrualPeriod); i {
+			switch v := v.(*AaveV2Stablecoin_Reinvest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1222,7 +1665,7 @@ func file_aave_v2_stablecoin_proto_init() {
 			}
 		}
 		file_aave_v2_stablecoin_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AaveV2Stablecoin_SetDepositLimit); i {
+			switch v := v.(*AaveV2Stablecoin_SetAccrualPeriod); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1234,7 +1677,7 @@ func file_aave_v2_stablecoin_proto_init() {
 			}
 		}
 		file_aave_v2_stablecoin_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AaveV2Stablecoin_SetLiquidityLimit); i {
+			switch v := v.(*AaveV2Stablecoin_SetDepositLimit); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1246,7 +1689,7 @@ func file_aave_v2_stablecoin_proto_init() {
 			}
 		}
 		file_aave_v2_stablecoin_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AaveV2Stablecoin_SendFees); i {
+			switch v := v.(*AaveV2Stablecoin_SetLiquidityLimit); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1258,7 +1701,79 @@ func file_aave_v2_stablecoin_proto_init() {
 			}
 		}
 		file_aave_v2_stablecoin_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AaveV2Stablecoin_SendFees); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_aave_v2_stablecoin_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*AaveV2Stablecoin_Rebalance_SwapParams); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_aave_v2_stablecoin_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AaveV2StablecoinGovernance_SetFeesDistributor); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_aave_v2_stablecoin_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AaveV2StablecoinGovernance_InitiateShutdown); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_aave_v2_stablecoin_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AaveV2StablecoinGovernance_LiftShutdown); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_aave_v2_stablecoin_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AaveV2StablecoinGovernance_SetTrust); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_aave_v2_stablecoin_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AaveV2StablecoinGovernance_Sweep); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1284,13 +1799,20 @@ func file_aave_v2_stablecoin_proto_init() {
 		(*AaveV2Stablecoin_SetLiquidityLimit_)(nil),
 		(*AaveV2Stablecoin_SendFees_)(nil),
 	}
+	file_aave_v2_stablecoin_proto_msgTypes[1].OneofWrappers = []interface{}{
+		(*AaveV2StablecoinGovernance_SetFeesDistributor_)(nil),
+		(*AaveV2StablecoinGovernance_InitiateShutdown_)(nil),
+		(*AaveV2StablecoinGovernance_LiftShutdown_)(nil),
+		(*AaveV2StablecoinGovernance_SetTrust_)(nil),
+		(*AaveV2StablecoinGovernance_Sweep_)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_aave_v2_stablecoin_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   14,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

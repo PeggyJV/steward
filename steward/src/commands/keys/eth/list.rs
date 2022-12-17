@@ -5,7 +5,7 @@ use std::path::Path;
 
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n List all Eth keys in keystore.\n This command lists all Eth keys and their addresses from the keystore."
+    long_about = "DESCRIPTION\n\nList all Eth keys in keystore.\n This command lists all Eth keys and their addresses from the keystore."
 )]
 pub struct ListKeyCmd {}
 

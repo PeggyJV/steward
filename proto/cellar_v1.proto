@@ -5,7 +5,7 @@
 */
 
 syntax = "proto3";
-package steward.v2;
+package steward.v3;
 
 option go_package = "/steward_proto";
 
@@ -226,5 +226,83 @@ message CellarV1 {
     */
     message SetRebalanceDeviation {
         string new_deviation = 1;
+    }
+}
+
+/*
+* Represent a function call initiated through a governance proposal
+*/
+message CellarV1Governance {
+    // The function to call on the target cellar
+    oneof function {
+        // Represents function `initiateShutdown()`
+        InitiateShutdown initiate_shutdown = 1;
+        // Represents function `liftShutdown()`
+        LiftShutdown lift_shutdown = 2;
+        // Represents function `resetHighWatermark()`
+        ResetHighWatermark reset_high_watermark = 3;
+        // Represents function `setFeesDistributor(address)`
+        SetFeesDistributor set_fees_distributor = 4;
+        // Represents function `setPerformanceFee(uint256)`
+        SetPerformanceFee set_performance_fee = 5;
+        // Represents function `setPlatformFee(uint256)`
+        SetPlatformFee set_platform_fee = 6;
+        // Represents function `setStrategistPerformanceCut(uint256)`
+        SetStrategistPerformanceCut set_strategist_performance_cut = 7;
+        // Represents function `setStrategistPlatformCut(address)`
+        SetStrategistPlatformCut set_strategist_platform_cut = 8;
+        // Represents function `trustPosition(address)`
+        TrustPosition trust_position = 9;
+    }
+
+    // Represents function `initiateShutdown()`
+    message InitiateShutdown {
+    }
+
+    // Represents function `liftShutdown()`
+    message LiftShutdown {
+    }
+
+    // Represents function `resetHighWatermark()`
+    message ResetHighWatermark {
+    }
+
+    // Represents function `setFeesDistributor(bytes32)`
+    message SetFeesDistributor {
+        // Cosmos address of the new fees distributor
+        string new_fees_distributor = 1;
+    }
+
+    // Represents function `setPerformanceFee(uint64)`
+    message SetPerformanceFee {
+        // New performance fee
+        uint64 amount = 1;
+    }
+
+    // Represents function `setPlatformFee(uint64)`
+    message SetPlatformFee {
+        // New platform fee
+        uint64 amount = 1;
+    }
+
+    // Represents function `setStrategistPerformanceCut(uint64)`
+    message SetStrategistPerformanceCut {
+        // New strategist performance cut
+        uint64 amount = 1;
+    }
+
+    // Represents function `setStrategistPlatformCut(uint64)`
+    message SetStrategistPlatformCut {
+        // New strategist platform cut
+        uint64 amount = 1;
+    }
+
+    // Represents function `trustPosition(address)`
+    message TrustPosition {
+        oneof position {
+            string erc20_address = 1;
+            string erc4626_address = 2;
+            string cellar_address = 3;
+        }
     }
 }

@@ -5,7 +5,7 @@ use std::path;
 
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Delete an Eth Key.\n This command deletes an Eth key from your keystore when provided with the keyname."
+    long_about = "DESCRIPTION\n\nDelete an Eth Key.\n This command deletes an Eth key from your keystore when provided with the keyname."
 )]
 pub struct DeleteKeyCmd {
     /// Eth keyname in keystore.

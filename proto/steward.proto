@@ -6,7 +6,7 @@
  */
 
 syntax = "proto3";
-package steward.v2;
+package steward.v3;
 
 option go_package = "/steward_proto";
 
@@ -17,21 +17,26 @@ import "cellar_v1.proto";
  * Service for handling Cellar contract calls
  */
 service ContractCall {
-    // Handles simple contract call submission
-    rpc Submit(SubmitRequest) returns (SubmitResponse) {}
+    // Handles scheduled contract call submission
+    rpc Schedule(ScheduleRequest) returns (ScheduleResponse) {}
 }
 
 /*
- * Represents a single function call on a particular Cellar
+ * Represents a single, scheduled function call to a particular Cellar
  */
-message SubmitRequest {
+message ScheduleRequest {
     // The ID (currently simply an Ethereum address) of the target Cellar
     string cellar_id = 1;
+    // The block height at which to schedule the contract call
+    uint64 block_height = 2;
     // The data from which the desired contract function will be encoded
     oneof call_data {
-        AaveV2Stablecoin aave_v2_stablecoin = 2;
-        CellarV1 cellar_v1 = 3;
+        AaveV2Stablecoin aave_v2_stablecoin = 3;
+        CellarV1 cellar_v1 = 4;
     }
 }
 
-message SubmitResponse {}
+message ScheduleResponse {
+    // The hex encoded ID of the scheduled cork
+    string id = 1;
+}

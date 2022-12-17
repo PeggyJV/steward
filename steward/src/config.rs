@@ -5,7 +5,7 @@
 //! for specifying it.
 use crate::prelude::APP;
 use abscissa_core::Application;
-use deep_space::{Address, PrivateKey};
+use deep_space::{Address as CosmosAddress, PrivateKey};
 use ethers::signers::LocalWallet as EthWallet;
 use gravity_bridge::cosmos_gravity;
 use lazy_static::lazy_static;
@@ -19,7 +19,7 @@ lazy_static! {
         let name = &config.keys.delegate_key;
         config.load_deep_space_key(name.clone())
     };
-    pub static ref DELEGATE_ADDRESS: Address = {
+    pub static ref DELEGATE_ADDRESS: CosmosAddress = {
         let config = APP.config();
         DELEGATE_KEY
             .to_address(&config.cosmos.prefix)
@@ -36,6 +36,7 @@ pub struct StewardConfig {
     pub ethereum: EthereumSection,
     pub gravity: GravitySection,
     pub keys: KeysConfig,
+    pub cork: CorkConfig,
     pub metrics: MetricsSection,
     pub server: ServerSection,
 }
@@ -83,6 +84,7 @@ impl Default for StewardConfig {
             ethereum: EthereumSection::default(),
             gravity: GravitySection::default(),
             keys: KeysConfig::default(),
+            cork: CorkConfig::default(),
             metrics: MetricsSection::default(),
             server: ServerSection::default(),
         }
@@ -125,6 +127,28 @@ impl Default for KeysConfig {
     }
 }
 
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(default)]
+pub struct CorkConfig {
+    /// Cache refresh period in seconds
+    pub cache_refresh_period: u64,
+    /// Proposal polling period in seconds
+    pub proposal_poll_period: u64,
+    /// Number of retries for failed scheduling for proposals
+    pub max_scheduling_retries: u64,
+}
+
+impl Default for CorkConfig {
+    fn default() -> Self {
+        Self {
+            cache_refresh_period: 60,
+            proposal_poll_period: 300,
+            max_scheduling_retries: 3,
+        }
+    }
+}
+
+/// EthereumSection for ethereum rpc and derivation path
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default)]
 pub struct EthereumSection {

@@ -1,22 +1,30 @@
 use crate::{
     error::Error,
-    utils::{sp_call_error, string_to_u256},
+    utils::{
+        encode_fees_distributor_address, governance_call_error, sp_call_error, string_to_u256,
+    },
 };
+use deep_space::Address as CosmosAddress;
 use ethers::{
     abi::AbiEncode,
     contract::EthCall,
-    prelude::{Address, U256},
+    prelude::{Address as EthereumAddress, U256},
 };
 use std::convert::TryInto;
 use steward_abi::aave_v2_stablecoin::*;
-use steward_proto::steward::aave_v2_stablecoin::Function::{self, *};
+use steward_proto::steward::{
+    aave_v2_stablecoin::Function as StrategyFunction,
+    aave_v2_stablecoin_governance::Function as GovernanceFunction,
+};
+use GovernanceFunction::*;
+use StrategyFunction::*;
 
-use super::log_cellar_call;
+use super::{log_cellar_call, log_governance_cellar_call};
 
 const CELLAR_NAME: &str = "aave_v2_stablecoin";
 const LOG_PREFIX: &str = "AaveV2StablcoinCellar";
 
-pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>, Error> {
+pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {
     match function {
         Accrue(_) => {
             log_cellar_call(
@@ -90,10 +98,10 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 )));
             }
 
-            let results: Vec<Result<Address, &String>> = params
+            let results: Vec<Result<EthereumAddress, &String>> = params
                 .route
                 .iter()
-                .map(|addr| match addr.parse::<Address>() {
+                .map(|addr| match addr.parse::<EthereumAddress>() {
                     Ok(addr) => Ok(addr),
                     Err(_) => Err(addr),
                 })
@@ -104,7 +112,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
             let route = results
                 .iter()
                 .map(|r| r.unwrap())
-                .collect::<Vec<Address>>()
+                .collect::<Vec<EthereumAddress>>()
                 .try_into()
                 .expect("failed to convert 'route' addresses to array");
 
@@ -186,7 +194,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
     }
 }
 
-fn validate_route(results: Vec<Result<Address, &String>>) -> Result<(), Error> {
+fn validate_route(results: Vec<Result<EthereumAddress, &String>>) -> Result<(), Error> {
     let mut bad_addresses_string = String::new();
     for r in results {
         if let Err(addr) = r {
@@ -201,4 +209,94 @@ fn validate_route(results: Vec<Result<Address, &String>>) -> Result<(), Error> {
     }
 
     Ok(())
+}
+
+pub fn get_encoded_governance_call(
+    function: GovernanceFunction,
+    cellar_id: &str,
+    proposal_id: u64,
+) -> Result<Vec<u8>, Error> {
+    match function {
+        SetFeesDistributor(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &SetFeesDistributorCall::function_name(),
+                cellar_id,
+            );
+            let address: CosmosAddress = params.new_fees_distributor.parse().map_err(|err| {
+                governance_call_error(format!(
+                    "{}: SetFeesDistibutor invalid address: {}",
+                    LOG_PREFIX, err
+                ))
+            })?;
+            let call = SetFeesDistributorCall {
+                new_fees_distributor: encode_fees_distributor_address(address),
+            };
+            Ok(AaveV2StablecoinCellarCalls::SetFeesDistributor(call).encode())
+        }
+        InitiateShutdown(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &InitiateShutdownCall::function_name(),
+                cellar_id,
+            );
+            let call = InitiateShutdownCall {
+                empty_position: params.empty_position,
+            };
+            Ok(AaveV2StablecoinCellarCalls::InitiateShutdown(call).encode())
+        }
+        LiftShutdown(_) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &LiftShutdownCall::function_name(),
+                cellar_id,
+            );
+            let call = LiftShutdownCall {};
+            Ok(AaveV2StablecoinCellarCalls::LiftShutdown(call).encode())
+        }
+        SetTrust(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &SetTrustCall::function_name(),
+                cellar_id,
+            );
+            let call = SetTrustCall {
+                trust: params.trust,
+                position: params.position.parse::<EthereumAddress>().map_err(|err| {
+                    governance_call_error(format!(
+                        "{}: SetTrust: invalid address: {}",
+                        LOG_PREFIX, err
+                    ))
+                })?,
+            };
+            Ok(AaveV2StablecoinCellarCalls::SetTrust(call).encode())
+        }
+        Sweep(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &SweepCall::function_name(),
+                cellar_id,
+            );
+            let call = SweepCall {
+                token: params.token.parse::<EthereumAddress>().map_err(|err| {
+                    governance_call_error(format!(
+                        "{}: Sweep: invalid token address: {}",
+                        LOG_PREFIX, err
+                    ))
+                })?,
+                to: params.recipient.parse::<EthereumAddress>().map_err(|err| {
+                    governance_call_error(format!(
+                        "{}: Sweep: invalid recipient address: {}",
+                        LOG_PREFIX, err
+                    ))
+                })?,
+            };
+            Ok(AaveV2StablecoinCellarCalls::Sweep(call).encode())
+        }
+    }
 }

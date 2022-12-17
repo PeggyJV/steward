@@ -13,7 +13,7 @@ use std::{
     ops::Deref,
 };
 use thiserror::Error;
-use tonic::transport::Error as TonicError;
+use tonic::{transport::Error as TonicError, Status as TonicStatus};
 
 /// Kinds of errors
 #[derive(Copy, Clone, Debug, Eq, Error, PartialEq)]
@@ -48,9 +48,24 @@ pub enum ErrorKind {
     /// Strategy Provider call error
     #[error("SP call error")]
     SPCallError,
+    /// Governance call error
+    #[error("SP call error")]
+    GovernanceCall,
     /// Client error
     #[error("client error")]
     ClientError,
+    /// Cache error
+    #[error("cache error")]
+    CacheError,
+    /// Unapproved cellar error
+    #[error("unapproved cellar error")]
+    UnapprovedCellar,
+    /// Invalid ethereum address
+    #[error("invalid ethereum address")]
+    InvalidEthereumAddress,
+    /// Proposal processing error
+    #[error("proposal processing error")]
+    ProposalProcessingError,
 }
 
 impl ErrorKind {
@@ -166,6 +181,13 @@ impl From<ProviderError> for Error {
 
 impl From<TonicError> for Error {
     fn from(err: TonicError) -> Self {
+        let err: BoxError = err.into();
+        ErrorKind::GrpcError.context(err).into()
+    }
+}
+
+impl From<TonicStatus> for Error {
+    fn from(err: TonicStatus) -> Self {
         let err: BoxError = err.into();
         ErrorKind::GrpcError.context(err).into()
     }

@@ -21,16 +21,20 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/server"
 	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
+	auctiontypes "github.com/peggyjv/sommelier/v4/x/auction/types"
+	cellarfeestypes "github.com/peggyjv/sommelier/v4/x/cellarfees/types"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 	tmconfig "github.com/tendermint/tendermint/config"
@@ -39,11 +43,11 @@ import (
 )
 
 const (
-	testDenom           = "testsomm"
-	initBalanceStr      = "110000000000utestsomm,100000000000testsomm"
+	testDenom           = "usomm"
+	initBalanceStr      = "110000000000usomm"
 	minGasPrice         = "2"
 	ethChainID     uint = 15
-	bondDenom           = "utestsomm"
+	bondDenom           = "usomm"
 )
 
 func MNEMONICS() []string {
@@ -270,18 +274,18 @@ func (s *IntegrationTestSuite) initGenesis() {
 
 	bankGenState.DenomMetadata = append(bankGenState.DenomMetadata, banktypes.Metadata{
 		Description: "The native staking token of the test somm network",
-		Display:     "testsomm",
+		Display:     testDenom,
 		Base:        bondDenom,
 		DenomUnits: []*banktypes.DenomUnit{
 			{
 				Denom:    bondDenom,
 				Exponent: 0,
 				Aliases: []string{
-					"tsomm",
+					"usomm",
 				},
 			},
 			{
-				Denom:    "testsomm",
+				Denom:    testDenom,
 				Exponent: 6,
 			},
 		},
@@ -326,6 +330,16 @@ func (s *IntegrationTestSuite) initGenesis() {
 	s.Require().NoError(err)
 	appGenState[minttypes.ModuleName] = bz
 
+	var govGenState govtypes.GenesisState
+	s.Require().NoError(cdc.UnmarshalJSON(appGenState[govtypes.ModuleName], &govGenState))
+
+	// set short voting period to allow gov proposals in tests
+	govGenState.VotingParams.VotingPeriod = time.Second * 20
+	govGenState.DepositParams.MinDeposit = sdk.Coins{{Denom: testDenom, Amount: sdk.OneInt()}}
+	bz, err = cdc.MarshalJSON(&govGenState)
+	s.Require().NoError(err)
+	appGenState[govtypes.ModuleName] = bz
+
 	var genUtilGenState genutiltypes.GenesisState
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[genutiltypes.ModuleName], &genUtilGenState))
 
@@ -353,15 +367,27 @@ func (s *IntegrationTestSuite) initGenesis() {
 	s.Require().NoError(err)
 	appGenState[genutiltypes.ModuleName] = bz
 
-	var corkGenState corktypes.GenesisState
+	corkGenState := corktypes.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[corktypes.ModuleName], &corkGenState))
 	corkGenState.CellarIds = corktypes.CellarIDSet{
 		Ids: []string{aaveCellar.Hex(), vaultCellar.Hex()},
 	}
-	corkGenState.Params.VotePeriod = 10
 	bz, err = cdc.MarshalJSON(&corkGenState)
 	s.Require().NoError(err)
 	appGenState[corktypes.ModuleName] = bz
+
+	auctionGenState := auctiontypes.DefaultGenesisState()
+	s.Require().NoError(cdc.UnmarshalJSON(appGenState[auctiontypes.ModuleName], &auctionGenState))
+	bz, err = cdc.MarshalJSON(&auctionGenState)
+	s.Require().NoError(err)
+	appGenState[auctiontypes.ModuleName] = bz
+
+	cellarfeesGenState := cellarfeestypes.DefaultGenesisState()
+	s.Require().NoError(cdc.UnmarshalJSON(appGenState[cellarfeestypes.ModuleName], &cellarfeesGenState))
+
+	bz, err = cdc.MarshalJSON(&cellarfeesGenState)
+	s.Require().NoError(err)
+	appGenState[cellarfeestypes.ModuleName] = bz
 
 	// set contract addr
 	var gravityGenState gravitytypes.GenesisState
@@ -734,6 +760,8 @@ func (s *IntegrationTestSuite) runStewards() {
 	s.stewResources = make([]*dockertest.Resource, len(s.chain.stewards))
 	for i, steward := range s.chain.stewards {
 		stewardCfg := fmt.Sprintf(`keystore = "/tmp/keystore"
+[cork]
+proposal_poll_period = 10
 
 [cosmos]
 grpc = "http://%s:9090"
@@ -846,4 +874,16 @@ func (s *IntegrationTestSuite) logsByContainerID(id string) string {
 	))
 
 	return containerLogsBuf.String()
+}
+
+func (s *IntegrationTestSuite) GetLatestBlockHeight(clientCtx *client.Context) (int64, error) {
+	node, err := clientCtx.GetNode()
+	if err != nil {
+		return 0, err
+	}
+	status, err := node.Status(context.Background())
+	if err != nil {
+		return 0, err
+	}
+	return status.SyncInfo.LatestBlockHeight, nil
 }

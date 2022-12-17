@@ -6,7 +6,7 @@ use std::path;
 
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Show details of an Eth key in the keystore.\n This command shows details of an Eth key in the keystore, it takes the name of the key."
+    long_about = "DESCRIPTION\n\nShow details of an Eth key in the keystore.\n This command shows details of an Eth key in the keystore, it takes the name of the key."
 )]
 pub struct ShowKeyCmd {
     /// Eth keyname

@@ -22,8 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ContractCallClient interface {
-	// Handles simple contract call submission
-	Submit(ctx context.Context, in *SubmitRequest, opts ...grpc.CallOption) (*SubmitResponse, error)
+	// Handles scheduled contract call submission
+	Schedule(ctx context.Context, in *ScheduleRequest, opts ...grpc.CallOption) (*ScheduleResponse, error)
 }
 
 type contractCallClient struct {
@@ -34,9 +34,9 @@ func NewContractCallClient(cc grpc.ClientConnInterface) ContractCallClient {
 	return &contractCallClient{cc}
 }
 
-func (c *contractCallClient) Submit(ctx context.Context, in *SubmitRequest, opts ...grpc.CallOption) (*SubmitResponse, error) {
-	out := new(SubmitResponse)
-	err := c.cc.Invoke(ctx, "/steward.v2.ContractCall/Submit", in, out, opts...)
+func (c *contractCallClient) Schedule(ctx context.Context, in *ScheduleRequest, opts ...grpc.CallOption) (*ScheduleResponse, error) {
+	out := new(ScheduleResponse)
+	err := c.cc.Invoke(ctx, "/steward.v3.ContractCall/Schedule", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -47,8 +47,8 @@ func (c *contractCallClient) Submit(ctx context.Context, in *SubmitRequest, opts
 // All implementations must embed UnimplementedContractCallServer
 // for forward compatibility
 type ContractCallServer interface {
-	// Handles simple contract call submission
-	Submit(context.Context, *SubmitRequest) (*SubmitResponse, error)
+	// Handles scheduled contract call submission
+	Schedule(context.Context, *ScheduleRequest) (*ScheduleResponse, error)
 	mustEmbedUnimplementedContractCallServer()
 }
 
@@ -56,8 +56,8 @@ type ContractCallServer interface {
 type UnimplementedContractCallServer struct {
 }
 
-func (UnimplementedContractCallServer) Submit(context.Context, *SubmitRequest) (*SubmitResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Submit not implemented")
+func (UnimplementedContractCallServer) Schedule(context.Context, *ScheduleRequest) (*ScheduleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Schedule not implemented")
 }
 func (UnimplementedContractCallServer) mustEmbedUnimplementedContractCallServer() {}
 
@@ -72,20 +72,20 @@ func RegisterContractCallServer(s grpc.ServiceRegistrar, srv ContractCallServer)
 	s.RegisterService(&ContractCall_ServiceDesc, srv)
 }
 
-func _ContractCall_Submit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SubmitRequest)
+func _ContractCall_Schedule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ScheduleRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ContractCallServer).Submit(ctx, in)
+		return srv.(ContractCallServer).Schedule(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/steward.v2.ContractCall/Submit",
+		FullMethod: "/steward.v3.ContractCall/Schedule",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContractCallServer).Submit(ctx, req.(*SubmitRequest))
+		return srv.(ContractCallServer).Schedule(ctx, req.(*ScheduleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -94,12 +94,12 @@ func _ContractCall_Submit_Handler(srv interface{}, ctx context.Context, dec func
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ContractCall_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "steward.v2.ContractCall",
+	ServiceName: "steward.v3.ContractCall",
 	HandlerType: (*ContractCallServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Submit",
-			Handler:    _ContractCall_Submit_Handler,
+			MethodName: "Schedule",
+			Handler:    _ContractCall_Schedule_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

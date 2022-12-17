@@ -7,7 +7,7 @@ use std::path;
 
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION \n\n Recover an external Cosmos key.\n This command will recover a Cosmos key, storing it in the keystore. \n It takes a keyname and bip39-mnemonic."
+    long_about = "DESCRIPTION\n\nRecover an external Cosmos key.\n This command will recover a Cosmos key, storing it in the keystore. \n It takes a keyname and bip39-mnemonic."
 )]
 pub struct RecoverCosmosKeyCmd {
     /// Cosmos keyname.

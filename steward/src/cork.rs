@@ -1,7 +1,10 @@
 use crate::{
     cellars::{self, aave_v2_stablecoin, cellar_v1},
     config,
-    error::{Error, ErrorKind},
+    error::{
+        Error,
+        ErrorKind::{self, *},
+    },
     prelude::APP,
     somm_send,
 };
@@ -10,14 +13,20 @@ use abscissa_core::{
     Application,
 };
 use deep_space::{Coin, Contact};
+use ethers::types::H160;
 use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
-use somm_proto::cork::{query_client::QueryClient as CorkQueryClient, Cork, QueryCellarIDsRequest};
+use sha3::{Digest, Keccak256};
+use somm_proto::cork::Cork;
 use std::time::Duration;
 use steward_proto::{
     self,
-    steward::{self, submit_request::CallData::*, SubmitRequest, SubmitResponse},
+    steward::{self, schedule_request::CallData::*, ScheduleRequest, ScheduleResponse},
 };
 use tonic::{self, async_trait, Code, Request, Response, Status};
+
+pub mod cache;
+pub mod client;
+pub mod proposals;
 
 const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
 const CHAIN_PREFIX: &str = "somm";
@@ -26,85 +35,53 @@ pub struct CorkHandler;
 
 #[async_trait]
 impl steward::contract_call_server::ContractCall for CorkHandler {
-    async fn submit(
+    async fn schedule(
         &self,
-        request: Request<SubmitRequest>,
-    ) -> Result<Response<SubmitResponse>, Status> {
+        request: Request<ScheduleRequest>,
+    ) -> Result<Response<ScheduleResponse>, Status> {
         let request = request.get_ref().to_owned();
-
-        // Check if cellar is governance approved before building cork
-        let config = APP.config();
-        let mut client = match CorkQueryClient::connect(config.cosmos.grpc.clone()).await {
-            Ok(c) => c,
-            Err(err) => {
-                error!("cork query client connection failed: {}", err);
-                return Err(Status::new(
-                    Code::Internal,
-                    format!("failed to query chain to validate cellar id: {}", err),
-                ));
+        let cellar_id = request.cellar_id.clone();
+        if let Err(err) = cellars::validate_cellar_id(&cellar_id).await {
+            let message = format!("cellar ID validation failed: {}", err);
+            match err.kind() {
+                CacheError => return Err(Status::new(Code::Internal, message)),
+                SPCallError => return Err(Status::new(Code::InvalidArgument, message)),
+                UnapprovedCellar => return Err(Status::new(Code::InvalidArgument, message)),
+                _ => return Err(Status::new(Code::Unknown, message)),
             }
-        };
-
-        debug!("checking if cellar ID is approved");
-        let ids = &client
-            .query_cellar_i_ds(QueryCellarIDsRequest {})
-            .await?
-            .get_ref()
-            .cellar_ids
-            .clone();
-        if !ids.contains(&request.cellar_id) {
-            info!(
-                "rejecting request for unapproved cellar {}",
-                request.cellar_id
-            );
-            return Err(Status::new(
-                Code::PermissionDenied,
-                format!(
-                    "cellar ID {} not approved by governance",
-                    &request.cellar_id
-                ),
-            ));
         }
 
         // Build and send cork
         let cellar_id = request.cellar_id.clone();
-        let cork = match build_cork(request).await {
+        let height = request.block_height;
+        let encoded_call = match get_encoded_call(request) {
             Ok(c) => c,
             Err(err) => {
-                warn!("failed to build cork for cellar {}: {}", cellar_id, err);
+                warn!("failed to get encoded call for {}: {}", cellar_id, err);
                 return Err(Status::new(Code::InvalidArgument, err.to_string()));
             }
         };
-        debug!("cork: {:?}", cork);
+        debug!("cork: {:?}", encoded_call);
 
-        if let Err(err) = send_cork(cork).await {
-            error!("failed to submit cork: {}", err);
+        if let Err(err) = schedule_cork(&cellar_id, encoded_call.clone(), height).await {
+            error!("failed to schedule cork for cellar {}: {}", cellar_id, err);
             return Err(Status::new(
                 Code::Internal,
                 format!("failed to send cork to sommelier: {}", err),
             ));
         }
-        info!("submitted cork for {}", cellar_id);
+        info!(
+            "scheduled cork for cellar {} at height {}",
+            cellar_id, height
+        );
 
-        Ok(Response::new(SubmitResponse {}))
+        Ok(Response::new(ScheduleResponse {
+            id: id_hash(height, &cellar_id, encoded_call),
+        }))
     }
 }
-// Because of Rusts handling of enums, we have no easy way to log what cellar type and function are
-// being requested before we get to the encoding step, so we pass the whole request into this method
-// and the get_encoded_call() methods so logging can happen there.
-async fn build_cork(request: SubmitRequest) -> Result<Cork, Error> {
-    cellars::validate_cellar_id(request.cellar_id.as_str())?;
 
-    let address = request.cellar_id.clone();
-    let encoded_call = get_encoded_call(request)?;
-
-    Ok(Cork {
-        encoded_contract_call: encoded_call,
-        target_contract_address: address,
-    })
-}
-
-fn get_encoded_call(request: SubmitRequest) -> Result<Vec<u8>, Error> {
+fn get_encoded_call(request: ScheduleRequest) -> Result<Vec<u8>, Error> {
     if request.call_data.is_none() {
         return Err(ErrorKind::Http.context("empty contract call data").into());
     }
@@ -127,35 +104,13 @@ fn get_encoded_call(request: SubmitRequest) -> Result<Vec<u8>, Error> {
     }
 }
 
-async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
-    let config = APP.config();
-    debug!("establishing grpc connection");
-    let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX)?;
-
-    debug!("getting cosmos fee");
-    let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
-    let fee = Coin {
-        amount: (cosmos_gas_price.0 as u64).into(),
-        denom: cosmos_gas_price.1,
-    };
-    somm_send::send_cork(
-        &contact,
-        cork,
-        config::DELEGATE_ADDRESS.to_string(),
-        &config::DELEGATE_KEY,
-        fee,
-    )
-    .await
-    .map_err(|e| e.into())
-}
-
 pub async fn schedule_cork(
-    contract: String,
+    contract: &str,
     encoded_call: Vec<u8>,
     height: u64,
 ) -> Result<TxResponse, Error> {
-    let config = APP.config();
     debug!("establishing grpc connection");
+    let config = APP.config();
     let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX).unwrap();
 
     debug!("getting cosmos fee");
@@ -166,7 +121,7 @@ pub async fn schedule_cork(
     };
     let cork = Cork {
         encoded_contract_call: encoded_call,
-        target_contract_address: contract.clone(),
+        target_contract_address: contract.to_string(),
     };
     somm_send::schedule_cork(
         &contact,
@@ -178,4 +133,36 @@ pub async fn schedule_cork(
     )
     .await
     .map_err(|e| e.into())
+}
+
+pub fn id_hash(block_height: u64, contract_address: &str, encoded_call: Vec<u8>) -> String {
+    let mut hasher = Keccak256::new();
+    let address = contract_address
+        .parse::<H160>()
+        .expect("failed to parse cellar ID. it should have been validated before now.");
+    let input = [
+        (block_height).to_be_bytes().as_slice(),
+        address.as_bytes(),
+        &encoded_call,
+    ]
+    .concat();
+    hasher.update(input);
+
+    format!("{:x}", hasher.finalize())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_id_hash() {
+        // inputs and expected output from an integration test run
+        let expected =
+            "fca62587f984a777a25ff1a45c2178066c82f8631f9bf54046943604c8805c84".to_string();
+        let call = hex::decode("fc4d43be00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
+        let actual = id_hash(193, "0x0165878A594ca255338adfa4d48449f69242Eb8F", call);
+
+        assert_eq!(expected, actual);
+    }
 }
