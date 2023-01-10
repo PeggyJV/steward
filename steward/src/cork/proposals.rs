@@ -16,7 +16,7 @@ use tokio::task::JoinHandle;
 use tonic::{transport::Channel, Code};
 
 use crate::{
-    cellars::{aave_v2_stablecoin, cellar_v1},
+    cellars::{aave_v2_stablecoin, cellar_v1, cellar_v2},
     config::DELEGATE_ADDRESS,
     cork::schedule_cork,
     error::{Error, ErrorKind},
@@ -235,6 +235,33 @@ async fn poll_approved_cork_proposals(state: &mut ProposalThreadState) -> Result
                 }
                 let function = data.function.unwrap();
                 match cellar_v1::get_encoded_governance_call(
+                    function,
+                    &cellar_id,
+                    proposal.proposal_id,
+                ) {
+                    Ok(d) => d,
+                    // this is likely a bug in steward
+                    Err(err) => {
+                        error!(
+                            "failed to get encoded governance call data for proposal {}: {}",
+                            proposal.proposal_id, err
+                        );
+                        state.increment_proposal_id();
+                        continue;
+                    }
+                }
+            }
+            Call::CellarV2(data) => {
+                if data.function.is_none() {
+                    warn!(
+                        "scheduled cork proposal {} call data contains no function data and will be ignored: {:?}",
+                        proposal.proposal_id, data,
+                    );
+                    state.increment_proposal_id();
+                    continue;
+                }
+                let function = data.function.unwrap();
+                match cellar_v2::get_encoded_governance_call(
                     function,
                     &cellar_id,
                     proposal.proposal_id,

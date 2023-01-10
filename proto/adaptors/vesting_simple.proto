@@ -60,3 +60,7 @@ message VestingSimpleAdaptor {
         string vesting_contract = 1;
     }
 }
+
+message VestingSimpleAdaptorCalls {
+    repeated VestingSimpleAdaptor calls = 1;
+}

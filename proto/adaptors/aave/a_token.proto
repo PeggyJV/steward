@@ -36,3 +36,7 @@ message AaveATokenAdaptor {
         string amount = 2;
     }
 }
+
+message AaveATokenAdaptorCalls {
+    repeated AaveATokenAdaptor calls = 1;
+}

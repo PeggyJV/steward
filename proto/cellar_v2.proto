@@ -9,10 +9,11 @@ package steward.v3;
 
 option go_package = "/steward_proto";
 
-import "common.proto";
-import "adaptors/uniswap/uniswap_v3.proto";
 import "adaptors/aave/a_token.proto";
 import "adaptors/aave/debt_token.proto";
+import "adaptors/compound/c_token.proto";
+import "adaptors/uniswap/uniswap_v3.proto";
+import "adaptors/vesting_simple.proto";
 
 /*
 * Represents a function call to a cellar that implements Cellar.sol
@@ -34,7 +35,7 @@ message CellarV2 {
         SwapPositions swap_positions = 6;
         // Represents function `setRebalanceDeviation(uint265)`
         SetRebalanceDeviation set_rebalance_deviation = 7;
-        // Represents function `setShareLockPeriod()`
+        // Represents function `setShareLockPeriod(uint256 newLock)`
         SetShareLockPeriod set_share_lock_period = 8;
         // Represents function `setupAdatptor(address adaptor)`
         SetupAdaptor setup_adaptor = 9;
@@ -51,7 +52,6 @@ message CellarV2 {
         // The position's ID in the cellar registry
         uint32 position_id = 2;
         // Data used to configure how the position behaves
-        // TODO: break this out into protos and let steward serialize the bytes
         bytes configuration_data = 3;
         // Whether to add position in the debt array, or the credit array.
         bool in_debt_array = 4;
@@ -63,9 +63,16 @@ message CellarV2 {
         string adaptor = 1;
         // The function call data for the adaptor
         oneof call_data {
-            UniswapV3Adaptor uniswap_v3 = 2;
-            AaveATokenAdaptor aave_a_token = 3;
-            AaveDebtTokenAdaptor aave_debt_token = 4;
+            // Represents function calls to the UniswapV3Adaptor
+            UniswapV3AdaptorCalls uniswap_v3_calls = 2;
+            // Represents function calls to the AaveATokenAdaptor
+            AaveATokenAdaptorCalls aave_a_token_calls = 3;
+            // Represents function calls to the AavaDebtTokenAdaptor
+            AaveDebtTokenAdaptorCalls aave_debt_token_calls = 4;
+            // Represents function calls to the CompoundCTokenAdaptor
+            CompoundCTokenAdaptorCalls compound_c_token_calls = 5;
+            // Represents function calls to the VestingSimpleAdaptor
+            VestingSimpleAdaptorCalls vesting_simple_calls = 6;
         }
     }
 
@@ -167,5 +174,42 @@ message CellarV2 {
     */
     message SetupAdaptor {
         string adaptor = 1;
+    }
+}
+
+/*
+* Represent a function call initiated through a governance proposal
+*/
+message CellarV2Governance {
+    // The function to call on the target cellar
+    oneof function {
+        // Represents function `initiateShutdown()`
+        InitiateShutdown initiate_shutdown = 1;
+        // Represents function `liftShutdown()`
+        LiftShutdown lift_shutdown = 2;
+        // Represents function `setPlatformFee(uint256)`
+        SetPlatformFee set_platform_fee = 3;
+        // Represents function `setStrategistPlatformCut(address)`
+        SetStrategistPlatformCut set_strategist_platform_cut = 4;
+    }
+
+    // Represents function `initiateShutdown()`
+    message InitiateShutdown {
+    }
+
+    // Represents function `liftShutdown()`
+    message LiftShutdown {
+    }
+
+    // Represents function `setPlatformFee(uint64)`
+    message SetPlatformFee {
+        // New platform fee
+        uint64 amount = 1;
+    }
+
+    // Represents function `setStrategistPlatformCut(uint64)`
+    message SetStrategistPlatformCut {
+        // New strategist platform cut
+        uint64 amount = 1;
     }
 }

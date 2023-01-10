@@ -3,6 +3,8 @@ package steward.v3;
 
 option go_package = "/steward_proto";
 
+import "common.proto";
+
 // Represents call data for the Compound C Token adaptor, managing lending positions on Compound.
 message CompoundCTokenAdaptor {
     oneof function {
@@ -50,8 +52,12 @@ message CompoundCTokenAdaptor {
     */
     message ClaimCompAndSwap {
         string asset_out = 1;
-        string exchange = 2;
-        string params = 3;
+        Exchange exchange = 2;
+        SwapParams params = 3;
         uint64 slippage = 4;
     }
+}
+
+message CompoundCTokenAdaptorCalls {
+    repeated CompoundCTokenAdaptor calls = 1;
 }

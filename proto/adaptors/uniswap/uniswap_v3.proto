@@ -69,3 +69,7 @@ message UniswapV3Adaptor {
         bool collect_fees = 5;
     }
 }
+
+message UniswapV3AdaptorCalls {
+    repeated UniswapV3Adaptor calls = 1;
+}

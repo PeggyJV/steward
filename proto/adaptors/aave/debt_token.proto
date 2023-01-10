@@ -3,17 +3,17 @@ package steward.v3;
 
 option go_package = "/steward_proto";
 
+import "common.proto";
+
 // Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
 message AaveDebtTokenAdaptor {
     oneof function {
         // Represents function `borrowFromAave(ERC20 debtTokenToBorrow, uint256 amountToBorrow)`
-        BorrowFromAave deposit_to_aave = 1;
+        BorrowFromAave borrow_from_aave = 1;
         // Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
-        RepayAaveDebt withdraw_from_aave = 2;
+        RepayAaveDebt repay_aave_debt = 2;
         // Represents function `swapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
         SwapAndRepay swap_and_repay = 3;
-        // Represents function `flashLoan(address[] memory loanToken, uint256[] memory loanAmount, bytes memory params)`
-        FlashLoan flash_loan = 4;
     }
 
     /*
@@ -54,19 +54,11 @@ message AaveDebtTokenAdaptor {
         string amount_in = 3;
         // The exchange to make the swap on
         Exchange exchange = 4;
-        // TODO: Add params. Nested bytes within bytes.
+        // The parameters for the swap
+        SwapParams params = 5;
     }
+}
 
-    /*
-    * Allows strategists to have cellars take out flash loans.
-    *
-    * Represents function `flashLoan(address[] memory loanToken, uint256[] memory loanAmount, bytes memory params)`
-    */
-    message FlashLoan {
-        // Address array of tokens to take out loans for
-        repeated string loan_tokens = 1;
-        // uint256 array of loan amounts for each loan token
-        repeated string amounts = 2;
-        // TODO: Add params. Nested bytes within bytes. https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool#flashloan
-    }
+message AaveDebtTokenAdaptorCalls {
+    repeated AaveDebtTokenAdaptor calls = 1;
 }
