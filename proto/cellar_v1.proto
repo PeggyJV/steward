@@ -9,6 +9,8 @@ package steward.v3;
 
 option go_package = "/steward_proto";
 
+import "common.proto";
+
 /*
 * Represents a function call to a cellar that implements Cellar.sol
 */
@@ -86,55 +88,6 @@ message CellarV1 {
     message SetHoldingPosition {
         // Address of the new holding position to use
         string new_holding_position = 1;
-    }
-
-    /*
-    * Exchange selector
-    */
-    enum Exchange {
-        EXCHANGE_UNSPECIFIED = 0;
-        // Represents Uniswap V2
-        EXCHANGE_UNIV2 = 1;
-        // Represents Uniswap V3
-        EXCHANGE_UNIV3 = 2;
-    }
-
-    /*
-    * Represents swap parameters for UniswapV2
-    */
-    message UniV2SwapParams {
-        // Array of addresses dictating what swap path to follow
-        repeated string path = 1;
-        // Amount of the first asset in the path to swap
-        string amount = 2;
-        // The minimum amount of the last asset in the path to receive
-        string amount_out_min = 3;
-    }
-
-    /*
-    * Represents swap parameters for UniswapV3
-    */
-    message UniV3SwapParams {
-        // Array of addresses dictating what swap path to follow
-        repeated string path = 1;
-        // Array of pool fees dictating what swap pools to use
-        repeated uint32 pool_fees = 2;
-        // Amount of the first asset in the path to swap
-        string amount = 3;
-        // The minimum amount of the last asset in the path to receive
-        string amount_out_min = 4;
-    }
-
-    /*
-    * Represents swap parameters for an exchange
-    */
-    message SwapParams {
-        oneof params {
-            // Params for a Uniswap V2 swap
-            UniV2SwapParams univ2_params = 1;
-            // Params for a Uniswap V3 swap
-            UniV3SwapParams univ3_params = 2;
-        }
     }
 
     /*

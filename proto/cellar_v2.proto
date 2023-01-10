@@ -1,13 +1,18 @@
 /*
-* An API for cellars that implement the EIP4626-compatible Cellar.sol contract.
+* An API for cellars that implement V2 of the EIP4626-compatible Cellar.sol contract.
 *
 * See [Cellar.sol](https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol)
 */
 
 syntax = "proto3";
-package steward.v2;
+package steward.v3;
 
 option go_package = "/steward_proto";
+
+import "common.proto";
+import "adaptors/uniswap/uniswap_v3.proto";
+import "adaptors/aave/a_token.proto";
+import "adaptors/aave/debt_token.proto";
 
 /*
 * Represents a function call to a cellar that implements Cellar.sol
@@ -17,21 +22,22 @@ message CellarV2 {
     oneof function {
         // Represents function `addPosition(uint256 index, address position)`
         AddPosition add_position = 1;
+        // Represents function `callOnAdaptor(AdaptorCall[] memory data)`
+        CallOnAdaptor call_on_adaptor = 2;
         // Represents function `removePosition(uint256 index)`
         RemovePosition remove_position = 3;
-        // Represents function `setHoldingIndex(uint8 index)`
-        SetHoldingIndex set_holding_index = 4;
-        SetStrategistPayoutAddress set_strategist_payout_address = 6;
+        // Represents function `setHoldingPosition(uint32 position_id)`
+        SetHoldingPosition set_holding_position = 4;
+        // Represents function `setStrategistPayoutAddress(address payout)`
+        SetStrategistPayoutAddress set_strategist_payout_address = 5;
         // Represents function `swapPositions(uint256 index1, uint256 index2)`
-        SwapPositions swap_positions = 8;
-        // Represents function `setDepositLimit()`
-        SetDepositLimit set_deposit_limit = 9;
-        // Represents function `setLiquidityLimit()`
-        SetLiquidityLimit set_liquidity_limit = 10;
-        // Represents function `setShareLockPeriod()`
-        SetShareLockPeriod set_share_lock_period = 11;
+        SwapPositions swap_positions = 6;
         // Represents function `setRebalanceDeviation(uint265)`
-        SetRebalanceDeviation set_rebalance_deviation = 12;
+        SetRebalanceDeviation set_rebalance_deviation = 7;
+        // Represents function `setShareLockPeriod()`
+        SetShareLockPeriod set_share_lock_period = 8;
+        // Represents function `setupAdatptor(address adaptor)`
+        SetupAdaptor setup_adaptor = 9;
     }
 
     /*
@@ -51,6 +57,27 @@ message CellarV2 {
         bool in_debt_array = 4;
     }
 
+    // Represents a call to adaptor an. The cellar must be authorized to call the target adaptor.
+    message AdaptorCall {
+        // Address of the adaptor
+        string adaptor = 1;
+        // The function call data for the adaptor
+        oneof call_data {
+            UniswapV3Adaptor uniswap_v3 = 2;
+            AaveATokenAdaptor aave_a_token = 3;
+            AaveDebtTokenAdaptor aave_debt_token = 4;
+        }
+    }
+
+    /*
+    * Allows strategists to manage their Cellar using arbitrary logic calls to adaptors.
+    *
+    * Represents function `callOnAdaptor(AdaptorCall[] memory data)`
+    */
+    message CallOnAdaptor {
+        repeated AdaptorCall data = 1;
+    }
+
     /*
     * Remove the position at a given index from the list of positions used by the cellar.
     *
@@ -68,9 +95,9 @@ message CellarV2 {
     *
     * Represents function `setHoldingIndex(uint8 index)`
     */
-    message SetHoldingIndex {
-        // Index of the new holding position to use
-        uint32 index = 1;
+    message SetHoldingPosition {
+        // ID (index) of the new holding position to use
+        uint32 position_id = 1;
     }
 
     /*
@@ -124,11 +151,21 @@ message CellarV2 {
     }
 
     /*
-    *
+    * Changes the cellar's allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
+    * during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
     *
     * Represents function `setRebalanceDeviation(uint256)`
     */
     message SetRebalanceDeviation {
         string new_deviation = 1;
+    }
+
+    /*
+    * Allows owner to add new adaptors for the cellar to use.
+    *
+    * Represents function `setupAdatptor(address adaptor)`
+    */
+    message SetupAdaptor {
+        string adaptor = 1;
     }
 }

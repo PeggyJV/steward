@@ -1,4 +1,57 @@
 syntax = "proto3";
-package steward.v2;
+package steward.v3;
 
 option go_package = "/steward_proto";
+
+// Represents call data for the Compound C Token adaptor, managing lending positions on Compound.
+message CompoundCTokenAdaptor {
+    oneof function {
+        // Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
+        DepositToCompound deposit_to_compound = 1;
+        // Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)`
+        WithdrawFromCompound withdraw_from_compound = 2;
+        // Represents function `claimComp()`
+        ClaimComp claim_comp = 3;
+        // Represents function `claimCompAndSwap(ERC20 assetOut, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+        ClaimCompAndSwap claim_comp_and_swap = 4;
+    }
+
+    /*
+    * Allows strategists to lend assets on Compound.
+    *
+    * Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
+    */
+    message DepositToCompound {
+        string market = 1;
+        string amount_to_deposit = 2;
+    }
+
+    /*
+    * Allows strategists to withdraw assets from Compound.
+    *
+    * Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)`
+    */
+    message WithdrawFromCompound {
+        string market = 1;
+        string amount_to_withdraw = 2;
+    }
+
+    /*
+    * Allows strategists to claim COMP rewards.
+    *
+    * Represents function `claimComp()`
+    */
+    message ClaimComp {}
+
+    /*
+    * Allows strategists to claim COMP and immediately swap it using oracleSwap.
+    *
+    * Represents function `claimCompAndSwap(ERC20 assetOut, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+    */
+    message ClaimCompAndSwap {
+        string asset_out = 1;
+        string exchange = 2;
+        string params = 3;
+        uint64 slippage = 4;
+    }
+}

@@ -3,45 +3,26 @@ use ethers::contract::Abigen;
 use std::process;
 
 fn main() {
-    // Aave
-    let aave_contract = "AaveV2StablecoinCellar";
+    // (JSON/Contract name, output file name)
+    let contracts = vec![
+        ("AaveV2StablecoinCellar", "aave_v2_stablecoin"),
+        ("CellarV1", "cellar_v1"),
+        ("CellarV2", "cellar_v2"),
+    ];
+
+    contracts
+        .iter()
+        .for_each(|n| generate_contract_abi(n.0, n.1))
+}
+
+fn generate_contract_abi(name: &str, file_name: &str) {
     let abigen = match Abigen::new(
-        aave_contract,
-        format!("../steward_abi/{}.json", aave_contract),
+        name,
+        format!("../steward_abi/{}.json", name),
     ) {
         Ok(abigen) => abigen,
         Err(e) => {
-            println!("Could not open {}.json: {}", aave_contract, e);
-            process::exit(1);
-        }
-    };
-
-    let abi = match abigen
-        .add_event_derive("serde::Deserialize")
-        .add_event_derive("serde::Serialize")
-        .generate()
-    {
-        Ok(abi) => abi,
-        Err(e) => {
-            println!("Could not generate abi from {}.json: {}", aave_contract, e);
-            process::exit(1);
-        }
-    };
-
-    match abi.write_to_file("../steward_abi/src/aave_v2_stablecoin.rs") {
-        Ok(_) => (),
-        Err(e) => println!("Error writing aave_v2_stablecoin.rs: {}", e),
-    }
-
-    // Cellar.sol
-    let cellar_contract = "Cellar";
-    let abigen = match Abigen::new(
-        cellar_contract,
-        format!("../steward_abi/{}.json", cellar_contract),
-    ) {
-        Ok(abigen) => abigen,
-        Err(e) => {
-            println!("Could not open {}.json: {}", cellar_contract, e);
+            println!("Could not open {}.json: {}", name, e);
             process::exit(1);
         }
     };
@@ -55,14 +36,14 @@ fn main() {
         Err(e) => {
             println!(
                 "Could not generate abi from {}.json: {}",
-                cellar_contract, e
+                name, e
             );
             process::exit(1);
         }
     };
 
-    match abi.write_to_file("../steward_abi/src/cellar.rs") {
+    match abi.write_to_file(format!("../steward_abi/src/{}.rs", file_name)) {
         Ok(_) => (),
-        Err(e) => println!("Error writing cellar.rs: {}", e),
+        Err(e) => println!("Error writing {}.rs: {}", file_name, e),
     }
 }
