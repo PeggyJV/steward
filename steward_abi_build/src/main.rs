@@ -21,10 +21,7 @@ fn main() {
 }
 
 fn generate_contract_abi(name: &str, file_name: &str) {
-    let abigen = match Abigen::new(
-        name,
-        format!("../steward_abi/{}.json", name),
-    ) {
+    let abigen = match Abigen::new(name, format!("../steward_abi/{}.json", name)) {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open {}.json: {}", name, e);
@@ -39,10 +36,7 @@ fn generate_contract_abi(name: &str, file_name: &str) {
     {
         Ok(abi) => abi,
         Err(e) => {
-            println!(
-                "Could not generate abi from {}.json: {}",
-                name, e
-            );
+            println!("Could not generate abi from {}.json: {}", name, e);
             process::exit(1);
         }
     };

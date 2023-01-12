@@ -10,10 +10,10 @@ use ethers::{
 };
 use steward_abi::cellar_v1::*;
 use steward_proto::steward::{
-    swap_params::Params::*,
-    SwapParams,
     cellar_v1::Function as StrategyFunction,
     cellar_v1_governance::{trust_position::Position, Function as GovernanceFunction},
+    swap_params::Params::*,
+    SwapParams,
 };
 use GovernanceFunction::*;
 use StrategyFunction::*;
