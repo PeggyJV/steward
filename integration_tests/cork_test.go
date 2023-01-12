@@ -384,7 +384,7 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 }
 
 func (s *IntegrationTestSuite) TestCellarV2() {
-	s.Run("Submit rebalance to MockCellar", func() {
+	s.Run("Submit callOnAdaptor to MockCellar", func() {
 		s.checkCellarExists(vaultCellar)
 
 		val := s.chain.validators[0]
@@ -481,6 +481,7 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 		request.BlockHeight = uint64(scheduledHeight)
 		s.executeStewardCalls(request)
 		s.waitForScheduledHeight(clientCtx, scheduledHeight)
+		s.queryLogicCallTransactionByAddress(clientCtx, vaultCellar.Hex())
 
 		// Construct invalidation scope and nonce for gravity query
 		// vault_abi, err := CellarMetaData.GetAbi()
@@ -525,6 +526,7 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 						var event AdaptorBorrowFromAave
 						err := adaptor_abi.UnpackIntoInterface(&event, "BorrowFromAave", log.Data)
 						s.Require().NoError(err, "failed to unpack BorrowFromAave event from log data")
+						s.Require().Equal(common.HexToAddress("0x2222222222222222222222222222222222222222"), event.DebtTokenToBorrow)
 
 						s.T().Log("Saw BorrowFromAave event!")
 						return true
@@ -573,6 +575,8 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 						var event AdaptorClaimCompAndSwap
 						err := adaptor_abi.UnpackIntoInterface(&event, "ClaimCompAndSwap", log.Data)
 						s.Require().NoError(err, "failed to unpack ClaimCompAndSwap event from log data")
+						// 1 == UniswapV3
+						s.Require().Equal(uint8(1), event.Exchange)
 
 						s.T().Log("Saw ClaimCompAndSwap event!")
 						return true
@@ -621,6 +625,8 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 						var event AdaptorSwapAndRepay
 						err := adaptor_abi.UnpackIntoInterface(&event, "SwapAndRepay", log.Data)
 						s.Require().NoError(err, "failed to unpack SwapAndRepay event from log data")
+						// 0 == UniswapV2
+						s.Require().Equal(uint8(0), event.Exchange)
 
 						s.T().Log("Saw SwapAndRepay event!")
 						return true
@@ -730,6 +736,28 @@ func (s *IntegrationTestSuite) queryLogicCallTransaction(clientCtx *client.Conte
 			for _, call := range response.Calls {
 				if bytes.Equal(call.InvalidationScope, invalidationScope) && call.InvalidationNonce == uint64(invalidationNonce) {
 					s.T().Log("logic call found in the gravity module!")
+					return true
+				}
+			}
+		}
+
+		return false
+	}, 1*time.Minute, 5*time.Second, "cellar event never seen")
+	time.Sleep(time.Duration(2000000000))
+}
+
+func (s *IntegrationTestSuite) queryLogicCallTransactionByAddress(clientCtx *client.Context, address string) {
+	s.T().Log("querying gravity module for logic call transaction")
+	gravityQueryClient := gravityTypes.NewQueryClient(clientCtx)
+	s.Require().Eventuallyf(func() bool {
+		request := &gravityTypes.ContractCallTxsRequest{
+			Pagination: &query.PageRequest{},
+		}
+		response, _ := gravityQueryClient.ContractCallTxs(context.Background(), request)
+		if response != nil {
+			for _, call := range response.Calls {
+				if call.Address == address {
+					s.T().Logf("logic call to %s found in the gravity module!", address)
 					return true
 				}
 			}
