@@ -125,6 +125,9 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
 
             Ok(CellarV2Calls::SetShareLockPeriod(call).encode())
         }
+
+        // This will ultimately need to be a governance function, but for Seven Sea's live testing we are keeping
+        // it here until they get a feel for what an appropriate value is.
         SetRebalanceDeviation(params) => {
             log_cellar_call(
                 CELLAR_NAME,
