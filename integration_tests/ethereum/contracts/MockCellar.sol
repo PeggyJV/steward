@@ -86,6 +86,7 @@ contract Cellar is Owned {
         emit TrustChanged(position, true);
     }
 
+    /************* CELLAR V2 **************/
     struct AdaptorCall {
         address adaptor;
         bytes[] callData;

@@ -2,7 +2,6 @@
  * Steward Strategy Provider API
  *
  * This proto defines the service/methods used by Strategy Providers to interact with Cellars through the Sommelier chain.
- *
  */
 
 syntax = "proto3";

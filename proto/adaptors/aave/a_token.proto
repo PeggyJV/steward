@@ -1,3 +1,7 @@
+/*
+* Protos for function calls to the Aave AToken adaptor.
+*/
+
 syntax = "proto3";
 package steward.v3;
 

@@ -39,6 +39,7 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 		}
 	}
 	`
+
 	targetBlockHeight := currentHeight + 120
 	proposal := corktypes.NewScheduledCorkProposal(
 		"scheduled cork proposal test",

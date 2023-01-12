@@ -3,31 +3,84 @@
 
 ## Table of Contents
 
-- [governance.proto](#governance-proto)
-    - [GovernanceCall](#steward-v3-GovernanceCall)
+- [adaptors/aave/a_token.proto](#adaptors_aave_a_token-proto)
+    - [AaveATokenAdaptor](#steward-v3-AaveATokenAdaptor)
+    - [AaveATokenAdaptor.DepositToAave](#steward-v3-AaveATokenAdaptor-DepositToAave)
+    - [AaveATokenAdaptor.WithdrawFromAave](#steward-v3-AaveATokenAdaptor-WithdrawFromAave)
+    - [AaveATokenAdaptorCalls](#steward-v3-AaveATokenAdaptorCalls)
   
 - [Scalar Value Types](#scalar-value-types)
 
 
 
-<a name="governance-proto"></a>
+<a name="adaptors_aave_a_token-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## governance.proto
+## adaptors/aave/a_token.proto
 
 
 
-<a name="steward-v3-GovernanceCall"></a>
+<a name="steward-v3-AaveATokenAdaptor"></a>
 
-### GovernanceCall
-Represents a governance-executed cellar function call. Used for Scheduled Cork Proposals in Sommelier.
+### AaveATokenAdaptor
+Represents call data for the Aave AToken adaptor, used to manage lending positions on Aave
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| aave_v2_stablecoin | [AaveV2StablecoinGovernance](#steward-v3-AaveV2StablecoinGovernance) |  | Governance function calls to the AaveV2Stablecoin cellar |
-| cellar_v1 | [CellarV1Governance](#steward-v3-CellarV1Governance) |  | Governance function calls to V1 cellars |
-| cellar_v2 | [CellarV2Governance](#steward-v3-CellarV2Governance) |  | Governance function calls to V2 cellars |
+| deposit_to_aave | [AaveATokenAdaptor.DepositToAave](#steward-v3-AaveATokenAdaptor-DepositToAave) |  | Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)` |
+| withdraw_from_aave | [AaveATokenAdaptor.WithdrawFromAave](#steward-v3-AaveATokenAdaptor-WithdrawFromAave) |  | Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)` |
+
+
+
+
+
+
+<a name="steward-v3-AaveATokenAdaptor-DepositToAave"></a>
+
+### AaveATokenAdaptor.DepositToAave
+Allows strategists to lend assets on Aave.
+
+Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [string](#string) |  | The address of the ERC20 token to deposit |
+| amount | [string](#string) |  | The amount to deposit |
+
+
+
+
+
+
+<a name="steward-v3-AaveATokenAdaptor-WithdrawFromAave"></a>
+
+### AaveATokenAdaptor.WithdrawFromAave
+Allows strategists to withdraw assets from Aave.
+
+Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [string](#string) |  | The address of the ERC20 token to withdraw |
+| amount | [string](#string) |  | The amount to withdraw |
+
+
+
+
+
+
+<a name="steward-v3-AaveATokenAdaptorCalls"></a>
+
+### AaveATokenAdaptorCalls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [AaveATokenAdaptor](#steward-v3-AaveATokenAdaptor) | repeated |  |
 
 
 
