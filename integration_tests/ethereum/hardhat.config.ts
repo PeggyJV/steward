@@ -40,6 +40,11 @@ task(
         await vaultCellar.deployed();
         console.log(`vault cellar contract deployed at - ${vaultCellar.address}`);
 
+        const Adaptor = await hre.ethers.getContractFactory("Adaptor");
+        const adaptor = (await Adaptor.deploy());
+        await adaptor.deployed();
+        console.log(`adaptor contract deployed at - ${adaptor.address}`);
+
         let cellarSignerAddress = await aaveCellar.signer.getAddress()
         await hre.network.provider.request({
             method: 'hardhat_impersonateAccount',
@@ -60,6 +65,14 @@ task(
         });
         console.log(
             `Vault Cellar contract at ${vaultCellar.address} is now owned by Gravity contract at ${gravity.address} with hash ${vaultHash}`,
+        );
+
+        let { adaptorHash } = await adaptor.setOwner(gravity.address, {
+            gasPrice: hre.ethers.BigNumber.from('99916001694'),
+            from: cellarSignerAddress
+        });
+        console.log(
+            `Adaptor contract at ${adaptor.address} is now owned by Gravity contract at ${gravity.address} with hash ${adaptorHash}`,
         );
 
         await hre.network.provider.send("evm_setIntervalMining", [1000]);

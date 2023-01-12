@@ -28,9 +28,15 @@ var (
 	_ = event.NewSubscription
 )
 
+// CellarAdaptorCall is an auto generated low-level Go binding around an user-defined struct.
+type CellarAdaptorCall struct {
+	Adaptor  common.Address
+	CallData [][]byte
+}
+
 // CellarMetaData contains all meta data concerning the Cellar contract.
 var CellarMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnerUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"fromPosition\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"toPosition\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"assetsFrom\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumCellar.Exchange\",\"name\":\"exchange\",\"type\":\"uint8\"}],\"name\":\"Rebalance\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"position\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"isTrusted\",\"type\":\"bool\"}],\"name\":\"TrustChanged\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"fromPosition\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"toPosition\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"assetsFrom\",\"type\":\"uint256\"},{\"internalType\":\"enumCellar.Exchange\",\"name\":\"exchange\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"params\",\"type\":\"bytes\"}],\"name\":\"rebalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"assetsTo\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"setOwner\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"position\",\"type\":\"address\"},{\"internalType\":\"enumCellar.PositionType\",\"name\":\"positionType\",\"type\":\"uint8\"}],\"name\":\"trustPosition\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"adaptor\",\"type\":\"address\"},{\"internalType\":\"bytes[]\",\"name\":\"callData\",\"type\":\"bytes[]\"}],\"indexed\":false,\"internalType\":\"structCellar.AdaptorCall[]\",\"name\":\"data\",\"type\":\"tuple[]\"}],\"name\":\"CallOnAdaptor\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnerUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"fromPosition\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"toPosition\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"assetsFrom\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumCellar.Exchange\",\"name\":\"exchange\",\"type\":\"uint8\"}],\"name\":\"Rebalance\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"position\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"isTrusted\",\"type\":\"bool\"}],\"name\":\"TrustChanged\",\"type\":\"event\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"adaptor\",\"type\":\"address\"},{\"internalType\":\"bytes[]\",\"name\":\"callData\",\"type\":\"bytes[]\"}],\"internalType\":\"structCellar.AdaptorCall[]\",\"name\":\"data\",\"type\":\"tuple[]\"}],\"name\":\"callOnAdaptor\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"fromPosition\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"toPosition\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"assetsFrom\",\"type\":\"uint256\"},{\"internalType\":\"enumCellar.Exchange\",\"name\":\"exchange\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"params\",\"type\":\"bytes\"}],\"name\":\"rebalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"assetsTo\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"setOwner\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"position\",\"type\":\"address\"},{\"internalType\":\"enumCellar.PositionType\",\"name\":\"positionType\",\"type\":\"uint8\"}],\"name\":\"trustPosition\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // CellarABI is the input ABI used to generate the binding from.
@@ -210,6 +216,27 @@ func (_Cellar *CellarCallerSession) Owner() (common.Address, error) {
 	return _Cellar.Contract.Owner(&_Cellar.CallOpts)
 }
 
+// CallOnAdaptor is a paid mutator transaction binding the contract method 0x4e84befe.
+//
+// Solidity: function callOnAdaptor((address,bytes[])[] data) returns()
+func (_Cellar *CellarTransactor) CallOnAdaptor(opts *bind.TransactOpts, data []CellarAdaptorCall) (*types.Transaction, error) {
+	return _Cellar.contract.Transact(opts, "callOnAdaptor", data)
+}
+
+// CallOnAdaptor is a paid mutator transaction binding the contract method 0x4e84befe.
+//
+// Solidity: function callOnAdaptor((address,bytes[])[] data) returns()
+func (_Cellar *CellarSession) CallOnAdaptor(data []CellarAdaptorCall) (*types.Transaction, error) {
+	return _Cellar.Contract.CallOnAdaptor(&_Cellar.TransactOpts, data)
+}
+
+// CallOnAdaptor is a paid mutator transaction binding the contract method 0x4e84befe.
+//
+// Solidity: function callOnAdaptor((address,bytes[])[] data) returns()
+func (_Cellar *CellarTransactorSession) CallOnAdaptor(data []CellarAdaptorCall) (*types.Transaction, error) {
+	return _Cellar.Contract.CallOnAdaptor(&_Cellar.TransactOpts, data)
+}
+
 // Rebalance is a paid mutator transaction binding the contract method 0x389a7294.
 //
 // Solidity: function rebalance(address fromPosition, address toPosition, uint256 assetsFrom, uint8 exchange, bytes params) returns(uint256 assetsTo)
@@ -271,6 +298,140 @@ func (_Cellar *CellarSession) TrustPosition(position common.Address, positionTyp
 // Solidity: function trustPosition(address position, uint8 positionType) returns()
 func (_Cellar *CellarTransactorSession) TrustPosition(position common.Address, positionType uint8) (*types.Transaction, error) {
 	return _Cellar.Contract.TrustPosition(&_Cellar.TransactOpts, position, positionType)
+}
+
+// CellarCallOnAdaptorIterator is returned from FilterCallOnAdaptor and is used to iterate over the raw logs and unpacked data for CallOnAdaptor events raised by the Cellar contract.
+type CellarCallOnAdaptorIterator struct {
+	Event *CellarCallOnAdaptor // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *CellarCallOnAdaptorIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(CellarCallOnAdaptor)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(CellarCallOnAdaptor)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *CellarCallOnAdaptorIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *CellarCallOnAdaptorIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// CellarCallOnAdaptor represents a CallOnAdaptor event raised by the Cellar contract.
+type CellarCallOnAdaptor struct {
+	Data []CellarAdaptorCall
+	Raw  types.Log // Blockchain specific contextual infos
+}
+
+// FilterCallOnAdaptor is a free log retrieval operation binding the contract event 0x261a6cb604cad99de116029b1ff284d989beb85ed58cd0f9042dd57363c04303.
+//
+// Solidity: event CallOnAdaptor((address,bytes[])[] data)
+func (_Cellar *CellarFilterer) FilterCallOnAdaptor(opts *bind.FilterOpts) (*CellarCallOnAdaptorIterator, error) {
+
+	logs, sub, err := _Cellar.contract.FilterLogs(opts, "CallOnAdaptor")
+	if err != nil {
+		return nil, err
+	}
+	return &CellarCallOnAdaptorIterator{contract: _Cellar.contract, event: "CallOnAdaptor", logs: logs, sub: sub}, nil
+}
+
+// WatchCallOnAdaptor is a free log subscription operation binding the contract event 0x261a6cb604cad99de116029b1ff284d989beb85ed58cd0f9042dd57363c04303.
+//
+// Solidity: event CallOnAdaptor((address,bytes[])[] data)
+func (_Cellar *CellarFilterer) WatchCallOnAdaptor(opts *bind.WatchOpts, sink chan<- *CellarCallOnAdaptor) (event.Subscription, error) {
+
+	logs, sub, err := _Cellar.contract.WatchLogs(opts, "CallOnAdaptor")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(CellarCallOnAdaptor)
+				if err := _Cellar.contract.UnpackLog(event, "CallOnAdaptor", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseCallOnAdaptor is a log parse operation binding the contract event 0x261a6cb604cad99de116029b1ff284d989beb85ed58cd0f9042dd57363c04303.
+//
+// Solidity: event CallOnAdaptor((address,bytes[])[] data)
+func (_Cellar *CellarFilterer) ParseCallOnAdaptor(log types.Log) (*CellarCallOnAdaptor, error) {
+	event := new(CellarCallOnAdaptor)
+	if err := _Cellar.contract.UnpackLog(event, "CallOnAdaptor", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
 }
 
 // CellarOwnerUpdatedIterator is returned from FilterOwnerUpdated and is used to iterate over the raw logs and unpacked data for OwnerUpdated events raised by the Cellar contract.

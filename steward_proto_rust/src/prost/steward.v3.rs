@@ -481,6 +481,42 @@ pub mod swap_params {
     }
 }
 ///
+/// Represents oracle swap parameters for UniswapV2
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct UniV2OracleSwapParams {
+    /// Array of addresses dictating what swap path to follow
+    #[prost(string, repeated, tag = "1")]
+    pub path: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
+///
+/// Represents oracle swap parameters for UniswapV3
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct UniV3OracleSwapParams {
+    /// Array of addresses dictating what swap path to follow
+    #[prost(string, repeated, tag = "1")]
+    pub path: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    /// Array of pool fees dictating what swap pools to use
+    #[prost(uint32, repeated, tag = "2")]
+    pub pool_fees: ::prost::alloc::vec::Vec<u32>,
+}
+///
+/// Represents swap params for BaseAdaptor.oracleSwap()
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct OracleSwapParams {
+    #[prost(oneof = "oracle_swap_params::Params", tags = "1, 2")]
+    pub params: ::core::option::Option<oracle_swap_params::Params>,
+}
+/// Nested message and enum types in `OracleSwapParams`.
+pub mod oracle_swap_params {
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Params {
+        #[prost(message, tag = "1")]
+        Univ2Params(super::UniV2OracleSwapParams),
+        #[prost(message, tag = "2")]
+        Univ3Params(super::UniV3OracleSwapParams),
+    }
+}
+///
 /// Exchange selector
 #[derive(
     serde::Deserialize,
@@ -673,7 +709,7 @@ pub mod compound_c_token_adaptor {
         #[prost(enumeration = "super::Exchange", tag = "2")]
         pub exchange: i32,
         #[prost(message, optional, tag = "3")]
-        pub params: ::core::option::Option<super::SwapParams>,
+        pub params: ::core::option::Option<super::OracleSwapParams>,
         #[prost(uint64, tag = "4")]
         pub slippage: u64,
     }

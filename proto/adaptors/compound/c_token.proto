@@ -53,7 +53,7 @@ message CompoundCTokenAdaptor {
     message ClaimCompAndSwap {
         string asset_out = 1;
         Exchange exchange = 2;
-        SwapParams params = 3;
+        OracleSwapParams params = 3;
         uint64 slippage = 4;
     }
 }

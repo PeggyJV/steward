@@ -17,7 +17,7 @@ e2e_build_images: e2e_clean_slate
 e2e_clean_slate:
 	@./clean_slate.sh
 
-e2e_cork_test: e2e_aave_v2_stablecoin_test e2e_cellar_v1_test e2e_proposal_test
+e2e_cork_test: e2e_aave_v2_stablecoin_test e2e_cellar_v1_test e2e_cellar_v2_test e2e_proposal_test
 
 # Because of the way `make` works, using the e2e_clean_slate target twice as prerequisites
 # for the individual tests doesn't work when `e2e_cork_test` runs the test targets in series,
@@ -29,6 +29,10 @@ e2e_aave_v2_stablecoin_test:
 e2e_cellar_v1_test:
 	@./clean_slate.sh
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestCellarV1 || make -s fail
+
+e2e_cellar_v2_test:
+	@./clean_slate.sh
+	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestCellarV2 || make -s fail
 
 e2e_proposal_test:
 	@./clean_slate.sh

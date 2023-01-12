@@ -51,3 +51,32 @@ message SwapParams {
         UniV3SwapParams univ3_params = 2;
     }
 }
+
+
+/*
+* Represents oracle swap parameters for UniswapV2
+*/
+message UniV2OracleSwapParams {
+    // Array of addresses dictating what swap path to follow
+    repeated string path = 1;
+}
+
+/*
+* Represents oracle swap parameters for UniswapV3
+*/
+message UniV3OracleSwapParams {
+    // Array of addresses dictating what swap path to follow
+    repeated string path = 1;
+    // Array of pool fees dictating what swap pools to use
+    repeated uint32 pool_fees = 2;
+}
+
+/*
+* Represents swap params for BaseAdaptor.oracleSwap()
+*/
+message OracleSwapParams {
+    oneof params {
+        UniV2OracleSwapParams univ2_params = 1;
+        UniV3OracleSwapParams univ3_params = 2;
+    }
+}

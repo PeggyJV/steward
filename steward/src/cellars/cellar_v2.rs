@@ -1,7 +1,7 @@
 //! Handlers for V2 of the Cellar.sol contract functions
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
-use abscissa_core::tracing::info;
+use abscissa_core::tracing::{info, debug};
 use ethers::{
     abi::{self, AbiEncode, Token},
     contract::EthCall,
@@ -11,9 +11,10 @@ use steward_abi::{cellar_v2::*, uniswap_v3_adaptor::UniswapV3AdaptorCalls, aave_
 use steward_abi::cellar_v2::AdaptorCall as AbiAdaptorCall;
 use steward_proto::steward::{
     swap_params::Params::*,
+    oracle_swap_params::Params::{Univ2Params as UniV2OracleParams, Univ3Params as UniV3OracleParams},
     SwapParams,
     cellar_v2::{Function as StrategyFunction, AdaptorCall, adaptor_call::CallData},
-    cellar_v2_governance::Function as GovernanceFunction, uniswap_v3_adaptor, aave_a_token_adaptor, aave_debt_token_adaptor, compound_c_token_adaptor, vesting_simple_adaptor,
+    cellar_v2_governance::Function as GovernanceFunction, uniswap_v3_adaptor, aave_a_token_adaptor, aave_debt_token_adaptor, compound_c_token_adaptor, vesting_simple_adaptor, OracleSwapParams,
 };
 use GovernanceFunction::*;
 use StrategyFunction::*;
@@ -202,6 +203,59 @@ fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
     }
 }
 
+/// Encodes the oracle swap params as ABI-encoded bytes to be passed as args to the underlying
+/// oracle swap function
+fn encode_oracle_swap_params(params: OracleSwapParams) -> Result<Vec<u8>, Error> {
+    match params
+        .params
+        .ok_or_else(|| sp_call_error("swap params cannot be unspecified".to_string()))?
+    {
+        UniV2OracleParams(p) => {
+            let mut path = Vec::<Token>::new();
+
+            for a in p.path {
+                let address = a.parse::<EthereumAddress>();
+                if address.is_err() {
+                    return Err(sp_call_error(format!(
+                        "could not parse swap params path address: {}",
+                        a
+                    )));
+                }
+
+                path.push(Token::Address(address.unwrap()))
+            }
+
+            let path = Token::Array(path);
+            Ok(abi::encode(&[path]))
+        }
+        UniV3OracleParams(p) => {
+            let mut path = Vec::<Token>::new();
+            for a in p.path {
+                let address = a.parse::<EthereumAddress>();
+                if address.is_err() {
+                    return Err(sp_call_error(format!(
+                        "could not parse swap params path address: {}",
+                        a
+                    )));
+                }
+
+                path.push(Token::Address(address.unwrap()))
+            }
+
+            let path = Token::Array(path);
+
+            let mut pool = Vec::<Token>::new();
+            for f in p.pool_fees {
+                pool.push(Token::Uint(f.into()))
+            }
+
+            let pool = Token::Array(pool);
+
+            Ok(abi::encode(&[path, pool]))
+        }
+    }
+}
+
 pub fn get_encoded_governance_call(
     function: GovernanceFunction,
     cellar_id: &str,
@@ -256,6 +310,7 @@ pub fn get_encoded_governance_call(
 fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall>, Error> {
     let mut result: Vec<AbiAdaptorCall> = Vec::new();
     for d in data {
+            debug!("adaptor call to {}", d.adaptor);
             let mut calls: Vec<Bytes> = Vec::new();
             match d.call_data.unwrap() {
                 CallData::UniswapV3Calls(params) => {
@@ -386,7 +441,7 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
                             },
                             compound_c_token_adaptor::Function::ClaimCompAndSwap(p) => {
                                 let swap_params =
-                                    encode_swap_params(p.params.ok_or_else(|| {
+                                    encode_oracle_swap_params(p.params.ok_or_else(|| {
                                         ErrorKind::SPCallError.context("swap params cannot be empty")
                                     })?)?;
 

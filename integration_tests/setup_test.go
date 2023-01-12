@@ -66,6 +66,7 @@ var (
 	// address once they are launched; therefore their initial values don't matter.
 	aaveCellar      = common.HexToAddress("0x0000000000000000000000000000000000000000")
 	vaultCellar     = common.HexToAddress("0x0000000000000000000000000000000000000000")
+	adaptorContract = common.HexToAddress("0x0000000000000000000000000000000000000000")
 	gravityContract = common.HexToAddress("0x04C89607413713Ec9775E14b954286519d836FEf")
 )
 
@@ -560,9 +561,23 @@ func (s *IntegrationTestSuite) runEthContainer() {
 		}
 		return false
 	}, time.Minute*5, time.Second*10, "unable to retrieve vault contract address from logs")
+
+	s.Require().Eventuallyf(func() bool {
+
+		for _, s := range strings.Split(ethereumLogOutput.String(), "\n") {
+			if strings.HasPrefix(s, "adaptor contract deployed at") {
+				strSpl := strings.Split(s, "-")
+				adaptorContract = common.HexToAddress(strings.ReplaceAll(strSpl[1], " ", ""))
+				return true
+			}
+		}
+		return false
+	}, time.Minute*5, time.Second*10, "unable to retrieve adaptor address from logs")
+
 	s.T().Logf("gravity contract deployed at %s", gravityContract.String())
 	s.T().Logf("aave contract deployed at %s", aaveCellar.String())
 	s.T().Logf("vault cellar contract deployed at %s", aaveCellar.String())
+	s.T().Logf("adaptor contract deployed at %s", adaptorContract.String())
 
 	s.T().Logf("started Ethereum container: %s", s.ethResource.Container.ID)
 }
