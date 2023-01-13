@@ -12,7 +12,7 @@ env:
 jobs:
   release:
     name: build-release-assets
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       # Setup Rust Environment
       - name: setup-rust
@@ -23,6 +23,8 @@ jobs:
       # Checkout repository code
       - name: checkout-code
         uses: actions/checkout@v2
+      - name: "Check version"
+        run: ./check_version.sh
       # Rust Cache
       - name: rust-cache
         uses: actions/cache@v2
