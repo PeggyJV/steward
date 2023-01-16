@@ -63,6 +63,7 @@ fn main() {
     // Compile all proto files
     let mut config = prost_build::Config::default();
     config.out_dir(tmp_dir);
+    config.type_attribute(".", "#[derive(serde::Deserialize, serde::Serialize)]");
     config.compile_protos(&protos, &steward_proto_dir).unwrap();
 
     // Compile all proto client for GRPC services
@@ -73,7 +74,7 @@ fn main() {
         .file_descriptor_set_path(tmp_dir.join("descriptor.bin"))
         .format(true)
         .out_dir(tmp_dir)
-        .compile(&protos, &steward_proto_dir)
+        .compile_with_config(config, &protos, &steward_proto_dir)
         .unwrap();
 
     copy_generated_files(tmp_dir, out_dir);

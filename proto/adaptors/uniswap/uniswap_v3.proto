@@ -1,0 +1,75 @@
+syntax = "proto3";
+package steward.v2;
+
+option go_package = "/steward_proto";
+
+// Represents call data for the Uniswap V3 adaptor
+message UniswapV3Adaptor {
+    oneof function {
+        // Represents function `openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)`
+        OpenPosition open_position = 1;
+        // Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)`
+        ClosePosition close_position = 2;
+        // Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
+        AddToPosition add_to_position = 3;
+        // Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
+        TakeFromPosition take_from_position = 4;
+    }
+
+    /*
+    * Allows strategist to open up arbritray Uniswap V3 positions.
+    *
+    * Represents function openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)
+    */
+    message OpenPosition {
+        string token_0 = 1;
+        string token_1 = 2;
+        uint32 pool_fee = 3;
+        string amount_0 = 4;
+        string amount_1 = 5;
+        string min_0 = 6;
+        string min_1 = 7;
+        uint32 tick_lower = 8;
+        uint32 tick_upper = 9;
+    }
+
+    /*
+    * Allows strategist to close Uniswap V3 positions.
+    *
+    * Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)`
+    */
+    message ClosePosition {
+        string position_id = 1;
+        string min_0 = 2;
+        string min_1 = 3;
+    }
+
+    /*
+    * Allows strategist to add to existing Uniswap V3 positions.
+    *
+    * Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
+    */
+    message AddToPosition {
+        string position_id = 1;
+        string amount_0 = 2;
+        string amount_1 = 3;
+        string min_0 = 4;
+        string min_1 = 5;
+    }
+    /*
+    * Allows strategist to take from existing Uniswap V3 positions.
+    *
+    * Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
+    */
+    message TakeFromPosition {
+        string position_id = 1;
+        string liquidity = 2;
+        string min_0 = 3;
+        string min_1 = 4;
+        bool collect_fees = 5;
+    }
+}
+
+message UniswapV3AdaptorCalls {
+    repeated UniswapV3Adaptor calls = 1;
+}

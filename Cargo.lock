@@ -4856,6 +4856,7 @@ version = "2.0.0"
 dependencies = [
  "prost 0.7.0",
  "prost-types 0.7.0",
+ "serde",
  "tonic 0.4.3",
 ]
 
@@ -4865,8 +4866,6 @@ version = "1.0.0"
 dependencies = [
  "prost 0.7.0",
  "prost-build",
- "tempdir",
- "tonic 0.4.3",
  "tonic-build",
  "walkdir",
 ]
