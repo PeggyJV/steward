@@ -4,6 +4,7 @@ use crate::{
 };
 use abscissa_core::Application;
 use deep_space::error::CosmosGrpcError;
+use deep_space::Address as CosmosAddress;
 use ethers::prelude::{types::Address as EthAddress, *};
 use gravity_bridge::{
     gravity_proto::gravity::{
@@ -26,6 +27,15 @@ pub fn bytes_to_hex_str(bytes: &[u8]) -> String {
         .iter()
         .map(|b| format!("{:0>2x?}", b))
         .fold(String::new(), |acc, x| acc + &x)
+}
+
+pub fn string_to_u128(value: String) -> Result<U128, Error> {
+    match U128::from_dec_str(value.as_str()) {
+        Ok(v) => Ok(v),
+        Err(_) => Err(ErrorKind::SPCallError
+            .context(format!("failed to parse amount {} to U128", value))
+            .into()),
+    }
 }
 
 pub fn string_to_u256(value: String) -> Result<U256, Error> {
@@ -94,4 +104,13 @@ pub fn sp_call_parse_address(address: String) -> Result<H160, Error> {
         Ok(addr) => Ok(addr),
         Err(err) => Err(sp_call_error(err.to_string())),
     }
+}
+
+/// Encodes the Cosmos address into a big-endian 32 byte array pre-padded with zeros. Since a Cosmos address is 20
+/// bytes, we copy it into a zeroed-out 32 byte array starting at index 12.
+pub fn encode_fees_distributor_address(address: CosmosAddress) -> [u8; 32] {
+    let mut address_bytes_slice: [u8; 32] = Default::default();
+    address_bytes_slice[12..].copy_from_slice(address.as_bytes());
+
+    address_bytes_slice
 }

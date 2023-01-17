@@ -1,7 +1,7 @@
 use crate::{application::APP, cellars, cork, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::abi::AbiEncode;
-use steward_abi::cellar::*;
+use steward_abi::cellar_v1::*;
 
 /// Fees Distributor subcommand
 #[derive(Command, Debug, Parser)]
@@ -26,7 +26,7 @@ impl Runnable for SetPlatformFeeCmd {
     fn run(&self) {
         abscissa_tokio::run_with_actix(&APP, async {
             let call = SetPlatformFeeCall { new_platform_fee: self.new_platform_fee };
-            let encoded_call = CellarCalls::SetPlatformFee(call).encode();
+            let encoded_call = CellarV1Calls::SetPlatformFee(call).encode();
 
             cellars::validate_cellar_id(&self.cellar_id).unwrap_or_else(|err| {
                 status_err!("invalid cellar ID: {}", err);

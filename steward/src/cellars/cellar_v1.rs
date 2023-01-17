@@ -5,14 +5,13 @@ use abscissa_core::tracing::info;
 use ethers::{
     abi::{self, AbiEncode, Token},
     contract::EthCall,
-    types::Address,
+    types::Address as EthereumAddress,
 };
-use steward_abi::cellar::{
-    AddPositionCall, CellarCalls, PushPositionCall, RebalanceCall, RemovePositionCall,
-    SetDepositLimitCall, SetHoldingPositionCall, SetLiquidityLimitCall, SetRebalanceDeviationCall,
-    SetShareLockPeriodCall, SetStrategistPayoutAddressCall, SetWithdrawTypeCall, SwapPositionsCall,
+use steward_abi::cellar_v1::*;
+use steward_proto::steward::{
+    cellar_v1::Function as StrategyFunction, swap_params::Params::*, SwapParams,
 };
-use steward_proto::steward::cellar_v1::{swap_params::Params::*, Function, SwapParams};
+use StrategyFunction::*;
 
 use crate::{
     error::{Error, ErrorKind},
@@ -21,28 +20,28 @@ use crate::{
 
 use super::log_cellar_call;
 
-const CELLAR_NAME: &str = "Cellar";
+const CELLAR_NAME: &str = "CellarV1";
 
-pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>, Error> {
+pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {
     match function {
-        Function::AddPosition(params) => {
+        AddPosition(params) => {
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
             let call = AddPositionCall {
                 index: string_to_u256(params.index)?,
                 position: sp_call_parse_address(params.position)?,
             };
 
-            Ok(CellarCalls::AddPosition(call).encode())
+            Ok(CellarV1Calls::AddPosition(call).encode())
         }
-        Function::PushPosition(params) => {
+        PushPosition(params) => {
             log_cellar_call(CELLAR_NAME, &PushPositionCall::function_name(), &cellar_id);
             let call = PushPositionCall {
                 position: sp_call_parse_address(params.position)?,
             };
 
-            Ok(CellarCalls::PushPosition(call).encode())
+            Ok(CellarV1Calls::PushPosition(call).encode())
         }
-        Function::RemovePosition(params) => {
+        RemovePosition(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &RemovePositionCall::function_name(),
@@ -52,9 +51,9 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 index: string_to_u256(params.index)?,
             };
 
-            Ok(CellarCalls::RemovePosition(call).encode())
+            Ok(CellarV1Calls::RemovePosition(call).encode())
         }
-        Function::SetHoldingPosition(params) => {
+        SetHoldingPosition(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetHoldingPositionCall::function_name(),
@@ -64,9 +63,9 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 new_holding_position: sp_call_parse_address(params.new_holding_position)?,
             };
 
-            Ok(CellarCalls::SetHoldingPosition(call).encode())
+            Ok(CellarV1Calls::SetHoldingPosition(call).encode())
         }
-        Function::Rebalance(params) => {
+        Rebalance(params) => {
             log_cellar_call(CELLAR_NAME, &RebalanceCall::function_name(), &cellar_id);
             let swap_params =
                 encode_swap_params(params.params.ok_or_else(|| {
@@ -84,11 +83,11 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 exchange: (params.exchange - 1) as u8,
                 params: swap_params.into(),
             };
-            let call = CellarCalls::Rebalance(call).encode();
+            let call = CellarV1Calls::Rebalance(call).encode();
             info!("final call: {:?}", hex::encode(&call));
             Ok(call)
         }
-        Function::SetStrategistPayoutAddress(params) => {
+        SetStrategistPayoutAddress(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetStrategistPayoutAddressCall::function_name(),
@@ -98,9 +97,9 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 payout: sp_call_parse_address(params.payout)?,
             };
 
-            Ok(CellarCalls::SetStrategistPayoutAddress(call).encode())
+            Ok(CellarV1Calls::SetStrategistPayoutAddress(call).encode())
         }
-        Function::SetWithdrawType(params) => {
+        SetWithdrawType(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetWithdrawTypeCall::function_name(),
@@ -112,18 +111,18 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 new_withdraw_type: (params.new_withdraw_type - 1) as u8,
             };
 
-            Ok(CellarCalls::SetWithdrawType(call).encode())
+            Ok(CellarV1Calls::SetWithdrawType(call).encode())
         }
-        Function::SwapPositions(params) => {
+        SwapPositions(params) => {
             log_cellar_call(CELLAR_NAME, &SwapPositionsCall::function_name(), &cellar_id);
             let call = SwapPositionsCall {
                 index_1: string_to_u256(params.index_1)?,
                 index_2: string_to_u256(params.index_2)?,
             };
 
-            Ok(CellarCalls::SwapPositions(call).encode())
+            Ok(CellarV1Calls::SwapPositions(call).encode())
         }
-        Function::SetDepositLimit(params) => {
+        SetDepositLimit(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetDepositLimitCall::function_name(),
@@ -133,9 +132,9 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 new_limit: string_to_u256(params.new_limit)?,
             };
 
-            Ok(CellarCalls::SetDepositLimit(call).encode())
+            Ok(CellarV1Calls::SetDepositLimit(call).encode())
         }
-        Function::SetLiquidityLimit(params) => {
+        SetLiquidityLimit(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetLiquidityLimitCall::function_name(),
@@ -145,9 +144,9 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 new_limit: string_to_u256(params.new_limit)?,
             };
 
-            Ok(CellarCalls::SetLiquidityLimit(call).encode())
+            Ok(CellarV1Calls::SetLiquidityLimit(call).encode())
         }
-        Function::SetShareLockPeriod(params) => {
+        SetShareLockPeriod(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetShareLockPeriodCall::function_name(),
@@ -157,9 +156,9 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 new_lock: string_to_u256(params.new_lock)?,
             };
 
-            Ok(CellarCalls::SetShareLockPeriod(call).encode())
+            Ok(CellarV1Calls::SetShareLockPeriod(call).encode())
         }
-        Function::SetRebalanceDeviation(params) => {
+        SetRebalanceDeviation(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetRebalanceDeviationCall::function_name(),
@@ -169,12 +168,12 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
                 new_deviation: string_to_u256(params.new_deviation)?,
             };
 
-            Ok(CellarCalls::SetRebalanceDeviation(call).encode())
+            Ok(CellarV1Calls::SetRebalanceDeviation(call).encode())
         }
     }
 }
 
-/// Encodes the swap params as ABI-encoded bytes to me passed as args to the underlying
+/// Encodes the swap params as ABI-encoded bytes to be passed as args to the underlying
 /// swap function
 fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
     match params
@@ -185,7 +184,7 @@ fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
             let mut path = Vec::<Token>::new();
 
             for a in p.path {
-                let address = a.parse::<Address>();
+                let address = a.parse::<EthereumAddress>();
                 if address.is_err() {
                     return Err(sp_call_error(format!(
                         "could not parse swap params path address: {}",
@@ -204,7 +203,7 @@ fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
         Univ3Params(p) => {
             let mut path = Vec::<Token>::new();
             for a in p.path {
-                let address = a.parse::<Address>();
+                let address = a.parse::<EthereumAddress>();
                 if address.is_err() {
                     return Err(sp_call_error(format!(
                         "could not parse swap params path address: {}",
