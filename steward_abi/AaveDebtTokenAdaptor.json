@@ -12,6 +12,11 @@
     },
     {
         "inputs": [],
+        "name": "AaveDebtTokenAdaptor__HealthFactorTooLow",
+        "type": "error"
+    },
+    {
+        "inputs": [],
         "name": "BaseAdaptor__BadSlippage",
         "type": "error"
     },
@@ -49,6 +54,25 @@
                 "internalType": "contract ERC20",
                 "name": "",
                 "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes",
+                "name": "adaptorData",
+                "type": "bytes"
+            }
+        ],
+        "name": "assetsUsed",
+        "outputs": [
+            {
+                "internalType": "contract ERC20[]",
+                "name": "assets",
+                "type": "address[]"
             }
         ],
         "stateMutability": "view",
@@ -221,6 +245,24 @@
             }
         ],
         "name": "repayAaveDebt",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract ERC20",
+                "name": "asset",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+            }
+        ],
+        "name": "revokeApproval",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

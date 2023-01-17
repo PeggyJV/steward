@@ -1,7 +1,7 @@
 //! Handlers for V2 of the Cellar.sol contract functions
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
-use abscissa_core::tracing::{debug, info};
+use abscissa_core::tracing::debug;
 use ethers::{
     abi::{self, AbiEncode, Token},
     contract::EthCall,
@@ -28,7 +28,9 @@ use StrategyFunction::*;
 
 use crate::{
     error::{Error, ErrorKind},
-    utils::{sp_call_error, sp_call_parse_address, string_to_u128, string_to_u256},
+    utils::{
+        convert_exchange, sp_call_error, sp_call_parse_address, string_to_u128, string_to_u256,
+    },
 };
 
 use super::log_cellar_call;
@@ -298,6 +300,45 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
                                     .into(),
                             );
                         }
+                        uniswap_v3_adaptor::Function::Swap(p) => {
+                            let swap_params = encode_swap_params(p.params.ok_or_else(|| {
+                                ErrorKind::SPCallError.context("swap params cannot be empty")
+                            })?)?;
+
+                            debug!("encoded: {:?}", hex::encode(&swap_params));
+                            let call = steward_abi::uniswap_v3_adaptor::SwapCall {
+                                asset_in: sp_call_parse_address(p.asset_in)?,
+                                asset_out: sp_call_parse_address(p.asset_out)?,
+                                amount_in: string_to_u256(p.amount_in)?,
+                                exchange: convert_exchange(p.exchange),
+                                params: swap_params.into(),
+                            };
+                            calls.push(UniswapV3AdaptorCalls::Swap(call).encode().into())
+                        }
+                        uniswap_v3_adaptor::Function::OracleSwap(p) => {
+                            let oracle_swap_params =
+                                encode_oracle_swap_params(p.params.ok_or_else(|| {
+                                    ErrorKind::SPCallError.context("swap params cannot be empty")
+                                })?)?;
+
+                            debug!("encoded: {:?}", hex::encode(&oracle_swap_params));
+                            let call = steward_abi::uniswap_v3_adaptor::OracleSwapCall {
+                                asset_in: sp_call_parse_address(p.asset_in)?,
+                                asset_out: sp_call_parse_address(p.asset_out)?,
+                                amount_in: string_to_u256(p.amount_in)?,
+                                exchange: convert_exchange(p.exchange),
+                                params: oracle_swap_params.into(),
+                                slippage: p.slippage,
+                            };
+                            calls.push(UniswapV3AdaptorCalls::OracleSwap(call).encode().into())
+                        }
+                        uniswap_v3_adaptor::Function::RevokeApproval(p) => {
+                            let call = steward_abi::uniswap_v3_adaptor::RevokeApprovalCall {
+                                asset: sp_call_parse_address(p.asset)?,
+                                spender: sp_call_parse_address(p.spender)?,
+                            };
+                            calls.push(UniswapV3AdaptorCalls::RevokeApproval(call).encode().into())
+                        }
                     }
                 }
             }
@@ -321,6 +362,45 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
                                     .encode()
                                     .into(),
                             )
+                        }
+                        aave_a_token_adaptor::Function::Swap(p) => {
+                            let swap_params = encode_swap_params(p.params.ok_or_else(|| {
+                                ErrorKind::SPCallError.context("swap params cannot be empty")
+                            })?)?;
+
+                            debug!("encoded: {:?}", hex::encode(&swap_params));
+                            let call = steward_abi::aave_a_token_adaptor::SwapCall {
+                                asset_in: sp_call_parse_address(p.asset_in)?,
+                                asset_out: sp_call_parse_address(p.asset_out)?,
+                                amount_in: string_to_u256(p.amount_in)?,
+                                exchange: convert_exchange(p.exchange),
+                                params: swap_params.into(),
+                            };
+                            calls.push(AaveATokenAdaptorCalls::Swap(call).encode().into())
+                        }
+                        aave_a_token_adaptor::Function::OracleSwap(p) => {
+                            let oracle_swap_params =
+                                encode_oracle_swap_params(p.params.ok_or_else(|| {
+                                    ErrorKind::SPCallError.context("swap params cannot be empty")
+                                })?)?;
+
+                            debug!("encoded: {:?}", hex::encode(&oracle_swap_params));
+                            let call = steward_abi::aave_a_token_adaptor::OracleSwapCall {
+                                asset_in: sp_call_parse_address(p.asset_in)?,
+                                asset_out: sp_call_parse_address(p.asset_out)?,
+                                amount_in: string_to_u256(p.amount_in)?,
+                                exchange: convert_exchange(p.exchange),
+                                params: oracle_swap_params.into(),
+                                slippage: p.slippage,
+                            };
+                            calls.push(AaveATokenAdaptorCalls::OracleSwap(call).encode().into())
+                        }
+                        aave_a_token_adaptor::Function::RevokeApproval(p) => {
+                            let call = steward_abi::aave_a_token_adaptor::RevokeApprovalCall {
+                                asset: sp_call_parse_address(p.asset)?,
+                                spender: sp_call_parse_address(p.spender)?,
+                            };
+                            calls.push(AaveATokenAdaptorCalls::RevokeApproval(call).encode().into())
                         }
                     }
                 }
@@ -355,18 +435,59 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
                                 ErrorKind::SPCallError.context("swap params cannot be empty")
                             })?)?;
 
-                            info!("encoded: {:?}", hex::encode(&swap_params));
+                            debug!("encoded: {:?}", hex::encode(&swap_params));
                             let call = steward_abi::aave_debt_token_adaptor::SwapAndRepayCall {
                                 token_in: sp_call_parse_address(p.token_in)?,
                                 token_to_repay: sp_call_parse_address(p.token_to_repay)?,
                                 amount_in: string_to_u256(p.amount_in)?,
-                                // to account for protobuf's requirement that an UNSPECIFIED enum variant be defined
-                                // as 0, we subtract 1 from the value
-                                exchange: (p.exchange - 1) as u8,
+                                exchange: convert_exchange(p.exchange),
                                 params: swap_params.into(),
                             };
                             calls.push(
                                 AaveDebtTokenAdaptorCalls::SwapAndRepay(call)
+                                    .encode()
+                                    .into(),
+                            )
+                        }
+                        aave_debt_token_adaptor::Function::Swap(p) => {
+                            let swap_params = encode_swap_params(p.params.ok_or_else(|| {
+                                ErrorKind::SPCallError.context("swap params cannot be empty")
+                            })?)?;
+
+                            debug!("encoded: {:?}", hex::encode(&swap_params));
+                            let call = steward_abi::aave_debt_token_adaptor::SwapCall {
+                                asset_in: sp_call_parse_address(p.asset_in)?,
+                                asset_out: sp_call_parse_address(p.asset_out)?,
+                                amount_in: string_to_u256(p.amount_in)?,
+                                exchange: convert_exchange(p.exchange),
+                                params: swap_params.into(),
+                            };
+                            calls.push(AaveDebtTokenAdaptorCalls::Swap(call).encode().into())
+                        }
+                        aave_debt_token_adaptor::Function::OracleSwap(p) => {
+                            let oracle_swap_params =
+                                encode_oracle_swap_params(p.params.ok_or_else(|| {
+                                    ErrorKind::SPCallError.context("swap params cannot be empty")
+                                })?)?;
+
+                            debug!("encoded: {:?}", hex::encode(&oracle_swap_params));
+                            let call = steward_abi::aave_debt_token_adaptor::OracleSwapCall {
+                                asset_in: sp_call_parse_address(p.asset_in)?,
+                                asset_out: sp_call_parse_address(p.asset_out)?,
+                                amount_in: string_to_u256(p.amount_in)?,
+                                exchange: convert_exchange(p.exchange),
+                                params: oracle_swap_params.into(),
+                                slippage: p.slippage,
+                            };
+                            calls.push(AaveDebtTokenAdaptorCalls::OracleSwap(call).encode().into())
+                        }
+                        aave_debt_token_adaptor::Function::RevokeApproval(p) => {
+                            let call = steward_abi::aave_debt_token_adaptor::RevokeApprovalCall {
+                                asset: sp_call_parse_address(p.asset)?,
+                                spender: sp_call_parse_address(p.spender)?,
+                            };
+                            calls.push(
+                                AaveDebtTokenAdaptorCalls::RevokeApproval(call)
                                     .encode()
                                     .into(),
                             )
@@ -406,23 +527,66 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
                             calls.push(CompoundCTokenAdaptorCalls::ClaimComp(call).encode().into())
                         }
                         compound_c_token_adaptor::Function::ClaimCompAndSwap(p) => {
-                            let swap_params =
+                            let oracle_swap_params =
                                 encode_oracle_swap_params(p.params.ok_or_else(|| {
                                     ErrorKind::SPCallError.context("swap params cannot be empty")
                                 })?)?;
 
-                            info!("encoded: {:?}", hex::encode(&swap_params));
+                            debug!("encoded: {:?}", hex::encode(&oracle_swap_params));
                             let call =
                                 steward_abi::compound_c_token_adaptor::ClaimCompAndSwapCall {
                                     asset_out: sp_call_parse_address(p.asset_out)?,
                                     // to account for protobuf's requirement that an UNSPECIFIED enum variant be defined
                                     // as 0, we subtract 1 from the value
                                     exchange: (p.exchange - 1) as u8,
-                                    params: swap_params.into(),
+                                    params: oracle_swap_params.into(),
                                     slippage: p.slippage,
                                 };
                             calls.push(
                                 CompoundCTokenAdaptorCalls::ClaimCompAndSwap(call)
+                                    .encode()
+                                    .into(),
+                            )
+                        }
+                        compound_c_token_adaptor::Function::Swap(p) => {
+                            let swap_params = encode_swap_params(p.params.ok_or_else(|| {
+                                ErrorKind::SPCallError.context("swap params cannot be empty")
+                            })?)?;
+
+                            debug!("encoded: {:?}", hex::encode(&swap_params));
+                            let call = steward_abi::compound_c_token_adaptor::SwapCall {
+                                asset_in: sp_call_parse_address(p.asset_in)?,
+                                asset_out: sp_call_parse_address(p.asset_out)?,
+                                amount_in: string_to_u256(p.amount_in)?,
+                                exchange: convert_exchange(p.exchange),
+                                params: swap_params.into(),
+                            };
+                            calls.push(CompoundCTokenAdaptorCalls::Swap(call).encode().into())
+                        }
+                        compound_c_token_adaptor::Function::OracleSwap(p) => {
+                            let oracle_swap_params =
+                                encode_oracle_swap_params(p.params.ok_or_else(|| {
+                                    ErrorKind::SPCallError.context("swap params cannot be empty")
+                                })?)?;
+
+                            debug!("encoded: {:?}", hex::encode(&oracle_swap_params));
+                            let call = steward_abi::compound_c_token_adaptor::OracleSwapCall {
+                                asset_in: sp_call_parse_address(p.asset_in)?,
+                                asset_out: sp_call_parse_address(p.asset_out)?,
+                                amount_in: string_to_u256(p.amount_in)?,
+                                exchange: convert_exchange(p.exchange),
+                                params: oracle_swap_params.into(),
+                                slippage: p.slippage,
+                            };
+                            calls.push(CompoundCTokenAdaptorCalls::OracleSwap(call).encode().into())
+                        }
+                        compound_c_token_adaptor::Function::RevokeApproval(p) => {
+                            let call = steward_abi::compound_c_token_adaptor::RevokeApprovalCall {
+                                asset: sp_call_parse_address(p.asset)?,
+                                spender: sp_call_parse_address(p.spender)?,
+                            };
+                            calls.push(
+                                CompoundCTokenAdaptorCalls::RevokeApproval(call)
                                     .encode()
                                     .into(),
                             )
@@ -476,6 +640,49 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
                                 };
                             calls.push(
                                 VestingSimpleAdaptorCalls::WithdrawAllFromVesting(call)
+                                    .encode()
+                                    .into(),
+                            )
+                        }
+                        vesting_simple_adaptor::Function::Swap(p) => {
+                            let swap_params = encode_swap_params(p.params.ok_or_else(|| {
+                                ErrorKind::SPCallError.context("swap params cannot be empty")
+                            })?)?;
+
+                            debug!("encoded: {:?}", hex::encode(&swap_params));
+                            let call = steward_abi::vesting_simple_adaptor::SwapCall {
+                                asset_in: sp_call_parse_address(p.asset_in)?,
+                                asset_out: sp_call_parse_address(p.asset_out)?,
+                                amount_in: string_to_u256(p.amount_in)?,
+                                exchange: convert_exchange(p.exchange),
+                                params: swap_params.into(),
+                            };
+                            calls.push(VestingSimpleAdaptorCalls::Swap(call).encode().into())
+                        }
+                        vesting_simple_adaptor::Function::OracleSwap(p) => {
+                            let oracle_swap_params =
+                                encode_oracle_swap_params(p.params.ok_or_else(|| {
+                                    ErrorKind::SPCallError.context("swap params cannot be empty")
+                                })?)?;
+
+                            debug!("encoded: {:?}", hex::encode(&oracle_swap_params));
+                            let call = steward_abi::vesting_simple_adaptor::OracleSwapCall {
+                                asset_in: sp_call_parse_address(p.asset_in)?,
+                                asset_out: sp_call_parse_address(p.asset_out)?,
+                                amount_in: string_to_u256(p.amount_in)?,
+                                exchange: convert_exchange(p.exchange),
+                                params: oracle_swap_params.into(),
+                                slippage: p.slippage,
+                            };
+                            calls.push(VestingSimpleAdaptorCalls::OracleSwap(call).encode().into())
+                        }
+                        vesting_simple_adaptor::Function::RevokeApproval(p) => {
+                            let call = steward_abi::vesting_simple_adaptor::RevokeApprovalCall {
+                                asset: sp_call_parse_address(p.asset)?,
+                                spender: sp_call_parse_address(p.spender)?,
+                            };
+                            calls.push(
+                                VestingSimpleAdaptorCalls::RevokeApproval(call)
                                     .encode()
                                     .into(),
                             )

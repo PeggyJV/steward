@@ -15,7 +15,7 @@ use StrategyFunction::*;
 
 use crate::{
     error::{Error, ErrorKind},
-    utils::{sp_call_error, sp_call_parse_address, string_to_u256},
+    utils::{convert_exchange, sp_call_error, sp_call_parse_address, string_to_u256},
 };
 
 use super::log_cellar_call;
@@ -78,9 +78,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 from_position: sp_call_parse_address(params.from_position)?,
                 to_position: sp_call_parse_address(params.to_position)?,
                 assets_from: string_to_u256(params.assets_from)?,
-                // to account for protobuf's requirement that an UNSPECIFIED enum variant be defined
-                // as 0, we subtract 1 from the value
-                exchange: (params.exchange - 1) as u8,
+                exchange: convert_exchange(params.exchange),
                 params: swap_params.into(),
             };
             let call = CellarV1Calls::Rebalance(call).encode();

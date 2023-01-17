@@ -56,6 +56,25 @@
                 "type": "bytes"
             }
         ],
+        "name": "assetsUsed",
+        "outputs": [
+            {
+                "internalType": "contract ERC20[]",
+                "name": "assets",
+                "type": "address[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes",
+                "name": "adaptorData",
+                "type": "bytes"
+            }
+        ],
         "name": "balanceOf",
         "outputs": [
             {
@@ -175,6 +194,24 @@
                 "type": "uint256"
             }
         ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract ERC20",
+                "name": "asset",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+            }
+        ],
+        "name": "revokeApproval",
+        "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
     },

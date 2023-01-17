@@ -114,3 +114,9 @@ pub fn encode_fees_distributor_address(address: CosmosAddress) -> [u8; 32] {
 
     address_bytes_slice
 }
+
+// to account for protobuf's requirement that an UNSPECIFIED enum variant be defined
+// as 0, we subtract 1 from the value
+pub fn convert_exchange(value: i32) -> u8 {
+    (value - 1) as u8
+}
