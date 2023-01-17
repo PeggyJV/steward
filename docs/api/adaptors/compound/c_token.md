@@ -3,27 +3,29 @@
 
 ## Table of Contents
 
-- [adaptors/aave/a_token.proto](#adaptors_aave_a_token-proto)
-    - [AaveATokenAdaptor](#steward-v2-AaveATokenAdaptor)
-    - [AaveATokenAdaptor.DepositToAave](#steward-v2-AaveATokenAdaptor-DepositToAave)
-    - [AaveATokenAdaptor.WithdrawFromAave](#steward-v2-AaveATokenAdaptor-WithdrawFromAave)
-    - [AaveATokenAdaptorCalls](#steward-v2-AaveATokenAdaptorCalls)
+- [adaptors/compound/c_token.proto](#adaptors_compound_c_token-proto)
+    - [CompoundCTokenAdaptor](#steward-v2-CompoundCTokenAdaptor)
+    - [CompoundCTokenAdaptor.ClaimComp](#steward-v2-CompoundCTokenAdaptor-ClaimComp)
+    - [CompoundCTokenAdaptor.ClaimCompAndSwap](#steward-v2-CompoundCTokenAdaptor-ClaimCompAndSwap)
+    - [CompoundCTokenAdaptor.DepositToCompound](#steward-v2-CompoundCTokenAdaptor-DepositToCompound)
+    - [CompoundCTokenAdaptor.WithdrawFromCompound](#steward-v2-CompoundCTokenAdaptor-WithdrawFromCompound)
+    - [CompoundCTokenAdaptorCalls](#steward-v2-CompoundCTokenAdaptorCalls)
   
 - [Scalar Value Types](#scalar-value-types)
 
 
 
-<a name="adaptors_aave_a_token-proto"></a>
+<a name="adaptors_compound_c_token-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## adaptors/aave/a_token.proto
+## adaptors/compound/c_token.proto
 
 
 
-<a name="steward-v2-AaveATokenAdaptor"></a>
+<a name="steward-v2-CompoundCTokenAdaptor"></a>
 
-### AaveATokenAdaptor
-Represents call data for the Aave AToken adaptor, used to manage lending positions on Aave
+### CompoundCTokenAdaptor
+Represents call data for the Compound C Token adaptor, managing lending positions on Compound.
 
 
 | Field | Type | Label | Description |
@@ -31,59 +33,93 @@ Represents call data for the Aave AToken adaptor, used to manage lending positio
 | swap | [Swap](#steward-v2-Swap) |  | Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
 | oracle_swap | [OracleSwap](#steward-v2-OracleSwap) |  | Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
 | revoke_approval | [RevokeApproval](#steward-v2-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
-| deposit_to_aave | [AaveATokenAdaptor.DepositToAave](#steward-v2-AaveATokenAdaptor-DepositToAave) |  | Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)` |
-| withdraw_from_aave | [AaveATokenAdaptor.WithdrawFromAave](#steward-v2-AaveATokenAdaptor-WithdrawFromAave) |  | Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)` |
+| deposit_to_compound | [CompoundCTokenAdaptor.DepositToCompound](#steward-v2-CompoundCTokenAdaptor-DepositToCompound) |  | Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)` |
+| withdraw_from_compound | [CompoundCTokenAdaptor.WithdrawFromCompound](#steward-v2-CompoundCTokenAdaptor-WithdrawFromCompound) |  | Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)` |
+| claim_comp | [CompoundCTokenAdaptor.ClaimComp](#steward-v2-CompoundCTokenAdaptor-ClaimComp) |  | Represents function `claimComp()` |
+| claim_comp_and_swap | [CompoundCTokenAdaptor.ClaimCompAndSwap](#steward-v2-CompoundCTokenAdaptor-ClaimCompAndSwap) |  | Represents function `claimCompAndSwap(ERC20 assetOut, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
 
 
 
 
 
 
-<a name="steward-v2-AaveATokenAdaptor-DepositToAave"></a>
+<a name="steward-v2-CompoundCTokenAdaptor-ClaimComp"></a>
 
-### AaveATokenAdaptor.DepositToAave
-Allows strategists to lend assets on Aave.
+### CompoundCTokenAdaptor.ClaimComp
+Allows strategists to claim COMP rewards.
 
-Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| token | [string](#string) |  | The address of the ERC20 token to deposit |
-| amount | [string](#string) |  | The amount to deposit |
+Represents function `claimComp()`
 
 
 
 
 
 
-<a name="steward-v2-AaveATokenAdaptor-WithdrawFromAave"></a>
+<a name="steward-v2-CompoundCTokenAdaptor-ClaimCompAndSwap"></a>
 
-### AaveATokenAdaptor.WithdrawFromAave
-Allows strategists to withdraw assets from Aave.
+### CompoundCTokenAdaptor.ClaimCompAndSwap
+Allows strategists to claim COMP and immediately swap it using oracleSwap.
 
-Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
+Represents function `claimCompAndSwap(ERC20 assetOut, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| token | [string](#string) |  | The address of the ERC20 token to withdraw |
-| amount | [string](#string) |  | The amount to withdraw |
+| asset_out | [string](#string) |  |  |
+| exchange | [Exchange](#steward-v2-Exchange) |  |  |
+| params | [OracleSwapParams](#steward-v2-OracleSwapParams) |  |  |
+| slippage | [uint64](#uint64) |  |  |
 
 
 
 
 
 
-<a name="steward-v2-AaveATokenAdaptorCalls"></a>
+<a name="steward-v2-CompoundCTokenAdaptor-DepositToCompound"></a>
 
-### AaveATokenAdaptorCalls
+### CompoundCTokenAdaptor.DepositToCompound
+Allows strategists to lend assets on Compound.
+
+Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| market | [string](#string) |  |  |
+| amount_to_deposit | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v2-CompoundCTokenAdaptor-WithdrawFromCompound"></a>
+
+### CompoundCTokenAdaptor.WithdrawFromCompound
+Allows strategists to withdraw assets from Compound.
+
+Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| market | [string](#string) |  |  |
+| amount_to_withdraw | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v2-CompoundCTokenAdaptorCalls"></a>
+
+### CompoundCTokenAdaptorCalls
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| calls | [AaveATokenAdaptor](#steward-v2-AaveATokenAdaptor) | repeated |  |
+| calls | [CompoundCTokenAdaptor](#steward-v2-CompoundCTokenAdaptor) | repeated |  |
 
 
 

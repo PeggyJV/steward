@@ -4,12 +4,12 @@
 ## Table of Contents
 
 - [adaptors/uniswap/uniswap_v3.proto](#adaptors_uniswap_uniswap_v3-proto)
-    - [UniswapV3Adaptor](#steward-v3-UniswapV3Adaptor)
-    - [UniswapV3Adaptor.AddToPosition](#steward-v3-UniswapV3Adaptor-AddToPosition)
-    - [UniswapV3Adaptor.ClosePosition](#steward-v3-UniswapV3Adaptor-ClosePosition)
-    - [UniswapV3Adaptor.OpenPosition](#steward-v3-UniswapV3Adaptor-OpenPosition)
-    - [UniswapV3Adaptor.TakeFromPosition](#steward-v3-UniswapV3Adaptor-TakeFromPosition)
-    - [UniswapV3AdaptorCalls](#steward-v3-UniswapV3AdaptorCalls)
+    - [UniswapV3Adaptor](#steward-v2-UniswapV3Adaptor)
+    - [UniswapV3Adaptor.AddToPosition](#steward-v2-UniswapV3Adaptor-AddToPosition)
+    - [UniswapV3Adaptor.ClosePosition](#steward-v2-UniswapV3Adaptor-ClosePosition)
+    - [UniswapV3Adaptor.OpenPosition](#steward-v2-UniswapV3Adaptor-OpenPosition)
+    - [UniswapV3Adaptor.TakeFromPosition](#steward-v2-UniswapV3Adaptor-TakeFromPosition)
+    - [UniswapV3AdaptorCalls](#steward-v2-UniswapV3AdaptorCalls)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -22,7 +22,7 @@
 
 
 
-<a name="steward-v3-UniswapV3Adaptor"></a>
+<a name="steward-v2-UniswapV3Adaptor"></a>
 
 ### UniswapV3Adaptor
 Represents call data for the Uniswap V3 adaptor
@@ -30,17 +30,20 @@ Represents call data for the Uniswap V3 adaptor
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| open_position | [UniswapV3Adaptor.OpenPosition](#steward-v3-UniswapV3Adaptor-OpenPosition) |  | Represents function `openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)` |
-| close_position | [UniswapV3Adaptor.ClosePosition](#steward-v3-UniswapV3Adaptor-ClosePosition) |  | Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)` |
-| add_to_position | [UniswapV3Adaptor.AddToPosition](#steward-v3-UniswapV3Adaptor-AddToPosition) |  | Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)` |
-| take_from_position | [UniswapV3Adaptor.TakeFromPosition](#steward-v3-UniswapV3Adaptor-TakeFromPosition) |  | Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)` |
+| swap | [Swap](#steward-v2-Swap) |  | Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
+| oracle_swap | [OracleSwap](#steward-v2-OracleSwap) |  | Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
+| revoke_approval | [RevokeApproval](#steward-v2-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| open_position | [UniswapV3Adaptor.OpenPosition](#steward-v2-UniswapV3Adaptor-OpenPosition) |  | Represents function `openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)` |
+| close_position | [UniswapV3Adaptor.ClosePosition](#steward-v2-UniswapV3Adaptor-ClosePosition) |  | Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)` |
+| add_to_position | [UniswapV3Adaptor.AddToPosition](#steward-v2-UniswapV3Adaptor-AddToPosition) |  | Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)` |
+| take_from_position | [UniswapV3Adaptor.TakeFromPosition](#steward-v2-UniswapV3Adaptor-TakeFromPosition) |  | Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)` |
 
 
 
 
 
 
-<a name="steward-v3-UniswapV3Adaptor-AddToPosition"></a>
+<a name="steward-v2-UniswapV3Adaptor-AddToPosition"></a>
 
 ### UniswapV3Adaptor.AddToPosition
 Allows strategist to add to existing Uniswap V3 positions.
@@ -61,7 +64,7 @@ Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 
 
 
 
-<a name="steward-v3-UniswapV3Adaptor-ClosePosition"></a>
+<a name="steward-v2-UniswapV3Adaptor-ClosePosition"></a>
 
 ### UniswapV3Adaptor.ClosePosition
 Allows strategist to close Uniswap V3 positions.
@@ -80,7 +83,7 @@ Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min
 
 
 
-<a name="steward-v3-UniswapV3Adaptor-OpenPosition"></a>
+<a name="steward-v2-UniswapV3Adaptor-OpenPosition"></a>
 
 ### UniswapV3Adaptor.OpenPosition
 Allows strategist to open up arbritray Uniswap V3 positions.
@@ -105,7 +108,7 @@ Represents function openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uin
 
 
 
-<a name="steward-v3-UniswapV3Adaptor-TakeFromPosition"></a>
+<a name="steward-v2-UniswapV3Adaptor-TakeFromPosition"></a>
 
 ### UniswapV3Adaptor.TakeFromPosition
 Allows strategist to take from existing Uniswap V3 positions.
@@ -126,7 +129,7 @@ Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uin
 
 
 
-<a name="steward-v3-UniswapV3AdaptorCalls"></a>
+<a name="steward-v2-UniswapV3AdaptorCalls"></a>
 
 ### UniswapV3AdaptorCalls
 
@@ -134,7 +137,7 @@ Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uin
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| calls | [UniswapV3Adaptor](#steward-v3-UniswapV3Adaptor) | repeated |  |
+| calls | [UniswapV3Adaptor](#steward-v2-UniswapV3Adaptor) | repeated |  |
 
 
 

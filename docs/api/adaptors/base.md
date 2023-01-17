@@ -3,138 +3,83 @@
 
 ## Table of Contents
 
-- [common.proto](#common-proto)
-    - [OracleSwapParams](#steward-v2-OracleSwapParams)
-    - [SwapParams](#steward-v2-SwapParams)
-    - [UniV2OracleSwapParams](#steward-v2-UniV2OracleSwapParams)
-    - [UniV2SwapParams](#steward-v2-UniV2SwapParams)
-    - [UniV3OracleSwapParams](#steward-v2-UniV3OracleSwapParams)
-    - [UniV3SwapParams](#steward-v2-UniV3SwapParams)
-  
-    - [Exchange](#steward-v2-Exchange)
+- [adaptors/base.proto](#adaptors_base-proto)
+    - [OracleSwap](#steward-v2-OracleSwap)
+    - [RevokeApproval](#steward-v2-RevokeApproval)
+    - [Swap](#steward-v2-Swap)
   
 - [Scalar Value Types](#scalar-value-types)
 
 
 
-<a name="common-proto"></a>
+<a name="adaptors_base-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## common.proto
+## adaptors/base.proto
 
 
 
-<a name="steward-v2-OracleSwapParams"></a>
+<a name="steward-v2-OracleSwap"></a>
 
-### OracleSwapParams
-Represents swap params for BaseAdaptor.oracleSwap()
+### OracleSwap
+Helper function to make safe &#34;blind&#34; Uniswap Swaps by comparing value in vs value out of the swap.
 
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| univ2_params | [UniV2OracleSwapParams](#steward-v2-UniV2OracleSwapParams) |  |  |
-| univ3_params | [UniV3OracleSwapParams](#steward-v2-UniV3OracleSwapParams) |  |  |
-
-
-
-
-
-
-<a name="steward-v2-SwapParams"></a>
-
-### SwapParams
-Represents swap parameters for an exchange
+Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| univ2_params | [UniV2SwapParams](#steward-v2-UniV2SwapParams) |  | Params for a Uniswap V2 swap |
-| univ3_params | [UniV3SwapParams](#steward-v2-UniV3SwapParams) |  | Params for a Uniswap V3 swap |
+| asset_in | [string](#string) |  | Asset to swap from |
+| asset_out | [string](#string) |  | Asset to swap to |
+| amount_in | [string](#string) |  | Amount to swap |
+| exchange | [Exchange](#steward-v2-Exchange) |  | The exchange to make the swap on |
+| params | [OracleSwapParams](#steward-v2-OracleSwapParams) |  | The parameters for the swap |
+| slippage | [uint64](#uint64) |  | The slippage allowed for the swap |
 
 
 
 
 
 
-<a name="steward-v2-UniV2OracleSwapParams"></a>
+<a name="steward-v2-RevokeApproval"></a>
 
-### UniV2OracleSwapParams
-Represents oracle swap parameters for UniswapV2
+### RevokeApproval
+Allows strategists to zero out an approval for a given `asset`.
 
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| path | [string](#string) | repeated | Array of addresses dictating what swap path to follow |
-
-
-
-
-
-
-<a name="steward-v2-UniV2SwapParams"></a>
-
-### UniV2SwapParams
-Represents swap parameters for UniswapV2
+Represents function `revokeApproval(ERC20 asset, address spender)`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| path | [string](#string) | repeated | Array of addresses dictating what swap path to follow |
-| amount | [string](#string) |  | Amount of the first asset in the path to swap |
-| amount_out_min | [string](#string) |  | The minimum amount of the last asset in the path to receive |
+| asset | [string](#string) |  | ERC20 Asset to revoke spender&#39;s approval for |
+| spender | [string](#string) |  | The spender to revoke approval of asset for |
 
 
 
 
 
 
-<a name="steward-v2-UniV3OracleSwapParams"></a>
+<a name="steward-v2-Swap"></a>
 
-### UniV3OracleSwapParams
-Represents oracle swap parameters for UniswapV3
+### Swap
+Helper function that allows swaps using the Swap Router
 
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| path | [string](#string) | repeated | Array of addresses dictating what swap path to follow |
-| pool_fees | [uint32](#uint32) | repeated | Array of pool fees dictating what swap pools to use |
-
-
-
-
-
-
-<a name="steward-v2-UniV3SwapParams"></a>
-
-### UniV3SwapParams
-Represents swap parameters for UniswapV3
+Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| path | [string](#string) | repeated | Array of addresses dictating what swap path to follow |
-| pool_fees | [uint32](#uint32) | repeated | Array of pool fees dictating what swap pools to use |
-| amount | [string](#string) |  | Amount of the first asset in the path to swap |
-| amount_out_min | [string](#string) |  | The minimum amount of the last asset in the path to receive |
+| asset_in | [string](#string) |  | Asset to swap from |
+| asset_out | [string](#string) |  | Asset to swap to |
+| amount_in | [string](#string) |  | Amount to swap |
+| exchange | [Exchange](#steward-v2-Exchange) |  | The exchange to make the swap on |
+| params | [SwapParams](#steward-v2-SwapParams) |  | The parameters for the swap |
 
 
 
 
 
  
-
-
-<a name="steward-v2-Exchange"></a>
-
-### Exchange
-Exchange selector
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| EXCHANGE_UNSPECIFIED | 0 |  |
-| EXCHANGE_UNIV2 | 1 | Represents Uniswap V2 |
-| EXCHANGE_UNIV3 | 2 | Represents Uniswap V3 |
-
 
  
 
