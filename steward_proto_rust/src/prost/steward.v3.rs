@@ -1055,7 +1055,7 @@ pub mod cellar_v1_governance {
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct CellarV2 {
     /// The function you wish to execute on the target cellar
-    #[prost(oneof = "cellar_v2::Function", tags = "1, 2, 3, 4, 5, 6, 7, 8, 9")]
+    #[prost(oneof = "cellar_v2::Function", tags = "1, 2, 3, 4, 5, 6, 7, 8")]
     pub function: ::core::option::Option<cellar_v2::Function>,
 }
 /// Nested message and enum types in `CellarV2`.
@@ -1205,15 +1205,6 @@ pub mod cellar_v2 {
         #[prost(string, tag = "1")]
         pub new_deviation: ::prost::alloc::string::String,
     }
-    ///
-    /// Allows owner to add new adaptors for the cellar to use.
-    ///
-    /// Represents function `setupAdatptor(address adaptor)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct SetupAdaptor {
-        #[prost(string, tag = "1")]
-        pub adaptor: ::prost::alloc::string::String,
-    }
     /// The function you wish to execute on the target cellar
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum Function {
@@ -1241,9 +1232,6 @@ pub mod cellar_v2 {
         /// Represents function `setShareLockPeriod(uint256 newLock)`
         #[prost(message, tag = "8")]
         SetShareLockPeriod(SetShareLockPeriod),
-        /// Represents function `setupAdatptor(address adaptor)`
-        #[prost(message, tag = "9")]
-        SetupAdaptor(SetupAdaptor),
     }
 }
 ///
@@ -1251,7 +1239,7 @@ pub mod cellar_v2 {
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct CellarV2Governance {
     /// The function to call on the target cellar
-    #[prost(oneof = "cellar_v2_governance::Function", tags = "1, 2, 3, 4")]
+    #[prost(oneof = "cellar_v2_governance::Function", tags = "1, 2, 3, 4, 5")]
     pub function: ::core::option::Option<cellar_v2_governance::Function>,
 }
 /// Nested message and enum types in `CellarV2Governance`.
@@ -1276,6 +1264,15 @@ pub mod cellar_v2_governance {
         #[prost(uint64, tag = "1")]
         pub amount: u64,
     }
+    ///
+    /// Allows owner to add new adaptors for the cellar to use.
+    ///
+    /// Represents function `setupAdatptor(address adaptor)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SetupAdaptor {
+        #[prost(string, tag = "1")]
+        pub adaptor: ::prost::alloc::string::String,
+    }
     /// The function to call on the target cellar
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum Function {
@@ -1291,6 +1288,9 @@ pub mod cellar_v2_governance {
         /// Represents function `setStrategistPlatformCut(address)`
         #[prost(message, tag = "4")]
         SetStrategistPlatformCut(SetStrategistPlatformCut),
+        /// Represents function `setupAdatptor(address adaptor)`
+        #[prost(message, tag = "5")]
+        SetupAdaptor(SetupAdaptor),
     }
 }
 ///

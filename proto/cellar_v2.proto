@@ -37,8 +37,6 @@ message CellarV2 {
         SetRebalanceDeviation set_rebalance_deviation = 7;
         // Represents function `setShareLockPeriod(uint256 newLock)`
         SetShareLockPeriod set_share_lock_period = 8;
-        // Represents function `setupAdatptor(address adaptor)`
-        SetupAdaptor setup_adaptor = 9;
     }
 
     /*
@@ -166,15 +164,6 @@ message CellarV2 {
     message SetRebalanceDeviation {
         string new_deviation = 1;
     }
-
-    /*
-    * Allows owner to add new adaptors for the cellar to use.
-    *
-    * Represents function `setupAdatptor(address adaptor)`
-    */
-    message SetupAdaptor {
-        string adaptor = 1;
-    }
 }
 
 /*
@@ -191,6 +180,8 @@ message CellarV2Governance {
         SetPlatformFee set_platform_fee = 3;
         // Represents function `setStrategistPlatformCut(address)`
         SetStrategistPlatformCut set_strategist_platform_cut = 4;
+        // Represents function `setupAdatptor(address adaptor)`
+        SetupAdaptor setup_adaptor = 5;
     }
 
     // Represents function `initiateShutdown()`
@@ -211,5 +202,14 @@ message CellarV2Governance {
     message SetStrategistPlatformCut {
         // New strategist platform cut
         uint64 amount = 1;
+    }
+
+    /*
+    * Allows owner to add new adaptors for the cellar to use.
+    *
+    * Represents function `setupAdatptor(address adaptor)`
+    */
+    message SetupAdaptor {
+        string adaptor = 1;
     }
 }

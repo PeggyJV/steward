@@ -15,13 +15,13 @@
     - [CellarV2.SetRebalanceDeviation](#steward-v3-CellarV2-SetRebalanceDeviation)
     - [CellarV2.SetShareLockPeriod](#steward-v3-CellarV2-SetShareLockPeriod)
     - [CellarV2.SetStrategistPayoutAddress](#steward-v3-CellarV2-SetStrategistPayoutAddress)
-    - [CellarV2.SetupAdaptor](#steward-v3-CellarV2-SetupAdaptor)
     - [CellarV2.SwapPositions](#steward-v3-CellarV2-SwapPositions)
     - [CellarV2Governance](#steward-v3-CellarV2Governance)
     - [CellarV2Governance.InitiateShutdown](#steward-v3-CellarV2Governance-InitiateShutdown)
     - [CellarV2Governance.LiftShutdown](#steward-v3-CellarV2Governance-LiftShutdown)
     - [CellarV2Governance.SetPlatformFee](#steward-v3-CellarV2Governance-SetPlatformFee)
     - [CellarV2Governance.SetStrategistPlatformCut](#steward-v3-CellarV2Governance-SetStrategistPlatformCut)
+    - [CellarV2Governance.SetupAdaptor](#steward-v3-CellarV2Governance-SetupAdaptor)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -50,7 +50,6 @@ Represents a function call to a cellar that implements Cellar.sol
 | swap_positions | [CellarV2.SwapPositions](#steward-v3-CellarV2-SwapPositions) |  | Represents function `swapPositions(uint256 index1, uint256 index2)` |
 | set_rebalance_deviation | [CellarV2.SetRebalanceDeviation](#steward-v3-CellarV2-SetRebalanceDeviation) |  | Represents function `setRebalanceDeviation(uint265)` |
 | set_share_lock_period | [CellarV2.SetShareLockPeriod](#steward-v3-CellarV2-SetShareLockPeriod) |  | Represents function `setShareLockPeriod(uint256 newLock)` |
-| setup_adaptor | [CellarV2.SetupAdaptor](#steward-v3-CellarV2-SetupAdaptor) |  | Represents function `setupAdatptor(address adaptor)` |
 
 
 
@@ -235,23 +234,6 @@ Represents function `setStrategistPayoutAddress(address payout)`
 
 
 
-<a name="steward-v3-CellarV2-SetupAdaptor"></a>
-
-### CellarV2.SetupAdaptor
-Allows owner to add new adaptors for the cellar to use.
-
-Represents function `setupAdatptor(address adaptor)`
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| adaptor | [string](#string) |  |  |
-
-
-
-
-
-
 <a name="steward-v3-CellarV2-SwapPositions"></a>
 
 ### CellarV2.SwapPositions
@@ -283,6 +265,7 @@ Represent a function call initiated through a governance proposal
 | lift_shutdown | [CellarV2Governance.LiftShutdown](#steward-v3-CellarV2Governance-LiftShutdown) |  | Represents function `liftShutdown()` |
 | set_platform_fee | [CellarV2Governance.SetPlatformFee](#steward-v3-CellarV2Governance-SetPlatformFee) |  | Represents function `setPlatformFee(uint256)` |
 | set_strategist_platform_cut | [CellarV2Governance.SetStrategistPlatformCut](#steward-v3-CellarV2Governance-SetStrategistPlatformCut) |  | Represents function `setStrategistPlatformCut(address)` |
+| setup_adaptor | [CellarV2Governance.SetupAdaptor](#steward-v3-CellarV2Governance-SetupAdaptor) |  | Represents function `setupAdatptor(address adaptor)` |
 
 
 
@@ -333,6 +316,23 @@ Represents function `setStrategistPlatformCut(uint64)`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | amount | [uint64](#uint64) |  | New strategist platform cut |
+
+
+
+
+
+
+<a name="steward-v3-CellarV2Governance-SetupAdaptor"></a>
+
+### CellarV2Governance.SetupAdaptor
+Allows owner to add new adaptors for the cellar to use.
+
+Represents function `setupAdatptor(address adaptor)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| adaptor | [string](#string) |  |  |
 
 
 

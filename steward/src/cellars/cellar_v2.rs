@@ -95,14 +95,6 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
 
             Ok(CellarV2Calls::SetStrategistPayoutAddress(call).encode())
         }
-        SetupAdaptor(params) => {
-            log_cellar_call(CELLAR_NAME, &SetupAdaptorCall::function_name(), &cellar_id);
-            let call = SetupAdaptorCall {
-                adaptor: sp_call_parse_address(params.adaptor)?,
-            };
-
-            Ok(CellarV2Calls::SetupAdaptor(call).encode())
-        }
         SwapPositions(params) => {
             log_cellar_call(CELLAR_NAME, &SwapPositionsCall::function_name(), &cellar_id);
             let call = SwapPositionsCall {
@@ -300,6 +292,19 @@ pub fn get_encoded_governance_call(
             );
             let call = SetStrategistPlatformCutCall { cut: params.amount };
             Ok(CellarV2Calls::SetStrategistPlatformCut(call).encode())
+        }
+        SetupAdaptor(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &SetupAdaptorCall::function_name(),
+                cellar_id,
+            );
+            let call = SetupAdaptorCall {
+                adaptor: sp_call_parse_address(params.adaptor)?,
+            };
+
+            Ok(CellarV2Calls::SetupAdaptor(call).encode())
         }
     }
 }
