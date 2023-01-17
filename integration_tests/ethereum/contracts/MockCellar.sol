@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.0;
 
-import {ERC20, Owned} from "./interfaces.sol";
+import {Address, ERC20, Owned} from "./interfaces.sol";
+import {Adaptor} from "./MockAdaptor.sol";
 
 /**
  * @title Sommelier Cellar
@@ -9,6 +10,8 @@ import {ERC20, Owned} from "./interfaces.sol";
  * @author Brian Le
  */
 contract Cellar is Owned {
+    using Address for address;
+
     constructor() Owned(msg.sender) {}
 
     // =========================================== POSITION LOGIC ===========================================
@@ -21,9 +24,28 @@ contract Cellar is Owned {
      */
     event Rebalance(address indexed fromPosition, address indexed toPosition, uint256 assetsFrom, Exchange exchange);
 
+    /**
+     * @notice Emitted when trust for a position is changed.
+     * @param position address of position that trust was changed for
+     * @param isTrusted whether the position is trusted
+     */
+    event TrustChanged(address position, bool isTrusted);
+
     enum Exchange {
         UNIV2,
         UNIV3
+    }
+
+    /**
+     * @notice Value specifying the interface a position uses.
+     * @param ERC20 an ERC20 token
+     * @param ERC4626 an ERC4626 vault
+     * @param Cellar a cellar
+     */
+    enum PositionType {
+        ERC20,
+        ERC4626,
+        Cellar
     }
 
     /**
@@ -53,5 +75,33 @@ contract Cellar is Owned {
             );
         }
         emit Rebalance(fromPosition, toPosition, assetsFrom, exchange);
+    }
+
+     /**
+     * @notice Trust a position to be used by the cellar.
+     * @param position address of position to trust
+     * @param positionType value specifying the interface the position uses
+     */
+    function trustPosition(address position, PositionType positionType) external onlyOwner {
+        emit TrustChanged(position, true);
+    }
+
+    /************* CELLAR V2 **************/
+    struct AdaptorCall {
+        address adaptor;
+        bytes[] callData;
+    }
+
+    event CallOnAdaptor(AdaptorCall[] data);
+
+    function callOnAdaptor(AdaptorCall[] memory data) external onlyOwner {
+        for (uint8 i = 0; i < data.length; ++i) {
+            address adaptor = data[i].adaptor;
+            for (uint8 j = 0; j < data[i].callData.length; j++) {
+                adaptor.functionDelegateCall(data[i].callData[j]);
+            }
+        }
+
+        emit CallOnAdaptor(data);
     }
 }

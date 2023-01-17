@@ -21,16 +21,19 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/server"
 	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
+	cellarfeestypes "github.com/peggyjv/sommelier/v4/x/cellarfees/types"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 	tmconfig "github.com/tendermint/tendermint/config"
@@ -39,11 +42,11 @@ import (
 )
 
 const (
-	testDenom           = "testsomm"
-	initBalanceStr      = "110000000000utestsomm,100000000000testsomm"
+	testDenom           = "usomm"
+	initBalanceStr      = "110000000000usomm"
 	minGasPrice         = "2"
 	ethChainID     uint = 15
-	bondDenom           = "utestsomm"
+	bondDenom           = "usomm"
 )
 
 func MNEMONICS() []string {
@@ -62,6 +65,7 @@ var (
 	// address once they are launched; therefore their initial values don't matter.
 	aaveCellar      = common.HexToAddress("0x0000000000000000000000000000000000000000")
 	vaultCellar     = common.HexToAddress("0x0000000000000000000000000000000000000000")
+	adaptorContract = common.HexToAddress("0x0000000000000000000000000000000000000000")
 	gravityContract = common.HexToAddress("0x04C89607413713Ec9775E14b954286519d836FEf")
 )
 
@@ -270,18 +274,18 @@ func (s *IntegrationTestSuite) initGenesis() {
 
 	bankGenState.DenomMetadata = append(bankGenState.DenomMetadata, banktypes.Metadata{
 		Description: "The native staking token of the test somm network",
-		Display:     "testsomm",
+		Display:     testDenom,
 		Base:        bondDenom,
 		DenomUnits: []*banktypes.DenomUnit{
 			{
 				Denom:    bondDenom,
 				Exponent: 0,
 				Aliases: []string{
-					"tsomm",
+					"usomm",
 				},
 			},
 			{
-				Denom:    "testsomm",
+				Denom:    testDenom,
 				Exponent: 6,
 			},
 		},
@@ -326,6 +330,16 @@ func (s *IntegrationTestSuite) initGenesis() {
 	s.Require().NoError(err)
 	appGenState[minttypes.ModuleName] = bz
 
+	var govGenState govtypes.GenesisState
+	s.Require().NoError(cdc.UnmarshalJSON(appGenState[govtypes.ModuleName], &govGenState))
+
+	// set short voting period to allow gov proposals in tests
+	govGenState.VotingParams.VotingPeriod = time.Second * 20
+	govGenState.DepositParams.MinDeposit = sdk.Coins{{Denom: testDenom, Amount: sdk.OneInt()}}
+	bz, err = cdc.MarshalJSON(&govGenState)
+	s.Require().NoError(err)
+	appGenState[govtypes.ModuleName] = bz
+
 	var genUtilGenState genutiltypes.GenesisState
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[genutiltypes.ModuleName], &genUtilGenState))
 
@@ -353,15 +367,21 @@ func (s *IntegrationTestSuite) initGenesis() {
 	s.Require().NoError(err)
 	appGenState[genutiltypes.ModuleName] = bz
 
-	var corkGenState corktypes.GenesisState
+	corkGenState := corktypes.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[corktypes.ModuleName], &corkGenState))
 	corkGenState.CellarIds = corktypes.CellarIDSet{
 		Ids: []string{aaveCellar.Hex(), vaultCellar.Hex()},
 	}
-	corkGenState.Params.VotePeriod = 10
 	bz, err = cdc.MarshalJSON(&corkGenState)
 	s.Require().NoError(err)
 	appGenState[corktypes.ModuleName] = bz
+
+	cellarfeesGenState := cellarfeestypes.DefaultGenesisState()
+	s.Require().NoError(cdc.UnmarshalJSON(appGenState[cellarfeestypes.ModuleName], &cellarfeesGenState))
+
+	bz, err = cdc.MarshalJSON(&cellarfeesGenState)
+	s.Require().NoError(err)
+	appGenState[cellarfeestypes.ModuleName] = bz
 
 	// set contract addr
 	var gravityGenState gravitytypes.GenesisState
@@ -534,9 +554,23 @@ func (s *IntegrationTestSuite) runEthContainer() {
 		}
 		return false
 	}, time.Minute*5, time.Second*10, "unable to retrieve vault contract address from logs")
+
+	s.Require().Eventuallyf(func() bool {
+
+		for _, s := range strings.Split(ethereumLogOutput.String(), "\n") {
+			if strings.HasPrefix(s, "adaptor contract deployed at") {
+				strSpl := strings.Split(s, "-")
+				adaptorContract = common.HexToAddress(strings.ReplaceAll(strSpl[1], " ", ""))
+				return true
+			}
+		}
+		return false
+	}, time.Minute*5, time.Second*10, "unable to retrieve adaptor address from logs")
+
 	s.T().Logf("gravity contract deployed at %s", gravityContract.String())
 	s.T().Logf("aave contract deployed at %s", aaveCellar.String())
 	s.T().Logf("vault cellar contract deployed at %s", aaveCellar.String())
+	s.T().Logf("adaptor contract deployed at %s", adaptorContract.String())
 
 	s.T().Logf("started Ethereum container: %s", s.ethResource.Container.ID)
 }
@@ -846,4 +880,16 @@ func (s *IntegrationTestSuite) logsByContainerID(id string) string {
 	))
 
 	return containerLogsBuf.String()
+}
+
+func (s *IntegrationTestSuite) GetLatestBlockHeight(clientCtx *client.Context) (int64, error) {
+	node, err := clientCtx.GetNode()
+	if err != nil {
+		return 0, err
+	}
+	status, err := node.Status(context.Background())
+	if err != nil {
+		return 0, err
+	}
+	return status.SyncInfo.LatestBlockHeight, nil
 }

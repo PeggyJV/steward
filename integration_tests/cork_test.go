@@ -11,6 +11,7 @@ import (
 	"math/big"
 	"time"
 
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -48,9 +49,17 @@ const T_AAVE_MIN_ASSETS_OUT = "1000000000000000000"
 func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 	s.Run("Submit rebalance request to MockAaveV2Stablecoin", func() {
 		s.checkCellarExists(aaveCellar)
-		s.waitForVotePeriod()
 
 		cellarId := aaveCellar.String()
+
+		val := s.chain.validators[0]
+		kb, err := val.keyring()
+		s.Require().NoError(err)
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		s.Require().NoError(err)
+		currentHeight, err := s.GetLatestBlockHeight(clientCtx)
+		s.Require().NoError(err)
+		scheduledHeight := currentHeight + 10
 
 		// Create the cork request to send to Steward
 		route := []string{T_AAVE_DAI, T_AAVE_POOL, T_AAVE_USDC, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS}
@@ -74,8 +83,9 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 				},
 			},
 		}
+
 		s.executeStewardCalls(request)
-		s.waitForVotePeriod()
+		s.waitForScheduledHeight(clientCtx, scheduledHeight)
 
 		// Construct invalidation scope and nonce for gravity query
 		aave_abi, err := AaveV2MetaData.GetAbi()
@@ -97,7 +107,7 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 		invalidationNonce := 1
 		s.Require().NoError(err)
 
-		s.queryLogicCallTransaction(invalidationScope, invalidationNonce)
+		s.queryLogicCallTransaction(clientCtx, invalidationScope, invalidationNonce)
 
 		// For non-anonymous events, the first log topic is a keccak256 hash o	f the
 		// event signature.
@@ -159,14 +169,20 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 	s.Run("Submit rebalance to MockCellar", func() {
 		s.checkCellarExists(vaultCellar)
 
+		val := s.chain.validators[0]
+		kb, err := val.keyring()
+		s.Require().NoError(err)
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		s.Require().NoError(err)
+
 		// Create the cork requests to send to Steward
 		from := ZERO_ADDRESS
 		to := ONE_ADDRESS
 		assetsFrom := "1000"
 		cellarId := vaultCellar.String()
-		swapParamsUniV2 := &steward_proto.CellarV1_SwapParams{
-			Params: &steward_proto.CellarV1_SwapParams_Univ2Params{
-				Univ2Params: &steward_proto.CellarV1_UniV2SwapParams{
+		swapParamsUniV2 := &steward_proto.SwapParams{
+			Params: &steward_proto.SwapParams_Univ2Params{
+				Univ2Params: &steward_proto.UniV2SwapParams{
 					Path:         []string{ZERO_ADDRESS, ONE_ADDRESS},
 					Amount:       "1000",
 					AmountOutMin: "2000",
@@ -182,16 +198,16 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 							FromPosition: from,
 							ToPosition:   to,
 							AssetsFrom:   assetsFrom,
-							Exchange:     steward_proto.CellarV1_EXCHANGE_UNIV2,
+							Exchange:     steward_proto.Exchange_EXCHANGE_UNIV2,
 							Params:       swapParamsUniV2,
 						},
 					},
 				},
 			},
 		}
-		swapParamsUniV3 := &steward_proto.CellarV1_SwapParams{
-			Params: &steward_proto.CellarV1_SwapParams_Univ3Params{
-				Univ3Params: &steward_proto.CellarV1_UniV3SwapParams{
+		swapParamsUniV3 := &steward_proto.SwapParams{
+			Params: &steward_proto.SwapParams_Univ3Params{
+				Univ3Params: &steward_proto.UniV3SwapParams{
 					Path:         []string{ZERO_ADDRESS, ONE_ADDRESS},
 					PoolFees:     []uint32{0, 0},
 					Amount:       "1000",
@@ -208,7 +224,7 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 							FromPosition: from,
 							ToPosition:   to,
 							AssetsFrom:   assetsFrom,
-							Exchange:     steward_proto.CellarV1_EXCHANGE_UNIV3,
+							Exchange:     steward_proto.Exchange_EXCHANGE_UNIV3,
 							Params:       swapParamsUniV3,
 						},
 					},
@@ -219,9 +235,7 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 		s.T().Log("running through two sequences to test rebalance with both UniV2 and Univ3 swap params")
 		for sequence, request := range []*steward_proto.SubmitRequest{requestUniV2, requestUniV3} {
 			s.T().Log("starting sequence")
-			s.waitForVotePeriod()
 			s.executeStewardCalls(request)
-			s.waitForVotePeriod()
 
 			// Construct invalidation scope and nonce for gravity query
 			vault_abi, err := CellarMetaData.GetAbi()
@@ -293,7 +307,7 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 					[]byte{},
 				)).Bytes()
 			invalidationNonce := sequence + 1
-			s.queryLogicCallTransaction(invalidationScope, invalidationNonce)
+			s.queryLogicCallTransaction(clientCtx, invalidationScope, invalidationNonce)
 
 			// For non-anonymous events, the first log topic is a keccak256 hash of the
 			// event signature.
@@ -363,6 +377,257 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 	})
 }
 
+func (s *IntegrationTestSuite) TestCellarV2() {
+	s.Run("Submit callOnAdaptor to MockCellar", func() {
+		s.checkCellarExists(vaultCellar)
+
+		val := s.chain.validators[0]
+		kb, err := val.keyring()
+		s.Require().NoError(err)
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		s.Require().NoError(err)
+
+		// Create the cork requests to send to Steward
+		cellarId := vaultCellar.String()
+		swapParamsUniV2 := &steward_proto.SwapParams{
+			Params: &steward_proto.SwapParams_Univ2Params{
+				Univ2Params: &steward_proto.UniV2SwapParams{
+					Path:         []string{ZERO_ADDRESS, ONE_ADDRESS},
+					Amount:       "1000",
+					AmountOutMin: "2000",
+				},
+			},
+		}
+		oracleSwapParamsUniV3 := &steward_proto.OracleSwapParams{
+			Params: &steward_proto.OracleSwapParams_Univ3Params{
+				Univ3Params: &steward_proto.UniV3OracleSwapParams{
+					Path:     []string{"0x1111111111111111111111111111111111111111", "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"},
+					PoolFees: []uint32{1000, 2000},
+				},
+			},
+		}
+
+		// Contains two adaptor calls, the first of which has two function calls inside of it, for a total of three function calls.
+		request := &steward_proto.SubmitRequest{
+			CellarId: cellarId,
+			CallData: &steward_proto.SubmitRequest_CellarV2{
+				CellarV2: &steward_proto.CellarV2{
+					Function: &steward_proto.CellarV2_CallOnAdaptor_{
+						CallOnAdaptor: &steward_proto.CellarV2_CallOnAdaptor{
+							Data: []*steward_proto.CellarV2_AdaptorCall{
+								{
+									Adaptor: adaptorContract.Hex(),
+									CallData: &steward_proto.CellarV2_AdaptorCall_AaveDebtTokenCalls{
+										AaveDebtTokenCalls: &steward_proto.AaveDebtTokenAdaptorCalls{
+											Calls: []*steward_proto.AaveDebtTokenAdaptor{
+												{
+													Function: &steward_proto.AaveDebtTokenAdaptor_BorrowFromAave_{
+														BorrowFromAave: &steward_proto.AaveDebtTokenAdaptor_BorrowFromAave{
+															Token:  "0x2222222222222222222222222222222222222222",
+															Amount: "250000",
+														},
+													},
+												},
+												{
+													Function: &steward_proto.AaveDebtTokenAdaptor_SwapAndRepay_{
+														SwapAndRepay: &steward_proto.AaveDebtTokenAdaptor_SwapAndRepay{
+															TokenIn:      "0x3333333333333333333333333333333333333333",
+															TokenToRepay: "0x4444444444444444444444444444444444444444",
+															AmountIn:     "5000",
+															Exchange:     steward_proto.Exchange_EXCHANGE_UNIV2,
+															Params:       swapParamsUniV2,
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+								{
+									Adaptor: adaptorContract.Hex(),
+									CallData: &steward_proto.CellarV2_AdaptorCall_CompoundCTokenCalls{
+										CompoundCTokenCalls: &steward_proto.CompoundCTokenAdaptorCalls{
+											Calls: []*steward_proto.CompoundCTokenAdaptor{
+												{
+													Function: &steward_proto.CompoundCTokenAdaptor_ClaimCompAndSwap_{
+														ClaimCompAndSwap: &steward_proto.CompoundCTokenAdaptor_ClaimCompAndSwap{
+															AssetOut: "0x5555555555555555555555555555555555555555",
+															Exchange: steward_proto.Exchange_EXCHANGE_UNIV3,
+															Params:   oracleSwapParamsUniV3,
+															Slippage: 0,
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+
+		s.executeStewardCalls(request)
+		s.queryLogicCallTransactionByAddress(clientCtx, vaultCellar.Hex())
+
+		// Construct invalidation scope and nonce for gravity query
+		// vault_abi, err := CellarMetaData.GetAbi()
+		adaptor_abi, err := AdaptorMetaData.GetAbi()
+		s.Require().NoError(err)
+
+		s.T().Logf("checking for BorrowFromAave event")
+		s.Require().Eventuallyf(func() bool {
+			s.T().Log("querying cellar events...")
+			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
+			if err != nil {
+				return false
+			}
+
+			// For non-anonymous events, the first log topic is a keccak256 hash of the
+			// event signature.
+			eventSignature := []byte("BorrowFromAave(address,uint256)")
+			mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
+			query := ethereum.FilterQuery{
+				FromBlock: nil,
+				ToBlock:   nil,
+				Addresses: []common.Address{
+					vaultCellar,
+				},
+				Topics: [][]common.Hash{
+					{
+						mockEventSignatureTopic,
+					},
+				},
+			}
+
+			logs, err := ethClient.FilterLogs(context.Background(), query)
+			if err != nil {
+				ethClient.Close()
+				return false
+			}
+
+			s.T().Logf("got %v logs: %v", len(logs), logs)
+			if len(logs) > 0 {
+				for _, log := range logs {
+					if len(log.Data) > 0 {
+						var event AdaptorBorrowFromAave
+						err := adaptor_abi.UnpackIntoInterface(&event, "BorrowFromAave", log.Data)
+						s.Require().NoError(err, "failed to unpack BorrowFromAave event from log data")
+						s.Require().Equal(common.HexToAddress("0x2222222222222222222222222222222222222222"), event.DebtTokenToBorrow)
+
+						s.T().Log("Saw BorrowFromAave event!")
+						return true
+					}
+				}
+			}
+
+			return false
+		}, 3*time.Minute, 20*time.Second, "cellar event never seen")
+
+		s.T().Logf("checking for ClaimCompAndSwap event")
+		s.Require().Eventuallyf(func() bool {
+			s.T().Log("querying cellar events...")
+			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
+			if err != nil {
+				return false
+			}
+
+			// For non-anonymous events, the first log topic is a keccak256 hash of the
+			// event signature.
+			eventSignature := []byte("ClaimCompAndSwap(address,uint8,bytes,uint64)")
+			mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
+			query := ethereum.FilterQuery{
+				FromBlock: nil,
+				ToBlock:   nil,
+				Addresses: []common.Address{
+					vaultCellar,
+				},
+				Topics: [][]common.Hash{
+					{
+						mockEventSignatureTopic,
+					},
+				},
+			}
+
+			logs, err := ethClient.FilterLogs(context.Background(), query)
+			if err != nil {
+				ethClient.Close()
+				return false
+			}
+
+			s.T().Logf("got %v logs: %v", len(logs), logs)
+			if len(logs) > 0 {
+				for _, log := range logs {
+					if len(log.Data) > 0 {
+						var event AdaptorClaimCompAndSwap
+						err := adaptor_abi.UnpackIntoInterface(&event, "ClaimCompAndSwap", log.Data)
+						s.Require().NoError(err, "failed to unpack ClaimCompAndSwap event from log data")
+						// 1 == UniswapV3
+						s.Require().Equal(uint8(1), event.Exchange)
+
+						s.T().Log("Saw ClaimCompAndSwap event!")
+						return true
+					}
+				}
+			}
+
+			return false
+		}, 3*time.Minute, 20*time.Second, "cellar event never seen")
+
+		s.T().Logf("checking for SwapAndRepay event")
+		s.Require().Eventuallyf(func() bool {
+			s.T().Log("querying cellar events...")
+			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
+			if err != nil {
+				return false
+			}
+
+			// For non-anonymous events, the first log topic is a keccak256 hash of the
+			// event signature.
+			eventSignature := []byte("SwapAndRepay(address,address,uint256,uint8,bytes)")
+			mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
+			query := ethereum.FilterQuery{
+				FromBlock: nil,
+				ToBlock:   nil,
+				Addresses: []common.Address{
+					vaultCellar,
+				},
+				Topics: [][]common.Hash{
+					{
+						mockEventSignatureTopic,
+					},
+				},
+			}
+
+			logs, err := ethClient.FilterLogs(context.Background(), query)
+			if err != nil {
+				ethClient.Close()
+				return false
+			}
+
+			s.T().Logf("got %v logs: %v", len(logs), logs)
+			if len(logs) > 0 {
+				for _, log := range logs {
+					if len(log.Data) > 0 {
+						var event AdaptorSwapAndRepay
+						err := adaptor_abi.UnpackIntoInterface(&event, "SwapAndRepay", log.Data)
+						s.Require().NoError(err, "failed to unpack SwapAndRepay event from log data")
+						// 0 == UniswapV2
+						s.Require().Equal(uint8(0), event.Exchange)
+
+						s.T().Log("Saw SwapAndRepay event!")
+						return true
+					}
+				}
+			}
+
+			return false
+		}, 3*time.Minute, 20*time.Second, "cellar event never seen")
+	})
+}
+
 func (s *IntegrationTestSuite) checkCellarExists(cellar common.Address) {
 	s.T().Logf("checking that cellar %s exists in the chain", cellar.String())
 	queryClient, err := s.chain.validators[0].GetQueryClient()
@@ -383,24 +648,17 @@ func (s *IntegrationTestSuite) checkCellarExists(cellar common.Address) {
 	}, 60*time.Second, 5*time.Second, "cellar %s not found in approved cellars list", cellar.String())
 }
 
-func (s *IntegrationTestSuite) waitForVotePeriod() {
-	s.T().Logf("wait for new vote period start")
-	queryClient, err := s.chain.validators[0].GetQueryClient()
-	s.Require().NoError(err, "error getting query client")
+func (s *IntegrationTestSuite) waitForScheduledHeight(clientCtx *client.Context, height int64) {
+	s.T().Logf("wait for height %d", height)
+	startingHeight, err := s.GetLatestBlockHeight(clientCtx)
+	s.Require().NoError(err)
+	delta := height - startingHeight
 	s.Require().Eventuallyf(func() bool {
-		res, err := queryClient.QueryCommitPeriod(context.Background(), &corkTypes.QueryCommitPeriodRequest{})
-		if err != nil {
-			return false
-		}
-		if res.VotePeriodStart != res.CurrentHeight {
-			if res.CurrentHeight%10 == 0 {
-				s.T().Logf("current height: %d, period end: %d", res.CurrentHeight, res.VotePeriodEnd)
-			}
-			return false
-		}
-
-		return true
-	}, 30*time.Second, 1*time.Second, "new vote period never seen")
+		currentHeight, err := s.GetLatestBlockHeight(clientCtx)
+		s.Require().NoError(err)
+		return currentHeight >= height
+		// block time in tests is usually ~1 second so this gives some cushion
+	}, time.Duration(delta*3)*time.Second, 1*time.Second, "scheduled height never reached")
 }
 
 func (s *IntegrationTestSuite) executeStewardCalls(request *steward_proto.SubmitRequest) {
@@ -455,15 +713,8 @@ func (s *IntegrationTestSuite) executeStewardCalls(request *steward_proto.Submit
 	}, 100*time.Second, 1*time.Second, "Cork request took too long")
 }
 
-func (s *IntegrationTestSuite) queryLogicCallTransaction(invalidationScope []byte, invalidationNonce int) {
+func (s *IntegrationTestSuite) queryLogicCallTransaction(clientCtx *client.Context, invalidationScope []byte, invalidationNonce int) {
 	s.T().Log("querying gravity module for logic call transaction")
-	val := s.chain.validators[0]
-	kb, err := val.keyring()
-	s.Require().NoError(err)
-
-	clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
-	s.Require().NoError(err)
-
 	gravityQueryClient := gravityTypes.NewQueryClient(clientCtx)
 	s.Require().Eventuallyf(func() bool {
 		request := &gravityTypes.ContractCallTxsRequest{
@@ -474,6 +725,28 @@ func (s *IntegrationTestSuite) queryLogicCallTransaction(invalidationScope []byt
 			for _, call := range response.Calls {
 				if bytes.Equal(call.InvalidationScope, invalidationScope) && call.InvalidationNonce == uint64(invalidationNonce) {
 					s.T().Log("logic call found in the gravity module!")
+					return true
+				}
+			}
+		}
+
+		return false
+	}, 2*time.Minute, 1*time.Second, "cellar event never seen")
+	time.Sleep(time.Duration(2000000000))
+}
+
+func (s *IntegrationTestSuite) queryLogicCallTransactionByAddress(clientCtx *client.Context, address string) {
+	s.T().Log("querying gravity module for logic call transaction")
+	gravityQueryClient := gravityTypes.NewQueryClient(clientCtx)
+	s.Require().Eventuallyf(func() bool {
+		request := &gravityTypes.ContractCallTxsRequest{
+			Pagination: &query.PageRequest{},
+		}
+		response, _ := gravityQueryClient.ContractCallTxs(context.Background(), request)
+		if response != nil {
+			for _, call := range response.Calls {
+				if call.Address == address {
+					s.T().Logf("logic call to %s found in the gravity module!", address)
 					return true
 				}
 			}
