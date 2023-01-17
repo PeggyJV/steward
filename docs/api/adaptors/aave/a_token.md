@@ -3,45 +3,84 @@
 
 ## Table of Contents
 
-- [steward.proto](#steward-proto)
-    - [SubmitRequest](#steward-v2-SubmitRequest)
-    - [SubmitResponse](#steward-v2-SubmitResponse)
-  
-    - [ContractCall](#steward-v2-ContractCall)
+- [adaptors/aave/a_token.proto](#adaptors_aave_a_token-proto)
+    - [AaveATokenAdaptor](#steward-v3-AaveATokenAdaptor)
+    - [AaveATokenAdaptor.DepositToAave](#steward-v3-AaveATokenAdaptor-DepositToAave)
+    - [AaveATokenAdaptor.WithdrawFromAave](#steward-v3-AaveATokenAdaptor-WithdrawFromAave)
+    - [AaveATokenAdaptorCalls](#steward-v3-AaveATokenAdaptorCalls)
   
 - [Scalar Value Types](#scalar-value-types)
 
 
 
-<a name="steward-proto"></a>
+<a name="adaptors_aave_a_token-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## steward.proto
+## adaptors/aave/a_token.proto
 
 
 
-<a name="steward-v2-SubmitRequest"></a>
+<a name="steward-v3-AaveATokenAdaptor"></a>
 
-### SubmitRequest
-Represents a single function call on a particular Cellar
+### AaveATokenAdaptor
+Represents call data for the Aave AToken adaptor, used to manage lending positions on Aave
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| cellar_id | [string](#string) |  | The ID (currently simply an Ethereum address) of the target Cellar |
-| aave_v2_stablecoin | [AaveV2Stablecoin](#steward-v2-AaveV2Stablecoin) |  |  |
-| cellar_v1 | [CellarV1](#steward-v2-CellarV1) |  |  |
-| cellar_v2 | [CellarV2](#steward-v2-CellarV2) |  |  |
+| deposit_to_aave | [AaveATokenAdaptor.DepositToAave](#steward-v3-AaveATokenAdaptor-DepositToAave) |  | Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)` |
+| withdraw_from_aave | [AaveATokenAdaptor.WithdrawFromAave](#steward-v3-AaveATokenAdaptor-WithdrawFromAave) |  | Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)` |
 
 
 
 
 
 
-<a name="steward-v2-SubmitResponse"></a>
+<a name="steward-v3-AaveATokenAdaptor-DepositToAave"></a>
 
-### SubmitResponse
+### AaveATokenAdaptor.DepositToAave
+Allows strategists to lend assets on Aave.
 
+Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [string](#string) |  | The address of the ERC20 token to deposit |
+| amount | [string](#string) |  | The amount to deposit |
+
+
+
+
+
+
+<a name="steward-v3-AaveATokenAdaptor-WithdrawFromAave"></a>
+
+### AaveATokenAdaptor.WithdrawFromAave
+Allows strategists to withdraw assets from Aave.
+
+Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [string](#string) |  | The address of the ERC20 token to withdraw |
+| amount | [string](#string) |  | The amount to withdraw |
+
+
+
+
+
+
+<a name="steward-v3-AaveATokenAdaptorCalls"></a>
+
+### AaveATokenAdaptorCalls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [AaveATokenAdaptor](#steward-v3-AaveATokenAdaptor) | repeated |  |
 
 
 
@@ -52,16 +91,6 @@ Represents a single function call on a particular Cellar
  
 
  
-
-
-<a name="steward-v2-ContractCall"></a>
-
-### ContractCall
-Service for handling Cellar contract calls
-
-| Method Name | Request Type | Response Type | Description |
-| ----------- | ------------ | ------------- | ------------|
-| Submit | [SubmitRequest](#steward-v2-SubmitRequest) | [SubmitResponse](#steward-v2-SubmitResponse) | Handles simple contract call submission |
 
  
 
