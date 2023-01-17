@@ -18,7 +18,7 @@ mod aavedebttokenadaptor_mod {
     use std::sync::Arc;
     pub static AAVEDEBTTOKENADAPTOR_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
         ethers::contract::Lazy::new(|| {
-            serde_json :: from_str ("[\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"untrackedDebtPosition\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"AaveDebtTokenAdaptor__DebtPositionsMustBeTracked\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__BadSlippage\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__ExchangeNotSupported\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__ExternalReceiverBlocked\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserDepositsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserWithdrawsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"balanceOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"debtTokenToBorrow\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountToBorrow\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"borrowFromAave\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"deposit\",\n        \"outputs\": [],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address[]\",\n                \"name\": \"loanToken\",\n                \"type\": \"address[]\"\n            },\n            {\n                \"internalType\": \"uint256[]\",\n                \"name\": \"loanAmount\",\n                \"type\": \"uint256[]\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"flashLoan\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"identifier\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"\",\n                \"type\": \"bytes32\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"isDebt\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetOut\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"slippage\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"name\": \"oracleSwap\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountOut\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"tokenToRepay\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountToRepay\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"repayAaveDebt\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetOut\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"swap\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountOut\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"tokenIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"tokenToRepay\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"swapAndRepay\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdraw\",\n        \"outputs\": [],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdrawableFrom\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    }\n]\n") . expect ("invalid abi")
+            serde_json :: from_str ("[\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"untrackedDebtPosition\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"AaveDebtTokenAdaptor__DebtPositionsMustBeTracked\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"AaveDebtTokenAdaptor__HealthFactorTooLow\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__BadSlippage\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__ExchangeNotSupported\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__ExternalReceiverBlocked\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserDepositsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserWithdrawsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetsUsed\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20[]\",\n                \"name\": \"assets\",\n                \"type\": \"address[]\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"balanceOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"debtTokenToBorrow\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountToBorrow\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"borrowFromAave\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"deposit\",\n        \"outputs\": [],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address[]\",\n                \"name\": \"loanToken\",\n                \"type\": \"address[]\"\n            },\n            {\n                \"internalType\": \"uint256[]\",\n                \"name\": \"loanAmount\",\n                \"type\": \"uint256[]\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"flashLoan\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"identifier\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"\",\n                \"type\": \"bytes32\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"isDebt\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetOut\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"slippage\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"name\": \"oracleSwap\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountOut\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"tokenToRepay\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountToRepay\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"repayAaveDebt\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"asset\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"revokeApproval\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetOut\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"swap\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountOut\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"tokenIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"tokenToRepay\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"swapAndRepay\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdraw\",\n        \"outputs\": [],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdrawableFrom\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    }\n]\n") . expect ("invalid abi")
         });
     #[derive(Clone)]
     pub struct AaveDebtTokenAdaptor<M>(ethers::contract::Contract<M>);
@@ -57,6 +57,18 @@ mod aavedebttokenadaptor_mod {
         ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
             self.0
                 .method_hash([225, 112, 169, 191], adaptor_data)
+                .expect("method not found (this should never happen)")
+        }
+        #[doc = "Calls the contract's `assetsUsed` (0xaeffddde) function"]
+        pub fn assets_used(
+            &self,
+            adaptor_data: ethers::core::types::Bytes,
+        ) -> ethers::contract::builders::ContractCall<
+            M,
+            ::std::vec::Vec<ethers::core::types::Address>,
+        > {
+            self.0
+                .method_hash([174, 255, 221, 222], adaptor_data)
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `balanceOf` (0x78415365) function"]
@@ -142,6 +154,16 @@ mod aavedebttokenadaptor_mod {
                 .method_hash([215, 12, 21, 57], (token_to_repay, amount_to_repay))
                 .expect("method not found (this should never happen)")
         }
+        #[doc = "Calls the contract's `revokeApproval` (0xd3bfe76a) function"]
+        pub fn revoke_approval(
+            &self,
+            asset: ethers::core::types::Address,
+            spender: ethers::core::types::Address,
+        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            self.0
+                .method_hash([211, 191, 231, 106], (asset, spender))
+                .expect("method not found (this should never happen)")
+        }
         #[doc = "Calls the contract's `swap` (0xf2879a8d) function"]
         pub fn swap(
             &self,
@@ -211,6 +233,22 @@ mod aavedebttokenadaptor_mod {
     )]
     #[ethcall(name = "assetOf", abi = "assetOf(bytes)")]
     pub struct AssetOfCall {
+        pub adaptor_data: ethers::core::types::Bytes,
+    }
+    #[doc = "Container type for all input parameters for the `assetsUsed`function with signature `assetsUsed(bytes)` and selector `[174, 255, 221, 222]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Default,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthCall,
+        ethers :: contract :: EthDisplay,
+        serde :: Deserialize,
+        serde :: Serialize,
+    )]
+    #[ethcall(name = "assetsUsed", abi = "assetsUsed(bytes)")]
+    pub struct AssetsUsedCall {
         pub adaptor_data: ethers::core::types::Bytes,
     }
     #[doc = "Container type for all input parameters for the `balanceOf`function with signature `balanceOf(bytes)` and selector `[120, 65, 83, 101]`"]
@@ -351,6 +389,23 @@ mod aavedebttokenadaptor_mod {
         pub token_to_repay: ethers::core::types::Address,
         pub amount_to_repay: ethers::core::types::U256,
     }
+    #[doc = "Container type for all input parameters for the `revokeApproval`function with signature `revokeApproval(address,address)` and selector `[211, 191, 231, 106]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Default,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthCall,
+        ethers :: contract :: EthDisplay,
+        serde :: Deserialize,
+        serde :: Serialize,
+    )]
+    #[ethcall(name = "revokeApproval", abi = "revokeApproval(address,address)")]
+    pub struct RevokeApprovalCall {
+        pub asset: ethers::core::types::Address,
+        pub spender: ethers::core::types::Address,
+    }
     #[doc = "Container type for all input parameters for the `swap`function with signature `swap(address,address,uint256,uint8,bytes)` and selector `[242, 135, 154, 141]`"]
     #[derive(
         Clone,
@@ -433,6 +488,7 @@ mod aavedebttokenadaptor_mod {
     #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
     pub enum AaveDebtTokenAdaptorCalls {
         AssetOf(AssetOfCall),
+        AssetsUsed(AssetsUsedCall),
         BalanceOf(BalanceOfCall),
         BorrowFromAave(BorrowFromAaveCall),
         Deposit(DepositCall),
@@ -441,6 +497,7 @@ mod aavedebttokenadaptor_mod {
         IsDebt(IsDebtCall),
         OracleSwap(OracleSwapCall),
         RepayAaveDebt(RepayAaveDebtCall),
+        RevokeApproval(RevokeApprovalCall),
         Swap(SwapCall),
         SwapAndRepay(SwapAndRepayCall),
         Withdraw(WithdrawCall),
@@ -452,6 +509,11 @@ mod aavedebttokenadaptor_mod {
                 <AssetOfCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(AaveDebtTokenAdaptorCalls::AssetOf(decoded));
+            }
+            if let Ok(decoded) =
+                <AssetsUsedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            {
+                return Ok(AaveDebtTokenAdaptorCalls::AssetsUsed(decoded));
             }
             if let Ok(decoded) =
                 <BalanceOfCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
@@ -492,6 +554,11 @@ mod aavedebttokenadaptor_mod {
             {
                 return Ok(AaveDebtTokenAdaptorCalls::RepayAaveDebt(decoded));
             }
+            if let Ok(decoded) =
+                <RevokeApprovalCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            {
+                return Ok(AaveDebtTokenAdaptorCalls::RevokeApproval(decoded));
+            }
             if let Ok(decoded) = <SwapCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
                 return Ok(AaveDebtTokenAdaptorCalls::Swap(decoded));
             }
@@ -517,6 +584,7 @@ mod aavedebttokenadaptor_mod {
         fn encode(self) -> Vec<u8> {
             match self {
                 AaveDebtTokenAdaptorCalls::AssetOf(element) => element.encode(),
+                AaveDebtTokenAdaptorCalls::AssetsUsed(element) => element.encode(),
                 AaveDebtTokenAdaptorCalls::BalanceOf(element) => element.encode(),
                 AaveDebtTokenAdaptorCalls::BorrowFromAave(element) => element.encode(),
                 AaveDebtTokenAdaptorCalls::Deposit(element) => element.encode(),
@@ -525,6 +593,7 @@ mod aavedebttokenadaptor_mod {
                 AaveDebtTokenAdaptorCalls::IsDebt(element) => element.encode(),
                 AaveDebtTokenAdaptorCalls::OracleSwap(element) => element.encode(),
                 AaveDebtTokenAdaptorCalls::RepayAaveDebt(element) => element.encode(),
+                AaveDebtTokenAdaptorCalls::RevokeApproval(element) => element.encode(),
                 AaveDebtTokenAdaptorCalls::Swap(element) => element.encode(),
                 AaveDebtTokenAdaptorCalls::SwapAndRepay(element) => element.encode(),
                 AaveDebtTokenAdaptorCalls::Withdraw(element) => element.encode(),
@@ -536,6 +605,7 @@ mod aavedebttokenadaptor_mod {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match self {
                 AaveDebtTokenAdaptorCalls::AssetOf(element) => element.fmt(f),
+                AaveDebtTokenAdaptorCalls::AssetsUsed(element) => element.fmt(f),
                 AaveDebtTokenAdaptorCalls::BalanceOf(element) => element.fmt(f),
                 AaveDebtTokenAdaptorCalls::BorrowFromAave(element) => element.fmt(f),
                 AaveDebtTokenAdaptorCalls::Deposit(element) => element.fmt(f),
@@ -544,6 +614,7 @@ mod aavedebttokenadaptor_mod {
                 AaveDebtTokenAdaptorCalls::IsDebt(element) => element.fmt(f),
                 AaveDebtTokenAdaptorCalls::OracleSwap(element) => element.fmt(f),
                 AaveDebtTokenAdaptorCalls::RepayAaveDebt(element) => element.fmt(f),
+                AaveDebtTokenAdaptorCalls::RevokeApproval(element) => element.fmt(f),
                 AaveDebtTokenAdaptorCalls::Swap(element) => element.fmt(f),
                 AaveDebtTokenAdaptorCalls::SwapAndRepay(element) => element.fmt(f),
                 AaveDebtTokenAdaptorCalls::Withdraw(element) => element.fmt(f),
@@ -554,6 +625,11 @@ mod aavedebttokenadaptor_mod {
     impl ::std::convert::From<AssetOfCall> for AaveDebtTokenAdaptorCalls {
         fn from(var: AssetOfCall) -> Self {
             AaveDebtTokenAdaptorCalls::AssetOf(var)
+        }
+    }
+    impl ::std::convert::From<AssetsUsedCall> for AaveDebtTokenAdaptorCalls {
+        fn from(var: AssetsUsedCall) -> Self {
+            AaveDebtTokenAdaptorCalls::AssetsUsed(var)
         }
     }
     impl ::std::convert::From<BalanceOfCall> for AaveDebtTokenAdaptorCalls {
@@ -594,6 +670,11 @@ mod aavedebttokenadaptor_mod {
     impl ::std::convert::From<RepayAaveDebtCall> for AaveDebtTokenAdaptorCalls {
         fn from(var: RepayAaveDebtCall) -> Self {
             AaveDebtTokenAdaptorCalls::RepayAaveDebt(var)
+        }
+    }
+    impl ::std::convert::From<RevokeApprovalCall> for AaveDebtTokenAdaptorCalls {
+        fn from(var: RevokeApprovalCall) -> Self {
+            AaveDebtTokenAdaptorCalls::RevokeApproval(var)
         }
     }
     impl ::std::convert::From<SwapCall> for AaveDebtTokenAdaptorCalls {

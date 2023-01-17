@@ -196,6 +196,24 @@
         "inputs": [
             {
                 "internalType": "contract ERC20",
+                "name": "asset",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+            }
+        ],
+        "name": "revokeApproval",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract ERC20",
                 "name": "assetIn",
                 "type": "address"
             },

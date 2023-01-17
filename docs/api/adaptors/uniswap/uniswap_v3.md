@@ -30,6 +30,9 @@ Represents call data for the Uniswap V3 adaptor
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| swap | [Swap](#steward-v3-Swap) |  | Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
+| oracle_swap | [OracleSwap](#steward-v3-OracleSwap) |  | Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
+| revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
 | open_position | [UniswapV3Adaptor.OpenPosition](#steward-v3-UniswapV3Adaptor-OpenPosition) |  | Represents function `openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)` |
 | close_position | [UniswapV3Adaptor.ClosePosition](#steward-v3-UniswapV3Adaptor-ClosePosition) |  | Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)` |
 | add_to_position | [UniswapV3Adaptor.AddToPosition](#steward-v3-UniswapV3Adaptor-AddToPosition) |  | Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)` |

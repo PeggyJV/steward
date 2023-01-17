@@ -3,87 +3,77 @@
 
 ## Table of Contents
 
-- [adaptors/aave/a_token.proto](#adaptors_aave_a_token-proto)
-    - [AaveATokenAdaptor](#steward-v3-AaveATokenAdaptor)
-    - [AaveATokenAdaptor.DepositToAave](#steward-v3-AaveATokenAdaptor-DepositToAave)
-    - [AaveATokenAdaptor.WithdrawFromAave](#steward-v3-AaveATokenAdaptor-WithdrawFromAave)
-    - [AaveATokenAdaptorCalls](#steward-v3-AaveATokenAdaptorCalls)
+- [adaptors/base.proto](#adaptors_base-proto)
+    - [OracleSwap](#steward-v3-OracleSwap)
+    - [RevokeApproval](#steward-v3-RevokeApproval)
+    - [Swap](#steward-v3-Swap)
   
 - [Scalar Value Types](#scalar-value-types)
 
 
 
-<a name="adaptors_aave_a_token-proto"></a>
+<a name="adaptors_base-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## adaptors/aave/a_token.proto
+## adaptors/base.proto
 
 
 
-<a name="steward-v3-AaveATokenAdaptor"></a>
+<a name="steward-v3-OracleSwap"></a>
 
-### AaveATokenAdaptor
-Represents call data for the Aave AToken adaptor, used to manage lending positions on Aave
+### OracleSwap
+Helper function to make safe &#34;blind&#34; Uniswap Swaps by comparing value in vs value out of the swap.
 
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| swap | [Swap](#steward-v3-Swap) |  | Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
-| oracle_swap | [OracleSwap](#steward-v3-OracleSwap) |  | Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
-| revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
-| deposit_to_aave | [AaveATokenAdaptor.DepositToAave](#steward-v3-AaveATokenAdaptor-DepositToAave) |  | Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)` |
-| withdraw_from_aave | [AaveATokenAdaptor.WithdrawFromAave](#steward-v3-AaveATokenAdaptor-WithdrawFromAave) |  | Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)` |
-
-
-
-
-
-
-<a name="steward-v3-AaveATokenAdaptor-DepositToAave"></a>
-
-### AaveATokenAdaptor.DepositToAave
-Allows strategists to lend assets on Aave.
-
-Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| token | [string](#string) |  | The address of the ERC20 token to deposit |
-| amount | [string](#string) |  | The amount to deposit |
+| asset_in | [string](#string) |  | Asset to swap from |
+| asset_out | [string](#string) |  | Asset to swap to |
+| amount_in | [string](#string) |  | Amount to swap |
+| exchange | [Exchange](#steward-v3-Exchange) |  | The exchange to make the swap on |
+| params | [OracleSwapParams](#steward-v3-OracleSwapParams) |  | The parameters for the swap |
+| slippage | [uint64](#uint64) |  | The slippage allowed for the swap |
 
 
 
 
 
 
-<a name="steward-v3-AaveATokenAdaptor-WithdrawFromAave"></a>
+<a name="steward-v3-RevokeApproval"></a>
 
-### AaveATokenAdaptor.WithdrawFromAave
-Allows strategists to withdraw assets from Aave.
+### RevokeApproval
+Allows strategists to zero out an approval for a given `asset`.
 
-Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| token | [string](#string) |  | The address of the ERC20 token to withdraw |
-| amount | [string](#string) |  | The amount to withdraw |
-
-
-
-
-
-
-<a name="steward-v3-AaveATokenAdaptorCalls"></a>
-
-### AaveATokenAdaptorCalls
-
+Represents function `revokeApproval(ERC20 asset, address spender)`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| calls | [AaveATokenAdaptor](#steward-v3-AaveATokenAdaptor) | repeated |  |
+| asset | [string](#string) |  | ERC20 Asset to revoke spender&#39;s approval for |
+| spender | [string](#string) |  | The spender to revoke approval of asset for |
+
+
+
+
+
+
+<a name="steward-v3-Swap"></a>
+
+### Swap
+Helper function that allows swaps using the Swap Router
+
+Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| asset_in | [string](#string) |  | Asset to swap from |
+| asset_out | [string](#string) |  | Asset to swap to |
+| amount_in | [string](#string) |  | Amount to swap |
+| exchange | [Exchange](#steward-v3-Exchange) |  | The exchange to make the swap on |
+| params | [SwapParams](#steward-v3-SwapParams) |  | The parameters for the swap |
 
 
 

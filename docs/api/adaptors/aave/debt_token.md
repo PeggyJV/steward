@@ -29,6 +29,9 @@ Represents call data for the Aave Debt Token adaptor, used for borrowing and rep
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| swap | [Swap](#steward-v3-Swap) |  | Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
+| oracle_swap | [OracleSwap](#steward-v3-OracleSwap) |  | Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
+| revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
 | borrow_from_aave | [AaveDebtTokenAdaptor.BorrowFromAave](#steward-v3-AaveDebtTokenAdaptor-BorrowFromAave) |  | Represents function `borrowFromAave(ERC20 debtTokenToBorrow, uint256 amountToBorrow)` |
 | repay_aave_debt | [AaveDebtTokenAdaptor.RepayAaveDebt](#steward-v3-AaveDebtTokenAdaptor-RepayAaveDebt) |  | Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)` |
 | swap_and_repay | [AaveDebtTokenAdaptor.SwapAndRepay](#steward-v3-AaveDebtTokenAdaptor-SwapAndRepay) |  | Represents function `swapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |

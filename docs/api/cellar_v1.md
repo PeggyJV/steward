@@ -16,10 +16,7 @@
     - [CellarV1.SetShareLockPeriod](#steward-v3-CellarV1-SetShareLockPeriod)
     - [CellarV1.SetStrategistPayoutAddress](#steward-v3-CellarV1-SetStrategistPayoutAddress)
     - [CellarV1.SetWithdrawType](#steward-v3-CellarV1-SetWithdrawType)
-    - [CellarV1.SwapParams](#steward-v3-CellarV1-SwapParams)
     - [CellarV1.SwapPositions](#steward-v3-CellarV1-SwapPositions)
-    - [CellarV1.UniV2SwapParams](#steward-v3-CellarV1-UniV2SwapParams)
-    - [CellarV1.UniV3SwapParams](#steward-v3-CellarV1-UniV3SwapParams)
     - [CellarV1Governance](#steward-v3-CellarV1Governance)
     - [CellarV1Governance.InitiateShutdown](#steward-v3-CellarV1Governance-InitiateShutdown)
     - [CellarV1Governance.LiftShutdown](#steward-v3-CellarV1Governance-LiftShutdown)
@@ -31,7 +28,6 @@
     - [CellarV1Governance.SetStrategistPlatformCut](#steward-v3-CellarV1Governance-SetStrategistPlatformCut)
     - [CellarV1Governance.TrustPosition](#steward-v3-CellarV1Governance-TrustPosition)
   
-    - [CellarV1.Exchange](#steward-v3-CellarV1-Exchange)
     - [CellarV1.WithdrawType](#steward-v3-CellarV1-WithdrawType)
   
 - [Scalar Value Types](#scalar-value-types)
@@ -123,8 +119,8 @@ Represents function `rebalance(address fromPosition, address toPosition,
 | from_position | [string](#string) |  |  |
 | to_position | [string](#string) |  |  |
 | assets_from | [string](#string) |  |  |
-| exchange | [CellarV1.Exchange](#steward-v3-CellarV1-Exchange) |  |  |
-| params | [CellarV1.SwapParams](#steward-v3-CellarV1-SwapParams) |  |  |
+| exchange | [Exchange](#steward-v3-Exchange) |  |  |
+| params | [SwapParams](#steward-v3-SwapParams) |  |  |
 
 
 
@@ -265,22 +261,6 @@ Represents function `setWithdrawType(WithdrawType newWithdrawType)`
 
 
 
-<a name="steward-v3-CellarV1-SwapParams"></a>
-
-### CellarV1.SwapParams
-Represents swap parameters for an exchange
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| univ2_params | [CellarV1.UniV2SwapParams](#steward-v3-CellarV1-UniV2SwapParams) |  | Params for a Uniswap V2 swap |
-| univ3_params | [CellarV1.UniV3SwapParams](#steward-v3-CellarV1-UniV3SwapParams) |  | Params for a Uniswap V3 swap |
-
-
-
-
-
-
 <a name="steward-v3-CellarV1-SwapPositions"></a>
 
 ### CellarV1.SwapPositions
@@ -293,41 +273,6 @@ Represents function `swapPositions(uint256 index1, uint256 index2)`
 | ----- | ---- | ----- | ----------- |
 | index_1 | [string](#string) |  | Index of the first position |
 | index_2 | [string](#string) |  | Index of the second position |
-
-
-
-
-
-
-<a name="steward-v3-CellarV1-UniV2SwapParams"></a>
-
-### CellarV1.UniV2SwapParams
-Represents swap parameters for UniswapV2
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| path | [string](#string) | repeated | Array of addresses dictating what swap path to follow |
-| amount | [string](#string) |  | Amount of the first asset in the path to swap |
-| amount_out_min | [string](#string) |  | The minimum amount of the last asset in the path to receive |
-
-
-
-
-
-
-<a name="steward-v3-CellarV1-UniV3SwapParams"></a>
-
-### CellarV1.UniV3SwapParams
-Represents swap parameters for UniswapV3
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| path | [string](#string) | repeated | Array of addresses dictating what swap path to follow |
-| pool_fees | [uint32](#uint32) | repeated | Array of pool fees dictating what swap pools to use |
-| amount | [string](#string) |  | Amount of the first asset in the path to swap |
-| amount_out_min | [string](#string) |  | The minimum amount of the last asset in the path to receive |
 
 
 
@@ -479,19 +424,6 @@ Represents function `trustPosition(address)`
 
 
  
-
-
-<a name="steward-v3-CellarV1-Exchange"></a>
-
-### CellarV1.Exchange
-Exchange selector
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| EXCHANGE_UNSPECIFIED | 0 |  |
-| EXCHANGE_UNIV2 | 1 | Represents Uniswap V2 |
-| EXCHANGE_UNIV3 | 2 | Represents Uniswap V3 |
-
 
 
 <a name="steward-v3-CellarV1-WithdrawType"></a>
