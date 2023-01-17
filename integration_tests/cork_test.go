@@ -49,6 +49,7 @@ const T_AAVE_MIN_ASSETS_OUT = "1000000000000000000"
 func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 	s.Run("Submit rebalance request to MockAaveV2Stablecoin", func() {
 		s.checkCellarExists(aaveCellar)
+		s.waitForVotePeriod()
 
 		cellarId := aaveCellar.String()
 
@@ -57,9 +58,6 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 		s.Require().NoError(err)
 		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
 		s.Require().NoError(err)
-		currentHeight, err := s.GetLatestBlockHeight(clientCtx)
-		s.Require().NoError(err)
-		scheduledHeight := currentHeight + 10
 
 		// Create the cork request to send to Steward
 		route := []string{T_AAVE_DAI, T_AAVE_POOL, T_AAVE_USDC, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS}
@@ -84,8 +82,9 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 			},
 		}
 
+		s.waitForVotePeriod()
 		s.executeStewardCalls(request)
-		s.waitForScheduledHeight(clientCtx, scheduledHeight)
+		s.waitForVotePeriod()
 
 		// Construct invalidation scope and nonce for gravity query
 		aave_abi, err := AaveV2MetaData.GetAbi()
@@ -168,6 +167,7 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 func (s *IntegrationTestSuite) TestCellarV1() {
 	s.Run("Submit rebalance to MockCellar", func() {
 		s.checkCellarExists(vaultCellar)
+		s.waitForVotePeriod()
 
 		val := s.chain.validators[0]
 		kb, err := val.keyring()
@@ -235,7 +235,9 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 		s.T().Log("running through two sequences to test rebalance with both UniV2 and Univ3 swap params")
 		for sequence, request := range []*steward_proto.SubmitRequest{requestUniV2, requestUniV3} {
 			s.T().Log("starting sequence")
+			s.waitForVotePeriod()
 			s.executeStewardCalls(request)
+			s.waitForVotePeriod()
 
 			// Construct invalidation scope and nonce for gravity query
 			vault_abi, err := CellarMetaData.GetAbi()
@@ -380,6 +382,7 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 func (s *IntegrationTestSuite) TestCellarV2() {
 	s.Run("Submit callOnAdaptor to MockCellar", func() {
 		s.checkCellarExists(vaultCellar)
+		s.waitForVotePeriod()
 
 		val := s.chain.validators[0]
 		kb, err := val.keyring()
@@ -469,7 +472,9 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 			},
 		}
 
+		s.waitForVotePeriod()
 		s.executeStewardCalls(request)
+		s.waitForVotePeriod()
 		s.queryLogicCallTransactionByAddress(clientCtx, vaultCellar.Hex())
 
 		// Construct invalidation scope and nonce for gravity query
@@ -648,17 +653,24 @@ func (s *IntegrationTestSuite) checkCellarExists(cellar common.Address) {
 	}, 60*time.Second, 5*time.Second, "cellar %s not found in approved cellars list", cellar.String())
 }
 
-func (s *IntegrationTestSuite) waitForScheduledHeight(clientCtx *client.Context, height int64) {
-	s.T().Logf("wait for height %d", height)
-	startingHeight, err := s.GetLatestBlockHeight(clientCtx)
-	s.Require().NoError(err)
-	delta := height - startingHeight
+func (s *IntegrationTestSuite) waitForVotePeriod() {
+	s.T().Logf("wait for new vote period start")
+	queryClient, err := s.chain.validators[0].GetQueryClient()
+	s.Require().NoError(err, "error getting query client")
 	s.Require().Eventuallyf(func() bool {
-		currentHeight, err := s.GetLatestBlockHeight(clientCtx)
-		s.Require().NoError(err)
-		return currentHeight >= height
-		// block time in tests is usually ~1 second so this gives some cushion
-	}, time.Duration(delta*3)*time.Second, 1*time.Second, "scheduled height never reached")
+		res, err := queryClient.QueryCommitPeriod(context.Background(), &corkTypes.QueryCommitPeriodRequest{})
+		if err != nil {
+			return false
+		}
+		if res.VotePeriodStart != res.CurrentHeight {
+			if res.CurrentHeight%10 == 0 {
+				s.T().Logf("current height: %d, period end: %d", res.CurrentHeight, res.VotePeriodEnd)
+			}
+			return false
+		}
+
+		return true
+	}, 30*time.Second, 1*time.Second, "new vote period never seen")
 }
 
 func (s *IntegrationTestSuite) executeStewardCalls(request *steward_proto.SubmitRequest) {

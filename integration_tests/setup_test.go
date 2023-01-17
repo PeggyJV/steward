@@ -21,7 +21,6 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 
-	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/server"
 	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -33,7 +32,6 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
-	cellarfeestypes "github.com/peggyjv/sommelier/v4/x/cellarfees/types"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 	tmconfig "github.com/tendermint/tendermint/config"
@@ -46,7 +44,6 @@ const (
 	initBalanceStr      = "110000000000usomm"
 	minGasPrice         = "2"
 	ethChainID     uint = 15
-	bondDenom           = "usomm"
 )
 
 func MNEMONICS() []string {
@@ -60,7 +57,7 @@ func MNEMONICS() []string {
 
 var (
 	stakeAmount, _  = sdk.NewIntFromString("100000000000")
-	stakeAmountCoin = sdk.NewCoin(bondDenom, stakeAmount)
+	stakeAmountCoin = sdk.NewCoin(testDenom, stakeAmount)
 	// these address variables get overwritten by parsing the hardhat logs for the contract
 	// address once they are launched; therefore their initial values don't matter.
 	aaveCellar      = common.HexToAddress("0x0000000000000000000000000000000000000000")
@@ -275,13 +272,13 @@ func (s *IntegrationTestSuite) initGenesis() {
 	bankGenState.DenomMetadata = append(bankGenState.DenomMetadata, banktypes.Metadata{
 		Description: "The native staking token of the test somm network",
 		Display:     testDenom,
-		Base:        bondDenom,
+		Base:        testDenom,
 		DenomUnits: []*banktypes.DenomUnit{
 			{
-				Denom:    bondDenom,
+				Denom:    testDenom,
 				Exponent: 0,
 				Aliases: []string{
-					"usomm",
+					testDenom,
 				},
 			},
 			{
@@ -309,7 +306,7 @@ func (s *IntegrationTestSuite) initGenesis() {
 	// set crisis denom
 	var crisisGenState crisistypes.GenesisState
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[crisistypes.ModuleName], &crisisGenState))
-	crisisGenState.ConstantFee.Denom = bondDenom
+	crisisGenState.ConstantFee.Denom = testDenom
 	bz, err = cdc.MarshalJSON(&crisisGenState)
 	s.Require().NoError(err)
 	appGenState[crisistypes.ModuleName] = bz
@@ -317,7 +314,7 @@ func (s *IntegrationTestSuite) initGenesis() {
 	// set staking bond denom
 	var stakingGenState stakingtypes.GenesisState
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[stakingtypes.ModuleName], &stakingGenState))
-	stakingGenState.Params.BondDenom = bondDenom
+	stakingGenState.Params.BondDenom = testDenom
 	bz, err = cdc.MarshalJSON(&stakingGenState)
 	s.Require().NoError(err)
 	appGenState[stakingtypes.ModuleName] = bz
@@ -325,7 +322,7 @@ func (s *IntegrationTestSuite) initGenesis() {
 	// set mint denom
 	var mintGenState minttypes.GenesisState
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[minttypes.ModuleName], &mintGenState))
-	mintGenState.Params.MintDenom = bondDenom
+	mintGenState.Params.MintDenom = testDenom
 	bz, err = cdc.MarshalJSON(&mintGenState)
 	s.Require().NoError(err)
 	appGenState[minttypes.ModuleName] = bz
@@ -375,13 +372,6 @@ func (s *IntegrationTestSuite) initGenesis() {
 	bz, err = cdc.MarshalJSON(&corkGenState)
 	s.Require().NoError(err)
 	appGenState[corktypes.ModuleName] = bz
-
-	cellarfeesGenState := cellarfeestypes.DefaultGenesisState()
-	s.Require().NoError(cdc.UnmarshalJSON(appGenState[cellarfeestypes.ModuleName], &cellarfeesGenState))
-
-	bz, err = cdc.MarshalJSON(&cellarfeesGenState)
-	s.Require().NoError(err)
-	appGenState[cellarfeestypes.ModuleName] = bz
 
 	// set contract addr
 	var gravityGenState gravitytypes.GenesisState
@@ -880,16 +870,4 @@ func (s *IntegrationTestSuite) logsByContainerID(id string) string {
 	))
 
 	return containerLogsBuf.String()
-}
-
-func (s *IntegrationTestSuite) GetLatestBlockHeight(clientCtx *client.Context) (int64, error) {
-	node, err := clientCtx.GetNode()
-	if err != nil {
-		return 0, err
-	}
-	status, err := node.Status(context.Background())
-	if err != nil {
-		return 0, err
-	}
-	return status.SyncInfo.LatestBlockHeight, nil
 }
