@@ -129,15 +129,6 @@ message CellarV2 {
     }
 
     /*
-    * Set the per-wallet deposit limit. Uses the same decimals as the current asset.
-    *
-    * Represents function `setDepositLimit()`
-    */
-    message SetDepositLimit {
-        string new_limit = 1;
-    }
-
-    /*
     * Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.
     *
     * Represents function `setLiquidityLimit()`

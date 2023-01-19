@@ -2,20 +2,16 @@
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
 use abscissa_core::tracing::info;
-use ethers::{
-    abi::{self, AbiEncode, Token},
-    contract::EthCall,
-    types::Address as EthereumAddress,
-};
+use ethers::{abi::AbiEncode, contract::EthCall};
 use steward_abi::cellar_v1::*;
-use steward_proto::steward::{
-    cellar_v1::Function as StrategyFunction, swap_params::Params::*, SwapParams,
-};
+use steward_proto::steward::cellar_v1::Function as StrategyFunction;
 use StrategyFunction::*;
 
 use crate::{
-    error::{Error, ErrorKind},
-    utils::{convert_exchange, sp_call_error, sp_call_parse_address, string_to_u256},
+    error::Error,
+    utils::{
+        convert_exchange, encode_swap_params, sp_call_error, sp_call_parse_address, string_to_u256,
+    },
 };
 
 use super::log_cellar_call;
@@ -67,10 +63,11 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
         }
         Rebalance(params) => {
             log_cellar_call(CELLAR_NAME, &RebalanceCall::function_name(), &cellar_id);
-            let swap_params =
-                encode_swap_params(params.params.ok_or_else(|| {
-                    ErrorKind::SPCallError.context("swap params cannot be empty")
-                })?)?;
+            let swap_params = encode_swap_params(
+                params
+                    .params
+                    .ok_or_else(|| sp_call_error("swap params cannot be empty".to_string()))?,
+            )?;
 
             info!("encoded: {:?}", hex::encode(&swap_params));
 
@@ -167,63 +164,6 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
             };
 
             Ok(CellarV1Calls::SetRebalanceDeviation(call).encode())
-        }
-    }
-}
-
-/// Encodes the swap params as ABI-encoded bytes to be passed as args to the underlying
-/// swap function
-fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
-    match params
-        .params
-        .ok_or_else(|| sp_call_error("swap params cannot be unspecified".to_string()))?
-    {
-        Univ2Params(p) => {
-            let mut path = Vec::<Token>::new();
-
-            for a in p.path {
-                let address = a.parse::<EthereumAddress>();
-                if address.is_err() {
-                    return Err(sp_call_error(format!(
-                        "could not parse swap params path address: {}",
-                        a
-                    )));
-                }
-
-                path.push(Token::Address(address.unwrap()))
-            }
-
-            let path = Token::Array(path);
-            let amount = Token::Uint(string_to_u256(p.amount)?);
-            let amount_out_min = Token::Uint(string_to_u256(p.amount_out_min)?);
-            Ok(abi::encode(&[path, amount, amount_out_min]))
-        }
-        Univ3Params(p) => {
-            let mut path = Vec::<Token>::new();
-            for a in p.path {
-                let address = a.parse::<EthereumAddress>();
-                if address.is_err() {
-                    return Err(sp_call_error(format!(
-                        "could not parse swap params path address: {}",
-                        a
-                    )));
-                }
-
-                path.push(Token::Address(address.unwrap()))
-            }
-
-            let path = Token::Array(path);
-
-            let mut pool = Vec::<Token>::new();
-            for f in p.pool_fees {
-                pool.push(Token::Uint(f.into()))
-            }
-
-            let pool = Token::Array(pool);
-            let amount = Token::Uint(string_to_u256(p.amount)?);
-            let amount_out_min = Token::Uint(string_to_u256(p.amount_out_min)?);
-
-            Ok(abi::encode(&[path, pool, amount, amount_out_min]))
         }
     }
 }

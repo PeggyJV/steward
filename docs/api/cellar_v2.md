@@ -9,7 +9,6 @@
     - [CellarV2.AddPosition](#steward-v2-CellarV2-AddPosition)
     - [CellarV2.CallOnAdaptor](#steward-v2-CellarV2-CallOnAdaptor)
     - [CellarV2.RemovePosition](#steward-v2-CellarV2-RemovePosition)
-    - [CellarV2.SetDepositLimit](#steward-v2-CellarV2-SetDepositLimit)
     - [CellarV2.SetHoldingPosition](#steward-v2-CellarV2-SetHoldingPosition)
     - [CellarV2.SetLiquidityLimit](#steward-v2-CellarV2-SetLiquidityLimit)
     - [CellarV2.SetRebalanceDeviation](#steward-v2-CellarV2-SetRebalanceDeviation)
@@ -119,23 +118,6 @@ Represents function `removePosition(uint32 index, bool inDebtArray)`
 | ----- | ---- | ----- | ----------- |
 | index | [uint32](#uint32) |  | Index at which to remove the position |
 | in_debt_array | [bool](#bool) |  | Whether to remove position from the debt array, or the credit array. |
-
-
-
-
-
-
-<a name="steward-v2-CellarV2-SetDepositLimit"></a>
-
-### CellarV2.SetDepositLimit
-Set the per-wallet deposit limit. Uses the same decimals as the current asset.
-
-Represents function `setDepositLimit()`
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| new_limit | [string](#string) |  |  |
 
 
 
