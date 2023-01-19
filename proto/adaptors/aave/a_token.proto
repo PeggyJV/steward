@@ -7,26 +7,13 @@ package steward.v2;
 
 option go_package = "/steward_proto";
 
-import "adaptors/base.proto";
-
 // Represents call data for the Aave AToken adaptor, used to manage lending positions on Aave
 message AaveATokenAdaptor {
     oneof function {
-        /***** BASE ADAPTOR FUNCTIONS *****/
-
-        // Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
-        Swap swap = 1;
-        // Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
-        OracleSwap oracle_swap = 2;
-        // Represents function `revokeApproval(ERC20 asset, address spender)`
-        RevokeApproval revoke_approval = 3;
-
-        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
-
         // Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
-        DepositToAave deposit_to_aave = 4;
+        DepositToAave deposit_to_aave = 1;
         // Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
-        WithdrawFromAave withdraw_from_aave = 5;
+        WithdrawFromAave withdraw_from_aave = 2;
     }
 
     /*

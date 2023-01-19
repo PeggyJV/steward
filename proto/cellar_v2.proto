@@ -9,6 +9,7 @@ package steward.v2;
 
 option go_package = "/steward_proto";
 
+import "adaptors/base.proto";
 import "adaptors/aave/a_token.proto";
 import "adaptors/aave/debt_token.proto";
 import "adaptors/compound/c_token.proto";
@@ -61,16 +62,18 @@ message CellarV2 {
         string adaptor = 1;
         // The function call data for the adaptor
         oneof call_data {
+            // Represents base adaptor function calls native to all adaptors
+            BaseAdaptorCalls base_calls = 2;
             // Represents function calls to the UniswapV3Adaptor
-            UniswapV3AdaptorCalls uniswap_v3_calls = 2;
+            UniswapV3AdaptorCalls uniswap_v3_calls = 3;
             // Represents function calls to the AaveATokenAdaptor
-            AaveATokenAdaptorCalls aave_a_token_calls = 3;
+            AaveATokenAdaptorCalls aave_a_token_calls = 4;
             // Represents function calls to the AavaDebtTokenAdaptor
-            AaveDebtTokenAdaptorCalls aave_debt_token_calls = 4;
+            AaveDebtTokenAdaptorCalls aave_debt_token_calls = 5;
             // Represents function calls to the CompoundCTokenAdaptor
-            CompoundCTokenAdaptorCalls compound_c_token_calls = 5;
+            CompoundCTokenAdaptorCalls compound_c_token_calls = 6;
             // Represents function calls to the VestingSimpleAdaptor
-            VestingSimpleAdaptorCalls vesting_simple_calls = 6;
+            VestingSimpleAdaptorCalls vesting_simple_calls = 7;
         }
     }
 

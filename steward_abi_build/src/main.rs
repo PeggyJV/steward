@@ -8,6 +8,7 @@ fn main() {
         ("AaveV2StablecoinCellar", "aave_v2_stablecoin"),
         ("CellarV1", "cellar_v1"),
         ("CellarV2", "cellar_v2"),
+        ("BaseAdaptor", "base_adaptor"),
         ("UniswapV3Adaptor", "uniswap_v3_adaptor"),
         ("AaveATokenAdaptor", "aave_a_token_adaptor"),
         ("AaveDebtTokenAdaptor", "aave_debt_token_adaptor"),

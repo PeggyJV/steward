@@ -7,29 +7,17 @@ package steward.v2;
 
 option go_package = "/steward_proto";
 
-import "adaptors/base.proto";
 import "common.proto";
 
 // Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
 message AaveDebtTokenAdaptor {
     oneof function {
-        /***** BASE ADAPTOR FUNCTIONS *****/
-
-        // Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
-        Swap swap = 1;
-        // Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
-        OracleSwap oracle_swap = 2;
-        // Represents function `revokeApproval(ERC20 asset, address spender)`
-        RevokeApproval revoke_approval = 3;
-
-        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
-
         // Represents function `borrowFromAave(ERC20 debtTokenToBorrow, uint256 amountToBorrow)`
-        BorrowFromAave borrow_from_aave = 4;
+        BorrowFromAave borrow_from_aave = 1;
         // Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
-        RepayAaveDebt repay_aave_debt = 5;
+        RepayAaveDebt repay_aave_debt = 2;
         // Represents function `swapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
-        SwapAndRepay swap_and_repay = 6;
+        SwapAndRepay swap_and_repay = 3;
     }
 
     /*
