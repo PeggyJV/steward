@@ -705,57 +705,6 @@ func (x *CellarV2_SwapPositions) GetInDebtArray() bool {
 }
 
 //
-// Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.
-//
-// Represents function `setLiquidityLimit()`
-type CellarV2_SetLiquidityLimit struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	NewLimit string `protobuf:"bytes,1,opt,name=new_limit,json=newLimit,proto3" json:"new_limit,omitempty"`
-}
-
-func (x *CellarV2_SetLiquidityLimit) Reset() {
-	*x = CellarV2_SetLiquidityLimit{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[8]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *CellarV2_SetLiquidityLimit) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CellarV2_SetLiquidityLimit) ProtoMessage() {}
-
-func (x *CellarV2_SetLiquidityLimit) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[8]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CellarV2_SetLiquidityLimit.ProtoReflect.Descriptor instead.
-func (*CellarV2_SetLiquidityLimit) Descriptor() ([]byte, []int) {
-	return file_cellar_v2_proto_rawDescGZIP(), []int{0, 7}
-}
-
-func (x *CellarV2_SetLiquidityLimit) GetNewLimit() string {
-	if x != nil {
-		return x.NewLimit
-	}
-	return ""
-}
-
-//
 // Allows share lock period to be updated.
 //
 // Represents function `setShareLockPeriod()`
@@ -770,7 +719,7 @@ type CellarV2_SetShareLockPeriod struct {
 func (x *CellarV2_SetShareLockPeriod) Reset() {
 	*x = CellarV2_SetShareLockPeriod{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[9]
+		mi := &file_cellar_v2_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -783,7 +732,7 @@ func (x *CellarV2_SetShareLockPeriod) String() string {
 func (*CellarV2_SetShareLockPeriod) ProtoMessage() {}
 
 func (x *CellarV2_SetShareLockPeriod) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[9]
+	mi := &file_cellar_v2_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -796,7 +745,7 @@ func (x *CellarV2_SetShareLockPeriod) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CellarV2_SetShareLockPeriod.ProtoReflect.Descriptor instead.
 func (*CellarV2_SetShareLockPeriod) Descriptor() ([]byte, []int) {
-	return file_cellar_v2_proto_rawDescGZIP(), []int{0, 8}
+	return file_cellar_v2_proto_rawDescGZIP(), []int{0, 7}
 }
 
 func (x *CellarV2_SetShareLockPeriod) GetNewLock() string {
@@ -822,7 +771,7 @@ type CellarV2_SetRebalanceDeviation struct {
 func (x *CellarV2_SetRebalanceDeviation) Reset() {
 	*x = CellarV2_SetRebalanceDeviation{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[10]
+		mi := &file_cellar_v2_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -835,7 +784,7 @@ func (x *CellarV2_SetRebalanceDeviation) String() string {
 func (*CellarV2_SetRebalanceDeviation) ProtoMessage() {}
 
 func (x *CellarV2_SetRebalanceDeviation) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[10]
+	mi := &file_cellar_v2_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -848,7 +797,7 @@ func (x *CellarV2_SetRebalanceDeviation) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CellarV2_SetRebalanceDeviation.ProtoReflect.Descriptor instead.
 func (*CellarV2_SetRebalanceDeviation) Descriptor() ([]byte, []int) {
-	return file_cellar_v2_proto_rawDescGZIP(), []int{0, 9}
+	return file_cellar_v2_proto_rawDescGZIP(), []int{0, 8}
 }
 
 func (x *CellarV2_SetRebalanceDeviation) GetNewDeviation() string {
@@ -872,7 +821,7 @@ var file_cellar_v2_proto_rawDesc = []byte{
 	0x70, 0x74, 0x6f, 0x72, 0x73, 0x2f, 0x75, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x2f, 0x75, 0x6e,
 	0x69, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x76, 0x33, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1d,
 	0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x73, 0x2f, 0x76, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67,
-	0x5f, 0x73, 0x69, 0x6d, 0x70, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xf0, 0x0e,
+	0x5f, 0x73, 0x69, 0x6d, 0x70, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xbe, 0x0e,
 	0x0a, 0x08, 0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x12, 0x45, 0x0a, 0x0c, 0x61, 0x64,
 	0x64, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
 	0x32, 0x20, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x32, 0x2e, 0x43, 0x65,
@@ -981,19 +930,16 @@ var file_cellar_v2_proto_rawDesc = []byte{
 	0x32, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x06, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x32, 0x12,
 	0x22, 0x0a, 0x0d, 0x69, 0x6e, 0x5f, 0x64, 0x65, 0x62, 0x74, 0x5f, 0x61, 0x72, 0x72, 0x61, 0x79,
 	0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0b, 0x69, 0x6e, 0x44, 0x65, 0x62, 0x74, 0x41, 0x72,
-	0x72, 0x61, 0x79, 0x1a, 0x30, 0x0a, 0x11, 0x53, 0x65, 0x74, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64,
-	0x69, 0x74, 0x79, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x6e, 0x65, 0x77, 0x5f,
-	0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6e, 0x65, 0x77,
-	0x4c, 0x69, 0x6d, 0x69, 0x74, 0x1a, 0x2f, 0x0a, 0x12, 0x53, 0x65, 0x74, 0x53, 0x68, 0x61, 0x72,
-	0x65, 0x4c, 0x6f, 0x63, 0x6b, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x6e,
-	0x65, 0x77, 0x5f, 0x6c, 0x6f, 0x63, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6e,
-	0x65, 0x77, 0x4c, 0x6f, 0x63, 0x6b, 0x1a, 0x3c, 0x0a, 0x15, 0x53, 0x65, 0x74, 0x52, 0x65, 0x62,
-	0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x44, 0x65, 0x76, 0x69, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12,
-	0x23, 0x0a, 0x0d, 0x6e, 0x65, 0x77, 0x5f, 0x64, 0x65, 0x76, 0x69, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x6e, 0x65, 0x77, 0x44, 0x65, 0x76, 0x69, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x42, 0x0a, 0x0a, 0x08, 0x66, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e,
-	0x42, 0x10, 0x5a, 0x0e, 0x2f, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x72, 0x61, 0x79, 0x1a, 0x2f, 0x0a, 0x12, 0x53, 0x65, 0x74, 0x53, 0x68, 0x61, 0x72, 0x65, 0x4c,
+	0x6f, 0x63, 0x6b, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x6e, 0x65, 0x77,
+	0x5f, 0x6c, 0x6f, 0x63, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6e, 0x65, 0x77,
+	0x4c, 0x6f, 0x63, 0x6b, 0x1a, 0x3c, 0x0a, 0x15, 0x53, 0x65, 0x74, 0x52, 0x65, 0x62, 0x61, 0x6c,
+	0x61, 0x6e, 0x63, 0x65, 0x44, 0x65, 0x76, 0x69, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x23, 0x0a,
+	0x0d, 0x6e, 0x65, 0x77, 0x5f, 0x64, 0x65, 0x76, 0x69, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x6e, 0x65, 0x77, 0x44, 0x65, 0x76, 0x69, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x42, 0x0a, 0x0a, 0x08, 0x66, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x10,
+	0x5a, 0x0e, 0x2f, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1008,7 +954,7 @@ func file_cellar_v2_proto_rawDescGZIP() []byte {
 	return file_cellar_v2_proto_rawDescData
 }
 
-var file_cellar_v2_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_cellar_v2_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_cellar_v2_proto_goTypes = []interface{}{
 	(*CellarV2)(nil),                            // 0: steward.v2.CellarV2
 	(*CellarV2_AddPosition)(nil),                // 1: steward.v2.CellarV2.AddPosition
@@ -1018,14 +964,13 @@ var file_cellar_v2_proto_goTypes = []interface{}{
 	(*CellarV2_SetHoldingPosition)(nil),         // 5: steward.v2.CellarV2.SetHoldingPosition
 	(*CellarV2_SetStrategistPayoutAddress)(nil), // 6: steward.v2.CellarV2.SetStrategistPayoutAddress
 	(*CellarV2_SwapPositions)(nil),              // 7: steward.v2.CellarV2.SwapPositions
-	(*CellarV2_SetLiquidityLimit)(nil),          // 8: steward.v2.CellarV2.SetLiquidityLimit
-	(*CellarV2_SetShareLockPeriod)(nil),         // 9: steward.v2.CellarV2.SetShareLockPeriod
-	(*CellarV2_SetRebalanceDeviation)(nil),      // 10: steward.v2.CellarV2.SetRebalanceDeviation
-	(*UniswapV3AdaptorCalls)(nil),               // 11: steward.v2.UniswapV3AdaptorCalls
-	(*AaveATokenAdaptorCalls)(nil),              // 12: steward.v2.AaveATokenAdaptorCalls
-	(*AaveDebtTokenAdaptorCalls)(nil),           // 13: steward.v2.AaveDebtTokenAdaptorCalls
-	(*CompoundCTokenAdaptorCalls)(nil),          // 14: steward.v2.CompoundCTokenAdaptorCalls
-	(*VestingSimpleAdaptorCalls)(nil),           // 15: steward.v2.VestingSimpleAdaptorCalls
+	(*CellarV2_SetShareLockPeriod)(nil),         // 8: steward.v2.CellarV2.SetShareLockPeriod
+	(*CellarV2_SetRebalanceDeviation)(nil),      // 9: steward.v2.CellarV2.SetRebalanceDeviation
+	(*UniswapV3AdaptorCalls)(nil),               // 10: steward.v2.UniswapV3AdaptorCalls
+	(*AaveATokenAdaptorCalls)(nil),              // 11: steward.v2.AaveATokenAdaptorCalls
+	(*AaveDebtTokenAdaptorCalls)(nil),           // 12: steward.v2.AaveDebtTokenAdaptorCalls
+	(*CompoundCTokenAdaptorCalls)(nil),          // 13: steward.v2.CompoundCTokenAdaptorCalls
+	(*VestingSimpleAdaptorCalls)(nil),           // 14: steward.v2.VestingSimpleAdaptorCalls
 }
 var file_cellar_v2_proto_depIdxs = []int32{
 	1,  // 0: steward.v2.CellarV2.add_position:type_name -> steward.v2.CellarV2.AddPosition
@@ -1034,13 +979,13 @@ var file_cellar_v2_proto_depIdxs = []int32{
 	5,  // 3: steward.v2.CellarV2.set_holding_position:type_name -> steward.v2.CellarV2.SetHoldingPosition
 	6,  // 4: steward.v2.CellarV2.set_strategist_payout_address:type_name -> steward.v2.CellarV2.SetStrategistPayoutAddress
 	7,  // 5: steward.v2.CellarV2.swap_positions:type_name -> steward.v2.CellarV2.SwapPositions
-	10, // 6: steward.v2.CellarV2.set_rebalance_deviation:type_name -> steward.v2.CellarV2.SetRebalanceDeviation
-	9,  // 7: steward.v2.CellarV2.set_share_lock_period:type_name -> steward.v2.CellarV2.SetShareLockPeriod
-	11, // 8: steward.v2.CellarV2.AdaptorCall.uniswap_v3_calls:type_name -> steward.v2.UniswapV3AdaptorCalls
-	12, // 9: steward.v2.CellarV2.AdaptorCall.aave_a_token_calls:type_name -> steward.v2.AaveATokenAdaptorCalls
-	13, // 10: steward.v2.CellarV2.AdaptorCall.aave_debt_token_calls:type_name -> steward.v2.AaveDebtTokenAdaptorCalls
-	14, // 11: steward.v2.CellarV2.AdaptorCall.compound_c_token_calls:type_name -> steward.v2.CompoundCTokenAdaptorCalls
-	15, // 12: steward.v2.CellarV2.AdaptorCall.vesting_simple_calls:type_name -> steward.v2.VestingSimpleAdaptorCalls
+	9,  // 6: steward.v2.CellarV2.set_rebalance_deviation:type_name -> steward.v2.CellarV2.SetRebalanceDeviation
+	8,  // 7: steward.v2.CellarV2.set_share_lock_period:type_name -> steward.v2.CellarV2.SetShareLockPeriod
+	10, // 8: steward.v2.CellarV2.AdaptorCall.uniswap_v3_calls:type_name -> steward.v2.UniswapV3AdaptorCalls
+	11, // 9: steward.v2.CellarV2.AdaptorCall.aave_a_token_calls:type_name -> steward.v2.AaveATokenAdaptorCalls
+	12, // 10: steward.v2.CellarV2.AdaptorCall.aave_debt_token_calls:type_name -> steward.v2.AaveDebtTokenAdaptorCalls
+	13, // 11: steward.v2.CellarV2.AdaptorCall.compound_c_token_calls:type_name -> steward.v2.CompoundCTokenAdaptorCalls
+	14, // 12: steward.v2.CellarV2.AdaptorCall.vesting_simple_calls:type_name -> steward.v2.VestingSimpleAdaptorCalls
 	2,  // 13: steward.v2.CellarV2.CallOnAdaptor.data:type_name -> steward.v2.CellarV2.AdaptorCall
 	14, // [14:14] is the sub-list for method output_type
 	14, // [14:14] is the sub-list for method input_type
@@ -1157,18 +1102,6 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_SetLiquidityLimit); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_cellar_v2_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CellarV2_SetShareLockPeriod); i {
 			case 0:
 				return &v.state
@@ -1180,7 +1113,7 @@ func file_cellar_v2_proto_init() {
 				return nil
 			}
 		}
-		file_cellar_v2_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+		file_cellar_v2_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CellarV2_SetRebalanceDeviation); i {
 			case 0:
 				return &v.state
@@ -1216,7 +1149,7 @@ func file_cellar_v2_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_cellar_v2_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   11,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

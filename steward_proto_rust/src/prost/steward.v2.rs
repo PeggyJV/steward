@@ -909,15 +909,6 @@ pub mod cellar_v2 {
         pub in_debt_array: bool,
     }
     ///
-    /// Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.
-    ///
-    /// Represents function `setLiquidityLimit()`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct SetLiquidityLimit {
-        #[prost(string, tag = "1")]
-        pub new_limit: ::prost::alloc::string::String,
-    }
-    ///
     /// Allows share lock period to be updated.
     ///
     /// Represents function `setShareLockPeriod()`

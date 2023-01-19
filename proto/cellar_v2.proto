@@ -129,15 +129,6 @@ message CellarV2 {
     }
 
     /*
-    * Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.
-    *
-    * Represents function `setLiquidityLimit()`
-    */
-    message SetLiquidityLimit {
-        string new_limit = 1;
-    }
-
-    /*
     * Allows share lock period to be updated.
     *
     * Represents function `setShareLockPeriod()`
