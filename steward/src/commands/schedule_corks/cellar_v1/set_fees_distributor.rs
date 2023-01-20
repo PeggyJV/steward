@@ -2,7 +2,7 @@ use crate::{application::APP, cellars, cork, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use deep_space::Address;
 use ethers::abi::AbiEncode;
-use steward_abi::cellar::*;
+use steward_abi::cellar_v1::*;
 
 /// Fees Distributor subcommand
 #[derive(Command, Debug, Parser)]
@@ -37,7 +37,7 @@ impl Runnable for SetFeesDistributorCmd {
             let call = SetFeesDistributorCall {
                 new_fees_distributor: address_slice,
             };
-            let encoded_call = CellarCalls::SetFeesDistributor(call).encode();
+            let encoded_call = CellarV1Calls::SetFeesDistributor(call).encode();
 
             cellars::validate_cellar_id(&self.cellar_id).unwrap_or_else(|err| {
                 status_err!("invalid cellar ID: {}", err);

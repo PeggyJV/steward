@@ -31,6 +31,7 @@ Represents a single function call on a particular Cellar
 | cellar_id | [string](#string) |  | The ID (currently simply an Ethereum address) of the target Cellar |
 | aave_v2_stablecoin | [AaveV2Stablecoin](#steward-v2-AaveV2Stablecoin) |  |  |
 | cellar_v1 | [CellarV1](#steward-v2-CellarV1) |  |  |
+| cellar_v2 | [CellarV2](#steward-v2-CellarV2) |  |  |
 
 
 

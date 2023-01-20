@@ -16,12 +16,8 @@
     - [CellarV1.SetShareLockPeriod](#steward-v2-CellarV1-SetShareLockPeriod)
     - [CellarV1.SetStrategistPayoutAddress](#steward-v2-CellarV1-SetStrategistPayoutAddress)
     - [CellarV1.SetWithdrawType](#steward-v2-CellarV1-SetWithdrawType)
-    - [CellarV1.SwapParams](#steward-v2-CellarV1-SwapParams)
     - [CellarV1.SwapPositions](#steward-v2-CellarV1-SwapPositions)
-    - [CellarV1.UniV2SwapParams](#steward-v2-CellarV1-UniV2SwapParams)
-    - [CellarV1.UniV3SwapParams](#steward-v2-CellarV1-UniV3SwapParams)
   
-    - [CellarV1.Exchange](#steward-v2-CellarV1-Exchange)
     - [CellarV1.WithdrawType](#steward-v2-CellarV1-WithdrawType)
   
 - [Scalar Value Types](#scalar-value-types)
@@ -113,8 +109,8 @@ Represents function `rebalance(address fromPosition, address toPosition,
 | from_position | [string](#string) |  |  |
 | to_position | [string](#string) |  |  |
 | assets_from | [string](#string) |  |  |
-| exchange | [CellarV1.Exchange](#steward-v2-CellarV1-Exchange) |  |  |
-| params | [CellarV1.SwapParams](#steward-v2-CellarV1-SwapParams) |  |  |
+| exchange | [Exchange](#steward-v2-Exchange) |  |  |
+| params | [SwapParams](#steward-v2-SwapParams) |  |  |
 
 
 
@@ -255,22 +251,6 @@ Represents function `setWithdrawType(WithdrawType newWithdrawType)`
 
 
 
-<a name="steward-v2-CellarV1-SwapParams"></a>
-
-### CellarV1.SwapParams
-Represents swap parameters for an exchange
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| univ2_params | [CellarV1.UniV2SwapParams](#steward-v2-CellarV1-UniV2SwapParams) |  | Params for a Uniswap V2 swap |
-| univ3_params | [CellarV1.UniV3SwapParams](#steward-v2-CellarV1-UniV3SwapParams) |  | Params for a Uniswap V3 swap |
-
-
-
-
-
-
 <a name="steward-v2-CellarV1-SwapPositions"></a>
 
 ### CellarV1.SwapPositions
@@ -288,55 +268,7 @@ Represents function `swapPositions(uint256 index1, uint256 index2)`
 
 
 
-
-<a name="steward-v2-CellarV1-UniV2SwapParams"></a>
-
-### CellarV1.UniV2SwapParams
-Represents swap parameters for UniswapV2
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| path | [string](#string) | repeated | Array of addresses dictating what swap path to follow |
-| amount | [string](#string) |  | Amount of the first asset in the path to swap |
-| amount_out_min | [string](#string) |  | The minimum amount of the last asset in the path to receive |
-
-
-
-
-
-
-<a name="steward-v2-CellarV1-UniV3SwapParams"></a>
-
-### CellarV1.UniV3SwapParams
-Represents swap parameters for UniswapV3
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| path | [string](#string) | repeated | Array of addresses dictating what swap path to follow |
-| pool_fees | [uint32](#uint32) | repeated | Array of pool fees dictating what swap pools to use |
-| amount | [string](#string) |  | Amount of the first asset in the path to swap |
-| amount_out_min | [string](#string) |  | The minimum amount of the last asset in the path to receive |
-
-
-
-
-
  
-
-
-<a name="steward-v2-CellarV1-Exchange"></a>
-
-### CellarV1.Exchange
-Exchange selector
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| EXCHANGE_UNSPECIFIED | 0 |  |
-| EXCHANGE_UNIV2 | 1 | Represents Uniswap V2 |
-| EXCHANGE_UNIV3 | 2 | Represents Uniswap V3 |
-
 
 
 <a name="steward-v2-CellarV1-WithdrawType"></a>

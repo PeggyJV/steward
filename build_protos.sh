@@ -17,8 +17,8 @@ echo Building Go bindings. Output will be in ./steward_proto_go/steward_proto
 protoc --proto_path=$PROTO_PATH \
 	--go_out=$GO_OUT/ \
 	--go-grpc_out=$GO_OUT/ \
-    $PROTO_PATH/steward.proto \
-	$PROTO_PATH/aave_v2_stablecoin.proto \
-	$PROTO_PATH/cellar_v1.proto
+    $PROTO_PATH/*.proto \
+	$PROTO_PATH/adaptors/*.proto \
+	$PROTO_PATH/adaptors/*/*.proto
 
 echo Done!

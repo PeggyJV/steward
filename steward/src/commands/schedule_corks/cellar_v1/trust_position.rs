@@ -1,7 +1,7 @@
 use crate::{application::APP, cellars, cork, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::abi::{AbiEncode, Address};
-use steward_abi::cellar::*;
+use steward_abi::cellar_v1::*;
 
 /// Fees Distributor subcommand
 #[derive(Command, Debug, Parser)]
@@ -33,7 +33,7 @@ impl Runnable for TrustPositionCmd {
                 position: self.position,
                 position_type: self.position_type,
             };
-            let encoded_call = CellarCalls::TrustPosition(call).encode();
+            let encoded_call = CellarV1Calls::TrustPosition(call).encode();
 
             cellars::validate_cellar_id(&self.cellar_id).unwrap_or_else(|err| {
                 status_err!("invalid cellar ID: {}", err);

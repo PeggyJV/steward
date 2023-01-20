@@ -1,7 +1,7 @@
 use crate::{application::APP, cellars, cork, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::abi::AbiEncode;
-use steward_abi::cellar::*;
+use steward_abi::cellar_v1::*;
 
 #[derive(Command, Debug, Parser)]
 #[clap(
@@ -21,7 +21,7 @@ impl Runnable for InitiateShutdownCmd {
     fn run(&self) {
         abscissa_tokio::run_with_actix(&APP, async {
             let call = InitiateShutdownCall {};
-            let encoded_call = CellarCalls::InitiateShutdown(call).encode();
+            let encoded_call = CellarV1Calls::InitiateShutdown(call).encode();
 
             cellars::validate_cellar_id(&self.cellar_id).unwrap_or_else(|err| {
                 status_err!("invalid cellar ID: {}", err);

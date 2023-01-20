@@ -1,7 +1,7 @@
 use crate::{application::APP, cellars, cork, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::abi::{AbiEncode, Address};
-use steward_abi::cellar::*;
+use steward_abi::cellar_v1::*;
 
 /// Fees Distributor subcommand
 #[derive(Command, Debug, Parser)]
@@ -28,7 +28,7 @@ impl Runnable for SetOwnerCmd {
             let call = SetOwnerCall {
                 new_owner: self.new_owner,
             };
-            let encoded_call = CellarCalls::SetOwner(call).encode();
+            let encoded_call = CellarV1Calls::SetOwner(call).encode();
 
             cellars::validate_cellar_id(&self.cellar_id).unwrap_or_else(|err| {
                 status_err!("invalid cellar ID: {}", err);

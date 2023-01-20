@@ -1,0 +1,358 @@
+[
+    {
+        "inputs": [],
+        "name": "BaseAdaptor__BadSlippage",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "BaseAdaptor__ExchangeNotSupported",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "BaseAdaptor__ExternalReceiverBlocked",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "BaseAdaptor__UserDepositsNotAllowed",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "BaseAdaptor__UserWithdrawsNotAllowed",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes",
+                "name": "adaptorData",
+                "type": "bytes"
+            }
+        ],
+        "name": "assetOf",
+        "outputs": [
+            {
+                "internalType": "contract ERC20",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes",
+                "name": "adaptorData",
+                "type": "bytes"
+            }
+        ],
+        "name": "assetsUsed",
+        "outputs": [
+            {
+                "internalType": "contract ERC20[]",
+                "name": "assets",
+                "type": "address[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes",
+                "name": "adaptorData",
+                "type": "bytes"
+            }
+        ],
+        "name": "balanceOf",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bytes",
+                "name": "",
+                "type": "bytes"
+            },
+            {
+                "internalType": "bytes",
+                "name": "",
+                "type": "bytes"
+            }
+        ],
+        "name": "deposit",
+        "outputs": [],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract VestingSimple",
+                "name": "vestingContract",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amountToDeposit",
+                "type": "uint256"
+            }
+        ],
+        "name": "depositToVesting",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "identifier",
+        "outputs": [
+            {
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
+            }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "isDebt",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract ERC20",
+                "name": "assetIn",
+                "type": "address"
+            },
+            {
+                "internalType": "contract ERC20",
+                "name": "assetOut",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amountIn",
+                "type": "uint256"
+            },
+            {
+                "internalType": "enum SwapRouter.Exchange",
+                "name": "exchange",
+                "type": "uint8"
+            },
+            {
+                "internalType": "bytes",
+                "name": "params",
+                "type": "bytes"
+            },
+            {
+                "internalType": "uint64",
+                "name": "slippage",
+                "type": "uint64"
+            }
+        ],
+        "name": "oracleSwap",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "amountOut",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract ERC20",
+                "name": "asset",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+            }
+        ],
+        "name": "revokeApproval",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract ERC20",
+                "name": "assetIn",
+                "type": "address"
+            },
+            {
+                "internalType": "contract ERC20",
+                "name": "assetOut",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amountIn",
+                "type": "uint256"
+            },
+            {
+                "internalType": "enum SwapRouter.Exchange",
+                "name": "exchange",
+                "type": "uint8"
+            },
+            {
+                "internalType": "bytes",
+                "name": "params",
+                "type": "bytes"
+            }
+        ],
+        "name": "swap",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "amountOut",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "assets",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "receiver",
+                "type": "address"
+            },
+            {
+                "internalType": "bytes",
+                "name": "adaptorData",
+                "type": "bytes"
+            },
+            {
+                "internalType": "bytes",
+                "name": "",
+                "type": "bytes"
+            }
+        ],
+        "name": "withdraw",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract VestingSimple",
+                "name": "vestingContract",
+                "type": "address"
+            }
+        ],
+        "name": "withdrawAllFromVesting",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract VestingSimple",
+                "name": "vestingContract",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amountToWithdraw",
+                "type": "uint256"
+            }
+        ],
+        "name": "withdrawAnyFromVesting",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract VestingSimple",
+                "name": "vestingContract",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "depositId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amountToWithdraw",
+                "type": "uint256"
+            }
+        ],
+        "name": "withdrawFromVesting",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes",
+                "name": "adaptorData",
+                "type": "bytes"
+            },
+            {
+                "internalType": "bytes",
+                "name": "",
+                "type": "bytes"
+            }
+        ],
+        "name": "withdrawableFrom",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]
