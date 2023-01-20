@@ -13,14 +13,25 @@ import "common.proto";
 // Represents call data for the Compound C Token adaptor, managing lending positions on Compound.
 message CompoundCTokenAdaptor {
     oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+        Swap swap = 1;
+        // Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+        OracleSwap oracle_swap = 2;
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 3;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
         // Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
-        DepositToCompound deposit_to_compound = 1;
+        DepositToCompound deposit_to_compound = 4;
         // Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)`
-        WithdrawFromCompound withdraw_from_compound = 2;
+        WithdrawFromCompound withdraw_from_compound = 5;
         // Represents function `claimComp()`
-        ClaimComp claim_comp = 3;
+        ClaimComp claim_comp = 6;
         // Represents function `claimCompAndSwap(ERC20 assetOut, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
-        ClaimCompAndSwap claim_comp_and_swap = 4;
+        ClaimCompAndSwap claim_comp_and_swap = 7;
     }
 
     /*

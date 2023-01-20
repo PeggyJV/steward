@@ -9,18 +9,6 @@ option go_package = "/steward_proto";
 
 import "common.proto";
 
-// Represents call data for the Aave AToken adaptor, used to manage lending positions on Aave
-message BaseAdaptor {
-    oneof function {
-        // Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
-        Swap swap = 1;
-        // Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
-        OracleSwap oracle_swap = 2;
-        // Represents function `revokeApproval(ERC20 asset, address spender)`
-        RevokeApproval revoke_approval = 3;
-    }
-}
-
 /*
 * Helper function that allows swaps using the Swap Router
 *
@@ -69,8 +57,4 @@ message RevokeApproval {
     string asset = 1;
     // The spender to revoke approval of asset for
     string spender = 2;
-}
-
-message BaseAdaptorCalls {
-    repeated BaseAdaptor calls = 1;
 }
