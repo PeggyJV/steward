@@ -9,9 +9,7 @@
     - [CellarV2.AddPosition](#steward-v3-CellarV2-AddPosition)
     - [CellarV2.CallOnAdaptor](#steward-v3-CellarV2-CallOnAdaptor)
     - [CellarV2.RemovePosition](#steward-v3-CellarV2-RemovePosition)
-    - [CellarV2.SetDepositLimit](#steward-v3-CellarV2-SetDepositLimit)
     - [CellarV2.SetHoldingPosition](#steward-v3-CellarV2-SetHoldingPosition)
-    - [CellarV2.SetLiquidityLimit](#steward-v3-CellarV2-SetLiquidityLimit)
     - [CellarV2.SetRebalanceDeviation](#steward-v3-CellarV2-SetRebalanceDeviation)
     - [CellarV2.SetShareLockPeriod](#steward-v3-CellarV2-SetShareLockPeriod)
     - [CellarV2.SetStrategistPayoutAddress](#steward-v3-CellarV2-SetStrategistPayoutAddress)
@@ -131,23 +129,6 @@ Represents function `removePosition(uint32 index, bool inDebtArray)`
 
 
 
-<a name="steward-v3-CellarV2-SetDepositLimit"></a>
-
-### CellarV2.SetDepositLimit
-Set the per-wallet deposit limit. Uses the same decimals as the current asset.
-
-Represents function `setDepositLimit()`
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| new_limit | [string](#string) |  |  |
-
-
-
-
-
-
 <a name="steward-v3-CellarV2-SetHoldingPosition"></a>
 
 ### CellarV2.SetHoldingPosition
@@ -159,23 +140,6 @@ Represents function `setHoldingIndex(uint8 index)`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | position_id | [uint32](#uint32) |  | ID (index) of the new holding position to use |
-
-
-
-
-
-
-<a name="steward-v3-CellarV2-SetLiquidityLimit"></a>
-
-### CellarV2.SetLiquidityLimit
-Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.
-
-Represents function `setLiquidityLimit()`
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| new_limit | [string](#string) |  |  |
 
 
 

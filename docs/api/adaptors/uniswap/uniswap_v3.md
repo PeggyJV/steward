@@ -100,8 +100,8 @@ Represents function openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uin
 | amount_1 | [string](#string) |  |  |
 | min_0 | [string](#string) |  |  |
 | min_1 | [string](#string) |  |  |
-| tick_lower | [uint32](#uint32) |  |  |
-| tick_upper | [uint32](#uint32) |  |  |
+| tick_lower | [int32](#int32) |  |  |
+| tick_upper | [int32](#int32) |  |  |
 
 
 

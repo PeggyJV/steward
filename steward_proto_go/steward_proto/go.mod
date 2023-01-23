@@ -1,6 +1,6 @@
 module steward_proto
 
-go 1.15
+go 1.18
 
 require (
 	google.golang.org/grpc v1.45.0

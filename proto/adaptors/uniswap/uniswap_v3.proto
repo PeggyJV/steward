@@ -42,8 +42,8 @@ message UniswapV3Adaptor {
         string amount_1 = 5;
         string min_0 = 6;
         string min_1 = 7;
-        uint32 tick_lower = 8;
-        uint32 tick_upper = 9;
+        int32 tick_lower = 8;
+        int32 tick_upper = 9;
     }
 
     /*

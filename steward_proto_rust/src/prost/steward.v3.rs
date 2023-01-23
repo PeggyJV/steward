@@ -450,10 +450,10 @@ pub mod uniswap_v3_adaptor {
         pub min_0: ::prost::alloc::string::String,
         #[prost(string, tag = "7")]
         pub min_1: ::prost::alloc::string::String,
-        #[prost(uint32, tag = "8")]
-        pub tick_lower: u32,
-        #[prost(uint32, tag = "9")]
-        pub tick_upper: u32,
+        #[prost(int32, tag = "8")]
+        pub tick_lower: i32,
+        #[prost(int32, tag = "9")]
+        pub tick_upper: i32,
     }
     ///
     /// Allows strategist to close Uniswap V3 positions.
@@ -716,7 +716,7 @@ pub struct AaveDebtTokenAdaptorCalls {
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct AaveATokenAdaptor {
     ///**** BASE ADAPTOR FUNCTIONS ****
-    #[prost(oneof = "aave_a_token_adaptor::Function", tags = "3, 4, 5, 1, 2")]
+    #[prost(oneof = "aave_a_token_adaptor::Function", tags = "1, 2, 3, 4, 5")]
     pub function: ::core::option::Option<aave_a_token_adaptor::Function>,
 }
 /// Nested message and enum types in `AaveATokenAdaptor`.
@@ -751,20 +751,20 @@ pub mod aave_a_token_adaptor {
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum Function {
         /// Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
-        #[prost(message, tag = "3")]
+        #[prost(message, tag = "1")]
         Swap(super::Swap),
         /// Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
-        #[prost(message, tag = "4")]
+        #[prost(message, tag = "2")]
         OracleSwap(super::OracleSwap),
         /// Represents function `revokeApproval(ERC20 asset, address spender)`
-        #[prost(message, tag = "5")]
+        #[prost(message, tag = "3")]
         RevokeApproval(super::RevokeApproval),
         //**** ADAPTOR-SPECIFIC FUNCTIONS ****
         /// Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
-        #[prost(message, tag = "1")]
+        #[prost(message, tag = "4")]
         DepositToAave(DepositToAave),
         /// Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
-        #[prost(message, tag = "2")]
+        #[prost(message, tag = "5")]
         WithdrawFromAave(WithdrawFromAave),
     }
 }
@@ -1293,24 +1293,6 @@ pub mod cellar_v2 {
         /// Whether to switch positions in the debt array, or the credit array.
         #[prost(bool, tag = "3")]
         pub in_debt_array: bool,
-    }
-    ///
-    /// Set the per-wallet deposit limit. Uses the same decimals as the current asset.
-    ///
-    /// Represents function `setDepositLimit()`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct SetDepositLimit {
-        #[prost(string, tag = "1")]
-        pub new_limit: ::prost::alloc::string::String,
-    }
-    ///
-    /// Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.
-    ///
-    /// Represents function `setLiquidityLimit()`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct SetLiquidityLimit {
-        #[prost(string, tag = "1")]
-        pub new_limit: ::prost::alloc::string::String,
     }
     ///
     /// Allows share lock period to be updated.
