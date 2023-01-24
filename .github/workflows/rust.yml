@@ -1,5 +1,5 @@
 name: Rust tests
-
+# test
 on:
   push:
     branches:
