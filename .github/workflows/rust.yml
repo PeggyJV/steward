@@ -1,5 +1,4 @@
 name: Rust tests
-# test
 on:
   push:
     branches:
@@ -16,14 +15,14 @@ jobs:
       - name: Checkout branch
         uses: actions/checkout@v2
       - name: Set up Rust caches
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: rust-cache
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.toml') }}
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Run Cargo build
         run: cargo build
       - name: Run steward acceptance tests
@@ -54,6 +53,15 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
+      - name: Restore Cargo cache
+        uses: actions/cache/restore@v3
+        id: rust-cache
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Add clippy
         run: rustup component add clippy
       - name: Run clippy
