@@ -29,7 +29,6 @@ use super::{log_cellar_call, log_governance_cellar_call};
 const CELLAR_NAME: &str = "CellarV1";
 const LOG_PREFIX: &str = CELLAR_NAME;
 
-
 pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {
     match function {
         AddPosition(params) => {
