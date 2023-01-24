@@ -355,7 +355,10 @@ pub struct RevokeApproval {
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct UniswapV3Adaptor {
     ///**** BASE ADAPTOR FUNCTIONS ****
-    #[prost(oneof = "uniswap_v3_adaptor::Function", tags = "1, 2, 3, 4, 5, 6, 7")]
+    #[prost(
+        oneof = "uniswap_v3_adaptor::Function",
+        tags = "1, 2, 3, 4, 5, 6, 7, 8"
+    )]
     pub function: ::core::option::Option<uniswap_v3_adaptor::Function>,
 }
 /// Nested message and enum types in `UniswapV3Adaptor`.
@@ -432,6 +435,19 @@ pub mod uniswap_v3_adaptor {
         #[prost(bool, tag = "5")]
         pub collect_fees: bool,
     }
+    ///
+    /// Allows strategist to collect fees from existing Uniswap V3 positions.
+    ///
+    /// Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct CollectFees {
+        #[prost(string, tag = "1")]
+        pub position_id: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub amount_0: ::prost::alloc::string::String,
+        #[prost(string, tag = "3")]
+        pub amount_1: ::prost::alloc::string::String,
+    }
     ///**** BASE ADAPTOR FUNCTIONS ****
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum Function {
@@ -457,6 +473,9 @@ pub mod uniswap_v3_adaptor {
         /// Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
         #[prost(message, tag = "7")]
         TakeFromPosition(TakeFromPosition),
+        /// Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
+        #[prost(message, tag = "8")]
+        CollectFees(CollectFees),
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
