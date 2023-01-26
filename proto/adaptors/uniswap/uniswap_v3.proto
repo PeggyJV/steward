@@ -27,6 +27,8 @@ message UniswapV3Adaptor {
         AddToPosition add_to_position = 6;
         // Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
         TakeFromPosition take_from_position = 7;
+        // Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
+        CollectFees collect_fees = 8;
     }
 
     /*
@@ -80,6 +82,17 @@ message UniswapV3Adaptor {
         string min_0 = 3;
         string min_1 = 4;
         bool collect_fees = 5;
+    }
+
+    /*
+    * Allows strategist to collect fees from existing Uniswap V3 positions.
+    *
+    * Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
+    */
+    message CollectFees {
+        string position_id = 1;
+        string amount_0 = 2;
+        string amount_1 = 3;
     }
 }
 

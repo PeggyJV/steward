@@ -295,6 +295,14 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
                             };
                             calls.push(UniswapV3AdaptorCalls::RevokeApproval(call).encode().into())
                         }
+                        uniswap_v3_adaptor::Function::CollectFees(p) => {
+                            let call = steward_abi::uniswap_v3_adaptor::CollectFeesCall {
+                                position_id: string_to_u256(p.position_id)?,
+                                amount_0: string_to_u128(p.amount_0)?.as_u128(),
+                                amount_1: string_to_u128(p.amount_1)?.as_u128(),
+                            };
+                            calls.push(UniswapV3AdaptorCalls::CollectFees(call).encode().into())
+                        }
                     }
                 }
             }
