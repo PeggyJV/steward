@@ -119,6 +119,28 @@ async fn poll_approved_cork_proposals(state: &mut ProposalThreadState) -> Result
             Ok(r) => r.into_inner().proposal,
             Err(err) => {
                 if err.code() == Code::NotFound {
+                    // look ahead in case id was skipped
+                    let mut increments = 0;
+                    for i in 1..=5 {
+                        let id_to_check = proposal_id + i;
+                        if gov_client
+                            .proposal(tonic::Request::new(QueryProposalRequest {
+                                proposal_id: id_to_check,
+                            }))
+                            .await
+                            .is_err()
+                        {
+                            continue;
+                        }
+
+                        increments = i - 1;
+                    }
+
+                    if increments > 0 {
+                        state.last_processed_proposal_id += increments;
+                        continue;
+                    }
+
                     info!(
                         "no new proposals. last processed proposal ID: {}",
                         state.last_processed_proposal_id
