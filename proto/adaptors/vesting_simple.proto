@@ -1,0 +1,83 @@
+/*
+* Protos for function calls to the simple Vesting adaptor.
+*/
+
+syntax = "proto3";
+package steward.v3;
+
+option go_package = "/steward_proto";
+
+import "adaptors/base.proto";
+
+// Represents call data for the Vesting Simple adaptor
+message VestingSimpleAdaptor {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+        Swap swap = 1;
+        // Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+        OracleSwap oracle_swap = 2;
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 3;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `depositToVesting(VestingSimple vestingContract, uint256 amountToDeposit)`
+        DepositToVesting deposit_to_vesting = 4;
+        // Represents function `withdrawFromVesting(VestingSimple vestingContract, uint256 depositId, uint256 amountToWithdraw)`
+        WithdrawFromVesting withdraw_from_vesting = 5;
+        // Represents function `withdrawAnyFromVesting(VestingSimple vestingContract, uint256 amountToWithdraw)`
+        WithdrawAnyFromVesting withdraw_any_from_vesting = 6;
+        // Represents function `withdrawAllFromVesting(VestingSimple vestingContract)`
+        WithdrawAllFromVesting withdraw_all_from_vesting = 7;
+    }
+
+    /*
+    * Allows strategists to deposit tokens to the vesting contract. By passing a max uint256 for amountToDeposit, the cellar will
+    * deposit its entire balance (appropriate in most cases).
+    *
+    * Represents function `depositToVesting(VestingSimple vestingContract, uint256 amountToDeposit)`
+    */
+    message DepositToVesting {
+        string vesting_contract = 1;
+        string amount = 2;
+    }
+
+    /*
+    * Allows strategists to deposit tokens to the vesting contract. By passing a max uint256 for amountToDeposit, the cellar will
+    * deposit its entire balance (appropriate in most cases).
+    *
+    * Represents function `withdrawFromVesting(VestingSimple vestingContract, uint256 depositId, uint256 amountToWithdraw)`
+    */
+    message WithdrawFromVesting {
+        string vesting_contract = 1;
+        string deposit_id = 2;
+        string amount = 3;
+    }
+
+    /*
+    * Withdraw a single deposit from vesting. This will not affect the cellar's TVL because any deposit must already have vested, and
+    * will be reported in balanceOf. Will revert if not enough tokens are available based on amountToWithdraw.
+    *
+    * Represents function `withdrawAnyFromVesting(VestingSimple vestingContract, uint256 amountToWithdraw)`
+    */
+    message WithdrawAnyFromVesting {
+        string vesting_contract = 1;
+        string amount = 2;
+    }
+
+    /*
+    * Withdraw a certain amount of tokens from vesting, from any deposit. This will not affect the cellar's TVL because any deposit must
+    * already have vested, and will be reported in balanceOf. Will revert if not enough tokens are available based on amountToWithdraw.
+    *
+    * Represents function `withdrawAllFromVesting(VestingSimple vestingContract)`
+    */
+    message WithdrawAllFromVesting {
+        string vesting_contract = 1;
+    }
+}
+
+message VestingSimpleAdaptorCalls {
+    repeated VestingSimpleAdaptor calls = 1;
+}

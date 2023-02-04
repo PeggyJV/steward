@@ -2,7 +2,6 @@
  * Steward Strategy Provider API
  *
  * This proto defines the service/methods used by Strategy Providers to interact with Cellars through the Sommelier chain.
- *
  */
 
 syntax = "proto3";
@@ -12,6 +11,7 @@ option go_package = "/steward_proto";
 
 import "aave_v2_stablecoin.proto";
 import "cellar_v1.proto";
+import "cellar_v2.proto";
 
 /*
  * Service for handling Cellar contract calls
@@ -33,6 +33,7 @@ message ScheduleRequest {
     oneof call_data {
         AaveV2Stablecoin aave_v2_stablecoin = 3;
         CellarV1 cellar_v1 = 4;
+        CellarV2 cellar_v2 = 5;
     }
 }
 

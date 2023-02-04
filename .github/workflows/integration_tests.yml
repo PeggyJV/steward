@@ -117,7 +117,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test_type: [ "AaveV2Stablecoin", "CellarV1", "ScheduledCorkProposal" ]
+        test_type: [ "AaveV2Stablecoin", "CellarV1", "CellarV2", "ScheduledCorkProposal" ]
     steps:
       - name: Set up Go 1.15
         uses: actions/setup-go@v2

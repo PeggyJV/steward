@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.0;
 
-import {ERC20, Owned} from "./interfaces.sol";
+import {Address, ERC20, Owned} from "./interfaces.sol";
+import {Adaptor} from "./MockAdaptor.sol";
 
 /**
  * @title Sommelier Cellar
@@ -9,6 +10,8 @@ import {ERC20, Owned} from "./interfaces.sol";
  * @author Brian Le
  */
 contract Cellar is Owned {
+    using Address for address;
+
     constructor() Owned(msg.sender) {}
 
     // =========================================== POSITION LOGIC ===========================================
@@ -81,5 +84,24 @@ contract Cellar is Owned {
      */
     function trustPosition(address position, PositionType positionType) external onlyOwner {
         emit TrustChanged(position, true);
+    }
+
+    /************* CELLAR V2 **************/
+    struct AdaptorCall {
+        address adaptor;
+        bytes[] callData;
+    }
+
+    event CallOnAdaptor(AdaptorCall[] data);
+
+    function callOnAdaptor(AdaptorCall[] memory data) external onlyOwner {
+        for (uint8 i = 0; i < data.length; ++i) {
+            address adaptor = data[i].adaptor;
+            for (uint8 j = 0; j < data[i].callData.length; j++) {
+                adaptor.functionDelegateCall(data[i].callData[j]);
+            }
+        }
+
+        emit CallOnAdaptor(data);
     }
 }

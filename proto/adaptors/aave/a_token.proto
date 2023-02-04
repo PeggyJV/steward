@@ -1,0 +1,59 @@
+/*
+* Protos for function calls to the Aave AToken adaptor.
+*/
+
+syntax = "proto3";
+package steward.v3;
+
+option go_package = "/steward_proto";
+
+import "adaptors/base.proto";
+
+// Represents call data for the Aave AToken adaptor, used to manage lending positions on Aave
+message AaveATokenAdaptor {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+        Swap swap = 1;
+        // Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+        OracleSwap oracle_swap = 2;
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 3;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+        DepositToAave deposit_to_aave = 4;
+        // Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
+        WithdrawFromAave withdraw_from_aave = 5;
+    }
+
+    /*
+    * Allows strategists to lend assets on Aave.
+    *
+    * Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+    */
+    message DepositToAave {
+        // The address of the ERC20 token to deposit
+        string token = 1;
+        // The amount to deposit
+        string amount = 2;
+    }
+
+    /*
+    * Allows strategists to withdraw assets from Aave.
+    *
+    * Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
+    */
+    message WithdrawFromAave {
+        // The address of the ERC20 token to withdraw
+        string token = 1;
+        // The amount to withdraw
+        string amount = 2;
+    }
+}
+
+message AaveATokenAdaptorCalls {
+    repeated AaveATokenAdaptor calls = 1;
+}

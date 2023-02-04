@@ -9,6 +9,7 @@ option go_package = "/steward_proto";
 
 import "aave_v2_stablecoin.proto";
 import "cellar_v1.proto";
+import "cellar_v2.proto";
 
 /*
 * Represents a governance-executed cellar function call. Used for Scheduled Cork Proposals in Sommelier.
@@ -20,5 +21,7 @@ message GovernanceCall {
         AaveV2StablecoinGovernance aave_v2_stablecoin = 2;
         // Governance function calls to V1 cellars
         CellarV1Governance cellar_v1 = 3;
+        // Governance function calls to V2 cellars
+        CellarV2Governance cellar_v2 = 4;
     }
 }

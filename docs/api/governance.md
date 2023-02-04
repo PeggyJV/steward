@@ -27,6 +27,7 @@ Represents a governance-executed cellar function call. Used for Scheduled Cork P
 | ----- | ---- | ----- | ----------- |
 | aave_v2_stablecoin | [AaveV2StablecoinGovernance](#steward-v3-AaveV2StablecoinGovernance) |  | Governance function calls to the AaveV2Stablecoin cellar |
 | cellar_v1 | [CellarV1Governance](#steward-v3-CellarV1Governance) |  | Governance function calls to V1 cellars |
+| cellar_v2 | [CellarV2Governance](#steward-v3-CellarV2Governance) |  | Governance function calls to V2 cellars |
 
 
 

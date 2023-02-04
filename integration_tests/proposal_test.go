@@ -39,7 +39,8 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 		}
 	}
 	`
-	targetBlockHeight := currentHeight + 120
+
+	targetBlockHeight := currentHeight + 90
 	proposal := corktypes.NewScheduledCorkProposal(
 		"scheduled cork proposal test",
 		"description",
@@ -94,7 +95,7 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 		localClientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kr, "val", val.keyInfo.GetAddress())
 		s.Require().NoError(err)
 
-		voteMsg := govtypes.NewMsgVote(val.keyInfo.GetAddress(), 1, govtypes.OptionYes)
+		voteMsg := govtypes.NewMsgVote(val.keyInfo.GetAddress(), proposalID, govtypes.OptionYes)
 		voteResponse, err := s.chain.sendMsgs(*localClientCtx, voteMsg)
 		s.Require().NoError(err)
 		s.Require().Zero(voteResponse.Code, "Vote error: %s", voteResponse.RawLog)
@@ -133,7 +134,7 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 		}
 
 		return false
-	}, 3*time.Minute, 1*time.Second, "never reached scheduled height")
+	}, 3*time.Minute, 10*time.Second, "never reached scheduled height")
 
 	s.T().Logf("checking for cellar event")
 	s.Require().Eventuallyf(func() bool {

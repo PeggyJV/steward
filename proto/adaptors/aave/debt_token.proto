@@ -1,0 +1,80 @@
+/*
+* Protos for function calls to the Aave Debt Token adaptor.
+*/
+
+syntax = "proto3";
+package steward.v3;
+
+option go_package = "/steward_proto";
+
+import "adaptors/base.proto";
+import "common.proto";
+
+// Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
+message AaveDebtTokenAdaptor {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+        Swap swap = 1;
+        // Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+        OracleSwap oracle_swap = 2;
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 3;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `borrowFromAave(ERC20 debtTokenToBorrow, uint256 amountToBorrow)`
+        BorrowFromAave borrow_from_aave = 4;
+        // Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
+        RepayAaveDebt repay_aave_debt = 5;
+        // Represents function `swapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+        SwapAndRepay swap_and_repay = 6;
+    }
+
+    /*
+    * Allows strategists to borrow assets from Aave.
+    *
+    * Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+    */
+    message BorrowFromAave {
+        // The address of the ERC20 token to borrow
+        string token = 1;
+        // The amount to borrow
+        string amount = 2;
+    }
+
+    /*
+    * Allows strategists to repay loan debt on Aave.
+    *
+    * Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
+    */
+    message RepayAaveDebt {
+        // The address of the ERC20 token to repay
+        string token = 1;
+        // The amount to repay
+        string amount = 2;
+    }
+
+    /*
+    * Allows strategists to swap assets and repay loans in one call.
+    *
+    * Represents function `swapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+    */
+    message SwapAndRepay {
+        // The address of the token to swap from
+        string token_in = 1;
+        // The address of the token to swap to and repay with
+        string token_to_repay = 2;
+        // The amount to swap
+        string amount_in = 3;
+        // The exchange to make the swap on
+        Exchange exchange = 4;
+        // The parameters for the swap
+        SwapParams params = 5;
+    }
+}
+
+message AaveDebtTokenAdaptorCalls {
+    repeated AaveDebtTokenAdaptor calls = 1;
+}

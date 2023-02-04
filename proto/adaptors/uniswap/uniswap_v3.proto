@@ -1,0 +1,101 @@
+syntax = "proto3";
+package steward.v3;
+
+option go_package = "/steward_proto";
+
+import "adaptors/base.proto";
+
+// Represents call data for the Uniswap V3 adaptor
+message UniswapV3Adaptor {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+        Swap swap = 1;
+        // Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+        OracleSwap oracle_swap = 2;
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 3;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)`
+        OpenPosition open_position = 4;
+        // Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)`
+        ClosePosition close_position = 5;
+        // Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
+        AddToPosition add_to_position = 6;
+        // Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
+        TakeFromPosition take_from_position = 7;
+        // Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
+        CollectFees collect_fees = 8;
+    }
+
+    /*
+    * Allows strategist to open up arbritray Uniswap V3 positions.
+    *
+    * Represents function openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)
+    */
+    message OpenPosition {
+        string token_0 = 1;
+        string token_1 = 2;
+        uint32 pool_fee = 3;
+        string amount_0 = 4;
+        string amount_1 = 5;
+        string min_0 = 6;
+        string min_1 = 7;
+        int32 tick_lower = 8;
+        int32 tick_upper = 9;
+    }
+
+    /*
+    * Allows strategist to close Uniswap V3 positions.
+    *
+    * Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)`
+    */
+    message ClosePosition {
+        string position_id = 1;
+        string min_0 = 2;
+        string min_1 = 3;
+    }
+
+    /*
+    * Allows strategist to add to existing Uniswap V3 positions.
+    *
+    * Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
+    */
+    message AddToPosition {
+        string position_id = 1;
+        string amount_0 = 2;
+        string amount_1 = 3;
+        string min_0 = 4;
+        string min_1 = 5;
+    }
+    /*
+    * Allows strategist to take from existing Uniswap V3 positions.
+    *
+    * Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
+    */
+    message TakeFromPosition {
+        string position_id = 1;
+        string liquidity = 2;
+        string min_0 = 3;
+        string min_1 = 4;
+        bool collect_fees = 5;
+    }
+
+    /*
+    * Allows strategist to collect fees from existing Uniswap V3 positions.
+    *
+    * Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
+    */
+    message CollectFees {
+        string position_id = 1;
+        string amount_0 = 2;
+        string amount_1 = 3;
+    }
+}
+
+message UniswapV3AdaptorCalls {
+    repeated UniswapV3Adaptor calls = 1;
+}
