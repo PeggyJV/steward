@@ -8,6 +8,7 @@
 
 #![forbid(unsafe_code)]
 #![warn(rust_2018_idioms, trivial_casts)]
+#![allow(clippy::uninlined_format_args)]
 
 pub mod application;
 pub mod cellars;
