@@ -120,31 +120,39 @@ async fn poll_approved_cork_proposals(state: &mut ProposalThreadState) -> Result
             Err(err) => {
                 if err.code() == Code::NotFound {
                     // look ahead in case id was skipped
-                    let mut increments = 0;
-                    for i in 1..=5 {
-                        let id_to_check = proposal_id + i;
-                        if gov_client
+                    let mut missing_proposals = 1;
+                    let mut found_proposal = false;
+
+                    for i in 1..=10 {
+                        if let Err(err) = gov_client
                             .proposal(tonic::Request::new(QueryProposalRequest {
-                                proposal_id: id_to_check,
+                                proposal_id: proposal_id + i,
                             }))
                             .await
-                            .is_err()
                         {
-                            continue;
+                            if err.code() == Code::NotFound {
+                                missing_proposals += 1;
+                                continue;
+                            } else {
+                                return Err(proposal_processing_error(format!(
+                                    "error querying proposal {}: {}",
+                                    proposal_id, err
+                                )));
+                            }
                         }
 
-                        increments = i - 1;
+                        found_proposal = true;
+                        break;
                     }
 
-                    if increments > 0 {
-                        state.last_processed_proposal_id += increments;
-                        continue;
+                    if found_proposal {
+                        state.last_processed_proposal_id += missing_proposals;
+                    } else {
+                        info!(
+                            "no new proposals. last processed proposal ID: {}",
+                            state.last_processed_proposal_id
+                        );
                     }
-
-                    info!(
-                        "no new proposals. last processed proposal ID: {}",
-                        state.last_processed_proposal_id
-                    );
 
                     break;
                 } else {
