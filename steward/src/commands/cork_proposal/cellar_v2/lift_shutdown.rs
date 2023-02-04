@@ -1,9 +1,9 @@
 use crate::{application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use steward_proto::steward::{
-    cellar_v1_governance::{Function, LiftShutdown},
+    cellar_v2_governance::{Function, LiftShutdown},
     governance_call::Call,
-    CellarV1Governance, GovernanceCall,
+    CellarV2Governance, GovernanceCall,
 };
 
 /// Shutdown subcommand
@@ -36,7 +36,7 @@ impl Runnable for LiftShutdownCmd {
                 });
 
             let governance_call = GovernanceCall {
-                call: Some(Call::CellarV1(CellarV1Governance {
+                call: Some(Call::CellarV2(CellarV2Governance {
                     function: Some(Function::LiftShutdown(LiftShutdown {})),
                 })),
             };

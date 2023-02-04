@@ -1394,9 +1394,10 @@ pub mod cellar_v2_governance {
     ///
     /// Allows owner to add new adaptors for the cellar to use.
     ///
-    /// Represents function `setupAdatptor(address adaptor)`
+    /// Represents function `setupAdaptor(address adaptor)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct SetupAdaptor {
+        /// Address of the adaptor
         #[prost(string, tag = "1")]
         pub adaptor: ::prost::alloc::string::String,
     }
@@ -1415,7 +1416,7 @@ pub mod cellar_v2_governance {
         /// Represents function `setStrategistPlatformCut(address)`
         #[prost(message, tag = "4")]
         SetStrategistPlatformCut(SetStrategistPlatformCut),
-        /// Represents function `setupAdatptor(address adaptor)`
+        /// Represents function `setupAdaptor(address adaptor)`
         #[prost(message, tag = "5")]
         SetupAdaptor(SetupAdaptor),
     }

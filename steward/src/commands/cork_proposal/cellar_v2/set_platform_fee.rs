@@ -1,9 +1,9 @@
 use crate::{application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use steward_proto::steward::{
-    cellar_v1_governance::{Function, SetPlatformFee},
+    cellar_v2_governance::{Function, SetPlatformFee},
     governance_call::Call,
-    CellarV1Governance, GovernanceCall,
+    CellarV2Governance, GovernanceCall,
 };
 
 /// Fees Distributor subcommand
@@ -40,7 +40,7 @@ impl Runnable for SetPlatformFeeCmd {
                 });
 
             let governance_call = GovernanceCall {
-                call: Some(Call::CellarV1(CellarV1Governance {
+                call: Some(Call::CellarV2(CellarV2Governance {
                     function: Some(Function::SetPlatformFee(SetPlatformFee {
                         amount: self.new_platform_fee,
                     })),

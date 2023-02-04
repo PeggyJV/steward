@@ -1,7 +1,10 @@
-use crate::{application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*};
+use crate::{
+    application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*, utils,
+};
 use abscissa_core::{clap::Parser, Command, Runnable};
+use ethers::types::Address as EthereumAddress;
 use steward_proto::steward::{
-    cellar_v2_governance::{Function, SetStrategistPlatformCut},
+    cellar_v2_governance::{Function, SetupAdaptor},
     governance_call::Call,
     CellarV2Governance, GovernanceCall,
 };
@@ -9,12 +12,12 @@ use steward_proto::steward::{
 /// Fees Distributor subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION\n\nCalls setStrategistPlatformCut() on the target V2 cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol"
+    long_about = "DESCRIPTION\n\nCalls setupAdaptor() on the target V2 cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol"
 )]
-pub struct SetStrategistPlatformCutCmd {
-    #[clap(short = 'n', long)]
-    /// New platform cut proportion for the Strategy Provider between 0 and 1e18 representing 0% and 100% respectively.
-    new_platform_cut: u64,
+pub struct SetupAdaptorCmd {
+    #[clap(short = 'a', long)]
+    /// Address of the adaptor contract.
+    adaptor_address: EthereumAddress,
 
     /// Target contract for scheduled cork.
     #[clap(short, long)]
@@ -29,7 +32,7 @@ pub struct SetStrategistPlatformCutCmd {
     quiet: bool,
 }
 
-impl Runnable for SetStrategistPlatformCutCmd {
+impl Runnable for SetupAdaptorCmd {
     fn run(&self) {
         abscissa_tokio::run_with_actix(&APP, async {
             cellars::validate_cellar_id(&self.cellar_id)
@@ -41,11 +44,9 @@ impl Runnable for SetStrategistPlatformCutCmd {
 
             let governance_call = GovernanceCall {
                 call: Some(Call::CellarV2(CellarV2Governance {
-                    function: Some(Function::SetStrategistPlatformCut(
-                        SetStrategistPlatformCut {
-                            amount: self.new_platform_cut,
-                        },
-                    )),
+                    function: Some(Function::SetupAdaptor(SetupAdaptor {
+                        adaptor: utils::format_eth_address(self.adaptor_address),
+                    })),
                 })),
             };
 

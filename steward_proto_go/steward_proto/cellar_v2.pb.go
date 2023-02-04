@@ -318,7 +318,7 @@ type CellarV2Governance_SetStrategistPlatformCut_ struct {
 }
 
 type CellarV2Governance_SetupAdaptor_ struct {
-	// Represents function `setupAdatptor(address adaptor)`
+	// Represents function `setupAdaptor(address adaptor)`
 	SetupAdaptor *CellarV2Governance_SetupAdaptor `protobuf:"bytes,5,opt,name=setup_adaptor,json=setupAdaptor,proto3,oneof"`
 }
 
@@ -1117,12 +1117,13 @@ func (x *CellarV2Governance_SetStrategistPlatformCut) GetAmount() uint64 {
 //
 // Allows owner to add new adaptors for the cellar to use.
 //
-// Represents function `setupAdatptor(address adaptor)`
+// Represents function `setupAdaptor(address adaptor)`
 type CellarV2Governance_SetupAdaptor struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// Address of the adaptor
 	Adaptor string `protobuf:"bytes,1,opt,name=adaptor,proto3" json:"adaptor,omitempty"`
 }
 

@@ -162,7 +162,7 @@ message CellarV2Governance {
         SetPlatformFee set_platform_fee = 3;
         // Represents function `setStrategistPlatformCut(address)`
         SetStrategistPlatformCut set_strategist_platform_cut = 4;
-        // Represents function `setupAdatptor(address adaptor)`
+        // Represents function `setupAdaptor(address adaptor)`
         SetupAdaptor setup_adaptor = 5;
     }
 
@@ -189,9 +189,10 @@ message CellarV2Governance {
     /*
     * Allows owner to add new adaptors for the cellar to use.
     *
-    * Represents function `setupAdatptor(address adaptor)`
+    * Represents function `setupAdaptor(address adaptor)`
     */
     message SetupAdaptor {
+        // Address of the adaptor
         string adaptor = 1;
     }
 }
