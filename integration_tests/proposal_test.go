@@ -89,6 +89,8 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 	}, time.Second*30, time.Second*5, "proposal submission was never found")
 
 	s.T().Log("Vote for proposal")
+	// wait so the client for val0 will be aware of the latest tx sequence
+	time.Sleep(time.Second * 10)
 	for _, val := range s.chain.validators {
 		kr, err := val.keyring()
 		s.Require().NoError(err)
@@ -118,7 +120,10 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 	s.T().Log("wait for scheduled height")
 	s.Require().Eventuallyf(func() bool {
 		currentHeight, err := s.GetLatestBlockHeight(orchClientCtx)
-		s.Require().NoError(err)
+		if err != nil {
+			s.T().Logf("error quering latest height (probably transient): %s", err)
+			return false
+		}
 		if currentHeight >= targetBlockHeight {
 			return true
 		} else {
