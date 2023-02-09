@@ -19,6 +19,7 @@ import "cellar_v2.proto";
 service ContractCall {
     // Handles scheduled contract call submission
     rpc Schedule(ScheduleRequest) returns (ScheduleResponse) {}
+    rpc Status(StatusRequest) returns (StatusResponse) {}
 }
 
 /*
@@ -40,4 +41,13 @@ message ScheduleRequest {
 message ScheduleResponse {
     // The hex encoded ID of the scheduled cork
     string id = 1;
+}
+
+/*
+ * Represents a request for Steward's current status
+ */
+message StatusRequest {}
+
+message StatusResponse {
+    string version = 1;
 }
