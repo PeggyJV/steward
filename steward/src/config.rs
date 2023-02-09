@@ -39,6 +39,7 @@ pub struct StewardConfig {
     pub cork: CorkConfig,
     pub metrics: MetricsSection,
     pub server: ServerSection,
+    pub simulate: SimulateSection,
 }
 
 impl StewardConfig {
@@ -87,6 +88,7 @@ impl Default for StewardConfig {
             cork: CorkConfig::default(),
             metrics: MetricsSection::default(),
             server: ServerSection::default(),
+            simulate: SimulateSection::default(),
         }
     }
 }
@@ -245,4 +247,14 @@ impl Default for MetricsSection {
             listen_addr: "127.0.0.1:3000".parse().unwrap(),
         }
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct SimulateSection {
+    pub enabled: bool,
+    pub use_tls: bool,
+    pub tenderly_access_key: String,
+    pub tenderly_project_name: String,
+    pub tenderly_username: String,
 }

@@ -22,7 +22,15 @@ service ContractCall {
 }
 
 /*
- * Represents a single, scheduled function call to a particular Cellar
+ * Service for simulating contract calls encoded by Steward using Tenderly
+ */
+ service SimulateContractCall {
+    // Handles simulated contract call submission
+    rpc Simulate(SimulateRequest) returns (SimulateResponse) {}
+ }
+
+/*
+ * Represents a scheduled function call to a particular Cellar
  */
 message ScheduleRequest {
     // The ID (currently simply an Ethereum address) of the target Cellar
@@ -41,3 +49,21 @@ message ScheduleResponse {
     // The hex encoded ID of the scheduled cork
     string id = 1;
 }
+
+/*
+ * Represents a simulated function call to a particular Cellar
+ */
+ message SimulateRequest {
+    ScheduleRequest request = 1;
+    /// Whether to simply encode and return the contract call data, skipping the Tenderly simulation
+    bool encode_only = 2;
+}
+
+message SimulateResponse {
+    /// The encoded contract call
+    string encoded_call = 1;
+    /// The response body from the Tenderly simulation
+    string response_body = 2;
+}
+
+
