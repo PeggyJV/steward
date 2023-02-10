@@ -1,6 +1,4 @@
-use abscissa_core::{
-    tracing::log::{info, warn},
-};
+use abscissa_core::tracing::log::{info, warn};
 use steward_proto::steward::{
     self,
     schedule_request::CallData::{AaveV2Stablecoin, CellarV1, CellarV2},
@@ -12,6 +10,7 @@ use crate::{
     cellars::{aave_v2_stablecoin, cellar_v1, cellar_v2},
     error::{Error, ErrorKind},
     tenderly,
+    utils::bytes_to_hex_str,
 };
 
 pub struct SimulateHandler;
@@ -23,7 +22,15 @@ impl steward::simulate_contract_call_server::SimulateContractCall for SimulateHa
         request: Request<SimulateRequest>,
     ) -> Result<Response<SimulateResponse>, Status> {
         let request = request.get_ref().to_owned();
-        let inner_request = request.request.unwrap();
+        let inner_request = match request.request {
+            Some(r) => r,
+            None => {
+                return Err(Status::new(
+                    Code::InvalidArgument,
+                    "empty request".to_string(),
+                ))
+            }
+        };
         let cellar_id = inner_request.cellar_id.clone();
         let encoded_call = match get_string_encoded_call(inner_request) {
             Ok(c) => c,
@@ -32,6 +39,7 @@ impl steward::simulate_contract_call_server::SimulateContractCall for SimulateHa
                 return Err(Status::new(Code::Aborted, err.to_string()));
             }
         };
+        info!("encoded call: {encoded_call}");
         let response = if request.encode_only {
             String::default()
         } else {
@@ -57,22 +65,22 @@ pub fn get_string_encoded_call(request: ScheduleRequest) -> Result<String, Error
                 return Err(ErrorKind::Http.context("empty function data").into());
             }
 
-            aave_v2_stablecoin::get_call(call.function.unwrap(), request.cellar_id)
-                .map(|v| v.to_string())
+            aave_v2_stablecoin::get_encoded_call(call.function.unwrap(), request.cellar_id)
         }
         CellarV1(call) => {
             if call.function.is_none() {
                 return Err(ErrorKind::Http.context("empty function data").into());
             }
 
-            cellar_v1::get_call(call.function.unwrap(), request.cellar_id).map(|v| v.to_string())
+            cellar_v1::get_encoded_call(call.function.unwrap(), request.cellar_id)
         }
         CellarV2(call) => {
             if call.function.is_none() {
                 return Err(ErrorKind::Http.context("empty function data").into());
             }
 
-            cellar_v2::get_call(call.function.unwrap(), request.cellar_id).map(|v| v.to_string())
+            cellar_v2::get_encoded_call(call.function.unwrap(), request.cellar_id)
         }
     }
+    .map(|b| bytes_to_hex_str(&b))
 }

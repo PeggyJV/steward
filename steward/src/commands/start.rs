@@ -14,9 +14,7 @@ use crate::{
 };
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
-use steward_proto::steward::{
-    contract_call_server::ContractCallServer,
-};
+use steward_proto::steward::contract_call_server::ContractCallServer;
 
 /// Starts steward
 #[derive(Command, Debug, Default, Parser)]

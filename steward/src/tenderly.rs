@@ -9,7 +9,7 @@ use crate::{config::StewardConfig, prelude::APP};
 const TENDERLY_BASE_URL: &str = "https://api.tenderly.co/api/v1";
 const GRAVITY_ADDRESS: &str = "0x69592e6f9d21989a043646fe8225da2600e5a0f7";
 
-fn validate_tenderly_config(config: &StewardConfig) {
+pub fn validate_tenderly_config(config: &StewardConfig) {
     if config.simulate.tenderly_access_key.is_empty() {
         panic!("Tenderly access key is not set");
     }
@@ -34,10 +34,8 @@ pub struct SimulateRequest {
 
 pub async fn simulate(cellar_id: String, encoded_call: String) -> Result<String, Status> {
     let config = APP.config();
-    validate_tenderly_config(&config);
-
     let body = serde_json::to_string(&SimulateRequest {
-        network_id: "1".to_string(),
+        network_id: config.simulate.network_id.clone(),
         from: GRAVITY_ADDRESS.to_string(),
         to: cellar_id,
         input: encoded_call,

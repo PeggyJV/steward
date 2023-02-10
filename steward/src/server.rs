@@ -38,7 +38,11 @@ pub async fn load_server_config(
     })
 }
 
-pub async fn load_tls_config(server_cert_path: &str, server_key_path: &str, client_ca_path: Option<String>) -> Result<ServerTlsConfig, Error> {
+pub async fn load_tls_config(
+    server_cert_path: &str,
+    server_key_path: &str,
+    client_ca_path: Option<String>,
+) -> Result<ServerTlsConfig, Error> {
     let cert = tokio::fs::read(server_cert_path).await?;
     let key = tokio::fs::read(server_key_path).await?;
     let server_identity = Identity::from_pem(cert, key);

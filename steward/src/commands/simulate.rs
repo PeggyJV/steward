@@ -8,12 +8,11 @@ use crate::{
     prelude::*,
     server::{self, with_tls},
     simulate::SimulateHandler,
+    tenderly::validate_tenderly_config,
 };
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
-use steward_proto::steward::{
-    simulate_contract_call_server::SimulateContractCallServer,
-};
+use steward_proto::steward::simulate_contract_call_server::SimulateContractCallServer;
 
 /// Runs the Simulate server which uses Tenderly to simulate contract calls
 #[derive(Command, Debug, Default, Parser)]
@@ -23,7 +22,7 @@ use steward_proto::steward::{
 pub struct SimulateCmd {
     /// Run the gRPC server with TLS enabled
     #[clap(long)]
-    pub tls: bool,
+    pub use_tls: bool,
 }
 
 impl Runnable for SimulateCmd {
@@ -33,6 +32,8 @@ impl Runnable for SimulateCmd {
 
         info!("Starting application");
         abscissa_tokio::run(&APP, async {
+            validate_tenderly_config(&config);
+
             // Reflection required for certain clients to function... such as grpcurl
             let contents = server::DESCRIPTOR.to_vec();
             let proto_descriptor_service = tonic_reflection::server::Builder::configure()
@@ -51,7 +52,7 @@ impl Runnable for SimulateCmd {
                 });
 
             let mut builder = tonic::transport::Server::builder();
-            if config.simulate.use_tls {
+            if self.use_tls {
                 let tls_config = &server_config
                     .tls_config
                     .expect("tls config was not initialized");
@@ -80,12 +81,7 @@ impl config::Override<StewardConfig> for SimulateCmd {
     // Process the given command line options, overriding settings from
     // a configuration file using explicit flags taken from command-line
     // arguments.
-    fn override_config(&self, mut config: StewardConfig) -> Result<StewardConfig, FrameworkError> {
-        info!("IN OVERRIDE CONFIG");
-        if self.tls {
-            config.simulate.use_tls = self.tls;
-        }
-
+    fn override_config(&self, config: StewardConfig) -> Result<StewardConfig, FrameworkError> {
         Ok(config)
     }
 }

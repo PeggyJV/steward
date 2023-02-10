@@ -46,6 +46,7 @@ pub enum StewardCmd {
     #[clap(subcommand)]
     Orchestrator(orchestrator::OrchestratorCmd),
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
+    Simulate(simulate::SimulateCmd),
     Start(StartCmd),
 }
 
