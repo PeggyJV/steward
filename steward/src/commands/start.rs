@@ -30,8 +30,8 @@ impl Runnable for StartCmd {
         info!("Starting application");
         abscissa_tokio::run(&APP, async {
             // currently allows the threads to detach since we aren't capturing the JoinHandle
-            // start_approved_cellar_cache_thread().await;
-            // start_scheduled_cork_proposal_polling_thread().await;
+            start_approved_cellar_cache_thread().await;
+            start_scheduled_cork_proposal_polling_thread().await;
 
             // Reflection required for certain clients to function... such as grpcurl
             let contents = server::DESCRIPTOR.to_vec();

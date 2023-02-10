@@ -37,7 +37,7 @@ const CHAIN_PREFIX: &str = "somm";
 
 lazy_static! {
     static ref STEWARD_VERSION: &'static str = env!("CARGO_PKG_VERSION");
-};
+}
 
 pub struct CorkHandler;
 
