@@ -5,36 +5,34 @@
 use crate::{
     application::APP,
     config::StewardConfig,
-    cork::{
-        cache::start_approved_cellar_cache_thread,
-        proposals::start_scheduled_cork_proposal_polling_thread, CorkHandler,
-    },
     prelude::*,
     server::{self, with_tls},
+    simulate::SimulateHandler,
 };
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
 use steward_proto::steward::{
-    contract_call_server::ContractCallServer,
+    simulate_contract_call_server::SimulateContractCallServer,
 };
 
-/// Starts steward
+/// Runs the Simulate server which uses Tenderly to simulate contract calls
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION\n\nCosmos mode, run Steward as a server.\n This command runs Steward as a server that will send updates to the Sommelier chain."
+    long_about = "Simulates contract calls using Tenderly. Tenderly credentials must be set in the config file to use."
 )]
-pub struct StartCmd {}
+pub struct SimulateCmd {
+    /// Run the gRPC server with TLS enabled
+    #[clap(long)]
+    pub tls: bool,
+}
 
-impl Runnable for StartCmd {
-    /// Start the application.
+impl Runnable for SimulateCmd {
+    /// Simulate the application.
     fn run(&self) {
         let config = APP.config();
+
         info!("Starting application");
         abscissa_tokio::run(&APP, async {
-            // currently allows the threads to detach since we aren't capturing the JoinHandle
-            start_approved_cellar_cache_thread().await;
-            start_scheduled_cork_proposal_polling_thread().await;
-
             // Reflection required for certain clients to function... such as grpcurl
             let contents = server::DESCRIPTOR.to_vec();
             let proto_descriptor_service = tonic_reflection::server::Builder::configure()
@@ -52,19 +50,22 @@ impl Runnable for StartCmd {
                     std::process::exit(1)
                 });
 
-            // build appropriate server
-            info!("listening on {}", server_config.address);
-            let builder = tonic::transport::Server::builder();
-            let tls_config = &server_config
-                .tls_config
-                .expect("tls config was not initialized");
-            if let Err(err) = with_tls(builder, tls_config)
-                .add_service(ContractCallServer::new(CorkHandler))
+            let mut builder = tonic::transport::Server::builder();
+            if config.simulate.use_tls {
+                let tls_config = &server_config
+                    .tls_config
+                    .expect("tls config was not initialized");
+                builder = with_tls(builder, tls_config);
+            }
+
+            info!("simulate server listening on {}", server_config.address);
+            if let Err(err) = builder
+                .add_service(SimulateContractCallServer::new(SimulateHandler))
                 .add_service(proto_descriptor_service)
                 .serve(server_config.address)
                 .await
             {
-                status_err!("server error: {}", err);
+                status_err!("simulate server error: {}", err);
                 std::process::exit(1)
             }
         })
@@ -75,11 +76,16 @@ impl Runnable for StartCmd {
     }
 }
 
-impl config::Override<StewardConfig> for StartCmd {
+impl config::Override<StewardConfig> for SimulateCmd {
     // Process the given command line options, overriding settings from
     // a configuration file using explicit flags taken from command-line
     // arguments.
-    fn override_config(&self, config: StewardConfig) -> Result<StewardConfig, FrameworkError> {
+    fn override_config(&self, mut config: StewardConfig) -> Result<StewardConfig, FrameworkError> {
+        info!("IN OVERRIDE CONFIG");
+        if self.tls {
+            config.simulate.use_tls = self.tls;
+        }
+
         Ok(config)
     }
 }

@@ -39,10 +39,6 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         &self,
         request: Request<ScheduleRequest>,
     ) -> Result<Response<ScheduleResponse>, Status> {
-        if APP.config().simulate.enabled {
-            panic!("schedule handler should not be reachable in simulate mode");
-        }
-
         let request = request.get_ref().to_owned();
         let cellar_id = request.cellar_id.clone();
         if let Err(err) = cellars::validate_cellar_id(&cellar_id).await {

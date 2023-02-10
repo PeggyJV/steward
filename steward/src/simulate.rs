@@ -1,6 +1,5 @@
 use abscissa_core::{
     tracing::log::{info, warn},
-    Application,
 };
 use steward_proto::steward::{
     self,
@@ -12,7 +11,6 @@ use tonic::{async_trait, Code, Request, Response, Status};
 use crate::{
     cellars::{aave_v2_stablecoin, cellar_v1, cellar_v2},
     error::{Error, ErrorKind},
-    prelude::APP,
     tenderly,
 };
 
@@ -24,10 +22,6 @@ impl steward::simulate_contract_call_server::SimulateContractCall for SimulateHa
         &self,
         request: Request<SimulateRequest>,
     ) -> Result<Response<SimulateResponse>, Status> {
-        if !APP.config().simulate.enabled {
-            panic!("simulate handler should not be reachable when simulate is disabled");
-        }
-
         let request = request.get_ref().to_owned();
         let inner_request = request.request.unwrap();
         let cellar_id = inner_request.cellar_id.clone();

@@ -15,23 +15,19 @@ pub struct ServerConfig {
 pub async fn load_server_config(
     config: &std::sync::Arc<StewardConfig>,
 ) -> Result<ServerConfig, Error> {
-    let mut tls_config = None;
-    if !config.simulate.enabled || config.simulate.use_tls {
-        let cert = tokio::fs::read(&config.server.server_cert_path).await?;
-        let key = tokio::fs::read(&config.server.server_key_path).await?;
-        let server_identity = Identity::from_pem(cert, key);
-        let client_ca = match &config.server.client_ca_cert_path {
-            Some(path) => tokio::fs::read(path).await?,
-            None => DEFAULT_CLIENT_CA.into(),
-        };
-        let client_ca_cert = Certificate::from_pem(client_ca);
-        tls_config = Some(
-            ServerTlsConfig::new()
-                .identity(server_identity.clone())
-                .client_ca_root(client_ca_cert),
-        );
-    }
-
+    let cert = tokio::fs::read(&config.server.server_cert_path).await?;
+    let key = tokio::fs::read(&config.server.server_key_path).await?;
+    let server_identity = Identity::from_pem(cert, key);
+    let client_ca = match &config.server.client_ca_cert_path {
+        Some(path) => tokio::fs::read(path).await?,
+        None => DEFAULT_CLIENT_CA.into(),
+    };
+    let client_ca_cert = Certificate::from_pem(client_ca);
+    let tls_config = Some(
+        ServerTlsConfig::new()
+            .identity(server_identity.clone())
+            .client_ca_root(client_ca_cert),
+    );
     let port = &config.server.port;
     let address = &config.server.address;
     let address: SocketAddr = format!("{}:{}", address, port).parse()?;
@@ -40,6 +36,21 @@ pub async fn load_server_config(
         tls_config,
         address,
     })
+}
+
+pub async fn load_tls_config(server_cert_path: &str, server_key_path: &str, client_ca_path: Option<String>) -> Result<ServerTlsConfig, Error> {
+    let cert = tokio::fs::read(server_cert_path).await?;
+    let key = tokio::fs::read(server_key_path).await?;
+    let server_identity = Identity::from_pem(cert, key);
+    let client_ca = match client_ca_path {
+        Some(path) => tokio::fs::read(path).await?,
+        None => DEFAULT_CLIENT_CA.into(),
+    };
+    let client_ca_cert = Certificate::from_pem(client_ca);
+
+    Ok(ServerTlsConfig::new()
+        .identity(server_identity.clone())
+        .client_ca_root(client_ca_cert))
 }
 
 pub fn with_tls(builder: Server, tls_config: &ServerTlsConfig) -> Server {

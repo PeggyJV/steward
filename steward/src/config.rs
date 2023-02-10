@@ -249,12 +249,24 @@ impl Default for MetricsSection {
     }
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields)]
 pub struct SimulateSection {
-    pub enabled: bool,
     pub use_tls: bool,
+    pub network_id: String,
     pub tenderly_access_key: String,
     pub tenderly_project_name: String,
     pub tenderly_username: String,
+}
+
+impl Default for SimulateSection {
+    fn default() -> Self {
+        Self {
+            use_tls: false,
+            network_id: "1".to_string(),
+            tenderly_access_key: "".to_string(),
+            tenderly_project_name: "".to_string(),
+            tenderly_username: "".to_string(),
+        }
+    }
 }
