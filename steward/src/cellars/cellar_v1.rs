@@ -3,7 +3,6 @@
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
 use deep_space::Address as CosmosAddress;
 use ethers::{abi::AbiEncode, contract::EthCall, types::Address as EthereumAddress};
-use steward_abi::cellar_v1::*;
 use steward_proto::steward::{
     cellar_v1::Function as StrategyFunction,
     cellar_v1_governance::{trust_position::Position, Function as GovernanceFunction},
@@ -12,6 +11,7 @@ use GovernanceFunction::*;
 use StrategyFunction::*;
 
 use crate::{
+    abi::cellar_v1::*,
     error::Error,
     utils::{
         convert_exchange, encode_fees_distributor_address, encode_swap_params,
