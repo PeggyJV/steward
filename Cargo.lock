@@ -4878,8 +4878,6 @@ version = "3.0.0"
 dependencies = [
  "lazy_static",
  "steward",
- "steward_abi",
- "steward_abi_build",
  "steward_proto",
  "steward_proto_rust_build",
 ]
@@ -5003,7 +5001,6 @@ dependencies = [
  "sha3 0.10.6",
  "signatory",
  "somm_proto",
- "steward_abi",
  "steward_proto",
  "tempdir",
  "thiserror",
@@ -5013,26 +5010,6 @@ dependencies = [
  "tonic-reflection",
  "tower",
  "url",
-]
-
-[[package]]
-name = "steward_abi"
-version = "3.0.0"
-dependencies = [
- "ethers",
- "serde",
- "serde_derive",
- "serde_json",
-]
-
-[[package]]
-name = "steward_abi_build"
-version = "1.0.0"
-dependencies = [
- "ethers",
- "serde",
- "serde_derive",
- "serde_json",
 ]
 
 [[package]]
