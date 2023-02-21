@@ -10,11 +10,11 @@ use crate::{
         proposals::start_scheduled_cork_proposal_polling_thread, CorkHandler,
     },
     prelude::*,
-    server,
+    proto::contract_call_server::ContractCallServer,
+    server::{self, FILE_DESCRIPTOR_SET},
 };
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
-use steward_proto::steward::contract_call_server::ContractCallServer;
 
 /// Cosmos Signer, start allocation module
 #[derive(Command, Debug, Parser)]
@@ -34,7 +34,7 @@ impl Runnable for StartCmd {
             start_scheduled_cork_proposal_polling_thread().await;
 
             // Reflection required for certain clients to function... such as grpcurl
-            let contents = server::DESCRIPTOR.to_vec();
+            let contents = FILE_DESCRIPTOR_SET.to_vec();
             let proto_descriptor_service = tonic_reflection::server::Builder::configure()
                 .register_encoded_file_descriptor_set(contents.as_slice())
                 .build()

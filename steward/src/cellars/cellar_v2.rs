@@ -3,12 +3,6 @@
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
 use abscissa_core::tracing::debug;
 use ethers::{abi::AbiEncode, contract::EthCall, types::Bytes};
-use steward_proto::steward::{
-    aave_a_token_adaptor, aave_debt_token_adaptor,
-    cellar_v2::{adaptor_call::CallData, AdaptorCall, Function as StrategyFunction},
-    cellar_v2_governance::Function as GovernanceFunction,
-    compound_c_token_adaptor, uniswap_v3_adaptor, vesting_simple_adaptor,
-};
 use GovernanceFunction::*;
 use StrategyFunction::*;
 
@@ -22,6 +16,12 @@ use crate::{
         cellar_v2::{AdaptorCall as AbiAdaptorCall, *},
     },
     error::Error,
+    proto::{
+        aave_a_token_adaptor, aave_debt_token_adaptor,
+        cellar_v2::{adaptor_call::CallData, AdaptorCall, Function as StrategyFunction},
+        cellar_v2_governance::Function as GovernanceFunction,
+        compound_c_token_adaptor, uniswap_v3_adaptor, vesting_simple_adaptor,
+    },
     utils::{
         convert_exchange, sp_call_error, sp_call_parse_address, string_to_u128, string_to_u256,
     },

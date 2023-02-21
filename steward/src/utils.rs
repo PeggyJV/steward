@@ -1,30 +1,22 @@
 use crate::{
     application::APP,
     error::{Error, ErrorKind},
+    proto::{
+        oracle_swap_params::Params::{
+            Univ2Params as UniV2OracleParams, Univ3Params as UniV3OracleParams,
+        },
+        swap_params::Params::*,
+        OracleSwapParams, SwapParams,
+    },
 };
 use abscissa_core::Application;
-use deep_space::error::CosmosGrpcError;
 use deep_space::Address as CosmosAddress;
 use ethers::{
     abi::Token,
     prelude::{types::Address as EthAddress, *},
 };
-use gravity_bridge::{
-    gravity_proto::gravity::{
-        query_client::QueryClient, DelegateKeysByOrchestratorRequest,
-        DelegateKeysByOrchestratorResponse,
-    },
-    gravity_utils::ethereum::downcast_to_u64,
-};
+use gravity_bridge::gravity_utils::ethereum::downcast_to_u64;
 use std::{convert::TryFrom, time::Duration};
-use steward_proto::steward::{
-    oracle_swap_params::Params::{
-        Univ2Params as UniV2OracleParams, Univ3Params as UniV3OracleParams,
-    },
-    swap_params::Params::*,
-    OracleSwapParams, SwapParams,
-};
-use tonic::transport::Channel;
 
 pub const TIMEOUT: Duration = Duration::from_secs(60);
 
@@ -82,19 +74,6 @@ pub async fn get_chain(eth_client: Provider<Http>) -> Result<Chain, Error> {
         42 => Chain::Kovan,
         _ => Chain::Mainnet,
     })
-}
-
-pub async fn get_delegates_keys_by_orchestrator(
-    client: &mut QueryClient<Channel>,
-    orch_address: String,
-) -> Result<DelegateKeysByOrchestratorResponse, CosmosGrpcError> {
-    let request = DelegateKeysByOrchestratorRequest {
-        orchestrator_address: orch_address,
-    };
-    let response = client.delegate_keys_by_orchestrator(request).await?;
-    let keys = response.into_inner();
-
-    Ok(keys)
 }
 
 pub async fn get_eth_provider() -> Result<Provider<Http>, Error> {

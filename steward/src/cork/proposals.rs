@@ -11,7 +11,6 @@ use gravity_bridge::gravity_proto::{
 use somm_proto::{
     cork::ScheduledCorkProposal, cosmos_sdk_proto::cosmos::gov::v1beta1::QueryProposalRequest,
 };
-use steward_proto::steward::{governance_call::Call, GovernanceCall};
 use tokio::task::JoinHandle;
 use tonic::{transport::Channel, Code};
 
@@ -21,6 +20,7 @@ use crate::{
     cork::schedule_cork,
     error::{Error, ErrorKind},
     prelude::APP,
+    proto::{governance_call::Call, GovernanceCall},
 };
 
 use super::{client::CorkQueryClient, id_hash};

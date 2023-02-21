@@ -1,11 +1,16 @@
-use crate::{application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*};
+use crate::{
+    application::APP,
+    cellars,
+    commands::cork_proposal::print_proposal,
+    prelude::*,
+    proto::{
+        aave_v2_stablecoin_governance::{Function, SetFeesDistributor},
+        governance_call::Call,
+        AaveV2StablecoinGovernance, GovernanceCall,
+    },
+};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use deep_space::Address as CosmosAddress;
-use steward_proto::steward::{
-    aave_v2_stablecoin_governance::{Function, SetFeesDistributor},
-    governance_call::Call,
-    AaveV2StablecoinGovernance, GovernanceCall,
-};
 
 /// Fees Distributor subcommand
 #[derive(Command, Debug, Parser)]

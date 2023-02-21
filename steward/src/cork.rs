@@ -6,6 +6,7 @@ use crate::{
         ErrorKind::{self, *},
     },
     prelude::APP,
+    proto::{self, schedule_request::CallData::*, ScheduleRequest, ScheduleResponse},
     somm_send,
 };
 use abscissa_core::{
@@ -18,10 +19,6 @@ use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1
 use sha3::{Digest, Keccak256};
 use somm_proto::cork::Cork;
 use std::time::Duration;
-use steward_proto::{
-    self,
-    steward::{self, schedule_request::CallData::*, ScheduleRequest, ScheduleResponse},
-};
 use tonic::{self, async_trait, Code, Request, Response, Status};
 
 pub mod cache;
@@ -34,7 +31,7 @@ const CHAIN_PREFIX: &str = "somm";
 pub struct CorkHandler;
 
 #[async_trait]
-impl steward::contract_call_server::ContractCall for CorkHandler {
+impl proto::contract_call_server::ContractCall for CorkHandler {
     async fn schedule(
         &self,
         request: Request<ScheduleRequest>,

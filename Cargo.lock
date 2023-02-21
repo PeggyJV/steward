@@ -4878,8 +4878,6 @@ version = "3.0.0"
 dependencies = [
  "lazy_static",
  "steward",
- "steward_proto",
- "steward_proto_rust_build",
 ]
 
 [[package]]
@@ -4990,6 +4988,7 @@ dependencies = [
  "openssl-sys",
  "pkcs8",
  "prost",
+ "prost-build",
  "prost-types",
  "rand 0.8.5",
  "rand_core 0.6.4",
@@ -5001,34 +5000,15 @@ dependencies = [
  "sha3 0.10.6",
  "signatory",
  "somm_proto",
- "steward_proto",
  "tempdir",
  "thiserror",
  "tokio 1.23.0",
  "toml",
  "tonic",
+ "tonic-build",
  "tonic-reflection",
  "tower",
  "url",
-]
-
-[[package]]
-name = "steward_proto"
-version = "3.0.0"
-dependencies = [
- "prost",
- "prost-types",
- "serde",
- "tonic",
-]
-
-[[package]]
-name = "steward_proto_rust_build"
-version = "1.0.0"
-dependencies = [
- "prost",
- "prost-build",
- "tonic-build",
  "walkdir",
 ]
 
