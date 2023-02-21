@@ -1,5 +1,4 @@
 name: Rust tests
-
 on:
   push:
     branches:
@@ -10,43 +9,24 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  rust-test:
+  rust-build-test:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout branch
         uses: actions/checkout@v2
       - name: Set up Rust caches
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: rust-cache
         with:
           path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
-      - name: Run steward acceptance tests
-        run: cargo test --all --verbose
-
-  rust-build:
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout branch
-        uses: actions/checkout@v2
-      - name: Set up Rust caches
-        uses: actions/cache@v2
-        id: rust-cache
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Run Cargo build
         run: cargo build
+      - name: Run steward acceptance tests
+        run: cargo test --all --verbose
 
   fmt:
     name: Rustfmt
@@ -73,6 +53,15 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
+      - name: Restore Cargo cache
+        uses: actions/cache/restore@v3
+        id: rust-cache
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Add clippy
         run: rustup component add clippy
       - name: Run clippy
