@@ -34,7 +34,6 @@ sha2 = "0.9"
 sha3 = "0.10.6"
 signatory = "0.23.0-pre"
 somm_proto = { git = "https://github.com/PeggyJV/sommelier" }
-steward_proto = { path = "../steward_proto_rust" }
 thiserror = "1"
 tokio ={ version = "1", features = ["macros", "fs"] }
 toml = { version = "0.5" }
@@ -72,4 +71,8 @@ tempdir = "0.3"
 
 [build-dependencies]
 ethers = { git = "https://github.com/iqlusioninc/ethers-rs.git", branch="zaki/error_abi_support", features = ["abigen"] }
+prost-build = "0.7"
+tonic = { version = "0.4.3", features = ["codegen", "tls", "transport"] }
+tonic-build = "0.4"
+walkdir = "2.3.2"
 

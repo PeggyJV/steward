@@ -10,11 +10,11 @@ use crate::{
         proposals::start_scheduled_cork_proposal_polling_thread, CorkHandler,
     },
     prelude::*,
-    server::{self, with_tls},
+    proto::contract_call_server::ContractCallServer,
+    server::{self, FILE_DESCRIPTOR_SET},
 };
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
-use steward_proto::steward::contract_call_server::ContractCallServer;
 
 /// Starts steward
 #[derive(Command, Debug, Default, Parser)]

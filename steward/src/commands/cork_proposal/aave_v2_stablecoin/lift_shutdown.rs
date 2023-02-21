@@ -1,10 +1,15 @@
-use crate::{application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*};
-use abscissa_core::{clap::Parser, Command, Runnable};
-use steward_proto::steward::{
-    aave_v2_stablecoin_governance::{Function, LiftShutdown},
-    governance_call::Call,
-    AaveV2StablecoinGovernance, GovernanceCall,
+use crate::{
+    application::APP,
+    cellars,
+    commands::cork_proposal::print_proposal,
+    prelude::*,
+    proto::{
+        aave_v2_stablecoin_governance::{Function, LiftShutdown},
+        governance_call::Call,
+        AaveV2StablecoinGovernance, GovernanceCall,
+    },
 };
+use abscissa_core::{clap::Parser, Command, Runnable};
 
 /// Shutdown subcommand
 #[derive(Command, Debug, Parser)]

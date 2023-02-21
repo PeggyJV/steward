@@ -2,10 +2,11 @@ mod aave_v2_stablecoin;
 mod cellar_v1;
 mod cellar_v2;
 
-use crate::commands::cork_proposal::aave_v2_stablecoin::AaveV2StablecoinCellarCmd;
+use crate::{
+    commands::cork_proposal::aave_v2_stablecoin::AaveV2StablecoinCellarCmd, proto::GovernanceCall,
+};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use somm_proto::cork::ScheduledCorkProposal;
-use steward_proto::steward::GovernanceCall;
 
 use self::cellar_v1::CellarV1Cmd;
 use self::cellar_v2::CellarV2Cmd;

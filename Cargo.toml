@@ -8,17 +8,11 @@ edition = "2021"
 [workspace]
 default-members = [
 	"steward",
-	"steward_proto_rust",
-	"steward_proto_rust_build",
 ]
 members = [
 	"steward",
-	"steward_proto_rust",
-	"steward_proto_rust_build",
 ]
 
 [dependencies]
 lazy_static = "1.4.0"
 steward = { path = "./steward" }
-steward_proto = { path = "./steward_proto_rust" }
-steward_proto_rust_build = { path = "./steward_proto_rust_build" }

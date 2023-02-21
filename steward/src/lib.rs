@@ -25,6 +25,7 @@ pub mod tenderly;
 pub mod utils;
 
 // Generated ABI definitions. This has to be manually updated when new contracts are added.
+#[allow(clippy::all)]
 pub mod abi {
     pub mod aave_v2_stablecoin {
         include!("gen/abi/aave_v2_stablecoin.rs");
@@ -59,4 +60,9 @@ pub mod abi {
             include!("gen/abi/vesting_simple.rs");
         }
     }
+}
+
+#[allow(clippy::all)]
+pub mod proto {
+    include!("gen/proto/steward.v3.rs");
 }

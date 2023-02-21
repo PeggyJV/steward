@@ -1,6 +1,10 @@
 use crate::{
     abi::aave_v2_stablecoin::*,
     error::Error,
+    proto::{
+        aave_v2_stablecoin::Function as StrategyFunction,
+        aave_v2_stablecoin_governance::Function as GovernanceFunction,
+    },
     utils::{
         encode_fees_distributor_address, governance_call_error, sp_call_error, string_to_u256,
     },
@@ -12,10 +16,6 @@ use ethers::{
     prelude::{Address as EthereumAddress, U256},
 };
 use std::convert::TryInto;
-use steward_proto::steward::{
-    aave_v2_stablecoin::Function as StrategyFunction,
-    aave_v2_stablecoin_governance::Function as GovernanceFunction,
-};
 use GovernanceFunction::*;
 use StrategyFunction::*;
 

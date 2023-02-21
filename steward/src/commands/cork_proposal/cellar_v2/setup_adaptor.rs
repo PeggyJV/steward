@@ -1,13 +1,17 @@
 use crate::{
-    application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*, utils,
+    application::APP,
+    cellars,
+    commands::cork_proposal::print_proposal,
+    prelude::*,
+    proto::{
+        cellar_v2_governance::{Function, SetupAdaptor},
+        governance_call::Call,
+        CellarV2Governance, GovernanceCall,
+    },
+    utils,
 };
 use abscissa_core::{clap::Parser, Command, Runnable};
 use ethers::types::Address as EthereumAddress;
-use steward_proto::steward::{
-    cellar_v2_governance::{Function, SetupAdaptor},
-    governance_call::Call,
-    CellarV2Governance, GovernanceCall,
-};
 
 /// Fees Distributor subcommand
 #[derive(Command, Debug, Parser)]

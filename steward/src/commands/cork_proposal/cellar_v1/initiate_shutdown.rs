@@ -1,10 +1,15 @@
-use crate::{application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*};
-use abscissa_core::{clap::Parser, Command, Runnable};
-use steward_proto::steward::{
-    cellar_v1_governance::{Function, InitiateShutdown},
-    governance_call::Call,
-    CellarV1Governance, GovernanceCall,
+use crate::{
+    application::APP,
+    cellars,
+    commands::cork_proposal::print_proposal,
+    prelude::*,
+    proto::{
+        cellar_v1_governance::{Function, InitiateShutdown},
+        governance_call::Call,
+        CellarV1Governance, GovernanceCall,
+    },
 };
+use abscissa_core::{clap::Parser, Command, Runnable};
 
 #[derive(Command, Debug, Parser)]
 #[clap(
