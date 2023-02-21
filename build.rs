@@ -35,7 +35,7 @@ fn generate_contract_abis() {
     contracts.iter().for_each(|n| {
         let name = n.0;
         let file_name = n.1;
-        let abigen = match Abigen::new(name, format!("../abi/{}.json", name)) {
+        let abigen = match Abigen::new(name, format!("abi/{}.json", name)) {
             Ok(abigen) => abigen,
             Err(e) => {
                 println!("Could not open {}.json: {}", name, e);
@@ -55,7 +55,7 @@ fn generate_contract_abis() {
             }
         };
 
-        match abi.write_to_file(format!("./src/gen/abi/{}.rs", file_name)) {
+        match abi.write_to_file(format!("src/gen/abi/{}.rs", file_name)) {
             Ok(_) => (),
             Err(e) => println!("Error writing {}.rs: {}", file_name, e),
         }
@@ -67,9 +67,6 @@ fn generate_protos() {
     let tmp_dir = Path::new(&TMP_PATH);
     let root = env!("CARGO_MANIFEST_DIR");
     let root: PathBuf = root.parse().unwrap();
-    // this gives us the repo root by going up one level from the module root
-    let root = root.parent().unwrap().to_path_buf();
-
     let mut steward_proto_dir = root;
     steward_proto_dir.push("proto/");
     let steward_proto_dir = [steward_proto_dir];

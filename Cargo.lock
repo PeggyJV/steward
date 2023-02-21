@@ -4873,14 +4873,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sommelier_steward"
-version = "3.0.0"
-dependencies = [
- "lazy_static",
- "steward",
-]
-
-[[package]]
 name = "spin"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
