@@ -4,8 +4,8 @@ VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:main"
 ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:main"
 
 protos:
-	./build_go_protos.sh
-	./build_api_docs.sh
+	scripts/build_go_protos.sh
+	scripts/build_api_docs.sh
 
 e2e_build_images: e2e_clean_slate
 	@docker pull $(VALIDATOR_IMAGE)
@@ -16,7 +16,7 @@ e2e_build_images: e2e_clean_slate
 	@docker build -t ethereum:prebuilt -f integration_tests/ethereum/Dockerfile integration_tests/ethereum/
 
 e2e_clean_slate:
-	@./clean_slate.sh
+	@scripts/clean_slate.sh
 
 e2e_cork_test: e2e_aave_v2_stablecoin_test e2e_cellar_v1_test e2e_cellar_v2_test e2e_proposal_test
 
@@ -24,19 +24,19 @@ e2e_cork_test: e2e_aave_v2_stablecoin_test e2e_cellar_v1_test e2e_cellar_v2_test
 # the individual tests doesn't work when `e2e_cork_test` runs the test targets in series,
 # so we explicitly call the cleanup script in each test target.
 e2e_aave_v2_stablecoin_test: go_protos
-	@./clean_slate.sh
+	@scripts/clean_slate.sh
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestAaveV2Stablecoin || make -s fail
 
 e2e_cellar_v1_test: go_protos
-	@./clean_slate.sh
+	@scripts/clean_slate.sh
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestCellarV1 || make -s fail
 
 e2e_cellar_v2_test: go_protos
-	@./clean_slate.sh
+	@scripts/clean_slate.sh
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestCellarV2 || make -s fail
 
 e2e_proposal_test: go_protos
-	@./clean_slate.sh
+	@scripts/clean_slate.sh
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestScheduledCorkProposal || make -s fail
 
 fail:

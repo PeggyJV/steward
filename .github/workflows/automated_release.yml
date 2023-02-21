@@ -24,7 +24,7 @@ jobs:
       - name: checkout-code
         uses: actions/checkout@v2
       - name: "Check version"
-        run: ./check_version.sh
+        run: scripts/check_version.sh
       # Rust Cache
       - name: rust-cache
         uses: actions/cache@v3

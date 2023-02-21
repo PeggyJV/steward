@@ -2,7 +2,7 @@
 
 This document will walk you through one way to generate a CA and self-signed certificate for use with Steward.
 
-Two-way trust must be established between Steward and the Strategy Provider client for each request. To accomplish this, both the Server and Client will need TLS certificates and the CA certificate of the other party (Steward needs the client's CA, and the client needs Steward's CA). To make generating Steward's certificates easier, we've provided a convenience script called `gen-certs.sh` which can be found [here](../gen-certs.sh). The script takes one optional flag for the output location of the certificates and their signing keys. The client CA will be set by default to Seven Seas' CA for now.
+Two-way trust must be established between Steward and the Strategy Provider client for each request. To accomplish this, both the Server and Client will need TLS certificates and the CA certificate of the other party (Steward needs the client's CA, and the client needs Steward's CA). To make generating Steward's certificates easier, we've provided a convenience script called `gen_certs.sh` which can be found [here](../scripts/gen_certs.sh). The script takes one optional flag for the output location of the certificates and their signing keys. The client CA will be set by default to Seven Seas' CA for now.
 
 ## Steps
 
@@ -15,7 +15,7 @@ Note that LibreSSL still uses the binary name `openssl`. You'll know if you have
 1. Run the following command from the root of this repository
 
 ```
-./gen-certs.sh -o some/output/location/
+scripts/gen_certs.sh -o some/output/location/
 ```
 
 If you don't set the output path flag, certificates and keys will be created in the current working directory.
@@ -111,7 +111,7 @@ ERROR:
   Message: cellar ID  not approved by governance
 ```
 
-When you send this request, if you get an error to establishing a connection, there is probably something wrong with your configuration or your certificates. 
+When you send this request, if you get an error to establishing a connection, there is probably something wrong with your configuration or your certificates.
 
 An error like this one means the connection was established successfully:
 
