@@ -180,6 +180,6 @@ jobs:
         env:
           E2E_SKIP_CLEANUP: true
       - name: Clean up docker images
-        run: ./clean_slate.sh
+        run: scripts/clean_slate.sh
       - name: Remove testnet tempdir
         run: sudo rm -rf somm-e2e-testnet*
