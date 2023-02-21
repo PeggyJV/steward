@@ -23,19 +23,19 @@ e2e_cork_test: e2e_aave_v2_stablecoin_test e2e_cellar_v1_test e2e_cellar_v2_test
 # Because of the way `make` works, using the e2e_clean_slate as as a prerequisite for
 # the individual tests doesn't work when `e2e_cork_test` runs the test targets in series,
 # so we explicitly call the cleanup script in each test target.
-e2e_aave_v2_stablecoin_test: go_protos
+e2e_aave_v2_stablecoin_test: protos
 	@scripts/clean_slate.sh
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestAaveV2Stablecoin || make -s fail
 
-e2e_cellar_v1_test: go_protos
+e2e_cellar_v1_test: protos
 	@scripts/clean_slate.sh
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestCellarV1 || make -s fail
 
-e2e_cellar_v2_test: go_protos
+e2e_cellar_v2_test: protos
 	@scripts/clean_slate.sh
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestCellarV2 || make -s fail
 
-e2e_proposal_test: go_protos
+e2e_proposal_test: protos
 	@scripts/clean_slate.sh
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestScheduledCorkProposal || make -s fail
 
