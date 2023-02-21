@@ -4879,14 +4879,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sommelier_steward"
-version = "3.0.0"
-dependencies = [
- "lazy_static",
- "steward",
-]
-
-[[package]]
 name = "spin"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4999,7 +4991,6 @@ dependencies = [
  "rand 0.8.5",
  "rand_core 0.6.4",
  "regex",
- "reqwest",
  "rpassword",
  "serde",
  "serde_json",
