@@ -7,8 +7,8 @@ package steward.v3;
 
 option go_package = "/steward_proto";
 
-import "adaptors/base.proto";
-import "common.proto";
+import "steward/v3/base.proto";
+import "steward/v3/common.proto";
 
 // Represents call data for the Compound C Token adaptor, managing lending positions on Compound.
 message CompoundCTokenAdaptor {

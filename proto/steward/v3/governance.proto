@@ -7,9 +7,9 @@ package steward.v3;
 
 option go_package = "/steward_proto";
 
-import "aave_v2_stablecoin.proto";
-import "cellar_v1.proto";
-import "cellar_v2.proto";
+import "steward/v3/aave_v2_stablecoin.proto";
+import "steward/v3/cellar_v1.proto";
+import "steward/v3/cellar_v2.proto";
 
 /*
 * Represents a governance-executed cellar function call. Used for Scheduled Cork Proposals in Sommelier.
