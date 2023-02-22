@@ -10,7 +10,7 @@ use crate::{
         proposals::start_scheduled_cork_proposal_polling_thread, CorkHandler,
     },
     prelude::*,
-    proto::contract_call_server::ContractCallServer,
+    proto::contract_call_service_server::ContractCallServiceServer,
     server::{self, FILE_DESCRIPTOR_SET},
 };
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
@@ -51,12 +51,12 @@ impl Runnable for StartCmd {
 
             // build appropriate server
             info!("listening on {}", server_config.address);
-            let builder = tonic::transport::Server::builder();
-            let tls_config = &server_config
-                .tls_config
-                .expect("tls config was not initialized");
-            if let Err(err) = with_tls(builder, tls_config)
-                .add_service(ContractCallServer::new(CorkHandler))
+            if let Err(err) = tonic::transport::Server::builder()
+                .tls_config(server_config.tls_config)
+                .unwrap_or_else(|err| {
+                    panic!("{:?}", err);
+                })
+                .add_service(ContractCallServiceServer::new(CorkHandler))
                 .add_service(proto_descriptor_service)
                 .serve(server_config.address)
                 .await
