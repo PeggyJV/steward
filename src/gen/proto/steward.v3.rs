@@ -1479,15 +1479,15 @@ pub struct ScheduleResponse {
     pub id: ::prost::alloc::string::String,
 }
 #[doc = r" Generated client implementations."]
-pub mod contract_call_client {
+pub mod contract_call_service_client {
     #![allow(unused_variables, dead_code, missing_docs)]
     use tonic::codegen::*;
     #[doc = ""]
     #[doc = " Service for handling Cellar contract calls"]
-    pub struct ContractCallClient<T> {
+    pub struct ContractCallServiceClient<T> {
         inner: tonic::client::Grpc<T>,
     }
-    impl ContractCallClient<tonic::transport::Channel> {
+    impl ContractCallServiceClient<tonic::transport::Channel> {
         #[doc = r" Attempt to create a new client by connecting to a given endpoint."]
         pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
         where
@@ -1498,7 +1498,7 @@ pub mod contract_call_client {
             Ok(Self::new(conn))
         }
     }
-    impl<T> ContractCallClient<T>
+    impl<T> ContractCallServiceClient<T>
     where
         T: tonic::client::GrpcService<tonic::body::BoxBody>,
         T::ResponseBody: Body + HttpBody + Send + 'static,
@@ -1525,30 +1525,31 @@ pub mod contract_call_client {
                 )
             })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/steward.v3.ContractCall/Schedule");
+            let path =
+                http::uri::PathAndQuery::from_static("/steward.v3.ContractCallService/Schedule");
             self.inner.unary(request.into_request(), path, codec).await
         }
     }
-    impl<T: Clone> Clone for ContractCallClient<T> {
+    impl<T: Clone> Clone for ContractCallServiceClient<T> {
         fn clone(&self) -> Self {
             Self {
                 inner: self.inner.clone(),
             }
         }
     }
-    impl<T> std::fmt::Debug for ContractCallClient<T> {
+    impl<T> std::fmt::Debug for ContractCallServiceClient<T> {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-            write!(f, "ContractCallClient {{ ... }}")
+            write!(f, "ContractCallServiceClient {{ ... }}")
         }
     }
 }
 #[doc = r" Generated server implementations."]
-pub mod contract_call_server {
+pub mod contract_call_service_server {
     #![allow(unused_variables, dead_code, missing_docs)]
     use tonic::codegen::*;
-    #[doc = "Generated trait containing gRPC methods that should be implemented for use with ContractCallServer."]
+    #[doc = "Generated trait containing gRPC methods that should be implemented for use with ContractCallServiceServer."]
     #[async_trait]
-    pub trait ContractCall: Send + Sync + 'static {
+    pub trait ContractCallService: Send + Sync + 'static {
         #[doc = " Handles scheduled contract call submission"]
         async fn schedule(
             &self,
@@ -1558,11 +1559,11 @@ pub mod contract_call_server {
     #[doc = ""]
     #[doc = " Service for handling Cellar contract calls"]
     #[derive(Debug)]
-    pub struct ContractCallServer<T: ContractCall> {
+    pub struct ContractCallServiceServer<T: ContractCallService> {
         inner: _Inner<T>,
     }
     struct _Inner<T>(Arc<T>, Option<tonic::Interceptor>);
-    impl<T: ContractCall> ContractCallServer<T> {
+    impl<T: ContractCallService> ContractCallServiceServer<T> {
         pub fn new(inner: T) -> Self {
             let inner = Arc::new(inner);
             let inner = _Inner(inner, None);
@@ -1574,9 +1575,9 @@ pub mod contract_call_server {
             Self { inner }
         }
     }
-    impl<T, B> Service<http::Request<B>> for ContractCallServer<T>
+    impl<T, B> Service<http::Request<B>> for ContractCallServiceServer<T>
     where
-        T: ContractCall,
+        T: ContractCallService,
         B: HttpBody + Send + Sync + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
@@ -1589,10 +1590,12 @@ pub mod contract_call_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/steward.v3.ContractCall/Schedule" => {
+                "/steward.v3.ContractCallService/Schedule" => {
                     #[allow(non_camel_case_types)]
-                    struct ScheduleSvc<T: ContractCall>(pub Arc<T>);
-                    impl<T: ContractCall> tonic::server::UnaryService<super::ScheduleRequest> for ScheduleSvc<T> {
+                    struct ScheduleSvc<T: ContractCallService>(pub Arc<T>);
+                    impl<T: ContractCallService> tonic::server::UnaryService<super::ScheduleRequest>
+                        for ScheduleSvc<T>
+                    {
                         type Response = super::ScheduleResponse;
                         type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
                         fn call(
@@ -1631,13 +1634,13 @@ pub mod contract_call_server {
             }
         }
     }
-    impl<T: ContractCall> Clone for ContractCallServer<T> {
+    impl<T: ContractCallService> Clone for ContractCallServiceServer<T> {
         fn clone(&self) -> Self {
             let inner = self.inner.clone();
             Self { inner }
         }
     }
-    impl<T: ContractCall> Clone for _Inner<T> {
+    impl<T: ContractCallService> Clone for _Inner<T> {
         fn clone(&self) -> Self {
             Self(self.0.clone(), self.1.clone())
         }
@@ -1647,7 +1650,7 @@ pub mod contract_call_server {
             write!(f, "{:?}", self.0)
         }
     }
-    impl<T: ContractCall> tonic::transport::NamedService for ContractCallServer<T> {
-        const NAME: &'static str = "steward.v3.ContractCall";
+    impl<T: ContractCallService> tonic::transport::NamedService for ContractCallServiceServer<T> {
+        const NAME: &'static str = "steward.v3.ContractCallService";
     }
 }

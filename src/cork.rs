@@ -31,7 +31,7 @@ const CHAIN_PREFIX: &str = "somm";
 pub struct CorkHandler;
 
 #[async_trait]
-impl proto::contract_call_server::ContractCall for CorkHandler {
+impl proto::contract_call_service_server::ContractCallService for CorkHandler {
     async fn schedule(
         &self,
         request: Request<ScheduleRequest>,
