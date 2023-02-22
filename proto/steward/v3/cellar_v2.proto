@@ -9,11 +9,11 @@ package steward.v3;
 
 option go_package = "/steward_proto";
 
-import "adaptors/aave/a_token.proto";
-import "adaptors/aave/debt_token.proto";
-import "adaptors/compound/c_token.proto";
-import "adaptors/uniswap/uniswap_v3.proto";
-import "adaptors/vesting_simple.proto";
+import "steward/v3/a_token.proto";
+import "steward/v3/debt_token.proto";
+import "steward/v3/c_token.proto";
+import "steward/v3/uniswap_v3.proto";
+import "steward/v3/vesting_simple.proto";
 
 /*
 * Represents a function call to a cellar that implements Cellar.sol

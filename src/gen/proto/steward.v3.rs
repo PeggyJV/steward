@@ -1,4 +1,320 @@
 ///
+/// Represents swap parameters for UniswapV2
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct UniV2SwapParams {
+    /// Array of addresses dictating what swap path to follow
+    #[prost(string, repeated, tag = "1")]
+    pub path: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    /// Amount of the first asset in the path to swap
+    #[prost(string, tag = "2")]
+    pub amount: ::prost::alloc::string::String,
+    /// The minimum amount of the last asset in the path to receive
+    #[prost(string, tag = "3")]
+    pub amount_out_min: ::prost::alloc::string::String,
+}
+///
+/// Represents swap parameters for UniswapV3
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct UniV3SwapParams {
+    /// Array of addresses dictating what swap path to follow
+    #[prost(string, repeated, tag = "1")]
+    pub path: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    /// Array of pool fees dictating what swap pools to use
+    #[prost(uint32, repeated, tag = "2")]
+    pub pool_fees: ::prost::alloc::vec::Vec<u32>,
+    /// Amount of the first asset in the path to swap
+    #[prost(string, tag = "3")]
+    pub amount: ::prost::alloc::string::String,
+    /// The minimum amount of the last asset in the path to receive
+    #[prost(string, tag = "4")]
+    pub amount_out_min: ::prost::alloc::string::String,
+}
+///
+/// Represents swap parameters for an exchange
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct SwapParams {
+    #[prost(oneof = "swap_params::Params", tags = "1, 2")]
+    pub params: ::core::option::Option<swap_params::Params>,
+}
+/// Nested message and enum types in `SwapParams`.
+pub mod swap_params {
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Params {
+        /// Params for a Uniswap V2 swap
+        #[prost(message, tag = "1")]
+        Univ2Params(super::UniV2SwapParams),
+        /// Params for a Uniswap V3 swap
+        #[prost(message, tag = "2")]
+        Univ3Params(super::UniV3SwapParams),
+    }
+}
+///
+/// Represents oracle swap parameters for UniswapV2
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct UniV2OracleSwapParams {
+    /// Array of addresses dictating what swap path to follow
+    #[prost(string, repeated, tag = "1")]
+    pub path: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
+///
+/// Represents oracle swap parameters for UniswapV3
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct UniV3OracleSwapParams {
+    /// Array of addresses dictating what swap path to follow
+    #[prost(string, repeated, tag = "1")]
+    pub path: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    /// Array of pool fees dictating what swap pools to use
+    #[prost(uint32, repeated, tag = "2")]
+    pub pool_fees: ::prost::alloc::vec::Vec<u32>,
+}
+///
+/// Represents swap params for BaseAdaptor.oracleSwap()
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct OracleSwapParams {
+    #[prost(oneof = "oracle_swap_params::Params", tags = "1, 2")]
+    pub params: ::core::option::Option<oracle_swap_params::Params>,
+}
+/// Nested message and enum types in `OracleSwapParams`.
+pub mod oracle_swap_params {
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Params {
+        #[prost(message, tag = "1")]
+        Univ2Params(super::UniV2OracleSwapParams),
+        #[prost(message, tag = "2")]
+        Univ3Params(super::UniV3OracleSwapParams),
+    }
+}
+///
+/// Exchange selector
+#[derive(
+    serde::Deserialize,
+    serde::Serialize,
+    Clone,
+    Copy,
+    Debug,
+    PartialEq,
+    Eq,
+    Hash,
+    PartialOrd,
+    Ord,
+    ::prost::Enumeration,
+)]
+#[repr(i32)]
+pub enum Exchange {
+    Unspecified = 0,
+    /// Represents Uniswap V2
+    Univ2 = 1,
+    /// Represents Uniswap V3
+    Univ3 = 2,
+}
+///
+/// Helper function that allows swaps using the Swap Router
+///
+/// Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct Swap {
+    /// Asset to swap from
+    #[prost(string, tag = "1")]
+    pub asset_in: ::prost::alloc::string::String,
+    /// Asset to swap to
+    #[prost(string, tag = "2")]
+    pub asset_out: ::prost::alloc::string::String,
+    /// Amount to swap
+    #[prost(string, tag = "3")]
+    pub amount_in: ::prost::alloc::string::String,
+    /// The exchange to make the swap on
+    #[prost(enumeration = "Exchange", tag = "4")]
+    pub exchange: i32,
+    /// The parameters for the swap
+    #[prost(message, optional, tag = "5")]
+    pub params: ::core::option::Option<SwapParams>,
+}
+///
+/// Helper function to make safe "blind" Uniswap Swaps by comparing value in vs value out of the swap.
+///
+/// Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct OracleSwap {
+    /// Asset to swap from
+    #[prost(string, tag = "1")]
+    pub asset_in: ::prost::alloc::string::String,
+    /// Asset to swap to
+    #[prost(string, tag = "2")]
+    pub asset_out: ::prost::alloc::string::String,
+    /// Amount to swap
+    #[prost(string, tag = "3")]
+    pub amount_in: ::prost::alloc::string::String,
+    /// The exchange to make the swap on
+    #[prost(enumeration = "Exchange", tag = "4")]
+    pub exchange: i32,
+    /// The parameters for the swap
+    #[prost(message, optional, tag = "5")]
+    pub params: ::core::option::Option<OracleSwapParams>,
+    /// The slippage allowed for the swap
+    #[prost(uint64, tag = "6")]
+    pub slippage: u64,
+}
+///
+/// Allows strategists to zero out an approval for a given `asset`.
+///
+/// Represents function `revokeApproval(ERC20 asset, address spender)`
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct RevokeApproval {
+    /// ERC20 Asset to revoke spender's approval for
+    #[prost(string, tag = "1")]
+    pub asset: ::prost::alloc::string::String,
+    /// The spender to revoke approval of asset for
+    #[prost(string, tag = "2")]
+    pub spender: ::prost::alloc::string::String,
+}
+/// Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct AaveDebtTokenAdaptor {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(oneof = "aave_debt_token_adaptor::Function", tags = "1, 2, 3, 4, 5, 6")]
+    pub function: ::core::option::Option<aave_debt_token_adaptor::Function>,
+}
+/// Nested message and enum types in `AaveDebtTokenAdaptor`.
+pub mod aave_debt_token_adaptor {
+    ///
+    /// Allows strategists to borrow assets from Aave.
+    ///
+    /// Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct BorrowFromAave {
+        /// The address of the ERC20 token to borrow
+        #[prost(string, tag = "1")]
+        pub token: ::prost::alloc::string::String,
+        /// The amount to borrow
+        #[prost(string, tag = "2")]
+        pub amount: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to repay loan debt on Aave.
+    ///
+    /// Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RepayAaveDebt {
+        /// The address of the ERC20 token to repay
+        #[prost(string, tag = "1")]
+        pub token: ::prost::alloc::string::String,
+        /// The amount to repay
+        #[prost(string, tag = "2")]
+        pub amount: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to swap assets and repay loans in one call.
+    ///
+    /// Represents function `swapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SwapAndRepay {
+        /// The address of the token to swap from
+        #[prost(string, tag = "1")]
+        pub token_in: ::prost::alloc::string::String,
+        /// The address of the token to swap to and repay with
+        #[prost(string, tag = "2")]
+        pub token_to_repay: ::prost::alloc::string::String,
+        /// The amount to swap
+        #[prost(string, tag = "3")]
+        pub amount_in: ::prost::alloc::string::String,
+        /// The exchange to make the swap on
+        #[prost(enumeration = "super::Exchange", tag = "4")]
+        pub exchange: i32,
+        /// The parameters for the swap
+        #[prost(message, optional, tag = "5")]
+        pub params: ::core::option::Option<super::SwapParams>,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+        #[prost(message, tag = "1")]
+        Swap(super::Swap),
+        /// Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+        #[prost(message, tag = "2")]
+        OracleSwap(super::OracleSwap),
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "3")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `borrowFromAave(ERC20 debtTokenToBorrow, uint256 amountToBorrow)`
+        #[prost(message, tag = "4")]
+        BorrowFromAave(BorrowFromAave),
+        /// Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
+        #[prost(message, tag = "5")]
+        RepayAaveDebt(RepayAaveDebt),
+        /// Represents function `swapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+        #[prost(message, tag = "6")]
+        SwapAndRepay(SwapAndRepay),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct AaveDebtTokenAdaptorCalls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<AaveDebtTokenAdaptor>,
+}
+/// Represents call data for the Aave AToken adaptor, used to manage lending positions on Aave
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct AaveATokenAdaptor {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(oneof = "aave_a_token_adaptor::Function", tags = "1, 2, 3, 4, 5")]
+    pub function: ::core::option::Option<aave_a_token_adaptor::Function>,
+}
+/// Nested message and enum types in `AaveATokenAdaptor`.
+pub mod aave_a_token_adaptor {
+    ///
+    /// Allows strategists to lend assets on Aave.
+    ///
+    /// Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct DepositToAave {
+        /// The address of the ERC20 token to deposit
+        #[prost(string, tag = "1")]
+        pub token: ::prost::alloc::string::String,
+        /// The amount to deposit
+        #[prost(string, tag = "2")]
+        pub amount: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to withdraw assets from Aave.
+    ///
+    /// Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct WithdrawFromAave {
+        /// The address of the ERC20 token to withdraw
+        #[prost(string, tag = "1")]
+        pub token: ::prost::alloc::string::String,
+        /// The amount to withdraw
+        #[prost(string, tag = "2")]
+        pub amount: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+        #[prost(message, tag = "1")]
+        Swap(super::Swap),
+        /// Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+        #[prost(message, tag = "2")]
+        OracleSwap(super::OracleSwap),
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "3")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+        #[prost(message, tag = "4")]
+        DepositToAave(DepositToAave),
+        /// Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
+        #[prost(message, tag = "5")]
+        WithdrawFromAave(WithdrawFromAave),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct AaveATokenAdaptorCalls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<AaveATokenAdaptor>,
+}
+///
 /// Represents a function call to the Aave V2 Stablecoin cellar
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct AaveV2Stablecoin {
@@ -252,307 +568,6 @@ pub mod aave_v2_stablecoin_governance {
         Sweep(Sweep),
     }
 }
-///
-/// Represents swap parameters for UniswapV2
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct UniV2SwapParams {
-    /// Array of addresses dictating what swap path to follow
-    #[prost(string, repeated, tag = "1")]
-    pub path: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-    /// Amount of the first asset in the path to swap
-    #[prost(string, tag = "2")]
-    pub amount: ::prost::alloc::string::String,
-    /// The minimum amount of the last asset in the path to receive
-    #[prost(string, tag = "3")]
-    pub amount_out_min: ::prost::alloc::string::String,
-}
-///
-/// Represents swap parameters for UniswapV3
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct UniV3SwapParams {
-    /// Array of addresses dictating what swap path to follow
-    #[prost(string, repeated, tag = "1")]
-    pub path: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-    /// Array of pool fees dictating what swap pools to use
-    #[prost(uint32, repeated, tag = "2")]
-    pub pool_fees: ::prost::alloc::vec::Vec<u32>,
-    /// Amount of the first asset in the path to swap
-    #[prost(string, tag = "3")]
-    pub amount: ::prost::alloc::string::String,
-    /// The minimum amount of the last asset in the path to receive
-    #[prost(string, tag = "4")]
-    pub amount_out_min: ::prost::alloc::string::String,
-}
-///
-/// Represents swap parameters for an exchange
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct SwapParams {
-    #[prost(oneof = "swap_params::Params", tags = "1, 2")]
-    pub params: ::core::option::Option<swap_params::Params>,
-}
-/// Nested message and enum types in `SwapParams`.
-pub mod swap_params {
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum Params {
-        /// Params for a Uniswap V2 swap
-        #[prost(message, tag = "1")]
-        Univ2Params(super::UniV2SwapParams),
-        /// Params for a Uniswap V3 swap
-        #[prost(message, tag = "2")]
-        Univ3Params(super::UniV3SwapParams),
-    }
-}
-///
-/// Represents oracle swap parameters for UniswapV2
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct UniV2OracleSwapParams {
-    /// Array of addresses dictating what swap path to follow
-    #[prost(string, repeated, tag = "1")]
-    pub path: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-}
-///
-/// Represents oracle swap parameters for UniswapV3
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct UniV3OracleSwapParams {
-    /// Array of addresses dictating what swap path to follow
-    #[prost(string, repeated, tag = "1")]
-    pub path: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-    /// Array of pool fees dictating what swap pools to use
-    #[prost(uint32, repeated, tag = "2")]
-    pub pool_fees: ::prost::alloc::vec::Vec<u32>,
-}
-///
-/// Represents swap params for BaseAdaptor.oracleSwap()
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct OracleSwapParams {
-    #[prost(oneof = "oracle_swap_params::Params", tags = "1, 2")]
-    pub params: ::core::option::Option<oracle_swap_params::Params>,
-}
-/// Nested message and enum types in `OracleSwapParams`.
-pub mod oracle_swap_params {
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum Params {
-        #[prost(message, tag = "1")]
-        Univ2Params(super::UniV2OracleSwapParams),
-        #[prost(message, tag = "2")]
-        Univ3Params(super::UniV3OracleSwapParams),
-    }
-}
-///
-/// Exchange selector
-#[derive(
-    serde::Deserialize,
-    serde::Serialize,
-    Clone,
-    Copy,
-    Debug,
-    PartialEq,
-    Eq,
-    Hash,
-    PartialOrd,
-    Ord,
-    ::prost::Enumeration,
-)]
-#[repr(i32)]
-pub enum Exchange {
-    Unspecified = 0,
-    /// Represents Uniswap V2
-    Univ2 = 1,
-    /// Represents Uniswap V3
-    Univ3 = 2,
-}
-///
-/// Helper function that allows swaps using the Swap Router
-///
-/// Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct Swap {
-    /// Asset to swap from
-    #[prost(string, tag = "1")]
-    pub asset_in: ::prost::alloc::string::String,
-    /// Asset to swap to
-    #[prost(string, tag = "2")]
-    pub asset_out: ::prost::alloc::string::String,
-    /// Amount to swap
-    #[prost(string, tag = "3")]
-    pub amount_in: ::prost::alloc::string::String,
-    /// The exchange to make the swap on
-    #[prost(enumeration = "Exchange", tag = "4")]
-    pub exchange: i32,
-    /// The parameters for the swap
-    #[prost(message, optional, tag = "5")]
-    pub params: ::core::option::Option<SwapParams>,
-}
-///
-/// Helper function to make safe "blind" Uniswap Swaps by comparing value in vs value out of the swap.
-///
-/// Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct OracleSwap {
-    /// Asset to swap from
-    #[prost(string, tag = "1")]
-    pub asset_in: ::prost::alloc::string::String,
-    /// Asset to swap to
-    #[prost(string, tag = "2")]
-    pub asset_out: ::prost::alloc::string::String,
-    /// Amount to swap
-    #[prost(string, tag = "3")]
-    pub amount_in: ::prost::alloc::string::String,
-    /// The exchange to make the swap on
-    #[prost(enumeration = "Exchange", tag = "4")]
-    pub exchange: i32,
-    /// The parameters for the swap
-    #[prost(message, optional, tag = "5")]
-    pub params: ::core::option::Option<OracleSwapParams>,
-    /// The slippage allowed for the swap
-    #[prost(uint64, tag = "6")]
-    pub slippage: u64,
-}
-///
-/// Allows strategists to zero out an approval for a given `asset`.
-///
-/// Represents function `revokeApproval(ERC20 asset, address spender)`
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct RevokeApproval {
-    /// ERC20 Asset to revoke spender's approval for
-    #[prost(string, tag = "1")]
-    pub asset: ::prost::alloc::string::String,
-    /// The spender to revoke approval of asset for
-    #[prost(string, tag = "2")]
-    pub spender: ::prost::alloc::string::String,
-}
-/// Represents call data for the Uniswap V3 adaptor
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct UniswapV3Adaptor {
-    ///**** BASE ADAPTOR FUNCTIONS ****
-    #[prost(
-        oneof = "uniswap_v3_adaptor::Function",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8"
-    )]
-    pub function: ::core::option::Option<uniswap_v3_adaptor::Function>,
-}
-/// Nested message and enum types in `UniswapV3Adaptor`.
-pub mod uniswap_v3_adaptor {
-    ///
-    /// Allows strategist to open up arbritray Uniswap V3 positions.
-    ///
-    /// Represents function openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct OpenPosition {
-        #[prost(string, tag = "1")]
-        pub token_0: ::prost::alloc::string::String,
-        #[prost(string, tag = "2")]
-        pub token_1: ::prost::alloc::string::String,
-        #[prost(uint32, tag = "3")]
-        pub pool_fee: u32,
-        #[prost(string, tag = "4")]
-        pub amount_0: ::prost::alloc::string::String,
-        #[prost(string, tag = "5")]
-        pub amount_1: ::prost::alloc::string::String,
-        #[prost(string, tag = "6")]
-        pub min_0: ::prost::alloc::string::String,
-        #[prost(string, tag = "7")]
-        pub min_1: ::prost::alloc::string::String,
-        #[prost(int32, tag = "8")]
-        pub tick_lower: i32,
-        #[prost(int32, tag = "9")]
-        pub tick_upper: i32,
-    }
-    ///
-    /// Allows strategist to close Uniswap V3 positions.
-    ///
-    /// Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct ClosePosition {
-        #[prost(string, tag = "1")]
-        pub position_id: ::prost::alloc::string::String,
-        #[prost(string, tag = "2")]
-        pub min_0: ::prost::alloc::string::String,
-        #[prost(string, tag = "3")]
-        pub min_1: ::prost::alloc::string::String,
-    }
-    ///
-    /// Allows strategist to add to existing Uniswap V3 positions.
-    ///
-    /// Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct AddToPosition {
-        #[prost(string, tag = "1")]
-        pub position_id: ::prost::alloc::string::String,
-        #[prost(string, tag = "2")]
-        pub amount_0: ::prost::alloc::string::String,
-        #[prost(string, tag = "3")]
-        pub amount_1: ::prost::alloc::string::String,
-        #[prost(string, tag = "4")]
-        pub min_0: ::prost::alloc::string::String,
-        #[prost(string, tag = "5")]
-        pub min_1: ::prost::alloc::string::String,
-    }
-    ///
-    /// Allows strategist to take from existing Uniswap V3 positions.
-    ///
-    /// Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct TakeFromPosition {
-        #[prost(string, tag = "1")]
-        pub position_id: ::prost::alloc::string::String,
-        #[prost(string, tag = "2")]
-        pub liquidity: ::prost::alloc::string::String,
-        #[prost(string, tag = "3")]
-        pub min_0: ::prost::alloc::string::String,
-        #[prost(string, tag = "4")]
-        pub min_1: ::prost::alloc::string::String,
-        #[prost(bool, tag = "5")]
-        pub collect_fees: bool,
-    }
-    ///
-    /// Allows strategist to collect fees from existing Uniswap V3 positions.
-    ///
-    /// Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct CollectFees {
-        #[prost(string, tag = "1")]
-        pub position_id: ::prost::alloc::string::String,
-        #[prost(string, tag = "2")]
-        pub amount_0: ::prost::alloc::string::String,
-        #[prost(string, tag = "3")]
-        pub amount_1: ::prost::alloc::string::String,
-    }
-    ///**** BASE ADAPTOR FUNCTIONS ****
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum Function {
-        /// Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
-        #[prost(message, tag = "1")]
-        Swap(super::Swap),
-        /// Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
-        #[prost(message, tag = "2")]
-        OracleSwap(super::OracleSwap),
-        /// Represents function `revokeApproval(ERC20 asset, address spender)`
-        #[prost(message, tag = "3")]
-        RevokeApproval(super::RevokeApproval),
-        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
-        /// Represents function `openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)`
-        #[prost(message, tag = "4")]
-        OpenPosition(OpenPosition),
-        /// Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)`
-        #[prost(message, tag = "5")]
-        ClosePosition(ClosePosition),
-        /// Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
-        #[prost(message, tag = "6")]
-        AddToPosition(AddToPosition),
-        /// Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
-        #[prost(message, tag = "7")]
-        TakeFromPosition(TakeFromPosition),
-        /// Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
-        #[prost(message, tag = "8")]
-        CollectFees(CollectFees),
-    }
-}
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct UniswapV3AdaptorCalls {
-    #[prost(message, repeated, tag = "1")]
-    pub calls: ::prost::alloc::vec::Vec<UniswapV3Adaptor>,
-}
 /// Represents call data for the Vesting Simple adaptor
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct VestingSimpleAdaptor {
@@ -644,240 +659,6 @@ pub mod vesting_simple_adaptor {
 pub struct VestingSimpleAdaptorCalls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<VestingSimpleAdaptor>,
-}
-/// Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct AaveDebtTokenAdaptor {
-    ///**** BASE ADAPTOR FUNCTIONS ****
-    #[prost(oneof = "aave_debt_token_adaptor::Function", tags = "1, 2, 3, 4, 5, 6")]
-    pub function: ::core::option::Option<aave_debt_token_adaptor::Function>,
-}
-/// Nested message and enum types in `AaveDebtTokenAdaptor`.
-pub mod aave_debt_token_adaptor {
-    ///
-    /// Allows strategists to borrow assets from Aave.
-    ///
-    /// Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct BorrowFromAave {
-        /// The address of the ERC20 token to borrow
-        #[prost(string, tag = "1")]
-        pub token: ::prost::alloc::string::String,
-        /// The amount to borrow
-        #[prost(string, tag = "2")]
-        pub amount: ::prost::alloc::string::String,
-    }
-    ///
-    /// Allows strategists to repay loan debt on Aave.
-    ///
-    /// Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct RepayAaveDebt {
-        /// The address of the ERC20 token to repay
-        #[prost(string, tag = "1")]
-        pub token: ::prost::alloc::string::String,
-        /// The amount to repay
-        #[prost(string, tag = "2")]
-        pub amount: ::prost::alloc::string::String,
-    }
-    ///
-    /// Allows strategists to swap assets and repay loans in one call.
-    ///
-    /// Represents function `swapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct SwapAndRepay {
-        /// The address of the token to swap from
-        #[prost(string, tag = "1")]
-        pub token_in: ::prost::alloc::string::String,
-        /// The address of the token to swap to and repay with
-        #[prost(string, tag = "2")]
-        pub token_to_repay: ::prost::alloc::string::String,
-        /// The amount to swap
-        #[prost(string, tag = "3")]
-        pub amount_in: ::prost::alloc::string::String,
-        /// The exchange to make the swap on
-        #[prost(enumeration = "super::Exchange", tag = "4")]
-        pub exchange: i32,
-        /// The parameters for the swap
-        #[prost(message, optional, tag = "5")]
-        pub params: ::core::option::Option<super::SwapParams>,
-    }
-    ///**** BASE ADAPTOR FUNCTIONS ****
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum Function {
-        /// Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
-        #[prost(message, tag = "1")]
-        Swap(super::Swap),
-        /// Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
-        #[prost(message, tag = "2")]
-        OracleSwap(super::OracleSwap),
-        /// Represents function `revokeApproval(ERC20 asset, address spender)`
-        #[prost(message, tag = "3")]
-        RevokeApproval(super::RevokeApproval),
-        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
-        /// Represents function `borrowFromAave(ERC20 debtTokenToBorrow, uint256 amountToBorrow)`
-        #[prost(message, tag = "4")]
-        BorrowFromAave(BorrowFromAave),
-        /// Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
-        #[prost(message, tag = "5")]
-        RepayAaveDebt(RepayAaveDebt),
-        /// Represents function `swapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
-        #[prost(message, tag = "6")]
-        SwapAndRepay(SwapAndRepay),
-    }
-}
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct AaveDebtTokenAdaptorCalls {
-    #[prost(message, repeated, tag = "1")]
-    pub calls: ::prost::alloc::vec::Vec<AaveDebtTokenAdaptor>,
-}
-/// Represents call data for the Aave AToken adaptor, used to manage lending positions on Aave
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct AaveATokenAdaptor {
-    ///**** BASE ADAPTOR FUNCTIONS ****
-    #[prost(oneof = "aave_a_token_adaptor::Function", tags = "1, 2, 3, 4, 5")]
-    pub function: ::core::option::Option<aave_a_token_adaptor::Function>,
-}
-/// Nested message and enum types in `AaveATokenAdaptor`.
-pub mod aave_a_token_adaptor {
-    ///
-    /// Allows strategists to lend assets on Aave.
-    ///
-    /// Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct DepositToAave {
-        /// The address of the ERC20 token to deposit
-        #[prost(string, tag = "1")]
-        pub token: ::prost::alloc::string::String,
-        /// The amount to deposit
-        #[prost(string, tag = "2")]
-        pub amount: ::prost::alloc::string::String,
-    }
-    ///
-    /// Allows strategists to withdraw assets from Aave.
-    ///
-    /// Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct WithdrawFromAave {
-        /// The address of the ERC20 token to withdraw
-        #[prost(string, tag = "1")]
-        pub token: ::prost::alloc::string::String,
-        /// The amount to withdraw
-        #[prost(string, tag = "2")]
-        pub amount: ::prost::alloc::string::String,
-    }
-    ///**** BASE ADAPTOR FUNCTIONS ****
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum Function {
-        /// Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
-        #[prost(message, tag = "1")]
-        Swap(super::Swap),
-        /// Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
-        #[prost(message, tag = "2")]
-        OracleSwap(super::OracleSwap),
-        /// Represents function `revokeApproval(ERC20 asset, address spender)`
-        #[prost(message, tag = "3")]
-        RevokeApproval(super::RevokeApproval),
-        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
-        /// Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
-        #[prost(message, tag = "4")]
-        DepositToAave(DepositToAave),
-        /// Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
-        #[prost(message, tag = "5")]
-        WithdrawFromAave(WithdrawFromAave),
-    }
-}
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct AaveATokenAdaptorCalls {
-    #[prost(message, repeated, tag = "1")]
-    pub calls: ::prost::alloc::vec::Vec<AaveATokenAdaptor>,
-}
-/// Represents call data for the Compound C Token adaptor, managing lending positions on Compound.
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct CompoundCTokenAdaptor {
-    ///**** BASE ADAPTOR FUNCTIONS ****
-    #[prost(
-        oneof = "compound_c_token_adaptor::Function",
-        tags = "1, 2, 3, 4, 5, 6, 7"
-    )]
-    pub function: ::core::option::Option<compound_c_token_adaptor::Function>,
-}
-/// Nested message and enum types in `CompoundCTokenAdaptor`.
-pub mod compound_c_token_adaptor {
-    ///
-    /// Allows strategists to lend assets on Compound.
-    ///
-    /// Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct DepositToCompound {
-        #[prost(string, tag = "1")]
-        pub market: ::prost::alloc::string::String,
-        #[prost(string, tag = "2")]
-        pub amount_to_deposit: ::prost::alloc::string::String,
-    }
-    ///
-    /// Allows strategists to withdraw assets from Compound.
-    ///
-    /// Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct WithdrawFromCompound {
-        #[prost(string, tag = "1")]
-        pub market: ::prost::alloc::string::String,
-        #[prost(string, tag = "2")]
-        pub amount_to_withdraw: ::prost::alloc::string::String,
-    }
-    ///
-    /// Allows strategists to claim COMP rewards.
-    ///
-    /// Represents function `claimComp()`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct ClaimComp {}
-    ///
-    /// Allows strategists to claim COMP and immediately swap it using oracleSwap.
-    ///
-    /// Represents function `claimCompAndSwap(ERC20 assetOut, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct ClaimCompAndSwap {
-        #[prost(string, tag = "1")]
-        pub asset_out: ::prost::alloc::string::String,
-        #[prost(enumeration = "super::Exchange", tag = "2")]
-        pub exchange: i32,
-        #[prost(message, optional, tag = "3")]
-        pub params: ::core::option::Option<super::OracleSwapParams>,
-        #[prost(uint64, tag = "4")]
-        pub slippage: u64,
-    }
-    ///**** BASE ADAPTOR FUNCTIONS ****
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum Function {
-        /// Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
-        #[prost(message, tag = "1")]
-        Swap(super::Swap),
-        /// Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
-        #[prost(message, tag = "2")]
-        OracleSwap(super::OracleSwap),
-        /// Represents function `revokeApproval(ERC20 asset, address spender)`
-        #[prost(message, tag = "3")]
-        RevokeApproval(super::RevokeApproval),
-        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
-        /// Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
-        #[prost(message, tag = "4")]
-        DepositToCompound(DepositToCompound),
-        /// Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)`
-        #[prost(message, tag = "5")]
-        WithdrawFromCompound(WithdrawFromCompound),
-        /// Represents function `claimComp()`
-        #[prost(message, tag = "6")]
-        ClaimComp(ClaimComp),
-        /// Represents function `claimCompAndSwap(ERC20 assetOut, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
-        #[prost(message, tag = "7")]
-        ClaimCompAndSwap(ClaimCompAndSwap),
-    }
-}
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct CompoundCTokenAdaptorCalls {
-    #[prost(message, repeated, tag = "1")]
-    pub calls: ::prost::alloc::vec::Vec<CompoundCTokenAdaptor>,
 }
 ///
 /// Represents a function call to a cellar that implements Cellar.sol
@@ -1194,6 +975,225 @@ pub mod cellar_v1_governance {
         #[prost(message, tag = "9")]
         TrustPosition(TrustPosition),
     }
+}
+/// Represents call data for the Compound C Token adaptor, managing lending positions on Compound.
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct CompoundCTokenAdaptor {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(
+        oneof = "compound_c_token_adaptor::Function",
+        tags = "1, 2, 3, 4, 5, 6, 7"
+    )]
+    pub function: ::core::option::Option<compound_c_token_adaptor::Function>,
+}
+/// Nested message and enum types in `CompoundCTokenAdaptor`.
+pub mod compound_c_token_adaptor {
+    ///
+    /// Allows strategists to lend assets on Compound.
+    ///
+    /// Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct DepositToCompound {
+        #[prost(string, tag = "1")]
+        pub market: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub amount_to_deposit: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to withdraw assets from Compound.
+    ///
+    /// Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct WithdrawFromCompound {
+        #[prost(string, tag = "1")]
+        pub market: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub amount_to_withdraw: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to claim COMP rewards.
+    ///
+    /// Represents function `claimComp()`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct ClaimComp {}
+    ///
+    /// Allows strategists to claim COMP and immediately swap it using oracleSwap.
+    ///
+    /// Represents function `claimCompAndSwap(ERC20 assetOut, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct ClaimCompAndSwap {
+        #[prost(string, tag = "1")]
+        pub asset_out: ::prost::alloc::string::String,
+        #[prost(enumeration = "super::Exchange", tag = "2")]
+        pub exchange: i32,
+        #[prost(message, optional, tag = "3")]
+        pub params: ::core::option::Option<super::OracleSwapParams>,
+        #[prost(uint64, tag = "4")]
+        pub slippage: u64,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+        #[prost(message, tag = "1")]
+        Swap(super::Swap),
+        /// Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+        #[prost(message, tag = "2")]
+        OracleSwap(super::OracleSwap),
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "3")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
+        #[prost(message, tag = "4")]
+        DepositToCompound(DepositToCompound),
+        /// Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)`
+        #[prost(message, tag = "5")]
+        WithdrawFromCompound(WithdrawFromCompound),
+        /// Represents function `claimComp()`
+        #[prost(message, tag = "6")]
+        ClaimComp(ClaimComp),
+        /// Represents function `claimCompAndSwap(ERC20 assetOut, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+        #[prost(message, tag = "7")]
+        ClaimCompAndSwap(ClaimCompAndSwap),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct CompoundCTokenAdaptorCalls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<CompoundCTokenAdaptor>,
+}
+/// Represents call data for the Uniswap V3 adaptor
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct UniswapV3Adaptor {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(
+        oneof = "uniswap_v3_adaptor::Function",
+        tags = "1, 2, 3, 4, 5, 6, 7, 8"
+    )]
+    pub function: ::core::option::Option<uniswap_v3_adaptor::Function>,
+}
+/// Nested message and enum types in `UniswapV3Adaptor`.
+pub mod uniswap_v3_adaptor {
+    ///
+    /// Allows strategist to open up arbritray Uniswap V3 positions.
+    ///
+    /// Represents function openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct OpenPosition {
+        #[prost(string, tag = "1")]
+        pub token_0: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub token_1: ::prost::alloc::string::String,
+        #[prost(uint32, tag = "3")]
+        pub pool_fee: u32,
+        #[prost(string, tag = "4")]
+        pub amount_0: ::prost::alloc::string::String,
+        #[prost(string, tag = "5")]
+        pub amount_1: ::prost::alloc::string::String,
+        #[prost(string, tag = "6")]
+        pub min_0: ::prost::alloc::string::String,
+        #[prost(string, tag = "7")]
+        pub min_1: ::prost::alloc::string::String,
+        #[prost(int32, tag = "8")]
+        pub tick_lower: i32,
+        #[prost(int32, tag = "9")]
+        pub tick_upper: i32,
+    }
+    ///
+    /// Allows strategist to close Uniswap V3 positions.
+    ///
+    /// Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct ClosePosition {
+        #[prost(string, tag = "1")]
+        pub position_id: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub min_0: ::prost::alloc::string::String,
+        #[prost(string, tag = "3")]
+        pub min_1: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to add to existing Uniswap V3 positions.
+    ///
+    /// Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct AddToPosition {
+        #[prost(string, tag = "1")]
+        pub position_id: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub amount_0: ::prost::alloc::string::String,
+        #[prost(string, tag = "3")]
+        pub amount_1: ::prost::alloc::string::String,
+        #[prost(string, tag = "4")]
+        pub min_0: ::prost::alloc::string::String,
+        #[prost(string, tag = "5")]
+        pub min_1: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to take from existing Uniswap V3 positions.
+    ///
+    /// Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct TakeFromPosition {
+        #[prost(string, tag = "1")]
+        pub position_id: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub liquidity: ::prost::alloc::string::String,
+        #[prost(string, tag = "3")]
+        pub min_0: ::prost::alloc::string::String,
+        #[prost(string, tag = "4")]
+        pub min_1: ::prost::alloc::string::String,
+        #[prost(bool, tag = "5")]
+        pub collect_fees: bool,
+    }
+    ///
+    /// Allows strategist to collect fees from existing Uniswap V3 positions.
+    ///
+    /// Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct CollectFees {
+        #[prost(string, tag = "1")]
+        pub position_id: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub amount_0: ::prost::alloc::string::String,
+        #[prost(string, tag = "3")]
+        pub amount_1: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+        #[prost(message, tag = "1")]
+        Swap(super::Swap),
+        /// Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+        #[prost(message, tag = "2")]
+        OracleSwap(super::OracleSwap),
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "3")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)`
+        #[prost(message, tag = "4")]
+        OpenPosition(OpenPosition),
+        /// Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)`
+        #[prost(message, tag = "5")]
+        ClosePosition(ClosePosition),
+        /// Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
+        #[prost(message, tag = "6")]
+        AddToPosition(AddToPosition),
+        /// Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
+        #[prost(message, tag = "7")]
+        TakeFromPosition(TakeFromPosition),
+        /// Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
+        #[prost(message, tag = "8")]
+        CollectFees(CollectFees),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct UniswapV3AdaptorCalls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<UniswapV3Adaptor>,
 }
 ///
 /// Represents a function call to a cellar that implements Cellar.sol
