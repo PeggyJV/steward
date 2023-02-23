@@ -1,9 +1,9 @@
-use crate::{error::Error, prelude::APP};
-use abscissa_core::Application;
-use somm_proto::cork::{
+use crate::somm_proto::cork::{
     query_client::QueryClient, QueryCellarIDsRequest, QueryCellarIDsResponse,
     QueryScheduledCorksByIdRequest, QueryScheduledCorksByIdResponse,
 };
+use crate::{error::Error, prelude::APP};
+use abscissa_core::Application;
 use tonic::{transport::Channel, Response, Status};
 
 /// Client wrapper used to refresh the cache

@@ -1,15 +1,15 @@
 use std::time::Duration;
 
+use crate::somm_proto::cork::ScheduledCorkProposal;
 use abscissa_core::{
     tracing::{debug, error, info, log::warn},
     Application,
 };
 use gravity_bridge::gravity_proto::{
-    cosmos_sdk_proto::cosmos::base::tendermint::v1beta1::GetLatestBlockRequest,
+    cosmos_sdk_proto::cosmos::{
+        base::tendermint::v1beta1::GetLatestBlockRequest, gov::v1beta1::QueryProposalRequest,
+    },
     gravity::DelegateKeysByOrchestratorRequest,
-};
-use somm_proto::{
-    cork::ScheduledCorkProposal, cosmos_sdk_proto::cosmos::gov::v1beta1::QueryProposalRequest,
 };
 use tokio::task::JoinHandle;
 use tonic::{transport::Channel, Code};

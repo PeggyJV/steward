@@ -64,3 +64,38 @@ pub mod abi {
 pub mod proto {
     include!("gen/proto/steward.v3.rs");
 }
+
+#[allow(clippy::all)]
+pub mod somm_proto {
+    pub mod auction {
+        include!("gen/somm_proto/auction.v1.rs");
+    }
+
+    pub mod cellarfees {
+        include!("gen/somm_proto/cellarfees.v1.rs");
+    }
+
+    pub mod cork {
+        include!("gen/somm_proto/cork.v2.rs");
+    }
+
+    pub mod pubsub {
+        include!("gen/somm_proto/pubsub.v1.rs");
+    }
+}
+
+// Some of the somm_proto bindings expect this module structure to be present
+#[allow(clippy::all)]
+pub mod cosmos {
+    pub mod base {
+        pub mod v1beta1 {
+            include!("gen/somm_proto/cosmos.base.v1beta1.rs");
+        }
+
+        pub mod query {
+            pub mod v1beta1 {
+                include!("gen/somm_proto/cosmos.base.query.v1beta1.rs");
+            }
+        }
+    }
+}

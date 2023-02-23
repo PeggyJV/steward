@@ -7,8 +7,8 @@ package steward.v3;
 
 option go_package = "/steward_proto";
 
-import "steward/v3/base.proto";
-import "steward/v3/common.proto";
+import "base.proto";
+import "common.proto";
 
 // Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
 message AaveDebtTokenAdaptor {

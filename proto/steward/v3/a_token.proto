@@ -7,7 +7,7 @@ package steward.v3;
 
 option go_package = "/steward_proto";
 
-import "steward/v3/base.proto";
+import "base.proto";
 
 // Represents call data for the Aave AToken adaptor, used to manage lending positions on Aave
 message AaveATokenAdaptor {

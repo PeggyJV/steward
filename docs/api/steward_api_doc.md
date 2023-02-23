@@ -3,6 +3,12 @@
 
 ## Table of Contents
 
+- [a_token.proto](#a_token-proto)
+    - [AaveATokenAdaptor](#steward-v3-AaveATokenAdaptor)
+    - [AaveATokenAdaptor.DepositToAave](#steward-v3-AaveATokenAdaptor-DepositToAave)
+    - [AaveATokenAdaptor.WithdrawFromAave](#steward-v3-AaveATokenAdaptor-WithdrawFromAave)
+    - [AaveATokenAdaptorCalls](#steward-v3-AaveATokenAdaptorCalls)
+  
 - [aave_v2_stablecoin.proto](#aave_v2_stablecoin-proto)
     - [AaveV2Stablecoin](#steward-v3-AaveV2Stablecoin)
     - [AaveV2Stablecoin.Accrue](#steward-v3-AaveV2Stablecoin-Accrue)
@@ -24,6 +30,19 @@
     - [AaveV2StablecoinGovernance.SetFeesDistributor](#steward-v3-AaveV2StablecoinGovernance-SetFeesDistributor)
     - [AaveV2StablecoinGovernance.SetTrust](#steward-v3-AaveV2StablecoinGovernance-SetTrust)
     - [AaveV2StablecoinGovernance.Sweep](#steward-v3-AaveV2StablecoinGovernance-Sweep)
+  
+- [base.proto](#base-proto)
+    - [OracleSwap](#steward-v3-OracleSwap)
+    - [RevokeApproval](#steward-v3-RevokeApproval)
+    - [Swap](#steward-v3-Swap)
+  
+- [c_token.proto](#c_token-proto)
+    - [CompoundCTokenAdaptor](#steward-v3-CompoundCTokenAdaptor)
+    - [CompoundCTokenAdaptor.ClaimComp](#steward-v3-CompoundCTokenAdaptor-ClaimComp)
+    - [CompoundCTokenAdaptor.ClaimCompAndSwap](#steward-v3-CompoundCTokenAdaptor-ClaimCompAndSwap)
+    - [CompoundCTokenAdaptor.DepositToCompound](#steward-v3-CompoundCTokenAdaptor-DepositToCompound)
+    - [CompoundCTokenAdaptor.WithdrawFromCompound](#steward-v3-CompoundCTokenAdaptor-WithdrawFromCompound)
+    - [CompoundCTokenAdaptorCalls](#steward-v3-CompoundCTokenAdaptorCalls)
   
 - [cellar_v1.proto](#cellar_v1-proto)
     - [CellarV1](#steward-v3-CellarV1)
@@ -80,6 +99,13 @@
   
     - [Exchange](#steward-v3-Exchange)
   
+- [debt_token.proto](#debt_token-proto)
+    - [AaveDebtTokenAdaptor](#steward-v3-AaveDebtTokenAdaptor)
+    - [AaveDebtTokenAdaptor.BorrowFromAave](#steward-v3-AaveDebtTokenAdaptor-BorrowFromAave)
+    - [AaveDebtTokenAdaptor.RepayAaveDebt](#steward-v3-AaveDebtTokenAdaptor-RepayAaveDebt)
+    - [AaveDebtTokenAdaptor.SwapAndRepay](#steward-v3-AaveDebtTokenAdaptor-SwapAndRepay)
+    - [AaveDebtTokenAdaptorCalls](#steward-v3-AaveDebtTokenAdaptorCalls)
+  
 - [governance.proto](#governance-proto)
     - [GovernanceCall](#steward-v3-GovernanceCall)
   
@@ -87,9 +113,112 @@
     - [ScheduleRequest](#steward-v3-ScheduleRequest)
     - [ScheduleResponse](#steward-v3-ScheduleResponse)
   
-    - [ContractCall](#steward-v3-ContractCall)
+    - [ContractCallService](#steward-v3-ContractCallService)
+  
+- [uniswap_v3.proto](#uniswap_v3-proto)
+    - [UniswapV3Adaptor](#steward-v3-UniswapV3Adaptor)
+    - [UniswapV3Adaptor.AddToPosition](#steward-v3-UniswapV3Adaptor-AddToPosition)
+    - [UniswapV3Adaptor.ClosePosition](#steward-v3-UniswapV3Adaptor-ClosePosition)
+    - [UniswapV3Adaptor.CollectFees](#steward-v3-UniswapV3Adaptor-CollectFees)
+    - [UniswapV3Adaptor.OpenPosition](#steward-v3-UniswapV3Adaptor-OpenPosition)
+    - [UniswapV3Adaptor.TakeFromPosition](#steward-v3-UniswapV3Adaptor-TakeFromPosition)
+    - [UniswapV3AdaptorCalls](#steward-v3-UniswapV3AdaptorCalls)
+  
+- [vesting_simple.proto](#vesting_simple-proto)
+    - [VestingSimpleAdaptor](#steward-v3-VestingSimpleAdaptor)
+    - [VestingSimpleAdaptor.DepositToVesting](#steward-v3-VestingSimpleAdaptor-DepositToVesting)
+    - [VestingSimpleAdaptor.WithdrawAllFromVesting](#steward-v3-VestingSimpleAdaptor-WithdrawAllFromVesting)
+    - [VestingSimpleAdaptor.WithdrawAnyFromVesting](#steward-v3-VestingSimpleAdaptor-WithdrawAnyFromVesting)
+    - [VestingSimpleAdaptor.WithdrawFromVesting](#steward-v3-VestingSimpleAdaptor-WithdrawFromVesting)
+    - [VestingSimpleAdaptorCalls](#steward-v3-VestingSimpleAdaptorCalls)
   
 - [Scalar Value Types](#scalar-value-types)
+
+
+
+<a name="a_token-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## a_token.proto
+
+
+
+<a name="steward-v3-AaveATokenAdaptor"></a>
+
+### AaveATokenAdaptor
+Represents call data for the Aave AToken adaptor, used to manage lending positions on Aave
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| swap | [Swap](#steward-v3-Swap) |  | Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
+| oracle_swap | [OracleSwap](#steward-v3-OracleSwap) |  | Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
+| revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| deposit_to_aave | [AaveATokenAdaptor.DepositToAave](#steward-v3-AaveATokenAdaptor-DepositToAave) |  | Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)` |
+| withdraw_from_aave | [AaveATokenAdaptor.WithdrawFromAave](#steward-v3-AaveATokenAdaptor-WithdrawFromAave) |  | Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)` |
+
+
+
+
+
+
+<a name="steward-v3-AaveATokenAdaptor-DepositToAave"></a>
+
+### AaveATokenAdaptor.DepositToAave
+Allows strategists to lend assets on Aave.
+
+Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [string](#string) |  | The address of the ERC20 token to deposit |
+| amount | [string](#string) |  | The amount to deposit |
+
+
+
+
+
+
+<a name="steward-v3-AaveATokenAdaptor-WithdrawFromAave"></a>
+
+### AaveATokenAdaptor.WithdrawFromAave
+Allows strategists to withdraw assets from Aave.
+
+Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [string](#string) |  | The address of the ERC20 token to withdraw |
+| amount | [string](#string) |  | The amount to withdraw |
+
+
+
+
+
+
+<a name="steward-v3-AaveATokenAdaptorCalls"></a>
+
+### AaveATokenAdaptorCalls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [AaveATokenAdaptor](#steward-v3-AaveATokenAdaptor) | repeated |  |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
 
 
 
@@ -412,6 +541,203 @@ Represents function `sweep(address, address)`
 | ----- | ---- | ----- | ----------- |
 | token | [string](#string) |  | The address of the ERC20 token to sweep |
 | recipient | [string](#string) |  | The recipient of the sweep |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+<a name="base-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## base.proto
+
+
+
+<a name="steward-v3-OracleSwap"></a>
+
+### OracleSwap
+Helper function to make safe &#34;blind&#34; Uniswap Swaps by comparing value in vs value out of the swap.
+
+Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| asset_in | [string](#string) |  | Asset to swap from |
+| asset_out | [string](#string) |  | Asset to swap to |
+| amount_in | [string](#string) |  | Amount to swap |
+| exchange | [Exchange](#steward-v3-Exchange) |  | The exchange to make the swap on |
+| params | [OracleSwapParams](#steward-v3-OracleSwapParams) |  | The parameters for the swap |
+| slippage | [uint64](#uint64) |  | The slippage allowed for the swap |
+
+
+
+
+
+
+<a name="steward-v3-RevokeApproval"></a>
+
+### RevokeApproval
+Allows strategists to zero out an approval for a given `asset`.
+
+Represents function `revokeApproval(ERC20 asset, address spender)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| asset | [string](#string) |  | ERC20 Asset to revoke spender&#39;s approval for |
+| spender | [string](#string) |  | The spender to revoke approval of asset for |
+
+
+
+
+
+
+<a name="steward-v3-Swap"></a>
+
+### Swap
+Helper function that allows swaps using the Swap Router
+
+Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| asset_in | [string](#string) |  | Asset to swap from |
+| asset_out | [string](#string) |  | Asset to swap to |
+| amount_in | [string](#string) |  | Amount to swap |
+| exchange | [Exchange](#steward-v3-Exchange) |  | The exchange to make the swap on |
+| params | [SwapParams](#steward-v3-SwapParams) |  | The parameters for the swap |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+<a name="c_token-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## c_token.proto
+
+
+
+<a name="steward-v3-CompoundCTokenAdaptor"></a>
+
+### CompoundCTokenAdaptor
+Represents call data for the Compound C Token adaptor, managing lending positions on Compound.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| swap | [Swap](#steward-v3-Swap) |  | Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
+| oracle_swap | [OracleSwap](#steward-v3-OracleSwap) |  | Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
+| revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| deposit_to_compound | [CompoundCTokenAdaptor.DepositToCompound](#steward-v3-CompoundCTokenAdaptor-DepositToCompound) |  | Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)` |
+| withdraw_from_compound | [CompoundCTokenAdaptor.WithdrawFromCompound](#steward-v3-CompoundCTokenAdaptor-WithdrawFromCompound) |  | Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)` |
+| claim_comp | [CompoundCTokenAdaptor.ClaimComp](#steward-v3-CompoundCTokenAdaptor-ClaimComp) |  | Represents function `claimComp()` |
+| claim_comp_and_swap | [CompoundCTokenAdaptor.ClaimCompAndSwap](#steward-v3-CompoundCTokenAdaptor-ClaimCompAndSwap) |  | Represents function `claimCompAndSwap(ERC20 assetOut, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
+
+
+
+
+
+
+<a name="steward-v3-CompoundCTokenAdaptor-ClaimComp"></a>
+
+### CompoundCTokenAdaptor.ClaimComp
+Allows strategists to claim COMP rewards.
+
+Represents function `claimComp()`
+
+
+
+
+
+
+<a name="steward-v3-CompoundCTokenAdaptor-ClaimCompAndSwap"></a>
+
+### CompoundCTokenAdaptor.ClaimCompAndSwap
+Allows strategists to claim COMP and immediately swap it using oracleSwap.
+
+Represents function `claimCompAndSwap(ERC20 assetOut, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| asset_out | [string](#string) |  |  |
+| exchange | [Exchange](#steward-v3-Exchange) |  |  |
+| params | [OracleSwapParams](#steward-v3-OracleSwapParams) |  |  |
+| slippage | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="steward-v3-CompoundCTokenAdaptor-DepositToCompound"></a>
+
+### CompoundCTokenAdaptor.DepositToCompound
+Allows strategists to lend assets on Compound.
+
+Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| market | [string](#string) |  |  |
+| amount_to_deposit | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v3-CompoundCTokenAdaptor-WithdrawFromCompound"></a>
+
+### CompoundCTokenAdaptor.WithdrawFromCompound
+Allows strategists to withdraw assets from Compound.
+
+Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| market | [string](#string) |  |  |
+| amount_to_withdraw | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v3-CompoundCTokenAdaptorCalls"></a>
+
+### CompoundCTokenAdaptorCalls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [CompoundCTokenAdaptor](#steward-v3-CompoundCTokenAdaptor) | repeated |  |
 
 
 
@@ -1253,6 +1579,114 @@ Exchange selector
 
 
 
+<a name="debt_token-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## debt_token.proto
+
+
+
+<a name="steward-v3-AaveDebtTokenAdaptor"></a>
+
+### AaveDebtTokenAdaptor
+Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| swap | [Swap](#steward-v3-Swap) |  | Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
+| oracle_swap | [OracleSwap](#steward-v3-OracleSwap) |  | Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
+| revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| borrow_from_aave | [AaveDebtTokenAdaptor.BorrowFromAave](#steward-v3-AaveDebtTokenAdaptor-BorrowFromAave) |  | Represents function `borrowFromAave(ERC20 debtTokenToBorrow, uint256 amountToBorrow)` |
+| repay_aave_debt | [AaveDebtTokenAdaptor.RepayAaveDebt](#steward-v3-AaveDebtTokenAdaptor-RepayAaveDebt) |  | Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)` |
+| swap_and_repay | [AaveDebtTokenAdaptor.SwapAndRepay](#steward-v3-AaveDebtTokenAdaptor-SwapAndRepay) |  | Represents function `swapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
+
+
+
+
+
+
+<a name="steward-v3-AaveDebtTokenAdaptor-BorrowFromAave"></a>
+
+### AaveDebtTokenAdaptor.BorrowFromAave
+Allows strategists to borrow assets from Aave.
+
+Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [string](#string) |  | The address of the ERC20 token to borrow |
+| amount | [string](#string) |  | The amount to borrow |
+
+
+
+
+
+
+<a name="steward-v3-AaveDebtTokenAdaptor-RepayAaveDebt"></a>
+
+### AaveDebtTokenAdaptor.RepayAaveDebt
+Allows strategists to repay loan debt on Aave.
+
+Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [string](#string) |  | The address of the ERC20 token to repay |
+| amount | [string](#string) |  | The amount to repay |
+
+
+
+
+
+
+<a name="steward-v3-AaveDebtTokenAdaptor-SwapAndRepay"></a>
+
+### AaveDebtTokenAdaptor.SwapAndRepay
+Allows strategists to swap assets and repay loans in one call.
+
+Represents function `swapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token_in | [string](#string) |  | The address of the token to swap from |
+| token_to_repay | [string](#string) |  | The address of the token to swap to and repay with |
+| amount_in | [string](#string) |  | The amount to swap |
+| exchange | [Exchange](#steward-v3-Exchange) |  | The exchange to make the swap on |
+| params | [SwapParams](#steward-v3-SwapParams) |  | The parameters for the swap |
+
+
+
+
+
+
+<a name="steward-v3-AaveDebtTokenAdaptorCalls"></a>
+
+### AaveDebtTokenAdaptorCalls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [AaveDebtTokenAdaptor](#steward-v3-AaveDebtTokenAdaptor) | repeated |  |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
 <a name="governance-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -1333,14 +1767,300 @@ Represents a single, scheduled function call to a particular Cellar
  
 
 
-<a name="steward-v3-ContractCall"></a>
+<a name="steward-v3-ContractCallService"></a>
 
-### ContractCall
+### ContractCallService
 Service for handling Cellar contract calls
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
 | Schedule | [ScheduleRequest](#steward-v3-ScheduleRequest) | [ScheduleResponse](#steward-v3-ScheduleResponse) | Handles scheduled contract call submission |
+
+ 
+
+
+
+<a name="uniswap_v3-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## uniswap_v3.proto
+
+
+
+<a name="steward-v3-UniswapV3Adaptor"></a>
+
+### UniswapV3Adaptor
+Represents call data for the Uniswap V3 adaptor
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| swap | [Swap](#steward-v3-Swap) |  | Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
+| oracle_swap | [OracleSwap](#steward-v3-OracleSwap) |  | Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
+| revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| open_position | [UniswapV3Adaptor.OpenPosition](#steward-v3-UniswapV3Adaptor-OpenPosition) |  | Represents function `openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)` |
+| close_position | [UniswapV3Adaptor.ClosePosition](#steward-v3-UniswapV3Adaptor-ClosePosition) |  | Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)` |
+| add_to_position | [UniswapV3Adaptor.AddToPosition](#steward-v3-UniswapV3Adaptor-AddToPosition) |  | Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)` |
+| take_from_position | [UniswapV3Adaptor.TakeFromPosition](#steward-v3-UniswapV3Adaptor-TakeFromPosition) |  | Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)` |
+| collect_fees | [UniswapV3Adaptor.CollectFees](#steward-v3-UniswapV3Adaptor-CollectFees) |  | Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)` |
+
+
+
+
+
+
+<a name="steward-v3-UniswapV3Adaptor-AddToPosition"></a>
+
+### UniswapV3Adaptor.AddToPosition
+Allows strategist to add to existing Uniswap V3 positions.
+
+Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [string](#string) |  |  |
+| amount_0 | [string](#string) |  |  |
+| amount_1 | [string](#string) |  |  |
+| min_0 | [string](#string) |  |  |
+| min_1 | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v3-UniswapV3Adaptor-ClosePosition"></a>
+
+### UniswapV3Adaptor.ClosePosition
+Allows strategist to close Uniswap V3 positions.
+
+Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [string](#string) |  |  |
+| min_0 | [string](#string) |  |  |
+| min_1 | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v3-UniswapV3Adaptor-CollectFees"></a>
+
+### UniswapV3Adaptor.CollectFees
+Allows strategist to collect fees from existing Uniswap V3 positions.
+
+Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [string](#string) |  |  |
+| amount_0 | [string](#string) |  |  |
+| amount_1 | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v3-UniswapV3Adaptor-OpenPosition"></a>
+
+### UniswapV3Adaptor.OpenPosition
+Allows strategist to open up arbritray Uniswap V3 positions.
+
+Represents function openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token_0 | [string](#string) |  |  |
+| token_1 | [string](#string) |  |  |
+| pool_fee | [uint32](#uint32) |  |  |
+| amount_0 | [string](#string) |  |  |
+| amount_1 | [string](#string) |  |  |
+| min_0 | [string](#string) |  |  |
+| min_1 | [string](#string) |  |  |
+| tick_lower | [int32](#int32) |  |  |
+| tick_upper | [int32](#int32) |  |  |
+
+
+
+
+
+
+<a name="steward-v3-UniswapV3Adaptor-TakeFromPosition"></a>
+
+### UniswapV3Adaptor.TakeFromPosition
+Allows strategist to take from existing Uniswap V3 positions.
+
+Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [string](#string) |  |  |
+| liquidity | [string](#string) |  |  |
+| min_0 | [string](#string) |  |  |
+| min_1 | [string](#string) |  |  |
+| collect_fees | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="steward-v3-UniswapV3AdaptorCalls"></a>
+
+### UniswapV3AdaptorCalls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [UniswapV3Adaptor](#steward-v3-UniswapV3Adaptor) | repeated |  |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+<a name="vesting_simple-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## vesting_simple.proto
+
+
+
+<a name="steward-v3-VestingSimpleAdaptor"></a>
+
+### VestingSimpleAdaptor
+Represents call data for the Vesting Simple adaptor
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| swap | [Swap](#steward-v3-Swap) |  | Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
+| oracle_swap | [OracleSwap](#steward-v3-OracleSwap) |  | Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
+| revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| deposit_to_vesting | [VestingSimpleAdaptor.DepositToVesting](#steward-v3-VestingSimpleAdaptor-DepositToVesting) |  | Represents function `depositToVesting(VestingSimple vestingContract, uint256 amountToDeposit)` |
+| withdraw_from_vesting | [VestingSimpleAdaptor.WithdrawFromVesting](#steward-v3-VestingSimpleAdaptor-WithdrawFromVesting) |  | Represents function `withdrawFromVesting(VestingSimple vestingContract, uint256 depositId, uint256 amountToWithdraw)` |
+| withdraw_any_from_vesting | [VestingSimpleAdaptor.WithdrawAnyFromVesting](#steward-v3-VestingSimpleAdaptor-WithdrawAnyFromVesting) |  | Represents function `withdrawAnyFromVesting(VestingSimple vestingContract, uint256 amountToWithdraw)` |
+| withdraw_all_from_vesting | [VestingSimpleAdaptor.WithdrawAllFromVesting](#steward-v3-VestingSimpleAdaptor-WithdrawAllFromVesting) |  | Represents function `withdrawAllFromVesting(VestingSimple vestingContract)` |
+
+
+
+
+
+
+<a name="steward-v3-VestingSimpleAdaptor-DepositToVesting"></a>
+
+### VestingSimpleAdaptor.DepositToVesting
+Allows strategists to deposit tokens to the vesting contract. By passing a max uint256 for amountToDeposit, the cellar will
+deposit its entire balance (appropriate in most cases).
+
+Represents function `depositToVesting(VestingSimple vestingContract, uint256 amountToDeposit)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| vesting_contract | [string](#string) |  |  |
+| amount | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v3-VestingSimpleAdaptor-WithdrawAllFromVesting"></a>
+
+### VestingSimpleAdaptor.WithdrawAllFromVesting
+Withdraw a certain amount of tokens from vesting, from any deposit. This will not affect the cellar&#39;s TVL because any deposit must
+already have vested, and will be reported in balanceOf. Will revert if not enough tokens are available based on amountToWithdraw.
+
+Represents function `withdrawAllFromVesting(VestingSimple vestingContract)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| vesting_contract | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v3-VestingSimpleAdaptor-WithdrawAnyFromVesting"></a>
+
+### VestingSimpleAdaptor.WithdrawAnyFromVesting
+Withdraw a single deposit from vesting. This will not affect the cellar&#39;s TVL because any deposit must already have vested, and
+will be reported in balanceOf. Will revert if not enough tokens are available based on amountToWithdraw.
+
+Represents function `withdrawAnyFromVesting(VestingSimple vestingContract, uint256 amountToWithdraw)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| vesting_contract | [string](#string) |  |  |
+| amount | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v3-VestingSimpleAdaptor-WithdrawFromVesting"></a>
+
+### VestingSimpleAdaptor.WithdrawFromVesting
+Allows strategists to deposit tokens to the vesting contract. By passing a max uint256 for amountToDeposit, the cellar will
+deposit its entire balance (appropriate in most cases).
+
+Represents function `withdrawFromVesting(VestingSimple vestingContract, uint256 depositId, uint256 amountToWithdraw)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| vesting_contract | [string](#string) |  |  |
+| deposit_id | [string](#string) |  |  |
+| amount | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v3-VestingSimpleAdaptorCalls"></a>
+
+### VestingSimpleAdaptorCalls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [VestingSimpleAdaptor](#steward-v3-VestingSimpleAdaptor) | repeated |  |
+
+
+
+
+
+ 
+
+ 
+
+ 
 
  
 

@@ -1,6 +1,6 @@
 #![allow(clippy::all)]
 use ethers::contract::Abigen;
-use std::process;
+use std::process::{self, Command};
 
 use std::path::Path;
 use std::{
@@ -16,7 +16,9 @@ const OUT_PATH: &str = "src/gen/proto/";
 
 fn main() {
     generate_contract_abis();
-    generate_protos();
+    generate_rust_protos();
+    generate_go_protos();
+    generate_api_docs();
 }
 
 fn generate_contract_abis() {
@@ -62,37 +64,36 @@ fn generate_contract_abis() {
     })
 }
 
-fn generate_protos() {
+fn generate_rust_protos() {
     let out_dir = Path::new(&OUT_PATH);
     let tmp_dir = Path::new(&TMP_PATH);
     let root = env!("CARGO_MANIFEST_DIR");
     let root: PathBuf = root.parse().unwrap();
-    let mut steward_proto_dir = root;
-    steward_proto_dir.push("proto/");
+    let mut steward_proto_dir = root.clone();
+    let mut somm_proto_dir = root.clone();
+    let mut third_party_proto_dir = root;
+    steward_proto_dir.push("proto/steward/v3");
+    somm_proto_dir.push("deps/sommelier/proto");
+    third_party_proto_dir.push("deps/sommelier/third_party/proto");
     let steward_proto_dir = [steward_proto_dir];
+    let somm_proto_dir = [somm_proto_dir];
 
     // List available proto files
     let mut protos: Vec<PathBuf> = vec![];
+    let mut somm_protos: Vec<PathBuf> = vec![];
     for proto_path in &steward_proto_dir {
-        protos.append(
-            &mut WalkDir::new(proto_path)
-                .into_iter()
-                .filter_map(|e| e.ok())
-                .filter(|e| {
-                    e.file_type().is_file()
-                        && e.path().extension().is_some()
-                        && e.path().extension().unwrap() == "proto"
-                })
-                .map(|e| e.into_path())
-                .collect(),
-        );
+        protos.append(&mut get_protos(proto_path));
     }
+    for proto_path in &somm_proto_dir {
+        somm_protos.append(&mut get_protos(proto_path));
+    }
+    let somm_proto_dir = [somm_proto_dir[0].clone(), third_party_proto_dir];
 
     // create directories for temporary build dirs
     fs::create_dir_all(tmp_dir)
         .unwrap_or_else(|_| panic!("Failed to create {:?}", tmp_dir.to_str()));
 
-    // Compile all proto files
+    // Compile steward proto files
     let mut config = prost_build::Config::default();
     config.out_dir(tmp_dir);
     config.type_attribute(".", "#[derive(serde::Deserialize, serde::Serialize)]");
@@ -110,7 +111,53 @@ fn generate_protos() {
         .unwrap();
 
     copy_generated_files(tmp_dir, out_dir);
+
+    // Compile sommelier proto files
+    let out_dir = Path::new("src/gen/somm_proto");
+    let mut config = prost_build::Config::default();
+    config.out_dir(out_dir);
+    config.type_attribute(".", "#[derive(serde::Deserialize, serde::Serialize)]");
+    config
+        .compile_protos(&somm_protos, &somm_proto_dir)
+        .unwrap();
+
+    // Compile all proto client for GRPC services
+    println!("Compiling proto clients for GRPC services...");
+    tonic_build::configure()
+        .build_client(true)
+        .build_server(true)
+        .file_descriptor_set_path(out_dir.join("descriptor.bin"))
+        .format(true)
+        .out_dir(out_dir)
+        .compile_with_config(config, &somm_protos, &somm_proto_dir)
+        .unwrap();
+
     println!("Done!");
+}
+
+fn generate_go_protos() {
+    Command::new("scripts/build_go_protos.sh")
+        .output()
+        .expect("failed to generate Go protos");
+}
+
+fn generate_api_docs() {
+    Command::new("scripts/build_api_docs.sh")
+        .output()
+        .expect("failed to build API docs");
+}
+
+fn get_protos(path: &PathBuf) -> Vec<PathBuf> {
+    WalkDir::new(path)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| {
+            e.file_type().is_file()
+                && e.path().extension().is_some()
+                && e.path().extension().unwrap() == "proto"
+        })
+        .map(|e| e.into_path())
+        .collect()
 }
 
 fn copy_generated_files(from_dir: &Path, to_dir: &Path) {

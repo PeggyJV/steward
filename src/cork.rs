@@ -1,3 +1,4 @@
+use crate::somm_proto::cork::Cork;
 use crate::{
     cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2},
     config,
@@ -17,7 +18,6 @@ use deep_space::{Coin, Contact};
 use ethers::types::H160;
 use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
 use sha3::{Digest, Keccak256};
-use somm_proto::cork::Cork;
 use std::time::Duration;
 use tonic::{self, async_trait, Code, Request, Response, Status};
 
