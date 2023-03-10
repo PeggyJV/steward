@@ -31,8 +31,8 @@ const CELLAR_NAME: &str = "CellarV2";
 
 // addresses treated as lowercase to ensure valid comparisons with arbitrary input
 const REAL_YIELD_USD: &str = "97e6e0a40a3d02f12d1cec30ebfbae04e37c119e";
-const BLOCKED_REAL_YIELD_USD_POSITIONS: [u32; 0] = [];
-const BLOCKED_ADAPTORS: [&str; 0] = [];
+const BLOCKED_REAL_YIELD_USD_POSITIONS: [u32; 2] = [4, 5];
+const BLOCKED_ADAPTORS: [&str; 1] = ["7c4262f83e6775d6ff6fe8d9ab268611ed9d13ee"];
 
 pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {
     // since a string prefixed with or without 0x is parsable, ensure the string comparison is valid
