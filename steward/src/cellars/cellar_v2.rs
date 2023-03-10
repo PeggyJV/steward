@@ -147,6 +147,19 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
 
             Ok(CellarV2Calls::SetRebalanceDeviation(call).encode())
         }
+        // TODO(bolten): should we set an explicit list for the new adaptors here, rather than making it generally available?
+        SetupAdaptor(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetupAdaptorCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetupAdaptorCall {
+                adaptor: sp_call_parse_address(params.adaptor)?,
+            };
+
+            Ok(CellarV2Calls::SetupAdaptor(call).encode())
+        }
     }
 }
 
