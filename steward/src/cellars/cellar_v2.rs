@@ -41,8 +41,15 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
 
     match function {
         AddPosition(params) => {
-            if cellar_id_address == REAL_YIELD_USD && BLOCKED_REAL_YIELD_USD_POSITIONS.contains(&params.position_id) {
-                return Err(ErrorKind::SPCallError.context(format!("real yield usd position is blocked: {}", params.position_id)).into())
+            if cellar_id_address == REAL_YIELD_USD
+                && BLOCKED_REAL_YIELD_USD_POSITIONS.contains(&params.position_id)
+            {
+                return Err(ErrorKind::SPCallError
+                    .context(format!(
+                        "real yield usd position is blocked: {}",
+                        params.position_id
+                    ))
+                    .into());
             }
 
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
@@ -62,7 +69,9 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                     let adaptor_str = adaptor_call.adaptor.as_str().to_lowercase();
                     let adaptor_address = adaptor_str.strip_prefix("0x").unwrap_or(&adaptor_str);
                     if BLOCKED_ADAPTORS.contains(&adaptor_address) {
-                        return Err(ErrorKind::SPCallError.context(format!("adaptor is blocked: {}", adaptor_call.adaptor)).into())
+                        return Err(ErrorKind::SPCallError
+                            .context(format!("adaptor is blocked: {}", adaptor_call.adaptor))
+                            .into());
                     }
                 }
             }
@@ -149,11 +158,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
         }
         // TODO(bolten): should we set an explicit list for the new adaptors here, rather than making it generally available?
         SetupAdaptor(params) => {
-            log_cellar_call(
-                CELLAR_NAME,
-                &SetupAdaptorCall::function_name(),
-                &cellar_id,
-            );
+            log_cellar_call(CELLAR_NAME, &SetupAdaptorCall::function_name(), &cellar_id);
             let call = SetupAdaptorCall {
                 adaptor: sp_call_parse_address(params.adaptor)?,
             };
