@@ -19,7 +19,7 @@ use StrategyFunction::*;
 
 use crate::utils::{encode_oracle_swap_params, encode_swap_params};
 use crate::{
-    error::Error,
+    error::{Error, ErrorKind},
     utils::{
         convert_exchange, sp_call_error, sp_call_parse_address, string_to_u128, string_to_u256,
     },
@@ -29,10 +29,24 @@ use super::log_cellar_call;
 
 const CELLAR_NAME: &str = "CellarV2";
 
+// addresses treated as lowercase to ensure valid comparisons with arbitrary input
+const REAL_YIELD_USD: &str = "97e6e0a40a3d02f12d1cec30ebfbae04e37c119e";
+const BLOCKED_REAL_YIELD_USD_POSITIONS: [u32; 0] = [];
+const BLOCKED_ADAPTORS: [&str; 0] = [];
+
 pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {
+    // since a string prefixed with or without 0x is parsable, ensure the string comparison is valid
+    let cellar_id_str = cellar_id.as_str().to_lowercase();
+    let cellar_id_address = cellar_id_str.strip_prefix("0x").unwrap_or(&cellar_id_str);
+
     match function {
         AddPosition(params) => {
+            if cellar_id_address == REAL_YIELD_USD && BLOCKED_REAL_YIELD_USD_POSITIONS.contains(&params.position_id) {
+                return Err(ErrorKind::SPCallError.context(format!("real yield usd position is blocked: {}", params.position_id)).into())
+            }
+
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
+
             let call = AddPositionCall {
                 index: params.index,
                 position_id: params.position_id,
@@ -43,6 +57,16 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
             Ok(CellarV2Calls::AddPosition(call).encode())
         }
         CallOnAdaptor(params) => {
+            if cellar_id_address == REAL_YIELD_USD {
+                for adaptor_call in params.data.clone() {
+                    let adaptor_str = adaptor_call.adaptor.as_str().to_lowercase();
+                    let adaptor_address = adaptor_str.strip_prefix("0x").unwrap_or(&adaptor_str);
+                    if BLOCKED_ADAPTORS.contains(&adaptor_address) {
+                        return Err(ErrorKind::SPCallError.context(format!("adaptor is blocked: {}", adaptor_call.adaptor)).into())
+                    }
+                }
+            }
+
             log_cellar_call(CELLAR_NAME, &CallOnAdaptorCall::function_name(), &cellar_id);
             let call = CallOnAdaptorCall {
                 data: get_encoded_adaptor_call(params.data)?,
@@ -109,7 +133,6 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
 
             Ok(CellarV2Calls::SetShareLockPeriod(call).encode())
         }
-
         // This will ultimately need to be a governance function, but for Seven Sea's live testing we are keeping
         // it here until they get a feel for what an appropriate value is.
         SetRebalanceDeviation(params) => {
