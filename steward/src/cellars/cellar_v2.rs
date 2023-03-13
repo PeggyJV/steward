@@ -290,13 +290,21 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
                                 token_0: sp_call_parse_address(p.token_0)?,
                                 token_1: sp_call_parse_address(p.token_1)?,
                             };
-                            calls.push(UniswapV3AdaptorCalls::PurgeAllZeroLiquidityPositions(call).encode().into())
+                            calls.push(
+                                UniswapV3AdaptorCalls::PurgeAllZeroLiquidityPositions(call)
+                                    .encode()
+                                    .into(),
+                            )
                         }
                         uniswap_v3_adaptor::Function::PurgeSinglePosition(p) => {
                             let call = steward_abi::uniswap_v3_adaptor::PurgeSinglePositionCall {
                                 token_id: string_to_u256(p.token_id)?,
                             };
-                            calls.push(UniswapV3AdaptorCalls::PurgeSinglePosition(call).encode().into())
+                            calls.push(
+                                UniswapV3AdaptorCalls::PurgeSinglePosition(call)
+                                    .encode()
+                                    .into(),
+                            )
                         }
                         uniswap_v3_adaptor::Function::RemoveUnownedPositionFromTracker(p) => {
                             let call = steward_abi::uniswap_v3_adaptor::RemoveUnOwnedPositionFromTrackerCall {
@@ -304,7 +312,11 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
                                 token_0: sp_call_parse_address(p.token_0)?,
                                 token_1: sp_call_parse_address(p.token_1)?,
                             };
-                            calls.push(UniswapV3AdaptorCalls::RemoveUnOwnedPositionFromTracker(call).encode().into())
+                            calls.push(
+                                UniswapV3AdaptorCalls::RemoveUnOwnedPositionFromTracker(call)
+                                    .encode()
+                                    .into(),
+                            )
                         }
                     }
                 }
