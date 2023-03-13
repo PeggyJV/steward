@@ -825,7 +825,7 @@ func (x *CellarV2_SetRebalanceDeviation) GetNewDeviation() string {
 //
 // Allows owner to add new adaptors for the cellar to use. They must have already been approved by the cellar's registry.
 //
-// Rpresents function `setupAdaptor(address _adaptor)`
+// Represents function `setupAdaptor(address _adaptor)`
 type CellarV2_SetupAdaptor struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
