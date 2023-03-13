@@ -702,9 +702,12 @@ fn test_address_normalization() {
     let blocked4 = String::from("7c4262f83e6775d6ff6fe8d9ab268611ed9d13ee");
     let nonblocked = String::from("0xDbd750F72a00d01f209FFc6C75e80301eFc789C1");
 
-    assert!(BLOCKED_ADAPTORS.contains(&normalize_address(blocked1).as_str()));
+    assert!(BLOCKED_ADAPTORS.contains(&normalize_address(blocked1.clone()).as_str()));
     assert!(BLOCKED_ADAPTORS.contains(&normalize_address(blocked2).as_str()));
     assert!(BLOCKED_ADAPTORS.contains(&normalize_address(blocked3).as_str()));
     assert!(BLOCKED_ADAPTORS.contains(&normalize_address(blocked4).as_str()));
-    assert!(!BLOCKED_ADAPTORS.contains(&normalize_address(nonblocked).as_str()));
+    assert!(!BLOCKED_ADAPTORS.contains(&normalize_address(nonblocked.clone()).as_str()));
+
+    assert!(ALLOWED_SETUP_ADAPTORS.contains(&normalize_address(nonblocked).as_str()));
+    assert!(!ALLOWED_SETUP_ADAPTORS.contains(&normalize_address(blocked1).as_str()));
 }
