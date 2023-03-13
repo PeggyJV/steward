@@ -40,19 +40,19 @@ const ALLOWED_SETUP_ADAPTORS: [&str; 1] = ["dbd750f72a00d01f209ffc6c75e80301efc7
 // since a string prefixed with or without 0x is parsable, ensure the string comparison is valid
 pub fn normalize_address(address: String) -> String {
     let lowercase_address = address.to_lowercase();
-    return address.to_lowercase().strip_prefix("0x").unwrap_or(&lowercase_address).to_string();
+    return address
+        .to_lowercase()
+        .strip_prefix("0x")
+        .unwrap_or(&lowercase_address)
+        .to_string();
 }
 
 pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {
     match function {
         AddPosition(params) => {
-            if BLOCKED_POSITIONS.contains(&params.position_id)
-            {
+            if BLOCKED_POSITIONS.contains(&params.position_id) {
                 return Err(ErrorKind::SPCallError
-                    .context(format!(
-                        "position is blocked: {}",
-                        params.position_id
-                    ))
+                    .context(format!("position is blocked: {}", params.position_id))
                     .into());
             }
 
