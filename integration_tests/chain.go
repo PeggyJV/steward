@@ -22,8 +22,8 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	gravitytypes "github.com/peggyjv/gravity-bridge/module/v2/x/gravity/types"
-	"github.com/peggyjv/sommelier/v4/app"
-	"github.com/peggyjv/sommelier/v4/app/params"
+	"github.com/peggyjv/sommelier/v5/app"
+	"github.com/peggyjv/sommelier/v5/app/params"
 	tmrand "github.com/tendermint/tendermint/libs/rand"
 	rpchttp "github.com/tendermint/tendermint/rpc/client/http"
 )
