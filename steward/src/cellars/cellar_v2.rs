@@ -29,24 +29,28 @@ use super::log_cellar_call;
 
 const CELLAR_NAME: &str = "CellarV2";
 
-// addresses treated as lowercase to ensure valid comparisons with arbitrary input
-const REAL_YIELD_USD: &str = "97e6e0a40a3d02f12d1cec30ebfbae04e37c119e";
-const BLOCKED_REAL_YIELD_USD_POSITIONS: [u32; 2] = [4, 5];
+// adaptors and positions associated with the deprecated UniV3 adaptor are blocked
+// addresses treated as lowercase without 0x prefix to ensure valid comparisons with arbitrary input
 const BLOCKED_ADAPTORS: [&str; 1] = ["7c4262f83e6775d6ff6fe8d9ab268611ed9d13ee"];
+const BLOCKED_POSITIONS: [u32; 2] = [4, 5];
+
+// address of the updated UniV3 adaptor
+const ALLOWED_SETUP_ADAPTORS: [&str; 1] = ["dbd750f72a00d01f209ffc6c75e80301efc789c1"];
+
+// since a string prefixed with or without 0x is parsable, ensure the string comparison is valid
+pub fn normalize_address(address: String) -> String {
+    let lowercase_address = address.to_lowercase();
+    return address.to_lowercase().strip_prefix("0x").unwrap_or(&lowercase_address).to_string();
+}
 
 pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {
-    // since a string prefixed with or without 0x is parsable, ensure the string comparison is valid
-    let cellar_id_str = cellar_id.as_str().to_lowercase();
-    let cellar_id_address = cellar_id_str.strip_prefix("0x").unwrap_or(&cellar_id_str);
-
     match function {
         AddPosition(params) => {
-            if cellar_id_address == REAL_YIELD_USD
-                && BLOCKED_REAL_YIELD_USD_POSITIONS.contains(&params.position_id)
+            if BLOCKED_POSITIONS.contains(&params.position_id)
             {
                 return Err(ErrorKind::SPCallError
                     .context(format!(
-                        "real yield usd position is blocked: {}",
+                        "position is blocked: {}",
                         params.position_id
                     ))
                     .into());
@@ -64,15 +68,12 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
             Ok(CellarV2Calls::AddPosition(call).encode())
         }
         CallOnAdaptor(params) => {
-            if cellar_id_address == REAL_YIELD_USD {
-                for adaptor_call in params.data.clone() {
-                    let adaptor_str = adaptor_call.adaptor.as_str().to_lowercase();
-                    let adaptor_address = adaptor_str.strip_prefix("0x").unwrap_or(&adaptor_str);
-                    if BLOCKED_ADAPTORS.contains(&adaptor_address) {
-                        return Err(ErrorKind::SPCallError
-                            .context(format!("adaptor is blocked: {}", adaptor_call.adaptor))
-                            .into());
-                    }
+            for adaptor_call in params.data.clone() {
+                let adaptor_address = normalize_address(adaptor_call.adaptor.clone());
+                if BLOCKED_ADAPTORS.contains(&adaptor_address.as_str()) {
+                    return Err(ErrorKind::SPCallError
+                        .context(format!("adaptor is blocked: {}", adaptor_call.adaptor))
+                        .into());
                 }
             }
 
@@ -156,8 +157,14 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
 
             Ok(CellarV2Calls::SetRebalanceDeviation(call).encode())
         }
-        // TODO(bolten): should we set an explicit list for the new adaptors here, rather than making it generally available?
         SetupAdaptor(params) => {
+            let adaptor_address = normalize_address(params.adaptor.clone());
+            if !ALLOWED_SETUP_ADAPTORS.contains(&adaptor_address.as_str()) {
+                return Err(ErrorKind::SPCallError
+                    .context(format!("adaptor setup not allowed: {}", params.adaptor))
+                    .into());
+            }
+
             log_cellar_call(CELLAR_NAME, &SetupAdaptorCall::function_name(), &cellar_id);
             let call = SetupAdaptorCall {
                 adaptor: sp_call_parse_address(params.adaptor)?,

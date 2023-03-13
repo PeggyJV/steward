@@ -152,7 +152,7 @@ message CellarV2 {
     /*
     * Allows owner to add new adaptors for the cellar to use. They must have already been approved by the cellar's registry.
     *
-    * Rpresents function `setupAdaptor(address _adaptor)`
+    * Represents function `setupAdaptor(address _adaptor)`
     */
     message SetupAdaptor {
         string adaptor = 1;
