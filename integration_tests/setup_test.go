@@ -16,7 +16,7 @@ import (
 
 	gravitytypes "github.com/peggyjv/gravity-bridge/module/v2/x/gravity/types"
 
-	corktypes "github.com/peggyjv/sommelier/v4/x/cork/types"
+	corktypes "github.com/peggyjv/sommelier/v5/x/cork/types"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"

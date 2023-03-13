@@ -37,6 +37,8 @@ message CellarV2 {
         SetRebalanceDeviation set_rebalance_deviation = 7;
         // Represents function `setShareLockPeriod(uint256 newLock)`
         SetShareLockPeriod set_share_lock_period = 8;
+        // Represents function `setupAdaptor(address _adaptor)`
+        SetupAdaptor setup_adaptor = 9;
     }
 
     /*
@@ -145,5 +147,14 @@ message CellarV2 {
     */
     message SetRebalanceDeviation {
         string new_deviation = 1;
+    }
+
+    /*
+    * Allows owner to add new adaptors for the cellar to use. They must have already been approved by the cellar's registry.
+    *
+    * Represents function `setupAdaptor(address _adaptor)`
+    */
+    message SetupAdaptor {
+        string adaptor = 1;
     }
 }
