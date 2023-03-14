@@ -7,11 +7,11 @@ use crate::{
     config::StewardConfig,
     cork::{
         cache::start_approved_cellar_cache_thread,
-        proposals::start_scheduled_cork_proposal_polling_thread, CorkHandler,
+        proposals::start_scheduled_cork_proposal_polling_thread,
     },
     prelude::*,
-    proto::contract_call_service_server::ContractCallServiceServer,
-    server::{self, FILE_DESCRIPTOR_SET},
+    pubsub::cache::start_publisher_trust_state_cache_thread,
+    server::start_server_management_thread,
 };
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
@@ -26,44 +26,15 @@ pub struct StartCmd;
 impl Runnable for StartCmd {
     /// Start the application.
     fn run(&self) {
-        let config = APP.config();
         info!("Starting application");
         abscissa_tokio::run(&APP, async {
             // currently allows the threads to detach since we aren't capturing the JoinHandle
             start_approved_cellar_cache_thread().await;
             start_scheduled_cork_proposal_polling_thread().await;
 
-            // Reflection required for certain clients to function... such as grpcurl
-            let contents = FILE_DESCRIPTOR_SET.to_vec();
-            let proto_descriptor_service = tonic_reflection::server::Builder::configure()
-                .register_encoded_file_descriptor_set(contents.as_slice())
-                .build()
-                .unwrap_or_else(|err| {
-                    status_err!("failed to build descriptor service: {}", err);
-                    std::process::exit(1)
-                });
-
-            let server_config = server::load_server_config(&config)
-                .await
-                .unwrap_or_else(|err| {
-                    status_err!("failed to load server config: {}", err);
-                    std::process::exit(1)
-                });
-
-            info!("listening on {}", server_config.address);
-            if let Err(err) = tonic::transport::Server::builder()
-                .tls_config(server_config.tls_config)
-                .unwrap_or_else(|err| {
-                    panic!("{:?}", err);
-                })
-                .add_service(ContractCallServiceServer::new(CorkHandler))
-                .add_service(proto_descriptor_service)
-                .serve(server_config.address)
-                .await
-            {
-                status_err!("server error: {}", err);
-                std::process::exit(1)
-            }
+            let (tx, rx) = tokio::sync::mpsc::channel(1);
+            start_publisher_trust_state_cache_thread(tx).await;
+            start_server_management_thread(rx).await;
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

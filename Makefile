@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := e2e_cork_test
 
-VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:main"
+VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:6839abb"
 ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:main"
 
 e2e_build_images: e2e_clean_slate
@@ -34,6 +34,10 @@ e2e_cellar_v2_test:
 e2e_proposal_test:
 	@scripts/clean_slate.sh
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestScheduledCorkProposal || make -s fail
+
+e2e_pubsub_test:
+	@scripts/clean_slate.sh
+	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestPubsub || make -s fail
 
 fail:
 	@echo 'test failed; dumping container logs into ./testdata for review'

@@ -44,6 +44,7 @@ pub async fn refresh_approved_cellars() -> Result<(), Error> {
 /// period can be configured via the `cork.cache_refresh_period` field (in seconds) in the steward
 /// config file. The default period is 60 seconds.
 pub async fn start_approved_cellar_cache_thread() -> JoinHandle<()> {
+    debug!("starting approved cellar cache thread");
     let config = APP.config();
     let query_period = Duration::from_secs(config.cork.cache_refresh_period);
 
@@ -54,7 +55,7 @@ pub async fn start_approved_cellar_cache_thread() -> JoinHandle<()> {
             if let Err(err) = refresh_approved_cellars().await {
                 fail_count += 1;
                 error!(
-                    "the cache has failed to refresh {} time(s): {}",
+                    "the approved cellars cache has failed to refresh {} time(s): {}",
                     fail_count, err
                 );
             } else {

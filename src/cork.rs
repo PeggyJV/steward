@@ -1,3 +1,4 @@
+use crate::server::handle_authorization;
 use crate::somm_proto::cork::Cork;
 use crate::{
     cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2},
@@ -36,7 +37,9 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
         &self,
         request: Request<ScheduleRequest>,
     ) -> Result<Response<ScheduleResponse>, Status> {
+        let certs = request.peer_certs().unwrap();
         let request = request.get_ref().to_owned();
+
         let cellar_id = request.cellar_id.clone();
         if let Err(err) = cellars::validate_cellar_id(&cellar_id).await {
             let message = format!("cellar ID validation failed: {}", err);
@@ -48,8 +51,10 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
             }
         }
 
+        debug!("checking publisher authorization for {cellar_id}");
+        handle_authorization(&cellar_id, certs).await?;
+
         // Build and send cork
-        let cellar_id = request.cellar_id.clone();
         let height = request.block_height;
         let encoded_call = match get_encoded_call(request) {
             Ok(c) => c,

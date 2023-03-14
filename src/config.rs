@@ -39,6 +39,7 @@ pub struct StewardConfig {
     pub cork: CorkConfig,
     pub metrics: MetricsSection,
     pub server: ServerSection,
+    pub pubsub: PubsubConfig,
 }
 
 impl StewardConfig {
@@ -87,6 +88,7 @@ impl Default for StewardConfig {
             cork: CorkConfig::default(),
             metrics: MetricsSection::default(),
             server: ServerSection::default(),
+            pubsub: PubsubConfig::default(),
         }
     }
 }
@@ -95,7 +97,6 @@ impl Default for StewardConfig {
 #[serde(default)]
 pub struct ServerSection {
     pub address: String,
-    pub client_ca_cert_path: Option<String>,
     pub port: u16,
     pub server_cert_path: String,
     pub server_key_path: String,
@@ -105,7 +106,6 @@ impl Default for ServerSection {
     fn default() -> Self {
         Self {
             address: "0.0.0.0".to_string(),
-            client_ca_cert_path: None,
             port: 5734,
             server_cert_path: "".to_owned(),
             server_key_path: "".to_owned(),
@@ -144,6 +144,21 @@ impl Default for CorkConfig {
             cache_refresh_period: 60,
             proposal_poll_period: 300,
             max_scheduling_retries: 3,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(default)]
+pub struct PubsubConfig {
+    /// Cache refresh period in seconds
+    pub cache_refresh_period: u64,
+}
+
+impl Default for PubsubConfig {
+    fn default() -> Self {
+        Self {
+            cache_refresh_period: 3600,
         }
     }
 }

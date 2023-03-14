@@ -18,6 +18,7 @@ pub mod cork;
 pub mod error;
 pub mod gas;
 pub mod prelude;
+pub mod pubsub;
 pub mod server;
 pub mod somm_send;
 pub mod utils;

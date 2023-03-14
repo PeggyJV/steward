@@ -14,6 +14,7 @@ use std::{
 };
 use thiserror::Error;
 use tonic::{transport::Error as TonicError, Status as TonicStatus};
+use x509_parser::prelude::{PEMError, X509Error};
 
 /// Kinds of errors
 #[derive(Copy, Clone, Debug, Eq, Error, PartialEq)]
@@ -66,6 +67,18 @@ pub enum ErrorKind {
     /// Proposal processing error
     #[error("proposal processing error")]
     ProposalProcessingError,
+    #[error("subscriber not found")]
+    SubscriberNotFound,
+    #[error("publisher not found")]
+    PublisherNotFound,
+    #[error("invalid argument")]
+    InvalidArgument,
+    #[error("no subscriptions")]
+    NoSubscriptions,
+    #[error("parsing error")]
+    ParsingError,
+    #[error("invalid certificate")]
+    InvalidCertificate,
 }
 
 impl ErrorKind {
@@ -190,5 +203,33 @@ impl From<TonicStatus> for Error {
     fn from(err: TonicStatus) -> Self {
         let err: BoxError = err.into();
         ErrorKind::GrpcError.context(err).into()
+    }
+}
+
+impl From<X509Error> for Error {
+    fn from(err: X509Error) -> Self {
+        let err: BoxError = err.into();
+        ErrorKind::ParsingError.context(err).into()
+    }
+}
+
+impl From<x509_parser::nom::Err<X509Error>> for Error {
+    fn from(err: x509_parser::nom::Err<X509Error>) -> Self {
+        let err: BoxError = err.into();
+        ErrorKind::ParsingError.context(err).into()
+    }
+}
+
+impl From<PEMError> for Error {
+    fn from(err: PEMError) -> Self {
+        let err: BoxError = err.into();
+        ErrorKind::ParsingError.context(err).into()
+    }
+}
+
+impl From<x509_parser::nom::Err<PEMError>> for Error {
+    fn from(err: x509_parser::nom::Err<PEMError>) -> Self {
+        let err: BoxError = err.into();
+        ErrorKind::ParsingError.context(err).into()
     }
 }
