@@ -714,7 +714,7 @@ func (s *IntegrationTestSuite) executeStewardCalls(request *steward_proto.Schedu
 			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 			defer cancel()
 
-			c := steward_proto.NewContractCallClient(conn)
+			c := steward_proto.NewContractCallServiceClient(conn)
 			s.T().Logf("sending request to %s", s.chain.validators[i].keyInfo.GetAddress())
 			_, err = c.Schedule(ctx, request)
 			s.Require().NoError(err)

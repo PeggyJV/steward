@@ -1,6 +1,6 @@
 #![allow(clippy::all)]
 use ethers::contract::Abigen;
-use std::process;
+use std::process::{self, Command};
 
 use std::path::Path;
 use std::{
@@ -16,7 +16,9 @@ const OUT_PATH: &str = "src/gen/proto/";
 
 fn main() {
     generate_contract_abis();
-    generate_protos();
+    generate_rust_protos();
+    generate_go_protos();
+    generate_api_docs();
 }
 
 fn generate_contract_abis() {
@@ -62,7 +64,7 @@ fn generate_contract_abis() {
     })
 }
 
-fn generate_protos() {
+fn generate_rust_protos() {
     let out_dir = Path::new(&OUT_PATH);
     let tmp_dir = Path::new(&TMP_PATH);
     let root = env!("CARGO_MANIFEST_DIR");
@@ -143,4 +145,16 @@ fn copy_generated_files(from_dir: &Path, to_dir: &Path) {
 
         panic!("[error] Aborted.");
     }
+}
+
+fn generate_go_protos() {
+    Command::new("scripts/build_go_protos.sh")
+        .output()
+        .expect("failed to generate Go protos");
+}
+
+fn generate_api_docs() {
+    Command::new("scripts/build_api_docs.sh")
+        .output()
+        .expect("failed to build API docs");
 }

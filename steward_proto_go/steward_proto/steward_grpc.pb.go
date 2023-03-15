@@ -18,88 +18,88 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// ContractCallClient is the client API for ContractCall service.
+// ContractCallServiceClient is the client API for ContractCallService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ContractCallClient interface {
+type ContractCallServiceClient interface {
 	// Handles scheduled contract call submission
 	Schedule(ctx context.Context, in *ScheduleRequest, opts ...grpc.CallOption) (*ScheduleResponse, error)
 }
 
-type contractCallClient struct {
+type contractCallServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewContractCallClient(cc grpc.ClientConnInterface) ContractCallClient {
-	return &contractCallClient{cc}
+func NewContractCallServiceClient(cc grpc.ClientConnInterface) ContractCallServiceClient {
+	return &contractCallServiceClient{cc}
 }
 
-func (c *contractCallClient) Schedule(ctx context.Context, in *ScheduleRequest, opts ...grpc.CallOption) (*ScheduleResponse, error) {
+func (c *contractCallServiceClient) Schedule(ctx context.Context, in *ScheduleRequest, opts ...grpc.CallOption) (*ScheduleResponse, error) {
 	out := new(ScheduleResponse)
-	err := c.cc.Invoke(ctx, "/steward.v3.ContractCall/Schedule", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/steward.v3.ContractCallService/Schedule", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ContractCallServer is the server API for ContractCall service.
-// All implementations must embed UnimplementedContractCallServer
+// ContractCallServiceServer is the server API for ContractCallService service.
+// All implementations must embed UnimplementedContractCallServiceServer
 // for forward compatibility
-type ContractCallServer interface {
+type ContractCallServiceServer interface {
 	// Handles scheduled contract call submission
 	Schedule(context.Context, *ScheduleRequest) (*ScheduleResponse, error)
-	mustEmbedUnimplementedContractCallServer()
+	mustEmbedUnimplementedContractCallServiceServer()
 }
 
-// UnimplementedContractCallServer must be embedded to have forward compatible implementations.
-type UnimplementedContractCallServer struct {
+// UnimplementedContractCallServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedContractCallServiceServer struct {
 }
 
-func (UnimplementedContractCallServer) Schedule(context.Context, *ScheduleRequest) (*ScheduleResponse, error) {
+func (UnimplementedContractCallServiceServer) Schedule(context.Context, *ScheduleRequest) (*ScheduleResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Schedule not implemented")
 }
-func (UnimplementedContractCallServer) mustEmbedUnimplementedContractCallServer() {}
+func (UnimplementedContractCallServiceServer) mustEmbedUnimplementedContractCallServiceServer() {}
 
-// UnsafeContractCallServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ContractCallServer will
+// UnsafeContractCallServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ContractCallServiceServer will
 // result in compilation errors.
-type UnsafeContractCallServer interface {
-	mustEmbedUnimplementedContractCallServer()
+type UnsafeContractCallServiceServer interface {
+	mustEmbedUnimplementedContractCallServiceServer()
 }
 
-func RegisterContractCallServer(s grpc.ServiceRegistrar, srv ContractCallServer) {
-	s.RegisterService(&ContractCall_ServiceDesc, srv)
+func RegisterContractCallServiceServer(s grpc.ServiceRegistrar, srv ContractCallServiceServer) {
+	s.RegisterService(&ContractCallService_ServiceDesc, srv)
 }
 
-func _ContractCall_Schedule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ContractCallService_Schedule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ScheduleRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ContractCallServer).Schedule(ctx, in)
+		return srv.(ContractCallServiceServer).Schedule(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/steward.v3.ContractCall/Schedule",
+		FullMethod: "/steward.v3.ContractCallService/Schedule",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContractCallServer).Schedule(ctx, req.(*ScheduleRequest))
+		return srv.(ContractCallServiceServer).Schedule(ctx, req.(*ScheduleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// ContractCall_ServiceDesc is the grpc.ServiceDesc for ContractCall service.
+// ContractCallService_ServiceDesc is the grpc.ServiceDesc for ContractCallService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var ContractCall_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "steward.v3.ContractCall",
-	HandlerType: (*ContractCallServer)(nil),
+var ContractCallService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "steward.v3.ContractCallService",
+	HandlerType: (*ContractCallServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Schedule",
-			Handler:    _ContractCall_Schedule_Handler,
+			Handler:    _ContractCallService_Schedule_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
