@@ -6,6 +6,8 @@
 - [steward.proto](#steward-proto)
     - [ScheduleRequest](#steward-v3-ScheduleRequest)
     - [ScheduleResponse](#steward-v3-ScheduleResponse)
+    - [StatusRequest](#steward-v3-StatusRequest)
+    - [StatusResponse](#steward-v3-StatusResponse)
   
     - [ContractCall](#steward-v3-ContractCall)
   
@@ -53,6 +55,31 @@ Represents a single, scheduled function call to a particular Cellar
 
 
 
+
+<a name="steward-v3-StatusRequest"></a>
+
+### StatusRequest
+Represents a request for Steward&#39;s current status
+
+
+
+
+
+
+<a name="steward-v3-StatusResponse"></a>
+
+### StatusResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| version | [string](#string) |  |  |
+
+
+
+
+
  
 
  
@@ -68,6 +95,7 @@ Service for handling Cellar contract calls
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
 | Schedule | [ScheduleRequest](#steward-v3-ScheduleRequest) | [ScheduleResponse](#steward-v3-ScheduleResponse) | Handles scheduled contract call submission |
+| Status | [StatusRequest](#steward-v3-StatusRequest) | [StatusResponse](#steward-v3-StatusResponse) |  |
 
  
 
