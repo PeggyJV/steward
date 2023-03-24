@@ -6,8 +6,10 @@ use crate::{
         ErrorKind::{self, *},
     },
     prelude::APP,
-    proto::{self, schedule_request::CallData::*, ScheduleRequest, ScheduleResponse, StatusRequest,
-        StatusResponse},
+    proto::{
+        self, schedule_request::CallData::*, ScheduleRequest, ScheduleResponse, StatusRequest,
+        StatusResponse,
+    },
     somm_send,
 };
 use abscissa_core::{
