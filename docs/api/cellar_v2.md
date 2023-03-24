@@ -229,7 +229,7 @@ Represent a function call initiated through a governance proposal
 | lift_shutdown | [CellarV2Governance.LiftShutdown](#steward-v3-CellarV2Governance-LiftShutdown) |  | Represents function `liftShutdown()` |
 | set_platform_fee | [CellarV2Governance.SetPlatformFee](#steward-v3-CellarV2Governance-SetPlatformFee) |  | Represents function `setPlatformFee(uint256)` |
 | set_strategist_platform_cut | [CellarV2Governance.SetStrategistPlatformCut](#steward-v3-CellarV2Governance-SetStrategistPlatformCut) |  | Represents function `setStrategistPlatformCut(address)` |
-| setup_adaptor | [CellarV2Governance.SetupAdaptor](#steward-v3-CellarV2Governance-SetupAdaptor) |  | Represents function `setupAdatptor(address adaptor)` |
+| setup_adaptor | [CellarV2Governance.SetupAdaptor](#steward-v3-CellarV2Governance-SetupAdaptor) |  | Represents function `setupAdaptor(address adaptor)` |
 
 
 
@@ -291,12 +291,12 @@ Represents function `setStrategistPlatformCut(uint64)`
 ### CellarV2Governance.SetupAdaptor
 Allows owner to add new adaptors for the cellar to use.
 
-Represents function `setupAdatptor(address adaptor)`
+Represents function `setupAdaptor(address adaptor)`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| adaptor | [string](#string) |  |  |
+| adaptor | [string](#string) |  | Address of the adaptor |
 
 
 

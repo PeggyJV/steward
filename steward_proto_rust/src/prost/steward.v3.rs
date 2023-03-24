@@ -1479,6 +1479,15 @@ pub struct ScheduleResponse {
     pub id: ::prost::alloc::string::String,
 }
 ///
+/// Represents a request for Steward's current status
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct StatusRequest {}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct StatusResponse {
+    #[prost(string, tag = "1")]
+    pub version: ::prost::alloc::string::String,
+}
+///
 /// Represents a simulated function call to a particular Cellar
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct SimulateRequest {
@@ -1545,6 +1554,20 @@ pub mod contract_call_client {
             })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static("/steward.v3.ContractCall/Schedule");
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn status(
+            &mut self,
+            request: impl tonic::IntoRequest<super::StatusRequest>,
+        ) -> Result<tonic::Response<super::StatusResponse>, tonic::Status> {
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::new(
+                    tonic::Code::Unknown,
+                    format!("Service was not ready: {}", e.into()),
+                )
+            })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/steward.v3.ContractCall/Status");
             self.inner.unary(request.into_request(), path, codec).await
         }
     }
@@ -1638,6 +1661,10 @@ pub mod contract_call_server {
             &self,
             request: tonic::Request<super::ScheduleRequest>,
         ) -> Result<tonic::Response<super::ScheduleResponse>, tonic::Status>;
+        async fn status(
+            &self,
+            request: tonic::Request<super::StatusRequest>,
+        ) -> Result<tonic::Response<super::StatusResponse>, tonic::Status>;
     }
     #[doc = ""]
     #[doc = " Service for handling Cellar contract calls"]
@@ -1693,6 +1720,37 @@ pub mod contract_call_server {
                         let interceptor = inner.1.clone();
                         let inner = inner.0;
                         let method = ScheduleSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = if let Some(interceptor) = interceptor {
+                            tonic::server::Grpc::with_interceptor(codec, interceptor)
+                        } else {
+                            tonic::server::Grpc::new(codec)
+                        };
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/steward.v3.ContractCall/Status" => {
+                    #[allow(non_camel_case_types)]
+                    struct StatusSvc<T: ContractCall>(pub Arc<T>);
+                    impl<T: ContractCall> tonic::server::UnaryService<super::StatusRequest> for StatusSvc<T> {
+                        type Response = super::StatusResponse;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::StatusRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).status(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let interceptor = inner.1.clone();
+                        let inner = inner.0;
+                        let method = StatusSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = if let Some(interceptor) = interceptor {
                             tonic::server::Grpc::with_interceptor(codec, interceptor)

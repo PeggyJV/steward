@@ -7,6 +7,7 @@
     - [UniswapV3Adaptor](#steward-v3-UniswapV3Adaptor)
     - [UniswapV3Adaptor.AddToPosition](#steward-v3-UniswapV3Adaptor-AddToPosition)
     - [UniswapV3Adaptor.ClosePosition](#steward-v3-UniswapV3Adaptor-ClosePosition)
+    - [UniswapV3Adaptor.CollectFees](#steward-v3-UniswapV3Adaptor-CollectFees)
     - [UniswapV3Adaptor.OpenPosition](#steward-v3-UniswapV3Adaptor-OpenPosition)
     - [UniswapV3Adaptor.TakeFromPosition](#steward-v3-UniswapV3Adaptor-TakeFromPosition)
     - [UniswapV3AdaptorCalls](#steward-v3-UniswapV3AdaptorCalls)
@@ -37,6 +38,7 @@ Represents call data for the Uniswap V3 adaptor
 | close_position | [UniswapV3Adaptor.ClosePosition](#steward-v3-UniswapV3Adaptor-ClosePosition) |  | Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)` |
 | add_to_position | [UniswapV3Adaptor.AddToPosition](#steward-v3-UniswapV3Adaptor-AddToPosition) |  | Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)` |
 | take_from_position | [UniswapV3Adaptor.TakeFromPosition](#steward-v3-UniswapV3Adaptor-TakeFromPosition) |  | Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)` |
+| collect_fees | [UniswapV3Adaptor.CollectFees](#steward-v3-UniswapV3Adaptor-CollectFees) |  | Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)` |
 
 
 
@@ -77,6 +79,25 @@ Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min
 | position_id | [string](#string) |  |  |
 | min_0 | [string](#string) |  |  |
 | min_1 | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v3-UniswapV3Adaptor-CollectFees"></a>
+
+### UniswapV3Adaptor.CollectFees
+Allows strategist to collect fees from existing Uniswap V3 positions.
+
+Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [string](#string) |  |  |
+| amount_0 | [string](#string) |  |  |
+| amount_1 | [string](#string) |  |  |
 
 
 

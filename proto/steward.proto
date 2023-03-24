@@ -19,6 +19,7 @@ import "cellar_v2.proto";
 service ContractCall {
     // Handles scheduled contract call submission
     rpc Schedule(ScheduleRequest) returns (ScheduleResponse) {}
+    rpc Status(StatusRequest) returns (StatusResponse) {}
 }
 
 /*
@@ -51,6 +52,15 @@ message ScheduleResponse {
 }
 
 /*
+ * Represents a request for Steward's current status
+ */
+message StatusRequest {}
+
+message StatusResponse {
+    string version = 1;
+}
+
+/*
  * Represents a simulated function call to a particular Cellar
  */
  message SimulateRequest {
@@ -65,5 +75,3 @@ message SimulateResponse {
     /// The response body from the Tenderly simulation
     string response_body = 2;
 }
-
-
