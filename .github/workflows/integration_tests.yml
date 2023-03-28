@@ -107,7 +107,7 @@ jobs:
       - name: Make Steward artifact available to other jobs
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ IMAGE_NAME }}
+          name: ${{ env.IMAGE_NAME }}
           path: /tmp/${{ env.STEWARD_ARTIFACT }}
       - name: Move Docker cache
         run: |
