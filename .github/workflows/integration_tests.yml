@@ -88,18 +88,18 @@ jobs:
       #     registry: ${{ env.REGISTRY }}
       #     username: ${{ github.actor }}
       #     password: ${{ secrets.GITHUB_TOKEN }}
-      - name: labels
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: ${{ env.IMAGE_NAME }}
+      # - name: labels
+      #   id: meta
+      #   uses: docker/metadata-action@v3
+      #   with:
+      #     images: ${{ env.IMAGE_NAME }}
       - name: build-and-push
         uses: docker/build-push-action@v2
         with:
           file: Dockerfile
           push: false
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          # tags: ${{ steps.meta.outputs.tags }}
+          # labels: ${{ steps.meta.outputs.labels }}
           builder: ${{ steps.buildx.outputs.name }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
