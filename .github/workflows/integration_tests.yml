@@ -14,7 +14,7 @@ env:
   HARDHAT_IMAGE: ghcr.io/peggyjv/steward-hardhat
   ORCHESTRATOR_IMAGE_NAME: ghcr.io/peggyjv/gravity-bridge-orchestrator:main
   SOMMELIER_IMAGE: ghcr.io/peggyjv/sommelier-sommelier:main
-  STEWARD_ARTIFACT: steward-steward.tar
+  STEWARD_ARTIFACT: steward_steward.tar
 
 jobs:
   hardhat-build:
