@@ -183,7 +183,7 @@ jobs:
           path: /tmp/${{ env.STEWARD_ARTIFACT }}
       - name: Load steward image
           run: |
-          docker load --input /tmp/${{ env.STEWARD_ARTIFACT }}
+            docker load --input /tmp/${{ env.STEWARD_ARTIFACT }}
       - name: rename steward image
         run: docker tag ${{ steps.meta-steward.outputs.tags }} steward:prebuilt
       - name: clean the slate
