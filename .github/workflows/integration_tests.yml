@@ -180,7 +180,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ env.IMAGE_NAME }}
-          path: /tmp/${{ env.STEWARD_ARTIFACT }}
+          path: /tmp
       - name: Load steward image
         run: docker load --input /tmp/${{ env.STEWARD_ARTIFACT }}
       - name: rename steward image
