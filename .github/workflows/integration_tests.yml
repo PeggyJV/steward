@@ -14,6 +14,7 @@ env:
   HARDHAT_IMAGE: ghcr.io/peggyjv/steward-hardhat
   ORCHESTRATOR_IMAGE_NAME: ghcr.io/peggyjv/gravity-bridge-orchestrator:main
   SOMMELIER_IMAGE: ghcr.io/peggyjv/sommelier-sommelier:main
+  STEWARD_ARTIFACT: steward-steward.tar
 
 jobs:
   hardhat-build:
@@ -81,27 +82,33 @@ jobs:
           key: ${{ runner.os }}-multi-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-multi-buildx
-      - name: container-login
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      # - name: container-login
+      #   uses: docker/login-action@v1
+      #   with:
+      #     registry: ${{ env.REGISTRY }}
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
       - name: labels
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.IMAGE_NAME }}
       - name: build-and-push
         uses: docker/build-push-action@v2
         with:
           file: Dockerfile
-          push: true
+          push: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           builder: ${{ steps.buildx.outputs.name }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+          outputs: types=docker,dest=/tmp/${{ env.STEWARD_ARTIFACT }},
+      - name: Make Steward artifact available to other jobs
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ IMAGE_NAME }}
+          path: /tmp/${{ env.STEWARD_ARTIFACT }}
       - name: Move Docker cache
         run: |
           rm -rf /tmp/.buildx-cache
@@ -154,7 +161,7 @@ jobs:
         id: meta-steward
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.IMAGE_NAME }}
       - name: pull sommelier image
         run: docker pull ${{ env.SOMMELIER_IMAGE }}
       - name: rename sommelier image
@@ -167,8 +174,16 @@ jobs:
         run: docker pull ${{ env.ORCHESTRATOR_IMAGE_NAME }}
       - name: rename orchestrator image
         run: docker tag ${{ env.ORCHESTRATOR_IMAGE_NAME }} orchestrator:prebuilt
-      - name: pull steward image
-        run: docker pull ${{ steps.meta-steward.outputs.tags }}
+      # - name: pull steward image
+      #   run: docker pull ${{ steps.meta-steward.outputs.tags }}
+      - name: Get steward artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.IMAGE_NAME }}
+          path: /tmp/${{ env.STEWARD_ARTIFACT }}
+      - name: Load steward image
+          run: |
+          docker load --input /tmp/${{ env.STEWARD_ARTIFACT }}
       - name: rename steward image
         run: docker tag ${{ steps.meta-steward.outputs.tags }} steward:prebuilt
       - name: clean the slate
