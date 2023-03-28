@@ -103,7 +103,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
-          outputs: types=docker,dest=/tmp/${{ env.STEWARD_ARTIFACT }},
+          outputs: types=docker,dest=/tmp/${{ env.STEWARD_ARTIFACT }}
       - name: Make Steward artifact available to other jobs
         uses: actions/upload-artifact@v3
         with:
