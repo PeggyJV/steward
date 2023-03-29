@@ -18,7 +18,7 @@ mod uniswapv3adaptor_mod {
     use std::sync::Arc;
     pub static UNISWAPV3ADAPTOR_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
         ethers::contract::Lazy::new(|| {
-            serde_json :: from_str ("[\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__BadSlippage\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__ExchangeNotSupported\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__ExternalReceiverBlocked\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserDepositsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserWithdrawsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"T\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"UniswapV3Adaptor__CallClosePosition\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"positionId\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"UniswapV3Adaptor__NotTheOwner\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"positionId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount1\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min1\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"addToPosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetsUsed\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20[]\",\n                \"name\": \"assets\",\n                \"type\": \"address[]\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"balanceOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"positionId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min1\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"closePosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"positionId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint128\",\n                \"name\": \"amount0\",\n                \"type\": \"uint128\"\n            },\n            {\n                \"internalType\": \"uint128\",\n                \"name\": \"amount1\",\n                \"type\": \"uint128\"\n            }\n        ],\n        \"name\": \"collectFees\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"deposit\",\n        \"outputs\": [],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"identifier\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"\",\n                \"type\": \"bytes32\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"isDebt\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"token0\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"token1\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint24\",\n                \"name\": \"poolFee\",\n                \"type\": \"uint24\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount1\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min1\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"int24\",\n                \"name\": \"tickLower\",\n                \"type\": \"int24\"\n            },\n            {\n                \"internalType\": \"int24\",\n                \"name\": \"tickUpper\",\n                \"type\": \"int24\"\n            }\n        ],\n        \"name\": \"openPosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetOut\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"slippage\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"name\": \"oracleSwap\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountOut\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"asset\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"revokeApproval\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetOut\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"swap\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountOut\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"positionId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint128\",\n                \"name\": \"liquidity\",\n                \"type\": \"uint128\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min1\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"collectFees\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"takeFromPosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdraw\",\n        \"outputs\": [],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdrawableFrom\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    }\n]\n") . expect ("invalid abi")
+            serde_json :: from_str ("[\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__BadSlippage\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__ExchangeNotSupported\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__ExternalReceiverBlocked\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserDepositsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserWithdrawsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"T\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"UniswapV3Adaptor__NotTheOwner\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"UniswapV3Adaptor__PurgingPositionWithLiquidity\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"UniswapV3Adaptor__TokenIdNotFoundInTracker\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"token0\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"token1\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"UniswapV3Adaptor__UntrackedLiquidity\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount1\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min1\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"addToPosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetsUsed\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20[]\",\n                \"name\": \"assets\",\n                \"type\": \"address[]\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"balanceOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min1\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"closePosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint128\",\n                \"name\": \"amount0\",\n                \"type\": \"uint128\"\n            },\n            {\n                \"internalType\": \"uint128\",\n                \"name\": \"amount1\",\n                \"type\": \"uint128\"\n            }\n        ],\n        \"name\": \"collectFees\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"deposit\",\n        \"outputs\": [],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"identifier\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"\",\n                \"type\": \"bytes32\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"isDebt\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"token0\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"token1\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint24\",\n                \"name\": \"poolFee\",\n                \"type\": \"uint24\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount1\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min1\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"int24\",\n                \"name\": \"tickLower\",\n                \"type\": \"int24\"\n            },\n            {\n                \"internalType\": \"int24\",\n                \"name\": \"tickUpper\",\n                \"type\": \"int24\"\n            }\n        ],\n        \"name\": \"openPosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetOut\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"slippage\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"name\": \"oracleSwap\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountOut\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"token0\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"token1\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"purgeAllZeroLiquidityPositions\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"purgeSinglePosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"token0\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"token1\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"removeUnOwnedPositionFromTracker\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"asset\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"revokeApproval\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetOut\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"swap\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountOut\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint128\",\n                \"name\": \"liquidity\",\n                \"type\": \"uint128\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min1\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"takeFees\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"takeFromPosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdraw\",\n        \"outputs\": [],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdrawableFrom\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    }\n]\n") . expect ("invalid abi")
         });
     #[derive(Clone)]
     pub struct UniswapV3Adaptor<M>(ethers::contract::Contract<M>);
@@ -53,7 +53,7 @@ mod uniswapv3adaptor_mod {
         #[doc = "Calls the contract's `addToPosition` (0x5ef54f36) function"]
         pub fn add_to_position(
             &self,
-            position_id: ethers::core::types::U256,
+            token_id: ethers::core::types::U256,
             amount_0: ethers::core::types::U256,
             amount_1: ethers::core::types::U256,
             min_0: ethers::core::types::U256,
@@ -62,7 +62,7 @@ mod uniswapv3adaptor_mod {
             self.0
                 .method_hash(
                     [94, 245, 79, 54],
-                    (position_id, amount_0, amount_1, min_0, min_1),
+                    (token_id, amount_0, amount_1, min_0, min_1),
                 )
                 .expect("method not found (this should never happen)")
         }
@@ -99,23 +99,23 @@ mod uniswapv3adaptor_mod {
         #[doc = "Calls the contract's `closePosition` (0xb35648d7) function"]
         pub fn close_position(
             &self,
-            position_id: ethers::core::types::U256,
+            token_id: ethers::core::types::U256,
             min_0: ethers::core::types::U256,
             min_1: ethers::core::types::U256,
         ) -> ethers::contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([179, 86, 72, 215], (position_id, min_0, min_1))
+                .method_hash([179, 86, 72, 215], (token_id, min_0, min_1))
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `collectFees` (0xb14d3ec5) function"]
         pub fn collect_fees(
             &self,
-            position_id: ethers::core::types::U256,
+            token_id: ethers::core::types::U256,
             amount_0: u128,
             amount_1: u128,
         ) -> ethers::contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([177, 77, 62, 197], (position_id, amount_0, amount_1))
+                .method_hash([177, 77, 62, 197], (token_id, amount_0, amount_1))
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `deposit` (0x69445c31) function"]
@@ -181,6 +181,36 @@ mod uniswapv3adaptor_mod {
                 )
                 .expect("method not found (this should never happen)")
         }
+        #[doc = "Calls the contract's `purgeAllZeroLiquidityPositions` (0xcfe93f77) function"]
+        pub fn purge_all_zero_liquidity_positions(
+            &self,
+            token_0: ethers::core::types::Address,
+            token_1: ethers::core::types::Address,
+        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            self.0
+                .method_hash([207, 233, 63, 119], (token_0, token_1))
+                .expect("method not found (this should never happen)")
+        }
+        #[doc = "Calls the contract's `purgeSinglePosition` (0x24f9f461) function"]
+        pub fn purge_single_position(
+            &self,
+            token_id: ethers::core::types::U256,
+        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            self.0
+                .method_hash([36, 249, 244, 97], token_id)
+                .expect("method not found (this should never happen)")
+        }
+        #[doc = "Calls the contract's `removeUnOwnedPositionFromTracker` (0xea97960c) function"]
+        pub fn remove_un_owned_position_from_tracker(
+            &self,
+            token_id: ethers::core::types::U256,
+            token_0: ethers::core::types::Address,
+            token_1: ethers::core::types::Address,
+        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            self.0
+                .method_hash([234, 151, 150, 12], (token_id, token_0, token_1))
+                .expect("method not found (this should never happen)")
+        }
         #[doc = "Calls the contract's `revokeApproval` (0xd3bfe76a) function"]
         pub fn revoke_approval(
             &self,
@@ -210,16 +240,16 @@ mod uniswapv3adaptor_mod {
         #[doc = "Calls the contract's `takeFromPosition` (0xd496b99c) function"]
         pub fn take_from_position(
             &self,
-            position_id: ethers::core::types::U256,
+            token_id: ethers::core::types::U256,
             liquidity: u128,
             min_0: ethers::core::types::U256,
             min_1: ethers::core::types::U256,
-            collect_fees: bool,
+            take_fees: bool,
         ) -> ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash(
                     [212, 150, 185, 156],
-                    (position_id, liquidity, min_0, min_1, collect_fees),
+                    (token_id, liquidity, min_0, min_1, take_fees),
                 )
                 .expect("method not found (this should never happen)")
         }
@@ -263,7 +293,7 @@ mod uniswapv3adaptor_mod {
         abi = "addToPosition(uint256,uint256,uint256,uint256,uint256)"
     )]
     pub struct AddToPositionCall {
-        pub position_id: ethers::core::types::U256,
+        pub token_id: ethers::core::types::U256,
         pub amount_0: ethers::core::types::U256,
         pub amount_1: ethers::core::types::U256,
         pub min_0: ethers::core::types::U256,
@@ -331,7 +361,7 @@ mod uniswapv3adaptor_mod {
     )]
     #[ethcall(name = "closePosition", abi = "closePosition(uint256,uint256,uint256)")]
     pub struct ClosePositionCall {
-        pub position_id: ethers::core::types::U256,
+        pub token_id: ethers::core::types::U256,
         pub min_0: ethers::core::types::U256,
         pub min_1: ethers::core::types::U256,
     }
@@ -349,7 +379,7 @@ mod uniswapv3adaptor_mod {
     )]
     #[ethcall(name = "collectFees", abi = "collectFees(uint256,uint128,uint128)")]
     pub struct CollectFeesCall {
-        pub position_id: ethers::core::types::U256,
+        pub token_id: ethers::core::types::U256,
         pub amount_0: u128,
         pub amount_1: u128,
     }
@@ -450,6 +480,63 @@ mod uniswapv3adaptor_mod {
         pub params: ethers::core::types::Bytes,
         pub slippage: u64,
     }
+    #[doc = "Container type for all input parameters for the `purgeAllZeroLiquidityPositions`function with signature `purgeAllZeroLiquidityPositions(address,address)` and selector `[207, 233, 63, 119]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Default,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthCall,
+        ethers :: contract :: EthDisplay,
+        serde :: Deserialize,
+        serde :: Serialize,
+    )]
+    #[ethcall(
+        name = "purgeAllZeroLiquidityPositions",
+        abi = "purgeAllZeroLiquidityPositions(address,address)"
+    )]
+    pub struct PurgeAllZeroLiquidityPositionsCall {
+        pub token_0: ethers::core::types::Address,
+        pub token_1: ethers::core::types::Address,
+    }
+    #[doc = "Container type for all input parameters for the `purgeSinglePosition`function with signature `purgeSinglePosition(uint256)` and selector `[36, 249, 244, 97]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Default,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthCall,
+        ethers :: contract :: EthDisplay,
+        serde :: Deserialize,
+        serde :: Serialize,
+    )]
+    #[ethcall(name = "purgeSinglePosition", abi = "purgeSinglePosition(uint256)")]
+    pub struct PurgeSinglePositionCall {
+        pub token_id: ethers::core::types::U256,
+    }
+    #[doc = "Container type for all input parameters for the `removeUnOwnedPositionFromTracker`function with signature `removeUnOwnedPositionFromTracker(uint256,address,address)` and selector `[234, 151, 150, 12]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Default,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthCall,
+        ethers :: contract :: EthDisplay,
+        serde :: Deserialize,
+        serde :: Serialize,
+    )]
+    #[ethcall(
+        name = "removeUnOwnedPositionFromTracker",
+        abi = "removeUnOwnedPositionFromTracker(uint256,address,address)"
+    )]
+    pub struct RemoveUnOwnedPositionFromTrackerCall {
+        pub token_id: ethers::core::types::U256,
+        pub token_0: ethers::core::types::Address,
+        pub token_1: ethers::core::types::Address,
+    }
     #[doc = "Container type for all input parameters for the `revokeApproval`function with signature `revokeApproval(address,address)` and selector `[211, 191, 231, 106]`"]
     #[derive(
         Clone,
@@ -504,11 +591,11 @@ mod uniswapv3adaptor_mod {
         abi = "takeFromPosition(uint256,uint128,uint256,uint256,bool)"
     )]
     pub struct TakeFromPositionCall {
-        pub position_id: ethers::core::types::U256,
+        pub token_id: ethers::core::types::U256,
         pub liquidity: u128,
         pub min_0: ethers::core::types::U256,
         pub min_1: ethers::core::types::U256,
-        pub collect_fees: bool,
+        pub take_fees: bool,
     }
     #[doc = "Container type for all input parameters for the `withdraw`function with signature `withdraw(uint256,address,bytes,bytes)` and selector `[201, 17, 27, 215]`"]
     #[derive(
@@ -559,6 +646,9 @@ mod uniswapv3adaptor_mod {
         IsDebt(IsDebtCall),
         OpenPosition(OpenPositionCall),
         OracleSwap(OracleSwapCall),
+        PurgeAllZeroLiquidityPositions(PurgeAllZeroLiquidityPositionsCall),
+        PurgeSinglePosition(PurgeSinglePositionCall),
+        RemoveUnOwnedPositionFromTracker(RemoveUnOwnedPositionFromTrackerCall),
         RevokeApproval(RevokeApprovalCall),
         Swap(SwapCall),
         TakeFromPosition(TakeFromPositionCall),
@@ -622,6 +712,29 @@ mod uniswapv3adaptor_mod {
                 return Ok(UniswapV3AdaptorCalls::OracleSwap(decoded));
             }
             if let Ok(decoded) =
+                <PurgeAllZeroLiquidityPositionsCall as ethers::core::abi::AbiDecode>::decode(
+                    data.as_ref(),
+                )
+            {
+                return Ok(UniswapV3AdaptorCalls::PurgeAllZeroLiquidityPositions(
+                    decoded,
+                ));
+            }
+            if let Ok(decoded) =
+                <PurgeSinglePositionCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            {
+                return Ok(UniswapV3AdaptorCalls::PurgeSinglePosition(decoded));
+            }
+            if let Ok(decoded) =
+                <RemoveUnOwnedPositionFromTrackerCall as ethers::core::abi::AbiDecode>::decode(
+                    data.as_ref(),
+                )
+            {
+                return Ok(UniswapV3AdaptorCalls::RemoveUnOwnedPositionFromTracker(
+                    decoded,
+                ));
+            }
+            if let Ok(decoded) =
                 <RevokeApprovalCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(UniswapV3AdaptorCalls::RevokeApproval(decoded));
@@ -661,6 +774,11 @@ mod uniswapv3adaptor_mod {
                 UniswapV3AdaptorCalls::IsDebt(element) => element.encode(),
                 UniswapV3AdaptorCalls::OpenPosition(element) => element.encode(),
                 UniswapV3AdaptorCalls::OracleSwap(element) => element.encode(),
+                UniswapV3AdaptorCalls::PurgeAllZeroLiquidityPositions(element) => element.encode(),
+                UniswapV3AdaptorCalls::PurgeSinglePosition(element) => element.encode(),
+                UniswapV3AdaptorCalls::RemoveUnOwnedPositionFromTracker(element) => {
+                    element.encode()
+                }
                 UniswapV3AdaptorCalls::RevokeApproval(element) => element.encode(),
                 UniswapV3AdaptorCalls::Swap(element) => element.encode(),
                 UniswapV3AdaptorCalls::TakeFromPosition(element) => element.encode(),
@@ -683,6 +801,9 @@ mod uniswapv3adaptor_mod {
                 UniswapV3AdaptorCalls::IsDebt(element) => element.fmt(f),
                 UniswapV3AdaptorCalls::OpenPosition(element) => element.fmt(f),
                 UniswapV3AdaptorCalls::OracleSwap(element) => element.fmt(f),
+                UniswapV3AdaptorCalls::PurgeAllZeroLiquidityPositions(element) => element.fmt(f),
+                UniswapV3AdaptorCalls::PurgeSinglePosition(element) => element.fmt(f),
+                UniswapV3AdaptorCalls::RemoveUnOwnedPositionFromTracker(element) => element.fmt(f),
                 UniswapV3AdaptorCalls::RevokeApproval(element) => element.fmt(f),
                 UniswapV3AdaptorCalls::Swap(element) => element.fmt(f),
                 UniswapV3AdaptorCalls::TakeFromPosition(element) => element.fmt(f),
@@ -744,6 +865,21 @@ mod uniswapv3adaptor_mod {
     impl ::std::convert::From<OracleSwapCall> for UniswapV3AdaptorCalls {
         fn from(var: OracleSwapCall) -> Self {
             UniswapV3AdaptorCalls::OracleSwap(var)
+        }
+    }
+    impl ::std::convert::From<PurgeAllZeroLiquidityPositionsCall> for UniswapV3AdaptorCalls {
+        fn from(var: PurgeAllZeroLiquidityPositionsCall) -> Self {
+            UniswapV3AdaptorCalls::PurgeAllZeroLiquidityPositions(var)
+        }
+    }
+    impl ::std::convert::From<PurgeSinglePositionCall> for UniswapV3AdaptorCalls {
+        fn from(var: PurgeSinglePositionCall) -> Self {
+            UniswapV3AdaptorCalls::PurgeSinglePosition(var)
+        }
+    }
+    impl ::std::convert::From<RemoveUnOwnedPositionFromTrackerCall> for UniswapV3AdaptorCalls {
+        fn from(var: RemoveUnOwnedPositionFromTrackerCall) -> Self {
+            UniswapV3AdaptorCalls::RemoveUnOwnedPositionFromTracker(var)
         }
     }
     impl ::std::convert::From<RevokeApprovalCall> for UniswapV3AdaptorCalls {

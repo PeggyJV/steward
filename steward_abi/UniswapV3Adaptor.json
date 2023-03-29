@@ -30,15 +30,10 @@
         "type": "error"
     },
     {
-        "inputs": [],
-        "name": "UniswapV3Adaptor__CallClosePosition",
-        "type": "error"
-    },
-    {
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "positionId",
+                "name": "tokenId",
                 "type": "uint256"
             }
         ],
@@ -49,7 +44,45 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "positionId",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "UniswapV3Adaptor__PurgingPositionWithLiquidity",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "UniswapV3Adaptor__TokenIdNotFoundInTracker",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "token0",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "token1",
+                "type": "address"
+            }
+        ],
+        "name": "UniswapV3Adaptor__UntrackedLiquidity",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
                 "type": "uint256"
             },
             {
@@ -139,7 +172,7 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "positionId",
+                "name": "tokenId",
                 "type": "uint256"
             },
             {
@@ -162,7 +195,7 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "positionId",
+                "name": "tokenId",
                 "type": "uint256"
             },
             {
@@ -331,6 +364,60 @@
         "inputs": [
             {
                 "internalType": "contract ERC20",
+                "name": "token0",
+                "type": "address"
+            },
+            {
+                "internalType": "contract ERC20",
+                "name": "token1",
+                "type": "address"
+            }
+        ],
+        "name": "purgeAllZeroLiquidityPositions",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "purgeSinglePosition",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "contract ERC20",
+                "name": "token0",
+                "type": "address"
+            },
+            {
+                "internalType": "contract ERC20",
+                "name": "token1",
+                "type": "address"
+            }
+        ],
+        "name": "removeUnOwnedPositionFromTracker",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract ERC20",
                 "name": "asset",
                 "type": "address"
             },
@@ -388,7 +475,7 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "positionId",
+                "name": "tokenId",
                 "type": "uint256"
             },
             {
@@ -408,7 +495,7 @@
             },
             {
                 "internalType": "bool",
-                "name": "collectFees",
+                "name": "takeFees",
                 "type": "bool"
             }
         ],
