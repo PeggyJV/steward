@@ -427,7 +427,7 @@ pub struct UniswapV3Adaptor {
     ///**** BASE ADAPTOR FUNCTIONS ****
     #[prost(
         oneof = "uniswap_v3_adaptor::Function",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11"
     )]
     pub function: ::core::option::Option<uniswap_v3_adaptor::Function>,
 }
@@ -461,11 +461,11 @@ pub mod uniswap_v3_adaptor {
     ///
     /// Allows strategist to close Uniswap V3 positions.
     ///
-    /// Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)`
+    /// Represents function `closePosition(uint256 tokenId, uint256 min0, uint256 min1)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct ClosePosition {
         #[prost(string, tag = "1")]
-        pub position_id: ::prost::alloc::string::String,
+        pub token_id: ::prost::alloc::string::String,
         #[prost(string, tag = "2")]
         pub min_0: ::prost::alloc::string::String,
         #[prost(string, tag = "3")]
@@ -474,11 +474,11 @@ pub mod uniswap_v3_adaptor {
     ///
     /// Allows strategist to add to existing Uniswap V3 positions.
     ///
-    /// Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
+    /// Represents function `addToPosition(uint256 tokenId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct AddToPosition {
         #[prost(string, tag = "1")]
-        pub position_id: ::prost::alloc::string::String,
+        pub token_id: ::prost::alloc::string::String,
         #[prost(string, tag = "2")]
         pub amount_0: ::prost::alloc::string::String,
         #[prost(string, tag = "3")]
@@ -491,11 +491,11 @@ pub mod uniswap_v3_adaptor {
     ///
     /// Allows strategist to take from existing Uniswap V3 positions.
     ///
-    /// Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
+    /// Represents function `takeFromPosition(uint256 tokenId, uint128 liquidity, uint256 min0, uint256 min1, bool takeFees)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct TakeFromPosition {
         #[prost(string, tag = "1")]
-        pub position_id: ::prost::alloc::string::String,
+        pub token_id: ::prost::alloc::string::String,
         #[prost(string, tag = "2")]
         pub liquidity: ::prost::alloc::string::String,
         #[prost(string, tag = "3")]
@@ -503,20 +503,53 @@ pub mod uniswap_v3_adaptor {
         #[prost(string, tag = "4")]
         pub min_1: ::prost::alloc::string::String,
         #[prost(bool, tag = "5")]
-        pub collect_fees: bool,
+        pub take_fees: bool,
     }
     ///
     /// Allows strategist to collect fees from existing Uniswap V3 positions.
     ///
-    /// Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
+    /// Represents function `collectFees(uint256 tokenId, uint128 amount0, uint128 amount1)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct CollectFees {
         #[prost(string, tag = "1")]
-        pub position_id: ::prost::alloc::string::String,
+        pub token_id: ::prost::alloc::string::String,
         #[prost(string, tag = "2")]
         pub amount_0: ::prost::alloc::string::String,
         #[prost(string, tag = "3")]
         pub amount_1: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to purge zero liquidity LP positions from tracker.
+    ///
+    /// Represents function `purgeAllZeroLiquidityPositions(ERC20 token0, ERC20 token1)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct PurgeAllZeroLiquidityPositions {
+        #[prost(string, tag = "1")]
+        pub token_0: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub token_1: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to purge a single zero liquidity LP position from tracker.
+    ///
+    /// Represents function `purgeSinglePosition(uint256 tokenId)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct PurgeSinglePosition {
+        #[prost(string, tag = "1")]
+        pub token_id: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to remove tracked positions that are not owned by the cellar.
+    ///
+    /// Represents function `removeUnOwnedPositionFromTracker(uint256 tokenId, ERC20 token0, ERC20 token1)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RemoveUnownedPositionFromTracker {
+        #[prost(string, tag = "1")]
+        pub token_id: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub token_0: ::prost::alloc::string::String,
+        #[prost(string, tag = "3")]
+        pub token_1: ::prost::alloc::string::String,
     }
     ///**** BASE ADAPTOR FUNCTIONS ****
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
@@ -546,6 +579,15 @@ pub mod uniswap_v3_adaptor {
         /// Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
         #[prost(message, tag = "8")]
         CollectFees(CollectFees),
+        /// Represents function `purgeAllZeroLiquidityPositions(ERC20 token0, ERC20 token1)`
+        #[prost(message, tag = "9")]
+        PurgeAllZeroLiquidityPositions(PurgeAllZeroLiquidityPositions),
+        /// Represents function `purgeSinglePosition(uint256 tokenId)`
+        #[prost(message, tag = "10")]
+        PurgeSinglePosition(PurgeSinglePosition),
+        /// Represents function `removeUnOwnedPositionFromTracker(uint256 tokenId, ERC20 token0, ERC20 token1)`
+        #[prost(message, tag = "11")]
+        RemoveUnownedPositionFromTracker(RemoveUnownedPositionFromTracker),
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
