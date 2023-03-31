@@ -4,13 +4,14 @@ set -e
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
 GO_OUT=$REPO_ROOT/steward_proto_go
-PROTO_PATH=$REPO_ROOT/proto/steward/v3
+PROTO_PATH=$REPO_ROOT/proto
 
 echo
 echo Building Go bindings. Output will be in ./steward_proto_go/steward_proto
+mkdir -p $GO_OUT
 protoc --proto_path=$PROTO_PATH \
 	--go_out=$GO_OUT/ \
 	--go-grpc_out=$GO_OUT/ \
-    $PROTO_PATH/*.proto \
+    $PROTO_PATH/steward/v3/*.proto \
 
 echo Done!
