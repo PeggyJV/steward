@@ -338,10 +338,11 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
                             calls.push(UniswapV3AdaptorCalls::CollectFees(call).encode().into())
                         }
                         uniswap_v3_adaptor::Function::PurgeAllZeroLiquidityPositions(p) => {
-                            let call = steward_abi::uniswap_v3_adaptor::PurgeAllZeroLiquidityPositionsCall {
-                                token_0: sp_call_parse_address(p.token_0)?,
-                                token_1: sp_call_parse_address(p.token_1)?,
-                            };
+                            let call =
+                                adaptors::uniswap_v3_adaptor::PurgeAllZeroLiquidityPositionsCall {
+                                    token_0: sp_call_parse_address(p.token_0)?,
+                                    token_1: sp_call_parse_address(p.token_1)?,
+                                };
                             calls.push(
                                 UniswapV3AdaptorCalls::PurgeAllZeroLiquidityPositions(call)
                                     .encode()
