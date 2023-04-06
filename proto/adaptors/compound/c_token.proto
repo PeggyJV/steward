@@ -3,15 +3,15 @@
 */
 
 syntax = "proto3";
-package steward.v2;
+package steward.v3;
 
 option go_package = "/steward_proto";
 
 import "adaptors/base.proto";
 import "common.proto";
 
-// Represents call data for the Compound C Token adaptor, managing lending positions on Compound.
-message CompoundCTokenAdaptor {
+// Represents call data for the Compound C Token adaptor V1, managing lending positions on Compound.
+message CompoundCTokenAdaptorV1 {
     oneof function {
         /***** BASE ADAPTOR FUNCTIONS *****/
 
@@ -74,6 +74,57 @@ message CompoundCTokenAdaptor {
     }
 }
 
-message CompoundCTokenAdaptorCalls {
-    repeated CompoundCTokenAdaptor calls = 1;
+
+// Represents call data for the Compound C Token adaptor V2, managing lending positions on Compound.
+message CompoundCTokenAdaptorV2 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
+        DepositToCompound deposit_to_compound = 2;
+        // Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)`
+        WithdrawFromCompound withdraw_from_compound = 3;
+        // Represents function `claimComp()`
+        ClaimComp claim_comp = 4;
+    }
+
+    /*
+    * Allows strategists to lend assets on Compound.
+    *
+    * Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
+    */
+    message DepositToCompound {
+        string market = 1;
+        string amount_to_deposit = 2;
+    }
+
+    /*
+    * Allows strategists to withdraw assets from Compound.
+    *
+    * Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)`
+    */
+    message WithdrawFromCompound {
+        string market = 1;
+        string amount_to_withdraw = 2;
+    }
+
+    /*
+    * Allows strategists to claim COMP rewards.
+    *
+    * Represents function `claimComp()`
+    */
+    message ClaimComp {}
+}
+
+message CompoundCTokenAdaptorV1Calls {
+    repeated CompoundCTokenAdaptorV1 calls = 1;
+}
+
+message CompoundCTokenAdaptorV2Calls {
+    repeated CompoundCTokenAdaptorV2 calls = 1;
 }

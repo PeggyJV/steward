@@ -1,12 +1,12 @@
 syntax = "proto3";
-package steward.v2;
+package steward.v3;
 
 option go_package = "/steward_proto";
 
 import "adaptors/base.proto";
 
 // Represents call data for the Uniswap V3 adaptor
-message UniswapV3Adaptor {
+message UniswapV3AdaptorV1 {
     oneof function {
         /***** BASE ADAPTOR FUNCTIONS *****/
 
@@ -132,6 +132,6 @@ message UniswapV3Adaptor {
     }
 }
 
-message UniswapV3AdaptorCalls {
-    repeated UniswapV3Adaptor calls = 1;
+message UniswapV3AdaptorV1Calls {
+    repeated UniswapV3AdaptorV1 calls = 1;
 }

@@ -3,26 +3,16 @@
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
 use abscissa_core::tracing::debug;
 use ethers::{abi::AbiEncode, contract::EthCall, types::Bytes};
-use steward_abi::cellar_v2::AdaptorCall as AbiAdaptorCall;
-use steward_abi::{
-    aave_a_token_adaptor::AaveATokenAdaptorCalls,
-    aave_debt_token_adaptor::AaveDebtTokenAdaptorCalls, cellar_v2::*,
-    compound_c_token_adaptor::CompoundCTokenAdaptorCalls,
-    uniswap_v3_adaptor::UniswapV3AdaptorCalls, vesting_simple_adaptor::VestingSimpleAdaptorCalls,
-};
+use steward_abi::cellar_v2::{AdaptorCall as AbiAdaptorCall, *};
 use steward_proto::steward::{
-    aave_a_token_adaptor, aave_debt_token_adaptor,
-    cellar_v2::{adaptor_call::CallData, AdaptorCall, Function as StrategyFunction},
-    compound_c_token_adaptor, uniswap_v3_adaptor, vesting_simple_adaptor,
+    adaptor_call::CallData::*, cellar_v2::Function as StrategyFunction, AdaptorCall,
 };
 use StrategyFunction::*;
 
-use crate::utils::{encode_oracle_swap_params, encode_swap_params};
+use crate::cellars::adaptors;
 use crate::{
     error::{Error, ErrorKind},
-    utils::{
-        convert_exchange, sp_call_error, sp_call_parse_address, string_to_u128, string_to_u256,
-    },
+    utils::{sp_call_error, sp_call_parse_address, string_to_u256},
 };
 
 use super::log_cellar_call;
@@ -47,6 +37,7 @@ pub fn normalize_address(address: String) -> String {
         .to_string();
 }
 
+/// Encodes a call to a CellarV2 contract
 pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {
     match function {
         AddPosition(params) => {
@@ -175,6 +166,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
     }
 }
 
+/// Encodes calls to the Adaptor contracts
 fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall>, Error> {
     let mut result: Vec<AbiAdaptorCall> = Vec::new();
     for d in data {
@@ -185,503 +177,41 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
             .ok_or_else(|| sp_call_error("call data is empty".to_string()))?;
 
         match call_data {
-            CallData::UniswapV3Calls(params) => {
-                for c in params.calls {
-                    let function = c
-                        .function
-                        .ok_or_else(|| sp_call_error("function cannot be empty".to_string()))?;
-
-                    match function {
-                        uniswap_v3_adaptor::Function::OpenPosition(p) => {
-                            let call = steward_abi::uniswap_v3_adaptor::OpenPositionCall {
-                                token_0: sp_call_parse_address(p.token_0)?,
-                                token_1: sp_call_parse_address(p.token_1)?,
-                                pool_fee: p.pool_fee,
-                                amount_0: string_to_u256(p.amount_0)?,
-                                amount_1: string_to_u256(p.amount_1)?,
-                                min_0: string_to_u256(p.min_0)?,
-                                min_1: string_to_u256(p.min_1)?,
-                                tick_lower: p.tick_lower,
-                                tick_upper: p.tick_upper,
-                            };
-                            calls.push(UniswapV3AdaptorCalls::OpenPosition(call).encode().into());
-                        }
-                        uniswap_v3_adaptor::Function::ClosePosition(p) => {
-                            let call = steward_abi::uniswap_v3_adaptor::ClosePositionCall {
-                                token_id: string_to_u256(p.token_id)?,
-                                min_0: string_to_u256(p.min_0)?,
-                                min_1: string_to_u256(p.min_1)?,
-                            };
-                            calls.push(UniswapV3AdaptorCalls::ClosePosition(call).encode().into());
-                        }
-                        uniswap_v3_adaptor::Function::AddToPosition(p) => {
-                            let call = steward_abi::uniswap_v3_adaptor::AddToPositionCall {
-                                token_id: string_to_u256(p.token_id)?,
-                                amount_0: string_to_u256(p.amount_0)?,
-                                amount_1: string_to_u256(p.amount_1)?,
-                                min_0: string_to_u256(p.min_0)?,
-                                min_1: string_to_u256(p.min_1)?,
-                            };
-                            calls.push(UniswapV3AdaptorCalls::AddToPosition(call).encode().into());
-                        }
-                        uniswap_v3_adaptor::Function::TakeFromPosition(p) => {
-                            let call = steward_abi::uniswap_v3_adaptor::TakeFromPositionCall {
-                                token_id: string_to_u256(p.token_id)?,
-                                liquidity: string_to_u128(p.liquidity)?.as_u128(),
-                                min_0: string_to_u256(p.min_0)?,
-                                min_1: string_to_u256(p.min_1)?,
-                                take_fees: p.take_fees,
-                            };
-                            calls.push(
-                                UniswapV3AdaptorCalls::TakeFromPosition(call)
-                                    .encode()
-                                    .into(),
-                            );
-                        }
-                        uniswap_v3_adaptor::Function::Swap(p) => {
-                            let swap_params = encode_swap_params(p.params.ok_or_else(|| {
-                                sp_call_error("swap params cannot be empty".to_string())
-                            })?)?;
-
-                            debug!("encoded: {:?}", hex::encode(&swap_params));
-                            let call = steward_abi::uniswap_v3_adaptor::SwapCall {
-                                asset_in: sp_call_parse_address(p.asset_in)?,
-                                asset_out: sp_call_parse_address(p.asset_out)?,
-                                amount_in: string_to_u256(p.amount_in)?,
-                                exchange: convert_exchange(p.exchange),
-                                params: swap_params.into(),
-                            };
-                            calls.push(UniswapV3AdaptorCalls::Swap(call).encode().into())
-                        }
-                        uniswap_v3_adaptor::Function::OracleSwap(p) => {
-                            let oracle_swap_params =
-                                encode_oracle_swap_params(p.params.ok_or_else(|| {
-                                    sp_call_error("swap params cannot be empty".to_string())
-                                })?)?;
-
-                            debug!("encoded: {:?}", hex::encode(&oracle_swap_params));
-                            let call = steward_abi::uniswap_v3_adaptor::OracleSwapCall {
-                                asset_in: sp_call_parse_address(p.asset_in)?,
-                                asset_out: sp_call_parse_address(p.asset_out)?,
-                                amount_in: string_to_u256(p.amount_in)?,
-                                exchange: convert_exchange(p.exchange),
-                                params: oracle_swap_params.into(),
-                                slippage: p.slippage,
-                            };
-                            calls.push(UniswapV3AdaptorCalls::OracleSwap(call).encode().into())
-                        }
-                        uniswap_v3_adaptor::Function::RevokeApproval(p) => {
-                            let call = steward_abi::uniswap_v3_adaptor::RevokeApprovalCall {
-                                asset: sp_call_parse_address(p.asset)?,
-                                spender: sp_call_parse_address(p.spender)?,
-                            };
-                            calls.push(UniswapV3AdaptorCalls::RevokeApproval(call).encode().into())
-                        }
-                        uniswap_v3_adaptor::Function::CollectFees(p) => {
-                            let call = steward_abi::uniswap_v3_adaptor::CollectFeesCall {
-                                token_id: string_to_u256(p.token_id)?,
-                                amount_0: string_to_u128(p.amount_0)?.as_u128(),
-                                amount_1: string_to_u128(p.amount_1)?.as_u128(),
-                            };
-                            calls.push(UniswapV3AdaptorCalls::CollectFees(call).encode().into())
-                        }
-                        uniswap_v3_adaptor::Function::PurgeAllZeroLiquidityPositions(p) => {
-                            let call = steward_abi::uniswap_v3_adaptor::PurgeAllZeroLiquidityPositionsCall {
-                                token_0: sp_call_parse_address(p.token_0)?,
-                                token_1: sp_call_parse_address(p.token_1)?,
-                            };
-                            calls.push(
-                                UniswapV3AdaptorCalls::PurgeAllZeroLiquidityPositions(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                        uniswap_v3_adaptor::Function::PurgeSinglePosition(p) => {
-                            let call = steward_abi::uniswap_v3_adaptor::PurgeSinglePositionCall {
-                                token_id: string_to_u256(p.token_id)?,
-                            };
-                            calls.push(
-                                UniswapV3AdaptorCalls::PurgeSinglePosition(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                        uniswap_v3_adaptor::Function::RemoveUnownedPositionFromTracker(p) => {
-                            let call = steward_abi::uniswap_v3_adaptor::RemoveUnOwnedPositionFromTrackerCall {
-                                token_id: string_to_u256(p.token_id)?,
-                                token_0: sp_call_parse_address(p.token_0)?,
-                                token_1: sp_call_parse_address(p.token_1)?,
-                            };
-                            calls.push(
-                                UniswapV3AdaptorCalls::RemoveUnOwnedPositionFromTracker(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                    }
-                }
+            UniswapV3Calls(params) => {
+                calls.extend(adaptors::uniswap_v3::uniswap_v3_adaptor_v1_call(params)?)
             }
-            CallData::AaveATokenCalls(params) => {
-                for c in params.calls {
-                    let function = c
-                        .function
-                        .ok_or_else(|| sp_call_error("function cannot be empty".to_string()))?;
-
-                    match function {
-                        aave_a_token_adaptor::Function::DepositToAave(p) => {
-                            let call = steward_abi::aave_a_token_adaptor::DepositToAaveCall {
-                                token_to_deposit: sp_call_parse_address(p.token)?,
-                                amount_to_deposit: string_to_u256(p.amount)?,
-                            };
-                            calls.push(AaveATokenAdaptorCalls::DepositToAave(call).encode().into())
-                        }
-                        aave_a_token_adaptor::Function::WithdrawFromAave(p) => {
-                            let call = steward_abi::aave_a_token_adaptor::WithdrawFromAaveCall {
-                                token_to_withdraw: sp_call_parse_address(p.token)?,
-                                amount_to_withdraw: string_to_u256(p.amount)?,
-                            };
-                            calls.push(
-                                AaveATokenAdaptorCalls::WithdrawFromAave(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                        aave_a_token_adaptor::Function::Swap(p) => {
-                            let swap_params = encode_swap_params(p.params.ok_or_else(|| {
-                                sp_call_error("swap params cannot be empty".to_string())
-                            })?)?;
-
-                            debug!("encoded: {:?}", hex::encode(&swap_params));
-                            let call = steward_abi::aave_a_token_adaptor::SwapCall {
-                                asset_in: sp_call_parse_address(p.asset_in)?,
-                                asset_out: sp_call_parse_address(p.asset_out)?,
-                                amount_in: string_to_u256(p.amount_in)?,
-                                exchange: convert_exchange(p.exchange),
-                                params: swap_params.into(),
-                            };
-                            calls.push(AaveATokenAdaptorCalls::Swap(call).encode().into())
-                        }
-                        aave_a_token_adaptor::Function::OracleSwap(p) => {
-                            let oracle_swap_params =
-                                encode_oracle_swap_params(p.params.ok_or_else(|| {
-                                    sp_call_error("swap params cannot be empty".to_string())
-                                })?)?;
-
-                            debug!("encoded: {:?}", hex::encode(&oracle_swap_params));
-                            let call = steward_abi::aave_a_token_adaptor::OracleSwapCall {
-                                asset_in: sp_call_parse_address(p.asset_in)?,
-                                asset_out: sp_call_parse_address(p.asset_out)?,
-                                amount_in: string_to_u256(p.amount_in)?,
-                                exchange: convert_exchange(p.exchange),
-                                params: oracle_swap_params.into(),
-                                slippage: p.slippage,
-                            };
-                            calls.push(AaveATokenAdaptorCalls::OracleSwap(call).encode().into())
-                        }
-                        aave_a_token_adaptor::Function::RevokeApproval(p) => {
-                            let call = steward_abi::aave_a_token_adaptor::RevokeApprovalCall {
-                                asset: sp_call_parse_address(p.asset)?,
-                                spender: sp_call_parse_address(p.spender)?,
-                            };
-                            calls.push(AaveATokenAdaptorCalls::RevokeApproval(call).encode().into())
-                        }
-                    }
-                }
+            AaveATokenV1Calls(params) => {
+                calls.extend(adaptors::aave_v2::aave_a_token_adaptor_v1_call(params)?)
             }
-            CallData::AaveDebtTokenCalls(params) => {
-                for c in params.calls {
-                    let function = c
-                        .function
-                        .ok_or_else(|| sp_call_error("function cannot be empty".to_string()))?;
-
-                    match function {
-                        aave_debt_token_adaptor::Function::BorrowFromAave(p) => {
-                            let call = steward_abi::aave_debt_token_adaptor::BorrowFromAaveCall {
-                                debt_token_to_borrow: sp_call_parse_address(p.token)?,
-                                amount_to_borrow: string_to_u256(p.amount)?,
-                            };
-                            calls.push(
-                                AaveDebtTokenAdaptorCalls::BorrowFromAave(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                        aave_debt_token_adaptor::Function::RepayAaveDebt(p) => {
-                            let call = steward_abi::aave_debt_token_adaptor::RepayAaveDebtCall {
-                                token_to_repay: sp_call_parse_address(p.token)?,
-                                amount_to_repay: string_to_u256(p.amount)?,
-                            };
-                            calls.push(
-                                AaveDebtTokenAdaptorCalls::RepayAaveDebt(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                        aave_debt_token_adaptor::Function::SwapAndRepay(p) => {
-                            let swap_params = encode_swap_params(p.params.ok_or_else(|| {
-                                sp_call_error("swap params cannot be empty".to_string())
-                            })?)?;
-
-                            debug!("encoded: {:?}", hex::encode(&swap_params));
-                            let call = steward_abi::aave_debt_token_adaptor::SwapAndRepayCall {
-                                token_in: sp_call_parse_address(p.token_in)?,
-                                token_to_repay: sp_call_parse_address(p.token_to_repay)?,
-                                amount_in: string_to_u256(p.amount_in)?,
-                                exchange: convert_exchange(p.exchange),
-                                params: swap_params.into(),
-                            };
-                            calls.push(
-                                AaveDebtTokenAdaptorCalls::SwapAndRepay(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                        aave_debt_token_adaptor::Function::Swap(p) => {
-                            let swap_params = encode_swap_params(p.params.ok_or_else(|| {
-                                sp_call_error("swap params cannot be empty".to_string())
-                            })?)?;
-
-                            debug!("encoded: {:?}", hex::encode(&swap_params));
-                            let call = steward_abi::aave_debt_token_adaptor::SwapCall {
-                                asset_in: sp_call_parse_address(p.asset_in)?,
-                                asset_out: sp_call_parse_address(p.asset_out)?,
-                                amount_in: string_to_u256(p.amount_in)?,
-                                exchange: convert_exchange(p.exchange),
-                                params: swap_params.into(),
-                            };
-                            calls.push(AaveDebtTokenAdaptorCalls::Swap(call).encode().into())
-                        }
-                        aave_debt_token_adaptor::Function::OracleSwap(p) => {
-                            let oracle_swap_params =
-                                encode_oracle_swap_params(p.params.ok_or_else(|| {
-                                    sp_call_error("swap params cannot be empty".to_string())
-                                })?)?;
-
-                            debug!("encoded: {:?}", hex::encode(&oracle_swap_params));
-                            let call = steward_abi::aave_debt_token_adaptor::OracleSwapCall {
-                                asset_in: sp_call_parse_address(p.asset_in)?,
-                                asset_out: sp_call_parse_address(p.asset_out)?,
-                                amount_in: string_to_u256(p.amount_in)?,
-                                exchange: convert_exchange(p.exchange),
-                                params: oracle_swap_params.into(),
-                                slippage: p.slippage,
-                            };
-                            calls.push(AaveDebtTokenAdaptorCalls::OracleSwap(call).encode().into())
-                        }
-                        aave_debt_token_adaptor::Function::RevokeApproval(p) => {
-                            let call = steward_abi::aave_debt_token_adaptor::RevokeApprovalCall {
-                                asset: sp_call_parse_address(p.asset)?,
-                                spender: sp_call_parse_address(p.spender)?,
-                            };
-                            calls.push(
-                                AaveDebtTokenAdaptorCalls::RevokeApproval(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                    }
-                }
+            AaveDebtTokenV1Calls(params) => {
+                calls.extend(adaptors::aave_v2::aave_debt_token_adaptor_v1_call(params)?)
             }
-            CallData::CompoundCTokenCalls(params) => {
-                for c in params.calls {
-                    let function = c
-                        .function
-                        .ok_or_else(|| sp_call_error("function cannot be empty".to_string()))?;
-
-                    match function {
-                        compound_c_token_adaptor::Function::DepositToCompound(p) => {
-                            let call =
-                                steward_abi::compound_c_token_adaptor::DepositToCompoundCall {
-                                    market: sp_call_parse_address(p.market)?,
-                                    amount_to_deposit: string_to_u256(p.amount_to_deposit)?,
-                                };
-                            calls.push(
-                                CompoundCTokenAdaptorCalls::DepositToCompound(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                        compound_c_token_adaptor::Function::WithdrawFromCompound(p) => {
-                            let call =
-                                steward_abi::compound_c_token_adaptor::WithdrawFromCompoundCall {
-                                    market: sp_call_parse_address(p.market)?,
-                                    amount_to_withdraw: string_to_u256(p.amount_to_withdraw)?,
-                                };
-                            calls.push(
-                                CompoundCTokenAdaptorCalls::WithdrawFromCompound(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                        compound_c_token_adaptor::Function::ClaimComp(_) => {
-                            let call = steward_abi::compound_c_token_adaptor::ClaimCompCall {};
-                            calls.push(CompoundCTokenAdaptorCalls::ClaimComp(call).encode().into())
-                        }
-                        compound_c_token_adaptor::Function::ClaimCompAndSwap(p) => {
-                            let oracle_swap_params =
-                                encode_oracle_swap_params(p.params.ok_or_else(|| {
-                                    sp_call_error("swap params cannot be empty".to_string())
-                                })?)?;
-
-                            debug!("encoded: {:?}", hex::encode(&oracle_swap_params));
-                            let call =
-                                steward_abi::compound_c_token_adaptor::ClaimCompAndSwapCall {
-                                    asset_out: sp_call_parse_address(p.asset_out)?,
-                                    exchange: convert_exchange(p.exchange),
-                                    params: oracle_swap_params.into(),
-                                    slippage: p.slippage,
-                                };
-                            calls.push(
-                                CompoundCTokenAdaptorCalls::ClaimCompAndSwap(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                        compound_c_token_adaptor::Function::Swap(p) => {
-                            let swap_params = encode_swap_params(p.params.ok_or_else(|| {
-                                sp_call_error("swap params cannot be empty".to_string())
-                            })?)?;
-
-                            debug!("encoded: {:?}", hex::encode(&swap_params));
-                            let call = steward_abi::compound_c_token_adaptor::SwapCall {
-                                asset_in: sp_call_parse_address(p.asset_in)?,
-                                asset_out: sp_call_parse_address(p.asset_out)?,
-                                amount_in: string_to_u256(p.amount_in)?,
-                                exchange: convert_exchange(p.exchange),
-                                params: swap_params.into(),
-                            };
-                            calls.push(CompoundCTokenAdaptorCalls::Swap(call).encode().into())
-                        }
-                        compound_c_token_adaptor::Function::OracleSwap(p) => {
-                            let oracle_swap_params =
-                                encode_oracle_swap_params(p.params.ok_or_else(|| {
-                                    sp_call_error("swap params cannot be empty".to_string())
-                                })?)?;
-
-                            debug!("encoded: {:?}", hex::encode(&oracle_swap_params));
-                            let call = steward_abi::compound_c_token_adaptor::OracleSwapCall {
-                                asset_in: sp_call_parse_address(p.asset_in)?,
-                                asset_out: sp_call_parse_address(p.asset_out)?,
-                                amount_in: string_to_u256(p.amount_in)?,
-                                exchange: convert_exchange(p.exchange),
-                                params: oracle_swap_params.into(),
-                                slippage: p.slippage,
-                            };
-                            calls.push(CompoundCTokenAdaptorCalls::OracleSwap(call).encode().into())
-                        }
-                        compound_c_token_adaptor::Function::RevokeApproval(p) => {
-                            let call = steward_abi::compound_c_token_adaptor::RevokeApprovalCall {
-                                asset: sp_call_parse_address(p.asset)?,
-                                spender: sp_call_parse_address(p.spender)?,
-                            };
-                            calls.push(
-                                CompoundCTokenAdaptorCalls::RevokeApproval(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                    }
-                }
+            CompoundCTokenV1Calls(params) => {
+                calls.extend(adaptors::compound::compound_c_token_v1_call(params)?)
             }
-            CallData::VestingSimpleCalls(params) => {
-                for c in params.calls {
-                    let function = c
-                        .function
-                        .ok_or_else(|| sp_call_error("function cannot be empty".to_string()))?;
-
-                    match function {
-                        vesting_simple_adaptor::Function::DepositToVesting(p) => {
-                            let call = steward_abi::vesting_simple_adaptor::DepositToVestingCall {
-                                vesting_contract: sp_call_parse_address(p.vesting_contract)?,
-                                amount_to_deposit: string_to_u256(p.amount)?,
-                            };
-                            calls.push(
-                                VestingSimpleAdaptorCalls::DepositToVesting(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                        vesting_simple_adaptor::Function::WithdrawFromVesting(p) => {
-                            let call =
-                                steward_abi::vesting_simple_adaptor::WithdrawFromVestingCall {
-                                    deposit_id: string_to_u256(p.deposit_id)?,
-                                    vesting_contract: sp_call_parse_address(p.vesting_contract)?,
-                                    amount_to_withdraw: string_to_u256(p.amount)?,
-                                };
-                            calls.push(
-                                VestingSimpleAdaptorCalls::WithdrawFromVesting(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                        vesting_simple_adaptor::Function::WithdrawAnyFromVesting(p) => {
-                            let call =
-                                steward_abi::vesting_simple_adaptor::WithdrawAnyFromVestingCall {
-                                    vesting_contract: sp_call_parse_address(p.vesting_contract)?,
-                                    amount_to_withdraw: string_to_u256(p.amount)?,
-                                };
-                            calls.push(
-                                VestingSimpleAdaptorCalls::WithdrawAnyFromVesting(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                        vesting_simple_adaptor::Function::WithdrawAllFromVesting(p) => {
-                            let call =
-                                steward_abi::vesting_simple_adaptor::WithdrawAllFromVestingCall {
-                                    vesting_contract: sp_call_parse_address(p.vesting_contract)?,
-                                };
-                            calls.push(
-                                VestingSimpleAdaptorCalls::WithdrawAllFromVesting(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                        vesting_simple_adaptor::Function::Swap(p) => {
-                            let swap_params = encode_swap_params(p.params.ok_or_else(|| {
-                                sp_call_error("swap params cannot be empty".to_string())
-                            })?)?;
-
-                            debug!("encoded: {:?}", hex::encode(&swap_params));
-                            let call = steward_abi::vesting_simple_adaptor::SwapCall {
-                                asset_in: sp_call_parse_address(p.asset_in)?,
-                                asset_out: sp_call_parse_address(p.asset_out)?,
-                                amount_in: string_to_u256(p.amount_in)?,
-                                exchange: convert_exchange(p.exchange),
-                                params: swap_params.into(),
-                            };
-                            calls.push(VestingSimpleAdaptorCalls::Swap(call).encode().into())
-                        }
-                        vesting_simple_adaptor::Function::OracleSwap(p) => {
-                            let oracle_swap_params =
-                                encode_oracle_swap_params(p.params.ok_or_else(|| {
-                                    sp_call_error("swap params cannot be empty".to_string())
-                                })?)?;
-
-                            debug!("encoded: {:?}", hex::encode(&oracle_swap_params));
-                            let call = steward_abi::vesting_simple_adaptor::OracleSwapCall {
-                                asset_in: sp_call_parse_address(p.asset_in)?,
-                                asset_out: sp_call_parse_address(p.asset_out)?,
-                                amount_in: string_to_u256(p.amount_in)?,
-                                exchange: convert_exchange(p.exchange),
-                                params: oracle_swap_params.into(),
-                                slippage: p.slippage,
-                            };
-                            calls.push(VestingSimpleAdaptorCalls::OracleSwap(call).encode().into())
-                        }
-                        vesting_simple_adaptor::Function::RevokeApproval(p) => {
-                            let call = steward_abi::vesting_simple_adaptor::RevokeApprovalCall {
-                                asset: sp_call_parse_address(p.asset)?,
-                                spender: sp_call_parse_address(p.spender)?,
-                            };
-                            calls.push(
-                                VestingSimpleAdaptorCalls::RevokeApproval(call)
-                                    .encode()
-                                    .into(),
-                            )
-                        }
-                    }
-                }
+            AaveATokenV2Calls(params) => {
+                calls.extend(adaptors::aave_v2::aave_a_token_adaptor_v2_call(params)?)
+            }
+            AaveDebtTokenV2Calls(params) => {
+                calls.extend(adaptors::aave_v2::aave_debt_token_adaptor_v2_call(params)?)
+            }
+            AaveV3ATokenV1Calls(params) => {
+                calls.extend(adaptors::aave_v3::aave_v3_a_token_adaptor_v1_call(params)?)
+            }
+            AaveV3DebtTokenV1Calls(params) => {
+                calls.extend(adaptors::aave_v3::aave_v3_debt_token_adaptor_v1_call(params)?)
+            }
+            OneInchV1Calls(params) => {
+                calls.extend(adaptors::oneinch::one_inch_adaptor_v1_call(params)?)
+            }
+            FeesAndReservesV1Calls(params) => calls
+                .extend(adaptors::fees_and_reserves::fees_and_reserves_adaptor_v1_call(params)?),
+            ZeroXV1Calls(params) => calls.extend(adaptors::zero_x::zero_x_adaptor_v1_call(params)?),
+            SwapWithUniswapV1Calls(params) => calls.extend(
+                adaptors::uniswap_v3::swap_with_uniswap_adaptor_v1_call(params)?,
+            ),
+            CompoundCTokenV2Calls(params) => {
+                calls.extend(adaptors::compound::compound_c_token_v2_call(params)?)
             }
         };
 

@@ -5,7 +5,7 @@
  */
 
 syntax = "proto3";
-package steward.v2;
+package steward.v3;
 
 option go_package = "/steward_proto";
 
@@ -29,9 +29,10 @@ message SubmitRequest {
     string cellar_id = 1;
     // The data from which the desired contract function will be encoded
     oneof call_data {
-        AaveV2Stablecoin aave_v2_stablecoin = 2;
-        CellarV1 cellar_v1 = 3;
-        CellarV2 cellar_v2 = 4;
+        AaveV2Stablecoin aave_v2_stablecoin = 3;
+        CellarV1 cellar_v1 = 4;
+        CellarV2 cellar_v2 = 5;
+        CellarV2_2 cellar_v2_2 = 6;
     }
 }
 

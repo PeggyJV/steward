@@ -8,11 +8,21 @@ fn main() {
         ("AaveV2StablecoinCellar", "aave_v2_stablecoin"),
         ("CellarV1", "cellar_v1"),
         ("CellarV2", "cellar_v2"),
+        ("CellarV2_2", "cellar_v2_2"),
         ("UniswapV3Adaptor", "uniswap_v3_adaptor"),
+        ("UniswapV3AdaptorV2", "uniswap_v3_adaptor_v2"),
         ("AaveATokenAdaptor", "aave_a_token_adaptor"),
         ("AaveDebtTokenAdaptor", "aave_debt_token_adaptor"),
+        ("AaveATokenAdaptorV2", "aave_a_token_adaptor_v2"),
+        ("AaveDebtTokenAdaptorV2", "aave_debt_token_adaptor_v2"),
+        ("AaveV3ATokenAdaptor", "aave_v3_a_token_adaptor"),
+        ("AaveV3DebtTokenAdaptor", "aave_v3_debt_token_adaptor"),
         ("CompoundCTokenAdaptor", "compound_c_token_adaptor"),
-        ("VestingSimpleAdaptor", "vesting_simple_adaptor"),
+        ("CompoundCTokenAdaptorV2", "compound_c_token_adaptor_v2"),
+        ("OneInchAdaptor", "oneinch_adaptor"),
+        ("ZeroXAdaptor", "zero_x_adaptor"),
+        ("SwapWithUniswapAdaptor", "swap_with_uniswap_adaptor"),
+        ("FeesAndReservesAdaptor", "fees_and_reserves_adaptor"),
     ];
 
     contracts

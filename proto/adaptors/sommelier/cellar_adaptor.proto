@@ -1,0 +1,32 @@
+// Protos for depositing/withdrawing from other Cellars
+
+syntax = "proto3";
+package steward.v3;
+
+option go_package = "/steward_proto";
+
+message CellarAdaptorV1 {
+    /*
+    * Allows strategists to deposit into Cellar positions.
+    *
+    * Represents function `depositToCellar(Cellar cellar, uint256 assets)`
+    */
+    message DepositToCellar {
+        string cellar = 1;
+        string assets = 2;
+    }
+
+    /*
+    * Allows strategists to withdraw from Cellar positions.
+    *
+    * Represents function `withdrawFromCellar(Cellar cellar, uint256 assets)`
+    */
+    message WithdrawFromCellar {
+        string cellar = 1;
+        string assets = 2;
+    }
+}
+
+message CellarAdaptorV1Calls {
+    repeated CellarAdaptorV1 calls = 1;
+}
