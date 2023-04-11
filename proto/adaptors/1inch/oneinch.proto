@@ -7,11 +7,18 @@ package steward.v3;
 
 option go_package = "/steward_proto";
 
+import "adaptors/base.proto";
+
 // Represents call data for the OneInch adaptor.
 message OneInchAdaptorV1 {
     oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
         // Represents function `swapWithOneInch(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes swapCallData)`
-        SwapWithOneInch swap_with_one_inch = 1;
+        SwapWithOneInch swap_with_one_inch = 2;
     }
 
     /*

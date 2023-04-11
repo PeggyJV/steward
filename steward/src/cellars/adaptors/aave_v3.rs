@@ -2,7 +2,9 @@ use abscissa_core::tracing::log::debug;
 use ethers::{abi::AbiEncode, types::Bytes};
 use steward_abi::{
     aave_v3_a_token_adaptor::AaveV3ATokenAdaptorCalls,
-    aave_v3_debt_token_adaptor::{AaveV3DebtTokenAdaptorCalls, FlashLoanCall},
+    aave_v3_debt_token_adaptor::{
+        AaveV3DebtTokenAdaptorCalls, FlashLoanCall, RepayWithATokensCall,
+    },
     cellar_v2_2::AdaptorCall as AbiAdaptorCall,
 };
 use steward_proto::steward::{
@@ -143,6 +145,17 @@ pub(crate) fn aave_v3_debt_token_adaptor_v1_call(
                 };
                 calls.push(AaveV3DebtTokenAdaptorCalls::FlashLoan(call).encode().into())
             }
+            aave_v3_debt_token_adaptor_v1::Function::RepayWithATokens(p) => {
+                let call = RepayWithATokensCall {
+                    underlying: sp_call_parse_address(p.underlying_token)?,
+                    amount: string_to_u256(p.amount)?,
+                };
+                calls.push(
+                    AaveV3DebtTokenAdaptorCalls::RepayWithATokens(call)
+                        .encode()
+                        .into(),
+                )
+            }
         }
     }
 
@@ -170,9 +183,6 @@ fn get_encoded_adaptor_call(
             }
             AaveDebtTokenV1Calls(params) => {
                 calls.extend(adaptors::aave_v2::aave_debt_token_adaptor_v1_call(params)?)
-            }
-            CompoundCTokenV1Calls(params) => {
-                calls.extend(adaptors::compound::compound_c_token_v1_call(params)?)
             }
             AaveATokenV2Calls(params) => {
                 calls.extend(adaptors::aave_v2::aave_a_token_adaptor_v2_call(params)?)
@@ -203,6 +213,9 @@ fn get_encoded_adaptor_call(
             ),
             CellarCalls(params) => {
                 calls.extend(adaptors::sommelier::cellar_adaptor_v1_call(params)?)
+            }
+            UniswapV3V2Calls(params) => {
+                calls.extend(adaptors::uniswap_v3::uniswap_v3_adaptor_v2_call(params)?)
             }
         };
 

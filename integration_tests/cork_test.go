@@ -401,14 +401,6 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 				},
 			},
 		}
-		oracleSwapParamsUniV3 := &steward_proto.OracleSwapParams{
-			Params: &steward_proto.OracleSwapParams_Univ3Params{
-				Univ3Params: &steward_proto.UniV3OracleSwapParams{
-					Path:     []string{"0x1111111111111111111111111111111111111111", "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"},
-					PoolFees: []uint32{1000, 2000},
-				},
-			},
-		}
 
 		// Contains two adaptor calls, the first of which has two function calls inside of it, for a total of three function calls.
 		request := &steward_proto.SubmitRequest{
@@ -448,16 +440,16 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 								},
 								{
 									Adaptor: adaptorContract.Hex(),
-									CallData: &steward_proto.AdaptorCall_CompoundCTokenV1Calls{
-										CompoundCTokenV1Calls: &steward_proto.CompoundCTokenAdaptorV1Calls{
-											Calls: []*steward_proto.CompoundCTokenAdaptorV1{
+									CallData: &steward_proto.AdaptorCall_SwapWithUniswapV1Calls{
+										SwapWithUniswapV1Calls: &steward_proto.SwapWithUniswapAdaptorV1Calls{
+											Calls: []*steward_proto.SwapWithUniswapAdaptorV1{
 												{
-													Function: &steward_proto.CompoundCTokenAdaptorV1_ClaimCompAndSwap_{
-														ClaimCompAndSwap: &steward_proto.CompoundCTokenAdaptorV1_ClaimCompAndSwap{
-															AssetOut: "0x5555555555555555555555555555555555555555",
-															Exchange: steward_proto.Exchange_EXCHANGE_UNIV3,
-															Params:   oracleSwapParamsUniV3,
-															Slippage: 0,
+													Function: &steward_proto.SwapWithUniswapAdaptorV1_SwapWithUniV3_{
+														SwapWithUniV3: &steward_proto.SwapWithUniswapAdaptorV1_SwapWithUniV3{
+															Path:         []string{"0x1111111111111111111111111111111111111111", "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"},
+															PoolFees:     []uint32{1000, 2000},
+															Amount:       "3",
+															AmountOutMin: "3",
 														},
 													},
 												},
@@ -531,7 +523,7 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 			return false
 		}, 3*time.Minute, 20*time.Second, "cellar event never seen")
 
-		s.T().Logf("checking for ClaimCompAndSwap event")
+		s.T().Logf("checking for SwapWithUniV3 event")
 		s.Require().Eventuallyf(func() bool {
 			s.T().Log("querying cellar events...")
 			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
@@ -541,13 +533,13 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 
 			// For non-anonymous events, the first log topic is a keccak256 hash of the
 			// event signature.
-			eventSignature := []byte("ClaimCompAndSwap(address,uint8,bytes,uint64)")
+			eventSignature := []byte("SwapWithUniV3(address[],uint24[],uint256,uint256)")
 			mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
 			query := ethereum.FilterQuery{
 				FromBlock: nil,
 				ToBlock:   nil,
 				Addresses: []common.Address{
-					vaultCellar,
+					v2_2Cellar,
 				},
 				Topics: [][]common.Hash{
 					{
@@ -566,13 +558,12 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 			if len(logs) > 0 {
 				for _, log := range logs {
 					if len(log.Data) > 0 {
-						var event AdaptorClaimCompAndSwap
-						err := adaptor_abi.UnpackIntoInterface(&event, "ClaimCompAndSwap", log.Data)
-						s.Require().NoError(err, "failed to unpack ClaimCompAndSwap event from log data")
-						// 1 == UniswapV3
-						s.Require().Equal(uint8(1), event.Exchange)
+						var event AdaptorSwapWithUniV3
+						err := adaptor_abi.UnpackIntoInterface(&event, "SwapWithUniV3", log.Data)
+						s.Require().NoError(err, "failed to unpack SwapWithUniV3 event from log data")
+						s.Require().Equal(big.NewInt(3), event.AmountOutMin)
 
-						s.T().Log("Saw ClaimCompAndSwap event!")
+						s.T().Log("Saw BorrowFromAave event!")
 						return true
 					}
 				}
@@ -638,11 +629,11 @@ func (s *IntegrationTestSuite) TestCellarV2_2() {
 		s.checkCellarExists(vaultCellar)
 		s.waitForVotePeriod()
 
-		// val := s.chain.validators[0]
-		// kb, err := val.keyring()
-		// s.Require().NoError(err)
-		// clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
-		// s.Require().NoError(err)
+		val := s.chain.validators[0]
+		kb, err := val.keyring()
+		s.Require().NoError(err)
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		s.Require().NoError(err)
 
 		// Create the cork requests to send to Steward
 		cellarId := v2_2Cellar.Hex()
@@ -692,7 +683,7 @@ func (s *IntegrationTestSuite) TestCellarV2_2() {
 		s.waitForVotePeriod()
 		s.executeStewardCalls(request)
 		s.waitForVotePeriod()
-		// s.queryLogicCallTransactionByAddress(clientCtx, v2_2Cellar.Hex())
+		s.queryLogicCallTransactionByAddress(clientCtx, v2_2Cellar.Hex())
 
 		adaptor_abi, err := AdaptorMetaData.GetAbi()
 		s.Require().NoError(err)

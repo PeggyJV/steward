@@ -5,12 +5,21 @@ package steward.v3;
 
 option go_package = "/steward_proto";
 
+import "adaptors/base.proto";
+
 message CellarAdaptorV1 {
     oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
         // Represents function `depositToCellar(Cellar cellar, uint256 assets)`
-        DepositToCellar depositToCellar = 1;
+        DepositToCellar depositToCellar = 2;
         // Represents function `withdrawFromCellar(Cellar cellar, uint256 assets)`
-        WithdrawFromCellar withdrawFromCellar = 2;
+        WithdrawFromCellar withdrawFromCellar = 3;
     }
 
     /*

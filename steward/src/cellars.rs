@@ -12,10 +12,17 @@ pub(crate) mod cellar_v2_2;
 
 // adaptors and positions associated with the deprecated UniV3 adaptor are blocked
 // addresses treated as lowercase without 0x prefix to ensure valid comparisons with arbitrary input
-pub const BLOCKED_ADAPTORS: [&str; 1] = ["7c4262f83e6775d6ff6fe8d9ab268611ed9d13ee"];
+pub const BLOCKED_ADAPTORS: [&str; 3] = [
+    // Original uniswap v3 adaptor
+    "7c4262f83e6775d6ff6fe8d9ab268611ed9d13ee",
+    // Original vesting simple adaptor
+    "1eAA1a100a460f46A2032f0402Bc01FE89FaAB60",
+    // Original compound C token adaptor
+    "26DbA82495f6189DDe7648Ae88bEAd46C402F078",
+];
 pub const BLOCKED_POSITIONS: [u32; 9] = [4, 5, 6, 7, 8, 9, 10, 11, 12];
 pub const ALLOWED_SETUP_ADAPTORS: [&str; 9] = [
-    // UniswapV3Adaptr V2
+    // UniswapV3Adaptor V2
     "dbd750f72a00d01f209ffc6c75e80301efc789c1",
     // VestingSimpleAdaptor V2
     "508E6aE090eA92Cb90571e4269B799257CD78CA1",

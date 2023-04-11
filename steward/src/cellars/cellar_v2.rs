@@ -145,6 +145,28 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
 
             Ok(CellarV2Calls::SetupAdaptor(call).encode())
         }
+        SetPlatformFee(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetPlatformFeeCall::function_name(),
+                &cellar_id,
+            );
+
+            if params.platform_fee != 0 {
+                return Err(ErrorKind::SPCallError
+                    .context(
+                        "this proto is a temporary measure. can only set platform fee to 0"
+                            .to_string(),
+                    )
+                    .into());
+            }
+
+            let call = SetPlatformFeeCall {
+                new_platform_fee: params.platform_fee,
+            };
+
+            Ok(CellarV2Calls::SetPlatformFee(call).encode())
+        }
     }
 }
 
@@ -167,9 +189,6 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
             }
             AaveDebtTokenV1Calls(params) => {
                 calls.extend(adaptors::aave_v2::aave_debt_token_adaptor_v1_call(params)?)
-            }
-            CompoundCTokenV1Calls(params) => {
-                calls.extend(adaptors::compound::compound_c_token_v1_call(params)?)
             }
             AaveATokenV2Calls(params) => {
                 calls.extend(adaptors::aave_v2::aave_a_token_adaptor_v2_call(params)?)
@@ -200,6 +219,9 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
             ),
             CellarCalls(params) => {
                 calls.extend(adaptors::sommelier::cellar_adaptor_v1_call(params)?)
+            }
+            UniswapV3V2Calls(params) => {
+                calls.extend(adaptors::uniswap_v3::uniswap_v3_adaptor_v2_call(params)?)
             }
         };
 

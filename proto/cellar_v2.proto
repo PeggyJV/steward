@@ -46,6 +46,8 @@ message CellarV2 {
         SetShareLockPeriod set_share_lock_period = 8;
         // Represents function `setupAdaptor(address _adaptor)`
         SetupAdaptor setup_adaptor = 9;
+        // Represents function `setPlatformFee(uint64 platformFee)`
+        SetPlatformFee set_platform_fee = 10;
     }
 
     /*
@@ -146,6 +148,15 @@ message CellarV2 {
         // Address of the adaptor
         string adaptor = 1;
     }
+
+    /*
+    * Allows owner to set the platform fee.
+    *
+    * Represents function `setPlatformFee(uint64 platformFee)`
+    */
+    message SetPlatformFee {
+        uint64 platform_fee = 1;
+    }
 }
 
 message CellarV2_2 {
@@ -177,6 +188,8 @@ message CellarV2_2 {
             SetShareLockPeriod set_share_lock_period = 8;
             // Represents function `initiateShutdown()`
             InitiateShutdown initiate_shutdown = 9;
+            // Represents function `setStrategistPlatformCut(uint64 cut)`
+            SetStrategistPlatformCut set_strategist_platform_cut = 10;
         }
     }
 
@@ -277,6 +290,16 @@ message CellarV2_2 {
     message InitiateShutdown {}
 
     /*
+    * Allows strategist to set the platform cut for the cellar.
+    *
+    * Represents function `setStrategistPlatformCut(uint64 cut)`
+    */
+    message SetStrategistPlatformCut {
+        // The new strategist platform cut
+        uint64 new_cut = 1;
+    }
+
+    /*
     * Allows caller to call multiple functions in a single TX.
     *
     * Represents function `multicall(bytes[] data)`
@@ -298,29 +321,29 @@ message AdaptorCall {
         AaveATokenAdaptorV1Calls aave_a_token_v1_calls = 3;
         // Represents function calls to the AavaDebtTokenAdaptor V1
         AaveDebtTokenAdaptorV1Calls aave_debt_token_v1_calls = 4;
-        // Represents function calls to the CompoundCTokenAdaptor V1
-        CompoundCTokenAdaptorV1Calls compound_c_token_v1_calls = 5;
         // Represents function calls to the CompoundCTokenAdaptor V2
-        CompoundCTokenAdaptorV2Calls compound_c_token_v2_calls = 6;
+        CompoundCTokenAdaptorV2Calls compound_c_token_v2_calls = 5;
         // Represents function calls to the AaveATokenV2Adaptor
-        AaveATokenAdaptorV2Calls aave_a_token_v2_calls = 7;
+        AaveATokenAdaptorV2Calls aave_a_token_v2_calls = 6;
         // Represents function calls to the AavaDebtTokenV2Adaptor
-        AaveDebtTokenAdaptorV2Calls aave_debt_token_v2_calls = 8;
+        AaveDebtTokenAdaptorV2Calls aave_debt_token_v2_calls = 7;
         // Represents function calls to the AaveATokenV1Adaptor
-        AaveV3ATokenAdaptorV1Calls aave_v3_a_token_v1_calls = 9;
+        AaveV3ATokenAdaptorV1Calls aave_v3_a_token_v1_calls = 8;
         // Represents function calls to the AavaDebtTokenV1Adaptor
-        AaveV3DebtTokenAdaptorV1Calls aave_v3_debt_token_v1_calls = 10;
+        AaveV3DebtTokenAdaptorV1Calls aave_v3_debt_token_v1_calls = 9;
         // Represents function calls to the OneInchAdaptorV1
-        OneInchAdaptorV1Calls one_inch_v1_calls = 11;
+        OneInchAdaptorV1Calls one_inch_v1_calls = 10;
         // Represents function calls to the FeesAndReservesAdaptorV1
-        FeesAndReservesAdaptorV1Calls fees_and_reserves_v1_calls = 12;
+        FeesAndReservesAdaptorV1Calls fees_and_reserves_v1_calls = 11;
         // Represents functionc alls to the ZeroXAdaptorV1
-        ZeroXAdaptorV1Calls zero_x_v1_calls = 13;
+        ZeroXAdaptorV1Calls zero_x_v1_calls = 12;
         // Represents function calls to the SwapWithUniswapAdaptorV1
-        SwapWithUniswapAdaptorV1Calls swap_with_uniswap_v1_calls = 14;
+        SwapWithUniswapAdaptorV1Calls swap_with_uniswap_v1_calls = 13;
         // Represents function calls to VestingSimpleAdaptor
-        VestingSimpleAdaptorCalls vesting_simple_calls = 15;
+        VestingSimpleAdaptorCalls vesting_simple_calls = 14;
         // Represents function calls to the CellarAdaptor
-        CellarAdaptorV1Calls cellar_calls = 16;
+        CellarAdaptorV1Calls cellar_calls = 15;
+        // Represents function calls to the UniswapV3Adaptor V2
+        UniswapV3AdaptorV2Calls uniswap_v3_v2_calls = 16;
     }
 }

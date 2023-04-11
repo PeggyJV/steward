@@ -26,6 +26,13 @@ pub(crate) fn one_inch_adaptor_v1_call(
                 };
                 calls.push(OneInchAdaptorCalls::SwapWithOneInch(call).encode().into())
             }
+            one_inch_adaptor_v1::Function::RevokeApproval(p) => {
+                let call = steward_abi::oneinch_adaptor::RevokeApprovalCall {
+                    asset: sp_call_parse_address(p.asset)?,
+                    spender: sp_call_parse_address(p.spender)?,
+                };
+                calls.push(OneInchAdaptorCalls::RevokeApproval(call).encode().into())
+            }
         }
     }
 

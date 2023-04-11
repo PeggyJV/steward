@@ -26,16 +26,18 @@ message AaveV3DebtTokenAdaptorV1 {
         /***** BASE ADAPTOR FUNCTIONS *****/
 
         // Represents function `revokeApproval(ERC20 asset, address spender)`
-        RevokeApproval revoke_approval = 3;
+        RevokeApproval revoke_approval = 1;
 
         /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
 
         // Represents function `borrowFromAave(ERC20 debtTokenToBorrow, uint256 amountToBorrow)`
-        BorrowFromAave borrow_from_aave = 4;
+        BorrowFromAave borrow_from_aave = 2;
         // Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
-        RepayAaveDebt repay_aave_debt = 5;
+        RepayAaveDebt repay_aave_debt = 3;
+        // Represents function `repayWithATokens(ERC20 underlying, uint256 amount)`
+        RepayWithATokens repay_with_a_tokens = 4;
         // Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
-        FlashLoan flash_loan = 6;
+        FlashLoan flash_loan = 5;
     }
 
     /*
@@ -102,30 +104,30 @@ message AaveV3DebtTokenAdaptorV1 {
             AaveATokenAdaptorV1Calls aave_a_token_v1_calls = 3;
             // Represents function calls to the AavaDebtTokenAdaptor V1
             AaveDebtTokenAdaptorV1Calls aave_debt_token_v1_calls = 4;
-            // Represents function calls to the CompoundCTokenAdaptor V1
-            CompoundCTokenAdaptorV1Calls compound_c_token_v1_calls = 5;
             // Represents function calls to the CompoundCTokenAdaptor V2
-            CompoundCTokenAdaptorV2Calls compound_c_token_v2_calls = 6;
+            CompoundCTokenAdaptorV2Calls compound_c_token_v2_calls = 5;
             // Represents function calls to the AaveATokenV2Adaptor
-            AaveATokenAdaptorV2Calls aave_a_token_v2_calls = 7;
+            AaveATokenAdaptorV2Calls aave_a_token_v2_calls = 6;
             // Represents function calls to the AavaDebtTokenV2Adaptor
-            AaveDebtTokenAdaptorV2Calls aave_debt_token_v2_calls = 8;
+            AaveDebtTokenAdaptorV2Calls aave_debt_token_v2_calls = 7;
             // Represents function calls to the AaveATokenV1Adaptor
-            AaveV3ATokenAdaptorV1Calls aave_v3_a_token_v1_calls = 9;
+            AaveV3ATokenAdaptorV1Calls aave_v3_a_token_v1_calls = 8;
             // Represents function calls to the AavaDebtTokenV1Adaptor
-            AaveV3DebtTokenAdaptorV1Calls aave_v3_debt_token_v1_calls = 10;
+            AaveV3DebtTokenAdaptorV1Calls aave_v3_debt_token_v1_calls = 9;
             // Represents function calls to the OneInchAdaptorV1
-            OneInchAdaptorV1Calls one_inch_v1_calls = 11;
+            OneInchAdaptorV1Calls one_inch_v1_calls = 10;
             // Represents function calls to the FeesAndReservesAdaptorV1
-            FeesAndReservesAdaptorV1Calls fees_and_reserves_v1_calls = 12;
+            FeesAndReservesAdaptorV1Calls fees_and_reserves_v1_calls = 11;
             // Represents functionc alls to the ZeroXAdaptorV1
-            ZeroXAdaptorV1Calls zero_x_v1_calls = 13;
+            ZeroXAdaptorV1Calls zero_x_v1_calls = 12;
             // Represents function calls to the SwapWithUniswapAdaptorV1
-            SwapWithUniswapAdaptorV1Calls swap_with_uniswap_v1_calls = 14;
+            SwapWithUniswapAdaptorV1Calls swap_with_uniswap_v1_calls = 13;
             // Represents function calls to VestingSimpleAdaptor
-            VestingSimpleAdaptorCalls vesting_simple_calls = 15;
+            VestingSimpleAdaptorCalls vesting_simple_calls = 14;
             // Represents function calls to the CellarAdaptor
-            CellarAdaptorV1Calls cellar_calls = 16;
+            CellarAdaptorV1Calls cellar_calls = 15;
+            // Represents function calls to the UniswapV3Adaptor V2
+            UniswapV3AdaptorV2Calls uniswap_v3_v2_calls = 16;
         }
     }
 }

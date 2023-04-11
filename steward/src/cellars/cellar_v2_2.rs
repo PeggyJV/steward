@@ -2,7 +2,11 @@
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
 use abscissa_core::tracing::debug;
-use ethers::{abi::AbiEncode, contract::EthCall, types::Bytes};
+use ethers::{
+    abi::AbiEncode,
+    contract::EthCall,
+    types::{Bytes, U256},
+};
 use steward_abi::cellar_v2_2::{AdaptorCall as AbiAdaptorCall, *};
 use steward_proto::steward::{
     adaptor_call::CallData::*,
@@ -145,27 +149,19 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
                 &SetRebalanceDeviationCall::function_name(),
                 &cellar_id,
             );
-            let call = SetRebalanceDeviationCall {
-                new_deviation: string_to_u256(params.new_deviation)?,
-            };
+
+            // bullet proof anti-rug
+            let new_deviation = string_to_u256(params.new_deviation)?;
+            if new_deviation > U256::from(5000000000000000u64) {
+                return Err(ErrorKind::SPCallError
+                    .context("deviation must be 0.5% or less".to_string())
+                    .into());
+            }
+
+            let call = SetRebalanceDeviationCall { new_deviation };
 
             Ok(CellarV2_2Calls::SetRebalanceDeviation(call).encode())
         }
-        // Function::SetupAdaptor(params) => {
-        //     let adaptor_address = normalize_address(params.adaptor.clone());
-        //     if !ALLOWED_SETUP_ADAPTORS.contains(&adaptor_address.as_str()) {
-        //         return Err(ErrorKind::SPCallError
-        //             .context(format!("adaptor setup not allowed: {}", params.adaptor))
-        //             .into());
-        //     }
-
-        //     log_cellar_call(CELLAR_NAME, &SetupAdaptorCall::function_name(), &cellar_id);
-        //     let call = SetupAdaptorCall {
-        //         adaptor: sp_call_parse_address(params.adaptor)?,
-        //     };
-
-        //     Ok(CellarV2_2Calls::SetupAdaptor(call).encode())
-        // }
         Function::InitiateShutdown(_) => {
             log_cellar_call(
                 CELLAR_NAME,
@@ -175,6 +171,18 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             let call = InitiateShutdownCall {};
 
             Ok(CellarV2_2Calls::InitiateShutdown(call).encode())
+        }
+        Function::SetStrategistPlatformCut(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetStrategistPlatformCutCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetStrategistPlatformCutCall {
+                cut: params.new_cut,
+            };
+
+            Ok(CellarV2_2Calls::SetStrategistPlatformCut(call).encode())
         }
     }
 }
@@ -198,9 +206,6 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
             }
             AaveDebtTokenV1Calls(params) => {
                 calls.extend(adaptors::aave_v2::aave_debt_token_adaptor_v1_call(params)?)
-            }
-            CompoundCTokenV1Calls(params) => {
-                calls.extend(adaptors::compound::compound_c_token_v1_call(params)?)
             }
             AaveATokenV2Calls(params) => {
                 calls.extend(adaptors::aave_v2::aave_a_token_adaptor_v2_call(params)?)
@@ -231,6 +236,9 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
             ),
             CellarCalls(params) => {
                 calls.extend(adaptors::sommelier::cellar_adaptor_v1_call(params)?)
+            }
+            UniswapV3V2Calls(params) => {
+                calls.extend(adaptors::uniswap_v3::uniswap_v3_adaptor_v2_call(params)?)
             }
         };
 

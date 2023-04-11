@@ -5,7 +5,8 @@ use steward_abi::{
     uniswap_v3_adaptor::UniswapV3AdaptorCalls,
 };
 use steward_proto::steward::{
-    swap_with_uniswap_adaptor_v1, uniswap_v3_adaptor_v1, UniswapV3AdaptorV1Calls,
+    swap_with_uniswap_adaptor_v1, uniswap_v3_adaptor_v1, uniswap_v3_adaptor_v2,
+    UniswapV3AdaptorV1Calls, UniswapV3AdaptorV2Calls,
 };
 
 use crate::{
@@ -141,6 +142,115 @@ pub fn uniswap_v3_adaptor_v1_call(params: UniswapV3AdaptorV1Calls) -> Result<Vec
                 )
             }
             uniswap_v3_adaptor_v1::Function::RemoveUnownedPositionFromTracker(p) => {
+                let call = steward_abi::uniswap_v3_adaptor::RemoveUnOwnedPositionFromTrackerCall {
+                    token_id: string_to_u256(p.token_id)?,
+                    token_0: sp_call_parse_address(p.token_0)?,
+                    token_1: sp_call_parse_address(p.token_1)?,
+                };
+                calls.push(
+                    UniswapV3AdaptorCalls::RemoveUnOwnedPositionFromTracker(call)
+                        .encode()
+                        .into(),
+                )
+            }
+        }
+    }
+
+    Ok(calls)
+}
+
+/// Encodes adaptor calls for UniswapV3Adaptor V1
+pub fn uniswap_v3_adaptor_v2_call(params: UniswapV3AdaptorV2Calls) -> Result<Vec<Bytes>, Error> {
+    let mut calls = Vec::new();
+    for c in params.calls {
+        let function = c
+            .function
+            .ok_or_else(|| sp_call_error("function cannot be empty".to_string()))?;
+
+        match function {
+            uniswap_v3_adaptor_v2::Function::OpenPosition(p) => {
+                let call = steward_abi::uniswap_v3_adaptor::OpenPositionCall {
+                    token_0: sp_call_parse_address(p.token_0)?,
+                    token_1: sp_call_parse_address(p.token_1)?,
+                    pool_fee: p.pool_fee,
+                    amount_0: string_to_u256(p.amount_0)?,
+                    amount_1: string_to_u256(p.amount_1)?,
+                    min_0: string_to_u256(p.min_0)?,
+                    min_1: string_to_u256(p.min_1)?,
+                    tick_lower: p.tick_lower,
+                    tick_upper: p.tick_upper,
+                };
+                calls.push(UniswapV3AdaptorCalls::OpenPosition(call).encode().into());
+            }
+            uniswap_v3_adaptor_v2::Function::ClosePosition(p) => {
+                let call = steward_abi::uniswap_v3_adaptor::ClosePositionCall {
+                    token_id: string_to_u256(p.token_id)?,
+                    min_0: string_to_u256(p.min_0)?,
+                    min_1: string_to_u256(p.min_1)?,
+                };
+                calls.push(UniswapV3AdaptorCalls::ClosePosition(call).encode().into());
+            }
+            uniswap_v3_adaptor_v2::Function::AddToPosition(p) => {
+                let call = steward_abi::uniswap_v3_adaptor::AddToPositionCall {
+                    token_id: string_to_u256(p.token_id)?,
+                    amount_0: string_to_u256(p.amount_0)?,
+                    amount_1: string_to_u256(p.amount_1)?,
+                    min_0: string_to_u256(p.min_0)?,
+                    min_1: string_to_u256(p.min_1)?,
+                };
+                calls.push(UniswapV3AdaptorCalls::AddToPosition(call).encode().into());
+            }
+            uniswap_v3_adaptor_v2::Function::TakeFromPosition(p) => {
+                let call = steward_abi::uniswap_v3_adaptor::TakeFromPositionCall {
+                    token_id: string_to_u256(p.token_id)?,
+                    liquidity: string_to_u128(p.liquidity)?.as_u128(),
+                    min_0: string_to_u256(p.min_0)?,
+                    min_1: string_to_u256(p.min_1)?,
+                    take_fees: p.take_fees,
+                };
+                calls.push(
+                    UniswapV3AdaptorCalls::TakeFromPosition(call)
+                        .encode()
+                        .into(),
+                );
+            }
+            uniswap_v3_adaptor_v2::Function::RevokeApproval(p) => {
+                let call = steward_abi::uniswap_v3_adaptor::RevokeApprovalCall {
+                    asset: sp_call_parse_address(p.asset)?,
+                    spender: sp_call_parse_address(p.spender)?,
+                };
+                calls.push(UniswapV3AdaptorCalls::RevokeApproval(call).encode().into())
+            }
+            uniswap_v3_adaptor_v2::Function::CollectFees(p) => {
+                let call = steward_abi::uniswap_v3_adaptor::CollectFeesCall {
+                    token_id: string_to_u256(p.token_id)?,
+                    amount_0: string_to_u128(p.amount_0)?.as_u128(),
+                    amount_1: string_to_u128(p.amount_1)?.as_u128(),
+                };
+                calls.push(UniswapV3AdaptorCalls::CollectFees(call).encode().into())
+            }
+            uniswap_v3_adaptor_v2::Function::PurgeAllZeroLiquidityPositions(p) => {
+                let call = steward_abi::uniswap_v3_adaptor::PurgeAllZeroLiquidityPositionsCall {
+                    token_0: sp_call_parse_address(p.token_0)?,
+                    token_1: sp_call_parse_address(p.token_1)?,
+                };
+                calls.push(
+                    UniswapV3AdaptorCalls::PurgeAllZeroLiquidityPositions(call)
+                        .encode()
+                        .into(),
+                )
+            }
+            uniswap_v3_adaptor_v2::Function::PurgeSinglePosition(p) => {
+                let call = steward_abi::uniswap_v3_adaptor::PurgeSinglePositionCall {
+                    token_id: string_to_u256(p.token_id)?,
+                };
+                calls.push(
+                    UniswapV3AdaptorCalls::PurgeSinglePosition(call)
+                        .encode()
+                        .into(),
+                )
+            }
+            uniswap_v3_adaptor_v2::Function::RemoveUnownedPositionFromTracker(p) => {
                 let call = steward_abi::uniswap_v3_adaptor::RemoveUnOwnedPositionFromTrackerCall {
                     token_id: string_to_u256(p.token_id)?,
                     token_0: sp_call_parse_address(p.token_0)?,

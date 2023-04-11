@@ -31,6 +31,13 @@ pub(crate) fn cellar_adaptor_v1_call(
                 };
                 calls.push(CellarAdaptorCalls::WithdrawFromCellar(call).encode().into())
             }
+            cellar_adaptor_v1::Function::RevokeApproval(p) => {
+                let call = steward_abi::cellar_adaptor::RevokeApprovalCall {
+                    asset: sp_call_parse_address(p.asset)?,
+                    spender: sp_call_parse_address(p.spender)?,
+                };
+                calls.push(CellarAdaptorCalls::RevokeApproval(call).encode().into())
+            }
         }
     }
 

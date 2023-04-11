@@ -5,7 +5,6 @@ import {ERC20, Owned} from "./interfaces.sol";
 import {Cellar} from "./MockCellar.sol";
 
 contract Adaptor is Owned {
-    event ClaimCompAndSwap(ERC20 assetOut, Cellar.Exchange exchange, bytes params, uint64 slippage);
     event SwapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, Cellar.Exchange exchange, bytes params);
     event BorrowFromAave(address debtTokenToBorrow, uint256 amountToBorrow);
     event SwapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin);
@@ -14,22 +13,6 @@ contract Adaptor is Owned {
 
     function borrowFromAave(address debtTokenToBorrow, uint256 amountToBorrow) external onlyOwner {
         emit BorrowFromAave(debtTokenToBorrow, amountToBorrow);
-    }
-
-    // Mocks the function parameters of the same name from CompoundCTokenAdaptor.sol
-    function claimCompAndSwap(
-        ERC20 assetOut,
-        Cellar.Exchange exchange,
-        bytes memory params,
-        uint64 slippage
-    ) external onlyOwner {
-        if (exchange == Cellar.Exchange.UNIV2) {
-            abi.decode(params, (address[]));
-        }
-        if (exchange == Cellar.Exchange.UNIV3) {
-            abi.decode(params, (address[], uint24[]));
-        }
-        emit ClaimCompAndSwap(assetOut, exchange, params, slippage);
     }
 
     // Mocks the function parameters of the same name from AaveDebtTokenAdaptor.sol
