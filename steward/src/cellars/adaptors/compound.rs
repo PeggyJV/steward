@@ -7,7 +7,7 @@ use crate::{
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
 };
 
-pub(crate) fn compound_c_token_v2_call(
+pub(crate) fn compound_c_token_v2_calls(
     params: steward_proto::steward::CompoundCTokenAdaptorV2Calls,
 ) -> Result<Vec<Bytes>, Error> {
     let mut calls = Vec::new();

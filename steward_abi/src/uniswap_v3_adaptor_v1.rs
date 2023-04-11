@@ -1,6 +1,6 @@
-pub use uniswapv3adaptor_mod::*;
+pub use uniswapv3adaptorv1_mod::*;
 #[allow(clippy::too_many_arguments)]
-mod uniswapv3adaptor_mod {
+mod uniswapv3adaptorv1_mod {
     #![allow(clippy::enum_variant_names)]
     #![allow(dead_code)]
     #![allow(clippy::type_complexity)]
@@ -14,28 +14,28 @@ mod uniswapv3adaptor_mod {
         types::*,
     };
     use ethers::providers::Middleware;
-    #[doc = "UniswapV3Adaptor was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
+    #[doc = "UniswapV3AdaptorV1 was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
     use std::sync::Arc;
-    pub static UNISWAPV3ADAPTOR_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
+    pub static UNISWAPV3ADAPTORV1_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
         ethers::contract::Lazy::new(|| {
             serde_json :: from_str ("[\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__BadSlippage\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__ExchangeNotSupported\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__ExternalReceiverBlocked\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserDepositsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserWithdrawsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"T\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"UniswapV3Adaptor__NotTheOwner\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"UniswapV3Adaptor__PurgingPositionWithLiquidity\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"UniswapV3Adaptor__TokenIdNotFoundInTracker\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"token0\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"token1\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"UniswapV3Adaptor__UntrackedLiquidity\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount1\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min1\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"addToPosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetsUsed\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20[]\",\n                \"name\": \"assets\",\n                \"type\": \"address[]\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"balanceOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min1\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"closePosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint128\",\n                \"name\": \"amount0\",\n                \"type\": \"uint128\"\n            },\n            {\n                \"internalType\": \"uint128\",\n                \"name\": \"amount1\",\n                \"type\": \"uint128\"\n            }\n        ],\n        \"name\": \"collectFees\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"deposit\",\n        \"outputs\": [],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"identifier\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"\",\n                \"type\": \"bytes32\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"isDebt\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"token0\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"token1\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint24\",\n                \"name\": \"poolFee\",\n                \"type\": \"uint24\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount1\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min1\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"int24\",\n                \"name\": \"tickLower\",\n                \"type\": \"int24\"\n            },\n            {\n                \"internalType\": \"int24\",\n                \"name\": \"tickUpper\",\n                \"type\": \"int24\"\n            }\n        ],\n        \"name\": \"openPosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetOut\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"slippage\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"name\": \"oracleSwap\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountOut\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"token0\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"token1\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"purgeAllZeroLiquidityPositions\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"purgeSinglePosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"token0\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"token1\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"removeUnOwnedPositionFromTracker\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"asset\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"revokeApproval\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetOut\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"swap\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountOut\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"tokenId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint128\",\n                \"name\": \"liquidity\",\n                \"type\": \"uint128\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min0\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min1\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"takeFees\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"takeFromPosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdraw\",\n        \"outputs\": [],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdrawableFrom\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    }\n]\n") . expect ("invalid abi")
         });
     #[derive(Clone)]
-    pub struct UniswapV3Adaptor<M>(ethers::contract::Contract<M>);
-    impl<M> std::ops::Deref for UniswapV3Adaptor<M> {
+    pub struct UniswapV3AdaptorV1<M>(ethers::contract::Contract<M>);
+    impl<M> std::ops::Deref for UniswapV3AdaptorV1<M> {
         type Target = ethers::contract::Contract<M>;
         fn deref(&self) -> &Self::Target {
             &self.0
         }
     }
-    impl<M: ethers::providers::Middleware> std::fmt::Debug for UniswapV3Adaptor<M> {
+    impl<M: ethers::providers::Middleware> std::fmt::Debug for UniswapV3AdaptorV1<M> {
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-            f.debug_tuple(stringify!(UniswapV3Adaptor))
+            f.debug_tuple(stringify!(UniswapV3AdaptorV1))
                 .field(&self.address())
                 .finish()
         }
     }
-    impl<'a, M: ethers::providers::Middleware> UniswapV3Adaptor<M> {
+    impl<'a, M: ethers::providers::Middleware> UniswapV3AdaptorV1<M> {
         #[doc = r" Creates a new contract instance with the specified `ethers`"]
         #[doc = r" client at the given `Address`. The contract derefs to a `ethers::Contract`"]
         #[doc = r" object"]
@@ -45,7 +45,7 @@ mod uniswapv3adaptor_mod {
         ) -> Self {
             let contract = ethers::contract::Contract::new(
                 address.into(),
-                UNISWAPV3ADAPTOR_ABI.clone(),
+                UNISWAPV3ADAPTORV1_ABI.clone(),
                 client,
             );
             Self(contract)
@@ -634,7 +634,7 @@ mod uniswapv3adaptor_mod {
         pub ethers::core::types::Bytes,
     );
     #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
-    pub enum UniswapV3AdaptorCalls {
+    pub enum UniswapV3AdaptorV1Calls {
         AddToPosition(AddToPositionCall),
         AssetOf(AssetOfCall),
         AssetsUsed(AssetsUsedCall),
@@ -655,256 +655,260 @@ mod uniswapv3adaptor_mod {
         Withdraw(WithdrawCall),
         WithdrawableFrom(WithdrawableFromCall),
     }
-    impl ethers::core::abi::AbiDecode for UniswapV3AdaptorCalls {
+    impl ethers::core::abi::AbiDecode for UniswapV3AdaptorV1Calls {
         fn decode(data: impl AsRef<[u8]>) -> Result<Self, ethers::core::abi::AbiError> {
             if let Ok(decoded) =
                 <AddToPositionCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(UniswapV3AdaptorCalls::AddToPosition(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::AddToPosition(decoded));
             }
             if let Ok(decoded) =
                 <AssetOfCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(UniswapV3AdaptorCalls::AssetOf(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::AssetOf(decoded));
             }
             if let Ok(decoded) =
                 <AssetsUsedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(UniswapV3AdaptorCalls::AssetsUsed(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::AssetsUsed(decoded));
             }
             if let Ok(decoded) =
                 <BalanceOfCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(UniswapV3AdaptorCalls::BalanceOf(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::BalanceOf(decoded));
             }
             if let Ok(decoded) =
                 <ClosePositionCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(UniswapV3AdaptorCalls::ClosePosition(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::ClosePosition(decoded));
             }
             if let Ok(decoded) =
                 <CollectFeesCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(UniswapV3AdaptorCalls::CollectFees(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::CollectFees(decoded));
             }
             if let Ok(decoded) =
                 <DepositCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(UniswapV3AdaptorCalls::Deposit(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::Deposit(decoded));
             }
             if let Ok(decoded) =
                 <IdentifierCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(UniswapV3AdaptorCalls::Identifier(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::Identifier(decoded));
             }
             if let Ok(decoded) = <IsDebtCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(UniswapV3AdaptorCalls::IsDebt(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::IsDebt(decoded));
             }
             if let Ok(decoded) =
                 <OpenPositionCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(UniswapV3AdaptorCalls::OpenPosition(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::OpenPosition(decoded));
             }
             if let Ok(decoded) =
                 <OracleSwapCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(UniswapV3AdaptorCalls::OracleSwap(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::OracleSwap(decoded));
             }
             if let Ok(decoded) =
                 <PurgeAllZeroLiquidityPositionsCall as ethers::core::abi::AbiDecode>::decode(
                     data.as_ref(),
                 )
             {
-                return Ok(UniswapV3AdaptorCalls::PurgeAllZeroLiquidityPositions(
+                return Ok(UniswapV3AdaptorV1Calls::PurgeAllZeroLiquidityPositions(
                     decoded,
                 ));
             }
             if let Ok(decoded) =
                 <PurgeSinglePositionCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(UniswapV3AdaptorCalls::PurgeSinglePosition(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::PurgeSinglePosition(decoded));
             }
             if let Ok(decoded) =
                 <RemoveUnOwnedPositionFromTrackerCall as ethers::core::abi::AbiDecode>::decode(
                     data.as_ref(),
                 )
             {
-                return Ok(UniswapV3AdaptorCalls::RemoveUnOwnedPositionFromTracker(
+                return Ok(UniswapV3AdaptorV1Calls::RemoveUnOwnedPositionFromTracker(
                     decoded,
                 ));
             }
             if let Ok(decoded) =
                 <RevokeApprovalCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(UniswapV3AdaptorCalls::RevokeApproval(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::RevokeApproval(decoded));
             }
             if let Ok(decoded) = <SwapCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(UniswapV3AdaptorCalls::Swap(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::Swap(decoded));
             }
             if let Ok(decoded) =
                 <TakeFromPositionCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(UniswapV3AdaptorCalls::TakeFromPosition(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::TakeFromPosition(decoded));
             }
             if let Ok(decoded) =
                 <WithdrawCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(UniswapV3AdaptorCalls::Withdraw(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::Withdraw(decoded));
             }
             if let Ok(decoded) =
                 <WithdrawableFromCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(UniswapV3AdaptorCalls::WithdrawableFrom(decoded));
+                return Ok(UniswapV3AdaptorV1Calls::WithdrawableFrom(decoded));
             }
             Err(ethers::core::abi::Error::InvalidData.into())
         }
     }
-    impl ethers::core::abi::AbiEncode for UniswapV3AdaptorCalls {
+    impl ethers::core::abi::AbiEncode for UniswapV3AdaptorV1Calls {
         fn encode(self) -> Vec<u8> {
             match self {
-                UniswapV3AdaptorCalls::AddToPosition(element) => element.encode(),
-                UniswapV3AdaptorCalls::AssetOf(element) => element.encode(),
-                UniswapV3AdaptorCalls::AssetsUsed(element) => element.encode(),
-                UniswapV3AdaptorCalls::BalanceOf(element) => element.encode(),
-                UniswapV3AdaptorCalls::ClosePosition(element) => element.encode(),
-                UniswapV3AdaptorCalls::CollectFees(element) => element.encode(),
-                UniswapV3AdaptorCalls::Deposit(element) => element.encode(),
-                UniswapV3AdaptorCalls::Identifier(element) => element.encode(),
-                UniswapV3AdaptorCalls::IsDebt(element) => element.encode(),
-                UniswapV3AdaptorCalls::OpenPosition(element) => element.encode(),
-                UniswapV3AdaptorCalls::OracleSwap(element) => element.encode(),
-                UniswapV3AdaptorCalls::PurgeAllZeroLiquidityPositions(element) => element.encode(),
-                UniswapV3AdaptorCalls::PurgeSinglePosition(element) => element.encode(),
-                UniswapV3AdaptorCalls::RemoveUnOwnedPositionFromTracker(element) => {
+                UniswapV3AdaptorV1Calls::AddToPosition(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::AssetOf(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::AssetsUsed(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::BalanceOf(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::ClosePosition(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::CollectFees(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::Deposit(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::Identifier(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::IsDebt(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::OpenPosition(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::OracleSwap(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::PurgeAllZeroLiquidityPositions(element) => {
                     element.encode()
                 }
-                UniswapV3AdaptorCalls::RevokeApproval(element) => element.encode(),
-                UniswapV3AdaptorCalls::Swap(element) => element.encode(),
-                UniswapV3AdaptorCalls::TakeFromPosition(element) => element.encode(),
-                UniswapV3AdaptorCalls::Withdraw(element) => element.encode(),
-                UniswapV3AdaptorCalls::WithdrawableFrom(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::PurgeSinglePosition(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::RemoveUnOwnedPositionFromTracker(element) => {
+                    element.encode()
+                }
+                UniswapV3AdaptorV1Calls::RevokeApproval(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::Swap(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::TakeFromPosition(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::Withdraw(element) => element.encode(),
+                UniswapV3AdaptorV1Calls::WithdrawableFrom(element) => element.encode(),
             }
         }
     }
-    impl ::std::fmt::Display for UniswapV3AdaptorCalls {
+    impl ::std::fmt::Display for UniswapV3AdaptorV1Calls {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match self {
-                UniswapV3AdaptorCalls::AddToPosition(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::AssetOf(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::AssetsUsed(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::BalanceOf(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::ClosePosition(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::CollectFees(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::Deposit(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::Identifier(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::IsDebt(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::OpenPosition(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::OracleSwap(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::PurgeAllZeroLiquidityPositions(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::PurgeSinglePosition(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::RemoveUnOwnedPositionFromTracker(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::RevokeApproval(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::Swap(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::TakeFromPosition(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::Withdraw(element) => element.fmt(f),
-                UniswapV3AdaptorCalls::WithdrawableFrom(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::AddToPosition(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::AssetOf(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::AssetsUsed(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::BalanceOf(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::ClosePosition(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::CollectFees(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::Deposit(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::Identifier(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::IsDebt(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::OpenPosition(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::OracleSwap(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::PurgeAllZeroLiquidityPositions(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::PurgeSinglePosition(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::RemoveUnOwnedPositionFromTracker(element) => {
+                    element.fmt(f)
+                }
+                UniswapV3AdaptorV1Calls::RevokeApproval(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::Swap(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::TakeFromPosition(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::Withdraw(element) => element.fmt(f),
+                UniswapV3AdaptorV1Calls::WithdrawableFrom(element) => element.fmt(f),
             }
         }
     }
-    impl ::std::convert::From<AddToPositionCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<AddToPositionCall> for UniswapV3AdaptorV1Calls {
         fn from(var: AddToPositionCall) -> Self {
-            UniswapV3AdaptorCalls::AddToPosition(var)
+            UniswapV3AdaptorV1Calls::AddToPosition(var)
         }
     }
-    impl ::std::convert::From<AssetOfCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<AssetOfCall> for UniswapV3AdaptorV1Calls {
         fn from(var: AssetOfCall) -> Self {
-            UniswapV3AdaptorCalls::AssetOf(var)
+            UniswapV3AdaptorV1Calls::AssetOf(var)
         }
     }
-    impl ::std::convert::From<AssetsUsedCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<AssetsUsedCall> for UniswapV3AdaptorV1Calls {
         fn from(var: AssetsUsedCall) -> Self {
-            UniswapV3AdaptorCalls::AssetsUsed(var)
+            UniswapV3AdaptorV1Calls::AssetsUsed(var)
         }
     }
-    impl ::std::convert::From<BalanceOfCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<BalanceOfCall> for UniswapV3AdaptorV1Calls {
         fn from(var: BalanceOfCall) -> Self {
-            UniswapV3AdaptorCalls::BalanceOf(var)
+            UniswapV3AdaptorV1Calls::BalanceOf(var)
         }
     }
-    impl ::std::convert::From<ClosePositionCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<ClosePositionCall> for UniswapV3AdaptorV1Calls {
         fn from(var: ClosePositionCall) -> Self {
-            UniswapV3AdaptorCalls::ClosePosition(var)
+            UniswapV3AdaptorV1Calls::ClosePosition(var)
         }
     }
-    impl ::std::convert::From<CollectFeesCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<CollectFeesCall> for UniswapV3AdaptorV1Calls {
         fn from(var: CollectFeesCall) -> Self {
-            UniswapV3AdaptorCalls::CollectFees(var)
+            UniswapV3AdaptorV1Calls::CollectFees(var)
         }
     }
-    impl ::std::convert::From<DepositCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<DepositCall> for UniswapV3AdaptorV1Calls {
         fn from(var: DepositCall) -> Self {
-            UniswapV3AdaptorCalls::Deposit(var)
+            UniswapV3AdaptorV1Calls::Deposit(var)
         }
     }
-    impl ::std::convert::From<IdentifierCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<IdentifierCall> for UniswapV3AdaptorV1Calls {
         fn from(var: IdentifierCall) -> Self {
-            UniswapV3AdaptorCalls::Identifier(var)
+            UniswapV3AdaptorV1Calls::Identifier(var)
         }
     }
-    impl ::std::convert::From<IsDebtCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<IsDebtCall> for UniswapV3AdaptorV1Calls {
         fn from(var: IsDebtCall) -> Self {
-            UniswapV3AdaptorCalls::IsDebt(var)
+            UniswapV3AdaptorV1Calls::IsDebt(var)
         }
     }
-    impl ::std::convert::From<OpenPositionCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<OpenPositionCall> for UniswapV3AdaptorV1Calls {
         fn from(var: OpenPositionCall) -> Self {
-            UniswapV3AdaptorCalls::OpenPosition(var)
+            UniswapV3AdaptorV1Calls::OpenPosition(var)
         }
     }
-    impl ::std::convert::From<OracleSwapCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<OracleSwapCall> for UniswapV3AdaptorV1Calls {
         fn from(var: OracleSwapCall) -> Self {
-            UniswapV3AdaptorCalls::OracleSwap(var)
+            UniswapV3AdaptorV1Calls::OracleSwap(var)
         }
     }
-    impl ::std::convert::From<PurgeAllZeroLiquidityPositionsCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<PurgeAllZeroLiquidityPositionsCall> for UniswapV3AdaptorV1Calls {
         fn from(var: PurgeAllZeroLiquidityPositionsCall) -> Self {
-            UniswapV3AdaptorCalls::PurgeAllZeroLiquidityPositions(var)
+            UniswapV3AdaptorV1Calls::PurgeAllZeroLiquidityPositions(var)
         }
     }
-    impl ::std::convert::From<PurgeSinglePositionCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<PurgeSinglePositionCall> for UniswapV3AdaptorV1Calls {
         fn from(var: PurgeSinglePositionCall) -> Self {
-            UniswapV3AdaptorCalls::PurgeSinglePosition(var)
+            UniswapV3AdaptorV1Calls::PurgeSinglePosition(var)
         }
     }
-    impl ::std::convert::From<RemoveUnOwnedPositionFromTrackerCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<RemoveUnOwnedPositionFromTrackerCall> for UniswapV3AdaptorV1Calls {
         fn from(var: RemoveUnOwnedPositionFromTrackerCall) -> Self {
-            UniswapV3AdaptorCalls::RemoveUnOwnedPositionFromTracker(var)
+            UniswapV3AdaptorV1Calls::RemoveUnOwnedPositionFromTracker(var)
         }
     }
-    impl ::std::convert::From<RevokeApprovalCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<RevokeApprovalCall> for UniswapV3AdaptorV1Calls {
         fn from(var: RevokeApprovalCall) -> Self {
-            UniswapV3AdaptorCalls::RevokeApproval(var)
+            UniswapV3AdaptorV1Calls::RevokeApproval(var)
         }
     }
-    impl ::std::convert::From<SwapCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<SwapCall> for UniswapV3AdaptorV1Calls {
         fn from(var: SwapCall) -> Self {
-            UniswapV3AdaptorCalls::Swap(var)
+            UniswapV3AdaptorV1Calls::Swap(var)
         }
     }
-    impl ::std::convert::From<TakeFromPositionCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<TakeFromPositionCall> for UniswapV3AdaptorV1Calls {
         fn from(var: TakeFromPositionCall) -> Self {
-            UniswapV3AdaptorCalls::TakeFromPosition(var)
+            UniswapV3AdaptorV1Calls::TakeFromPosition(var)
         }
     }
-    impl ::std::convert::From<WithdrawCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<WithdrawCall> for UniswapV3AdaptorV1Calls {
         fn from(var: WithdrawCall) -> Self {
-            UniswapV3AdaptorCalls::Withdraw(var)
+            UniswapV3AdaptorV1Calls::Withdraw(var)
         }
     }
-    impl ::std::convert::From<WithdrawableFromCall> for UniswapV3AdaptorCalls {
+    impl ::std::convert::From<WithdrawableFromCall> for UniswapV3AdaptorV1Calls {
         fn from(var: WithdrawableFromCall) -> Self {
-            UniswapV3AdaptorCalls::WithdrawableFrom(var)
+            UniswapV3AdaptorV1Calls::WithdrawableFrom(var)
         }
     }
 }

@@ -15,18 +15,18 @@ message AaveV3ATokenAdaptorV1 {
         /***** BASE ADAPTOR FUNCTIONS *****/
 
         // Represents function `revokeApproval(ERC20 asset, address spender)`
-        RevokeApproval revoke_approval = 3;
+        RevokeApproval revoke_approval = 1;
 
         /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
 
         // Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
-        DepositToAave deposit_to_aave = 4;
+        DepositToAave deposit_to_aave = 2;
         // Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
-        WithdrawFromAave withdraw_from_aave = 5;
+        WithdrawFromAave withdraw_from_aave = 3;
         // Represents function `adjustIsolationModeAssetAsCollateral(ERC20 asset, bool useAsCollateral)`
-        AdjustIsolationModeAssetAsCollateral adjust_isolation_mode_asset_as_collateral = 6;
+        AdjustIsolationModeAssetAsCollateral adjust_isolation_mode_asset_as_collateral = 4;
         // Represents function `changeEMode(uint8 categoryId)`
-        ChangeEMode change_emode = 7;
+        ChangeEMode change_emode = 5;
     }
 
     /*

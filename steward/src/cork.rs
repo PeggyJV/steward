@@ -131,7 +131,7 @@ fn get_encoded_call(request: SubmitRequest) -> Result<Vec<u8>, Error> {
 
             cellar_v2::get_encoded_call(call.function.unwrap(), request.cellar_id)
         }
-        CellarV22(call) => {
+        CellarV2dot2(call) => {
             if call.call_type.is_none() {
                 return Err(ErrorKind::Http.context("empty function data").into());
             }

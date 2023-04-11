@@ -1,6 +1,6 @@
-pub use vestingsimpleadaptor_mod::*;
+pub use vestingsimpleadaptorv2_mod::*;
 #[allow(clippy::too_many_arguments)]
-mod vestingsimpleadaptor_mod {
+mod vestingsimpleadaptorv2_mod {
     #![allow(clippy::enum_variant_names)]
     #![allow(dead_code)]
     #![allow(clippy::type_complexity)]
@@ -14,28 +14,28 @@ mod vestingsimpleadaptor_mod {
         types::*,
     };
     use ethers::providers::Middleware;
-    #[doc = "VestingSimpleAdaptor was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
+    #[doc = "VestingSimpleAdaptorV2 was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
     use std::sync::Arc;
-    pub static VESTINGSIMPLEADAPTOR_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
+    pub static VESTINGSIMPLEADAPTORV2_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
         ethers::contract::Lazy::new(|| {
             serde_json :: from_str ("[\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__ExternalReceiverBlocked\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"asset\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"BaseAdaptor__PricingNotSupported\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__Slippage\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserDepositsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserWithdrawsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"unUsedVestingContract\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"VestingSimpleAdaptor__VestingPositionNotUsed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetsUsed\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20[]\",\n                \"name\": \"assets\",\n                \"type\": \"address[]\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"balanceOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"deposit\",\n        \"outputs\": [],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract VestingSimple\",\n                \"name\": \"vestingContract\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountToDeposit\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"depositToVesting\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"identifier\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"\",\n                \"type\": \"bytes32\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"isDebt\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"asset\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"revokeApproval\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"slippage\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdraw\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract VestingSimple\",\n                \"name\": \"vestingContract\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"withdrawAllFromVesting\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract VestingSimple\",\n                \"name\": \"vestingContract\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountToWithdraw\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"withdrawAnyFromVesting\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract VestingSimple\",\n                \"name\": \"vestingContract\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"depositId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountToWithdraw\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"withdrawFromVesting\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdrawableFrom\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    }\n]\n") . expect ("invalid abi")
         });
     #[derive(Clone)]
-    pub struct VestingSimpleAdaptor<M>(ethers::contract::Contract<M>);
-    impl<M> std::ops::Deref for VestingSimpleAdaptor<M> {
+    pub struct VestingSimpleAdaptorV2<M>(ethers::contract::Contract<M>);
+    impl<M> std::ops::Deref for VestingSimpleAdaptorV2<M> {
         type Target = ethers::contract::Contract<M>;
         fn deref(&self) -> &Self::Target {
             &self.0
         }
     }
-    impl<M: ethers::providers::Middleware> std::fmt::Debug for VestingSimpleAdaptor<M> {
+    impl<M: ethers::providers::Middleware> std::fmt::Debug for VestingSimpleAdaptorV2<M> {
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-            f.debug_tuple(stringify!(VestingSimpleAdaptor))
+            f.debug_tuple(stringify!(VestingSimpleAdaptorV2))
                 .field(&self.address())
                 .finish()
         }
     }
-    impl<'a, M: ethers::providers::Middleware> VestingSimpleAdaptor<M> {
+    impl<'a, M: ethers::providers::Middleware> VestingSimpleAdaptorV2<M> {
         #[doc = r" Creates a new contract instance with the specified `ethers`"]
         #[doc = r" client at the given `Address`. The contract derefs to a `ethers::Contract`"]
         #[doc = r" object"]
@@ -45,7 +45,7 @@ mod vestingsimpleadaptor_mod {
         ) -> Self {
             let contract = ethers::contract::Contract::new(
                 address.into(),
-                VESTINGSIMPLEADAPTOR_ABI.clone(),
+                VESTINGSIMPLEADAPTORV2_ABI.clone(),
                 client,
             );
             Self(contract)
@@ -424,7 +424,7 @@ mod vestingsimpleadaptor_mod {
         pub p1: ethers::core::types::Bytes,
     }
     #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
-    pub enum VestingSimpleAdaptorCalls {
+    pub enum VestingSimpleAdaptorV2Calls {
         AssetOf(AssetOfCall),
         AssetsUsed(AssetsUsedCall),
         BalanceOf(BalanceOfCall),
@@ -440,188 +440,188 @@ mod vestingsimpleadaptor_mod {
         WithdrawFromVesting(WithdrawFromVestingCall),
         WithdrawableFrom(WithdrawableFromCall),
     }
-    impl ethers::core::abi::AbiDecode for VestingSimpleAdaptorCalls {
+    impl ethers::core::abi::AbiDecode for VestingSimpleAdaptorV2Calls {
         fn decode(data: impl AsRef<[u8]>) -> Result<Self, ethers::core::abi::AbiError> {
             if let Ok(decoded) =
                 <AssetOfCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(VestingSimpleAdaptorCalls::AssetOf(decoded));
+                return Ok(VestingSimpleAdaptorV2Calls::AssetOf(decoded));
             }
             if let Ok(decoded) =
                 <AssetsUsedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(VestingSimpleAdaptorCalls::AssetsUsed(decoded));
+                return Ok(VestingSimpleAdaptorV2Calls::AssetsUsed(decoded));
             }
             if let Ok(decoded) =
                 <BalanceOfCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(VestingSimpleAdaptorCalls::BalanceOf(decoded));
+                return Ok(VestingSimpleAdaptorV2Calls::BalanceOf(decoded));
             }
             if let Ok(decoded) =
                 <DepositCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(VestingSimpleAdaptorCalls::Deposit(decoded));
+                return Ok(VestingSimpleAdaptorV2Calls::Deposit(decoded));
             }
             if let Ok(decoded) =
                 <DepositToVestingCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(VestingSimpleAdaptorCalls::DepositToVesting(decoded));
+                return Ok(VestingSimpleAdaptorV2Calls::DepositToVesting(decoded));
             }
             if let Ok(decoded) =
                 <IdentifierCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(VestingSimpleAdaptorCalls::Identifier(decoded));
+                return Ok(VestingSimpleAdaptorV2Calls::Identifier(decoded));
             }
             if let Ok(decoded) = <IsDebtCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(VestingSimpleAdaptorCalls::IsDebt(decoded));
+                return Ok(VestingSimpleAdaptorV2Calls::IsDebt(decoded));
             }
             if let Ok(decoded) =
                 <RevokeApprovalCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(VestingSimpleAdaptorCalls::RevokeApproval(decoded));
+                return Ok(VestingSimpleAdaptorV2Calls::RevokeApproval(decoded));
             }
             if let Ok(decoded) =
                 <SlippageCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(VestingSimpleAdaptorCalls::Slippage(decoded));
+                return Ok(VestingSimpleAdaptorV2Calls::Slippage(decoded));
             }
             if let Ok(decoded) =
                 <WithdrawCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(VestingSimpleAdaptorCalls::Withdraw(decoded));
+                return Ok(VestingSimpleAdaptorV2Calls::Withdraw(decoded));
             }
             if let Ok(decoded) =
                 <WithdrawAllFromVestingCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(VestingSimpleAdaptorCalls::WithdrawAllFromVesting(decoded));
+                return Ok(VestingSimpleAdaptorV2Calls::WithdrawAllFromVesting(decoded));
             }
             if let Ok(decoded) =
                 <WithdrawAnyFromVestingCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(VestingSimpleAdaptorCalls::WithdrawAnyFromVesting(decoded));
+                return Ok(VestingSimpleAdaptorV2Calls::WithdrawAnyFromVesting(decoded));
             }
             if let Ok(decoded) =
                 <WithdrawFromVestingCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(VestingSimpleAdaptorCalls::WithdrawFromVesting(decoded));
+                return Ok(VestingSimpleAdaptorV2Calls::WithdrawFromVesting(decoded));
             }
             if let Ok(decoded) =
                 <WithdrawableFromCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(VestingSimpleAdaptorCalls::WithdrawableFrom(decoded));
+                return Ok(VestingSimpleAdaptorV2Calls::WithdrawableFrom(decoded));
             }
             Err(ethers::core::abi::Error::InvalidData.into())
         }
     }
-    impl ethers::core::abi::AbiEncode for VestingSimpleAdaptorCalls {
+    impl ethers::core::abi::AbiEncode for VestingSimpleAdaptorV2Calls {
         fn encode(self) -> Vec<u8> {
             match self {
-                VestingSimpleAdaptorCalls::AssetOf(element) => element.encode(),
-                VestingSimpleAdaptorCalls::AssetsUsed(element) => element.encode(),
-                VestingSimpleAdaptorCalls::BalanceOf(element) => element.encode(),
-                VestingSimpleAdaptorCalls::Deposit(element) => element.encode(),
-                VestingSimpleAdaptorCalls::DepositToVesting(element) => element.encode(),
-                VestingSimpleAdaptorCalls::Identifier(element) => element.encode(),
-                VestingSimpleAdaptorCalls::IsDebt(element) => element.encode(),
-                VestingSimpleAdaptorCalls::RevokeApproval(element) => element.encode(),
-                VestingSimpleAdaptorCalls::Slippage(element) => element.encode(),
-                VestingSimpleAdaptorCalls::Withdraw(element) => element.encode(),
-                VestingSimpleAdaptorCalls::WithdrawAllFromVesting(element) => element.encode(),
-                VestingSimpleAdaptorCalls::WithdrawAnyFromVesting(element) => element.encode(),
-                VestingSimpleAdaptorCalls::WithdrawFromVesting(element) => element.encode(),
-                VestingSimpleAdaptorCalls::WithdrawableFrom(element) => element.encode(),
+                VestingSimpleAdaptorV2Calls::AssetOf(element) => element.encode(),
+                VestingSimpleAdaptorV2Calls::AssetsUsed(element) => element.encode(),
+                VestingSimpleAdaptorV2Calls::BalanceOf(element) => element.encode(),
+                VestingSimpleAdaptorV2Calls::Deposit(element) => element.encode(),
+                VestingSimpleAdaptorV2Calls::DepositToVesting(element) => element.encode(),
+                VestingSimpleAdaptorV2Calls::Identifier(element) => element.encode(),
+                VestingSimpleAdaptorV2Calls::IsDebt(element) => element.encode(),
+                VestingSimpleAdaptorV2Calls::RevokeApproval(element) => element.encode(),
+                VestingSimpleAdaptorV2Calls::Slippage(element) => element.encode(),
+                VestingSimpleAdaptorV2Calls::Withdraw(element) => element.encode(),
+                VestingSimpleAdaptorV2Calls::WithdrawAllFromVesting(element) => element.encode(),
+                VestingSimpleAdaptorV2Calls::WithdrawAnyFromVesting(element) => element.encode(),
+                VestingSimpleAdaptorV2Calls::WithdrawFromVesting(element) => element.encode(),
+                VestingSimpleAdaptorV2Calls::WithdrawableFrom(element) => element.encode(),
             }
         }
     }
-    impl ::std::fmt::Display for VestingSimpleAdaptorCalls {
+    impl ::std::fmt::Display for VestingSimpleAdaptorV2Calls {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match self {
-                VestingSimpleAdaptorCalls::AssetOf(element) => element.fmt(f),
-                VestingSimpleAdaptorCalls::AssetsUsed(element) => element.fmt(f),
-                VestingSimpleAdaptorCalls::BalanceOf(element) => element.fmt(f),
-                VestingSimpleAdaptorCalls::Deposit(element) => element.fmt(f),
-                VestingSimpleAdaptorCalls::DepositToVesting(element) => element.fmt(f),
-                VestingSimpleAdaptorCalls::Identifier(element) => element.fmt(f),
-                VestingSimpleAdaptorCalls::IsDebt(element) => element.fmt(f),
-                VestingSimpleAdaptorCalls::RevokeApproval(element) => element.fmt(f),
-                VestingSimpleAdaptorCalls::Slippage(element) => element.fmt(f),
-                VestingSimpleAdaptorCalls::Withdraw(element) => element.fmt(f),
-                VestingSimpleAdaptorCalls::WithdrawAllFromVesting(element) => element.fmt(f),
-                VestingSimpleAdaptorCalls::WithdrawAnyFromVesting(element) => element.fmt(f),
-                VestingSimpleAdaptorCalls::WithdrawFromVesting(element) => element.fmt(f),
-                VestingSimpleAdaptorCalls::WithdrawableFrom(element) => element.fmt(f),
+                VestingSimpleAdaptorV2Calls::AssetOf(element) => element.fmt(f),
+                VestingSimpleAdaptorV2Calls::AssetsUsed(element) => element.fmt(f),
+                VestingSimpleAdaptorV2Calls::BalanceOf(element) => element.fmt(f),
+                VestingSimpleAdaptorV2Calls::Deposit(element) => element.fmt(f),
+                VestingSimpleAdaptorV2Calls::DepositToVesting(element) => element.fmt(f),
+                VestingSimpleAdaptorV2Calls::Identifier(element) => element.fmt(f),
+                VestingSimpleAdaptorV2Calls::IsDebt(element) => element.fmt(f),
+                VestingSimpleAdaptorV2Calls::RevokeApproval(element) => element.fmt(f),
+                VestingSimpleAdaptorV2Calls::Slippage(element) => element.fmt(f),
+                VestingSimpleAdaptorV2Calls::Withdraw(element) => element.fmt(f),
+                VestingSimpleAdaptorV2Calls::WithdrawAllFromVesting(element) => element.fmt(f),
+                VestingSimpleAdaptorV2Calls::WithdrawAnyFromVesting(element) => element.fmt(f),
+                VestingSimpleAdaptorV2Calls::WithdrawFromVesting(element) => element.fmt(f),
+                VestingSimpleAdaptorV2Calls::WithdrawableFrom(element) => element.fmt(f),
             }
         }
     }
-    impl ::std::convert::From<AssetOfCall> for VestingSimpleAdaptorCalls {
+    impl ::std::convert::From<AssetOfCall> for VestingSimpleAdaptorV2Calls {
         fn from(var: AssetOfCall) -> Self {
-            VestingSimpleAdaptorCalls::AssetOf(var)
+            VestingSimpleAdaptorV2Calls::AssetOf(var)
         }
     }
-    impl ::std::convert::From<AssetsUsedCall> for VestingSimpleAdaptorCalls {
+    impl ::std::convert::From<AssetsUsedCall> for VestingSimpleAdaptorV2Calls {
         fn from(var: AssetsUsedCall) -> Self {
-            VestingSimpleAdaptorCalls::AssetsUsed(var)
+            VestingSimpleAdaptorV2Calls::AssetsUsed(var)
         }
     }
-    impl ::std::convert::From<BalanceOfCall> for VestingSimpleAdaptorCalls {
+    impl ::std::convert::From<BalanceOfCall> for VestingSimpleAdaptorV2Calls {
         fn from(var: BalanceOfCall) -> Self {
-            VestingSimpleAdaptorCalls::BalanceOf(var)
+            VestingSimpleAdaptorV2Calls::BalanceOf(var)
         }
     }
-    impl ::std::convert::From<DepositCall> for VestingSimpleAdaptorCalls {
+    impl ::std::convert::From<DepositCall> for VestingSimpleAdaptorV2Calls {
         fn from(var: DepositCall) -> Self {
-            VestingSimpleAdaptorCalls::Deposit(var)
+            VestingSimpleAdaptorV2Calls::Deposit(var)
         }
     }
-    impl ::std::convert::From<DepositToVestingCall> for VestingSimpleAdaptorCalls {
+    impl ::std::convert::From<DepositToVestingCall> for VestingSimpleAdaptorV2Calls {
         fn from(var: DepositToVestingCall) -> Self {
-            VestingSimpleAdaptorCalls::DepositToVesting(var)
+            VestingSimpleAdaptorV2Calls::DepositToVesting(var)
         }
     }
-    impl ::std::convert::From<IdentifierCall> for VestingSimpleAdaptorCalls {
+    impl ::std::convert::From<IdentifierCall> for VestingSimpleAdaptorV2Calls {
         fn from(var: IdentifierCall) -> Self {
-            VestingSimpleAdaptorCalls::Identifier(var)
+            VestingSimpleAdaptorV2Calls::Identifier(var)
         }
     }
-    impl ::std::convert::From<IsDebtCall> for VestingSimpleAdaptorCalls {
+    impl ::std::convert::From<IsDebtCall> for VestingSimpleAdaptorV2Calls {
         fn from(var: IsDebtCall) -> Self {
-            VestingSimpleAdaptorCalls::IsDebt(var)
+            VestingSimpleAdaptorV2Calls::IsDebt(var)
         }
     }
-    impl ::std::convert::From<RevokeApprovalCall> for VestingSimpleAdaptorCalls {
+    impl ::std::convert::From<RevokeApprovalCall> for VestingSimpleAdaptorV2Calls {
         fn from(var: RevokeApprovalCall) -> Self {
-            VestingSimpleAdaptorCalls::RevokeApproval(var)
+            VestingSimpleAdaptorV2Calls::RevokeApproval(var)
         }
     }
-    impl ::std::convert::From<SlippageCall> for VestingSimpleAdaptorCalls {
+    impl ::std::convert::From<SlippageCall> for VestingSimpleAdaptorV2Calls {
         fn from(var: SlippageCall) -> Self {
-            VestingSimpleAdaptorCalls::Slippage(var)
+            VestingSimpleAdaptorV2Calls::Slippage(var)
         }
     }
-    impl ::std::convert::From<WithdrawCall> for VestingSimpleAdaptorCalls {
+    impl ::std::convert::From<WithdrawCall> for VestingSimpleAdaptorV2Calls {
         fn from(var: WithdrawCall) -> Self {
-            VestingSimpleAdaptorCalls::Withdraw(var)
+            VestingSimpleAdaptorV2Calls::Withdraw(var)
         }
     }
-    impl ::std::convert::From<WithdrawAllFromVestingCall> for VestingSimpleAdaptorCalls {
+    impl ::std::convert::From<WithdrawAllFromVestingCall> for VestingSimpleAdaptorV2Calls {
         fn from(var: WithdrawAllFromVestingCall) -> Self {
-            VestingSimpleAdaptorCalls::WithdrawAllFromVesting(var)
+            VestingSimpleAdaptorV2Calls::WithdrawAllFromVesting(var)
         }
     }
-    impl ::std::convert::From<WithdrawAnyFromVestingCall> for VestingSimpleAdaptorCalls {
+    impl ::std::convert::From<WithdrawAnyFromVestingCall> for VestingSimpleAdaptorV2Calls {
         fn from(var: WithdrawAnyFromVestingCall) -> Self {
-            VestingSimpleAdaptorCalls::WithdrawAnyFromVesting(var)
+            VestingSimpleAdaptorV2Calls::WithdrawAnyFromVesting(var)
         }
     }
-    impl ::std::convert::From<WithdrawFromVestingCall> for VestingSimpleAdaptorCalls {
+    impl ::std::convert::From<WithdrawFromVestingCall> for VestingSimpleAdaptorV2Calls {
         fn from(var: WithdrawFromVestingCall) -> Self {
-            VestingSimpleAdaptorCalls::WithdrawFromVesting(var)
+            VestingSimpleAdaptorV2Calls::WithdrawFromVesting(var)
         }
     }
-    impl ::std::convert::From<WithdrawableFromCall> for VestingSimpleAdaptorCalls {
+    impl ::std::convert::From<WithdrawableFromCall> for VestingSimpleAdaptorV2Calls {
         fn from(var: WithdrawableFromCall) -> Self {
-            VestingSimpleAdaptorCalls::WithdrawableFrom(var)
+            VestingSimpleAdaptorV2Calls::WithdrawableFrom(var)
         }
     }
 }

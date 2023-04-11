@@ -10,7 +10,7 @@ option go_package = "/steward_proto";
 import "adaptors/base.proto";
 
 // Represents call data for the Vesting Simple adaptor
-message VestingSimpleAdaptor {
+message VestingSimpleAdaptorV2 {
     oneof function {
         /***** BASE ADAPTOR FUNCTIONS *****/
 
@@ -74,6 +74,6 @@ message VestingSimpleAdaptor {
     }
 }
 
-message VestingSimpleAdaptorCalls {
-    repeated VestingSimpleAdaptor calls = 1;
+message VestingSimpleAdaptorV2Calls {
+    repeated VestingSimpleAdaptorV2 calls = 1;
 }

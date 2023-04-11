@@ -99,7 +99,7 @@ message AaveV3DebtTokenAdaptorV1 {
         // The function call data for the adaptor
         oneof call_data {
             // Represents function calls to the UniswapV3Adaptor V1
-            UniswapV3AdaptorV1Calls uniswap_v3_calls = 2;
+            UniswapV3AdaptorV1Calls uniswap_v3_v1_calls = 2;
             // Represents function calls to the AaveATokenAdaptor V1
             AaveATokenAdaptorV1Calls aave_a_token_v1_calls = 3;
             // Represents function calls to the AavaDebtTokenAdaptor V1
@@ -123,9 +123,9 @@ message AaveV3DebtTokenAdaptorV1 {
             // Represents function calls to the SwapWithUniswapAdaptorV1
             SwapWithUniswapAdaptorV1Calls swap_with_uniswap_v1_calls = 13;
             // Represents function calls to VestingSimpleAdaptor
-            VestingSimpleAdaptorCalls vesting_simple_calls = 14;
+            VestingSimpleAdaptorV2Calls vesting_simple_v2_calls = 14;
             // Represents function calls to the CellarAdaptor
-            CellarAdaptorV1Calls cellar_calls = 15;
+            CellarAdaptorV1Calls cellar_v1_calls = 15;
             // Represents function calls to the UniswapV3Adaptor V2
             UniswapV3AdaptorV2Calls uniswap_v3_v2_calls = 16;
         }

@@ -90,7 +90,7 @@ message CellarV2 {
     /*
     * Set the holding position used of the cellar.
     *
-    * Represents function `setHoldingIndex(uint8 index)`
+    * Represents function `setHoldingPosition(uint32 positionId)`
     */
     message SetHoldingPosition {
         // ID (index) of the new holding position to use
@@ -109,7 +109,7 @@ message CellarV2 {
     /*
     * Swap the positions at two given indeces.
     *
-    * Represents function `swapPositions(uint32 index1, uint32 index2)`
+    * Represents function `swapPositions(uint32 index1, uint32 index2, bool inDebtArray)`
     */
     message SwapPositions {
         // Index of the first position
@@ -123,7 +123,7 @@ message CellarV2 {
     /*
     * Allows share lock period to be updated.
     *
-    * Represents function `setShareLockPeriod()`
+    * Represents function `setShareLockPeriod(uint256 newLock)`
     */
     message SetShareLockPeriod {
         string new_lock = 1;
@@ -316,7 +316,7 @@ message AdaptorCall {
     // The function call data for the adaptor
     oneof call_data {
         // Represents function calls to the UniswapV3Adaptor V1
-        UniswapV3AdaptorV1Calls uniswap_v3_calls = 2;
+        UniswapV3AdaptorV1Calls uniswap_v3_v1_calls = 2;
         // Represents function calls to the AaveATokenAdaptor V1
         AaveATokenAdaptorV1Calls aave_a_token_v1_calls = 3;
         // Represents function calls to the AavaDebtTokenAdaptor V1
@@ -340,9 +340,9 @@ message AdaptorCall {
         // Represents function calls to the SwapWithUniswapAdaptorV1
         SwapWithUniswapAdaptorV1Calls swap_with_uniswap_v1_calls = 13;
         // Represents function calls to VestingSimpleAdaptor
-        VestingSimpleAdaptorCalls vesting_simple_calls = 14;
+        VestingSimpleAdaptorV2Calls vesting_simple_v2_calls = 14;
         // Represents function calls to the CellarAdaptor
-        CellarAdaptorV1Calls cellar_calls = 15;
+        CellarAdaptorV1Calls cellar_v1_calls = 15;
         // Represents function calls to the UniswapV3Adaptor V2
         UniswapV3AdaptorV2Calls uniswap_v3_v2_calls = 16;
     }

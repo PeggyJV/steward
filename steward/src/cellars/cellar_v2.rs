@@ -52,7 +52,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
 
             log_cellar_call(CELLAR_NAME, &CallOnAdaptorCall::function_name(), &cellar_id);
             let call = CallOnAdaptorCall {
-                data: get_encoded_adaptor_call(params.data)?,
+                data: get_encoded_adaptor_calls(params.data)?,
             };
 
             Ok(CellarV2Calls::CallOnAdaptor(call).encode())
@@ -171,7 +171,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
 }
 
 /// Encodes calls to the Adaptor contracts
-fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall>, Error> {
+fn get_encoded_adaptor_calls(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall>, Error> {
     let mut result: Vec<AbiAdaptorCall> = Vec::new();
     for d in data {
         debug!("adaptor call to {}", d.adaptor);
@@ -181,47 +181,48 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
             .ok_or_else(|| sp_call_error("call data is empty".to_string()))?;
 
         match call_data {
-            UniswapV3Calls(params) => {
-                calls.extend(adaptors::uniswap_v3::uniswap_v3_adaptor_v1_call(params)?)
+            UniswapV3V1Calls(params) => {
+                calls.extend(adaptors::uniswap_v3::uniswap_v3_adaptor_v1_calls(params)?)
             }
             AaveATokenV1Calls(params) => {
-                calls.extend(adaptors::aave_v2::aave_a_token_adaptor_v1_call(params)?)
+                calls.extend(adaptors::aave_v2::aave_a_token_adaptor_v1_calls(params)?)
             }
             AaveDebtTokenV1Calls(params) => {
-                calls.extend(adaptors::aave_v2::aave_debt_token_adaptor_v1_call(params)?)
+                calls.extend(adaptors::aave_v2::aave_debt_token_adaptor_v1_calls(params)?)
             }
             AaveATokenV2Calls(params) => {
-                calls.extend(adaptors::aave_v2::aave_a_token_adaptor_v2_call(params)?)
+                calls.extend(adaptors::aave_v2::aave_a_token_adaptor_v2_calls(params)?)
             }
             AaveDebtTokenV2Calls(params) => {
-                calls.extend(adaptors::aave_v2::aave_debt_token_adaptor_v2_call(params)?)
+                calls.extend(adaptors::aave_v2::aave_debt_token_adaptor_v2_calls(params)?)
             }
             AaveV3ATokenV1Calls(params) => {
-                calls.extend(adaptors::aave_v3::aave_v3_a_token_adaptor_v1_call(params)?)
+                calls.extend(adaptors::aave_v3::aave_v3_a_token_adaptor_v1_calls(params)?)
             }
             AaveV3DebtTokenV1Calls(params) => calls.extend(
-                adaptors::aave_v3::aave_v3_debt_token_adaptor_v1_call(params)?,
+                adaptors::aave_v3::aave_v3_debt_token_adaptor_v1_calls(params)?,
             ),
             OneInchV1Calls(params) => {
-                calls.extend(adaptors::oneinch::one_inch_adaptor_v1_call(params)?)
+                calls.extend(adaptors::oneinch::one_inch_adaptor_v1_calls(params)?)
             }
             FeesAndReservesV1Calls(params) => calls
-                .extend(adaptors::fees_and_reserves::fees_and_reserves_adaptor_v1_call(params)?),
-            ZeroXV1Calls(params) => calls.extend(adaptors::zero_x::zero_x_adaptor_v1_call(params)?),
-            SwapWithUniswapV1Calls(params) => calls.extend(
-                adaptors::uniswap_v3::swap_with_uniswap_adaptor_v1_call(params)?,
-            ),
-            CompoundCTokenV2Calls(params) => {
-                calls.extend(adaptors::compound::compound_c_token_v2_call(params)?)
+                .extend(adaptors::fees_and_reserves::fees_and_reserves_adaptor_v1_calls(params)?),
+            ZeroXV1Calls(params) => {
+                calls.extend(adaptors::zero_x::zero_x_adaptor_v1_calls(params)?)
             }
-            VestingSimpleCalls(params) => calls.extend(
-                adaptors::vesting_simple::vesting_simple_adaptor_v1_call(params)?,
+            SwapWithUniswapV1Calls(params) => calls
+                .extend(adaptors::swap_with_uniswap::swap_with_uniswap_adaptor_v1_calls(params)?),
+            CompoundCTokenV2Calls(params) => {
+                calls.extend(adaptors::compound::compound_c_token_v2_calls(params)?)
+            }
+            VestingSimpleV2Calls(params) => calls.extend(
+                adaptors::vesting_simple::vesting_simple_adaptor_v2_calls(params)?,
             ),
-            CellarCalls(params) => {
-                calls.extend(adaptors::sommelier::cellar_adaptor_v1_call(params)?)
+            CellarV1Calls(params) => {
+                calls.extend(adaptors::sommelier::cellar_adaptor_v1_calls(params)?)
             }
             UniswapV3V2Calls(params) => {
-                calls.extend(adaptors::uniswap_v3::uniswap_v3_adaptor_v2_call(params)?)
+                calls.extend(adaptors::uniswap_v3::uniswap_v3_adaptor_v2_calls(params)?)
             }
         };
 

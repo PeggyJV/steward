@@ -4,6 +4,7 @@ pub mod compound;
 pub mod fees_and_reserves;
 pub mod oneinch;
 pub mod sommelier;
+pub mod swap_with_uniswap;
 pub mod uniswap_v3;
 pub mod vesting_simple;
 pub mod zero_x;

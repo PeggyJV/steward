@@ -16,30 +16,30 @@ pub const BLOCKED_ADAPTORS: [&str; 3] = [
     // Original uniswap v3 adaptor
     "7c4262f83e6775d6ff6fe8d9ab268611ed9d13ee",
     // Original vesting simple adaptor
-    "1eAA1a100a460f46A2032f0402Bc01FE89FaAB60",
+    "1eaa1a100a460f46a2032f0402bc01fe89faab60",
     // Original compound C token adaptor
-    "26DbA82495f6189DDe7648Ae88bEAd46C402F078",
+    "26dba82495f6189dde7648ae88bead46c402f078",
 ];
 pub const BLOCKED_POSITIONS: [u32; 9] = [4, 5, 6, 7, 8, 9, 10, 11, 12];
 pub const ALLOWED_SETUP_ADAPTORS: [&str; 9] = [
-    // UniswapV3Adaptor V2
+    // Uniswapv3Adaptor v2
     "dbd750f72a00d01f209ffc6c75e80301efc789c1",
-    // VestingSimpleAdaptor V2
-    "508E6aE090eA92Cb90571e4269B799257CD78CA1",
-    // OneInchAdaptor V1
-    "B8952ce4010CFF3C74586d712a4402285A3a3AFb",
-    // SwapWithUniswapAdaptor V1
-    "d6BC6Df1ed43e3101bC27a4254593a06598a3fDD",
-    // ZeroXAdaptor V1
-    "1039a9b61DFF6A3fb8dbF4e924AA749E5cFE35ef",
-    // AaveV3ATokenAdaptor V1
-    "3184CBEa47eD519FA04A23c4207cD15b7545F1A6",
-    // AaveATokenAdaptor V2
-    "25570a77dCA06fda89C1ef41FAb6eE48a2377E81",
-    // FeesAndReservesAdaptor V1
-    "647d264d800A2461E594796af61a39b7735d8933",
-    // CTokenAdaptor V2
-    "9a384Df333588428843D128120Becd72434ec078",
+    // VestingSimpleAdaptor v2
+    "508e6ae090ea92cb90571e4269b799257cd78ca1",
+    // OneInchAdaptor v1
+    "b8952ce4010cff3c74586d712a4402285a3a3afb",
+    // SwapWithUniswapAdaptor v1
+    "d6bc6df1ed43e3101bc27a4254593a06598a3fdd",
+    // ZeroXAdaptor v1
+    "1039a9b61dff6a3fb8dbf4e924aa749e5cfe35ef",
+    // AaveV3ATokenAdaptor v1
+    "3184cbea47ed519fa04a23c4207cd15b7545f1a6",
+    // AaveATokenAdaptor v2
+    "25570a77dca06fda89c1ef41fab6ee48a2377e81",
+    // FeesAndReservesAdaptor v1
+    "647d264d800a2461e594796af61a39b7735d8933",
+    // CTokenAdaptor v2
+    "9a384df333588428843d128120becd72434ec078",
 ];
 
 pub trait CellarAdaptorCall {}

@@ -1,5 +1,5 @@
 use ethers::{abi::AbiEncode, types::Bytes};
-use steward_abi::cellar_adaptor::CellarAdaptorCalls;
+use steward_abi::cellar_adaptor_v1::CellarAdaptorV1Calls as AbiCellarAdaptorV1Calls;
 use steward_proto::steward::cellar_adaptor_v1;
 
 use crate::{
@@ -7,7 +7,7 @@ use crate::{
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
 };
 
-pub(crate) fn cellar_adaptor_v1_call(
+pub(crate) fn cellar_adaptor_v1_calls(
     params: steward_proto::steward::CellarAdaptorV1Calls,
 ) -> Result<Vec<Bytes>, Error> {
     let mut calls = Vec::new();
@@ -18,25 +18,37 @@ pub(crate) fn cellar_adaptor_v1_call(
 
         match function {
             cellar_adaptor_v1::Function::DepositToCellar(p) => {
-                let call = steward_abi::cellar_adaptor::DepositToCellarCall {
+                let call = steward_abi::cellar_adaptor_v1::DepositToCellarCall {
                     cellar: sp_call_parse_address(p.cellar)?,
                     assets: string_to_u256(p.assets)?,
                 };
-                calls.push(CellarAdaptorCalls::DepositToCellar(call).encode().into())
+                calls.push(
+                    AbiCellarAdaptorV1Calls::DepositToCellar(call)
+                        .encode()
+                        .into(),
+                )
             }
             cellar_adaptor_v1::Function::WithdrawFromCellar(p) => {
-                let call = steward_abi::cellar_adaptor::WithdrawFromCellarCall {
+                let call = steward_abi::cellar_adaptor_v1::WithdrawFromCellarCall {
                     cellar: sp_call_parse_address(p.cellar)?,
                     assets: string_to_u256(p.assets)?,
                 };
-                calls.push(CellarAdaptorCalls::WithdrawFromCellar(call).encode().into())
+                calls.push(
+                    AbiCellarAdaptorV1Calls::WithdrawFromCellar(call)
+                        .encode()
+                        .into(),
+                )
             }
             cellar_adaptor_v1::Function::RevokeApproval(p) => {
-                let call = steward_abi::cellar_adaptor::RevokeApprovalCall {
+                let call = steward_abi::cellar_adaptor_v1::RevokeApprovalCall {
                     asset: sp_call_parse_address(p.asset)?,
                     spender: sp_call_parse_address(p.spender)?,
                 };
-                calls.push(CellarAdaptorCalls::RevokeApproval(call).encode().into())
+                calls.push(
+                    AbiCellarAdaptorV1Calls::RevokeApproval(call)
+                        .encode()
+                        .into(),
+                )
             }
         }
     }

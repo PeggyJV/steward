@@ -842,13 +842,13 @@ pub struct CellarAdaptorV1Calls {
 }
 /// Represents call data for the Vesting Simple adaptor
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct VestingSimpleAdaptor {
+pub struct VestingSimpleAdaptorV2 {
     ///**** BASE ADAPTOR FUNCTIONS ****
-    #[prost(oneof = "vesting_simple_adaptor::Function", tags = "1, 2, 3, 4, 5")]
-    pub function: ::core::option::Option<vesting_simple_adaptor::Function>,
+    #[prost(oneof = "vesting_simple_adaptor_v2::Function", tags = "1, 2, 3, 4, 5")]
+    pub function: ::core::option::Option<vesting_simple_adaptor_v2::Function>,
 }
-/// Nested message and enum types in `VestingSimpleAdaptor`.
-pub mod vesting_simple_adaptor {
+/// Nested message and enum types in `VestingSimpleAdaptorV2`.
+pub mod vesting_simple_adaptor_v2 {
     ///
     /// Allows strategists to deposit tokens to the vesting contract. By passing a max uint256 for amountToDeposit, the cellar will
     /// deposit its entire balance (appropriate in most cases).
@@ -919,9 +919,9 @@ pub mod vesting_simple_adaptor {
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct VestingSimpleAdaptorCalls {
+pub struct VestingSimpleAdaptorV2Calls {
     #[prost(message, repeated, tag = "1")]
-    pub calls: ::prost::alloc::vec::Vec<VestingSimpleAdaptor>,
+    pub calls: ::prost::alloc::vec::Vec<VestingSimpleAdaptorV2>,
 }
 /// Represents call data for the Aave Debt Token adaptor V1, used for borrowing and repaying debt on Aave.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -1187,7 +1187,7 @@ pub struct AaveATokenAdaptorV2Calls {
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct AaveV3aTokenAdaptorV1 {
     ///**** BASE ADAPTOR FUNCTIONS ****
-    #[prost(oneof = "aave_v3a_token_adaptor_v1::Function", tags = "3, 4, 5, 6, 7")]
+    #[prost(oneof = "aave_v3a_token_adaptor_v1::Function", tags = "1, 2, 3, 4, 5")]
     pub function: ::core::option::Option<aave_v3a_token_adaptor_v1::Function>,
 }
 /// Nested message and enum types in `AaveV3ATokenAdaptorV1`.
@@ -1245,20 +1245,20 @@ pub mod aave_v3a_token_adaptor_v1 {
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum Function {
         /// Represents function `revokeApproval(ERC20 asset, address spender)`
-        #[prost(message, tag = "3")]
+        #[prost(message, tag = "1")]
         RevokeApproval(super::RevokeApproval),
         //**** ADAPTOR-SPECIFIC FUNCTIONS ****
         /// Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
-        #[prost(message, tag = "4")]
+        #[prost(message, tag = "2")]
         DepositToAave(DepositToAave),
         /// Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
-        #[prost(message, tag = "5")]
+        #[prost(message, tag = "3")]
         WithdrawFromAave(WithdrawFromAave),
         /// Represents function `adjustIsolationModeAssetAsCollateral(ERC20 asset, bool useAsCollateral)`
-        #[prost(message, tag = "6")]
+        #[prost(message, tag = "4")]
         AdjustIsolationModeAssetAsCollateral(AdjustIsolationModeAssetAsCollateral),
         /// Represents function `changeEMode(uint8 categoryId)`
-        #[prost(message, tag = "7")]
+        #[prost(message, tag = "5")]
         ChangeEmode(ChangeEMode),
     }
 }
@@ -1582,7 +1582,7 @@ pub mod aave_v3_debt_token_adaptor_v1 {
         pub enum CallData {
             /// Represents function calls to the UniswapV3Adaptor V1
             #[prost(message, tag = "2")]
-            UniswapV3Calls(super::super::UniswapV3AdaptorV1Calls),
+            UniswapV3V1Calls(super::super::UniswapV3AdaptorV1Calls),
             /// Represents function calls to the AaveATokenAdaptor V1
             #[prost(message, tag = "3")]
             AaveATokenV1Calls(super::super::AaveATokenAdaptorV1Calls),
@@ -1618,10 +1618,10 @@ pub mod aave_v3_debt_token_adaptor_v1 {
             SwapWithUniswapV1Calls(super::super::SwapWithUniswapAdaptorV1Calls),
             /// Represents function calls to VestingSimpleAdaptor
             #[prost(message, tag = "14")]
-            VestingSimpleCalls(super::super::VestingSimpleAdaptorCalls),
+            VestingSimpleV2Calls(super::super::VestingSimpleAdaptorV2Calls),
             /// Represents function calls to the CellarAdaptor
             #[prost(message, tag = "15")]
-            CellarCalls(super::super::CellarAdaptorV1Calls),
+            CellarV1Calls(super::super::CellarAdaptorV1Calls),
             /// Represents function calls to the UniswapV3Adaptor V2
             #[prost(message, tag = "16")]
             UniswapV3V2Calls(super::super::UniswapV3AdaptorV2Calls),
@@ -1707,7 +1707,7 @@ pub mod cellar_v2 {
     ///
     /// Set the holding position used of the cellar.
     ///
-    /// Represents function `setHoldingIndex(uint8 index)`
+    /// Represents function `setHoldingPosition(uint32 positionId)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct SetHoldingPosition {
         /// ID (index) of the new holding position to use
@@ -1726,7 +1726,7 @@ pub mod cellar_v2 {
     ///
     /// Swap the positions at two given indeces.
     ///
-    /// Represents function `swapPositions(uint32 index1, uint32 index2)`
+    /// Represents function `swapPositions(uint32 index1, uint32 index2, bool inDebtArray)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct SwapPositions {
         /// Index of the first position
@@ -1742,7 +1742,7 @@ pub mod cellar_v2 {
     ///
     /// Allows share lock period to be updated.
     ///
-    /// Represents function `setShareLockPeriod()`
+    /// Represents function `setShareLockPeriod(uint256 newLock)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct SetShareLockPeriod {
         #[prost(string, tag = "1")]
@@ -2014,7 +2014,7 @@ pub mod adaptor_call {
     pub enum CallData {
         /// Represents function calls to the UniswapV3Adaptor V1
         #[prost(message, tag = "2")]
-        UniswapV3Calls(super::UniswapV3AdaptorV1Calls),
+        UniswapV3V1Calls(super::UniswapV3AdaptorV1Calls),
         /// Represents function calls to the AaveATokenAdaptor V1
         #[prost(message, tag = "3")]
         AaveATokenV1Calls(super::AaveATokenAdaptorV1Calls),
@@ -2050,10 +2050,10 @@ pub mod adaptor_call {
         SwapWithUniswapV1Calls(super::SwapWithUniswapAdaptorV1Calls),
         /// Represents function calls to VestingSimpleAdaptor
         #[prost(message, tag = "14")]
-        VestingSimpleCalls(super::VestingSimpleAdaptorCalls),
+        VestingSimpleV2Calls(super::VestingSimpleAdaptorV2Calls),
         /// Represents function calls to the CellarAdaptor
         #[prost(message, tag = "15")]
-        CellarCalls(super::CellarAdaptorV1Calls),
+        CellarV1Calls(super::CellarAdaptorV1Calls),
         /// Represents function calls to the UniswapV3Adaptor V2
         #[prost(message, tag = "16")]
         UniswapV3V2Calls(super::UniswapV3AdaptorV2Calls),
@@ -2276,7 +2276,7 @@ pub struct SubmitRequest {
     #[prost(string, tag = "1")]
     pub cellar_id: ::prost::alloc::string::String,
     /// The data from which the desired contract function will be encoded
-    #[prost(oneof = "submit_request::CallData", tags = "3, 4, 5, 6")]
+    #[prost(oneof = "submit_request::CallData", tags = "2, 3, 4, 5")]
     pub call_data: ::core::option::Option<submit_request::CallData>,
 }
 /// Nested message and enum types in `SubmitRequest`.
@@ -2284,14 +2284,14 @@ pub mod submit_request {
     /// The data from which the desired contract function will be encoded
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum CallData {
-        #[prost(message, tag = "3")]
+        #[prost(message, tag = "2")]
         AaveV2Stablecoin(super::AaveV2Stablecoin),
-        #[prost(message, tag = "4")]
+        #[prost(message, tag = "3")]
         CellarV1(super::CellarV1),
-        #[prost(message, tag = "5")]
+        #[prost(message, tag = "4")]
         CellarV2(super::CellarV2),
-        #[prost(message, tag = "6")]
-        CellarV22(super::CellarV22),
+        #[prost(message, tag = "5")]
+        CellarV2dot2(super::CellarV22),
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
