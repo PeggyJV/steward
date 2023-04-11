@@ -201,6 +201,17 @@ pub(crate) fn swap_with_uniswap_adaptor_v1_call(
                         .into(),
                 )
             }
+            swap_with_uniswap_adaptor_v1::Function::RevokeApproval(p) => {
+                let call = steward_abi::swap_with_uniswap_adaptor::RevokeApprovalCall {
+                    asset: sp_call_parse_address(p.asset)?,
+                    spender: sp_call_parse_address(p.spender)?,
+                };
+                calls.push(
+                    SwapWithUniswapAdaptorCalls::RevokeApproval(call)
+                        .encode()
+                        .into(),
+                )
+            }
         }
     }
 

@@ -258,6 +258,10 @@ func (x *FeesAndReservesAdaptorV1Calls) GetCalls() []*FeesAndReservesAdaptorV1 {
 	return nil
 }
 
+//
+//
+//
+//
 type FeesAndReservesAdaptorV1_UpdatePerformanceFees struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -305,6 +309,10 @@ func (x *FeesAndReservesAdaptorV1_UpdatePerformanceFees) GetPerformanceFee() uin
 	return 0
 }
 
+//
+//
+//
+//
 type FeesAndReservesAdaptorV1_UpdateManagementFees struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -352,6 +360,10 @@ func (x *FeesAndReservesAdaptorV1_UpdateManagementFees) GetManagementFee() uint3
 	return 0
 }
 
+//
+//
+//
+//
 type FeesAndReservesAdaptorV1_ChangeUpkeepFrequency struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -399,6 +411,10 @@ func (x *FeesAndReservesAdaptorV1_ChangeUpkeepFrequency) GetNewFrequency() uint6
 	return 0
 }
 
+//
+//
+//
+//
 type FeesAndReservesAdaptorV1_ChangeUpkeepMaxGas struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -446,6 +462,10 @@ func (x *FeesAndReservesAdaptorV1_ChangeUpkeepMaxGas) GetNewMaxGas() uint64 {
 	return 0
 }
 
+//
+//
+//
+//
 type FeesAndReservesAdaptorV1_SetupMetaData struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -501,6 +521,10 @@ func (x *FeesAndReservesAdaptorV1_SetupMetaData) GetPerformanceFee() uint32 {
 	return 0
 }
 
+//
+//
+//
+//
 type FeesAndReservesAdaptorV1_AddAssetsToReserves struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -548,6 +572,10 @@ func (x *FeesAndReservesAdaptorV1_AddAssetsToReserves) GetAmount() string {
 	return ""
 }
 
+//
+//
+//
+//
 type FeesAndReservesAdaptorV1_WithdrawAssetsFromReserves struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -595,6 +623,10 @@ func (x *FeesAndReservesAdaptorV1_WithdrawAssetsFromReserves) GetAmount() string
 	return ""
 }
 
+//
+//
+//
+//
 type FeesAndReservesAdaptorV1_PrepareFees struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

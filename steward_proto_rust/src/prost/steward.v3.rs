@@ -182,59 +182,6 @@ pub mod aave_v2_stablecoin {
         SendFees(SendFees),
     }
 }
-/// Represents call data for the Uniswap V3 adaptor
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct SwapWithUniswapAdaptorV1 {
-    ///**** ADAPTOR-SPECIFIC FUNCTIONS ****
-    #[prost(oneof = "swap_with_uniswap_adaptor_v1::Function", tags = "1, 2")]
-    pub function: ::core::option::Option<swap_with_uniswap_adaptor_v1::Function>,
-}
-/// Nested message and enum types in `SwapWithUniswapAdaptorV1`.
-pub mod swap_with_uniswap_adaptor_v1 {
-    ///
-    /// Perform a swap using Uniswap V2.
-    ///
-    /// Represents function `swapWithUniV2(address[] path, uint256 amount, uint256 amountOutMin)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct SwapWithUniV2 {
-        #[prost(string, repeated, tag = "1")]
-        pub path: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-        #[prost(string, tag = "2")]
-        pub amount: ::prost::alloc::string::String,
-        #[prost(string, tag = "3")]
-        pub amount_out_min: ::prost::alloc::string::String,
-    }
-    ///
-    /// Perform a swap using Uniswap V3.
-    ///
-    /// Represents function `Represents function `swapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin)``
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct SwapWithUniV3 {
-        #[prost(string, repeated, tag = "1")]
-        pub path: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-        #[prost(uint32, repeated, tag = "2")]
-        pub pool_fees: ::prost::alloc::vec::Vec<u32>,
-        #[prost(string, tag = "3")]
-        pub amount: ::prost::alloc::string::String,
-        #[prost(string, tag = "4")]
-        pub amount_out_min: ::prost::alloc::string::String,
-    }
-    ///**** ADAPTOR-SPECIFIC FUNCTIONS ****
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum Function {
-        /// Represents function `swapWithUniV2(address[] path, uint256 amount, uint256 amountOutMin)`
-        #[prost(message, tag = "1")]
-        SwapWithUniV2(SwapWithUniV2),
-        /// Represents function `swapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin)`
-        #[prost(message, tag = "2")]
-        SwapWithUniV3(SwapWithUniV3),
-    }
-}
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct SwapWithUniswapAdaptorV1Calls {
-    #[prost(message, repeated, tag = "1")]
-    pub calls: ::prost::alloc::vec::Vec<SwapWithUniswapAdaptorV1>,
-}
 ///
 /// Represents swap parameters for UniswapV2
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -403,6 +350,63 @@ pub struct RevokeApproval {
     /// The spender to revoke approval of asset for
     #[prost(string, tag = "2")]
     pub spender: ::prost::alloc::string::String,
+}
+/// Represents call data for the Uniswap V3 adaptor
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct SwapWithUniswapAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(oneof = "swap_with_uniswap_adaptor_v1::Function", tags = "1, 2, 3")]
+    pub function: ::core::option::Option<swap_with_uniswap_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `SwapWithUniswapAdaptorV1`.
+pub mod swap_with_uniswap_adaptor_v1 {
+    ///
+    /// Perform a swap using Uniswap V2.
+    ///
+    /// Represents function `swapWithUniV2(address[] path, uint256 amount, uint256 amountOutMin)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SwapWithUniV2 {
+        #[prost(string, repeated, tag = "1")]
+        pub path: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+        #[prost(string, tag = "2")]
+        pub amount: ::prost::alloc::string::String,
+        #[prost(string, tag = "3")]
+        pub amount_out_min: ::prost::alloc::string::String,
+    }
+    ///
+    /// Perform a swap using Uniswap V3.
+    ///
+    /// Represents function `Represents function `swapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin)``
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SwapWithUniV3 {
+        #[prost(string, repeated, tag = "1")]
+        pub path: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+        #[prost(uint32, repeated, tag = "2")]
+        pub pool_fees: ::prost::alloc::vec::Vec<u32>,
+        #[prost(string, tag = "3")]
+        pub amount: ::prost::alloc::string::String,
+        #[prost(string, tag = "4")]
+        pub amount_out_min: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `swapWithUniV2(address[] path, uint256 amount, uint256 amountOutMin)`
+        #[prost(message, tag = "2")]
+        SwapWithUniV2(SwapWithUniV2),
+        /// Represents function `swapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin)`
+        #[prost(message, tag = "3")]
+        SwapWithUniV3(SwapWithUniV3),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct SwapWithUniswapAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<SwapWithUniswapAdaptorV1>,
 }
 /// Represents call data for the Uniswap V3 adaptor
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -1250,26 +1254,46 @@ pub struct FeesAndReservesAdaptorV1 {
 }
 /// Nested message and enum types in `FeesAndReservesAdaptorV1`.
 pub mod fees_and_reserves_adaptor_v1 {
+    ///
+    ///
+    ///
+    ///
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct UpdatePerformanceFees {
         #[prost(uint32, tag = "1")]
         pub performance_fee: u32,
     }
+    ///
+    ///
+    ///
+    ///
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct UpdateManagementFees {
         #[prost(uint32, tag = "1")]
         pub management_fee: u32,
     }
+    ///
+    ///
+    ///
+    ///
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct ChangeUpkeepFrequency {
         #[prost(uint64, tag = "1")]
         pub new_frequency: u64,
     }
+    ///
+    ///
+    ///
+    ///
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct ChangeUpkeepMaxGas {
         #[prost(uint64, tag = "1")]
         pub new_max_gas: u64,
     }
+    ///
+    ///
+    ///
+    ///
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct SetupMetaData {
         #[prost(uint32, tag = "1")]
@@ -1277,16 +1301,28 @@ pub mod fees_and_reserves_adaptor_v1 {
         #[prost(uint32, tag = "2")]
         pub performance_fee: u32,
     }
+    ///
+    ///
+    ///
+    ///
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct AddAssetsToReserves {
         #[prost(string, tag = "1")]
         pub amount: ::prost::alloc::string::String,
     }
+    ///
+    ///
+    ///
+    ///
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct WithdrawAssetsFromReserves {
         #[prost(string, tag = "1")]
         pub amount: ::prost::alloc::string::String,
     }
+    ///
+    ///
+    ///
+    ///
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct PrepareFees {
         #[prost(string, tag = "1")]
@@ -1429,7 +1465,7 @@ pub mod aave_v3_debt_token_adaptor_v1 {
         #[prost(message, repeated, tag = "3")]
         pub params: ::prost::alloc::vec::Vec<AdaptorCallForAaveV3Flashloan>,
     }
-    // NOTE: FlashLoan takes in AdaptorCall. cellar_v2.proto defines this message, but also imports this file; therefore, we can't import cellar_v2.proto in order to use the AdaptorCall message here. To avoid the recursive import, we duplicate the message definition.
+    // NOTE: FlashLoan takes an array of AdaptorCall. cellar_v2.proto defines it, but also imports this file, therefore we can't import cellar_v2.proto in order to use the AdaptorCall message here. To avoid the recursive import, we duplicate the message definition.
 
     /// Represents a call to adaptor an. The cellar must be authorized to call the target adaptor.
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]

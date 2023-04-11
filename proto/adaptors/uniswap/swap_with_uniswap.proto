@@ -3,15 +3,22 @@ package steward.v3;
 
 option go_package = "/steward_proto";
 
+import "adaptors/base.proto";
+
 // Represents call data for the Uniswap V3 adaptor
 message SwapWithUniswapAdaptorV1 {
     oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
         /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
 
         // Represents function `swapWithUniV2(address[] path, uint256 amount, uint256 amountOutMin)`
-        SwapWithUniV2 swap_with_uni_v2 = 1;
+        SwapWithUniV2 swap_with_uni_v2 = 2;
         // Represents function `swapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin)`
-        SwapWithUniV3 swap_with_uni_v3 = 2;
+        SwapWithUniV3 swap_with_uni_v3 = 3;
     }
 
     /*

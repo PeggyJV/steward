@@ -39,35 +39,75 @@ message FeesAndReservesAdaptorV1 {
         PrepareFees prepare_fees = 9;
     }
 
+    /*
+    *
+    *
+    *
+    */
     message UpdatePerformanceFees {
         uint32 performance_fee = 1;
     }
 
+    /*
+    *
+    *
+    *
+    */
     message UpdateManagementFees {
         uint32 management_fee = 1;
     }
 
+    /*
+    *
+    *
+    *
+    */
     message ChangeUpkeepFrequency {
         uint64 new_frequency = 1;
     }
 
+    /*
+    *
+    *
+    *
+    */
     message ChangeUpkeepMaxGas {
         uint64 new_max_gas = 1;
     }
 
+    /*
+    *
+    *
+    *
+    */
     message SetupMetaData {
         uint32 management_fee = 1;
         uint32 performance_fee = 2;
     }
 
+    /*
+    *
+    *
+    *
+    */
     message AddAssetsToReserves {
         string amount = 1;
     }
 
+    /*
+    *
+    *
+    *
+    */
     message WithdrawAssetsFromReserves {
         string amount = 1;
     }
 
+    /*
+    *
+    *
+    *
+    */
     message PrepareFees {
         string amount = 1;
     }
