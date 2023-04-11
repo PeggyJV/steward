@@ -150,7 +150,6 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
                 &cellar_id,
             );
 
-            // bullet proof anti-rug
             let new_deviation = string_to_u256(params.new_deviation)?;
             if new_deviation > U256::from(5000000000000000u64) {
                 return Err(ErrorKind::SPCallError
@@ -178,6 +177,23 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
                 &SetStrategistPlatformCutCall::function_name(),
                 &cellar_id,
             );
+
+            if normalize_address(cellar_id) != "b5b29320d2dde5ba5bafa1ebcd270052070483ec" {
+                return Err(ErrorKind::SPCallError
+                    .context(
+                        "this proto is a temporary measure. can only be called on RealYield ETH"
+                            .to_string(),
+                    )
+                    .into());
+            } else if params.new_cut != 750000000000000000 {
+                return Err(ErrorKind::SPCallError
+                    .context(
+                        "this proto is a temporary measure. can only set strategist platform cut to 0.75%"
+                            .to_string(),
+                    )
+                    .into());
+            }
+
             let call = SetStrategistPlatformCutCall {
                 cut: params.new_cut,
             };

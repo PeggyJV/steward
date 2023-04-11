@@ -152,7 +152,14 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 &cellar_id,
             );
 
-            if params.platform_fee != 0 {
+            if normalize_address(cellar_id) != "97e6e0a40a3d02f12d1cec30ebfbae04e37c119e" {
+                return Err(ErrorKind::SPCallError
+                    .context(
+                        "this proto is a temporary measure. can only be called on RealYield USD"
+                            .to_string(),
+                    )
+                    .into());
+            } else if params.platform_fee != 0 {
                 return Err(ErrorKind::SPCallError
                     .context(
                         "this proto is a temporary measure. can only set platform fee to 0"

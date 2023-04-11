@@ -563,7 +563,7 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 						s.Require().NoError(err, "failed to unpack SwapWithUniV3 event from log data")
 						s.Require().Equal(big.NewInt(3), event.AmountOutMin)
 
-						s.T().Log("Saw BorrowFromAave event!")
+						s.T().Log("Saw SwapWithUniV3 event!")
 						return true
 					}
 				}
