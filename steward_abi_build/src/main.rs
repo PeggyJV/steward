@@ -17,12 +17,14 @@ fn main() {
         ("AaveDebtTokenAdaptorV2", "aave_debt_token_adaptor_v2"),
         ("AaveV3ATokenAdaptor", "aave_v3_a_token_adaptor"),
         ("AaveV3DebtTokenAdaptor", "aave_v3_debt_token_adaptor"),
+        ("CellarAdaptor", "cellar_adaptor"),
         ("CompoundCTokenAdaptor", "compound_c_token_adaptor"),
         ("CompoundCTokenAdaptorV2", "compound_c_token_adaptor_v2"),
         ("OneInchAdaptor", "oneinch_adaptor"),
         ("ZeroXAdaptor", "zero_x_adaptor"),
         ("SwapWithUniswapAdaptor", "swap_with_uniswap_adaptor"),
         ("FeesAndReservesAdaptor", "fees_and_reserves_adaptor"),
+        ("VestingSimpleAdaptor", "vesting_simple_adaptor"),
     ];
 
     contracts

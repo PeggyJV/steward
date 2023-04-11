@@ -3,10 +3,10 @@
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
 use abscissa_core::tracing::debug;
 use ethers::{abi::AbiEncode, contract::EthCall, types::Bytes};
-use steward_abi::cellar_v2_2::{self, AdaptorCall as AbiAdaptorCall, *};
+use steward_abi::cellar_v2_2::{AdaptorCall as AbiAdaptorCall, *};
 use steward_proto::steward::{
     adaptor_call::CallData::*,
-    cellar_v2_2::{function_call::Function, CallType, FunctionCall, *},
+    cellar_v2_2::{function_call::Function, CallType, FunctionCall},
     AdaptorCall,
 };
 
@@ -44,8 +44,7 @@ pub fn get_encoded_call(call_type: CallType, cellar_id: String) -> Result<Vec<u8
         CallType::FunctionCall(f) => get_encoded_function(f, cellar_id),
         CallType::Multicall(m) => {
             let mut multicall = MulticallCall::default();
-            m
-                .function_calls
+            m.function_calls
                 .iter()
                 .map(|f| get_encoded_function(f.clone(), cellar_id.clone()))
                 .collect::<Result<Vec<Vec<u8>>, Error>>()?
@@ -53,7 +52,7 @@ pub fn get_encoded_call(call_type: CallType, cellar_id: String) -> Result<Vec<u8
                 .for_each(|f| multicall.data.push(Bytes::from(f.clone())));
 
             Ok(multicall.encode().into())
-        },
+        }
     }
 }
 
@@ -244,6 +243,9 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
             ),
             CompoundCTokenV2Calls(params) => {
                 calls.extend(adaptors::compound::compound_c_token_v2_call(params)?)
+            },
+            VestingSimpleCalls(params) => {
+                calls.extend(adaptors::vesting_simple::vesting_simple_adaptor_v1_call(params)?)
             }
         };
 

@@ -1,9 +1,20 @@
 use abscissa_core::tracing::log::debug;
-use ethers::{types::Bytes, abi::AbiEncode};
-use steward_abi::{uniswap_v3_adaptor::UniswapV3AdaptorCalls, swap_with_uniswap_adaptor::SwapWithUniswapAdaptorCalls};
-use steward_proto::steward::{UniswapV3AdaptorV1Calls, uniswap_v3_adaptor_v1};
+use ethers::{abi::AbiEncode, types::Bytes};
+use steward_abi::{
+    swap_with_uniswap_adaptor::SwapWithUniswapAdaptorCalls,
+    uniswap_v3_adaptor::UniswapV3AdaptorCalls,
+};
+use steward_proto::steward::{
+    swap_with_uniswap_adaptor_v1, uniswap_v3_adaptor_v1, UniswapV3AdaptorV1Calls,
+};
 
-use crate::{error::Error, utils::{sp_call_parse_address, string_to_u256, sp_call_error, convert_exchange, encode_swap_params, encode_oracle_swap_params, string_to_u128}};
+use crate::{
+    error::Error,
+    utils::{
+        convert_exchange, encode_oracle_swap_params, encode_swap_params, sp_call_error,
+        sp_call_parse_address, string_to_u128, string_to_u256,
+    },
+};
 
 /// Encodes adaptor calls for UniswapV3Adaptor V1
 pub fn uniswap_v3_adaptor_v1_call(params: UniswapV3AdaptorV1Calls) -> Result<Vec<Bytes>, Error> {
@@ -61,9 +72,10 @@ pub fn uniswap_v3_adaptor_v1_call(params: UniswapV3AdaptorV1Calls) -> Result<Vec
                 );
             }
             uniswap_v3_adaptor_v1::Function::Swap(p) => {
-                let swap_params = encode_swap_params(p.params.ok_or_else(|| {
-                    sp_call_error("swap params cannot be empty".to_string())
-                })?)?;
+                let swap_params =
+                    encode_swap_params(p.params.ok_or_else(|| {
+                        sp_call_error("swap params cannot be empty".to_string())
+                    })?)?;
 
                 debug!("encoded: {:?}", hex::encode(&swap_params));
                 let call = steward_abi::uniswap_v3_adaptor::SwapCall {
@@ -146,7 +158,9 @@ pub fn uniswap_v3_adaptor_v1_call(params: UniswapV3AdaptorV1Calls) -> Result<Vec
     Ok(calls)
 }
 
-pub(crate) fn swap_with_uniswap_adaptor_v1_call(params: steward_proto::steward::SwapWithUniswapAdaptorV1Calls) -> Result<Vec<Bytes>, Error> {
+pub(crate) fn swap_with_uniswap_adaptor_v1_call(
+    params: steward_proto::steward::SwapWithUniswapAdaptorV1Calls,
+) -> Result<Vec<Bytes>, Error> {
     let mut calls = Vec::new();
     for c in params.calls {
         let function = c
@@ -154,22 +168,38 @@ pub(crate) fn swap_with_uniswap_adaptor_v1_call(params: steward_proto::steward::
             .ok_or_else(|| sp_call_error("function cannot be empty".to_string()))?;
 
         match function {
-            steward_proto::steward::swap_with_uniswap_adaptor_v1::Function::SwapWithUniV2(p) => {
+            swap_with_uniswap_adaptor_v1::Function::SwapWithUniV2(p) => {
                 let call = steward_abi::swap_with_uniswap_adaptor::SwapWithUniV2Call {
-                    path: p.path.into_iter().map(sp_call_parse_address).collect::<Result<Vec<_>, _>>()?,
+                    path: p
+                        .path
+                        .into_iter()
+                        .map(sp_call_parse_address)
+                        .collect::<Result<Vec<_>, _>>()?,
                     amount: string_to_u256(p.amount)?,
                     amount_out_min: string_to_u256(p.amount_out_min)?,
                 };
-                calls.push(SwapWithUniswapAdaptorCalls::SwapWithUniV2(call).encode().into())
+                calls.push(
+                    SwapWithUniswapAdaptorCalls::SwapWithUniV2(call)
+                        .encode()
+                        .into(),
+                )
             }
-            steward_proto::steward::swap_with_uniswap_adaptor_v1::Function::SwapWithUniV3(p) => {
+            swap_with_uniswap_adaptor_v1::Function::SwapWithUniV3(p) => {
                 let call = steward_abi::swap_with_uniswap_adaptor::SwapWithUniV3Call {
-                    path: p.path.into_iter().map(sp_call_parse_address).collect::<Result<Vec<_>, _>>()?,
+                    path: p
+                        .path
+                        .into_iter()
+                        .map(sp_call_parse_address)
+                        .collect::<Result<Vec<_>, _>>()?,
                     pool_fees: p.pool_fees,
                     amount: string_to_u256(p.amount)?,
                     amount_out_min: string_to_u256(p.amount_out_min)?,
                 };
-                calls.push(SwapWithUniswapAdaptorCalls::SwapWithUniV3(call).encode().into())
+                calls.push(
+                    SwapWithUniswapAdaptorCalls::SwapWithUniV3(call)
+                        .encode()
+                        .into(),
+                )
             }
         }
     }

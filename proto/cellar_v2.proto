@@ -19,6 +19,7 @@ import "adaptors/uniswap/swap_with_uniswap.proto";
 import "adaptors/fees_and_reserves.proto";
 import "adaptors/0x/zero_x.proto";
 import "adaptors/1inch/oneinch.proto";
+import "adaptors/vesting_simple.proto";
 
 /*
 * Represents a function call to a cellar that implements Cellar.sol
@@ -316,5 +317,7 @@ message AdaptorCall {
         ZeroXAdaptorV1Calls zero_x_v1_calls = 13;
         // Represents function calls to the SwapWithUniswapAdaptorV1
         SwapWithUniswapAdaptorV1Calls swap_with_uniswap_v1_calls = 14;
+        // Represents function calls to VestingSimpleAdaptor
+        VestingSimpleAdaptorCalls vesting_simple_calls = 15;
     }
 }

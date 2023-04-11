@@ -4,7 +4,9 @@ use steward_abi::{
     compound_c_token_adaptor::CompoundCTokenAdaptorCalls,
     compound_c_token_adaptor_v2::CompoundCTokenAdaptorV2Calls,
 };
-use steward_proto::steward::{compound_c_token_adaptor_v1, CompoundCTokenAdaptorV1Calls};
+use steward_proto::steward::{
+    compound_c_token_adaptor_v1, compound_c_token_adaptor_v2, CompoundCTokenAdaptorV1Calls,
+};
 
 use crate::{
     error::Error,
@@ -27,7 +29,8 @@ pub fn compound_c_token_v1_call(params: CompoundCTokenAdaptorV1Calls) -> Result<
                     market: sp_call_parse_address(p.market)?,
                     amount_to_deposit: string_to_u256(p.amount_to_deposit)?,
                 };
-                calls.push(                    CompoundCTokenAdaptorCalls::DepositToCompound(call)
+                calls.push(
+                    CompoundCTokenAdaptorCalls::DepositToCompound(call)
                         .encode()
                         .into(),
                 )
@@ -37,7 +40,8 @@ pub fn compound_c_token_v1_call(params: CompoundCTokenAdaptorV1Calls) -> Result<
                     market: sp_call_parse_address(p.market)?,
                     amount_to_withdraw: string_to_u256(p.amount_to_withdraw)?,
                 };
-                calls.push(                    CompoundCTokenAdaptorCalls::WithdrawFromCompound(call)
+                calls.push(
+                    CompoundCTokenAdaptorCalls::WithdrawFromCompound(call)
                         .encode()
                         .into(),
                 )
@@ -59,7 +63,8 @@ pub fn compound_c_token_v1_call(params: CompoundCTokenAdaptorV1Calls) -> Result<
                     params: oracle_swap_params.into(),
                     slippage: p.slippage,
                 };
-                calls.push(                    CompoundCTokenAdaptorCalls::ClaimCompAndSwap(call)
+                calls.push(
+                    CompoundCTokenAdaptorCalls::ClaimCompAndSwap(call)
                         .encode()
                         .into(),
                 )
@@ -102,7 +107,8 @@ pub fn compound_c_token_v1_call(params: CompoundCTokenAdaptorV1Calls) -> Result<
                     asset: sp_call_parse_address(p.asset)?,
                     spender: sp_call_parse_address(p.spender)?,
                 };
-                calls.push(                    CompoundCTokenAdaptorCalls::RevokeApproval(call)
+                calls.push(
+                    CompoundCTokenAdaptorCalls::RevokeApproval(call)
                         .encode()
                         .into(),
                 )
@@ -123,32 +129,46 @@ pub(crate) fn compound_c_token_v2_call(
             .ok_or_else(|| sp_call_error("function cannot be empty".to_string()))?;
 
         match function {
-            steward_proto::steward::compound_c_token_adaptor_v2::Function::RevokeApproval(p) => {
+            compound_c_token_adaptor_v2::Function::RevokeApproval(p) => {
                 let call = steward_abi::compound_c_token_adaptor_v2::RevokeApprovalCall {
                     asset: sp_call_parse_address(p.asset)?,
                     spender: sp_call_parse_address(p.spender)?,
                 };
-                calls.push(CompoundCTokenAdaptorV2Calls::RevokeApproval(call).encode().into())
+                calls.push(
+                    CompoundCTokenAdaptorV2Calls::RevokeApproval(call)
+                        .encode()
+                        .into(),
+                )
             }
-            steward_proto::steward::compound_c_token_adaptor_v2::Function::DepositToCompound(p) => {
+            compound_c_token_adaptor_v2::Function::DepositToCompound(p) => {
                 let call = steward_abi::compound_c_token_adaptor_v2::DepositToCompoundCall {
                     market: sp_call_parse_address(p.market)?,
                     amount_to_deposit: string_to_u256(p.amount_to_deposit)?,
                 };
-                calls.push(CompoundCTokenAdaptorV2Calls::DepositToCompound(call).encode().into())
+                calls.push(
+                    CompoundCTokenAdaptorV2Calls::DepositToCompound(call)
+                        .encode()
+                        .into(),
+                )
             }
-            steward_proto::steward::compound_c_token_adaptor_v2::Function::WithdrawFromCompound(
-                p,
-            ) => {
+            compound_c_token_adaptor_v2::Function::WithdrawFromCompound(p) => {
                 let call = steward_abi::compound_c_token_adaptor_v2::WithdrawFromCompoundCall {
                     market: sp_call_parse_address(p.market)?,
                     amount_to_withdraw: string_to_u256(p.amount_to_withdraw)?,
                 };
-                calls.push(CompoundCTokenAdaptorV2Calls::WithdrawFromCompound(call).encode().into())
+                calls.push(
+                    CompoundCTokenAdaptorV2Calls::WithdrawFromCompound(call)
+                        .encode()
+                        .into(),
+                )
             }
-            steward_proto::steward::compound_c_token_adaptor_v2::Function::ClaimComp(p) => {
+            compound_c_token_adaptor_v2::Function::ClaimComp(p) => {
                 let call = steward_abi::compound_c_token_adaptor_v2::ClaimCompCall {};
-                calls.push(CompoundCTokenAdaptorV2Calls::ClaimComp(call).encode().into())
+                calls.push(
+                    CompoundCTokenAdaptorV2Calls::ClaimComp(call)
+                        .encode()
+                        .into(),
+                )
             }
         }
     }

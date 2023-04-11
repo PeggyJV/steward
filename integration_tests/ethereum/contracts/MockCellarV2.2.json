@@ -1,0 +1,121 @@
+[
+    {
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "adaptor",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "bytes[]",
+                        "name": "callData",
+                        "type": "bytes[]"
+                    }
+                ],
+                "indexed": false,
+                "internalType": "struct CellarV2_2.AdaptorCall[]",
+                "name": "data",
+                "type": "tuple[]"
+            }
+        ],
+        "name": "CallOnAdaptor",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [],
+        "name": "Multicall",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "OwnerUpdated",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "adaptor",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "bytes[]",
+                        "name": "callData",
+                        "type": "bytes[]"
+                    }
+                ],
+                "internalType": "struct CellarV2_2.AdaptorCall[]",
+                "name": "data",
+                "type": "tuple[]"
+            }
+        ],
+        "name": "callOnAdaptor",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes[]",
+                "name": "data",
+                "type": "bytes[]"
+            }
+        ],
+        "name": "multicall",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "setOwner",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]

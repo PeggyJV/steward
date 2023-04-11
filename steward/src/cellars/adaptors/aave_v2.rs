@@ -7,8 +7,8 @@ use steward_abi::{
     aave_debt_token_adaptor_v2::AaveDebtTokenAdaptorV2Calls,
 };
 use steward_proto::steward::{
-    aave_a_token_adaptor_v1, aave_debt_token_adaptor_v1, AaveATokenAdaptorV1Calls,
-    AaveDebtTokenAdaptorV1Calls,
+    aave_a_token_adaptor_v1, aave_a_token_adaptor_v2, aave_debt_token_adaptor_v1,
+    AaveATokenAdaptorV1Calls, AaveDebtTokenAdaptorV1Calls,
 };
 
 use crate::{
@@ -204,7 +204,7 @@ pub(crate) fn aave_a_token_adaptor_v2_call(
             .ok_or_else(|| sp_call_error("function cannot be empty".to_string()))?;
 
         match function {
-            steward_proto::steward::aave_a_token_adaptor_v2::Function::RevokeApproval(p) => {
+            aave_a_token_adaptor_v2::Function::RevokeApproval(p) => {
                 let call = steward_abi::aave_a_token_adaptor_v2::RevokeApprovalCall {
                     asset: sp_call_parse_address(p.asset)?,
                     spender: sp_call_parse_address(p.spender)?,
@@ -215,7 +215,7 @@ pub(crate) fn aave_a_token_adaptor_v2_call(
                         .into(),
                 )
             }
-            steward_proto::steward::aave_a_token_adaptor_v2::Function::DepositToAave(p) => {
+            aave_a_token_adaptor_v2::Function::DepositToAave(p) => {
                 let call = steward_abi::aave_a_token_adaptor_v2::DepositToAaveCall {
                     token_to_deposit: sp_call_parse_address(p.token)?,
                     amount_to_deposit: string_to_u256(p.amount)?,
@@ -226,7 +226,7 @@ pub(crate) fn aave_a_token_adaptor_v2_call(
                         .into(),
                 )
             }
-            steward_proto::steward::aave_a_token_adaptor_v2::Function::WithdrawFromAave(p) => {
+            aave_a_token_adaptor_v2::Function::WithdrawFromAave(p) => {
                 let call = steward_abi::aave_a_token_adaptor_v2::WithdrawFromAaveCall {
                     token_to_withdraw: sp_call_parse_address(p.token)?,
                     amount_to_withdraw: string_to_u256(p.amount)?,

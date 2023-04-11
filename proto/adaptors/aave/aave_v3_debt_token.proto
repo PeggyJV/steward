@@ -7,6 +7,16 @@ package steward.v3;
 
 option go_package = "/steward_proto";
 
+import "adaptors/aave/a_token.proto";
+import "adaptors/aave/debt_token.proto";
+import "adaptors/aave/aave_v3_a_token.proto";
+import "adaptors/compound/c_token.proto";
+import "adaptors/uniswap/uniswap_v3.proto";
+import "adaptors/uniswap/swap_with_uniswap.proto";
+import "adaptors/fees_and_reserves.proto";
+import "adaptors/0x/zero_x.proto";
+import "adaptors/1inch/oneinch.proto";
+import "adaptors/vesting_simple.proto";
 import "adaptors/base.proto";
 
 // Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
@@ -23,6 +33,8 @@ message AaveV3DebtTokenAdaptorV1 {
         BorrowFromAave borrow_from_aave = 4;
         // Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
         RepayAaveDebt repay_aave_debt = 5;
+        // Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
+        FlashLoan flash_loan = 6;
     }
 
     /*
@@ -59,6 +71,59 @@ message AaveV3DebtTokenAdaptorV1 {
         string underlying_token = 1;
         // The amount to repay
         string amount = 2;
+    }
+
+    /*
+    * Allows strategists to have Cellars take out flash loans
+    *
+    * Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
+    */
+    message FlashLoan {
+        // The addresses of the ERC20 tokens to borrow
+        repeated string loan_tokens = 1;
+        // The amounts to borrow
+        repeated string loan_amounts = 2;
+        // The params to pass to the flash loan callback.
+        repeated AdaptorCallForAaveV3Flashloan params = 3;
+    }
+
+    // NOTE: FlashLoan takes in AdaptorCall. cellar_v2.proto defines this message, but also imports this file; therefore, we can't import cellar_v2.proto in order to use the AdaptorCall message here. To avoid the recursive import, we duplicate the message definition.
+
+    // Represents a call to adaptor an. The cellar must be authorized to call the target adaptor.
+    message AdaptorCallForAaveV3Flashloan {
+        // Address of the adaptor
+        string adaptor = 1;
+        // The function call data for the adaptor
+        oneof call_data {
+            // Represents function calls to the UniswapV3Adaptor V1
+            UniswapV3AdaptorV1Calls uniswap_v3_calls = 2;
+            // Represents function calls to the AaveATokenAdaptor V1
+            AaveATokenAdaptorV1Calls aave_a_token_v1_calls = 3;
+            // Represents function calls to the AavaDebtTokenAdaptor V1
+            AaveDebtTokenAdaptorV1Calls aave_debt_token_v1_calls = 4;
+            // Represents function calls to the CompoundCTokenAdaptor V1
+            CompoundCTokenAdaptorV1Calls compound_c_token_v1_calls = 5;
+            // Represents function calls to the CompoundCTokenAdaptor V2
+            CompoundCTokenAdaptorV2Calls compound_c_token_v2_calls = 6;
+            // Represents function calls to the AaveATokenV2Adaptor
+            AaveATokenAdaptorV2Calls aave_a_token_v2_calls = 7;
+            // Represents function calls to the AavaDebtTokenV2Adaptor
+            AaveDebtTokenAdaptorV2Calls aave_debt_token_v2_calls = 8;
+            // Represents function calls to the AaveATokenV1Adaptor
+            AaveV3ATokenAdaptorV1Calls aave_v3_a_token_v1_calls = 9;
+            // Represents function calls to the AavaDebtTokenV1Adaptor
+            AaveV3DebtTokenAdaptorV1Calls aave_v3_debt_token_v1_calls = 10;
+            // Represents function calls to the OneInchAdaptorV1
+            OneInchAdaptorV1Calls one_inch_v1_calls = 11;
+            // Represents function calls to the FeesAndReservesAdaptorV1
+            FeesAndReservesAdaptorV1Calls fees_and_reserves_v1_calls = 12;
+            // Represents functionc alls to the ZeroXAdaptorV1
+            ZeroXAdaptorV1Calls zero_x_v1_calls = 13;
+            // Represents function calls to the SwapWithUniswapAdaptorV1
+            SwapWithUniswapAdaptorV1Calls swap_with_uniswap_v1_calls = 14;
+            // Represents function calls to VestingSimpleAdaptor
+            VestingSimpleAdaptorCalls vesting_simple_calls = 15;
+        }
     }
 }
 

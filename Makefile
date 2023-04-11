@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := e2e_cork_test
 
 VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:latest"
-ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:main"
+ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:latest"
 
 build_protos:
 	./build_protos.sh
@@ -33,6 +33,10 @@ e2e_cellar_v1_test:
 e2e_cellar_v2_test:
 	@./clean_slate.sh
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestCellarV2 || make -s fail
+
+e2e_cellar_v2_2_test:
+	@./clean_slate.sh
+	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestCellarV2_2 || make -s fail
 
 fail:
 	@echo 'test failed; dumping container logs into ./testdata for review'

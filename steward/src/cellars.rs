@@ -10,6 +10,8 @@ pub(crate) mod cellar_v1;
 pub(crate) mod cellar_v2;
 pub(crate) mod cellar_v2_2;
 
+pub trait CellarAdaptorCall {}
+
 pub fn validate_cellar_id(cellar_id: &str) -> Result<(), Error> {
     if let Err(err) = cellar_id.parse::<H160>() {
         return Err(ErrorKind::SPCallError

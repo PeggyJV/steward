@@ -18,7 +18,7 @@ mod vestingsimpleadaptor_mod {
     use std::sync::Arc;
     pub static VESTINGSIMPLEADAPTOR_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
         ethers::contract::Lazy::new(|| {
-            serde_json :: from_str ("[\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__BadSlippage\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__ExchangeNotSupported\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__ExternalReceiverBlocked\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserDepositsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserWithdrawsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetsUsed\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20[]\",\n                \"name\": \"assets\",\n                \"type\": \"address[]\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"balanceOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"deposit\",\n        \"outputs\": [],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract VestingSimple\",\n                \"name\": \"vestingContract\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountToDeposit\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"depositToVesting\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"identifier\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"\",\n                \"type\": \"bytes32\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"isDebt\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetOut\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"slippage\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"name\": \"oracleSwap\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountOut\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"asset\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"revokeApproval\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetOut\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"swap\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountOut\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdraw\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract VestingSimple\",\n                \"name\": \"vestingContract\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"withdrawAllFromVesting\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract VestingSimple\",\n                \"name\": \"vestingContract\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountToWithdraw\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"withdrawAnyFromVesting\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract VestingSimple\",\n                \"name\": \"vestingContract\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"depositId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountToWithdraw\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"withdrawFromVesting\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdrawableFrom\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    }\n]\n") . expect ("invalid abi")
+            serde_json :: from_str ("[\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__ExternalReceiverBlocked\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"asset\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"BaseAdaptor__PricingNotSupported\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__Slippage\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserDepositsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserWithdrawsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"unUsedVestingContract\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"VestingSimpleAdaptor__VestingPositionNotUsed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetsUsed\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20[]\",\n                \"name\": \"assets\",\n                \"type\": \"address[]\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"balanceOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"deposit\",\n        \"outputs\": [],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract VestingSimple\",\n                \"name\": \"vestingContract\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountToDeposit\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"depositToVesting\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"identifier\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"\",\n                \"type\": \"bytes32\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"isDebt\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"asset\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"revokeApproval\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"slippage\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdraw\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract VestingSimple\",\n                \"name\": \"vestingContract\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"withdrawAllFromVesting\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract VestingSimple\",\n                \"name\": \"vestingContract\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountToWithdraw\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"withdrawAnyFromVesting\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract VestingSimple\",\n                \"name\": \"vestingContract\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"depositId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountToWithdraw\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"withdrawFromVesting\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdrawableFrom\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    }\n]\n") . expect ("invalid abi")
         });
     #[derive(Clone)]
     pub struct VestingSimpleAdaptor<M>(ethers::contract::Contract<M>);
@@ -113,23 +113,6 @@ mod vestingsimpleadaptor_mod {
                 .method_hash([137, 53, 58, 9], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `oracleSwap` (0x17d964df) function"]
-        pub fn oracle_swap(
-            &self,
-            asset_in: ethers::core::types::Address,
-            asset_out: ethers::core::types::Address,
-            amount_in: ethers::core::types::U256,
-            exchange: u8,
-            params: ethers::core::types::Bytes,
-            slippage: u64,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
-            self.0
-                .method_hash(
-                    [23, 217, 100, 223],
-                    (asset_in, asset_out, amount_in, exchange, params, slippage),
-                )
-                .expect("method not found (this should never happen)")
-        }
         #[doc = "Calls the contract's `revokeApproval` (0xd3bfe76a) function"]
         pub fn revoke_approval(
             &self,
@@ -140,20 +123,10 @@ mod vestingsimpleadaptor_mod {
                 .method_hash([211, 191, 231, 106], (asset, spender))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `swap` (0xf2879a8d) function"]
-        pub fn swap(
-            &self,
-            asset_in: ethers::core::types::Address,
-            asset_out: ethers::core::types::Address,
-            amount_in: ethers::core::types::U256,
-            exchange: u8,
-            params: ethers::core::types::Bytes,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        #[doc = "Calls the contract's `slippage` (0x3e032a3b) function"]
+        pub fn slippage(&self) -> ethers::contract::builders::ContractCall<M, u32> {
             self.0
-                .method_hash(
-                    [242, 135, 154, 141],
-                    (asset_in, asset_out, amount_in, exchange, params),
-                )
+                .method_hash([62, 3, 42, 59], ())
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `withdraw` (0xc9111bd7) function"]
@@ -323,30 +296,6 @@ mod vestingsimpleadaptor_mod {
     )]
     #[ethcall(name = "isDebt", abi = "isDebt()")]
     pub struct IsDebtCall;
-    #[doc = "Container type for all input parameters for the `oracleSwap`function with signature `oracleSwap(address,address,uint256,uint8,bytes,uint64)` and selector `[23, 217, 100, 223]`"]
-    #[derive(
-        Clone,
-        Debug,
-        Default,
-        Eq,
-        PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
-    )]
-    #[ethcall(
-        name = "oracleSwap",
-        abi = "oracleSwap(address,address,uint256,uint8,bytes,uint64)"
-    )]
-    pub struct OracleSwapCall {
-        pub asset_in: ethers::core::types::Address,
-        pub asset_out: ethers::core::types::Address,
-        pub amount_in: ethers::core::types::U256,
-        pub exchange: u8,
-        pub params: ethers::core::types::Bytes,
-        pub slippage: u64,
-    }
     #[doc = "Container type for all input parameters for the `revokeApproval`function with signature `revokeApproval(address,address)` and selector `[211, 191, 231, 106]`"]
     #[derive(
         Clone,
@@ -364,7 +313,7 @@ mod vestingsimpleadaptor_mod {
         pub asset: ethers::core::types::Address,
         pub spender: ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `swap`function with signature `swap(address,address,uint256,uint8,bytes)` and selector `[242, 135, 154, 141]`"]
+    #[doc = "Container type for all input parameters for the `slippage`function with signature `slippage()` and selector `[62, 3, 42, 59]`"]
     #[derive(
         Clone,
         Debug,
@@ -376,14 +325,8 @@ mod vestingsimpleadaptor_mod {
         serde :: Deserialize,
         serde :: Serialize,
     )]
-    #[ethcall(name = "swap", abi = "swap(address,address,uint256,uint8,bytes)")]
-    pub struct SwapCall {
-        pub asset_in: ethers::core::types::Address,
-        pub asset_out: ethers::core::types::Address,
-        pub amount_in: ethers::core::types::U256,
-        pub exchange: u8,
-        pub params: ethers::core::types::Bytes,
-    }
+    #[ethcall(name = "slippage", abi = "slippage()")]
+    pub struct SlippageCall;
     #[doc = "Container type for all input parameters for the `withdraw`function with signature `withdraw(uint256,address,bytes,bytes)` and selector `[201, 17, 27, 215]`"]
     #[derive(
         Clone,
@@ -489,9 +432,8 @@ mod vestingsimpleadaptor_mod {
         DepositToVesting(DepositToVestingCall),
         Identifier(IdentifierCall),
         IsDebt(IsDebtCall),
-        OracleSwap(OracleSwapCall),
         RevokeApproval(RevokeApprovalCall),
-        Swap(SwapCall),
+        Slippage(SlippageCall),
         Withdraw(WithdrawCall),
         WithdrawAllFromVesting(WithdrawAllFromVestingCall),
         WithdrawAnyFromVesting(WithdrawAnyFromVestingCall),
@@ -535,17 +477,14 @@ mod vestingsimpleadaptor_mod {
                 return Ok(VestingSimpleAdaptorCalls::IsDebt(decoded));
             }
             if let Ok(decoded) =
-                <OracleSwapCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(VestingSimpleAdaptorCalls::OracleSwap(decoded));
-            }
-            if let Ok(decoded) =
                 <RevokeApprovalCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(VestingSimpleAdaptorCalls::RevokeApproval(decoded));
             }
-            if let Ok(decoded) = <SwapCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(VestingSimpleAdaptorCalls::Swap(decoded));
+            if let Ok(decoded) =
+                <SlippageCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            {
+                return Ok(VestingSimpleAdaptorCalls::Slippage(decoded));
             }
             if let Ok(decoded) =
                 <WithdrawCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
@@ -585,9 +524,8 @@ mod vestingsimpleadaptor_mod {
                 VestingSimpleAdaptorCalls::DepositToVesting(element) => element.encode(),
                 VestingSimpleAdaptorCalls::Identifier(element) => element.encode(),
                 VestingSimpleAdaptorCalls::IsDebt(element) => element.encode(),
-                VestingSimpleAdaptorCalls::OracleSwap(element) => element.encode(),
                 VestingSimpleAdaptorCalls::RevokeApproval(element) => element.encode(),
-                VestingSimpleAdaptorCalls::Swap(element) => element.encode(),
+                VestingSimpleAdaptorCalls::Slippage(element) => element.encode(),
                 VestingSimpleAdaptorCalls::Withdraw(element) => element.encode(),
                 VestingSimpleAdaptorCalls::WithdrawAllFromVesting(element) => element.encode(),
                 VestingSimpleAdaptorCalls::WithdrawAnyFromVesting(element) => element.encode(),
@@ -606,9 +544,8 @@ mod vestingsimpleadaptor_mod {
                 VestingSimpleAdaptorCalls::DepositToVesting(element) => element.fmt(f),
                 VestingSimpleAdaptorCalls::Identifier(element) => element.fmt(f),
                 VestingSimpleAdaptorCalls::IsDebt(element) => element.fmt(f),
-                VestingSimpleAdaptorCalls::OracleSwap(element) => element.fmt(f),
                 VestingSimpleAdaptorCalls::RevokeApproval(element) => element.fmt(f),
-                VestingSimpleAdaptorCalls::Swap(element) => element.fmt(f),
+                VestingSimpleAdaptorCalls::Slippage(element) => element.fmt(f),
                 VestingSimpleAdaptorCalls::Withdraw(element) => element.fmt(f),
                 VestingSimpleAdaptorCalls::WithdrawAllFromVesting(element) => element.fmt(f),
                 VestingSimpleAdaptorCalls::WithdrawAnyFromVesting(element) => element.fmt(f),
@@ -652,19 +589,14 @@ mod vestingsimpleadaptor_mod {
             VestingSimpleAdaptorCalls::IsDebt(var)
         }
     }
-    impl ::std::convert::From<OracleSwapCall> for VestingSimpleAdaptorCalls {
-        fn from(var: OracleSwapCall) -> Self {
-            VestingSimpleAdaptorCalls::OracleSwap(var)
-        }
-    }
     impl ::std::convert::From<RevokeApprovalCall> for VestingSimpleAdaptorCalls {
         fn from(var: RevokeApprovalCall) -> Self {
             VestingSimpleAdaptorCalls::RevokeApproval(var)
         }
     }
-    impl ::std::convert::From<SwapCall> for VestingSimpleAdaptorCalls {
-        fn from(var: SwapCall) -> Self {
-            VestingSimpleAdaptorCalls::Swap(var)
+    impl ::std::convert::From<SlippageCall> for VestingSimpleAdaptorCalls {
+        fn from(var: SlippageCall) -> Self {
+            VestingSimpleAdaptorCalls::Slippage(var)
         }
     }
     impl ::std::convert::From<WithdrawCall> for VestingSimpleAdaptorCalls {

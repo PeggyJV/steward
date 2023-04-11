@@ -619,7 +619,10 @@ pub struct ZeroXAdaptorV1Calls {
     pub calls: ::core::option::Option<ZeroXAdaptorV1>,
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct CellarAdaptorV1 {}
+pub struct CellarAdaptorV1 {
+    #[prost(oneof = "cellar_adaptor_v1::Function", tags = "1, 2")]
+    pub function: ::core::option::Option<cellar_adaptor_v1::Function>,
+}
 /// Nested message and enum types in `CellarAdaptorV1`.
 pub mod cellar_adaptor_v1 {
     ///
@@ -644,11 +647,103 @@ pub mod cellar_adaptor_v1 {
         #[prost(string, tag = "2")]
         pub assets: ::prost::alloc::string::String,
     }
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `depositToCellar(Cellar cellar, uint256 assets)`
+        #[prost(message, tag = "1")]
+        DepositToCellar(DepositToCellar),
+        /// Represents function `withdrawFromCellar(Cellar cellar, uint256 assets)`
+        #[prost(message, tag = "2")]
+        WithdrawFromCellar(WithdrawFromCellar),
+    }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct CellarAdaptorV1Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<CellarAdaptorV1>,
+}
+/// Represents call data for the Vesting Simple adaptor
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct VestingSimpleAdaptor {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(oneof = "vesting_simple_adaptor::Function", tags = "1, 2, 3, 4, 5")]
+    pub function: ::core::option::Option<vesting_simple_adaptor::Function>,
+}
+/// Nested message and enum types in `VestingSimpleAdaptor`.
+pub mod vesting_simple_adaptor {
+    ///
+    /// Allows strategists to deposit tokens to the vesting contract. By passing a max uint256 for amountToDeposit, the cellar will
+    /// deposit its entire balance (appropriate in most cases).
+    ///
+    /// Represents function `depositToVesting(VestingSimple vestingContract, uint256 amountToDeposit)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct DepositToVesting {
+        #[prost(string, tag = "1")]
+        pub vesting_contract: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub amount: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to deposit tokens to the vesting contract. By passing a max uint256 for amountToDeposit, the cellar will
+    /// deposit its entire balance (appropriate in most cases).
+    ///
+    /// Represents function `withdrawFromVesting(VestingSimple vestingContract, uint256 depositId, uint256 amountToWithdraw)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct WithdrawFromVesting {
+        #[prost(string, tag = "1")]
+        pub vesting_contract: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub deposit_id: ::prost::alloc::string::String,
+        #[prost(string, tag = "3")]
+        pub amount: ::prost::alloc::string::String,
+    }
+    ///
+    /// Withdraw a single deposit from vesting. This will not affect the cellar's TVL because any deposit must already have vested, and
+    /// will be reported in balanceOf. Will revert if not enough tokens are available based on amountToWithdraw.
+    ///
+    /// Represents function `withdrawAnyFromVesting(VestingSimple vestingContract, uint256 amountToWithdraw)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct WithdrawAnyFromVesting {
+        #[prost(string, tag = "1")]
+        pub vesting_contract: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub amount: ::prost::alloc::string::String,
+    }
+    ///
+    /// Withdraw a certain amount of tokens from vesting, from any deposit. This will not affect the cellar's TVL because any deposit must
+    /// already have vested, and will be reported in balanceOf. Will revert if not enough tokens are available based on amountToWithdraw.
+    ///
+    /// Represents function `withdrawAllFromVesting(VestingSimple vestingContract)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct WithdrawAllFromVesting {
+        #[prost(string, tag = "1")]
+        pub vesting_contract: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `depositToVesting(VestingSimple vestingContract, uint256 amountToDeposit)`
+        #[prost(message, tag = "2")]
+        DepositToVesting(DepositToVesting),
+        /// Represents function `withdrawFromVesting(VestingSimple vestingContract, uint256 depositId, uint256 amountToWithdraw)`
+        #[prost(message, tag = "3")]
+        WithdrawFromVesting(WithdrawFromVesting),
+        /// Represents function `withdrawAnyFromVesting(VestingSimple vestingContract, uint256 amountToWithdraw)`
+        #[prost(message, tag = "4")]
+        WithdrawAnyFromVesting(WithdrawAnyFromVesting),
+        /// Represents function `withdrawAllFromVesting(VestingSimple vestingContract)`
+        #[prost(message, tag = "5")]
+        WithdrawAllFromVesting(WithdrawAllFromVesting),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct VestingSimpleAdaptorCalls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<VestingSimpleAdaptor>,
 }
 /// Represents call data for the Aave Debt Token adaptor V1, used for borrowing and repaying debt on Aave.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -793,74 +888,6 @@ pub struct AaveDebtTokenAdaptorV1Calls {
 pub struct AaveDebtTokenAdaptorV2Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<AaveDebtTokenAdaptorV2>,
-}
-/// Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct AaveV3DebtTokenAdaptorV1 {
-    ///**** BASE ADAPTOR FUNCTIONS ****
-    #[prost(oneof = "aave_v3_debt_token_adaptor_v1::Function", tags = "3, 4, 5")]
-    pub function: ::core::option::Option<aave_v3_debt_token_adaptor_v1::Function>,
-}
-/// Nested message and enum types in `AaveV3DebtTokenAdaptorV1`.
-pub mod aave_v3_debt_token_adaptor_v1 {
-    ///
-    /// Allows strategists to borrow assets from Aave.
-    ///
-    /// Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct BorrowFromAave {
-        /// The address of the ERC20 token to borrow
-        #[prost(string, tag = "1")]
-        pub token: ::prost::alloc::string::String,
-        /// The amount to borrow
-        #[prost(string, tag = "2")]
-        pub amount: ::prost::alloc::string::String,
-    }
-    ///
-    /// Allows strategists to repay loan debt on Aave.
-    ///
-    /// Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct RepayAaveDebt {
-        /// The address of the ERC20 token to repay
-        #[prost(string, tag = "1")]
-        pub token: ::prost::alloc::string::String,
-        /// The amount to repay
-        #[prost(string, tag = "2")]
-        pub amount: ::prost::alloc::string::String,
-    }
-    ///
-    /// Allows strategist to use aTokens to repay debt tokens with the same underlying.
-    ///
-    /// Represents function `repayWithATokens(ERC20 underlying, uint256 amount)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct RepayWithATokens {
-        /// The address of the underlying ERC20 token to repay
-        #[prost(string, tag = "1")]
-        pub underlying_token: ::prost::alloc::string::String,
-        /// The amount to repay
-        #[prost(string, tag = "2")]
-        pub amount: ::prost::alloc::string::String,
-    }
-    ///**** BASE ADAPTOR FUNCTIONS ****
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum Function {
-        /// Represents function `revokeApproval(ERC20 asset, address spender)`
-        #[prost(message, tag = "3")]
-        RevokeApproval(super::RevokeApproval),
-        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
-        /// Represents function `borrowFromAave(ERC20 debtTokenToBorrow, uint256 amountToBorrow)`
-        #[prost(message, tag = "4")]
-        BorrowFromAave(BorrowFromAave),
-        /// Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
-        #[prost(message, tag = "5")]
-        RepayAaveDebt(RepayAaveDebt),
-    }
-}
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct AaveV3DebtTokenAdaptorV1Calls {
-    #[prost(message, repeated, tag = "1")]
-    pub calls: ::prost::alloc::vec::Vec<AaveV3DebtTokenAdaptorV1>,
 }
 /// Represents call data for the Aave AToken adaptor V1, used to manage lending positions on Aave
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -1061,41 +1088,6 @@ pub mod aave_v3a_token_adaptor_v1 {
 pub struct AaveV3aTokenAdaptorV1Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<AaveV3aTokenAdaptorV1>,
-}
-/// Represents call data for the OneInch adaptor.
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct OneInchAdaptorV1 {
-    #[prost(oneof = "one_inch_adaptor_v1::Function", tags = "1")]
-    pub function: ::core::option::Option<one_inch_adaptor_v1::Function>,
-}
-/// Nested message and enum types in `OneInchAdaptorV1`.
-pub mod one_inch_adaptor_v1 {
-    ///
-    /// Allows strategists to make ERC20 swaps using 1Inch.
-    ///
-    /// Represents function `swapWithOneInch(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes swapCallData)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct SwapWithOneInch {
-        #[prost(string, tag = "1")]
-        pub token_in: ::prost::alloc::string::String,
-        #[prost(string, tag = "2")]
-        pub token_out: ::prost::alloc::string::String,
-        #[prost(string, tag = "3")]
-        pub amount: ::prost::alloc::string::String,
-        #[prost(bytes = "vec", tag = "4")]
-        pub swap_call_data: ::prost::alloc::vec::Vec<u8>,
-    }
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum Function {
-        /// Represents function `swapWithOneInch(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes swapCallData)`
-        #[prost(message, tag = "1")]
-        SwapWithOneInch(SwapWithOneInch),
-    }
-}
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct OneInchAdaptorV1Calls {
-    #[prost(message, repeated, tag = "1")]
-    pub calls: ::prost::alloc::vec::Vec<OneInchAdaptorV1>,
 }
 /// Represents call data for the Compound C Token adaptor V1, managing lending positions on Compound.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -1337,6 +1329,192 @@ pub mod fees_and_reserves_adaptor_v1 {
 pub struct FeesAndReservesAdaptorV1Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<FeesAndReservesAdaptorV1>,
+}
+/// Represents call data for the OneInch adaptor.
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct OneInchAdaptorV1 {
+    #[prost(oneof = "one_inch_adaptor_v1::Function", tags = "1")]
+    pub function: ::core::option::Option<one_inch_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `OneInchAdaptorV1`.
+pub mod one_inch_adaptor_v1 {
+    ///
+    /// Allows strategists to make ERC20 swaps using 1Inch.
+    ///
+    /// Represents function `swapWithOneInch(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes swapCallData)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SwapWithOneInch {
+        #[prost(string, tag = "1")]
+        pub token_in: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub token_out: ::prost::alloc::string::String,
+        #[prost(string, tag = "3")]
+        pub amount: ::prost::alloc::string::String,
+        #[prost(bytes = "vec", tag = "4")]
+        pub swap_call_data: ::prost::alloc::vec::Vec<u8>,
+    }
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `swapWithOneInch(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes swapCallData)`
+        #[prost(message, tag = "1")]
+        SwapWithOneInch(SwapWithOneInch),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct OneInchAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<OneInchAdaptorV1>,
+}
+/// Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct AaveV3DebtTokenAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(oneof = "aave_v3_debt_token_adaptor_v1::Function", tags = "3, 4, 5, 6")]
+    pub function: ::core::option::Option<aave_v3_debt_token_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `AaveV3DebtTokenAdaptorV1`.
+pub mod aave_v3_debt_token_adaptor_v1 {
+    ///
+    /// Allows strategists to borrow assets from Aave.
+    ///
+    /// Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct BorrowFromAave {
+        /// The address of the ERC20 token to borrow
+        #[prost(string, tag = "1")]
+        pub token: ::prost::alloc::string::String,
+        /// The amount to borrow
+        #[prost(string, tag = "2")]
+        pub amount: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to repay loan debt on Aave.
+    ///
+    /// Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RepayAaveDebt {
+        /// The address of the ERC20 token to repay
+        #[prost(string, tag = "1")]
+        pub token: ::prost::alloc::string::String,
+        /// The amount to repay
+        #[prost(string, tag = "2")]
+        pub amount: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to use aTokens to repay debt tokens with the same underlying.
+    ///
+    /// Represents function `repayWithATokens(ERC20 underlying, uint256 amount)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RepayWithATokens {
+        /// The address of the underlying ERC20 token to repay
+        #[prost(string, tag = "1")]
+        pub underlying_token: ::prost::alloc::string::String,
+        /// The amount to repay
+        #[prost(string, tag = "2")]
+        pub amount: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to have Cellars take out flash loans
+    ///
+    /// Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct FlashLoan {
+        /// The addresses of the ERC20 tokens to borrow
+        #[prost(string, repeated, tag = "1")]
+        pub loan_tokens: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+        /// The amounts to borrow
+        #[prost(string, repeated, tag = "2")]
+        pub loan_amounts: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+        /// The params to pass to the flash loan callback.
+        #[prost(message, repeated, tag = "3")]
+        pub params: ::prost::alloc::vec::Vec<AdaptorCallForAaveV3Flashloan>,
+    }
+    // NOTE: FlashLoan takes in AdaptorCall. cellar_v2.proto defines this message, but also imports this file; therefore, we can't import cellar_v2.proto in order to use the AdaptorCall message here. To avoid the recursive import, we duplicate the message definition.
+
+    /// Represents a call to adaptor an. The cellar must be authorized to call the target adaptor.
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct AdaptorCallForAaveV3Flashloan {
+        /// Address of the adaptor
+        #[prost(string, tag = "1")]
+        pub adaptor: ::prost::alloc::string::String,
+        /// The function call data for the adaptor
+        #[prost(
+            oneof = "adaptor_call_for_aave_v3_flashloan::CallData",
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15"
+        )]
+        pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flashloan::CallData>,
+    }
+    /// Nested message and enum types in `AdaptorCallForAaveV3Flashloan`.
+    pub mod adaptor_call_for_aave_v3_flashloan {
+        /// The function call data for the adaptor
+        #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+        pub enum CallData {
+            /// Represents function calls to the UniswapV3Adaptor V1
+            #[prost(message, tag = "2")]
+            UniswapV3Calls(super::super::UniswapV3AdaptorV1Calls),
+            /// Represents function calls to the AaveATokenAdaptor V1
+            #[prost(message, tag = "3")]
+            AaveATokenV1Calls(super::super::AaveATokenAdaptorV1Calls),
+            /// Represents function calls to the AavaDebtTokenAdaptor V1
+            #[prost(message, tag = "4")]
+            AaveDebtTokenV1Calls(super::super::AaveDebtTokenAdaptorV1Calls),
+            /// Represents function calls to the CompoundCTokenAdaptor V1
+            #[prost(message, tag = "5")]
+            CompoundCTokenV1Calls(super::super::CompoundCTokenAdaptorV1Calls),
+            /// Represents function calls to the CompoundCTokenAdaptor V2
+            #[prost(message, tag = "6")]
+            CompoundCTokenV2Calls(super::super::CompoundCTokenAdaptorV2Calls),
+            /// Represents function calls to the AaveATokenV2Adaptor
+            #[prost(message, tag = "7")]
+            AaveATokenV2Calls(super::super::AaveATokenAdaptorV2Calls),
+            /// Represents function calls to the AavaDebtTokenV2Adaptor
+            #[prost(message, tag = "8")]
+            AaveDebtTokenV2Calls(super::super::AaveDebtTokenAdaptorV2Calls),
+            /// Represents function calls to the AaveATokenV1Adaptor
+            #[prost(message, tag = "9")]
+            AaveV3ATokenV1Calls(super::super::AaveV3aTokenAdaptorV1Calls),
+            /// Represents function calls to the AavaDebtTokenV1Adaptor
+            #[prost(message, tag = "10")]
+            AaveV3DebtTokenV1Calls(super::super::AaveV3DebtTokenAdaptorV1Calls),
+            /// Represents function calls to the OneInchAdaptorV1
+            #[prost(message, tag = "11")]
+            OneInchV1Calls(super::super::OneInchAdaptorV1Calls),
+            /// Represents function calls to the FeesAndReservesAdaptorV1
+            #[prost(message, tag = "12")]
+            FeesAndReservesV1Calls(super::super::FeesAndReservesAdaptorV1Calls),
+            /// Represents functionc alls to the ZeroXAdaptorV1
+            #[prost(message, tag = "13")]
+            ZeroXV1Calls(super::super::ZeroXAdaptorV1Calls),
+            /// Represents function calls to the SwapWithUniswapAdaptorV1
+            #[prost(message, tag = "14")]
+            SwapWithUniswapV1Calls(super::super::SwapWithUniswapAdaptorV1Calls),
+            /// Represents function calls to VestingSimpleAdaptor
+            #[prost(message, tag = "15")]
+            VestingSimpleCalls(super::super::VestingSimpleAdaptorCalls),
+        }
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "3")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `borrowFromAave(ERC20 debtTokenToBorrow, uint256 amountToBorrow)`
+        #[prost(message, tag = "4")]
+        BorrowFromAave(BorrowFromAave),
+        /// Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
+        #[prost(message, tag = "5")]
+        RepayAaveDebt(RepayAaveDebt),
+        /// Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
+        #[prost(message, tag = "6")]
+        FlashLoan(FlashLoan),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct AaveV3DebtTokenAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<AaveV3DebtTokenAdaptorV1>,
 }
 ///
 /// Represents a function call to a cellar that implements Cellar.sol
@@ -1660,7 +1838,7 @@ pub struct AdaptorCall {
     /// The function call data for the adaptor
     #[prost(
         oneof = "adaptor_call::CallData",
-        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14"
+        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15"
     )]
     pub call_data: ::core::option::Option<adaptor_call::CallData>,
 }
@@ -1708,6 +1886,9 @@ pub mod adaptor_call {
         /// Represents function calls to the SwapWithUniswapAdaptorV1
         #[prost(message, tag = "14")]
         SwapWithUniswapV1Calls(super::SwapWithUniswapAdaptorV1Calls),
+        /// Represents function calls to VestingSimpleAdaptor
+        #[prost(message, tag = "15")]
+        VestingSimpleCalls(super::VestingSimpleAdaptorCalls),
     }
 }
 ///

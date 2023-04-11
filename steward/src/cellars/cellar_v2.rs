@@ -22,10 +22,27 @@ const CELLAR_NAME: &str = "CellarV2";
 // adaptors and positions associated with the deprecated UniV3 adaptor are blocked
 // addresses treated as lowercase without 0x prefix to ensure valid comparisons with arbitrary input
 const BLOCKED_ADAPTORS: [&str; 1] = ["7c4262f83e6775d6ff6fe8d9ab268611ed9d13ee"];
-const BLOCKED_POSITIONS: [u32; 2] = [4, 5];
-
-// address of the updated UniV3 adaptor
-const ALLOWED_SETUP_ADAPTORS: [&str; 1] = ["dbd750f72a00d01f209ffc6c75e80301efc789c1"];
+const BLOCKED_POSITIONS: [u32; 9] = [4, 5, 6, 7, 8, 9, 10, 11, 12];
+const ALLOWED_SETUP_ADAPTORS: [&str; 9] = [
+    // UniswapV3Adaptr V2
+    "dbd750f72a00d01f209ffc6c75e80301efc789c1",
+    // VestingSimpleAdaptor V2
+    "508E6aE090eA92Cb90571e4269B799257CD78CA1",
+    // OneInchAdaptor V1
+    "B8952ce4010CFF3C74586d712a4402285A3a3AFb",
+    // SwapWithUniswapAdaptor V1
+    "d6BC6Df1ed43e3101bC27a4254593a06598a3fDD",
+    // ZeroXAdaptor V1
+    "1039a9b61DFF6A3fb8dbF4e924AA749E5cFE35ef",
+    // AaveV3ATokenAdaptor V1
+    "3184CBEa47eD519FA04A23c4207cD15b7545F1A6",
+    // AaveATokenAdaptor V2
+    "25570a77dCA06fda89C1ef41FAb6eE48a2377E81",
+    // FeesAndReservesAdaptor V1
+    "647d264d800A2461E594796af61a39b7735d8933",
+    // CTokenAdaptor V2
+    "9a384Df333588428843D128120Becd72434ec078",
+];
 
 // since a string prefixed with or without 0x is parsable, ensure the string comparison is valid
 pub fn normalize_address(address: String) -> String {
@@ -198,9 +215,9 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
             AaveV3ATokenV1Calls(params) => {
                 calls.extend(adaptors::aave_v3::aave_v3_a_token_adaptor_v1_call(params)?)
             }
-            AaveV3DebtTokenV1Calls(params) => {
-                calls.extend(adaptors::aave_v3::aave_v3_debt_token_adaptor_v1_call(params)?)
-            }
+            AaveV3DebtTokenV1Calls(params) => calls.extend(
+                adaptors::aave_v3::aave_v3_debt_token_adaptor_v1_call(params)?,
+            ),
             OneInchV1Calls(params) => {
                 calls.extend(adaptors::oneinch::one_inch_adaptor_v1_call(params)?)
             }
@@ -213,6 +230,9 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
             CompoundCTokenV2Calls(params) => {
                 calls.extend(adaptors::compound::compound_c_token_v2_call(params)?)
             }
+            VestingSimpleCalls(params) => calls.extend(
+                adaptors::vesting_simple::vesting_simple_adaptor_v1_call(params)?,
+            ),
         };
 
         result.push(AbiAdaptorCall {

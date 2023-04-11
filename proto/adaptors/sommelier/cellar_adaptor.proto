@@ -6,6 +6,13 @@ package steward.v3;
 option go_package = "/steward_proto";
 
 message CellarAdaptorV1 {
+    oneof function {
+        // Represents function `depositToCellar(Cellar cellar, uint256 assets)`
+        DepositToCellar depositToCellar = 1;
+        // Represents function `withdrawFromCellar(Cellar cellar, uint256 assets)`
+        WithdrawFromCellar withdrawFromCellar = 2;
+    }
+
     /*
     * Allows strategists to deposit into Cellar positions.
     *
