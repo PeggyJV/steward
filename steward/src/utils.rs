@@ -145,8 +145,7 @@ pub fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
                 let address = a.parse::<EthAddress>();
                 if address.is_err() {
                     return Err(sp_call_error(format!(
-                        "could not parse swap params path address: {}",
-                        a
+                        "could not parse swap params path address: {a}"
                     )));
                 }
 
@@ -164,8 +163,7 @@ pub fn encode_swap_params(params: SwapParams) -> Result<Vec<u8>, Error> {
                 let address = a.parse::<EthAddress>();
                 if address.is_err() {
                     return Err(sp_call_error(format!(
-                        "could not parse swap params path address: {}",
-                        a
+                        "could not parse swap params path address: {a}"
                     )));
                 }
 
@@ -202,8 +200,7 @@ pub fn encode_oracle_swap_params(params: OracleSwapParams) -> Result<Vec<u8>, Er
                 let address = a.parse::<EthAddress>();
                 if address.is_err() {
                     return Err(sp_call_error(format!(
-                        "could not parse swap params path address: {}",
-                        a
+                        "could not parse swap params path address: {a}"
                     )));
                 }
 
@@ -219,8 +216,7 @@ pub fn encode_oracle_swap_params(params: OracleSwapParams) -> Result<Vec<u8>, Er
                 let address = a.parse::<EthAddress>();
                 if address.is_err() {
                     return Err(sp_call_error(format!(
-                        "could not parse swap params path address: {}",
-                        a
+                        "could not parse swap params path address: {a}"
                     )));
                 }
 

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {Address, ERC20, Owned} from "./interfaces.sol";
+import {Adaptor} from "./MockAdaptor.sol";
 
 /**
  * @title Sommelier Cellar

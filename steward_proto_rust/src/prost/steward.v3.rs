@@ -615,8 +615,8 @@ pub mod zero_x_adaptor_v1 {
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct ZeroXAdaptorV1Calls {
-    #[prost(message, optional, tag = "1")]
-    pub calls: ::core::option::Option<ZeroXAdaptorV1>,
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<ZeroXAdaptorV1>,
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct CellarAdaptorV1 {
@@ -1440,7 +1440,7 @@ pub mod aave_v3_debt_token_adaptor_v1 {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_aave_v3_flashloan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flashloan::CallData>,
     }
@@ -1491,6 +1491,9 @@ pub mod aave_v3_debt_token_adaptor_v1 {
             /// Represents function calls to VestingSimpleAdaptor
             #[prost(message, tag = "15")]
             VestingSimpleCalls(super::super::VestingSimpleAdaptorCalls),
+            /// Represents function calls to the CellarAdaptor
+            #[prost(message, tag = "16")]
+            CellarCalls(super::super::CellarAdaptorV1Calls),
         }
     }
     ///**** BASE ADAPTOR FUNCTIONS ****
@@ -1838,7 +1841,7 @@ pub struct AdaptorCall {
     /// The function call data for the adaptor
     #[prost(
         oneof = "adaptor_call::CallData",
-        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15"
+        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16"
     )]
     pub call_data: ::core::option::Option<adaptor_call::CallData>,
 }
@@ -1889,6 +1892,9 @@ pub mod adaptor_call {
         /// Represents function calls to VestingSimpleAdaptor
         #[prost(message, tag = "15")]
         VestingSimpleCalls(super::VestingSimpleAdaptorCalls),
+        /// Represents function calls to the CellarAdaptor
+        #[prost(message, tag = "16")]
+        CellarCalls(super::CellarAdaptorV1Calls),
     }
 }
 ///

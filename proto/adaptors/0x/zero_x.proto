@@ -34,5 +34,5 @@ message ZeroXAdaptorV1 {
 }
 
 message ZeroXAdaptorV1Calls {
-    ZeroXAdaptorV1 calls = 1;
+    repeated ZeroXAdaptorV1 calls = 1;
 }

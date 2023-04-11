@@ -29,12 +29,11 @@ pub(crate) fn vesting_simple_adaptor_v1_call(
                 )
             }
             vesting_simple_adaptor::Function::WithdrawFromVesting(p) => {
-                let call =
-                    steward_abi::vesting_simple_adaptor::WithdrawFromVestingCall {
-                        deposit_id: string_to_u256(p.deposit_id)?,
-                        vesting_contract: sp_call_parse_address(p.vesting_contract)?,
-                        amount_to_withdraw: string_to_u256(p.amount)?,
-                    };
+                let call = steward_abi::vesting_simple_adaptor::WithdrawFromVestingCall {
+                    deposit_id: string_to_u256(p.deposit_id)?,
+                    vesting_contract: sp_call_parse_address(p.vesting_contract)?,
+                    amount_to_withdraw: string_to_u256(p.amount)?,
+                };
                 calls.push(
                     VestingSimpleAdaptorCalls::WithdrawFromVesting(call)
                         .encode()
@@ -42,11 +41,10 @@ pub(crate) fn vesting_simple_adaptor_v1_call(
                 )
             }
             vesting_simple_adaptor::Function::WithdrawAnyFromVesting(p) => {
-                let call =
-                    steward_abi::vesting_simple_adaptor::WithdrawAnyFromVestingCall {
-                        vesting_contract: sp_call_parse_address(p.vesting_contract)?,
-                        amount_to_withdraw: string_to_u256(p.amount)?,
-                    };
+                let call = steward_abi::vesting_simple_adaptor::WithdrawAnyFromVestingCall {
+                    vesting_contract: sp_call_parse_address(p.vesting_contract)?,
+                    amount_to_withdraw: string_to_u256(p.amount)?,
+                };
                 calls.push(
                     VestingSimpleAdaptorCalls::WithdrawAnyFromVesting(call)
                         .encode()
@@ -54,16 +52,15 @@ pub(crate) fn vesting_simple_adaptor_v1_call(
                 )
             }
             vesting_simple_adaptor::Function::WithdrawAllFromVesting(p) => {
-                let call =
-                    steward_abi::vesting_simple_adaptor::WithdrawAllFromVestingCall {
-                        vesting_contract: sp_call_parse_address(p.vesting_contract)?,
-                    };
+                let call = steward_abi::vesting_simple_adaptor::WithdrawAllFromVestingCall {
+                    vesting_contract: sp_call_parse_address(p.vesting_contract)?,
+                };
                 calls.push(
                     VestingSimpleAdaptorCalls::WithdrawAllFromVesting(call)
                         .encode()
                         .into(),
                 )
-            },
+            }
             vesting_simple_adaptor::Function::RevokeApproval(p) => {
                 let call = steward_abi::vesting_simple_adaptor::RevokeApprovalCall {
                     asset: sp_call_parse_address(p.asset)?,

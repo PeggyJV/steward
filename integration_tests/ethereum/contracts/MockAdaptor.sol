@@ -8,7 +8,6 @@ contract Adaptor is Owned {
     event ClaimCompAndSwap(ERC20 assetOut, Cellar.Exchange exchange, bytes params, uint64 slippage);
     event SwapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, Cellar.Exchange exchange, bytes params);
     event BorrowFromAave(address debtTokenToBorrow, uint256 amountToBorrow);
-    event FlashLoan(address[] loanToken, uint256[] loanAmount, bytes params);
     event SwapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin);
 
     constructor() Owned(msg.sender) {}
@@ -25,10 +24,10 @@ contract Adaptor is Owned {
         uint64 slippage
     ) external onlyOwner {
         if (exchange == Cellar.Exchange.UNIV2) {
-            address[] memory path = abi.decode(params, (address[]));
+            abi.decode(params, (address[]));
         }
         if (exchange == Cellar.Exchange.UNIV3) {
-            (address[] memory path, uint24[] memory poolFees) = abi.decode(params, (address[], uint24[]));
+            abi.decode(params, (address[], uint24[]));
         }
         emit ClaimCompAndSwap(assetOut, exchange, params, slippage);
     }
@@ -42,30 +41,18 @@ contract Adaptor is Owned {
         bytes memory params
     ) external onlyOwner {
         if (exchange == Cellar.Exchange.UNIV2) {
-            (address[] memory path, uint256 amount, uint256 amountOutMin) = abi.decode(
+            abi.decode(
                 params,
                 (address[], uint256, uint256)
             );
         }
         if (exchange == Cellar.Exchange.UNIV3) {
-            (address[] memory path, uint24[] memory poolFees, uint256 amount, uint256 amountOutMin) = abi.decode(
+            abi.decode(
                 params,
                 (address[], uint24[], uint256, uint256)
             );
         }
         emit SwapAndRepay(tokenIn, tokenToRepay, amountIn, exchange, params);
-    }
-
-    struct AdaptorCall {
-        address adaptor;
-        bytes[] callData;
-    }
-
-    // Mocks the Aave V3 Debt Token adaptor's flashLoan function
-    function flashLoan(address[] memory loanToken, uint256[] memory loanAmount, bytes memory params) public {
-        AdaptorCall[] memory call = abi.decode(params, (AdaptorCall[]));
-
-        emit FlashLoan(loanToken, loanAmount, params);
     }
 
     // Mocks the SwapWithUniswapAdaptor swap function

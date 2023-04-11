@@ -78,15 +78,13 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
             // We expect the client to pad the route to length 9
             if params.route.len() != 9 {
                 return Err(sp_call_error(format!(
-                    "{}: Rebalance 'route': array must contain 9 elements",
-                    LOG_PREFIX
+                    "{LOG_PREFIX}: Rebalance 'route': array must contain 9 elements"
                 )));
             }
 
             if params.swap_params.len() != 4 {
                 return Err(sp_call_error(format!(
-                    "{}: Rebalance 'swap_params': array must contain 4 elements",
-                    LOG_PREFIX
+                    "{LOG_PREFIX}: Rebalance 'swap_params': array must contain 4 elements"
                 )));
             }
 
@@ -197,7 +195,7 @@ fn validate_route(results: Vec<Result<Address, &String>>) -> Result<(), Error> {
     if !bad_addresses_string.is_empty() {
         let mut err_string = "Rebalance 'route': array contains invalid address(s)".to_string();
         err_string.push_str(&bad_addresses_string);
-        return Err(sp_call_error(format!("{}: {}", LOG_PREFIX, err_string)));
+        return Err(sp_call_error(format!("{LOG_PREFIX}: {err_string}")));
     }
 
     Ok(())

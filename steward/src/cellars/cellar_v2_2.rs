@@ -16,27 +16,9 @@ use crate::{
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
 };
 
-use super::log_cellar_call;
+use super::{log_cellar_call, normalize_address, BLOCKED_ADAPTORS, BLOCKED_POSITIONS};
 
 const CELLAR_NAME: &str = "CellarV2.2";
-
-// adaptors and positions associated with the deprecated UniV3 adaptor are blocked
-// addresses treated as lowercase without 0x prefix to ensure valid comparisons with arbitrary input
-const BLOCKED_ADAPTORS: [&str; 1] = ["7c4262f83e6775d6ff6fe8d9ab268611ed9d13ee"];
-const BLOCKED_POSITIONS: [u32; 2] = [4, 5];
-
-// address of the updated UniV3 adaptor
-const ALLOWED_SETUP_ADAPTORS: [&str; 1] = ["dbd750f72a00d01f209ffc6c75e80301efc789c1"];
-
-// since a string prefixed with or without 0x is parsable, ensure the string comparison is valid
-pub fn normalize_address(address: String) -> String {
-    let lowercase_address = address.to_lowercase();
-    return address
-        .to_lowercase()
-        .strip_prefix("0x")
-        .unwrap_or(&lowercase_address)
-        .to_string();
-}
 
 /// Encodes a call to a CellarV2.2 contract
 pub fn get_encoded_call(call_type: CallType, cellar_id: String) -> Result<Vec<u8>, Error> {
@@ -51,7 +33,7 @@ pub fn get_encoded_call(call_type: CallType, cellar_id: String) -> Result<Vec<u8
                 .iter()
                 .for_each(|f| multicall.data.push(Bytes::from(f.clone())));
 
-            Ok(multicall.encode().into())
+            Ok(multicall.encode())
         }
     }
 }
@@ -169,7 +151,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_2Calls::SetRebalanceDeviation(call).encode())
         }
-        // SetupAdaptor(params) => {
+        // Function::SetupAdaptor(params) => {
         //     let adaptor_address = normalize_address(params.adaptor.clone());
         //     if !ALLOWED_SETUP_ADAPTORS.contains(&adaptor_address.as_str()) {
         //         return Err(ErrorKind::SPCallError
@@ -192,7 +174,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             );
             let call = InitiateShutdownCall {};
 
-            Ok(CellarV2_2Calls::InitiateShutdown(call).encode().into())
+            Ok(CellarV2_2Calls::InitiateShutdown(call).encode())
         }
     }
 }
@@ -243,9 +225,12 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
             ),
             CompoundCTokenV2Calls(params) => {
                 calls.extend(adaptors::compound::compound_c_token_v2_call(params)?)
-            },
-            VestingSimpleCalls(params) => {
-                calls.extend(adaptors::vesting_simple::vesting_simple_adaptor_v1_call(params)?)
+            }
+            VestingSimpleCalls(params) => calls.extend(
+                adaptors::vesting_simple::vesting_simple_adaptor_v1_call(params)?,
+            ),
+            CellarCalls(params) => {
+                calls.extend(adaptors::sommelier::cellar_adaptor_v1_call(params)?)
             }
         };
 
@@ -256,22 +241,4 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
     }
 
     Ok(result)
-}
-
-#[test]
-fn test_address_normalization() {
-    let blocked1 = String::from("0x7C4262f83e6775D6ff6fE8d9ab268611Ed9d13Ee");
-    let blocked2 = String::from("0X7c4262f83e6775d6ff6fe8d9ab268611ed9d13ee");
-    let blocked3 = String::from("7C4262f83e6775D6ff6fE8d9ab268611Ed9d13Ee");
-    let blocked4 = String::from("7c4262f83e6775d6ff6fe8d9ab268611ed9d13ee");
-    let nonblocked = String::from("0xDbd750F72a00d01f209FFc6C75e80301eFc789C1");
-
-    assert!(BLOCKED_ADAPTORS.contains(&normalize_address(blocked1.clone()).as_str()));
-    assert!(BLOCKED_ADAPTORS.contains(&normalize_address(blocked2).as_str()));
-    assert!(BLOCKED_ADAPTORS.contains(&normalize_address(blocked3).as_str()));
-    assert!(BLOCKED_ADAPTORS.contains(&normalize_address(blocked4).as_str()));
-    assert!(!BLOCKED_ADAPTORS.contains(&normalize_address(nonblocked.clone()).as_str()));
-
-    assert!(ALLOWED_SETUP_ADAPTORS.contains(&normalize_address(nonblocked).as_str()));
-    assert!(!ALLOWED_SETUP_ADAPTORS.contains(&normalize_address(blocked1).as_str()));
 }

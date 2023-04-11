@@ -1,9 +1,5 @@
 use abscissa_core::tracing::log::debug;
-use ethers::{
-    abi::{self, AbiEncode, Token, Tokenizable},
-    types::Bytes,
-};
-use signatory::signature::Signature;
+use ethers::{abi::AbiEncode, types::Bytes};
 use steward_abi::{
     aave_v3_a_token_adaptor::AaveV3ATokenAdaptorCalls,
     aave_v3_debt_token_adaptor::{AaveV3DebtTokenAdaptorCalls, FlashLoanCall},
@@ -143,31 +139,7 @@ pub(crate) fn aave_v3_debt_token_adaptor_v1_call(
                         .iter()
                         .map(|a| string_to_u256(a.clone()))
                         .collect::<Result<Vec<_>, _>>()?,
-                    // kind of ugly but works for now. The ABI mapping of a Solidity struct is a tuple of the field types.
-                    // we build a vector of the tuples, wrap it in an array token, and then encode the whole thing to
-                    // represent an []AdaptorCall.
-                    params: abi::encode(&[Token::Array(
-                        get_encoded_adaptor_call(p.params)?
-                            .iter()
-                            .map(|ac| {
-                                // encoded structs, in this case AdaptorCall, are the encoded tuple made from a vector of the
-                                // tokenized field types
-                                Token::Tuple(
-                                    [
-                                        Token::Address(ac.adaptor),
-                                        Token::Array(
-                                            ac.call_data
-                                                .iter()
-                                                .map(|b| Token::Bytes(b.to_vec()))
-                                                .collect::<Vec<Token>>(),
-                                        ),
-                                    ]
-                                    .to_vec(),
-                                )
-                            })
-                            .collect::<Vec<Token>>(),
-                    )])
-                    .into(),
+                    params: get_encoded_adaptor_call(p.params)?.encode().into(),
                 };
                 calls.push(AaveV3DebtTokenAdaptorCalls::FlashLoan(call).encode().into())
             }
@@ -229,6 +201,9 @@ fn get_encoded_adaptor_call(
             VestingSimpleCalls(params) => calls.extend(
                 adaptors::vesting_simple::vesting_simple_adaptor_v1_call(params)?,
             ),
+            CellarCalls(params) => {
+                calls.extend(adaptors::sommelier::cellar_adaptor_v1_call(params)?)
+            }
         };
 
         result.push(AbiAdaptorCall {

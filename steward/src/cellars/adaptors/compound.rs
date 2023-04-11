@@ -46,7 +46,7 @@ pub fn compound_c_token_v1_call(params: CompoundCTokenAdaptorV1Calls) -> Result<
                         .into(),
                 )
             }
-            compound_c_token_adaptor_v1::Function::ClaimComp(p) => {
+            compound_c_token_adaptor_v1::Function::ClaimComp(_) => {
                 let call = steward_abi::compound_c_token_adaptor::ClaimCompCall {};
                 calls.push(CompoundCTokenAdaptorCalls::ClaimComp(call).encode().into())
             }
@@ -162,7 +162,7 @@ pub(crate) fn compound_c_token_v2_call(
                         .into(),
                 )
             }
-            compound_c_token_adaptor_v2::Function::ClaimComp(p) => {
+            compound_c_token_adaptor_v2::Function::ClaimComp(_) => {
                 let call = steward_abi::compound_c_token_adaptor_v2::ClaimCompCall {};
                 calls.push(
                     CompoundCTokenAdaptorV2Calls::ClaimComp(call)
