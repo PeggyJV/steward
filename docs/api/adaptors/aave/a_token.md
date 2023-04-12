@@ -4,10 +4,14 @@
 ## Table of Contents
 
 - [adaptors/aave/a_token.proto](#adaptors_aave_a_token-proto)
-    - [AaveATokenAdaptor](#steward-v2-AaveATokenAdaptor)
-    - [AaveATokenAdaptor.DepositToAave](#steward-v2-AaveATokenAdaptor-DepositToAave)
-    - [AaveATokenAdaptor.WithdrawFromAave](#steward-v2-AaveATokenAdaptor-WithdrawFromAave)
-    - [AaveATokenAdaptorCalls](#steward-v2-AaveATokenAdaptorCalls)
+    - [AaveATokenAdaptorV1](#steward-v3-AaveATokenAdaptorV1)
+    - [AaveATokenAdaptorV1.DepositToAave](#steward-v3-AaveATokenAdaptorV1-DepositToAave)
+    - [AaveATokenAdaptorV1.WithdrawFromAave](#steward-v3-AaveATokenAdaptorV1-WithdrawFromAave)
+    - [AaveATokenAdaptorV1Calls](#steward-v3-AaveATokenAdaptorV1Calls)
+    - [AaveATokenAdaptorV2](#steward-v3-AaveATokenAdaptorV2)
+    - [AaveATokenAdaptorV2.DepositToAave](#steward-v3-AaveATokenAdaptorV2-DepositToAave)
+    - [AaveATokenAdaptorV2.WithdrawFromAave](#steward-v3-AaveATokenAdaptorV2-WithdrawFromAave)
+    - [AaveATokenAdaptorV2Calls](#steward-v3-AaveATokenAdaptorV2Calls)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -20,28 +24,28 @@
 
 
 
-<a name="steward-v2-AaveATokenAdaptor"></a>
+<a name="steward-v3-AaveATokenAdaptorV1"></a>
 
-### AaveATokenAdaptor
-Represents call data for the Aave AToken adaptor, used to manage lending positions on Aave
+### AaveATokenAdaptorV1
+Represents call data for the Aave AToken adaptor V1, used to manage lending positions on Aave
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| swap | [Swap](#steward-v2-Swap) |  | Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
-| oracle_swap | [OracleSwap](#steward-v2-OracleSwap) |  | Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
-| revoke_approval | [RevokeApproval](#steward-v2-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
-| deposit_to_aave | [AaveATokenAdaptor.DepositToAave](#steward-v2-AaveATokenAdaptor-DepositToAave) |  | Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)` |
-| withdraw_from_aave | [AaveATokenAdaptor.WithdrawFromAave](#steward-v2-AaveATokenAdaptor-WithdrawFromAave) |  | Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)` |
+| swap | [Swap](#steward-v3-Swap) |  | Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
+| oracle_swap | [OracleSwap](#steward-v3-OracleSwap) |  | Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
+| revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| deposit_to_aave | [AaveATokenAdaptorV1.DepositToAave](#steward-v3-AaveATokenAdaptorV1-DepositToAave) |  | Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)` |
+| withdraw_from_aave | [AaveATokenAdaptorV1.WithdrawFromAave](#steward-v3-AaveATokenAdaptorV1-WithdrawFromAave) |  | Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)` |
 
 
 
 
 
 
-<a name="steward-v2-AaveATokenAdaptor-DepositToAave"></a>
+<a name="steward-v3-AaveATokenAdaptorV1-DepositToAave"></a>
 
-### AaveATokenAdaptor.DepositToAave
+### AaveATokenAdaptorV1.DepositToAave
 Allows strategists to lend assets on Aave.
 
 Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
@@ -57,9 +61,9 @@ Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit
 
 
 
-<a name="steward-v2-AaveATokenAdaptor-WithdrawFromAave"></a>
+<a name="steward-v3-AaveATokenAdaptorV1-WithdrawFromAave"></a>
 
-### AaveATokenAdaptor.WithdrawFromAave
+### AaveATokenAdaptorV1.WithdrawFromAave
 Allows strategists to withdraw assets from Aave.
 
 Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
@@ -75,15 +79,83 @@ Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWit
 
 
 
-<a name="steward-v2-AaveATokenAdaptorCalls"></a>
+<a name="steward-v3-AaveATokenAdaptorV1Calls"></a>
 
-### AaveATokenAdaptorCalls
+### AaveATokenAdaptorV1Calls
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| calls | [AaveATokenAdaptor](#steward-v2-AaveATokenAdaptor) | repeated |  |
+| calls | [AaveATokenAdaptorV1](#steward-v3-AaveATokenAdaptorV1) | repeated |  |
+
+
+
+
+
+
+<a name="steward-v3-AaveATokenAdaptorV2"></a>
+
+### AaveATokenAdaptorV2
+Represents call data for the Aave AToken adaptor V2, used to manage lending positions on Aave
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| deposit_to_aave | [AaveATokenAdaptorV2.DepositToAave](#steward-v3-AaveATokenAdaptorV2-DepositToAave) |  | Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)` |
+| withdraw_from_aave | [AaveATokenAdaptorV2.WithdrawFromAave](#steward-v3-AaveATokenAdaptorV2-WithdrawFromAave) |  | Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)` |
+
+
+
+
+
+
+<a name="steward-v3-AaveATokenAdaptorV2-DepositToAave"></a>
+
+### AaveATokenAdaptorV2.DepositToAave
+Allows strategists to lend assets on Aave.
+
+Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [string](#string) |  | The address of the ERC20 token to deposit |
+| amount | [string](#string) |  | The amount to deposit |
+
+
+
+
+
+
+<a name="steward-v3-AaveATokenAdaptorV2-WithdrawFromAave"></a>
+
+### AaveATokenAdaptorV2.WithdrawFromAave
+Allows strategists to withdraw assets from Aave.
+
+Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [string](#string) |  | The address of the ERC20 token to withdraw |
+| amount | [string](#string) |  | The amount to withdraw |
+
+
+
+
+
+
+<a name="steward-v3-AaveATokenAdaptorV2Calls"></a>
+
+### AaveATokenAdaptorV2Calls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [AaveATokenAdaptorV2](#steward-v3-AaveATokenAdaptorV2) | repeated |  |
 
 
 

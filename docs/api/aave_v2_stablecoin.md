@@ -4,20 +4,20 @@
 ## Table of Contents
 
 - [aave_v2_stablecoin.proto](#aave_v2_stablecoin-proto)
-    - [AaveV2Stablecoin](#steward-v2-AaveV2Stablecoin)
-    - [AaveV2Stablecoin.Accrue](#steward-v2-AaveV2Stablecoin-Accrue)
-    - [AaveV2Stablecoin.ClaimAndUnstake](#steward-v2-AaveV2Stablecoin-ClaimAndUnstake)
-    - [AaveV2Stablecoin.EnterPosition](#steward-v2-AaveV2Stablecoin-EnterPosition)
-    - [AaveV2Stablecoin.EnterPositionWithAssets](#steward-v2-AaveV2Stablecoin-EnterPositionWithAssets)
-    - [AaveV2Stablecoin.ExitPosition](#steward-v2-AaveV2Stablecoin-ExitPosition)
-    - [AaveV2Stablecoin.ExitPositionWithAssets](#steward-v2-AaveV2Stablecoin-ExitPositionWithAssets)
-    - [AaveV2Stablecoin.Rebalance](#steward-v2-AaveV2Stablecoin-Rebalance)
-    - [AaveV2Stablecoin.Rebalance.SwapParams](#steward-v2-AaveV2Stablecoin-Rebalance-SwapParams)
-    - [AaveV2Stablecoin.Reinvest](#steward-v2-AaveV2Stablecoin-Reinvest)
-    - [AaveV2Stablecoin.SendFees](#steward-v2-AaveV2Stablecoin-SendFees)
-    - [AaveV2Stablecoin.SetAccrualPeriod](#steward-v2-AaveV2Stablecoin-SetAccrualPeriod)
-    - [AaveV2Stablecoin.SetDepositLimit](#steward-v2-AaveV2Stablecoin-SetDepositLimit)
-    - [AaveV2Stablecoin.SetLiquidityLimit](#steward-v2-AaveV2Stablecoin-SetLiquidityLimit)
+    - [AaveV2Stablecoin](#steward-v3-AaveV2Stablecoin)
+    - [AaveV2Stablecoin.Accrue](#steward-v3-AaveV2Stablecoin-Accrue)
+    - [AaveV2Stablecoin.ClaimAndUnstake](#steward-v3-AaveV2Stablecoin-ClaimAndUnstake)
+    - [AaveV2Stablecoin.EnterPosition](#steward-v3-AaveV2Stablecoin-EnterPosition)
+    - [AaveV2Stablecoin.EnterPositionWithAssets](#steward-v3-AaveV2Stablecoin-EnterPositionWithAssets)
+    - [AaveV2Stablecoin.ExitPosition](#steward-v3-AaveV2Stablecoin-ExitPosition)
+    - [AaveV2Stablecoin.ExitPositionWithAssets](#steward-v3-AaveV2Stablecoin-ExitPositionWithAssets)
+    - [AaveV2Stablecoin.Rebalance](#steward-v3-AaveV2Stablecoin-Rebalance)
+    - [AaveV2Stablecoin.Rebalance.SwapParams](#steward-v3-AaveV2Stablecoin-Rebalance-SwapParams)
+    - [AaveV2Stablecoin.Reinvest](#steward-v3-AaveV2Stablecoin-Reinvest)
+    - [AaveV2Stablecoin.SendFees](#steward-v3-AaveV2Stablecoin-SendFees)
+    - [AaveV2Stablecoin.SetAccrualPeriod](#steward-v3-AaveV2Stablecoin-SetAccrualPeriod)
+    - [AaveV2Stablecoin.SetDepositLimit](#steward-v3-AaveV2Stablecoin-SetDepositLimit)
+    - [AaveV2Stablecoin.SetLiquidityLimit](#steward-v3-AaveV2Stablecoin-SetLiquidityLimit)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -30,7 +30,7 @@
 
 
 
-<a name="steward-v2-AaveV2Stablecoin"></a>
+<a name="steward-v3-AaveV2Stablecoin"></a>
 
 ### AaveV2Stablecoin
 Represents a function call to the Aave V2 Stablecoin cellar
@@ -38,25 +38,25 @@ Represents a function call to the Aave V2 Stablecoin cellar
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| accrue | [AaveV2Stablecoin.Accrue](#steward-v2-AaveV2Stablecoin-Accrue) |  | Represents function `accruePlatformFees()` |
-| claim_and_unstake | [AaveV2Stablecoin.ClaimAndUnstake](#steward-v2-AaveV2Stablecoin-ClaimAndUnstake) |  | Represents function `claimAndUnstake()` |
-| enter_position | [AaveV2Stablecoin.EnterPosition](#steward-v2-AaveV2Stablecoin-EnterPosition) |  | Represents function `enterPosition()` |
-| enter_position_with_assets | [AaveV2Stablecoin.EnterPositionWithAssets](#steward-v2-AaveV2Stablecoin-EnterPositionWithAssets) |  | Represents function `enterPosition(uint256 assets)` |
-| exit_position | [AaveV2Stablecoin.ExitPosition](#steward-v2-AaveV2Stablecoin-ExitPosition) |  | Represents function `exitPosition()` |
-| exit_position_with_assets | [AaveV2Stablecoin.ExitPositionWithAssets](#steward-v2-AaveV2Stablecoin-ExitPositionWithAssets) |  | Represents function `exitPosition(uint256 assets)` |
-| rebalance | [AaveV2Stablecoin.Rebalance](#steward-v2-AaveV2Stablecoin-Rebalance) |  | Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)` |
-| reinvest | [AaveV2Stablecoin.Reinvest](#steward-v2-AaveV2Stablecoin-Reinvest) |  | Represents function `reinvest(uint256 minAssetsOut)` |
-| set_accrual_period | [AaveV2Stablecoin.SetAccrualPeriod](#steward-v2-AaveV2Stablecoin-SetAccrualPeriod) |  | Represents function `setAccrualPeriod(uint32 newAccrualPeriod)` |
-| set_deposit_limit | [AaveV2Stablecoin.SetDepositLimit](#steward-v2-AaveV2Stablecoin-SetDepositLimit) |  | Represents function `setDepositLimit(uint256 limit)` |
-| set_liquidity_limit | [AaveV2Stablecoin.SetLiquidityLimit](#steward-v2-AaveV2Stablecoin-SetLiquidityLimit) |  | Represents function `setLiquidityLimit(uint256 limit)` |
-| send_fees | [AaveV2Stablecoin.SendFees](#steward-v2-AaveV2Stablecoin-SendFees) |  | Represents function `transferFees()` |
+| accrue | [AaveV2Stablecoin.Accrue](#steward-v3-AaveV2Stablecoin-Accrue) |  | Represents function `accruePlatformFees()` |
+| claim_and_unstake | [AaveV2Stablecoin.ClaimAndUnstake](#steward-v3-AaveV2Stablecoin-ClaimAndUnstake) |  | Represents function `claimAndUnstake()` |
+| enter_position | [AaveV2Stablecoin.EnterPosition](#steward-v3-AaveV2Stablecoin-EnterPosition) |  | Represents function `enterPosition()` |
+| enter_position_with_assets | [AaveV2Stablecoin.EnterPositionWithAssets](#steward-v3-AaveV2Stablecoin-EnterPositionWithAssets) |  | Represents function `enterPosition(uint256 assets)` |
+| exit_position | [AaveV2Stablecoin.ExitPosition](#steward-v3-AaveV2Stablecoin-ExitPosition) |  | Represents function `exitPosition()` |
+| exit_position_with_assets | [AaveV2Stablecoin.ExitPositionWithAssets](#steward-v3-AaveV2Stablecoin-ExitPositionWithAssets) |  | Represents function `exitPosition(uint256 assets)` |
+| rebalance | [AaveV2Stablecoin.Rebalance](#steward-v3-AaveV2Stablecoin-Rebalance) |  | Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)` |
+| reinvest | [AaveV2Stablecoin.Reinvest](#steward-v3-AaveV2Stablecoin-Reinvest) |  | Represents function `reinvest(uint256 minAssetsOut)` |
+| set_accrual_period | [AaveV2Stablecoin.SetAccrualPeriod](#steward-v3-AaveV2Stablecoin-SetAccrualPeriod) |  | Represents function `setAccrualPeriod(uint32 newAccrualPeriod)` |
+| set_deposit_limit | [AaveV2Stablecoin.SetDepositLimit](#steward-v3-AaveV2Stablecoin-SetDepositLimit) |  | Represents function `setDepositLimit(uint256 limit)` |
+| set_liquidity_limit | [AaveV2Stablecoin.SetLiquidityLimit](#steward-v3-AaveV2Stablecoin-SetLiquidityLimit) |  | Represents function `setLiquidityLimit(uint256 limit)` |
+| send_fees | [AaveV2Stablecoin.SendFees](#steward-v3-AaveV2Stablecoin-SendFees) |  | Represents function `transferFees()` |
 
 
 
 
 
 
-<a name="steward-v2-AaveV2Stablecoin-Accrue"></a>
+<a name="steward-v3-AaveV2Stablecoin-Accrue"></a>
 
 ### AaveV2Stablecoin.Accrue
 Accrue yield, platform fees, and performance fees..
@@ -68,7 +68,7 @@ Represents function `accrue()`
 
 
 
-<a name="steward-v2-AaveV2Stablecoin-ClaimAndUnstake"></a>
+<a name="steward-v3-AaveV2Stablecoin-ClaimAndUnstake"></a>
 
 ### AaveV2Stablecoin.ClaimAndUnstake
 Claim rewards from Aave and begin cooldown period to unstake them.
@@ -80,7 +80,7 @@ Represents function `claimAndUnstake()`
 
 
 
-<a name="steward-v2-AaveV2Stablecoin-EnterPosition"></a>
+<a name="steward-v3-AaveV2Stablecoin-EnterPosition"></a>
 
 ### AaveV2Stablecoin.EnterPosition
 Pushes total assets into the current Aave lending position.
@@ -92,7 +92,7 @@ Represents function `enterPosition()`
 
 
 
-<a name="steward-v2-AaveV2Stablecoin-EnterPositionWithAssets"></a>
+<a name="steward-v3-AaveV2Stablecoin-EnterPositionWithAssets"></a>
 
 ### AaveV2Stablecoin.EnterPositionWithAssets
 Pushes assets into the current Aave lending position.
@@ -109,7 +109,7 @@ Represents function `enterPosition(uint256 assets)`
 
 
 
-<a name="steward-v2-AaveV2Stablecoin-ExitPosition"></a>
+<a name="steward-v3-AaveV2Stablecoin-ExitPosition"></a>
 
 ### AaveV2Stablecoin.ExitPosition
 Pulls total assets from the current Aave lending position.
@@ -121,7 +121,7 @@ Represents function `enterPosition()`
 
 
 
-<a name="steward-v2-AaveV2Stablecoin-ExitPositionWithAssets"></a>
+<a name="steward-v3-AaveV2Stablecoin-ExitPositionWithAssets"></a>
 
 ### AaveV2Stablecoin.ExitPositionWithAssets
 Pulls assets from the current Aave lending position.
@@ -138,7 +138,7 @@ Represents function `exitPosition(uint256 assets)`
 
 
 
-<a name="steward-v2-AaveV2Stablecoin-Rebalance"></a>
+<a name="steward-v3-AaveV2Stablecoin-Rebalance"></a>
 
 ### AaveV2Stablecoin.Rebalance
 Rebalances current assets into a new asset position.
@@ -152,7 +152,7 @@ https://github.com/curvefi/curve-pool-registry/blob/16a8664952cf61d7fed06acca79a
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | route | [string](#string) | repeated | array of [initial token, pool, token, pool, token, ...] that specifies the swap route on Curve. |
-| swap_params | [AaveV2Stablecoin.Rebalance.SwapParams](#steward-v2-AaveV2Stablecoin-Rebalance-SwapParams) | repeated | An array of up to 4 swap params. Attempting more than four swaps will fail. |
+| swap_params | [AaveV2Stablecoin.Rebalance.SwapParams](#steward-v3-AaveV2Stablecoin-Rebalance-SwapParams) | repeated | An array of up to 4 swap params. Attempting more than four swaps will fail. |
 | min_assets_out | [string](#string) |  | Minimum acceptable assets to be received from the swap (slippage parameter). Must be parsable as an unsigned 256-bit integer. |
 
 
@@ -160,7 +160,7 @@ https://github.com/curvefi/curve-pool-registry/blob/16a8664952cf61d7fed06acca79a
 
 
 
-<a name="steward-v2-AaveV2Stablecoin-Rebalance-SwapParams"></a>
+<a name="steward-v3-AaveV2Stablecoin-Rebalance-SwapParams"></a>
 
 ### AaveV2Stablecoin.Rebalance.SwapParams
 Represents parameters for a single swap. Each swap needs the indeces in Rebalance.route of the in/out token addresses and the swap type. See the Curve contract linked above for more detail.
@@ -177,7 +177,7 @@ Represents parameters for a single swap. Each swap needs the indeces in Rebalanc
 
 
 
-<a name="steward-v2-AaveV2Stablecoin-Reinvest"></a>
+<a name="steward-v3-AaveV2Stablecoin-Reinvest"></a>
 
 ### AaveV2Stablecoin.Reinvest
 Reinvest rewards back into cellar&#39;s current position. Must be called within 2 day unstake period 10 days after `claimAndUnstake` was run.
@@ -194,7 +194,7 @@ Represents function `reinvest(uint256 minAssetsOut)`
 
 
 
-<a name="steward-v2-AaveV2Stablecoin-SendFees"></a>
+<a name="steward-v3-AaveV2Stablecoin-SendFees"></a>
 
 ### AaveV2Stablecoin.SendFees
 Transfer accrued fees to the Sommelier Chain to distribute.
@@ -206,7 +206,7 @@ Represents function `sendFees()`
 
 
 
-<a name="steward-v2-AaveV2Stablecoin-SetAccrualPeriod"></a>
+<a name="steward-v3-AaveV2Stablecoin-SetAccrualPeriod"></a>
 
 ### AaveV2Stablecoin.SetAccrualPeriod
 Set the accrual period over which yield is distributed.
@@ -223,7 +223,7 @@ Represents function `setAccrualPeriod(uint32 newAccrualPeriod)`
 
 
 
-<a name="steward-v2-AaveV2Stablecoin-SetDepositLimit"></a>
+<a name="steward-v3-AaveV2Stablecoin-SetDepositLimit"></a>
 
 ### AaveV2Stablecoin.SetDepositLimit
 Set the per-wallet deposit limit. Uses the same decimals as the current asset.
@@ -240,7 +240,7 @@ Represents function `setDepositLimit(uint256 limit)`
 
 
 
-<a name="steward-v2-AaveV2Stablecoin-SetLiquidityLimit"></a>
+<a name="steward-v3-AaveV2Stablecoin-SetLiquidityLimit"></a>
 
 ### AaveV2Stablecoin.SetLiquidityLimit
 Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.

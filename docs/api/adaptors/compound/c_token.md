@@ -4,12 +4,11 @@
 ## Table of Contents
 
 - [adaptors/compound/c_token.proto](#adaptors_compound_c_token-proto)
-    - [CompoundCTokenAdaptor](#steward-v2-CompoundCTokenAdaptor)
-    - [CompoundCTokenAdaptor.ClaimComp](#steward-v2-CompoundCTokenAdaptor-ClaimComp)
-    - [CompoundCTokenAdaptor.ClaimCompAndSwap](#steward-v2-CompoundCTokenAdaptor-ClaimCompAndSwap)
-    - [CompoundCTokenAdaptor.DepositToCompound](#steward-v2-CompoundCTokenAdaptor-DepositToCompound)
-    - [CompoundCTokenAdaptor.WithdrawFromCompound](#steward-v2-CompoundCTokenAdaptor-WithdrawFromCompound)
-    - [CompoundCTokenAdaptorCalls](#steward-v2-CompoundCTokenAdaptorCalls)
+    - [CompoundCTokenAdaptorV2](#steward-v3-CompoundCTokenAdaptorV2)
+    - [CompoundCTokenAdaptorV2.ClaimComp](#steward-v3-CompoundCTokenAdaptorV2-ClaimComp)
+    - [CompoundCTokenAdaptorV2.DepositToCompound](#steward-v3-CompoundCTokenAdaptorV2-DepositToCompound)
+    - [CompoundCTokenAdaptorV2.WithdrawFromCompound](#steward-v3-CompoundCTokenAdaptorV2-WithdrawFromCompound)
+    - [CompoundCTokenAdaptorV2Calls](#steward-v3-CompoundCTokenAdaptorV2Calls)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -22,30 +21,27 @@
 
 
 
-<a name="steward-v2-CompoundCTokenAdaptor"></a>
+<a name="steward-v3-CompoundCTokenAdaptorV2"></a>
 
-### CompoundCTokenAdaptor
-Represents call data for the Compound C Token adaptor, managing lending positions on Compound.
+### CompoundCTokenAdaptorV2
+Represents call data for the Compound C Token adaptor V2, managing lending positions on Compound.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| swap | [Swap](#steward-v2-Swap) |  | Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
-| oracle_swap | [OracleSwap](#steward-v2-OracleSwap) |  | Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
-| revoke_approval | [RevokeApproval](#steward-v2-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
-| deposit_to_compound | [CompoundCTokenAdaptor.DepositToCompound](#steward-v2-CompoundCTokenAdaptor-DepositToCompound) |  | Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)` |
-| withdraw_from_compound | [CompoundCTokenAdaptor.WithdrawFromCompound](#steward-v2-CompoundCTokenAdaptor-WithdrawFromCompound) |  | Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)` |
-| claim_comp | [CompoundCTokenAdaptor.ClaimComp](#steward-v2-CompoundCTokenAdaptor-ClaimComp) |  | Represents function `claimComp()` |
-| claim_comp_and_swap | [CompoundCTokenAdaptor.ClaimCompAndSwap](#steward-v2-CompoundCTokenAdaptor-ClaimCompAndSwap) |  | Represents function `claimCompAndSwap(ERC20 assetOut, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
+| revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| deposit_to_compound | [CompoundCTokenAdaptorV2.DepositToCompound](#steward-v3-CompoundCTokenAdaptorV2-DepositToCompound) |  | Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)` |
+| withdraw_from_compound | [CompoundCTokenAdaptorV2.WithdrawFromCompound](#steward-v3-CompoundCTokenAdaptorV2-WithdrawFromCompound) |  | Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)` |
+| claim_comp | [CompoundCTokenAdaptorV2.ClaimComp](#steward-v3-CompoundCTokenAdaptorV2-ClaimComp) |  | Represents function `claimComp()` |
 
 
 
 
 
 
-<a name="steward-v2-CompoundCTokenAdaptor-ClaimComp"></a>
+<a name="steward-v3-CompoundCTokenAdaptorV2-ClaimComp"></a>
 
-### CompoundCTokenAdaptor.ClaimComp
+### CompoundCTokenAdaptorV2.ClaimComp
 Allows strategists to claim COMP rewards.
 
 Represents function `claimComp()`
@@ -55,29 +51,9 @@ Represents function `claimComp()`
 
 
 
-<a name="steward-v2-CompoundCTokenAdaptor-ClaimCompAndSwap"></a>
+<a name="steward-v3-CompoundCTokenAdaptorV2-DepositToCompound"></a>
 
-### CompoundCTokenAdaptor.ClaimCompAndSwap
-Allows strategists to claim COMP and immediately swap it using oracleSwap.
-
-Represents function `claimCompAndSwap(ERC20 assetOut, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| asset_out | [string](#string) |  |  |
-| exchange | [Exchange](#steward-v2-Exchange) |  |  |
-| params | [OracleSwapParams](#steward-v2-OracleSwapParams) |  |  |
-| slippage | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="steward-v2-CompoundCTokenAdaptor-DepositToCompound"></a>
-
-### CompoundCTokenAdaptor.DepositToCompound
+### CompoundCTokenAdaptorV2.DepositToCompound
 Allows strategists to lend assets on Compound.
 
 Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
@@ -93,9 +69,9 @@ Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
 
 
 
-<a name="steward-v2-CompoundCTokenAdaptor-WithdrawFromCompound"></a>
+<a name="steward-v3-CompoundCTokenAdaptorV2-WithdrawFromCompound"></a>
 
-### CompoundCTokenAdaptor.WithdrawFromCompound
+### CompoundCTokenAdaptorV2.WithdrawFromCompound
 Allows strategists to withdraw assets from Compound.
 
 Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)`
@@ -111,15 +87,15 @@ Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdra
 
 
 
-<a name="steward-v2-CompoundCTokenAdaptorCalls"></a>
+<a name="steward-v3-CompoundCTokenAdaptorV2Calls"></a>
 
-### CompoundCTokenAdaptorCalls
+### CompoundCTokenAdaptorV2Calls
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| calls | [CompoundCTokenAdaptor](#steward-v2-CompoundCTokenAdaptor) | repeated |  |
+| calls | [CompoundCTokenAdaptorV2](#steward-v3-CompoundCTokenAdaptorV2) | repeated |  |
 
 
 

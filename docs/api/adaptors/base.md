@@ -4,9 +4,9 @@
 ## Table of Contents
 
 - [adaptors/base.proto](#adaptors_base-proto)
-    - [OracleSwap](#steward-v2-OracleSwap)
-    - [RevokeApproval](#steward-v2-RevokeApproval)
-    - [Swap](#steward-v2-Swap)
+    - [OracleSwap](#steward-v3-OracleSwap)
+    - [RevokeApproval](#steward-v3-RevokeApproval)
+    - [Swap](#steward-v3-Swap)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -19,7 +19,7 @@
 
 
 
-<a name="steward-v2-OracleSwap"></a>
+<a name="steward-v3-OracleSwap"></a>
 
 ### OracleSwap
 Helper function to make safe &#34;blind&#34; Uniswap Swaps by comparing value in vs value out of the swap.
@@ -32,8 +32,8 @@ Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn,
 | asset_in | [string](#string) |  | Asset to swap from |
 | asset_out | [string](#string) |  | Asset to swap to |
 | amount_in | [string](#string) |  | Amount to swap |
-| exchange | [Exchange](#steward-v2-Exchange) |  | The exchange to make the swap on |
-| params | [OracleSwapParams](#steward-v2-OracleSwapParams) |  | The parameters for the swap |
+| exchange | [Exchange](#steward-v3-Exchange) |  | The exchange to make the swap on |
+| params | [OracleSwapParams](#steward-v3-OracleSwapParams) |  | The parameters for the swap |
 | slippage | [uint64](#uint64) |  | The slippage allowed for the swap |
 
 
@@ -41,7 +41,7 @@ Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn,
 
 
 
-<a name="steward-v2-RevokeApproval"></a>
+<a name="steward-v3-RevokeApproval"></a>
 
 ### RevokeApproval
 Allows strategists to zero out an approval for a given `asset`.
@@ -59,7 +59,7 @@ Represents function `revokeApproval(ERC20 asset, address spender)`
 
 
 
-<a name="steward-v2-Swap"></a>
+<a name="steward-v3-Swap"></a>
 
 ### Swap
 Helper function that allows swaps using the Swap Router
@@ -72,8 +72,8 @@ Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapR
 | asset_in | [string](#string) |  | Asset to swap from |
 | asset_out | [string](#string) |  | Asset to swap to |
 | amount_in | [string](#string) |  | Amount to swap |
-| exchange | [Exchange](#steward-v2-Exchange) |  | The exchange to make the swap on |
-| params | [SwapParams](#steward-v2-SwapParams) |  | The parameters for the swap |
+| exchange | [Exchange](#steward-v3-Exchange) |  | The exchange to make the swap on |
+| params | [SwapParams](#steward-v3-SwapParams) |  | The parameters for the swap |
 
 
 

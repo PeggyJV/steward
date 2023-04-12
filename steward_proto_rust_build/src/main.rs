@@ -7,6 +7,7 @@
 // run 'cargo run'
 
 use std::path::Path;
+use std::process;
 use std::{
     fs::{self, create_dir_all, remove_dir_all},
     path::PathBuf,
@@ -64,7 +65,12 @@ fn main() {
     let mut config = prost_build::Config::default();
     config.out_dir(tmp_dir);
     config.type_attribute(".", "#[derive(serde::Deserialize, serde::Serialize)]");
-    config.compile_protos(&protos, &steward_proto_dir).unwrap();
+    config
+        .compile_protos(&protos, &steward_proto_dir)
+        .unwrap_or_else(|e| {
+            println!("{e}");
+            process::exit(1);
+        });
 
     // Compile all proto client for GRPC services
     println!("Compiling proto clients for GRPC services...");

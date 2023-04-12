@@ -62,6 +62,7 @@ var (
 	// address once they are launched; therefore their initial values don't matter.
 	aaveCellar      = common.HexToAddress("0x0000000000000000000000000000000000000000")
 	vaultCellar     = common.HexToAddress("0x0000000000000000000000000000000000000000")
+	v2_2Cellar      = common.HexToAddress("0x0000000000000000000000000000000000000000")
 	adaptorContract = common.HexToAddress("0x0000000000000000000000000000000000000000")
 	gravityContract = common.HexToAddress("0x04C89607413713Ec9775E14b954286519d836FEf")
 )
@@ -367,7 +368,7 @@ func (s *IntegrationTestSuite) initGenesis() {
 	corkGenState := corktypes.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[corktypes.ModuleName], &corkGenState))
 	corkGenState.CellarIds = corktypes.CellarIDSet{
-		Ids: []string{aaveCellar.Hex(), vaultCellar.Hex()},
+		Ids: []string{aaveCellar.Hex(), vaultCellar.Hex(), v2_2Cellar.Hex()},
 	}
 	bz, err = cdc.MarshalJSON(&corkGenState)
 	s.Require().NoError(err)
@@ -544,6 +545,18 @@ func (s *IntegrationTestSuite) runEthContainer() {
 		}
 		return false
 	}, time.Minute*5, time.Second*10, "unable to retrieve vault contract address from logs")
+
+	s.Require().Eventuallyf(func() bool {
+
+		for _, s := range strings.Split(ethereumLogOutput.String(), "\n") {
+			if strings.HasPrefix(s, "cellar v2.2 contract deployed at") {
+				strSpl := strings.Split(s, "-")
+				v2_2Cellar = common.HexToAddress(strings.ReplaceAll(strSpl[1], " ", ""))
+				return true
+			}
+		}
+		return false
+	}, time.Minute*5, time.Second*10, "unable to retrieve cellar v2.2 contract address from logs")
 
 	s.Require().Eventuallyf(func() bool {
 

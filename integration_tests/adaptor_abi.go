@@ -30,7 +30,7 @@ var (
 
 // AdaptorMetaData contains all meta data concerning the Adaptor contract.
 var AdaptorMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"debtTokenToBorrow\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amountToBorrow\",\"type\":\"uint256\"}],\"name\":\"BorrowFromAave\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"contractERC20\",\"name\":\"assetOut\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enumCellar.Exchange\",\"name\":\"exchange\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"params\",\"type\":\"bytes\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"slippage\",\"type\":\"uint64\"}],\"name\":\"ClaimCompAndSwap\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnerUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"contractERC20\",\"name\":\"tokenIn\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"contractERC20\",\"name\":\"tokenToRepay\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amountIn\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumCellar.Exchange\",\"name\":\"exchange\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"params\",\"type\":\"bytes\"}],\"name\":\"SwapAndRepay\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"debtTokenToBorrow\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountToBorrow\",\"type\":\"uint256\"}],\"name\":\"borrowFromAave\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractERC20\",\"name\":\"assetOut\",\"type\":\"address\"},{\"internalType\":\"enumCellar.Exchange\",\"name\":\"exchange\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"params\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"slippage\",\"type\":\"uint64\"}],\"name\":\"claimCompAndSwap\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"setOwner\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractERC20\",\"name\":\"tokenIn\",\"type\":\"address\"},{\"internalType\":\"contractERC20\",\"name\":\"tokenToRepay\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountIn\",\"type\":\"uint256\"},{\"internalType\":\"enumCellar.Exchange\",\"name\":\"exchange\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"params\",\"type\":\"bytes\"}],\"name\":\"swapAndRepay\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"debtTokenToBorrow\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amountToBorrow\",\"type\":\"uint256\"}],\"name\":\"BorrowFromAave\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"contractERC20\",\"name\":\"assetOut\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enumCellar.Exchange\",\"name\":\"exchange\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"params\",\"type\":\"bytes\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"slippage\",\"type\":\"uint64\"}],\"name\":\"ClaimCompAndSwap\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address[]\",\"name\":\"loanToken\",\"type\":\"address[]\"},{\"indexed\":false,\"internalType\":\"uint256[]\",\"name\":\"loanAmount\",\"type\":\"uint256[]\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"params\",\"type\":\"bytes\"}],\"name\":\"FlashLoan\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnerUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"contractERC20\",\"name\":\"tokenIn\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"contractERC20\",\"name\":\"tokenToRepay\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amountIn\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumCellar.Exchange\",\"name\":\"exchange\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"params\",\"type\":\"bytes\"}],\"name\":\"SwapAndRepay\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address[]\",\"name\":\"path\",\"type\":\"address[]\"},{\"indexed\":false,\"internalType\":\"uint24[]\",\"name\":\"poolFees\",\"type\":\"uint24[]\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amountOutMin\",\"type\":\"uint256\"}],\"name\":\"SwapWithUniV3\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"debtTokenToBorrow\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountToBorrow\",\"type\":\"uint256\"}],\"name\":\"borrowFromAave\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractERC20\",\"name\":\"assetOut\",\"type\":\"address\"},{\"internalType\":\"enumCellar.Exchange\",\"name\":\"exchange\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"params\",\"type\":\"bytes\"},{\"internalType\":\"uint64\",\"name\":\"slippage\",\"type\":\"uint64\"}],\"name\":\"claimCompAndSwap\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[]\",\"name\":\"loanToken\",\"type\":\"address[]\"},{\"internalType\":\"uint256[]\",\"name\":\"loanAmount\",\"type\":\"uint256[]\"},{\"internalType\":\"bytes\",\"name\":\"params\",\"type\":\"bytes\"}],\"name\":\"flashLoan\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"setOwner\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractERC20\",\"name\":\"tokenIn\",\"type\":\"address\"},{\"internalType\":\"contractERC20\",\"name\":\"tokenToRepay\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountIn\",\"type\":\"uint256\"},{\"internalType\":\"enumCellar.Exchange\",\"name\":\"exchange\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"params\",\"type\":\"bytes\"}],\"name\":\"swapAndRepay\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[]\",\"name\":\"path\",\"type\":\"address[]\"},{\"internalType\":\"uint24[]\",\"name\":\"poolFees\",\"type\":\"uint24[]\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amountOutMin\",\"type\":\"uint256\"}],\"name\":\"swapWithUniV3\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // AdaptorABI is the input ABI used to generate the binding from.
@@ -252,6 +252,27 @@ func (_Adaptor *AdaptorTransactorSession) ClaimCompAndSwap(assetOut common.Addre
 	return _Adaptor.Contract.ClaimCompAndSwap(&_Adaptor.TransactOpts, assetOut, exchange, params, slippage)
 }
 
+// FlashLoan is a paid mutator transaction binding the contract method 0x788fb484.
+//
+// Solidity: function flashLoan(address[] loanToken, uint256[] loanAmount, bytes params) returns()
+func (_Adaptor *AdaptorTransactor) FlashLoan(opts *bind.TransactOpts, loanToken []common.Address, loanAmount []*big.Int, params []byte) (*types.Transaction, error) {
+	return _Adaptor.contract.Transact(opts, "flashLoan", loanToken, loanAmount, params)
+}
+
+// FlashLoan is a paid mutator transaction binding the contract method 0x788fb484.
+//
+// Solidity: function flashLoan(address[] loanToken, uint256[] loanAmount, bytes params) returns()
+func (_Adaptor *AdaptorSession) FlashLoan(loanToken []common.Address, loanAmount []*big.Int, params []byte) (*types.Transaction, error) {
+	return _Adaptor.Contract.FlashLoan(&_Adaptor.TransactOpts, loanToken, loanAmount, params)
+}
+
+// FlashLoan is a paid mutator transaction binding the contract method 0x788fb484.
+//
+// Solidity: function flashLoan(address[] loanToken, uint256[] loanAmount, bytes params) returns()
+func (_Adaptor *AdaptorTransactorSession) FlashLoan(loanToken []common.Address, loanAmount []*big.Int, params []byte) (*types.Transaction, error) {
+	return _Adaptor.Contract.FlashLoan(&_Adaptor.TransactOpts, loanToken, loanAmount, params)
+}
+
 // SetOwner is a paid mutator transaction binding the contract method 0x13af4035.
 //
 // Solidity: function setOwner(address newOwner) returns()
@@ -292,6 +313,27 @@ func (_Adaptor *AdaptorSession) SwapAndRepay(tokenIn common.Address, tokenToRepa
 // Solidity: function swapAndRepay(address tokenIn, address tokenToRepay, uint256 amountIn, uint8 exchange, bytes params) returns()
 func (_Adaptor *AdaptorTransactorSession) SwapAndRepay(tokenIn common.Address, tokenToRepay common.Address, amountIn *big.Int, exchange uint8, params []byte) (*types.Transaction, error) {
 	return _Adaptor.Contract.SwapAndRepay(&_Adaptor.TransactOpts, tokenIn, tokenToRepay, amountIn, exchange, params)
+}
+
+// SwapWithUniV3 is a paid mutator transaction binding the contract method 0xc4547a73.
+//
+// Solidity: function swapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin) returns()
+func (_Adaptor *AdaptorTransactor) SwapWithUniV3(opts *bind.TransactOpts, path []common.Address, poolFees []*big.Int, amount *big.Int, amountOutMin *big.Int) (*types.Transaction, error) {
+	return _Adaptor.contract.Transact(opts, "swapWithUniV3", path, poolFees, amount, amountOutMin)
+}
+
+// SwapWithUniV3 is a paid mutator transaction binding the contract method 0xc4547a73.
+//
+// Solidity: function swapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin) returns()
+func (_Adaptor *AdaptorSession) SwapWithUniV3(path []common.Address, poolFees []*big.Int, amount *big.Int, amountOutMin *big.Int) (*types.Transaction, error) {
+	return _Adaptor.Contract.SwapWithUniV3(&_Adaptor.TransactOpts, path, poolFees, amount, amountOutMin)
+}
+
+// SwapWithUniV3 is a paid mutator transaction binding the contract method 0xc4547a73.
+//
+// Solidity: function swapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin) returns()
+func (_Adaptor *AdaptorTransactorSession) SwapWithUniV3(path []common.Address, poolFees []*big.Int, amount *big.Int, amountOutMin *big.Int) (*types.Transaction, error) {
+	return _Adaptor.Contract.SwapWithUniV3(&_Adaptor.TransactOpts, path, poolFees, amount, amountOutMin)
 }
 
 // AdaptorBorrowFromAaveIterator is returned from FilterBorrowFromAave and is used to iterate over the raw logs and unpacked data for BorrowFromAave events raised by the Adaptor contract.
@@ -560,6 +602,142 @@ func (_Adaptor *AdaptorFilterer) WatchClaimCompAndSwap(opts *bind.WatchOpts, sin
 func (_Adaptor *AdaptorFilterer) ParseClaimCompAndSwap(log types.Log) (*AdaptorClaimCompAndSwap, error) {
 	event := new(AdaptorClaimCompAndSwap)
 	if err := _Adaptor.contract.UnpackLog(event, "ClaimCompAndSwap", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// AdaptorFlashLoanIterator is returned from FilterFlashLoan and is used to iterate over the raw logs and unpacked data for FlashLoan events raised by the Adaptor contract.
+type AdaptorFlashLoanIterator struct {
+	Event *AdaptorFlashLoan // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *AdaptorFlashLoanIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(AdaptorFlashLoan)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(AdaptorFlashLoan)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *AdaptorFlashLoanIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *AdaptorFlashLoanIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// AdaptorFlashLoan represents a FlashLoan event raised by the Adaptor contract.
+type AdaptorFlashLoan struct {
+	LoanToken  []common.Address
+	LoanAmount []*big.Int
+	Params     []byte
+	Raw        types.Log // Blockchain specific contextual infos
+}
+
+// FilterFlashLoan is a free log retrieval operation binding the contract event 0x9fbcb54e2fedf70cdd17eea8dada1de3123bc15cc424b378738467a9d83c13d9.
+//
+// Solidity: event FlashLoan(address[] loanToken, uint256[] loanAmount, bytes params)
+func (_Adaptor *AdaptorFilterer) FilterFlashLoan(opts *bind.FilterOpts) (*AdaptorFlashLoanIterator, error) {
+
+	logs, sub, err := _Adaptor.contract.FilterLogs(opts, "FlashLoan")
+	if err != nil {
+		return nil, err
+	}
+	return &AdaptorFlashLoanIterator{contract: _Adaptor.contract, event: "FlashLoan", logs: logs, sub: sub}, nil
+}
+
+// WatchFlashLoan is a free log subscription operation binding the contract event 0x9fbcb54e2fedf70cdd17eea8dada1de3123bc15cc424b378738467a9d83c13d9.
+//
+// Solidity: event FlashLoan(address[] loanToken, uint256[] loanAmount, bytes params)
+func (_Adaptor *AdaptorFilterer) WatchFlashLoan(opts *bind.WatchOpts, sink chan<- *AdaptorFlashLoan) (event.Subscription, error) {
+
+	logs, sub, err := _Adaptor.contract.WatchLogs(opts, "FlashLoan")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(AdaptorFlashLoan)
+				if err := _Adaptor.contract.UnpackLog(event, "FlashLoan", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseFlashLoan is a log parse operation binding the contract event 0x9fbcb54e2fedf70cdd17eea8dada1de3123bc15cc424b378738467a9d83c13d9.
+//
+// Solidity: event FlashLoan(address[] loanToken, uint256[] loanAmount, bytes params)
+func (_Adaptor *AdaptorFilterer) ParseFlashLoan(log types.Log) (*AdaptorFlashLoan, error) {
+	event := new(AdaptorFlashLoan)
+	if err := _Adaptor.contract.UnpackLog(event, "FlashLoan", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -851,6 +1029,143 @@ func (_Adaptor *AdaptorFilterer) WatchSwapAndRepay(opts *bind.WatchOpts, sink ch
 func (_Adaptor *AdaptorFilterer) ParseSwapAndRepay(log types.Log) (*AdaptorSwapAndRepay, error) {
 	event := new(AdaptorSwapAndRepay)
 	if err := _Adaptor.contract.UnpackLog(event, "SwapAndRepay", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// AdaptorSwapWithUniV3Iterator is returned from FilterSwapWithUniV3 and is used to iterate over the raw logs and unpacked data for SwapWithUniV3 events raised by the Adaptor contract.
+type AdaptorSwapWithUniV3Iterator struct {
+	Event *AdaptorSwapWithUniV3 // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *AdaptorSwapWithUniV3Iterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(AdaptorSwapWithUniV3)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(AdaptorSwapWithUniV3)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *AdaptorSwapWithUniV3Iterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *AdaptorSwapWithUniV3Iterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// AdaptorSwapWithUniV3 represents a SwapWithUniV3 event raised by the Adaptor contract.
+type AdaptorSwapWithUniV3 struct {
+	Path         []common.Address
+	PoolFees     []*big.Int
+	Amount       *big.Int
+	AmountOutMin *big.Int
+	Raw          types.Log // Blockchain specific contextual infos
+}
+
+// FilterSwapWithUniV3 is a free log retrieval operation binding the contract event 0xd5dbebd2e41b175921fe93b1ffea965d65dc11ed9f7ccc4077b2ff8436a7cdc2.
+//
+// Solidity: event SwapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin)
+func (_Adaptor *AdaptorFilterer) FilterSwapWithUniV3(opts *bind.FilterOpts) (*AdaptorSwapWithUniV3Iterator, error) {
+
+	logs, sub, err := _Adaptor.contract.FilterLogs(opts, "SwapWithUniV3")
+	if err != nil {
+		return nil, err
+	}
+	return &AdaptorSwapWithUniV3Iterator{contract: _Adaptor.contract, event: "SwapWithUniV3", logs: logs, sub: sub}, nil
+}
+
+// WatchSwapWithUniV3 is a free log subscription operation binding the contract event 0xd5dbebd2e41b175921fe93b1ffea965d65dc11ed9f7ccc4077b2ff8436a7cdc2.
+//
+// Solidity: event SwapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin)
+func (_Adaptor *AdaptorFilterer) WatchSwapWithUniV3(opts *bind.WatchOpts, sink chan<- *AdaptorSwapWithUniV3) (event.Subscription, error) {
+
+	logs, sub, err := _Adaptor.contract.WatchLogs(opts, "SwapWithUniV3")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(AdaptorSwapWithUniV3)
+				if err := _Adaptor.contract.UnpackLog(event, "SwapWithUniV3", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSwapWithUniV3 is a log parse operation binding the contract event 0xd5dbebd2e41b175921fe93b1ffea965d65dc11ed9f7ccc4077b2ff8436a7cdc2.
+//
+// Solidity: event SwapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin)
+func (_Adaptor *AdaptorFilterer) ParseSwapWithUniV3(log types.Log) (*AdaptorSwapWithUniV3, error) {
+	event := new(AdaptorSwapWithUniV3)
+	if err := _Adaptor.contract.UnpackLog(event, "SwapWithUniV3", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
