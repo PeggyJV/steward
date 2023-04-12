@@ -20,7 +20,10 @@ use crate::{
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
 };
 
-use super::{log_cellar_call, normalize_address, BLOCKED_ADAPTORS, BLOCKED_POSITIONS};
+use super::{
+    log_cellar_call, normalize_address, ALLOWED_CATALOGUE_ADAPTORS, BLOCKED_ADAPTORS,
+    BLOCKED_POSITIONS,
+};
 
 const CELLAR_NAME: &str = "CellarV2.2";
 
@@ -205,6 +208,28 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             let call = LiftShutdownCall {};
 
             Ok(CellarV2_2Calls::LiftShutdown(call).encode())
+        }
+        Function::AddAdaptorToCatalogue(params) => {
+            let adaptor_address = normalize_address(params.adaptor.clone());
+            if !ALLOWED_CATALOGUE_ADAPTORS.contains(&adaptor_address.as_str()) {
+                return Err(ErrorKind::SPCallError
+                    .context(format!(
+                        "adding this adaptor to catalogue is not allowed: {}",
+                        params.adaptor
+                    ))
+                    .into());
+            }
+
+            log_cellar_call(
+                CELLAR_NAME,
+                &AddAdaptorToCatalogueCall::function_name(),
+                &cellar_id,
+            );
+            let call = AddAdaptorToCatalogueCall {
+                adaptor: sp_call_parse_address(params.adaptor)?,
+            };
+
+            Ok(CellarV2_2Calls::AddAdaptorToCatalogue(call).encode())
         }
     }
 }

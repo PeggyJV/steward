@@ -212,6 +212,8 @@ message CellarV2_2 {
             SetStrategistPlatformCut set_strategist_platform_cut = 10;
             // Represents function `liftShutdown()`
             LiftShutdown lift_shutdown = 11;
+            // Represents function `addAdaptorToCatalogue(address adaptor)`
+            AddAdaptorToCatalogue add_adaptor_to_catalogue = 12;
         }
     }
 
@@ -327,6 +329,15 @@ message CellarV2_2 {
     * Represents function `liftShutdown()`
     */
     message LiftShutdown {}
+
+    /*
+    * Allows the owner to add an adaptor to the Cellar's adaptor catalogue
+    *
+    * Represents function `addAdaptorToCatalogue(address adaptor)`
+    */
+    message AddAdaptorToCatalogue {
+        string adaptor = 1;
+    }
 
     /*
     * Allows caller to call multiple functions in a single TX.

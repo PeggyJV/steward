@@ -1892,7 +1892,7 @@ pub mod cellar_v2_2 {
     pub struct FunctionCall {
         #[prost(
             oneof = "function_call::Function",
-            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11"
+            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12"
         )]
         pub function: ::core::option::Option<function_call::Function>,
     }
@@ -1933,6 +1933,9 @@ pub mod cellar_v2_2 {
             /// Represents function `liftShutdown()`
             #[prost(message, tag = "11")]
             LiftShutdown(super::LiftShutdown),
+            /// Represents function `addAdaptorToCatalogue(address adaptor)`
+            #[prost(message, tag = "12")]
+            AddAdaptorToCatalogue(super::AddAdaptorToCatalogue),
         }
     }
     ///
@@ -2052,6 +2055,15 @@ pub mod cellar_v2_2 {
     /// Represents function `liftShutdown()`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct LiftShutdown {}
+    ///
+    /// Allows the owner to add an adaptor to the Cellar's adaptor catalogue
+    ///
+    /// Represents function `addAdaptorToCatalogue(address adaptor)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct AddAdaptorToCatalogue {
+        #[prost(string, tag = "1")]
+        pub adaptor: ::prost::alloc::string::String,
+    }
     ///
     /// Allows caller to call multiple functions in a single TX.
     ///
