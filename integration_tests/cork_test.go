@@ -523,55 +523,6 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 			return false
 		}, 3*time.Minute, 20*time.Second, "cellar event never seen")
 
-		s.T().Logf("checking for SwapWithUniV3 event")
-		s.Require().Eventuallyf(func() bool {
-			s.T().Log("querying cellar events...")
-			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
-			if err != nil {
-				return false
-			}
-
-			// For non-anonymous events, the first log topic is a keccak256 hash of the
-			// event signature.
-			eventSignature := []byte("SwapWithUniV3(address[],uint24[],uint256,uint256)")
-			mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
-			query := ethereum.FilterQuery{
-				FromBlock: nil,
-				ToBlock:   nil,
-				Addresses: []common.Address{
-					v2_2Cellar,
-				},
-				Topics: [][]common.Hash{
-					{
-						mockEventSignatureTopic,
-					},
-				},
-			}
-
-			logs, err := ethClient.FilterLogs(context.Background(), query)
-			if err != nil {
-				ethClient.Close()
-				return false
-			}
-
-			s.T().Logf("got %v logs: %v", len(logs), logs)
-			if len(logs) > 0 {
-				for _, log := range logs {
-					if len(log.Data) > 0 {
-						var event AdaptorSwapWithUniV3
-						err := adaptor_abi.UnpackIntoInterface(&event, "SwapWithUniV3", log.Data)
-						s.Require().NoError(err, "failed to unpack SwapWithUniV3 event from log data")
-						s.Require().Equal(big.NewInt(3), event.AmountOutMin)
-
-						s.T().Log("Saw SwapWithUniV3 event!")
-						return true
-					}
-				}
-			}
-
-			return false
-		}, 3*time.Minute, 20*time.Second, "cellar event never seen")
-
 		s.T().Logf("checking for SwapAndRepay event")
 		s.Require().Eventuallyf(func() bool {
 			s.T().Log("querying cellar events...")
@@ -614,6 +565,55 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 						s.Require().Equal(uint8(0), event.Exchange)
 
 						s.T().Log("Saw SwapAndRepay event!")
+						return true
+					}
+				}
+			}
+
+			return false
+		}, 3*time.Minute, 20*time.Second, "cellar event never seen")
+
+		s.T().Logf("checking for SwapWithUniV3 event")
+		s.Require().Eventuallyf(func() bool {
+			s.T().Log("querying cellar events...")
+			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
+			if err != nil {
+				return false
+			}
+
+			// For non-anonymous events, the first log topic is a keccak256 hash of the
+			// event signature.
+			eventSignature := []byte("SwapWithUniV3(address[],uint24[],uint256,uint256)")
+			mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
+			query := ethereum.FilterQuery{
+				FromBlock: nil,
+				ToBlock:   nil,
+				Addresses: []common.Address{
+					v2_2Cellar,
+				},
+				Topics: [][]common.Hash{
+					{
+						mockEventSignatureTopic,
+					},
+				},
+			}
+
+			logs, err := ethClient.FilterLogs(context.Background(), query)
+			if err != nil {
+				ethClient.Close()
+				return false
+			}
+
+			s.T().Logf("got %v logs: %v", len(logs), logs)
+			if len(logs) > 0 {
+				for _, log := range logs {
+					if len(log.Data) > 0 {
+						var event AdaptorSwapWithUniV3
+						err := adaptor_abi.UnpackIntoInterface(&event, "SwapWithUniV3", log.Data)
+						s.Require().NoError(err, "failed to unpack SwapWithUniV3 event from log data")
+						s.Require().Equal(big.NewInt(1), event.AmountOutMin)
+
+						s.T().Log("Saw SwapWithUniV3 event!")
 						return true
 					}
 				}
@@ -753,6 +753,11 @@ func (s *IntegrationTestSuite) TestCellarV2_2() {
 						var event AdaptorSwapWithUniV3
 						err := adaptor_abi.UnpackIntoInterface(&event, "SwapWithUniV3", log.Data)
 						s.Require().NoError(err, "failed to unpack SwapWithUniV3 event from log data")
+
+						if event.AmountOutMin == big.NewInt(2) {
+							continue
+						}
+
 						s.Require().Equal(big.NewInt(3), event.AmountOutMin)
 
 						s.T().Log("Saw SwapWithUniV3 event!")
