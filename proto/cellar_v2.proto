@@ -5,15 +5,22 @@
 */
 
 syntax = "proto3";
-package steward.v3;
+package steward.v4;
 
 option go_package = "/steward_proto";
 
 import "adaptors/aave/a_token.proto";
 import "adaptors/aave/debt_token.proto";
+import "adaptors/aave/aave_v3_a_token.proto";
+import "adaptors/aave/aave_v3_debt_token.proto";
 import "adaptors/compound/c_token.proto";
 import "adaptors/uniswap/uniswap_v3.proto";
+import "adaptors/uniswap/swap_with_uniswap.proto";
+import "adaptors/fees_and_reserves.proto";
+import "adaptors/0x/zero_x.proto";
+import "adaptors/1inch/oneinch.proto";
 import "adaptors/vesting_simple.proto";
+import "adaptors/sommelier/cellar_adaptor.proto";
 
 /*
 * Represents a function call to a cellar that implements Cellar.sol
@@ -55,23 +62,179 @@ message CellarV2 {
         bool in_debt_array = 4;
     }
 
-    // Represents a call to adaptor an. The cellar must be authorized to call the target adaptor.
-    message AdaptorCall {
+    /*
+    * Allows strategists to manage their Cellar using arbitrary logic calls to adaptors.
+    *
+    * Represents function `callOnAdaptor(AdaptorCall[] memory data)`
+    */
+    message CallOnAdaptor {
+        repeated AdaptorCall data = 1;
+    }
+
+    /*
+    * Remove the position at a given index from the list of positions used by the cellar.
+    *
+    * Represents function `removePosition(uint32 index, bool inDebtArray)`
+    */
+    message RemovePosition {
+        // Index at which to remove the position
+        uint32 index = 1;
+        // Whether to remove position from the debt array, or the credit array.
+        bool in_debt_array = 2;
+    }
+
+    /*
+    * Set the holding position used of the cellar.
+    *
+    * Represents function `setHoldingPosition(uint32 positionId)`
+    */
+    message SetHoldingPosition {
+        // ID (index) of the new holding position to use
+        uint32 position_id = 1;
+    }
+
+    /*
+    * Sets the Strategists payout address.
+    *
+    * Represents function `setStrategistPayoutAddress(address payout)`
+    */
+    message SetStrategistPayoutAddress {
+        string payout = 1;
+    }
+
+    /*
+    * Swap the positions at two given indeces.
+    *
+    * Represents function `swapPositions(uint32 index1, uint32 index2, bool inDebtArray)`
+    */
+    message SwapPositions {
+        // Index of the first position
+        uint32 index_1 = 1;
+        // Index of the second position
+        uint32 index_2 = 2;
+        // Whether to switch positions in the debt array, or the credit array.
+        bool in_debt_array = 3;
+    }
+
+    /*
+    * Allows share lock period to be updated.
+    *
+    * Represents function `setShareLockPeriod(uint256 newLock)`
+    */
+    message SetShareLockPeriod {
+        string new_lock = 1;
+    }
+
+    /*
+    * Changes the cellar's allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
+    * during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
+    *
+    * Represents function `setRebalanceDeviation(uint256)`
+    */
+    message SetRebalanceDeviation {
+        string new_deviation = 1;
+    }
+}
+
+/*
+* Represent a function call initiated through a governance proposal
+*/
+message CellarV2Governance {
+    // The function to call on the target cellar
+    oneof function {
+        // Represents function `initiateShutdown()`
+        InitiateShutdown initiate_shutdown = 1;
+        // Represents function `liftShutdown()`
+        LiftShutdown lift_shutdown = 2;
+        // Represents function `setPlatformFee(uint256)`
+        SetPlatformFee set_platform_fee = 3;
+        // Represents function `setStrategistPlatformCut(address)`
+        SetStrategistPlatformCut set_strategist_platform_cut = 4;
+        // Represents function `setupAdaptor(address adaptor)`
+        SetupAdaptor setup_adaptor = 5;
+    }
+
+    // Represents function `initiateShutdown()`
+    message InitiateShutdown {
+    }
+
+    // Represents function `liftShutdown()`
+    message LiftShutdown {
+    }
+
+    // Represents function `setPlatformFee(uint64)`
+    message SetPlatformFee {
+        // New platform fee
+        uint64 amount = 1;
+    }
+
+    // Represents function `setStrategistPlatformCut(uint64)`
+    message SetStrategistPlatformCut {
+        // New strategist platform cut
+        uint64 amount = 1;
+    }
+
+    /*
+    * Allows owner to add new adaptors for the cellar to use.
+    *
+    * Represents function `setupAdaptor(address adaptor)`
+    */
+    message SetupAdaptor {
         // Address of the adaptor
         string adaptor = 1;
-        // The function call data for the adaptor
-        oneof call_data {
-            // Represents function calls to the UniswapV3Adaptor
-            UniswapV3AdaptorCalls uniswap_v3_calls = 2;
-            // Represents function calls to the AaveATokenAdaptor
-            AaveATokenAdaptorCalls aave_a_token_calls = 3;
-            // Represents function calls to the AavaDebtTokenAdaptor
-            AaveDebtTokenAdaptorCalls aave_debt_token_calls = 4;
-            // Represents function calls to the CompoundCTokenAdaptor
-            CompoundCTokenAdaptorCalls compound_c_token_calls = 5;
-            // Represents function calls to the VestingSimpleAdaptor
-            VestingSimpleAdaptorCalls vesting_simple_calls = 6;
+    }
+}
+
+message CellarV2_2 {
+    oneof call_type {
+        // Represents a single function call
+        FunctionCall function_call = 1;
+        // Represents multiple, ordered function calls
+        Multicall multicall = 2;
+    }
+
+    // The function you wish to execute on the target cellar
+    message FunctionCall {
+        oneof function {
+            // Represents function `addPosition(uint256 index, address position)`
+            AddPosition add_position = 1;
+            // Represents function `callOnAdaptor(AdaptorCall[] memory data)`
+            CallOnAdaptor call_on_adaptor = 2;
+            // Represents function `removePosition(uint256 index)`
+            RemovePosition remove_position = 3;
+            // Represents function `setHoldingPosition(uint32 position_id)`
+            SetHoldingPosition set_holding_position = 4;
+            // Represents function `setStrategistPayoutAddress(address payout)`
+            SetStrategistPayoutAddress set_strategist_payout_address = 5;
+            // Represents function `swapPositions(uint256 index1, uint256 index2)`
+            SwapPositions swap_positions = 6;
+            // Represents function `setRebalanceDeviation(uint265)`
+            SetRebalanceDeviation set_rebalance_deviation = 7;
+            // Represents function `setShareLockPeriod(uint256 newLock)`
+            SetShareLockPeriod set_share_lock_period = 8;
+            // Represents function `initiateShutdown()`
+            InitiateShutdown initiate_shutdown = 9;
+            // Represents function `setStrategistPlatformCut(uint64 cut)`
+            SetStrategistPlatformCut set_strategist_platform_cut = 10;
+            // Represents function `liftShutdown()`
+            LiftShutdown lift_shutdown = 11;
         }
+    }
+
+    /*
+    * Insert a trusted position to the list of positions used by the cellar at a given index.
+    *
+    * Represents function `addPosition(uint32 index, uint32 positionId, bytes configurationData, bool inDebtArray)`
+    */
+    message AddPosition {
+        // Index at which to add the position
+        uint32 index = 1;
+        // The position's ID in the cellar registry
+        uint32 position_id = 2;
+        // Data used to configure how the position behaves
+        bytes configuration_data = 3;
+        // Whether to add position in the debt array, or the credit array.
+        bool in_debt_array = 4;
     }
 
     /*
@@ -146,53 +309,228 @@ message CellarV2 {
     message SetRebalanceDeviation {
         string new_deviation = 1;
     }
+
+    /*
+    * Shutdown the cellar. Used in an emergency or if the cellar has been deprecated.
+    *
+    * Represents function `initiateShutdown()`
+    */
+    message InitiateShutdown {}
+
+    /*
+    * Allows strategist to set the platform cut for the cellar.
+    *
+    * Represents function `setStrategistPlatformCut(uint64 cut)`
+    */
+    message SetStrategistPlatformCut {
+        // The new strategist platform cut
+        uint64 new_cut = 1;
+    }
+
+    /*
+    * Allows the owner to restart a shut down Cellar
+    *
+    * Represents function `liftShutdown()`
+    */
+    message LiftShutdown {}
+
+    /*
+    * Allows caller to call multiple functions in a single TX.
+    *
+    * Represents function `multicall(bytes[] data)`
+    */
+    message Multicall {
+        repeated FunctionCall function_calls = 1;
+    }
 }
 
 /*
 * Represent a function call initiated through a governance proposal
 */
-message CellarV2Governance {
+message CellarV2_2Governance {
     // The function to call on the target cellar
     oneof function {
+        // Represents function `addPositionToCatalogue(uint32 positionId)`
+        AddPositionToCatalogue add_position_to_catalogue = 1;
+        // Represents function `removePositionFromCatalogue(uint32 positionId)`
+        RemovePositionFromCatalogue remove_position_from_catalogue = 2;
+        // Represents function `addAdaptorToCatalogue(address adaptor)`
+        AddAdaptorToCatalogue add_adaptor_to_catalogue = 3;
+        // Represents function `removeAdaptorFromCatalogue(address adaptor)`
+        RemoveAdaptorFromCatalogue remove_adaptor_from_catalogue = 4;
+        // Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+        ForcePositionOut force_position_out = 5;
+        // Represents function `toggleIgnorePause(bool toggle)`
+        ToggleIgnorePause toggle_ignore_pause = 6;
+        // Represents function `setRebalanceDeviation(uint256 newDeviation)
+        SetRebalanceDeviation set_rebalance_deviation = 7;
         // Represents function `initiateShutdown()`
-        InitiateShutdown initiate_shutdown = 1;
+        InitiateShutdown initiate_shutdown = 8;
         // Represents function `liftShutdown()`
-        LiftShutdown lift_shutdown = 2;
+        LiftShutdown lift_shutdown = 9;
         // Represents function `setPlatformFee(uint256)`
-        SetPlatformFee set_platform_fee = 3;
+        SetPlatformFee set_platform_fee = 10;
         // Represents function `setStrategistPlatformCut(address)`
-        SetStrategistPlatformCut set_strategist_platform_cut = 4;
+        SetStrategistPlatformCut set_strategist_platform_cut = 11;
         // Represents function `setupAdaptor(address adaptor)`
-        SetupAdaptor setup_adaptor = 5;
+        SetupAdaptor setup_adaptor = 12;
     }
 
-    // Represents function `initiateShutdown()`
-    message InitiateShutdown {
+    /*
+    * Allows Governance to add positions to this cellar's catalogue.
+    *
+    * Represents function `addPositionToCatalogue(uint32 positionId)`
+    */
+    message AddPositionToCatalogue {
+        // ID of the position to add to the catalogue
+        uint32 position_id = 1;
     }
 
-    // Represents function `liftShutdown()`
-    message LiftShutdown {
+    /*
+    * Allows Governance to remove positions from this cellar's catalogue.
+    *
+    * Represents function `removePositionFromCatalogue(uint32 positionId)`
+    */
+    message RemovePositionFromCatalogue {
+        // ID of the position to remove from the catalogue
+        uint32 position_id = 1;
     }
 
-    // Represents function `setPlatformFee(uint64)`
+    /*
+    * Allows Governance to add adaptors to this cellar's catalogue.
+    *
+    * Represents function `addAdaptorToCatalogue(address adaptor)`
+    */
+    message AddAdaptorToCatalogue {
+        // Address of the adaptor to add to the catalogue
+        string adaptor = 1;
+    }
+
+    /*
+    * Allows Governance to remove adaptors from this cellar's catalogue.
+    *
+    * Represents function `removeAdaptorFromCatalogue(address adaptor)`
+    */
+    message RemoveAdaptorFromCatalogue {
+        // Address of the adaptor to remove from the catalogue
+        string adaptor = 1;
+    }
+
+    /*
+    * Allows Governance to force a position out of the cellar.
+    *
+    * Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+    */
+    message ForcePositionOut {
+        // Index of the position to force out
+        uint32 index = 1;
+        // ID of the position to force out
+        uint32 position_id = 2;
+        // Whether to force the position out of the debt array, or the credit array
+        bool in_debt_array = 3;
+    }
+
+    /*
+    * Allows Governance to toggle whether the cellar ignores a pause.
+    *
+    * Represents function `toggleIgnorePause(bool toggle)`
+    */
+    message ToggleIgnorePause {
+        // Whether the cellar should ignore the pause
+        bool ignore_pause = 1;
+    }
+
+    /*
+    * Allows Governance to change the allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
+    * during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
+    *
+    * Represents function `setRebalanceDeviation(uint256 newDeviation)`
+    */
+    message SetRebalanceDeviation {
+        // The new rebalance deviation
+        string new_deviation = 1;
+    }
+
+    /*
+    * Shutdown the cellar. Used in an emergency or if the cellar has been deprecated.
+    *
+    * Represents function `initiateShutdown()`
+    */
+    message InitiateShutdown {}
+
+    /*
+    * Allows governance to restart a shut down Cellar
+    *
+    * Represents function `liftShutdown()`
+    */
+    message LiftShutdown {}
+
+    /*
+    * Allows Governance to set the platform fee for the cellar.
+    *
+    * Represents function `setPlatformFee(uint64)`
+    */
     message SetPlatformFee {
-        // New platform fee
-        uint64 amount = 1;
-    }
-
-    // Represents function `setStrategistPlatformCut(uint64)`
-    message SetStrategistPlatformCut {
-        // New strategist platform cut
+        // The new platform fee
         uint64 amount = 1;
     }
 
     /*
-    * Allows owner to add new adaptors for the cellar to use.
+    * Allows Governance to set the strategist platform cut for the cellar.
+    *
+    * Represents function `setStrategistPlatformCut(uint64 cut)`
+    */
+    message SetStrategistPlatformCut {
+        // The new strategist platform cut
+        uint64 new_cut = 1;
+    }
+
+    /*
+    * Allows Governance to add new adaptors for the cellar to use.
     *
     * Represents function `setupAdaptor(address adaptor)`
     */
     message SetupAdaptor {
         // Address of the adaptor
         string adaptor = 1;
+    }
+}
+
+// Represents a call to adaptor an. The cellar must be authorized to call the target adaptor.
+message AdaptorCall {
+    // Address of the adaptor
+    string adaptor = 1;
+    // The function call data for the adaptor
+    oneof call_data {
+        // Represents function calls to the UniswapV3Adaptor V1
+        UniswapV3AdaptorV1Calls uniswap_v3_v1_calls = 2;
+        // Represents function calls to the AaveATokenAdaptor V1
+        AaveATokenAdaptorV1Calls aave_a_token_v1_calls = 3;
+        // Represents function calls to the AavaDebtTokenAdaptor V1
+        AaveDebtTokenAdaptorV1Calls aave_debt_token_v1_calls = 4;
+        // Represents function calls to the CompoundCTokenAdaptor V2
+        CompoundCTokenAdaptorV2Calls compound_c_token_v2_calls = 5;
+        // Represents function calls to the AaveATokenV2Adaptor
+        AaveATokenAdaptorV2Calls aave_a_token_v2_calls = 6;
+        // Represents function calls to the AavaDebtTokenV2Adaptor
+        AaveDebtTokenAdaptorV2Calls aave_debt_token_v2_calls = 7;
+        // Represents function calls to the AaveATokenV1Adaptor
+        AaveV3ATokenAdaptorV1Calls aave_v3_a_token_v1_calls = 8;
+        // Represents function calls to the AavaDebtTokenV1Adaptor
+        AaveV3DebtTokenAdaptorV1Calls aave_v3_debt_token_v1_calls = 9;
+        // Represents function calls to the OneInchAdaptorV1
+        OneInchAdaptorV1Calls one_inch_v1_calls = 10;
+        // Represents function calls to the FeesAndReservesAdaptorV1
+        FeesAndReservesAdaptorV1Calls fees_and_reserves_v1_calls = 11;
+        // Represents functionc alls to the ZeroXAdaptorV1
+        ZeroXAdaptorV1Calls zero_x_v1_calls = 12;
+        // Represents function calls to the SwapWithUniswapAdaptorV1
+        SwapWithUniswapAdaptorV1Calls swap_with_uniswap_v1_calls = 13;
+        // Represents function calls to VestingSimpleAdaptor
+        VestingSimpleAdaptorV2Calls vesting_simple_v2_calls = 14;
+        // Represents function calls to the CellarAdaptor
+        CellarAdaptorV1Calls cellar_v1_calls = 15;
+        // Represents function calls to the UniswapV3Adaptor V2
+        UniswapV3AdaptorV2Calls uniswap_v3_v2_calls = 16;
     }
 }

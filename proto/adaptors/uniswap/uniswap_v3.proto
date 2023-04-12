@@ -1,12 +1,12 @@
 syntax = "proto3";
-package steward.v3;
+package steward.v4;
 
 option go_package = "/steward_proto";
 
 import "adaptors/base.proto";
 
 // Represents call data for the Uniswap V3 adaptor
-message UniswapV3Adaptor {
+message UniswapV3AdaptorV1 {
     oneof function {
         /***** BASE ADAPTOR FUNCTIONS *****/
 
@@ -132,6 +132,133 @@ message UniswapV3Adaptor {
     }
 }
 
-message UniswapV3AdaptorCalls {
-    repeated UniswapV3Adaptor calls = 1;
+// Represents call data for the Uniswap V3 adaptor
+message UniswapV3AdaptorV2 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)`
+        OpenPosition open_position = 2;
+        // Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)`
+        ClosePosition close_position = 3;
+        // Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
+        AddToPosition add_to_position = 4;
+        // Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
+        TakeFromPosition take_from_position = 5;
+        // Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
+        CollectFees collect_fees = 6;
+        // Represents function `purgeAllZeroLiquidityPositions(ERC20 token0, ERC20 token1)`
+        PurgeAllZeroLiquidityPositions purge_all_zero_liquidity_positions = 7;
+        // Represents function `purgeSinglePosition(uint256 tokenId)`
+        PurgeSinglePosition purge_single_position = 8;
+        // Represents function `removeUnOwnedPositionFromTracker(uint256 tokenId, ERC20 token0, ERC20 token1)`
+        RemoveUnownedPositionFromTracker remove_unowned_position_from_tracker = 9;
+    }
+
+    /*
+    * Allows strategist to open up arbritray Uniswap V3 positions.
+    *
+    * Represents function openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)
+    */
+    message OpenPosition {
+        string token_0 = 1;
+        string token_1 = 2;
+        uint32 pool_fee = 3;
+        string amount_0 = 4;
+        string amount_1 = 5;
+        string min_0 = 6;
+        string min_1 = 7;
+        int32 tick_lower = 8;
+        int32 tick_upper = 9;
+    }
+
+    /*
+    * Allows strategist to close Uniswap V3 positions.
+    *
+    * Represents function `closePosition(uint256 tokenId, uint256 min0, uint256 min1)`
+    */
+    message ClosePosition {
+        string token_id = 1;
+        string min_0 = 2;
+        string min_1 = 3;
+    }
+
+    /*
+    * Allows strategist to add to existing Uniswap V3 positions.
+    *
+    * Represents function `addToPosition(uint256 tokenId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
+    */
+    message AddToPosition {
+        string token_id = 1;
+        string amount_0 = 2;
+        string amount_1 = 3;
+        string min_0 = 4;
+        string min_1 = 5;
+    }
+    /*
+    * Allows strategist to take from existing Uniswap V3 positions.
+    *
+    * Represents function `takeFromPosition(uint256 tokenId, uint128 liquidity, uint256 min0, uint256 min1, bool takeFees)`
+    */
+    message TakeFromPosition {
+        string token_id = 1;
+        string liquidity = 2;
+        string min_0 = 3;
+        string min_1 = 4;
+        bool take_fees = 5;
+    }
+
+    /*
+    * Allows strategist to collect fees from existing Uniswap V3 positions.
+    *
+    * Represents function `collectFees(uint256 tokenId, uint128 amount0, uint128 amount1)`
+    */
+    message CollectFees {
+        string token_id = 1;
+        string amount_0 = 2;
+        string amount_1 = 3;
+    }
+
+    /*
+     * Allows strategist to purge zero liquidity LP positions from tracker.
+     *
+     * Represents function `purgeAllZeroLiquidityPositions(ERC20 token0, ERC20 token1)`
+     */
+    message PurgeAllZeroLiquidityPositions {
+        string token_0 = 1;
+        string token_1 = 2;
+    }
+
+    /*
+     * Allows strategist to purge a single zero liquidity LP position from tracker.
+     *
+     * Represents function `purgeSinglePosition(uint256 tokenId)`
+     */
+    message PurgeSinglePosition {
+        string token_id = 1;
+    }
+
+    /*
+     * Allows strategist to remove tracked positions that are not owned by the cellar.
+     *
+     * Represents function `removeUnOwnedPositionFromTracker(uint256 tokenId, ERC20 token0, ERC20 token1)`
+     */
+    message RemoveUnownedPositionFromTracker {
+        string token_id = 1;
+        string token_0 = 2;
+        string token_1 = 3;
+    }
+}
+
+message UniswapV3AdaptorV1Calls {
+    repeated UniswapV3AdaptorV1 calls = 1;
+}
+
+message UniswapV3AdaptorV2Calls {
+    repeated UniswapV3AdaptorV2 calls = 1;
 }
