@@ -3,49 +3,82 @@
 
 ## Table of Contents
 
-- [adaptors/aave/a_token.proto](#adaptors_aave_a_token-proto)
-    - [AaveATokenAdaptorV1](#steward-v3-AaveATokenAdaptorV1)
-    - [AaveATokenAdaptorV1.DepositToAave](#steward-v3-AaveATokenAdaptorV1-DepositToAave)
-    - [AaveATokenAdaptorV1.WithdrawFromAave](#steward-v3-AaveATokenAdaptorV1-WithdrawFromAave)
-    - [AaveATokenAdaptorV1Calls](#steward-v3-AaveATokenAdaptorV1Calls)
-    - [AaveATokenAdaptorV2](#steward-v3-AaveATokenAdaptorV2)
-    - [AaveATokenAdaptorV2.DepositToAave](#steward-v3-AaveATokenAdaptorV2-DepositToAave)
-    - [AaveATokenAdaptorV2.WithdrawFromAave](#steward-v3-AaveATokenAdaptorV2-WithdrawFromAave)
-    - [AaveATokenAdaptorV2Calls](#steward-v3-AaveATokenAdaptorV2Calls)
+- [adaptors/aave/aave_v3_a_token.proto](#adaptors_aave_aave_v3_a_token-proto)
+    - [AaveV3ATokenAdaptorV1](#steward-v3-AaveV3ATokenAdaptorV1)
+    - [AaveV3ATokenAdaptorV1.AdjustIsolationModeAssetAsCollateral](#steward-v3-AaveV3ATokenAdaptorV1-AdjustIsolationModeAssetAsCollateral)
+    - [AaveV3ATokenAdaptorV1.ChangeEMode](#steward-v3-AaveV3ATokenAdaptorV1-ChangeEMode)
+    - [AaveV3ATokenAdaptorV1.DepositToAave](#steward-v3-AaveV3ATokenAdaptorV1-DepositToAave)
+    - [AaveV3ATokenAdaptorV1.WithdrawFromAave](#steward-v3-AaveV3ATokenAdaptorV1-WithdrawFromAave)
+    - [AaveV3ATokenAdaptorV1Calls](#steward-v3-AaveV3ATokenAdaptorV1Calls)
   
 - [Scalar Value Types](#scalar-value-types)
 
 
 
-<a name="adaptors_aave_a_token-proto"></a>
+<a name="adaptors_aave_aave_v3_a_token-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## adaptors/aave/a_token.proto
+## adaptors/aave/aave_v3_a_token.proto
 
 
 
-<a name="steward-v3-AaveATokenAdaptorV1"></a>
+<a name="steward-v3-AaveV3ATokenAdaptorV1"></a>
 
-### AaveATokenAdaptorV1
-Represents call data for the Aave AToken adaptor V1, used to manage lending positions on Aave
+### AaveV3ATokenAdaptorV1
+Represents call data for the Aave AToken adaptor, used to manage lending positions on Aave
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| swap | [Swap](#steward-v3-Swap) |  | Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
-| oracle_swap | [OracleSwap](#steward-v3-OracleSwap) |  | Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
 | revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
-| deposit_to_aave | [AaveATokenAdaptorV1.DepositToAave](#steward-v3-AaveATokenAdaptorV1-DepositToAave) |  | Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)` |
-| withdraw_from_aave | [AaveATokenAdaptorV1.WithdrawFromAave](#steward-v3-AaveATokenAdaptorV1-WithdrawFromAave) |  | Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)` |
+| deposit_to_aave | [AaveV3ATokenAdaptorV1.DepositToAave](#steward-v3-AaveV3ATokenAdaptorV1-DepositToAave) |  | Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)` |
+| withdraw_from_aave | [AaveV3ATokenAdaptorV1.WithdrawFromAave](#steward-v3-AaveV3ATokenAdaptorV1-WithdrawFromAave) |  | Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)` |
+| adjust_isolation_mode_asset_as_collateral | [AaveV3ATokenAdaptorV1.AdjustIsolationModeAssetAsCollateral](#steward-v3-AaveV3ATokenAdaptorV1-AdjustIsolationModeAssetAsCollateral) |  | Represents function `adjustIsolationModeAssetAsCollateral(ERC20 asset, bool useAsCollateral)` |
+| change_emode | [AaveV3ATokenAdaptorV1.ChangeEMode](#steward-v3-AaveV3ATokenAdaptorV1-ChangeEMode) |  | Represents function `changeEMode(uint8 categoryId)` |
 
 
 
 
 
 
-<a name="steward-v3-AaveATokenAdaptorV1-DepositToAave"></a>
+<a name="steward-v3-AaveV3ATokenAdaptorV1-AdjustIsolationModeAssetAsCollateral"></a>
 
-### AaveATokenAdaptorV1.DepositToAave
+### AaveV3ATokenAdaptorV1.AdjustIsolationModeAssetAsCollateral
+Allows strategists to adjust an asset&#39;s isolation mode.
+
+Represents function `adjustIsolationModeAssetAsCollateral(ERC20 asset, bool useAsCollateral)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| asset | [string](#string) |  | The address of the ERC20 token |
+| use_as_collateral | [bool](#bool) |  | Whether to use the asset as collateral |
+
+
+
+
+
+
+<a name="steward-v3-AaveV3ATokenAdaptorV1-ChangeEMode"></a>
+
+### AaveV3ATokenAdaptorV1.ChangeEMode
+Allows strategists to enter different EModes.
+
+Represents function `changeEMode(uint8 categoryId)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| category_id | [uint32](#uint32) |  | The category ID |
+
+
+
+
+
+
+<a name="steward-v3-AaveV3ATokenAdaptorV1-DepositToAave"></a>
+
+### AaveV3ATokenAdaptorV1.DepositToAave
 Allows strategists to lend assets on Aave.
 
 Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
@@ -61,9 +94,9 @@ Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit
 
 
 
-<a name="steward-v3-AaveATokenAdaptorV1-WithdrawFromAave"></a>
+<a name="steward-v3-AaveV3ATokenAdaptorV1-WithdrawFromAave"></a>
 
-### AaveATokenAdaptorV1.WithdrawFromAave
+### AaveV3ATokenAdaptorV1.WithdrawFromAave
 Allows strategists to withdraw assets from Aave.
 
 Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
@@ -79,83 +112,15 @@ Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWit
 
 
 
-<a name="steward-v3-AaveATokenAdaptorV1Calls"></a>
+<a name="steward-v3-AaveV3ATokenAdaptorV1Calls"></a>
 
-### AaveATokenAdaptorV1Calls
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| calls | [AaveATokenAdaptorV1](#steward-v3-AaveATokenAdaptorV1) | repeated |  |
-
-
-
-
-
-
-<a name="steward-v3-AaveATokenAdaptorV2"></a>
-
-### AaveATokenAdaptorV2
-Represents call data for the Aave AToken adaptor V2, used to manage lending positions on Aave
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
-| deposit_to_aave | [AaveATokenAdaptorV2.DepositToAave](#steward-v3-AaveATokenAdaptorV2-DepositToAave) |  | Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)` |
-| withdraw_from_aave | [AaveATokenAdaptorV2.WithdrawFromAave](#steward-v3-AaveATokenAdaptorV2-WithdrawFromAave) |  | Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)` |
-
-
-
-
-
-
-<a name="steward-v3-AaveATokenAdaptorV2-DepositToAave"></a>
-
-### AaveATokenAdaptorV2.DepositToAave
-Allows strategists to lend assets on Aave.
-
-Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| token | [string](#string) |  | The address of the ERC20 token to deposit |
-| amount | [string](#string) |  | The amount to deposit |
-
-
-
-
-
-
-<a name="steward-v3-AaveATokenAdaptorV2-WithdrawFromAave"></a>
-
-### AaveATokenAdaptorV2.WithdrawFromAave
-Allows strategists to withdraw assets from Aave.
-
-Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| token | [string](#string) |  | The address of the ERC20 token to withdraw |
-| amount | [string](#string) |  | The amount to withdraw |
-
-
-
-
-
-
-<a name="steward-v3-AaveATokenAdaptorV2Calls"></a>
-
-### AaveATokenAdaptorV2Calls
+### AaveV3ATokenAdaptorV1Calls
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| calls | [AaveATokenAdaptorV2](#steward-v3-AaveATokenAdaptorV2) | repeated |  |
+| calls | [AaveV3ATokenAdaptorV1](#steward-v3-AaveV3ATokenAdaptorV1) | repeated |  |
 
 
 

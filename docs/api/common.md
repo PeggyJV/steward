@@ -4,14 +4,14 @@
 ## Table of Contents
 
 - [common.proto](#common-proto)
-    - [OracleSwapParams](#steward-v2-OracleSwapParams)
-    - [SwapParams](#steward-v2-SwapParams)
-    - [UniV2OracleSwapParams](#steward-v2-UniV2OracleSwapParams)
-    - [UniV2SwapParams](#steward-v2-UniV2SwapParams)
-    - [UniV3OracleSwapParams](#steward-v2-UniV3OracleSwapParams)
-    - [UniV3SwapParams](#steward-v2-UniV3SwapParams)
+    - [OracleSwapParams](#steward-v3-OracleSwapParams)
+    - [SwapParams](#steward-v3-SwapParams)
+    - [UniV2OracleSwapParams](#steward-v3-UniV2OracleSwapParams)
+    - [UniV2SwapParams](#steward-v3-UniV2SwapParams)
+    - [UniV3OracleSwapParams](#steward-v3-UniV3OracleSwapParams)
+    - [UniV3SwapParams](#steward-v3-UniV3SwapParams)
   
-    - [Exchange](#steward-v2-Exchange)
+    - [Exchange](#steward-v3-Exchange)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -24,7 +24,7 @@
 
 
 
-<a name="steward-v2-OracleSwapParams"></a>
+<a name="steward-v3-OracleSwapParams"></a>
 
 ### OracleSwapParams
 Represents swap params for BaseAdaptor.oracleSwap()
@@ -32,15 +32,15 @@ Represents swap params for BaseAdaptor.oracleSwap()
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| univ2_params | [UniV2OracleSwapParams](#steward-v2-UniV2OracleSwapParams) |  |  |
-| univ3_params | [UniV3OracleSwapParams](#steward-v2-UniV3OracleSwapParams) |  |  |
+| univ2_params | [UniV2OracleSwapParams](#steward-v3-UniV2OracleSwapParams) |  |  |
+| univ3_params | [UniV3OracleSwapParams](#steward-v3-UniV3OracleSwapParams) |  |  |
 
 
 
 
 
 
-<a name="steward-v2-SwapParams"></a>
+<a name="steward-v3-SwapParams"></a>
 
 ### SwapParams
 Represents swap parameters for an exchange
@@ -48,15 +48,15 @@ Represents swap parameters for an exchange
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| univ2_params | [UniV2SwapParams](#steward-v2-UniV2SwapParams) |  | Params for a Uniswap V2 swap |
-| univ3_params | [UniV3SwapParams](#steward-v2-UniV3SwapParams) |  | Params for a Uniswap V3 swap |
+| univ2_params | [UniV2SwapParams](#steward-v3-UniV2SwapParams) |  | Params for a Uniswap V2 swap |
+| univ3_params | [UniV3SwapParams](#steward-v3-UniV3SwapParams) |  | Params for a Uniswap V3 swap |
 
 
 
 
 
 
-<a name="steward-v2-UniV2OracleSwapParams"></a>
+<a name="steward-v3-UniV2OracleSwapParams"></a>
 
 ### UniV2OracleSwapParams
 Represents oracle swap parameters for UniswapV2
@@ -71,7 +71,7 @@ Represents oracle swap parameters for UniswapV2
 
 
 
-<a name="steward-v2-UniV2SwapParams"></a>
+<a name="steward-v3-UniV2SwapParams"></a>
 
 ### UniV2SwapParams
 Represents swap parameters for UniswapV2
@@ -88,7 +88,7 @@ Represents swap parameters for UniswapV2
 
 
 
-<a name="steward-v2-UniV3OracleSwapParams"></a>
+<a name="steward-v3-UniV3OracleSwapParams"></a>
 
 ### UniV3OracleSwapParams
 Represents oracle swap parameters for UniswapV3
@@ -104,7 +104,7 @@ Represents oracle swap parameters for UniswapV3
 
 
 
-<a name="steward-v2-UniV3SwapParams"></a>
+<a name="steward-v3-UniV3SwapParams"></a>
 
 ### UniV3SwapParams
 Represents swap parameters for UniswapV3
@@ -124,7 +124,7 @@ Represents swap parameters for UniswapV3
  
 
 
-<a name="steward-v2-Exchange"></a>
+<a name="steward-v3-Exchange"></a>
 
 ### Exchange
 Exchange selector

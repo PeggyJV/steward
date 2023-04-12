@@ -4,12 +4,12 @@
 ## Table of Contents
 
 - [adaptors/vesting_simple.proto](#adaptors_vesting_simple-proto)
-    - [VestingSimpleAdaptor](#steward-v3-VestingSimpleAdaptor)
-    - [VestingSimpleAdaptor.DepositToVesting](#steward-v3-VestingSimpleAdaptor-DepositToVesting)
-    - [VestingSimpleAdaptor.WithdrawAllFromVesting](#steward-v3-VestingSimpleAdaptor-WithdrawAllFromVesting)
-    - [VestingSimpleAdaptor.WithdrawAnyFromVesting](#steward-v3-VestingSimpleAdaptor-WithdrawAnyFromVesting)
-    - [VestingSimpleAdaptor.WithdrawFromVesting](#steward-v3-VestingSimpleAdaptor-WithdrawFromVesting)
-    - [VestingSimpleAdaptorCalls](#steward-v3-VestingSimpleAdaptorCalls)
+    - [VestingSimpleAdaptorV2](#steward-v3-VestingSimpleAdaptorV2)
+    - [VestingSimpleAdaptorV2.DepositToVesting](#steward-v3-VestingSimpleAdaptorV2-DepositToVesting)
+    - [VestingSimpleAdaptorV2.WithdrawAllFromVesting](#steward-v3-VestingSimpleAdaptorV2-WithdrawAllFromVesting)
+    - [VestingSimpleAdaptorV2.WithdrawAnyFromVesting](#steward-v3-VestingSimpleAdaptorV2-WithdrawAnyFromVesting)
+    - [VestingSimpleAdaptorV2.WithdrawFromVesting](#steward-v3-VestingSimpleAdaptorV2-WithdrawFromVesting)
+    - [VestingSimpleAdaptorV2Calls](#steward-v3-VestingSimpleAdaptorV2Calls)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -22,27 +22,28 @@
 
 
 
-<a name="steward-v3-VestingSimpleAdaptor"></a>
+<a name="steward-v3-VestingSimpleAdaptorV2"></a>
 
-### VestingSimpleAdaptor
+### VestingSimpleAdaptorV2
 Represents call data for the Vesting Simple adaptor
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| deposit_to_vesting | [VestingSimpleAdaptor.DepositToVesting](#steward-v3-VestingSimpleAdaptor-DepositToVesting) |  | Represents function `depositToVesting(VestingSimple vestingContract, uint256 amountToDeposit)` |
-| withdraw_from_vesting | [VestingSimpleAdaptor.WithdrawFromVesting](#steward-v3-VestingSimpleAdaptor-WithdrawFromVesting) |  | Represents function `withdrawFromVesting(VestingSimple vestingContract, uint256 depositId, uint256 amountToWithdraw)` |
-| withdraw_any_from_vesting | [VestingSimpleAdaptor.WithdrawAnyFromVesting](#steward-v3-VestingSimpleAdaptor-WithdrawAnyFromVesting) |  | Represents function `withdrawAnyFromVesting(VestingSimple vestingContract, uint256 amountToWithdraw)` |
-| withdraw_all_from_vesting | [VestingSimpleAdaptor.WithdrawAllFromVesting](#steward-v3-VestingSimpleAdaptor-WithdrawAllFromVesting) |  | Represents function `withdrawAllFromVesting(VestingSimple vestingContract)` |
+| revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| deposit_to_vesting | [VestingSimpleAdaptorV2.DepositToVesting](#steward-v3-VestingSimpleAdaptorV2-DepositToVesting) |  | Represents function `depositToVesting(VestingSimple vestingContract, uint256 amountToDeposit)` |
+| withdraw_from_vesting | [VestingSimpleAdaptorV2.WithdrawFromVesting](#steward-v3-VestingSimpleAdaptorV2-WithdrawFromVesting) |  | Represents function `withdrawFromVesting(VestingSimple vestingContract, uint256 depositId, uint256 amountToWithdraw)` |
+| withdraw_any_from_vesting | [VestingSimpleAdaptorV2.WithdrawAnyFromVesting](#steward-v3-VestingSimpleAdaptorV2-WithdrawAnyFromVesting) |  | Represents function `withdrawAnyFromVesting(VestingSimple vestingContract, uint256 amountToWithdraw)` |
+| withdraw_all_from_vesting | [VestingSimpleAdaptorV2.WithdrawAllFromVesting](#steward-v3-VestingSimpleAdaptorV2-WithdrawAllFromVesting) |  | Represents function `withdrawAllFromVesting(VestingSimple vestingContract)` |
 
 
 
 
 
 
-<a name="steward-v3-VestingSimpleAdaptor-DepositToVesting"></a>
+<a name="steward-v3-VestingSimpleAdaptorV2-DepositToVesting"></a>
 
-### VestingSimpleAdaptor.DepositToVesting
+### VestingSimpleAdaptorV2.DepositToVesting
 Allows strategists to deposit tokens to the vesting contract. By passing a max uint256 for amountToDeposit, the cellar will
 deposit its entire balance (appropriate in most cases).
 
@@ -59,9 +60,9 @@ Represents function `depositToVesting(VestingSimple vestingContract, uint256 amo
 
 
 
-<a name="steward-v3-VestingSimpleAdaptor-WithdrawAllFromVesting"></a>
+<a name="steward-v3-VestingSimpleAdaptorV2-WithdrawAllFromVesting"></a>
 
-### VestingSimpleAdaptor.WithdrawAllFromVesting
+### VestingSimpleAdaptorV2.WithdrawAllFromVesting
 Withdraw a certain amount of tokens from vesting, from any deposit. This will not affect the cellar&#39;s TVL because any deposit must
 already have vested, and will be reported in balanceOf. Will revert if not enough tokens are available based on amountToWithdraw.
 
@@ -77,9 +78,9 @@ Represents function `withdrawAllFromVesting(VestingSimple vestingContract)`
 
 
 
-<a name="steward-v3-VestingSimpleAdaptor-WithdrawAnyFromVesting"></a>
+<a name="steward-v3-VestingSimpleAdaptorV2-WithdrawAnyFromVesting"></a>
 
-### VestingSimpleAdaptor.WithdrawAnyFromVesting
+### VestingSimpleAdaptorV2.WithdrawAnyFromVesting
 Withdraw a single deposit from vesting. This will not affect the cellar&#39;s TVL because any deposit must already have vested, and
 will be reported in balanceOf. Will revert if not enough tokens are available based on amountToWithdraw.
 
@@ -96,9 +97,9 @@ Represents function `withdrawAnyFromVesting(VestingSimple vestingContract, uint2
 
 
 
-<a name="steward-v3-VestingSimpleAdaptor-WithdrawFromVesting"></a>
+<a name="steward-v3-VestingSimpleAdaptorV2-WithdrawFromVesting"></a>
 
-### VestingSimpleAdaptor.WithdrawFromVesting
+### VestingSimpleAdaptorV2.WithdrawFromVesting
 Allows strategists to deposit tokens to the vesting contract. By passing a max uint256 for amountToDeposit, the cellar will
 deposit its entire balance (appropriate in most cases).
 
@@ -116,15 +117,15 @@ Represents function `withdrawFromVesting(VestingSimple vestingContract, uint256 
 
 
 
-<a name="steward-v3-VestingSimpleAdaptorCalls"></a>
+<a name="steward-v3-VestingSimpleAdaptorV2Calls"></a>
 
-### VestingSimpleAdaptorCalls
+### VestingSimpleAdaptorV2Calls
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| calls | [VestingSimpleAdaptor](#steward-v3-VestingSimpleAdaptor) | repeated |  |
+| calls | [VestingSimpleAdaptorV2](#steward-v3-VestingSimpleAdaptorV2) | repeated |  |
 
 
 

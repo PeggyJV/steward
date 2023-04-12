@@ -3,99 +3,85 @@
 
 ## Table of Contents
 
-- [adaptors/compound/c_token.proto](#adaptors_compound_c_token-proto)
-    - [CompoundCTokenAdaptorV2](#steward-v3-CompoundCTokenAdaptorV2)
-    - [CompoundCTokenAdaptorV2.ClaimComp](#steward-v3-CompoundCTokenAdaptorV2-ClaimComp)
-    - [CompoundCTokenAdaptorV2.DepositToCompound](#steward-v3-CompoundCTokenAdaptorV2-DepositToCompound)
-    - [CompoundCTokenAdaptorV2.WithdrawFromCompound](#steward-v3-CompoundCTokenAdaptorV2-WithdrawFromCompound)
-    - [CompoundCTokenAdaptorV2Calls](#steward-v3-CompoundCTokenAdaptorV2Calls)
+- [adaptors/sommelier/cellar_adaptor.proto](#adaptors_sommelier_cellar_adaptor-proto)
+    - [CellarAdaptorV1](#steward-v3-CellarAdaptorV1)
+    - [CellarAdaptorV1.DepositToCellar](#steward-v3-CellarAdaptorV1-DepositToCellar)
+    - [CellarAdaptorV1.WithdrawFromCellar](#steward-v3-CellarAdaptorV1-WithdrawFromCellar)
+    - [CellarAdaptorV1Calls](#steward-v3-CellarAdaptorV1Calls)
   
 - [Scalar Value Types](#scalar-value-types)
 
 
 
-<a name="adaptors_compound_c_token-proto"></a>
+<a name="adaptors_sommelier_cellar_adaptor-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## adaptors/compound/c_token.proto
+## adaptors/sommelier/cellar_adaptor.proto
 
 
 
-<a name="steward-v3-CompoundCTokenAdaptorV2"></a>
+<a name="steward-v3-CellarAdaptorV1"></a>
 
-### CompoundCTokenAdaptorV2
-Represents call data for the Compound C Token adaptor V2, managing lending positions on Compound.
+### CellarAdaptorV1
+
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
-| deposit_to_compound | [CompoundCTokenAdaptorV2.DepositToCompound](#steward-v3-CompoundCTokenAdaptorV2-DepositToCompound) |  | Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)` |
-| withdraw_from_compound | [CompoundCTokenAdaptorV2.WithdrawFromCompound](#steward-v3-CompoundCTokenAdaptorV2-WithdrawFromCompound) |  | Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)` |
-| claim_comp | [CompoundCTokenAdaptorV2.ClaimComp](#steward-v3-CompoundCTokenAdaptorV2-ClaimComp) |  | Represents function `claimComp()` |
+| depositToCellar | [CellarAdaptorV1.DepositToCellar](#steward-v3-CellarAdaptorV1-DepositToCellar) |  | Represents function `depositToCellar(Cellar cellar, uint256 assets)` |
+| withdrawFromCellar | [CellarAdaptorV1.WithdrawFromCellar](#steward-v3-CellarAdaptorV1-WithdrawFromCellar) |  | Represents function `withdrawFromCellar(Cellar cellar, uint256 assets)` |
 
 
 
 
 
 
-<a name="steward-v3-CompoundCTokenAdaptorV2-ClaimComp"></a>
+<a name="steward-v3-CellarAdaptorV1-DepositToCellar"></a>
 
-### CompoundCTokenAdaptorV2.ClaimComp
-Allows strategists to claim COMP rewards.
+### CellarAdaptorV1.DepositToCellar
+Allows strategists to deposit into Cellar positions.
 
-Represents function `claimComp()`
-
-
-
-
-
-
-<a name="steward-v3-CompoundCTokenAdaptorV2-DepositToCompound"></a>
-
-### CompoundCTokenAdaptorV2.DepositToCompound
-Allows strategists to lend assets on Compound.
-
-Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
+Represents function `depositToCellar(Cellar cellar, uint256 assets)`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| market | [string](#string) |  |  |
-| amount_to_deposit | [string](#string) |  |  |
+| cellar | [string](#string) |  |  |
+| assets | [string](#string) |  |  |
 
 
 
 
 
 
-<a name="steward-v3-CompoundCTokenAdaptorV2-WithdrawFromCompound"></a>
+<a name="steward-v3-CellarAdaptorV1-WithdrawFromCellar"></a>
 
-### CompoundCTokenAdaptorV2.WithdrawFromCompound
-Allows strategists to withdraw assets from Compound.
+### CellarAdaptorV1.WithdrawFromCellar
+Allows strategists to withdraw from Cellar positions.
 
-Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)`
+Represents function `withdrawFromCellar(Cellar cellar, uint256 assets)`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| market | [string](#string) |  |  |
-| amount_to_withdraw | [string](#string) |  |  |
+| cellar | [string](#string) |  |  |
+| assets | [string](#string) |  |  |
 
 
 
 
 
 
-<a name="steward-v3-CompoundCTokenAdaptorV2Calls"></a>
+<a name="steward-v3-CellarAdaptorV1Calls"></a>
 
-### CompoundCTokenAdaptorV2Calls
+### CellarAdaptorV1Calls
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| calls | [CompoundCTokenAdaptorV2](#steward-v3-CompoundCTokenAdaptorV2) | repeated |  |
+| calls | [CellarAdaptorV1](#steward-v3-CellarAdaptorV1) | repeated |  |
 
 
 

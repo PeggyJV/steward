@@ -3,99 +3,88 @@
 
 ## Table of Contents
 
-- [adaptors/compound/c_token.proto](#adaptors_compound_c_token-proto)
-    - [CompoundCTokenAdaptorV2](#steward-v3-CompoundCTokenAdaptorV2)
-    - [CompoundCTokenAdaptorV2.ClaimComp](#steward-v3-CompoundCTokenAdaptorV2-ClaimComp)
-    - [CompoundCTokenAdaptorV2.DepositToCompound](#steward-v3-CompoundCTokenAdaptorV2-DepositToCompound)
-    - [CompoundCTokenAdaptorV2.WithdrawFromCompound](#steward-v3-CompoundCTokenAdaptorV2-WithdrawFromCompound)
-    - [CompoundCTokenAdaptorV2Calls](#steward-v3-CompoundCTokenAdaptorV2Calls)
+- [adaptors/uniswap/swap_with_uniswap.proto](#adaptors_uniswap_swap_with_uniswap-proto)
+    - [SwapWithUniswapAdaptorV1](#steward-v3-SwapWithUniswapAdaptorV1)
+    - [SwapWithUniswapAdaptorV1.SwapWithUniV2](#steward-v3-SwapWithUniswapAdaptorV1-SwapWithUniV2)
+    - [SwapWithUniswapAdaptorV1.SwapWithUniV3](#steward-v3-SwapWithUniswapAdaptorV1-SwapWithUniV3)
+    - [SwapWithUniswapAdaptorV1Calls](#steward-v3-SwapWithUniswapAdaptorV1Calls)
   
 - [Scalar Value Types](#scalar-value-types)
 
 
 
-<a name="adaptors_compound_c_token-proto"></a>
+<a name="adaptors_uniswap_swap_with_uniswap-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## adaptors/compound/c_token.proto
+## adaptors/uniswap/swap_with_uniswap.proto
 
 
 
-<a name="steward-v3-CompoundCTokenAdaptorV2"></a>
+<a name="steward-v3-SwapWithUniswapAdaptorV1"></a>
 
-### CompoundCTokenAdaptorV2
-Represents call data for the Compound C Token adaptor V2, managing lending positions on Compound.
+### SwapWithUniswapAdaptorV1
+Represents call data for the Uniswap V3 adaptor
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
-| deposit_to_compound | [CompoundCTokenAdaptorV2.DepositToCompound](#steward-v3-CompoundCTokenAdaptorV2-DepositToCompound) |  | Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)` |
-| withdraw_from_compound | [CompoundCTokenAdaptorV2.WithdrawFromCompound](#steward-v3-CompoundCTokenAdaptorV2-WithdrawFromCompound) |  | Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)` |
-| claim_comp | [CompoundCTokenAdaptorV2.ClaimComp](#steward-v3-CompoundCTokenAdaptorV2-ClaimComp) |  | Represents function `claimComp()` |
+| swap_with_uni_v2 | [SwapWithUniswapAdaptorV1.SwapWithUniV2](#steward-v3-SwapWithUniswapAdaptorV1-SwapWithUniV2) |  | Represents function `swapWithUniV2(address[] path, uint256 amount, uint256 amountOutMin)` |
+| swap_with_uni_v3 | [SwapWithUniswapAdaptorV1.SwapWithUniV3](#steward-v3-SwapWithUniswapAdaptorV1-SwapWithUniV3) |  | Represents function `swapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin)` |
 
 
 
 
 
 
-<a name="steward-v3-CompoundCTokenAdaptorV2-ClaimComp"></a>
+<a name="steward-v3-SwapWithUniswapAdaptorV1-SwapWithUniV2"></a>
 
-### CompoundCTokenAdaptorV2.ClaimComp
-Allows strategists to claim COMP rewards.
+### SwapWithUniswapAdaptorV1.SwapWithUniV2
+Perform a swap using Uniswap V2.
 
-Represents function `claimComp()`
-
-
-
-
-
-
-<a name="steward-v3-CompoundCTokenAdaptorV2-DepositToCompound"></a>
-
-### CompoundCTokenAdaptorV2.DepositToCompound
-Allows strategists to lend assets on Compound.
-
-Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
+Represents function `swapWithUniV2(address[] path, uint256 amount, uint256 amountOutMin)`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| market | [string](#string) |  |  |
-| amount_to_deposit | [string](#string) |  |  |
+| path | [string](#string) | repeated |  |
+| amount | [string](#string) |  |  |
+| amount_out_min | [string](#string) |  |  |
 
 
 
 
 
 
-<a name="steward-v3-CompoundCTokenAdaptorV2-WithdrawFromCompound"></a>
+<a name="steward-v3-SwapWithUniswapAdaptorV1-SwapWithUniV3"></a>
 
-### CompoundCTokenAdaptorV2.WithdrawFromCompound
-Allows strategists to withdraw assets from Compound.
+### SwapWithUniswapAdaptorV1.SwapWithUniV3
+Perform a swap using Uniswap V3.
 
-Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)`
+Represents function `Represents function `swapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin)``
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| market | [string](#string) |  |  |
-| amount_to_withdraw | [string](#string) |  |  |
+| path | [string](#string) | repeated |  |
+| pool_fees | [uint32](#uint32) | repeated |  |
+| amount | [string](#string) |  |  |
+| amount_out_min | [string](#string) |  |  |
 
 
 
 
 
 
-<a name="steward-v3-CompoundCTokenAdaptorV2Calls"></a>
+<a name="steward-v3-SwapWithUniswapAdaptorV1Calls"></a>
 
-### CompoundCTokenAdaptorV2Calls
+### SwapWithUniswapAdaptorV1Calls
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| calls | [CompoundCTokenAdaptorV2](#steward-v3-CompoundCTokenAdaptorV2) | repeated |  |
+| calls | [SwapWithUniswapAdaptorV1](#steward-v3-SwapWithUniswapAdaptorV1) | repeated |  |
 
 
 

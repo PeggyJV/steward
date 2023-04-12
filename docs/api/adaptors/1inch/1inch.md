@@ -3,99 +3,67 @@
 
 ## Table of Contents
 
-- [adaptors/compound/c_token.proto](#adaptors_compound_c_token-proto)
-    - [CompoundCTokenAdaptorV2](#steward-v3-CompoundCTokenAdaptorV2)
-    - [CompoundCTokenAdaptorV2.ClaimComp](#steward-v3-CompoundCTokenAdaptorV2-ClaimComp)
-    - [CompoundCTokenAdaptorV2.DepositToCompound](#steward-v3-CompoundCTokenAdaptorV2-DepositToCompound)
-    - [CompoundCTokenAdaptorV2.WithdrawFromCompound](#steward-v3-CompoundCTokenAdaptorV2-WithdrawFromCompound)
-    - [CompoundCTokenAdaptorV2Calls](#steward-v3-CompoundCTokenAdaptorV2Calls)
+- [adaptors/1inch/oneinch.proto](#adaptors_1inch_oneinch-proto)
+    - [OneInchAdaptorV1](#steward-v3-OneInchAdaptorV1)
+    - [OneInchAdaptorV1.SwapWithOneInch](#steward-v3-OneInchAdaptorV1-SwapWithOneInch)
+    - [OneInchAdaptorV1Calls](#steward-v3-OneInchAdaptorV1Calls)
   
 - [Scalar Value Types](#scalar-value-types)
 
 
 
-<a name="adaptors_compound_c_token-proto"></a>
+<a name="adaptors_1inch_oneinch-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## adaptors/compound/c_token.proto
+## adaptors/1inch/oneinch.proto
 
 
 
-<a name="steward-v3-CompoundCTokenAdaptorV2"></a>
+<a name="steward-v3-OneInchAdaptorV1"></a>
 
-### CompoundCTokenAdaptorV2
-Represents call data for the Compound C Token adaptor V2, managing lending positions on Compound.
+### OneInchAdaptorV1
+Represents call data for the OneInch adaptor.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
-| deposit_to_compound | [CompoundCTokenAdaptorV2.DepositToCompound](#steward-v3-CompoundCTokenAdaptorV2-DepositToCompound) |  | Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)` |
-| withdraw_from_compound | [CompoundCTokenAdaptorV2.WithdrawFromCompound](#steward-v3-CompoundCTokenAdaptorV2-WithdrawFromCompound) |  | Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)` |
-| claim_comp | [CompoundCTokenAdaptorV2.ClaimComp](#steward-v3-CompoundCTokenAdaptorV2-ClaimComp) |  | Represents function `claimComp()` |
+| swap_with_one_inch | [OneInchAdaptorV1.SwapWithOneInch](#steward-v3-OneInchAdaptorV1-SwapWithOneInch) |  | Represents function `swapWithOneInch(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes swapCallData)` |
 
 
 
 
 
 
-<a name="steward-v3-CompoundCTokenAdaptorV2-ClaimComp"></a>
+<a name="steward-v3-OneInchAdaptorV1-SwapWithOneInch"></a>
 
-### CompoundCTokenAdaptorV2.ClaimComp
-Allows strategists to claim COMP rewards.
+### OneInchAdaptorV1.SwapWithOneInch
+Allows strategists to make ERC20 swaps using 1Inch.
 
-Represents function `claimComp()`
-
-
-
-
-
-
-<a name="steward-v3-CompoundCTokenAdaptorV2-DepositToCompound"></a>
-
-### CompoundCTokenAdaptorV2.DepositToCompound
-Allows strategists to lend assets on Compound.
-
-Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
+Represents function `swapWithOneInch(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes swapCallData)`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| market | [string](#string) |  |  |
-| amount_to_deposit | [string](#string) |  |  |
+| token_in | [string](#string) |  |  |
+| token_out | [string](#string) |  |  |
+| amount | [string](#string) |  |  |
+| swap_call_data | [bytes](#bytes) |  |  |
 
 
 
 
 
 
-<a name="steward-v3-CompoundCTokenAdaptorV2-WithdrawFromCompound"></a>
+<a name="steward-v3-OneInchAdaptorV1Calls"></a>
 
-### CompoundCTokenAdaptorV2.WithdrawFromCompound
-Allows strategists to withdraw assets from Compound.
-
-Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)`
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| market | [string](#string) |  |  |
-| amount_to_withdraw | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="steward-v3-CompoundCTokenAdaptorV2Calls"></a>
-
-### CompoundCTokenAdaptorV2Calls
+### OneInchAdaptorV1Calls
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| calls | [CompoundCTokenAdaptorV2](#steward-v3-CompoundCTokenAdaptorV2) | repeated |  |
+| calls | [OneInchAdaptorV1](#steward-v3-OneInchAdaptorV1) | repeated |  |
 
 
 

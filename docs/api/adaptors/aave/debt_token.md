@@ -4,11 +4,15 @@
 ## Table of Contents
 
 - [adaptors/aave/debt_token.proto](#adaptors_aave_debt_token-proto)
-    - [AaveDebtTokenAdaptor](#steward-v2-AaveDebtTokenAdaptor)
-    - [AaveDebtTokenAdaptor.BorrowFromAave](#steward-v2-AaveDebtTokenAdaptor-BorrowFromAave)
-    - [AaveDebtTokenAdaptor.RepayAaveDebt](#steward-v2-AaveDebtTokenAdaptor-RepayAaveDebt)
-    - [AaveDebtTokenAdaptor.SwapAndRepay](#steward-v2-AaveDebtTokenAdaptor-SwapAndRepay)
-    - [AaveDebtTokenAdaptorCalls](#steward-v2-AaveDebtTokenAdaptorCalls)
+    - [AaveDebtTokenAdaptorV1](#steward-v3-AaveDebtTokenAdaptorV1)
+    - [AaveDebtTokenAdaptorV1.BorrowFromAave](#steward-v3-AaveDebtTokenAdaptorV1-BorrowFromAave)
+    - [AaveDebtTokenAdaptorV1.RepayAaveDebt](#steward-v3-AaveDebtTokenAdaptorV1-RepayAaveDebt)
+    - [AaveDebtTokenAdaptorV1.SwapAndRepay](#steward-v3-AaveDebtTokenAdaptorV1-SwapAndRepay)
+    - [AaveDebtTokenAdaptorV1Calls](#steward-v3-AaveDebtTokenAdaptorV1Calls)
+    - [AaveDebtTokenAdaptorV2](#steward-v3-AaveDebtTokenAdaptorV2)
+    - [AaveDebtTokenAdaptorV2.BorrowFromAave](#steward-v3-AaveDebtTokenAdaptorV2-BorrowFromAave)
+    - [AaveDebtTokenAdaptorV2.RepayAaveDebt](#steward-v3-AaveDebtTokenAdaptorV2-RepayAaveDebt)
+    - [AaveDebtTokenAdaptorV2Calls](#steward-v3-AaveDebtTokenAdaptorV2Calls)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -21,29 +25,29 @@
 
 
 
-<a name="steward-v2-AaveDebtTokenAdaptor"></a>
+<a name="steward-v3-AaveDebtTokenAdaptorV1"></a>
 
-### AaveDebtTokenAdaptor
-Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
+### AaveDebtTokenAdaptorV1
+Represents call data for the Aave Debt Token adaptor V1, used for borrowing and repaying debt on Aave.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| swap | [Swap](#steward-v2-Swap) |  | Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
-| oracle_swap | [OracleSwap](#steward-v2-OracleSwap) |  | Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
-| revoke_approval | [RevokeApproval](#steward-v2-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
-| borrow_from_aave | [AaveDebtTokenAdaptor.BorrowFromAave](#steward-v2-AaveDebtTokenAdaptor-BorrowFromAave) |  | Represents function `borrowFromAave(ERC20 debtTokenToBorrow, uint256 amountToBorrow)` |
-| repay_aave_debt | [AaveDebtTokenAdaptor.RepayAaveDebt](#steward-v2-AaveDebtTokenAdaptor-RepayAaveDebt) |  | Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)` |
-| swap_and_repay | [AaveDebtTokenAdaptor.SwapAndRepay](#steward-v2-AaveDebtTokenAdaptor-SwapAndRepay) |  | Represents function `swapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
+| swap | [Swap](#steward-v3-Swap) |  | Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
+| oracle_swap | [OracleSwap](#steward-v3-OracleSwap) |  | Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)` |
+| revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| borrow_from_aave | [AaveDebtTokenAdaptorV1.BorrowFromAave](#steward-v3-AaveDebtTokenAdaptorV1-BorrowFromAave) |  | Represents function `borrowFromAave(ERC20 debtTokenToBorrow, uint256 amountToBorrow)` |
+| repay_aave_debt | [AaveDebtTokenAdaptorV1.RepayAaveDebt](#steward-v3-AaveDebtTokenAdaptorV1-RepayAaveDebt) |  | Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)` |
+| swap_and_repay | [AaveDebtTokenAdaptorV1.SwapAndRepay](#steward-v3-AaveDebtTokenAdaptorV1-SwapAndRepay) |  | Represents function `swapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)` |
 
 
 
 
 
 
-<a name="steward-v2-AaveDebtTokenAdaptor-BorrowFromAave"></a>
+<a name="steward-v3-AaveDebtTokenAdaptorV1-BorrowFromAave"></a>
 
-### AaveDebtTokenAdaptor.BorrowFromAave
+### AaveDebtTokenAdaptorV1.BorrowFromAave
 Allows strategists to borrow assets from Aave.
 
 Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
@@ -59,9 +63,9 @@ Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit
 
 
 
-<a name="steward-v2-AaveDebtTokenAdaptor-RepayAaveDebt"></a>
+<a name="steward-v3-AaveDebtTokenAdaptorV1-RepayAaveDebt"></a>
 
-### AaveDebtTokenAdaptor.RepayAaveDebt
+### AaveDebtTokenAdaptorV1.RepayAaveDebt
 Allows strategists to repay loan debt on Aave.
 
 Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
@@ -77,9 +81,9 @@ Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
 
 
 
-<a name="steward-v2-AaveDebtTokenAdaptor-SwapAndRepay"></a>
+<a name="steward-v3-AaveDebtTokenAdaptorV1-SwapAndRepay"></a>
 
-### AaveDebtTokenAdaptor.SwapAndRepay
+### AaveDebtTokenAdaptorV1.SwapAndRepay
 Allows strategists to swap assets and repay loans in one call.
 
 Represents function `swapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
@@ -90,23 +94,91 @@ Represents function `swapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amo
 | token_in | [string](#string) |  | The address of the token to swap from |
 | token_to_repay | [string](#string) |  | The address of the token to swap to and repay with |
 | amount_in | [string](#string) |  | The amount to swap |
-| exchange | [Exchange](#steward-v2-Exchange) |  | The exchange to make the swap on |
-| params | [SwapParams](#steward-v2-SwapParams) |  | The parameters for the swap |
+| exchange | [Exchange](#steward-v3-Exchange) |  | The exchange to make the swap on |
+| params | [SwapParams](#steward-v3-SwapParams) |  | The parameters for the swap |
 
 
 
 
 
 
-<a name="steward-v2-AaveDebtTokenAdaptorCalls"></a>
+<a name="steward-v3-AaveDebtTokenAdaptorV1Calls"></a>
 
-### AaveDebtTokenAdaptorCalls
+### AaveDebtTokenAdaptorV1Calls
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| calls | [AaveDebtTokenAdaptor](#steward-v2-AaveDebtTokenAdaptor) | repeated |  |
+| calls | [AaveDebtTokenAdaptorV1](#steward-v3-AaveDebtTokenAdaptorV1) | repeated |  |
+
+
+
+
+
+
+<a name="steward-v3-AaveDebtTokenAdaptorV2"></a>
+
+### AaveDebtTokenAdaptorV2
+Represents call data for the Aave Debt Token adaptor V2, used for borrowing and repaying debt on Aave.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| revoke_approval | [RevokeApproval](#steward-v3-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| borrow_from_aave | [AaveDebtTokenAdaptorV2.BorrowFromAave](#steward-v3-AaveDebtTokenAdaptorV2-BorrowFromAave) |  | Represents function `borrowFromAave(ERC20 debtTokenToBorrow, uint256 amountToBorrow)` |
+| repay_aave_debt | [AaveDebtTokenAdaptorV2.RepayAaveDebt](#steward-v3-AaveDebtTokenAdaptorV2-RepayAaveDebt) |  | Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)` |
+
+
+
+
+
+
+<a name="steward-v3-AaveDebtTokenAdaptorV2-BorrowFromAave"></a>
+
+### AaveDebtTokenAdaptorV2.BorrowFromAave
+Allows strategists to borrow assets from Aave.
+
+Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [string](#string) |  | The address of the ERC20 token to borrow |
+| amount | [string](#string) |  | The amount to borrow |
+
+
+
+
+
+
+<a name="steward-v3-AaveDebtTokenAdaptorV2-RepayAaveDebt"></a>
+
+### AaveDebtTokenAdaptorV2.RepayAaveDebt
+Allows strategists to repay loan debt on Aave.
+
+Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [string](#string) |  | The address of the ERC20 token to repay |
+| amount | [string](#string) |  | The amount to repay |
+
+
+
+
+
+
+<a name="steward-v3-AaveDebtTokenAdaptorV2Calls"></a>
+
+### AaveDebtTokenAdaptorV2Calls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [AaveDebtTokenAdaptorV2](#steward-v3-AaveDebtTokenAdaptorV2) | repeated |  |
 
 
 
