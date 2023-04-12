@@ -41,11 +41,11 @@ pub const ALLOWED_SETUP_ADAPTORS: [&str; 10] = [
     // CTokenAdaptor v2
     "9a384df333588428843d128120becd72434ec078",
     // AaveV2EnableAssetAsCollateralAdaptor v1
-    "",
+    "724feb5819d1717aec5adbc0974a655a498b2614",
 ];
 pub const ALLOWED_CATALOGUE_ADAPTORS: [&str; 1] = [
     // AaveV2EnableAssetAsCollateralAdaptor v1
-    "",
+    "724feb5819d1717aec5adbc0974a655a498b2614",
 ];
 
 pub trait CellarAdaptorCall {}
