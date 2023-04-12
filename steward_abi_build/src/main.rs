@@ -24,6 +24,10 @@ fn main() {
         ("SwapWithUniswapAdaptorV1", "swap_with_uniswap_adaptor_v1"),
         ("FeesAndReservesAdaptorV1", "fees_and_reserves_adaptor_v1"),
         ("VestingSimpleAdaptorV2", "vesting_simple_adaptor_v2"),
+        (
+            "AaveV2EnableAssetAsCollateralAdaptorV1",
+            "aave_v2_enable_asset_as_collateral_adaptor_v1",
+        ),
     ];
 
     contracts

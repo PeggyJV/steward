@@ -369,6 +369,7 @@ type AdaptorCall struct {
 	//	*AdaptorCall_VestingSimpleV2Calls
 	//	*AdaptorCall_CellarV1Calls
 	//	*AdaptorCall_UniswapV3V2Calls
+	//	*AdaptorCall_AaveV2EnableAssetAsCollateralV1Calls
 	CallData isAdaptorCall_CallData `protobuf_oneof:"call_data"`
 }
 
@@ -523,6 +524,13 @@ func (x *AdaptorCall) GetUniswapV3V2Calls() *UniswapV3AdaptorV2Calls {
 	return nil
 }
 
+func (x *AdaptorCall) GetAaveV2EnableAssetAsCollateralV1Calls() *AaveV2EnableAssetAsCollateralAdaptorV1Calls {
+	if x, ok := x.GetCallData().(*AdaptorCall_AaveV2EnableAssetAsCollateralV1Calls); ok {
+		return x.AaveV2EnableAssetAsCollateralV1Calls
+	}
+	return nil
+}
+
 type isAdaptorCall_CallData interface {
 	isAdaptorCall_CallData()
 }
@@ -602,6 +610,11 @@ type AdaptorCall_UniswapV3V2Calls struct {
 	UniswapV3V2Calls *UniswapV3AdaptorV2Calls `protobuf:"bytes,16,opt,name=uniswap_v3_v2_calls,json=uniswapV3V2Calls,proto3,oneof"`
 }
 
+type AdaptorCall_AaveV2EnableAssetAsCollateralV1Calls struct {
+	// Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1
+	AaveV2EnableAssetAsCollateralV1Calls *AaveV2EnableAssetAsCollateralAdaptorV1Calls `protobuf:"bytes,17,opt,name=aave_v2_enable_asset_as_collateral_v1_calls,json=aaveV2EnableAssetAsCollateralV1Calls,proto3,oneof"`
+}
+
 func (*AdaptorCall_UniswapV3V1Calls) isAdaptorCall_CallData() {}
 
 func (*AdaptorCall_AaveATokenV1Calls) isAdaptorCall_CallData() {}
@@ -631,6 +644,8 @@ func (*AdaptorCall_VestingSimpleV2Calls) isAdaptorCall_CallData() {}
 func (*AdaptorCall_CellarV1Calls) isAdaptorCall_CallData() {}
 
 func (*AdaptorCall_UniswapV3V2Calls) isAdaptorCall_CallData() {}
+
+func (*AdaptorCall_AaveV2EnableAssetAsCollateralV1Calls) isAdaptorCall_CallData() {}
 
 //
 // Insert a trusted position to the list of positions used by the cellar at a given index.
@@ -2188,6 +2203,10 @@ var file_cellar_v2_proto_rawDesc = []byte{
 	0x67, 0x5f, 0x73, 0x69, 0x6d, 0x70, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x27,
 	0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x73, 0x2f, 0x73, 0x6f, 0x6d, 0x6d, 0x65, 0x6c, 0x69,
 	0x65, 0x72, 0x2f, 0x63, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x5f, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f,
+	0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x3e, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72,
+	0x73, 0x2f, 0x61, 0x61, 0x76, 0x65, 0x2f, 0x61, 0x61, 0x76, 0x65, 0x5f, 0x76, 0x32, 0x5f, 0x65,
+	0x6e, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x61, 0x73, 0x5f, 0x63,
+	0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x5f, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f,
 	0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x84, 0x0e, 0x0a, 0x08, 0x43, 0x65, 0x6c, 0x6c,
 	0x61, 0x72, 0x56, 0x32, 0x12, 0x45, 0x0a, 0x0c, 0x61, 0x64, 0x64, 0x5f, 0x70, 0x6f, 0x73, 0x69,
 	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x73, 0x74, 0x65,
@@ -2425,7 +2444,7 @@ var file_cellar_v2_proto_rawDesc = []byte{
 	0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72,
 	0x56, 0x32, 0x5f, 0x32, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x61, 0x6c,
 	0x6c, 0x52, 0x0d, 0x66, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x61, 0x6c, 0x6c, 0x73,
-	0x42, 0x0b, 0x0a, 0x09, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x22, 0xa5, 0x0b,
+	0x42, 0x0b, 0x0a, 0x09, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x22, 0xbc, 0x0c,
 	0x0a, 0x0b, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x43, 0x61, 0x6c, 0x6c, 0x12, 0x18, 0x0a,
 	0x07, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
 	0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x12, 0x54, 0x0a, 0x13, 0x75, 0x6e, 0x69, 0x73, 0x77,
@@ -2515,9 +2534,19 @@ var file_cellar_v2_proto_rawDesc = []byte{
 	0x23, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x55, 0x6e, 0x69,
 	0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x32, 0x43,
 	0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x10, 0x75, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56,
-	0x33, 0x56, 0x32, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x42, 0x0b, 0x0a, 0x09, 0x63, 0x61, 0x6c, 0x6c,
-	0x5f, 0x64, 0x61, 0x74, 0x61, 0x42, 0x10, 0x5a, 0x0e, 0x2f, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72,
-	0x64, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x33, 0x56, 0x32, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x94, 0x01, 0x0a, 0x2b, 0x61, 0x61, 0x76,
+	0x65, 0x5f, 0x76, 0x32, 0x5f, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x61, 0x73, 0x73, 0x65,
+	0x74, 0x5f, 0x61, 0x73, 0x5f, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x5f,
+	0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x11, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x37,
+	0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65,
+	0x56, 0x32, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x41, 0x73, 0x43,
+	0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72,
+	0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x24, 0x61, 0x61, 0x76, 0x65, 0x56,
+	0x32, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x41, 0x73, 0x43, 0x6f,
+	0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x42,
+	0x0b, 0x0a, 0x09, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 0x64, 0x61, 0x74, 0x61, 0x42, 0x10, 0x5a, 0x0e,
+	0x2f, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -2534,49 +2563,50 @@ func file_cellar_v2_proto_rawDescGZIP() []byte {
 
 var file_cellar_v2_proto_msgTypes = make([]protoimpl.MessageInfo, 28)
 var file_cellar_v2_proto_goTypes = []interface{}{
-	(*CellarV2)(nil),                              // 0: steward.v3.CellarV2
-	(*CellarV2_2)(nil),                            // 1: steward.v3.CellarV2_2
-	(*AdaptorCall)(nil),                           // 2: steward.v3.AdaptorCall
-	(*CellarV2_AddPosition)(nil),                  // 3: steward.v3.CellarV2.AddPosition
-	(*CellarV2_CallOnAdaptor)(nil),                // 4: steward.v3.CellarV2.CallOnAdaptor
-	(*CellarV2_RemovePosition)(nil),               // 5: steward.v3.CellarV2.RemovePosition
-	(*CellarV2_SetHoldingPosition)(nil),           // 6: steward.v3.CellarV2.SetHoldingPosition
-	(*CellarV2_SetStrategistPayoutAddress)(nil),   // 7: steward.v3.CellarV2.SetStrategistPayoutAddress
-	(*CellarV2_SwapPositions)(nil),                // 8: steward.v3.CellarV2.SwapPositions
-	(*CellarV2_SetShareLockPeriod)(nil),           // 9: steward.v3.CellarV2.SetShareLockPeriod
-	(*CellarV2_SetRebalanceDeviation)(nil),        // 10: steward.v3.CellarV2.SetRebalanceDeviation
-	(*CellarV2_SetupAdaptor)(nil),                 // 11: steward.v3.CellarV2.SetupAdaptor
-	(*CellarV2_SetPlatformFee)(nil),               // 12: steward.v3.CellarV2.SetPlatformFee
-	(*CellarV2_InitiateShutdown)(nil),             // 13: steward.v3.CellarV2.InitiateShutdown
-	(*CellarV2_LiftShutdown)(nil),                 // 14: steward.v3.CellarV2.LiftShutdown
-	(*CellarV2_2_FunctionCall)(nil),               // 15: steward.v3.CellarV2_2.FunctionCall
-	(*CellarV2_2_AddPosition)(nil),                // 16: steward.v3.CellarV2_2.AddPosition
-	(*CellarV2_2_CallOnAdaptor)(nil),              // 17: steward.v3.CellarV2_2.CallOnAdaptor
-	(*CellarV2_2_RemovePosition)(nil),             // 18: steward.v3.CellarV2_2.RemovePosition
-	(*CellarV2_2_SetHoldingPosition)(nil),         // 19: steward.v3.CellarV2_2.SetHoldingPosition
-	(*CellarV2_2_SetStrategistPayoutAddress)(nil), // 20: steward.v3.CellarV2_2.SetStrategistPayoutAddress
-	(*CellarV2_2_SwapPositions)(nil),              // 21: steward.v3.CellarV2_2.SwapPositions
-	(*CellarV2_2_SetShareLockPeriod)(nil),         // 22: steward.v3.CellarV2_2.SetShareLockPeriod
-	(*CellarV2_2_SetRebalanceDeviation)(nil),      // 23: steward.v3.CellarV2_2.SetRebalanceDeviation
-	(*CellarV2_2_InitiateShutdown)(nil),           // 24: steward.v3.CellarV2_2.InitiateShutdown
-	(*CellarV2_2_SetStrategistPlatformCut)(nil),   // 25: steward.v3.CellarV2_2.SetStrategistPlatformCut
-	(*CellarV2_2_LiftShutdown)(nil),               // 26: steward.v3.CellarV2_2.LiftShutdown
-	(*CellarV2_2_Multicall)(nil),                  // 27: steward.v3.CellarV2_2.Multicall
-	(*UniswapV3AdaptorV1Calls)(nil),               // 28: steward.v3.UniswapV3AdaptorV1Calls
-	(*AaveATokenAdaptorV1Calls)(nil),              // 29: steward.v3.AaveATokenAdaptorV1Calls
-	(*AaveDebtTokenAdaptorV1Calls)(nil),           // 30: steward.v3.AaveDebtTokenAdaptorV1Calls
-	(*CompoundCTokenAdaptorV2Calls)(nil),          // 31: steward.v3.CompoundCTokenAdaptorV2Calls
-	(*AaveATokenAdaptorV2Calls)(nil),              // 32: steward.v3.AaveATokenAdaptorV2Calls
-	(*AaveDebtTokenAdaptorV2Calls)(nil),           // 33: steward.v3.AaveDebtTokenAdaptorV2Calls
-	(*AaveV3ATokenAdaptorV1Calls)(nil),            // 34: steward.v3.AaveV3ATokenAdaptorV1Calls
-	(*AaveV3DebtTokenAdaptorV1Calls)(nil),         // 35: steward.v3.AaveV3DebtTokenAdaptorV1Calls
-	(*OneInchAdaptorV1Calls)(nil),                 // 36: steward.v3.OneInchAdaptorV1Calls
-	(*FeesAndReservesAdaptorV1Calls)(nil),         // 37: steward.v3.FeesAndReservesAdaptorV1Calls
-	(*ZeroXAdaptorV1Calls)(nil),                   // 38: steward.v3.ZeroXAdaptorV1Calls
-	(*SwapWithUniswapAdaptorV1Calls)(nil),         // 39: steward.v3.SwapWithUniswapAdaptorV1Calls
-	(*VestingSimpleAdaptorV2Calls)(nil),           // 40: steward.v3.VestingSimpleAdaptorV2Calls
-	(*CellarAdaptorV1Calls)(nil),                  // 41: steward.v3.CellarAdaptorV1Calls
-	(*UniswapV3AdaptorV2Calls)(nil),               // 42: steward.v3.UniswapV3AdaptorV2Calls
+	(*CellarV2)(nil),                                    // 0: steward.v3.CellarV2
+	(*CellarV2_2)(nil),                                  // 1: steward.v3.CellarV2_2
+	(*AdaptorCall)(nil),                                 // 2: steward.v3.AdaptorCall
+	(*CellarV2_AddPosition)(nil),                        // 3: steward.v3.CellarV2.AddPosition
+	(*CellarV2_CallOnAdaptor)(nil),                      // 4: steward.v3.CellarV2.CallOnAdaptor
+	(*CellarV2_RemovePosition)(nil),                     // 5: steward.v3.CellarV2.RemovePosition
+	(*CellarV2_SetHoldingPosition)(nil),                 // 6: steward.v3.CellarV2.SetHoldingPosition
+	(*CellarV2_SetStrategistPayoutAddress)(nil),         // 7: steward.v3.CellarV2.SetStrategistPayoutAddress
+	(*CellarV2_SwapPositions)(nil),                      // 8: steward.v3.CellarV2.SwapPositions
+	(*CellarV2_SetShareLockPeriod)(nil),                 // 9: steward.v3.CellarV2.SetShareLockPeriod
+	(*CellarV2_SetRebalanceDeviation)(nil),              // 10: steward.v3.CellarV2.SetRebalanceDeviation
+	(*CellarV2_SetupAdaptor)(nil),                       // 11: steward.v3.CellarV2.SetupAdaptor
+	(*CellarV2_SetPlatformFee)(nil),                     // 12: steward.v3.CellarV2.SetPlatformFee
+	(*CellarV2_InitiateShutdown)(nil),                   // 13: steward.v3.CellarV2.InitiateShutdown
+	(*CellarV2_LiftShutdown)(nil),                       // 14: steward.v3.CellarV2.LiftShutdown
+	(*CellarV2_2_FunctionCall)(nil),                     // 15: steward.v3.CellarV2_2.FunctionCall
+	(*CellarV2_2_AddPosition)(nil),                      // 16: steward.v3.CellarV2_2.AddPosition
+	(*CellarV2_2_CallOnAdaptor)(nil),                    // 17: steward.v3.CellarV2_2.CallOnAdaptor
+	(*CellarV2_2_RemovePosition)(nil),                   // 18: steward.v3.CellarV2_2.RemovePosition
+	(*CellarV2_2_SetHoldingPosition)(nil),               // 19: steward.v3.CellarV2_2.SetHoldingPosition
+	(*CellarV2_2_SetStrategistPayoutAddress)(nil),       // 20: steward.v3.CellarV2_2.SetStrategistPayoutAddress
+	(*CellarV2_2_SwapPositions)(nil),                    // 21: steward.v3.CellarV2_2.SwapPositions
+	(*CellarV2_2_SetShareLockPeriod)(nil),               // 22: steward.v3.CellarV2_2.SetShareLockPeriod
+	(*CellarV2_2_SetRebalanceDeviation)(nil),            // 23: steward.v3.CellarV2_2.SetRebalanceDeviation
+	(*CellarV2_2_InitiateShutdown)(nil),                 // 24: steward.v3.CellarV2_2.InitiateShutdown
+	(*CellarV2_2_SetStrategistPlatformCut)(nil),         // 25: steward.v3.CellarV2_2.SetStrategistPlatformCut
+	(*CellarV2_2_LiftShutdown)(nil),                     // 26: steward.v3.CellarV2_2.LiftShutdown
+	(*CellarV2_2_Multicall)(nil),                        // 27: steward.v3.CellarV2_2.Multicall
+	(*UniswapV3AdaptorV1Calls)(nil),                     // 28: steward.v3.UniswapV3AdaptorV1Calls
+	(*AaveATokenAdaptorV1Calls)(nil),                    // 29: steward.v3.AaveATokenAdaptorV1Calls
+	(*AaveDebtTokenAdaptorV1Calls)(nil),                 // 30: steward.v3.AaveDebtTokenAdaptorV1Calls
+	(*CompoundCTokenAdaptorV2Calls)(nil),                // 31: steward.v3.CompoundCTokenAdaptorV2Calls
+	(*AaveATokenAdaptorV2Calls)(nil),                    // 32: steward.v3.AaveATokenAdaptorV2Calls
+	(*AaveDebtTokenAdaptorV2Calls)(nil),                 // 33: steward.v3.AaveDebtTokenAdaptorV2Calls
+	(*AaveV3ATokenAdaptorV1Calls)(nil),                  // 34: steward.v3.AaveV3ATokenAdaptorV1Calls
+	(*AaveV3DebtTokenAdaptorV1Calls)(nil),               // 35: steward.v3.AaveV3DebtTokenAdaptorV1Calls
+	(*OneInchAdaptorV1Calls)(nil),                       // 36: steward.v3.OneInchAdaptorV1Calls
+	(*FeesAndReservesAdaptorV1Calls)(nil),               // 37: steward.v3.FeesAndReservesAdaptorV1Calls
+	(*ZeroXAdaptorV1Calls)(nil),                         // 38: steward.v3.ZeroXAdaptorV1Calls
+	(*SwapWithUniswapAdaptorV1Calls)(nil),               // 39: steward.v3.SwapWithUniswapAdaptorV1Calls
+	(*VestingSimpleAdaptorV2Calls)(nil),                 // 40: steward.v3.VestingSimpleAdaptorV2Calls
+	(*CellarAdaptorV1Calls)(nil),                        // 41: steward.v3.CellarAdaptorV1Calls
+	(*UniswapV3AdaptorV2Calls)(nil),                     // 42: steward.v3.UniswapV3AdaptorV2Calls
+	(*AaveV2EnableAssetAsCollateralAdaptorV1Calls)(nil), // 43: steward.v3.AaveV2EnableAssetAsCollateralAdaptorV1Calls
 }
 var file_cellar_v2_proto_depIdxs = []int32{
 	3,  // 0: steward.v3.CellarV2.add_position:type_name -> steward.v3.CellarV2.AddPosition
@@ -2608,25 +2638,26 @@ var file_cellar_v2_proto_depIdxs = []int32{
 	40, // 26: steward.v3.AdaptorCall.vesting_simple_v2_calls:type_name -> steward.v3.VestingSimpleAdaptorV2Calls
 	41, // 27: steward.v3.AdaptorCall.cellar_v1_calls:type_name -> steward.v3.CellarAdaptorV1Calls
 	42, // 28: steward.v3.AdaptorCall.uniswap_v3_v2_calls:type_name -> steward.v3.UniswapV3AdaptorV2Calls
-	2,  // 29: steward.v3.CellarV2.CallOnAdaptor.data:type_name -> steward.v3.AdaptorCall
-	16, // 30: steward.v3.CellarV2_2.FunctionCall.add_position:type_name -> steward.v3.CellarV2_2.AddPosition
-	17, // 31: steward.v3.CellarV2_2.FunctionCall.call_on_adaptor:type_name -> steward.v3.CellarV2_2.CallOnAdaptor
-	18, // 32: steward.v3.CellarV2_2.FunctionCall.remove_position:type_name -> steward.v3.CellarV2_2.RemovePosition
-	19, // 33: steward.v3.CellarV2_2.FunctionCall.set_holding_position:type_name -> steward.v3.CellarV2_2.SetHoldingPosition
-	20, // 34: steward.v3.CellarV2_2.FunctionCall.set_strategist_payout_address:type_name -> steward.v3.CellarV2_2.SetStrategistPayoutAddress
-	21, // 35: steward.v3.CellarV2_2.FunctionCall.swap_positions:type_name -> steward.v3.CellarV2_2.SwapPositions
-	23, // 36: steward.v3.CellarV2_2.FunctionCall.set_rebalance_deviation:type_name -> steward.v3.CellarV2_2.SetRebalanceDeviation
-	22, // 37: steward.v3.CellarV2_2.FunctionCall.set_share_lock_period:type_name -> steward.v3.CellarV2_2.SetShareLockPeriod
-	24, // 38: steward.v3.CellarV2_2.FunctionCall.initiate_shutdown:type_name -> steward.v3.CellarV2_2.InitiateShutdown
-	25, // 39: steward.v3.CellarV2_2.FunctionCall.set_strategist_platform_cut:type_name -> steward.v3.CellarV2_2.SetStrategistPlatformCut
-	26, // 40: steward.v3.CellarV2_2.FunctionCall.lift_shutdown:type_name -> steward.v3.CellarV2_2.LiftShutdown
-	2,  // 41: steward.v3.CellarV2_2.CallOnAdaptor.data:type_name -> steward.v3.AdaptorCall
-	15, // 42: steward.v3.CellarV2_2.Multicall.function_calls:type_name -> steward.v3.CellarV2_2.FunctionCall
-	43, // [43:43] is the sub-list for method output_type
-	43, // [43:43] is the sub-list for method input_type
-	43, // [43:43] is the sub-list for extension type_name
-	43, // [43:43] is the sub-list for extension extendee
-	0,  // [0:43] is the sub-list for field type_name
+	43, // 29: steward.v3.AdaptorCall.aave_v2_enable_asset_as_collateral_v1_calls:type_name -> steward.v3.AaveV2EnableAssetAsCollateralAdaptorV1Calls
+	2,  // 30: steward.v3.CellarV2.CallOnAdaptor.data:type_name -> steward.v3.AdaptorCall
+	16, // 31: steward.v3.CellarV2_2.FunctionCall.add_position:type_name -> steward.v3.CellarV2_2.AddPosition
+	17, // 32: steward.v3.CellarV2_2.FunctionCall.call_on_adaptor:type_name -> steward.v3.CellarV2_2.CallOnAdaptor
+	18, // 33: steward.v3.CellarV2_2.FunctionCall.remove_position:type_name -> steward.v3.CellarV2_2.RemovePosition
+	19, // 34: steward.v3.CellarV2_2.FunctionCall.set_holding_position:type_name -> steward.v3.CellarV2_2.SetHoldingPosition
+	20, // 35: steward.v3.CellarV2_2.FunctionCall.set_strategist_payout_address:type_name -> steward.v3.CellarV2_2.SetStrategistPayoutAddress
+	21, // 36: steward.v3.CellarV2_2.FunctionCall.swap_positions:type_name -> steward.v3.CellarV2_2.SwapPositions
+	23, // 37: steward.v3.CellarV2_2.FunctionCall.set_rebalance_deviation:type_name -> steward.v3.CellarV2_2.SetRebalanceDeviation
+	22, // 38: steward.v3.CellarV2_2.FunctionCall.set_share_lock_period:type_name -> steward.v3.CellarV2_2.SetShareLockPeriod
+	24, // 39: steward.v3.CellarV2_2.FunctionCall.initiate_shutdown:type_name -> steward.v3.CellarV2_2.InitiateShutdown
+	25, // 40: steward.v3.CellarV2_2.FunctionCall.set_strategist_platform_cut:type_name -> steward.v3.CellarV2_2.SetStrategistPlatformCut
+	26, // 41: steward.v3.CellarV2_2.FunctionCall.lift_shutdown:type_name -> steward.v3.CellarV2_2.LiftShutdown
+	2,  // 42: steward.v3.CellarV2_2.CallOnAdaptor.data:type_name -> steward.v3.AdaptorCall
+	15, // 43: steward.v3.CellarV2_2.Multicall.function_calls:type_name -> steward.v3.CellarV2_2.FunctionCall
+	44, // [44:44] is the sub-list for method output_type
+	44, // [44:44] is the sub-list for method input_type
+	44, // [44:44] is the sub-list for extension type_name
+	44, // [44:44] is the sub-list for extension extendee
+	0,  // [0:44] is the sub-list for field type_name
 }
 
 func init() { file_cellar_v2_proto_init() }
@@ -2646,6 +2677,7 @@ func file_cellar_v2_proto_init() {
 	file_adaptors_1inch_oneinch_proto_init()
 	file_adaptors_vesting_simple_proto_init()
 	file_adaptors_sommelier_cellar_adaptor_proto_init()
+	file_adaptors_aave_aave_v2_enable_asset_as_collateral_adaptor_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_cellar_v2_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CellarV2); i {
@@ -3018,6 +3050,7 @@ func file_cellar_v2_proto_init() {
 		(*AdaptorCall_VestingSimpleV2Calls)(nil),
 		(*AdaptorCall_CellarV1Calls)(nil),
 		(*AdaptorCall_UniswapV3V2Calls)(nil),
+		(*AdaptorCall_AaveV2EnableAssetAsCollateralV1Calls)(nil),
 	}
 	file_cellar_v2_proto_msgTypes[15].OneofWrappers = []interface{}{
 		(*CellarV2_2_FunctionCall_AddPosition)(nil),

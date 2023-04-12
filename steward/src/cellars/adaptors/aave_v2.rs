@@ -5,10 +5,12 @@ use steward_abi::{
     aave_a_token_adaptor_v2::AaveATokenAdaptorV2Calls as AbiAaveATokenAdaptorV2Calls,
     aave_debt_token_adaptor_v1::AaveDebtTokenAdaptorV1Calls as AbiAaveDebtTokenAdaptorV1Calls,
     aave_debt_token_adaptor_v2::AaveDebtTokenAdaptorV2Calls as AbiAaveDebtTokenAdaptorV2Calls,
+    aave_v2_enable_asset_as_collateral_adaptor_v1::AaveV2EnableAssetAsCollateralAdaptorV1Calls as AbiAaveV2EnableAssetAsCollateralAdaptorV1Calls,
 };
 use steward_proto::steward::{
     aave_a_token_adaptor_v1, aave_a_token_adaptor_v2, aave_debt_token_adaptor_v1,
-    aave_debt_token_adaptor_v2, AaveATokenAdaptorV1Calls, AaveDebtTokenAdaptorV1Calls,
+    aave_debt_token_adaptor_v2, aave_v2_enable_asset_as_collateral_adaptor_v1,
+    AaveATokenAdaptorV1Calls, AaveDebtTokenAdaptorV1Calls,
 };
 
 use crate::{
@@ -304,6 +306,44 @@ pub(crate) fn aave_debt_token_adaptor_v2_calls(
                         .into(),
                 )
             }
+        }
+    }
+
+    Ok(calls)
+}
+
+pub(crate) fn aave_v2_enable_asset_as_collateral_adaptor_v1_calls(
+    params: steward_proto::steward::AaveV2EnableAssetAsCollateralAdaptorV1Calls,
+) -> Result<Vec<Bytes>, Error> {
+    let mut calls = Vec::new();
+    for c in params.calls {
+        let function = c
+            .function
+            .ok_or_else(|| sp_call_error("function cannot be empty".to_string()))?;
+
+        match function {
+            aave_v2_enable_asset_as_collateral_adaptor_v1::Function::RevokeApproval(p) => {
+                let call = steward_abi::aave_v2_enable_asset_as_collateral_adaptor_v1::RevokeApprovalCall {
+                    asset: sp_call_parse_address(p.asset)?,
+                    spender: sp_call_parse_address(p.spender)?,
+                };
+                calls.push(
+                    AbiAaveV2EnableAssetAsCollateralAdaptorV1Calls::RevokeApproval(call)
+                        .encode()
+                        .into(),
+                )
+            },
+            aave_v2_enable_asset_as_collateral_adaptor_v1::Function::SetUserUseReserveAsCollateral(p) => {
+                let call = steward_abi::aave_v2_enable_asset_as_collateral_adaptor_v1::SetUserUseReserveAsCollateralCall {
+                    asset: sp_call_parse_address(p.asset)?,
+                    use_as_collateral: p.use_as_collateral,
+                };
+                calls.push(
+                    AbiAaveV2EnableAssetAsCollateralAdaptorV1Calls::SetUserUseReserveAsCollateral(call)
+                        .encode()
+                        .into(),
+                )
+            },
         }
     }
 
