@@ -589,7 +589,7 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 				FromBlock: nil,
 				ToBlock:   nil,
 				Addresses: []common.Address{
-					v2_2Cellar,
+					vaultCellar,
 				},
 				Topics: [][]common.Hash{
 					{
@@ -754,7 +754,7 @@ func (s *IntegrationTestSuite) TestCellarV2_2() {
 						err := adaptor_abi.UnpackIntoInterface(&event, "SwapWithUniV3", log.Data)
 						s.Require().NoError(err, "failed to unpack SwapWithUniV3 event from log data")
 
-						if event.AmountOutMin == big.NewInt(2) {
+						if event.AmountOutMin.Cmp(big.NewInt(2)) == 0 {
 							continue
 						}
 
