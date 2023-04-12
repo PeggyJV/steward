@@ -48,6 +48,10 @@ message CellarV2 {
         SetupAdaptor setup_adaptor = 9;
         // Represents function `setPlatformFee(uint64 platformFee)`
         SetPlatformFee set_platform_fee = 10;
+        // Represents function `initiateShutdown()`
+        InitiateShutdown initiate_shutdown = 11;
+        // Represents function `liftShutdown()`
+        LiftShutdown lift_shutdown = 12;
     }
 
     /*
@@ -157,6 +161,21 @@ message CellarV2 {
     message SetPlatformFee {
         uint64 platform_fee = 1;
     }
+
+
+    /*
+    * Shutdown the cellar. Used in an emergency or if the cellar has been deprecated.
+    *
+    * Represents function `initiateShutdown()`
+    */
+    message InitiateShutdown {}
+
+    /*
+    * Allows the owner to restart a shut down Cellar
+    *
+    * Represents function `liftShutdown()`
+    */
+    message LiftShutdown {}
 }
 
 message CellarV2_2 {
@@ -190,6 +209,8 @@ message CellarV2_2 {
             InitiateShutdown initiate_shutdown = 9;
             // Represents function `setStrategistPlatformCut(uint64 cut)`
             SetStrategistPlatformCut set_strategist_platform_cut = 10;
+            // Represents function `liftShutdown()`
+            LiftShutdown lift_shutdown = 11;
         }
     }
 
@@ -298,6 +319,13 @@ message CellarV2_2 {
         // The new strategist platform cut
         uint64 new_cut = 1;
     }
+
+    /*
+    * Allows the owner to restart a shut down Cellar
+    *
+    * Represents function `liftShutdown()`
+    */
+    message LiftShutdown {}
 
     /*
     * Allows caller to call multiple functions in a single TX.

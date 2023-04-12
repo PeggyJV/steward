@@ -448,8 +448,8 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 														SwapWithUniV3: &steward_proto.SwapWithUniswapAdaptorV1_SwapWithUniV3{
 															Path:         []string{"0x1111111111111111111111111111111111111111", "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"},
 															PoolFees:     []uint32{1000, 2000},
-															Amount:       "3",
-															AmountOutMin: "3",
+															Amount:       "1",
+															AmountOutMin: "1",
 														},
 													},
 												},
@@ -660,8 +660,8 @@ func (s *IntegrationTestSuite) TestCellarV2_2() {
 																		SwapWithUniV3: &steward_proto.SwapWithUniswapAdaptorV1_SwapWithUniV3{
 																			Path:         []string{"0x1111111111111111111111111111111111111111", "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"},
 																			PoolFees:     []uint32{1000, 2000},
-																			Amount:       "3",
-																			AmountOutMin: "3",
+																			Amount:       "2",
+																			AmountOutMin: "2",
 																		},
 																	},
 																},
@@ -687,8 +687,8 @@ func (s *IntegrationTestSuite) TestCellarV2_2() {
 																		SwapWithUniV3: &steward_proto.SwapWithUniswapAdaptorV1_SwapWithUniV3{
 																			Path:         []string{"0x1111111111111111111111111111111111111111", "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"},
 																			PoolFees:     []uint32{1000, 2000},
-																			Amount:       "4",
-																			AmountOutMin: "4",
+																			Amount:       "3",
+																			AmountOutMin: "3",
 																		},
 																	},
 																},
@@ -753,7 +753,7 @@ func (s *IntegrationTestSuite) TestCellarV2_2() {
 						var event AdaptorSwapWithUniV3
 						err := adaptor_abi.UnpackIntoInterface(&event, "SwapWithUniV3", log.Data)
 						s.Require().NoError(err, "failed to unpack SwapWithUniV3 event from log data")
-						s.Require().Equal(big.NewInt(4), event.AmountOutMin)
+						s.Require().Equal(big.NewInt(3), event.AmountOutMin)
 
 						s.T().Log("Saw SwapWithUniV3 event!")
 						return true

@@ -200,6 +200,12 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_2Calls::SetStrategistPlatformCut(call).encode())
         }
+        Function::LiftShutdown(_) => {
+            log_cellar_call(CELLAR_NAME, &LiftShutdownCall::function_name(), &cellar_id);
+            let call = LiftShutdownCall {};
+
+            Ok(CellarV2_2Calls::LiftShutdown(call).encode())
+        }
     }
 }
 

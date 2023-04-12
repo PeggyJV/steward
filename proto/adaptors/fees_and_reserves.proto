@@ -40,45 +40,45 @@ message FeesAndReservesAdaptorV1 {
     }
 
     /*
+    * Allows the owner to update a Cellar's performance fee.
     *
-    *
-    *
+    * Represents function `updatePerformanceFee(uint32 performanceFee)`
     */
     message UpdatePerformanceFees {
         uint32 performance_fee = 1;
     }
 
     /*
+    * Allows the owner to update a Cellar's management fee.
     *
-    *
-    *
+    * Represents function `updateManagementFee(uint32 managementFee)`
     */
     message UpdateManagementFees {
         uint32 management_fee = 1;
     }
 
     /*
+    * Allows the owner to update a Cellar's upkeep frequency.
     *
-    *
-    *
+    * Represents function `changeUpkeepFrequency(uint64 newFrequency)`
     */
     message ChangeUpkeepFrequency {
         uint64 new_frequency = 1;
     }
 
     /*
+    * Allows the owner to update a Cellar's upkeep max gas.
     *
-    *
-    *
+    * Represents function `changeUpkeepMaxGas(uint64 newMaxGas)`
     */
     message ChangeUpkeepMaxGas {
         uint64 new_max_gas = 1;
     }
 
     /*
+    * Allows the owner to set the Cellar's fee metadata
     *
-    *
-    *
+    * Represents function `setupMetaData(uint32 managementFee, uint32 performanceFee)`
     */
     message SetupMetaData {
         uint32 management_fee = 1;
@@ -86,27 +86,27 @@ message FeesAndReservesAdaptorV1 {
     }
 
     /*
+    * Allows the owner to add assets to the Cellar's reserves
     *
-    *
-    *
+    * Represents function `addAssetsToReserves(uint256 amount)`
     */
     message AddAssetsToReserves {
         string amount = 1;
     }
 
     /*
+    * Allows the owner to withdraw assets from the Cellar's reserves
     *
-    *
-    *
+    * Represents function `withdrawAssetsFromReserves(uint256 amount)`
     */
     message WithdrawAssetsFromReserves {
         string amount = 1;
     }
 
     /*
+    * Allows the owner to prepare fees to be split between the platform, strategist, and protocol
     *
-    *
-    *
+    * Represents function `prepareFees(uint256 amount)`
     */
     message PrepareFees {
         string amount = 1;

@@ -97,7 +97,7 @@ mod tests {
         let blocked2 = String::from("0X7c4262f83e6775d6ff6fe8d9ab268611ed9d13ee");
         let blocked3 = String::from("7C4262f83e6775D6ff6fE8d9ab268611Ed9d13Ee");
         let blocked4 = String::from("7c4262f83e6775d6ff6fe8d9ab268611ed9d13ee");
-        let nonblocked = String::from("0xDbd750F72a00d01f209FFc6C75e80301eFc789C1");
+        let nonblocked = String::from("0x0bD9a2c1917e3A932a4a712aEE38ff63d35733fb");
 
         assert!(BLOCKED_ADAPTORS.contains(&normalize_address(blocked1.clone()).as_str()));
         assert!(BLOCKED_ADAPTORS.contains(&normalize_address(blocked2).as_str()));

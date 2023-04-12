@@ -1342,45 +1342,45 @@ pub struct FeesAndReservesAdaptorV1 {
 /// Nested message and enum types in `FeesAndReservesAdaptorV1`.
 pub mod fees_and_reserves_adaptor_v1 {
     ///
+    /// Allows the owner to update a Cellar's performance fee.
     ///
-    ///
-    ///
+    /// Represents function `updatePerformanceFee(uint32 performanceFee)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct UpdatePerformanceFees {
         #[prost(uint32, tag = "1")]
         pub performance_fee: u32,
     }
     ///
+    /// Allows the owner to update a Cellar's management fee.
     ///
-    ///
-    ///
+    /// Represents function `updateManagementFee(uint32 managementFee)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct UpdateManagementFees {
         #[prost(uint32, tag = "1")]
         pub management_fee: u32,
     }
     ///
+    /// Allows the owner to update a Cellar's upkeep frequency.
     ///
-    ///
-    ///
+    /// Represents function `changeUpkeepFrequency(uint64 newFrequency)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct ChangeUpkeepFrequency {
         #[prost(uint64, tag = "1")]
         pub new_frequency: u64,
     }
     ///
+    /// Allows the owner to update a Cellar's upkeep max gas.
     ///
-    ///
-    ///
+    /// Represents function `changeUpkeepMaxGas(uint64 newMaxGas)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct ChangeUpkeepMaxGas {
         #[prost(uint64, tag = "1")]
         pub new_max_gas: u64,
     }
     ///
+    /// Allows the owner to set the Cellar's fee metadata
     ///
-    ///
-    ///
+    /// Represents function `setupMetaData(uint32 managementFee, uint32 performanceFee)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct SetupMetaData {
         #[prost(uint32, tag = "1")]
@@ -1389,27 +1389,27 @@ pub mod fees_and_reserves_adaptor_v1 {
         pub performance_fee: u32,
     }
     ///
+    /// Allows the owner to add assets to the Cellar's reserves
     ///
-    ///
-    ///
+    /// Represents function `addAssetsToReserves(uint256 amount)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct AddAssetsToReserves {
         #[prost(string, tag = "1")]
         pub amount: ::prost::alloc::string::String,
     }
     ///
+    /// Allows the owner to withdraw assets from the Cellar's reserves
     ///
-    ///
-    ///
+    /// Represents function `withdrawAssetsFromReserves(uint256 amount)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct WithdrawAssetsFromReserves {
         #[prost(string, tag = "1")]
         pub amount: ::prost::alloc::string::String,
     }
     ///
+    /// Allows the owner to prepare fees to be split between the platform, strategist, and protocol
     ///
-    ///
-    ///
+    /// Represents function `prepareFees(uint256 amount)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct PrepareFees {
         #[prost(string, tag = "1")]
@@ -1658,7 +1658,10 @@ pub struct AaveV3DebtTokenAdaptorV1Calls {
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct CellarV2 {
     /// The function you wish to execute on the target cellar
-    #[prost(oneof = "cellar_v2::Function", tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10")]
+    #[prost(
+        oneof = "cellar_v2::Function",
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12"
+    )]
     pub function: ::core::option::Option<cellar_v2::Function>,
 }
 /// Nested message and enum types in `CellarV2`.
@@ -1777,6 +1780,18 @@ pub mod cellar_v2 {
         #[prost(uint64, tag = "1")]
         pub platform_fee: u64,
     }
+    ///
+    /// Shutdown the cellar. Used in an emergency or if the cellar has been deprecated.
+    ///
+    /// Represents function `initiateShutdown()`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct InitiateShutdown {}
+    ///
+    /// Allows the owner to restart a shut down Cellar
+    ///
+    /// Represents function `liftShutdown()`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct LiftShutdown {}
     /// The function you wish to execute on the target cellar
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum Function {
@@ -1810,6 +1825,12 @@ pub mod cellar_v2 {
         /// Represents function `setPlatformFee(uint64 platformFee)`
         #[prost(message, tag = "10")]
         SetPlatformFee(SetPlatformFee),
+        /// Represents function `initiateShutdown()`
+        #[prost(message, tag = "11")]
+        InitiateShutdown(InitiateShutdown),
+        /// Represents function `liftShutdown()`
+        #[prost(message, tag = "12")]
+        LiftShutdown(LiftShutdown),
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -1824,7 +1845,7 @@ pub mod cellar_v2_2 {
     pub struct FunctionCall {
         #[prost(
             oneof = "function_call::Function",
-            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
+            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11"
         )]
         pub function: ::core::option::Option<function_call::Function>,
     }
@@ -1862,6 +1883,9 @@ pub mod cellar_v2_2 {
             /// Represents function `setStrategistPlatformCut(uint64 cut)`
             #[prost(message, tag = "10")]
             SetStrategistPlatformCut(super::SetStrategistPlatformCut),
+            /// Represents function `liftShutdown()`
+            #[prost(message, tag = "11")]
+            LiftShutdown(super::LiftShutdown),
         }
     }
     ///
@@ -1975,6 +1999,12 @@ pub mod cellar_v2_2 {
         #[prost(uint64, tag = "1")]
         pub new_cut: u64,
     }
+    ///
+    /// Allows the owner to restart a shut down Cellar
+    ///
+    /// Represents function `liftShutdown()`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct LiftShutdown {}
     ///
     /// Allows caller to call multiple functions in a single TX.
     ///

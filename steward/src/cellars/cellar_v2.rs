@@ -174,6 +174,22 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
 
             Ok(CellarV2Calls::SetPlatformFee(call).encode())
         }
+        InitiateShutdown(_) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &InitiateShutdownCall::function_name(),
+                &cellar_id,
+            );
+            let call = InitiateShutdownCall {};
+
+            Ok(CellarV2Calls::InitiateShutdown(call).encode())
+        }
+        LiftShutdown(_) => {
+            log_cellar_call(CELLAR_NAME, &LiftShutdownCall::function_name(), &cellar_id);
+            let call = LiftShutdownCall {};
+
+            Ok(CellarV2Calls::LiftShutdown(call).encode())
+        }
     }
 }
 
