@@ -21,9 +21,11 @@ pub const BLOCKED_ADAPTORS: [&str; 3] = [
     "26dba82495f6189dde7648ae88bead46c402f078",
 ];
 pub const BLOCKED_POSITIONS: [u32; 9] = [4, 5, 6, 7, 8, 9, 10, 11, 12];
-pub const ALLOWED_SETUP_ADAPTORS: [&str; 9] = [
-    // Uniswapv3Adaptor v2
+pub const ALLOWED_SETUP_ADAPTORS: [&str; 10] = [
+    // Uniswapv3Adaptor v1
     "dbd750f72a00d01f209ffc6c75e80301efc789c1",
+    // UniswapV3Adaptor v2
+    "0bd9a2c1917e3a932a4a712aee38ff63d35733fb",
     // VestingSimpleAdaptor v2
     "508e6ae090ea92cb90571e4269b799257cd78ca1",
     // OneInchAdaptor v1
