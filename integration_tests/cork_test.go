@@ -641,8 +641,8 @@ func (s *IntegrationTestSuite) TestCellarV2_2() {
 		// Contains two adaptor calls, the first of which has two function calls inside of it, for a total of three function calls.
 		request := &steward_proto.SubmitRequest{
 			CellarId: cellarId,
-			CallData: &steward_proto.SubmitRequest_CellarV2_2{
-				CellarV2_2: &steward_proto.CellarV2_2{
+			CallData: &steward_proto.SubmitRequest_CellarV2Dot2{
+				CellarV2Dot2: &steward_proto.CellarV2_2{
 					CallType: &steward_proto.CellarV2_2_Multicall_{
 						Multicall: &steward_proto.CellarV2_2_Multicall{
 							FunctionCalls: []*steward_proto.CellarV2_2_FunctionCall{
@@ -662,6 +662,33 @@ func (s *IntegrationTestSuite) TestCellarV2_2() {
 																			PoolFees:     []uint32{1000, 2000},
 																			Amount:       "3",
 																			AmountOutMin: "3",
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+								{
+									Function: &steward_proto.CellarV2_2_FunctionCall_CallOnAdaptor{
+										CallOnAdaptor: &steward_proto.CellarV2_2_CallOnAdaptor{
+											Data: []*steward_proto.AdaptorCall{
+												{
+													Adaptor: adaptorContract.Hex(),
+													CallData: &steward_proto.AdaptorCall_SwapWithUniswapV1Calls{
+														SwapWithUniswapV1Calls: &steward_proto.SwapWithUniswapAdaptorV1Calls{
+															Calls: []*steward_proto.SwapWithUniswapAdaptorV1{
+																{
+																	Function: &steward_proto.SwapWithUniswapAdaptorV1_SwapWithUniV3_{
+																		SwapWithUniV3: &steward_proto.SwapWithUniswapAdaptorV1_SwapWithUniV3{
+																			Path:         []string{"0x1111111111111111111111111111111111111111", "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"},
+																			PoolFees:     []uint32{1000, 2000},
+																			Amount:       "4",
+																			AmountOutMin: "4",
 																		},
 																	},
 																},
@@ -726,9 +753,9 @@ func (s *IntegrationTestSuite) TestCellarV2_2() {
 						var event AdaptorSwapWithUniV3
 						err := adaptor_abi.UnpackIntoInterface(&event, "SwapWithUniV3", log.Data)
 						s.Require().NoError(err, "failed to unpack SwapWithUniV3 event from log data")
-						s.Require().Equal(big.NewInt(3), event.AmountOutMin)
+						s.Require().Equal(big.NewInt(4), event.AmountOutMin)
 
-						s.T().Log("Saw BorrowFromAave event!")
+						s.T().Log("Saw SwapWithUniV3 event!")
 						return true
 					}
 				}
