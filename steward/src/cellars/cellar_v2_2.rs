@@ -7,7 +7,7 @@ use steward_abi::cellar_v2_2::{AdaptorCall as AbiAdaptorCall, *};
 use steward_proto::steward::{
     adaptor_call::CallData::*,
     cellar_v2_2::{function_call::Function as StrategistFunction, CallType, FunctionCall},
-    cellar_v2_2governance::Function as GovernanceFunction,
+    cellar_v2dot2_governance::Function as GovernanceFunction,
     AdaptorCall,
 };
 use GovernanceFunction::*;
@@ -25,7 +25,6 @@ use super::{
 };
 
 const CELLAR_NAME: &str = "CellarV2.2";
-const LOG_PREFIX: &str = CELLAR_NAME;
 
 /// Encodes a call to a CellarV2.2 contract
 pub fn get_encoded_call(call_type: CallType, cellar_id: String) -> Result<Vec<u8>, Error> {
@@ -239,7 +238,7 @@ pub fn get_encoded_governance_call(
             };
             Ok(CellarV2_2Calls::SetRebalanceDeviation(call).encode())
         }
-        InitiateShutdown(params) => {
+        InitiateShutdown(_) => {
             log_governance_cellar_call(
                 proposal_id,
                 CELLAR_NAME,
@@ -249,7 +248,7 @@ pub fn get_encoded_governance_call(
             let call = InitiateShutdownCall {};
             Ok(CellarV2_2Calls::InitiateShutdown(call).encode())
         }
-        LiftShutdown(params) => {
+        LiftShutdown(_) => {
             log_governance_cellar_call(
                 proposal_id,
                 CELLAR_NAME,

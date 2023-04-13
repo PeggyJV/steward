@@ -20,7 +20,6 @@ use crate::{
 use super::{log_cellar_call, log_governance_cellar_call, normalize_address, BLOCKED_POSITIONS};
 
 const CELLAR_NAME: &str = "CellarV2";
-const LOG_PREFIX: &str = CELLAR_NAME;
 
 /// Encodes a call to a CellarV2 contract
 pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {

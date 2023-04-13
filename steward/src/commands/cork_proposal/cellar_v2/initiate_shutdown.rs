@@ -35,7 +35,7 @@ impl Runnable for InitiateShutdownCmd {
                 });
 
             let governance_call = GovernanceCall {
-                call: Some(Call::CellarV2(CellarV2Governance {
+                call: Some(Call::CellarV2Governance(CellarV2Governance {
                     function: Some(Function::InitiateShutdown(InitiateShutdown {})),
                 })),
             };

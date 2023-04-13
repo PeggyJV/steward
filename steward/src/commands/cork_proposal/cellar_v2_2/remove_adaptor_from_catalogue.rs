@@ -1,16 +1,19 @@
-use crate::{application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*};
+use crate::{
+    application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*, utils,
+};
 use abscissa_core::{clap::Parser, Command, Runnable};
+use ethers::types::Address as EthereumAddress;
 use steward_proto::steward::{
-    cellar_v1_governance::{Function, InitiateShutdown},
+    cellar_v2dot2_governance::{Function, RemoveAdaptorFromCatalogue},
     governance_call::Call,
-    CellarV1Governance, GovernanceCall,
+    CellarV2dot2Governance, GovernanceCall,
 };
 
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION\n\nCalls initiateShutdown() on the target cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-v1_5/blob/release/src/base/Cellar.sol"
+    long_about = "DESCRIPTION\n\nCalls removeAdaptorFromCatalogue() on the target V2.2 cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol"
 )]
-pub struct InitiateShutdownCmd {
+pub struct RemoveAdaptorFromCatalogueCmd {
     /// Target contract for scheduled cork.
     #[clap(short, long)]
     cellar_id: String,
@@ -19,12 +22,16 @@ pub struct InitiateShutdownCmd {
     #[clap(short, long)]
     block_height: u64,
 
+    /// Address of the adaptor
+    #[clap(short, long)]
+    adaptor_address: EthereumAddress,
+
     /// Only print JSON output, omitting explanatory text
     #[clap(short, long)]
     quiet: bool,
 }
 
-impl Runnable for InitiateShutdownCmd {
+impl Runnable for RemoveAdaptorFromCatalogueCmd {
     fn run(&self) {
         abscissa_tokio::run_with_actix(&APP, async {
             cellars::validate_cellar_id(&self.cellar_id)
@@ -35,8 +42,12 @@ impl Runnable for InitiateShutdownCmd {
                 });
 
             let governance_call = GovernanceCall {
-                call: Some(Call::CellarV1Governance(CellarV1Governance {
-                    function: Some(Function::InitiateShutdown(InitiateShutdown {})),
+                call: Some(Call::CellarV2dot2Governance(CellarV2dot2Governance {
+                    function: Some(Function::RemoveAdaptorFromCatalogue(
+                        RemoveAdaptorFromCatalogue {
+                            adaptor: utils::format_eth_address(self.adaptor_address),
+                        },
+                    )),
                 })),
             };
 

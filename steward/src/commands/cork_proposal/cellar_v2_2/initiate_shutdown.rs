@@ -1,14 +1,14 @@
 use crate::{application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use steward_proto::steward::{
-    cellar_v1_governance::{Function, InitiateShutdown},
+    cellar_v2dot2_governance::{Function, InitiateShutdown},
     governance_call::Call,
-    CellarV1Governance, GovernanceCall,
+    CellarV2dot2Governance, GovernanceCall,
 };
 
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION\n\nCalls initiateShutdown() on the target cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-v1_5/blob/release/src/base/Cellar.sol"
+    long_about = "DESCRIPTION\n\nCalls initiateShutdown() on the target V2.2 cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol"
 )]
 pub struct InitiateShutdownCmd {
     /// Target contract for scheduled cork.
@@ -35,7 +35,7 @@ impl Runnable for InitiateShutdownCmd {
                 });
 
             let governance_call = GovernanceCall {
-                call: Some(Call::CellarV1Governance(CellarV1Governance {
+                call: Some(Call::CellarV2dot2Governance(CellarV2dot2Governance {
                     function: Some(Function::InitiateShutdown(InitiateShutdown {})),
                 })),
             };

@@ -40,7 +40,7 @@ impl Runnable for SetStrategistPerformanceCutCmd {
                 });
 
             let governance_call = GovernanceCall {
-                call: Some(Call::CellarV1(CellarV1Governance {
+                call: Some(Call::CellarV1Governance(CellarV1Governance {
                     function: Some(Function::SetStrategistPerformanceCut(
                         SetStrategistPerformanceCut {
                             amount: self.new_performance_cut,

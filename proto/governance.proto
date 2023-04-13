@@ -24,6 +24,6 @@ message GovernanceCall {
         // Governance function calls to V2 cellars
         CellarV2Governance cellar_v2_governance = 4;
         // Governance function calls to V2.2 cellars
-        CellarV2_2Governance cellar_v2dot2_governance = 5;
+        CellarV2dot2Governance cellar_v2dot2_governance = 5;
     }
 }

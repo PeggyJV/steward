@@ -2412,16 +2412,16 @@ pub mod cellar_v2_2 {
 ///
 /// Represent a function call initiated through a governance proposal
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct CellarV22governance {
+pub struct CellarV2dot2Governance {
     /// The function to call on the target cellar
     #[prost(
-        oneof = "cellar_v2_2governance::Function",
+        oneof = "cellar_v2dot2_governance::Function",
         tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
     )]
-    pub function: ::core::option::Option<cellar_v2_2governance::Function>,
+    pub function: ::core::option::Option<cellar_v2dot2_governance::Function>,
 }
-/// Nested message and enum types in `CellarV2_2Governance`.
-pub mod cellar_v2_2governance {
+/// Nested message and enum types in `CellarV2dot2Governance`.
+pub mod cellar_v2dot2_governance {
     ///
     /// Allows Governance to add positions to this cellar's catalogue.
     ///
@@ -2645,7 +2645,7 @@ pub mod governance_call {
         CellarV2Governance(super::CellarV2Governance),
         /// Governance function calls to V2.2 cellars
         #[prost(message, tag = "5")]
-        CellarV2dot2Governance(super::CellarV22governance),
+        CellarV2dot2Governance(super::CellarV2dot2Governance),
     }
 }
 ///

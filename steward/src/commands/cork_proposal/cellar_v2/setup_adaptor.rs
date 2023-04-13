@@ -43,7 +43,7 @@ impl Runnable for SetupAdaptorCmd {
                 });
 
             let governance_call = GovernanceCall {
-                call: Some(Call::CellarV2(CellarV2Governance {
+                call: Some(Call::CellarV2Governance(CellarV2Governance {
                     function: Some(Function::SetupAdaptor(SetupAdaptor {
                         adaptor: utils::format_eth_address(self.adaptor_address),
                     })),

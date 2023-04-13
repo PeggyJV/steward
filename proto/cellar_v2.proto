@@ -339,7 +339,7 @@ message CellarV2_2 {
 /*
 * Represent a function call initiated through a governance proposal
 */
-message CellarV2_2Governance {
+message CellarV2dot2Governance {
     // The function to call on the target cellar
     oneof function {
         // Represents function `addPositionToCatalogue(uint32 positionId)`

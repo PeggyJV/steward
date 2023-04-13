@@ -1,16 +1,21 @@
 use crate::{application::APP, cellars, commands::cork_proposal::print_proposal, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 use steward_proto::steward::{
-    cellar_v1_governance::{Function, InitiateShutdown},
+    cellar_v2dot2_governance::{Function, SetStrategistPlatformCut},
     governance_call::Call,
-    CellarV1Governance, GovernanceCall,
+    CellarV2dot2Governance, GovernanceCall,
 };
 
+/// Fees Distributor subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION\n\nCalls initiateShutdown() on the target cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-v1_5/blob/release/src/base/Cellar.sol"
+    long_about = "DESCRIPTION\n\nCalls setStrategistPlatformCut() on the target V2.2 cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol"
 )]
-pub struct InitiateShutdownCmd {
+pub struct SetStrategistPlatformCutCmd {
+    #[clap(short = 'n', long)]
+    /// New platform cut proportion for the Strategy Provider between 0 and 1e18 representing 0% and 100% respectively.
+    new_platform_cut: u64,
+
     /// Target contract for scheduled cork.
     #[clap(short, long)]
     cellar_id: String,
@@ -24,7 +29,7 @@ pub struct InitiateShutdownCmd {
     quiet: bool,
 }
 
-impl Runnable for InitiateShutdownCmd {
+impl Runnable for SetStrategistPlatformCutCmd {
     fn run(&self) {
         abscissa_tokio::run_with_actix(&APP, async {
             cellars::validate_cellar_id(&self.cellar_id)
@@ -35,8 +40,12 @@ impl Runnable for InitiateShutdownCmd {
                 });
 
             let governance_call = GovernanceCall {
-                call: Some(Call::CellarV1Governance(CellarV1Governance {
-                    function: Some(Function::InitiateShutdown(InitiateShutdown {})),
+                call: Some(Call::CellarV2dot2Governance(CellarV2dot2Governance {
+                    function: Some(Function::SetStrategistPlatformCut(
+                        SetStrategistPlatformCut {
+                            new_cut: self.new_platform_cut,
+                        },
+                    )),
                 })),
             };
 

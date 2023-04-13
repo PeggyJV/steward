@@ -57,7 +57,7 @@ impl Runnable for TrustPositionCmd {
                 }
             };
             let governance_call = GovernanceCall {
-                call: Some(Call::CellarV1(CellarV1Governance {
+                call: Some(Call::CellarV1Governance(CellarV1Governance {
                     function: Some(Function::TrustPosition(TrustPosition {
                         position: Some(position),
                     })),

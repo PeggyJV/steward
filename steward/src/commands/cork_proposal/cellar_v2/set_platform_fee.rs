@@ -40,7 +40,7 @@ impl Runnable for SetPlatformFeeCmd {
                 });
 
             let governance_call = GovernanceCall {
-                call: Some(Call::CellarV2(CellarV2Governance {
+                call: Some(Call::CellarV2Governance(CellarV2Governance {
                     function: Some(Function::SetPlatformFee(SetPlatformFee {
                         amount: self.new_platform_fee,
                     })),

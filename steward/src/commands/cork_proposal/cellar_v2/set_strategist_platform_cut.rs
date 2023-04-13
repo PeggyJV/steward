@@ -40,7 +40,7 @@ impl Runnable for SetStrategistPlatformCutCmd {
                 });
 
             let governance_call = GovernanceCall {
-                call: Some(Call::CellarV2(CellarV2Governance {
+                call: Some(Call::CellarV2Governance(CellarV2Governance {
                     function: Some(Function::SetStrategistPlatformCut(
                         SetStrategistPlatformCut {
                             amount: self.new_platform_cut,
