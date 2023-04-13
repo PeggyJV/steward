@@ -208,16 +208,8 @@ message CellarV2_2 {
             SetStrategistPayoutAddress set_strategist_payout_address = 5;
             // Represents function `swapPositions(uint256 index1, uint256 index2)`
             SwapPositions swap_positions = 6;
-            // Represents function `setRebalanceDeviation(uint265)`
-            SetRebalanceDeviation set_rebalance_deviation = 7;
             // Represents function `setShareLockPeriod(uint256 newLock)`
-            SetShareLockPeriod set_share_lock_period = 8;
-            // Represents function `initiateShutdown()`
-            InitiateShutdown initiate_shutdown = 9;
-            // Represents function `setStrategistPlatformCut(uint64 cut)`
-            SetStrategistPlatformCut set_strategist_platform_cut = 10;
-            // Represents function `liftShutdown()`
-            LiftShutdown lift_shutdown = 11;
+            SetShareLockPeriod set_share_lock_period = 7;
         }
     }
 
@@ -368,12 +360,8 @@ message CellarV2_2Governance {
         InitiateShutdown initiate_shutdown = 8;
         // Represents function `liftShutdown()`
         LiftShutdown lift_shutdown = 9;
-        // Represents function `setPlatformFee(uint256)`
-        SetPlatformFee set_platform_fee = 10;
         // Represents function `setStrategistPlatformCut(address)`
-        SetStrategistPlatformCut set_strategist_platform_cut = 11;
-        // Represents function `setupAdaptor(address adaptor)`
-        SetupAdaptor setup_adaptor = 12;
+        SetStrategistPlatformCut set_strategist_platform_cut = 10;
     }
 
     /*
@@ -466,16 +454,6 @@ message CellarV2_2Governance {
     message LiftShutdown {}
 
     /*
-    * Allows Governance to set the platform fee for the cellar.
-    *
-    * Represents function `setPlatformFee(uint64)`
-    */
-    message SetPlatformFee {
-        // The new platform fee
-        uint64 amount = 1;
-    }
-
-    /*
     * Allows Governance to set the strategist platform cut for the cellar.
     *
     * Represents function `setStrategistPlatformCut(uint64 cut)`
@@ -483,16 +461,6 @@ message CellarV2_2Governance {
     message SetStrategistPlatformCut {
         // The new strategist platform cut
         uint64 new_cut = 1;
-    }
-
-    /*
-    * Allows Governance to add new adaptors for the cellar to use.
-    *
-    * Represents function `setupAdaptor(address adaptor)`
-    */
-    message SetupAdaptor {
-        // Address of the adaptor
-        string adaptor = 1;
     }
 }
 

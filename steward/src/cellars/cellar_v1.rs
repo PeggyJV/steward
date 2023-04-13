@@ -174,6 +174,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
         }
     }
 }
+
 pub fn get_encoded_governance_call(
     function: GovernanceFunction,
     cellar_id: &str,

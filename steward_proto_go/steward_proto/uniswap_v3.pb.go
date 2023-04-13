@@ -21,28 +21,28 @@ const (
 )
 
 // Represents call data for the Uniswap V3 adaptor
-type UniswapV3Adaptor struct {
+type UniswapV3AdaptorV1 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Function:
-	//	*UniswapV3Adaptor_Swap
-	//	*UniswapV3Adaptor_OracleSwap
-	//	*UniswapV3Adaptor_RevokeApproval
-	//	*UniswapV3Adaptor_OpenPosition_
-	//	*UniswapV3Adaptor_ClosePosition_
-	//	*UniswapV3Adaptor_AddToPosition_
-	//	*UniswapV3Adaptor_TakeFromPosition_
-	//	*UniswapV3Adaptor_CollectFees_
-	//	*UniswapV3Adaptor_PurgeAllZeroLiquidityPositions_
-	//	*UniswapV3Adaptor_PurgeSinglePosition_
-	//	*UniswapV3Adaptor_RemoveUnownedPositionFromTracker_
-	Function isUniswapV3Adaptor_Function `protobuf_oneof:"function"`
+	//	*UniswapV3AdaptorV1_Swap
+	//	*UniswapV3AdaptorV1_OracleSwap
+	//	*UniswapV3AdaptorV1_RevokeApproval
+	//	*UniswapV3AdaptorV1_OpenPosition_
+	//	*UniswapV3AdaptorV1_ClosePosition_
+	//	*UniswapV3AdaptorV1_AddToPosition_
+	//	*UniswapV3AdaptorV1_TakeFromPosition_
+	//	*UniswapV3AdaptorV1_CollectFees_
+	//	*UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions_
+	//	*UniswapV3AdaptorV1_PurgeSinglePosition_
+	//	*UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker_
+	Function isUniswapV3AdaptorV1_Function `protobuf_oneof:"function"`
 }
 
-func (x *UniswapV3Adaptor) Reset() {
-	*x = UniswapV3Adaptor{}
+func (x *UniswapV3AdaptorV1) Reset() {
+	*x = UniswapV3AdaptorV1{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -50,13 +50,13 @@ func (x *UniswapV3Adaptor) Reset() {
 	}
 }
 
-func (x *UniswapV3Adaptor) String() string {
+func (x *UniswapV3AdaptorV1) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UniswapV3Adaptor) ProtoMessage() {}
+func (*UniswapV3AdaptorV1) ProtoMessage() {}
 
-func (x *UniswapV3Adaptor) ProtoReflect() protoreflect.Message {
+func (x *UniswapV3AdaptorV1) ProtoReflect() protoreflect.Message {
 	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,186 +68,197 @@ func (x *UniswapV3Adaptor) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UniswapV3Adaptor.ProtoReflect.Descriptor instead.
-func (*UniswapV3Adaptor) Descriptor() ([]byte, []int) {
+// Deprecated: Use UniswapV3AdaptorV1.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV1) Descriptor() ([]byte, []int) {
 	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *UniswapV3Adaptor) GetFunction() isUniswapV3Adaptor_Function {
+func (m *UniswapV3AdaptorV1) GetFunction() isUniswapV3AdaptorV1_Function {
 	if m != nil {
 		return m.Function
 	}
 	return nil
 }
 
-func (x *UniswapV3Adaptor) GetSwap() *Swap {
-	if x, ok := x.GetFunction().(*UniswapV3Adaptor_Swap); ok {
+func (x *UniswapV3AdaptorV1) GetSwap() *Swap {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV1_Swap); ok {
 		return x.Swap
 	}
 	return nil
 }
 
-func (x *UniswapV3Adaptor) GetOracleSwap() *OracleSwap {
-	if x, ok := x.GetFunction().(*UniswapV3Adaptor_OracleSwap); ok {
+func (x *UniswapV3AdaptorV1) GetOracleSwap() *OracleSwap {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV1_OracleSwap); ok {
 		return x.OracleSwap
 	}
 	return nil
 }
 
-func (x *UniswapV3Adaptor) GetRevokeApproval() *RevokeApproval {
-	if x, ok := x.GetFunction().(*UniswapV3Adaptor_RevokeApproval); ok {
+func (x *UniswapV3AdaptorV1) GetRevokeApproval() *RevokeApproval {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV1_RevokeApproval); ok {
 		return x.RevokeApproval
 	}
 	return nil
 }
 
-func (x *UniswapV3Adaptor) GetOpenPosition() *UniswapV3Adaptor_OpenPosition {
-	if x, ok := x.GetFunction().(*UniswapV3Adaptor_OpenPosition_); ok {
+func (x *UniswapV3AdaptorV1) GetOpenPosition() *UniswapV3AdaptorV1_OpenPosition {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV1_OpenPosition_); ok {
 		return x.OpenPosition
 	}
 	return nil
 }
 
-func (x *UniswapV3Adaptor) GetClosePosition() *UniswapV3Adaptor_ClosePosition {
-	if x, ok := x.GetFunction().(*UniswapV3Adaptor_ClosePosition_); ok {
+func (x *UniswapV3AdaptorV1) GetClosePosition() *UniswapV3AdaptorV1_ClosePosition {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV1_ClosePosition_); ok {
 		return x.ClosePosition
 	}
 	return nil
 }
 
-func (x *UniswapV3Adaptor) GetAddToPosition() *UniswapV3Adaptor_AddToPosition {
-	if x, ok := x.GetFunction().(*UniswapV3Adaptor_AddToPosition_); ok {
+func (x *UniswapV3AdaptorV1) GetAddToPosition() *UniswapV3AdaptorV1_AddToPosition {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV1_AddToPosition_); ok {
 		return x.AddToPosition
 	}
 	return nil
 }
 
-func (x *UniswapV3Adaptor) GetTakeFromPosition() *UniswapV3Adaptor_TakeFromPosition {
-	if x, ok := x.GetFunction().(*UniswapV3Adaptor_TakeFromPosition_); ok {
+func (x *UniswapV3AdaptorV1) GetTakeFromPosition() *UniswapV3AdaptorV1_TakeFromPosition {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV1_TakeFromPosition_); ok {
 		return x.TakeFromPosition
 	}
 	return nil
 }
 
-func (x *UniswapV3Adaptor) GetCollectFees() *UniswapV3Adaptor_CollectFees {
-	if x, ok := x.GetFunction().(*UniswapV3Adaptor_CollectFees_); ok {
+func (x *UniswapV3AdaptorV1) GetCollectFees() *UniswapV3AdaptorV1_CollectFees {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV1_CollectFees_); ok {
 		return x.CollectFees
 	}
 	return nil
 }
 
-func (x *UniswapV3Adaptor) GetPurgeAllZeroLiquidityPositions() *UniswapV3Adaptor_PurgeAllZeroLiquidityPositions {
-	if x, ok := x.GetFunction().(*UniswapV3Adaptor_PurgeAllZeroLiquidityPositions_); ok {
+func (x *UniswapV3AdaptorV1) GetPurgeAllZeroLiquidityPositions() *UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions_); ok {
 		return x.PurgeAllZeroLiquidityPositions
 	}
 	return nil
 }
 
-func (x *UniswapV3Adaptor) GetPurgeSinglePosition() *UniswapV3Adaptor_PurgeSinglePosition {
-	if x, ok := x.GetFunction().(*UniswapV3Adaptor_PurgeSinglePosition_); ok {
+func (x *UniswapV3AdaptorV1) GetPurgeSinglePosition() *UniswapV3AdaptorV1_PurgeSinglePosition {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV1_PurgeSinglePosition_); ok {
 		return x.PurgeSinglePosition
 	}
 	return nil
 }
 
-func (x *UniswapV3Adaptor) GetRemoveUnownedPositionFromTracker() *UniswapV3Adaptor_RemoveUnownedPositionFromTracker {
-	if x, ok := x.GetFunction().(*UniswapV3Adaptor_RemoveUnownedPositionFromTracker_); ok {
+func (x *UniswapV3AdaptorV1) GetRemoveUnownedPositionFromTracker() *UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker_); ok {
 		return x.RemoveUnownedPositionFromTracker
 	}
 	return nil
 }
 
-type isUniswapV3Adaptor_Function interface {
-	isUniswapV3Adaptor_Function()
+type isUniswapV3AdaptorV1_Function interface {
+	isUniswapV3AdaptorV1_Function()
 }
 
-type UniswapV3Adaptor_Swap struct {
+type UniswapV3AdaptorV1_Swap struct {
 	// Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
 	Swap *Swap `protobuf:"bytes,1,opt,name=swap,proto3,oneof"`
 }
 
-type UniswapV3Adaptor_OracleSwap struct {
+type UniswapV3AdaptorV1_OracleSwap struct {
 	// Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
 	OracleSwap *OracleSwap `protobuf:"bytes,2,opt,name=oracle_swap,json=oracleSwap,proto3,oneof"`
 }
 
-type UniswapV3Adaptor_RevokeApproval struct {
+type UniswapV3AdaptorV1_RevokeApproval struct {
 	// Represents function `revokeApproval(ERC20 asset, address spender)`
 	RevokeApproval *RevokeApproval `protobuf:"bytes,3,opt,name=revoke_approval,json=revokeApproval,proto3,oneof"`
 }
 
-type UniswapV3Adaptor_OpenPosition_ struct {
+type UniswapV3AdaptorV1_OpenPosition_ struct {
 	// Represents function `openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)`
-	OpenPosition *UniswapV3Adaptor_OpenPosition `protobuf:"bytes,4,opt,name=open_position,json=openPosition,proto3,oneof"`
+	OpenPosition *UniswapV3AdaptorV1_OpenPosition `protobuf:"bytes,4,opt,name=open_position,json=openPosition,proto3,oneof"`
 }
 
-type UniswapV3Adaptor_ClosePosition_ struct {
+type UniswapV3AdaptorV1_ClosePosition_ struct {
 	// Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)`
-	ClosePosition *UniswapV3Adaptor_ClosePosition `protobuf:"bytes,5,opt,name=close_position,json=closePosition,proto3,oneof"`
+	ClosePosition *UniswapV3AdaptorV1_ClosePosition `protobuf:"bytes,5,opt,name=close_position,json=closePosition,proto3,oneof"`
 }
 
-type UniswapV3Adaptor_AddToPosition_ struct {
+type UniswapV3AdaptorV1_AddToPosition_ struct {
 	// Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
-	AddToPosition *UniswapV3Adaptor_AddToPosition `protobuf:"bytes,6,opt,name=add_to_position,json=addToPosition,proto3,oneof"`
+	AddToPosition *UniswapV3AdaptorV1_AddToPosition `protobuf:"bytes,6,opt,name=add_to_position,json=addToPosition,proto3,oneof"`
 }
 
-type UniswapV3Adaptor_TakeFromPosition_ struct {
+type UniswapV3AdaptorV1_TakeFromPosition_ struct {
 	// Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
-	TakeFromPosition *UniswapV3Adaptor_TakeFromPosition `protobuf:"bytes,7,opt,name=take_from_position,json=takeFromPosition,proto3,oneof"`
+	TakeFromPosition *UniswapV3AdaptorV1_TakeFromPosition `protobuf:"bytes,7,opt,name=take_from_position,json=takeFromPosition,proto3,oneof"`
 }
 
-type UniswapV3Adaptor_CollectFees_ struct {
+type UniswapV3AdaptorV1_CollectFees_ struct {
 	// Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
-	CollectFees *UniswapV3Adaptor_CollectFees `protobuf:"bytes,8,opt,name=collect_fees,json=collectFees,proto3,oneof"`
+	CollectFees *UniswapV3AdaptorV1_CollectFees `protobuf:"bytes,8,opt,name=collect_fees,json=collectFees,proto3,oneof"`
 }
 
-type UniswapV3Adaptor_PurgeAllZeroLiquidityPositions_ struct {
+type UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions_ struct {
 	// Represents function `purgeAllZeroLiquidityPositions(ERC20 token0, ERC20 token1)`
-	PurgeAllZeroLiquidityPositions *UniswapV3Adaptor_PurgeAllZeroLiquidityPositions `protobuf:"bytes,9,opt,name=purge_all_zero_liquidity_positions,json=purgeAllZeroLiquidityPositions,proto3,oneof"`
+	PurgeAllZeroLiquidityPositions *UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions `protobuf:"bytes,9,opt,name=purge_all_zero_liquidity_positions,json=purgeAllZeroLiquidityPositions,proto3,oneof"`
 }
 
-type UniswapV3Adaptor_PurgeSinglePosition_ struct {
+type UniswapV3AdaptorV1_PurgeSinglePosition_ struct {
 	// Represents function `purgeSinglePosition(uint256 tokenId)`
-	PurgeSinglePosition *UniswapV3Adaptor_PurgeSinglePosition `protobuf:"bytes,10,opt,name=purge_single_position,json=purgeSinglePosition,proto3,oneof"`
+	PurgeSinglePosition *UniswapV3AdaptorV1_PurgeSinglePosition `protobuf:"bytes,10,opt,name=purge_single_position,json=purgeSinglePosition,proto3,oneof"`
 }
 
-type UniswapV3Adaptor_RemoveUnownedPositionFromTracker_ struct {
+type UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker_ struct {
 	// Represents function `removeUnOwnedPositionFromTracker(uint256 tokenId, ERC20 token0, ERC20 token1)`
-	RemoveUnownedPositionFromTracker *UniswapV3Adaptor_RemoveUnownedPositionFromTracker `protobuf:"bytes,11,opt,name=remove_unowned_position_from_tracker,json=removeUnownedPositionFromTracker,proto3,oneof"`
+	RemoveUnownedPositionFromTracker *UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker `protobuf:"bytes,11,opt,name=remove_unowned_position_from_tracker,json=removeUnownedPositionFromTracker,proto3,oneof"`
 }
 
-func (*UniswapV3Adaptor_Swap) isUniswapV3Adaptor_Function() {}
+func (*UniswapV3AdaptorV1_Swap) isUniswapV3AdaptorV1_Function() {}
 
-func (*UniswapV3Adaptor_OracleSwap) isUniswapV3Adaptor_Function() {}
+func (*UniswapV3AdaptorV1_OracleSwap) isUniswapV3AdaptorV1_Function() {}
 
-func (*UniswapV3Adaptor_RevokeApproval) isUniswapV3Adaptor_Function() {}
+func (*UniswapV3AdaptorV1_RevokeApproval) isUniswapV3AdaptorV1_Function() {}
 
-func (*UniswapV3Adaptor_OpenPosition_) isUniswapV3Adaptor_Function() {}
+func (*UniswapV3AdaptorV1_OpenPosition_) isUniswapV3AdaptorV1_Function() {}
 
-func (*UniswapV3Adaptor_ClosePosition_) isUniswapV3Adaptor_Function() {}
+func (*UniswapV3AdaptorV1_ClosePosition_) isUniswapV3AdaptorV1_Function() {}
 
-func (*UniswapV3Adaptor_AddToPosition_) isUniswapV3Adaptor_Function() {}
+func (*UniswapV3AdaptorV1_AddToPosition_) isUniswapV3AdaptorV1_Function() {}
 
-func (*UniswapV3Adaptor_TakeFromPosition_) isUniswapV3Adaptor_Function() {}
+func (*UniswapV3AdaptorV1_TakeFromPosition_) isUniswapV3AdaptorV1_Function() {}
 
-func (*UniswapV3Adaptor_CollectFees_) isUniswapV3Adaptor_Function() {}
+func (*UniswapV3AdaptorV1_CollectFees_) isUniswapV3AdaptorV1_Function() {}
 
-func (*UniswapV3Adaptor_PurgeAllZeroLiquidityPositions_) isUniswapV3Adaptor_Function() {}
+func (*UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions_) isUniswapV3AdaptorV1_Function() {}
 
-func (*UniswapV3Adaptor_PurgeSinglePosition_) isUniswapV3Adaptor_Function() {}
+func (*UniswapV3AdaptorV1_PurgeSinglePosition_) isUniswapV3AdaptorV1_Function() {}
 
-func (*UniswapV3Adaptor_RemoveUnownedPositionFromTracker_) isUniswapV3Adaptor_Function() {}
+func (*UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker_) isUniswapV3AdaptorV1_Function() {}
 
-type UniswapV3AdaptorCalls struct {
+// Represents call data for the Uniswap V3 adaptor
+type UniswapV3AdaptorV2 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Calls []*UniswapV3Adaptor `protobuf:"bytes,1,rep,name=calls,proto3" json:"calls,omitempty"`
+	// Types that are assignable to Function:
+	//	*UniswapV3AdaptorV2_RevokeApproval
+	//	*UniswapV3AdaptorV2_OpenPosition_
+	//	*UniswapV3AdaptorV2_ClosePosition_
+	//	*UniswapV3AdaptorV2_AddToPosition_
+	//	*UniswapV3AdaptorV2_TakeFromPosition_
+	//	*UniswapV3AdaptorV2_CollectFees_
+	//	*UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions_
+	//	*UniswapV3AdaptorV2_PurgeSinglePosition_
+	//	*UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker_
+	Function isUniswapV3AdaptorV2_Function `protobuf_oneof:"function"`
 }
 
-func (x *UniswapV3AdaptorCalls) Reset() {
-	*x = UniswapV3AdaptorCalls{}
+func (x *UniswapV3AdaptorV2) Reset() {
+	*x = UniswapV3AdaptorV2{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -255,13 +266,13 @@ func (x *UniswapV3AdaptorCalls) Reset() {
 	}
 }
 
-func (x *UniswapV3AdaptorCalls) String() string {
+func (x *UniswapV3AdaptorV2) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UniswapV3AdaptorCalls) ProtoMessage() {}
+func (*UniswapV3AdaptorV2) ProtoMessage() {}
 
-func (x *UniswapV3AdaptorCalls) ProtoReflect() protoreflect.Message {
+func (x *UniswapV3AdaptorV2) ProtoReflect() protoreflect.Message {
 	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -273,12 +284,236 @@ func (x *UniswapV3AdaptorCalls) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UniswapV3AdaptorCalls.ProtoReflect.Descriptor instead.
-func (*UniswapV3AdaptorCalls) Descriptor() ([]byte, []int) {
+// Deprecated: Use UniswapV3AdaptorV2.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV2) Descriptor() ([]byte, []int) {
 	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *UniswapV3AdaptorCalls) GetCalls() []*UniswapV3Adaptor {
+func (m *UniswapV3AdaptorV2) GetFunction() isUniswapV3AdaptorV2_Function {
+	if m != nil {
+		return m.Function
+	}
+	return nil
+}
+
+func (x *UniswapV3AdaptorV2) GetRevokeApproval() *RevokeApproval {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV2_RevokeApproval); ok {
+		return x.RevokeApproval
+	}
+	return nil
+}
+
+func (x *UniswapV3AdaptorV2) GetOpenPosition() *UniswapV3AdaptorV2_OpenPosition {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV2_OpenPosition_); ok {
+		return x.OpenPosition
+	}
+	return nil
+}
+
+func (x *UniswapV3AdaptorV2) GetClosePosition() *UniswapV3AdaptorV2_ClosePosition {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV2_ClosePosition_); ok {
+		return x.ClosePosition
+	}
+	return nil
+}
+
+func (x *UniswapV3AdaptorV2) GetAddToPosition() *UniswapV3AdaptorV2_AddToPosition {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV2_AddToPosition_); ok {
+		return x.AddToPosition
+	}
+	return nil
+}
+
+func (x *UniswapV3AdaptorV2) GetTakeFromPosition() *UniswapV3AdaptorV2_TakeFromPosition {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV2_TakeFromPosition_); ok {
+		return x.TakeFromPosition
+	}
+	return nil
+}
+
+func (x *UniswapV3AdaptorV2) GetCollectFees() *UniswapV3AdaptorV2_CollectFees {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV2_CollectFees_); ok {
+		return x.CollectFees
+	}
+	return nil
+}
+
+func (x *UniswapV3AdaptorV2) GetPurgeAllZeroLiquidityPositions() *UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions_); ok {
+		return x.PurgeAllZeroLiquidityPositions
+	}
+	return nil
+}
+
+func (x *UniswapV3AdaptorV2) GetPurgeSinglePosition() *UniswapV3AdaptorV2_PurgeSinglePosition {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV2_PurgeSinglePosition_); ok {
+		return x.PurgeSinglePosition
+	}
+	return nil
+}
+
+func (x *UniswapV3AdaptorV2) GetRemoveUnownedPositionFromTracker() *UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker {
+	if x, ok := x.GetFunction().(*UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker_); ok {
+		return x.RemoveUnownedPositionFromTracker
+	}
+	return nil
+}
+
+type isUniswapV3AdaptorV2_Function interface {
+	isUniswapV3AdaptorV2_Function()
+}
+
+type UniswapV3AdaptorV2_RevokeApproval struct {
+	// Represents function `revokeApproval(ERC20 asset, address spender)`
+	RevokeApproval *RevokeApproval `protobuf:"bytes,1,opt,name=revoke_approval,json=revokeApproval,proto3,oneof"`
+}
+
+type UniswapV3AdaptorV2_OpenPosition_ struct {
+	// Represents function `openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)`
+	OpenPosition *UniswapV3AdaptorV2_OpenPosition `protobuf:"bytes,2,opt,name=open_position,json=openPosition,proto3,oneof"`
+}
+
+type UniswapV3AdaptorV2_ClosePosition_ struct {
+	// Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)`
+	ClosePosition *UniswapV3AdaptorV2_ClosePosition `protobuf:"bytes,3,opt,name=close_position,json=closePosition,proto3,oneof"`
+}
+
+type UniswapV3AdaptorV2_AddToPosition_ struct {
+	// Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
+	AddToPosition *UniswapV3AdaptorV2_AddToPosition `protobuf:"bytes,4,opt,name=add_to_position,json=addToPosition,proto3,oneof"`
+}
+
+type UniswapV3AdaptorV2_TakeFromPosition_ struct {
+	// Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
+	TakeFromPosition *UniswapV3AdaptorV2_TakeFromPosition `protobuf:"bytes,5,opt,name=take_from_position,json=takeFromPosition,proto3,oneof"`
+}
+
+type UniswapV3AdaptorV2_CollectFees_ struct {
+	// Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
+	CollectFees *UniswapV3AdaptorV2_CollectFees `protobuf:"bytes,6,opt,name=collect_fees,json=collectFees,proto3,oneof"`
+}
+
+type UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions_ struct {
+	// Represents function `purgeAllZeroLiquidityPositions(ERC20 token0, ERC20 token1)`
+	PurgeAllZeroLiquidityPositions *UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions `protobuf:"bytes,7,opt,name=purge_all_zero_liquidity_positions,json=purgeAllZeroLiquidityPositions,proto3,oneof"`
+}
+
+type UniswapV3AdaptorV2_PurgeSinglePosition_ struct {
+	// Represents function `purgeSinglePosition(uint256 tokenId)`
+	PurgeSinglePosition *UniswapV3AdaptorV2_PurgeSinglePosition `protobuf:"bytes,8,opt,name=purge_single_position,json=purgeSinglePosition,proto3,oneof"`
+}
+
+type UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker_ struct {
+	// Represents function `removeUnOwnedPositionFromTracker(uint256 tokenId, ERC20 token0, ERC20 token1)`
+	RemoveUnownedPositionFromTracker *UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker `protobuf:"bytes,9,opt,name=remove_unowned_position_from_tracker,json=removeUnownedPositionFromTracker,proto3,oneof"`
+}
+
+func (*UniswapV3AdaptorV2_RevokeApproval) isUniswapV3AdaptorV2_Function() {}
+
+func (*UniswapV3AdaptorV2_OpenPosition_) isUniswapV3AdaptorV2_Function() {}
+
+func (*UniswapV3AdaptorV2_ClosePosition_) isUniswapV3AdaptorV2_Function() {}
+
+func (*UniswapV3AdaptorV2_AddToPosition_) isUniswapV3AdaptorV2_Function() {}
+
+func (*UniswapV3AdaptorV2_TakeFromPosition_) isUniswapV3AdaptorV2_Function() {}
+
+func (*UniswapV3AdaptorV2_CollectFees_) isUniswapV3AdaptorV2_Function() {}
+
+func (*UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions_) isUniswapV3AdaptorV2_Function() {}
+
+func (*UniswapV3AdaptorV2_PurgeSinglePosition_) isUniswapV3AdaptorV2_Function() {}
+
+func (*UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker_) isUniswapV3AdaptorV2_Function() {}
+
+type UniswapV3AdaptorV1Calls struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Calls []*UniswapV3AdaptorV1 `protobuf:"bytes,1,rep,name=calls,proto3" json:"calls,omitempty"`
+}
+
+func (x *UniswapV3AdaptorV1Calls) Reset() {
+	*x = UniswapV3AdaptorV1Calls{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UniswapV3AdaptorV1Calls) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UniswapV3AdaptorV1Calls) ProtoMessage() {}
+
+func (x *UniswapV3AdaptorV1Calls) ProtoReflect() protoreflect.Message {
+	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UniswapV3AdaptorV1Calls.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV1Calls) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *UniswapV3AdaptorV1Calls) GetCalls() []*UniswapV3AdaptorV1 {
+	if x != nil {
+		return x.Calls
+	}
+	return nil
+}
+
+type UniswapV3AdaptorV2Calls struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Calls []*UniswapV3AdaptorV2 `protobuf:"bytes,1,rep,name=calls,proto3" json:"calls,omitempty"`
+}
+
+func (x *UniswapV3AdaptorV2Calls) Reset() {
+	*x = UniswapV3AdaptorV2Calls{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UniswapV3AdaptorV2Calls) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UniswapV3AdaptorV2Calls) ProtoMessage() {}
+
+func (x *UniswapV3AdaptorV2Calls) ProtoReflect() protoreflect.Message {
+	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UniswapV3AdaptorV2Calls.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV2Calls) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *UniswapV3AdaptorV2Calls) GetCalls() []*UniswapV3AdaptorV2 {
 	if x != nil {
 		return x.Calls
 	}
@@ -289,7 +524,7 @@ func (x *UniswapV3AdaptorCalls) GetCalls() []*UniswapV3Adaptor {
 // Allows strategist to open up arbritray Uniswap V3 positions.
 //
 // Represents function openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)
-type UniswapV3Adaptor_OpenPosition struct {
+type UniswapV3AdaptorV1_OpenPosition struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -305,186 +540,8 @@ type UniswapV3Adaptor_OpenPosition struct {
 	TickUpper int32  `protobuf:"varint,9,opt,name=tick_upper,json=tickUpper,proto3" json:"tick_upper,omitempty"`
 }
 
-func (x *UniswapV3Adaptor_OpenPosition) Reset() {
-	*x = UniswapV3Adaptor_OpenPosition{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UniswapV3Adaptor_OpenPosition) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UniswapV3Adaptor_OpenPosition) ProtoMessage() {}
-
-func (x *UniswapV3Adaptor_OpenPosition) ProtoReflect() protoreflect.Message {
-	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UniswapV3Adaptor_OpenPosition.ProtoReflect.Descriptor instead.
-func (*UniswapV3Adaptor_OpenPosition) Descriptor() ([]byte, []int) {
-	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0, 0}
-}
-
-func (x *UniswapV3Adaptor_OpenPosition) GetToken_0() string {
-	if x != nil {
-		return x.Token_0
-	}
-	return ""
-}
-
-func (x *UniswapV3Adaptor_OpenPosition) GetToken_1() string {
-	if x != nil {
-		return x.Token_1
-	}
-	return ""
-}
-
-func (x *UniswapV3Adaptor_OpenPosition) GetPoolFee() uint32 {
-	if x != nil {
-		return x.PoolFee
-	}
-	return 0
-}
-
-func (x *UniswapV3Adaptor_OpenPosition) GetAmount_0() string {
-	if x != nil {
-		return x.Amount_0
-	}
-	return ""
-}
-
-func (x *UniswapV3Adaptor_OpenPosition) GetAmount_1() string {
-	if x != nil {
-		return x.Amount_1
-	}
-	return ""
-}
-
-func (x *UniswapV3Adaptor_OpenPosition) GetMin_0() string {
-	if x != nil {
-		return x.Min_0
-	}
-	return ""
-}
-
-func (x *UniswapV3Adaptor_OpenPosition) GetMin_1() string {
-	if x != nil {
-		return x.Min_1
-	}
-	return ""
-}
-
-func (x *UniswapV3Adaptor_OpenPosition) GetTickLower() int32 {
-	if x != nil {
-		return x.TickLower
-	}
-	return 0
-}
-
-func (x *UniswapV3Adaptor_OpenPosition) GetTickUpper() int32 {
-	if x != nil {
-		return x.TickUpper
-	}
-	return 0
-}
-
-//
-// Allows strategist to close Uniswap V3 positions.
-//
-// Represents function `closePosition(uint256 tokenId, uint256 min0, uint256 min1)`
-type UniswapV3Adaptor_ClosePosition struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	TokenId string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
-	Min_0   string `protobuf:"bytes,2,opt,name=min_0,json=min0,proto3" json:"min_0,omitempty"`
-	Min_1   string `protobuf:"bytes,3,opt,name=min_1,json=min1,proto3" json:"min_1,omitempty"`
-}
-
-func (x *UniswapV3Adaptor_ClosePosition) Reset() {
-	*x = UniswapV3Adaptor_ClosePosition{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UniswapV3Adaptor_ClosePosition) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UniswapV3Adaptor_ClosePosition) ProtoMessage() {}
-
-func (x *UniswapV3Adaptor_ClosePosition) ProtoReflect() protoreflect.Message {
-	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UniswapV3Adaptor_ClosePosition.ProtoReflect.Descriptor instead.
-func (*UniswapV3Adaptor_ClosePosition) Descriptor() ([]byte, []int) {
-	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0, 1}
-}
-
-func (x *UniswapV3Adaptor_ClosePosition) GetTokenId() string {
-	if x != nil {
-		return x.TokenId
-	}
-	return ""
-}
-
-func (x *UniswapV3Adaptor_ClosePosition) GetMin_0() string {
-	if x != nil {
-		return x.Min_0
-	}
-	return ""
-}
-
-func (x *UniswapV3Adaptor_ClosePosition) GetMin_1() string {
-	if x != nil {
-		return x.Min_1
-	}
-	return ""
-}
-
-//
-// Allows strategist to add to existing Uniswap V3 positions.
-//
-// Represents function `addToPosition(uint256 tokenId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
-type UniswapV3Adaptor_AddToPosition struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	TokenId  string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
-	Amount_0 string `protobuf:"bytes,2,opt,name=amount_0,json=amount0,proto3" json:"amount_0,omitempty"`
-	Amount_1 string `protobuf:"bytes,3,opt,name=amount_1,json=amount1,proto3" json:"amount_1,omitempty"`
-	Min_0    string `protobuf:"bytes,4,opt,name=min_0,json=min0,proto3" json:"min_0,omitempty"`
-	Min_1    string `protobuf:"bytes,5,opt,name=min_1,json=min1,proto3" json:"min_1,omitempty"`
-}
-
-func (x *UniswapV3Adaptor_AddToPosition) Reset() {
-	*x = UniswapV3Adaptor_AddToPosition{}
+func (x *UniswapV3AdaptorV1_OpenPosition) Reset() {
+	*x = UniswapV3AdaptorV1_OpenPosition{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -492,13 +549,13 @@ func (x *UniswapV3Adaptor_AddToPosition) Reset() {
 	}
 }
 
-func (x *UniswapV3Adaptor_AddToPosition) String() string {
+func (x *UniswapV3AdaptorV1_OpenPosition) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UniswapV3Adaptor_AddToPosition) ProtoMessage() {}
+func (*UniswapV3AdaptorV1_OpenPosition) ProtoMessage() {}
 
-func (x *UniswapV3Adaptor_AddToPosition) ProtoReflect() protoreflect.Message {
+func (x *UniswapV3AdaptorV1_OpenPosition) ProtoReflect() protoreflect.Message {
 	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -510,64 +567,90 @@ func (x *UniswapV3Adaptor_AddToPosition) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UniswapV3Adaptor_AddToPosition.ProtoReflect.Descriptor instead.
-func (*UniswapV3Adaptor_AddToPosition) Descriptor() ([]byte, []int) {
-	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0, 2}
+// Deprecated: Use UniswapV3AdaptorV1_OpenPosition.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV1_OpenPosition) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0, 0}
 }
 
-func (x *UniswapV3Adaptor_AddToPosition) GetTokenId() string {
+func (x *UniswapV3AdaptorV1_OpenPosition) GetToken_0() string {
 	if x != nil {
-		return x.TokenId
+		return x.Token_0
 	}
 	return ""
 }
 
-func (x *UniswapV3Adaptor_AddToPosition) GetAmount_0() string {
+func (x *UniswapV3AdaptorV1_OpenPosition) GetToken_1() string {
+	if x != nil {
+		return x.Token_1
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV1_OpenPosition) GetPoolFee() uint32 {
+	if x != nil {
+		return x.PoolFee
+	}
+	return 0
+}
+
+func (x *UniswapV3AdaptorV1_OpenPosition) GetAmount_0() string {
 	if x != nil {
 		return x.Amount_0
 	}
 	return ""
 }
 
-func (x *UniswapV3Adaptor_AddToPosition) GetAmount_1() string {
+func (x *UniswapV3AdaptorV1_OpenPosition) GetAmount_1() string {
 	if x != nil {
 		return x.Amount_1
 	}
 	return ""
 }
 
-func (x *UniswapV3Adaptor_AddToPosition) GetMin_0() string {
+func (x *UniswapV3AdaptorV1_OpenPosition) GetMin_0() string {
 	if x != nil {
 		return x.Min_0
 	}
 	return ""
 }
 
-func (x *UniswapV3Adaptor_AddToPosition) GetMin_1() string {
+func (x *UniswapV3AdaptorV1_OpenPosition) GetMin_1() string {
 	if x != nil {
 		return x.Min_1
 	}
 	return ""
 }
 
+func (x *UniswapV3AdaptorV1_OpenPosition) GetTickLower() int32 {
+	if x != nil {
+		return x.TickLower
+	}
+	return 0
+}
+
+func (x *UniswapV3AdaptorV1_OpenPosition) GetTickUpper() int32 {
+	if x != nil {
+		return x.TickUpper
+	}
+	return 0
+}
+
 //
-// Allows strategist to take from existing Uniswap V3 positions.
+// Allows strategist to close Uniswap V3 positions.
 //
-// Represents function `takeFromPosition(uint256 tokenId, uint128 liquidity, uint256 min0, uint256 min1, bool takeFees)`
-type UniswapV3Adaptor_TakeFromPosition struct {
+// Represents function `closePosition(uint256 tokenId, uint256 min0, uint256 min1)`
+type UniswapV3AdaptorV1_ClosePosition struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	TokenId   string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
-	Liquidity string `protobuf:"bytes,2,opt,name=liquidity,proto3" json:"liquidity,omitempty"`
-	Min_0     string `protobuf:"bytes,3,opt,name=min_0,json=min0,proto3" json:"min_0,omitempty"`
-	Min_1     string `protobuf:"bytes,4,opt,name=min_1,json=min1,proto3" json:"min_1,omitempty"`
-	TakeFees  bool   `protobuf:"varint,5,opt,name=take_fees,json=takeFees,proto3" json:"take_fees,omitempty"`
+	TokenId string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
+	Min_0   string `protobuf:"bytes,2,opt,name=min_0,json=min0,proto3" json:"min_0,omitempty"`
+	Min_1   string `protobuf:"bytes,3,opt,name=min_1,json=min1,proto3" json:"min_1,omitempty"`
 }
 
-func (x *UniswapV3Adaptor_TakeFromPosition) Reset() {
-	*x = UniswapV3Adaptor_TakeFromPosition{}
+func (x *UniswapV3AdaptorV1_ClosePosition) Reset() {
+	*x = UniswapV3AdaptorV1_ClosePosition{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -575,13 +658,13 @@ func (x *UniswapV3Adaptor_TakeFromPosition) Reset() {
 	}
 }
 
-func (x *UniswapV3Adaptor_TakeFromPosition) String() string {
+func (x *UniswapV3AdaptorV1_ClosePosition) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UniswapV3Adaptor_TakeFromPosition) ProtoMessage() {}
+func (*UniswapV3AdaptorV1_ClosePosition) ProtoMessage() {}
 
-func (x *UniswapV3Adaptor_TakeFromPosition) ProtoReflect() protoreflect.Message {
+func (x *UniswapV3AdaptorV1_ClosePosition) ProtoReflect() protoreflect.Message {
 	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -593,51 +676,37 @@ func (x *UniswapV3Adaptor_TakeFromPosition) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UniswapV3Adaptor_TakeFromPosition.ProtoReflect.Descriptor instead.
-func (*UniswapV3Adaptor_TakeFromPosition) Descriptor() ([]byte, []int) {
-	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0, 3}
+// Deprecated: Use UniswapV3AdaptorV1_ClosePosition.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV1_ClosePosition) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0, 1}
 }
 
-func (x *UniswapV3Adaptor_TakeFromPosition) GetTokenId() string {
+func (x *UniswapV3AdaptorV1_ClosePosition) GetTokenId() string {
 	if x != nil {
 		return x.TokenId
 	}
 	return ""
 }
 
-func (x *UniswapV3Adaptor_TakeFromPosition) GetLiquidity() string {
-	if x != nil {
-		return x.Liquidity
-	}
-	return ""
-}
-
-func (x *UniswapV3Adaptor_TakeFromPosition) GetMin_0() string {
+func (x *UniswapV3AdaptorV1_ClosePosition) GetMin_0() string {
 	if x != nil {
 		return x.Min_0
 	}
 	return ""
 }
 
-func (x *UniswapV3Adaptor_TakeFromPosition) GetMin_1() string {
+func (x *UniswapV3AdaptorV1_ClosePosition) GetMin_1() string {
 	if x != nil {
 		return x.Min_1
 	}
 	return ""
 }
 
-func (x *UniswapV3Adaptor_TakeFromPosition) GetTakeFees() bool {
-	if x != nil {
-		return x.TakeFees
-	}
-	return false
-}
-
 //
-// Allows strategist to collect fees from existing Uniswap V3 positions.
+// Allows strategist to add to existing Uniswap V3 positions.
 //
-// Represents function `collectFees(uint256 tokenId, uint128 amount0, uint128 amount1)`
-type UniswapV3Adaptor_CollectFees struct {
+// Represents function `addToPosition(uint256 tokenId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
+type UniswapV3AdaptorV1_AddToPosition struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -645,10 +714,12 @@ type UniswapV3Adaptor_CollectFees struct {
 	TokenId  string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
 	Amount_0 string `protobuf:"bytes,2,opt,name=amount_0,json=amount0,proto3" json:"amount_0,omitempty"`
 	Amount_1 string `protobuf:"bytes,3,opt,name=amount_1,json=amount1,proto3" json:"amount_1,omitempty"`
+	Min_0    string `protobuf:"bytes,4,opt,name=min_0,json=min0,proto3" json:"min_0,omitempty"`
+	Min_1    string `protobuf:"bytes,5,opt,name=min_1,json=min1,proto3" json:"min_1,omitempty"`
 }
 
-func (x *UniswapV3Adaptor_CollectFees) Reset() {
-	*x = UniswapV3Adaptor_CollectFees{}
+func (x *UniswapV3AdaptorV1_AddToPosition) Reset() {
+	*x = UniswapV3AdaptorV1_AddToPosition{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -656,13 +727,13 @@ func (x *UniswapV3Adaptor_CollectFees) Reset() {
 	}
 }
 
-func (x *UniswapV3Adaptor_CollectFees) String() string {
+func (x *UniswapV3AdaptorV1_AddToPosition) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UniswapV3Adaptor_CollectFees) ProtoMessage() {}
+func (*UniswapV3AdaptorV1_AddToPosition) ProtoMessage() {}
 
-func (x *UniswapV3Adaptor_CollectFees) ProtoReflect() protoreflect.Message {
+func (x *UniswapV3AdaptorV1_AddToPosition) ProtoReflect() protoreflect.Message {
 	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -674,47 +745,64 @@ func (x *UniswapV3Adaptor_CollectFees) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UniswapV3Adaptor_CollectFees.ProtoReflect.Descriptor instead.
-func (*UniswapV3Adaptor_CollectFees) Descriptor() ([]byte, []int) {
-	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0, 4}
+// Deprecated: Use UniswapV3AdaptorV1_AddToPosition.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV1_AddToPosition) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0, 2}
 }
 
-func (x *UniswapV3Adaptor_CollectFees) GetTokenId() string {
+func (x *UniswapV3AdaptorV1_AddToPosition) GetTokenId() string {
 	if x != nil {
 		return x.TokenId
 	}
 	return ""
 }
 
-func (x *UniswapV3Adaptor_CollectFees) GetAmount_0() string {
+func (x *UniswapV3AdaptorV1_AddToPosition) GetAmount_0() string {
 	if x != nil {
 		return x.Amount_0
 	}
 	return ""
 }
 
-func (x *UniswapV3Adaptor_CollectFees) GetAmount_1() string {
+func (x *UniswapV3AdaptorV1_AddToPosition) GetAmount_1() string {
 	if x != nil {
 		return x.Amount_1
 	}
 	return ""
 }
 
+func (x *UniswapV3AdaptorV1_AddToPosition) GetMin_0() string {
+	if x != nil {
+		return x.Min_0
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV1_AddToPosition) GetMin_1() string {
+	if x != nil {
+		return x.Min_1
+	}
+	return ""
+}
+
 //
-// Allows strategist to purge zero liquidity LP positions from tracker.
+// Allows strategist to take from existing Uniswap V3 positions.
 //
-// Represents function `purgeAllZeroLiquidityPositions(ERC20 token0, ERC20 token1)`
-type UniswapV3Adaptor_PurgeAllZeroLiquidityPositions struct {
+// Represents function `takeFromPosition(uint256 tokenId, uint128 liquidity, uint256 min0, uint256 min1, bool takeFees)`
+type UniswapV3AdaptorV1_TakeFromPosition struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Token_0 string `protobuf:"bytes,1,opt,name=token_0,json=token0,proto3" json:"token_0,omitempty"`
-	Token_1 string `protobuf:"bytes,2,opt,name=token_1,json=token1,proto3" json:"token_1,omitempty"`
+	TokenId   string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
+	Liquidity string `protobuf:"bytes,2,opt,name=liquidity,proto3" json:"liquidity,omitempty"`
+	Min_0     string `protobuf:"bytes,3,opt,name=min_0,json=min0,proto3" json:"min_0,omitempty"`
+	Min_1     string `protobuf:"bytes,4,opt,name=min_1,json=min1,proto3" json:"min_1,omitempty"`
+	TakeFees  bool   `protobuf:"varint,5,opt,name=take_fees,json=takeFees,proto3" json:"take_fees,omitempty"`
 }
 
-func (x *UniswapV3Adaptor_PurgeAllZeroLiquidityPositions) Reset() {
-	*x = UniswapV3Adaptor_PurgeAllZeroLiquidityPositions{}
+func (x *UniswapV3AdaptorV1_TakeFromPosition) Reset() {
+	*x = UniswapV3AdaptorV1_TakeFromPosition{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -722,13 +810,13 @@ func (x *UniswapV3Adaptor_PurgeAllZeroLiquidityPositions) Reset() {
 	}
 }
 
-func (x *UniswapV3Adaptor_PurgeAllZeroLiquidityPositions) String() string {
+func (x *UniswapV3AdaptorV1_TakeFromPosition) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UniswapV3Adaptor_PurgeAllZeroLiquidityPositions) ProtoMessage() {}
+func (*UniswapV3AdaptorV1_TakeFromPosition) ProtoMessage() {}
 
-func (x *UniswapV3Adaptor_PurgeAllZeroLiquidityPositions) ProtoReflect() protoreflect.Message {
+func (x *UniswapV3AdaptorV1_TakeFromPosition) ProtoReflect() protoreflect.Message {
 	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -740,39 +828,62 @@ func (x *UniswapV3Adaptor_PurgeAllZeroLiquidityPositions) ProtoReflect() protore
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UniswapV3Adaptor_PurgeAllZeroLiquidityPositions.ProtoReflect.Descriptor instead.
-func (*UniswapV3Adaptor_PurgeAllZeroLiquidityPositions) Descriptor() ([]byte, []int) {
-	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0, 5}
+// Deprecated: Use UniswapV3AdaptorV1_TakeFromPosition.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV1_TakeFromPosition) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0, 3}
 }
 
-func (x *UniswapV3Adaptor_PurgeAllZeroLiquidityPositions) GetToken_0() string {
+func (x *UniswapV3AdaptorV1_TakeFromPosition) GetTokenId() string {
 	if x != nil {
-		return x.Token_0
+		return x.TokenId
 	}
 	return ""
 }
 
-func (x *UniswapV3Adaptor_PurgeAllZeroLiquidityPositions) GetToken_1() string {
+func (x *UniswapV3AdaptorV1_TakeFromPosition) GetLiquidity() string {
 	if x != nil {
-		return x.Token_1
+		return x.Liquidity
 	}
 	return ""
 }
 
+func (x *UniswapV3AdaptorV1_TakeFromPosition) GetMin_0() string {
+	if x != nil {
+		return x.Min_0
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV1_TakeFromPosition) GetMin_1() string {
+	if x != nil {
+		return x.Min_1
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV1_TakeFromPosition) GetTakeFees() bool {
+	if x != nil {
+		return x.TakeFees
+	}
+	return false
+}
+
 //
-// Allows strategist to purge a single zero liquidity LP position from tracker.
+// Allows strategist to collect fees from existing Uniswap V3 positions.
 //
-// Represents function `purgeSinglePosition(uint256 tokenId)`
-type UniswapV3Adaptor_PurgeSinglePosition struct {
+// Represents function `collectFees(uint256 tokenId, uint128 amount0, uint128 amount1)`
+type UniswapV3AdaptorV1_CollectFees struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	TokenId string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
+	TokenId  string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
+	Amount_0 string `protobuf:"bytes,2,opt,name=amount_0,json=amount0,proto3" json:"amount_0,omitempty"`
+	Amount_1 string `protobuf:"bytes,3,opt,name=amount_1,json=amount1,proto3" json:"amount_1,omitempty"`
 }
 
-func (x *UniswapV3Adaptor_PurgeSinglePosition) Reset() {
-	*x = UniswapV3Adaptor_PurgeSinglePosition{}
+func (x *UniswapV3AdaptorV1_CollectFees) Reset() {
+	*x = UniswapV3AdaptorV1_CollectFees{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -780,13 +891,13 @@ func (x *UniswapV3Adaptor_PurgeSinglePosition) Reset() {
 	}
 }
 
-func (x *UniswapV3Adaptor_PurgeSinglePosition) String() string {
+func (x *UniswapV3AdaptorV1_CollectFees) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UniswapV3Adaptor_PurgeSinglePosition) ProtoMessage() {}
+func (*UniswapV3AdaptorV1_CollectFees) ProtoMessage() {}
 
-func (x *UniswapV3Adaptor_PurgeSinglePosition) ProtoReflect() protoreflect.Message {
+func (x *UniswapV3AdaptorV1_CollectFees) ProtoReflect() protoreflect.Message {
 	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -798,34 +909,47 @@ func (x *UniswapV3Adaptor_PurgeSinglePosition) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UniswapV3Adaptor_PurgeSinglePosition.ProtoReflect.Descriptor instead.
-func (*UniswapV3Adaptor_PurgeSinglePosition) Descriptor() ([]byte, []int) {
-	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0, 6}
+// Deprecated: Use UniswapV3AdaptorV1_CollectFees.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV1_CollectFees) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0, 4}
 }
 
-func (x *UniswapV3Adaptor_PurgeSinglePosition) GetTokenId() string {
+func (x *UniswapV3AdaptorV1_CollectFees) GetTokenId() string {
 	if x != nil {
 		return x.TokenId
 	}
 	return ""
 }
 
+func (x *UniswapV3AdaptorV1_CollectFees) GetAmount_0() string {
+	if x != nil {
+		return x.Amount_0
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV1_CollectFees) GetAmount_1() string {
+	if x != nil {
+		return x.Amount_1
+	}
+	return ""
+}
+
 //
-// Allows strategist to remove tracked positions that are not owned by the cellar.
+// Allows strategist to purge zero liquidity LP positions from tracker.
 //
-// Represents function `removeUnOwnedPositionFromTracker(uint256 tokenId, ERC20 token0, ERC20 token1)`
-type UniswapV3Adaptor_RemoveUnownedPositionFromTracker struct {
+// Represents function `purgeAllZeroLiquidityPositions(ERC20 token0, ERC20 token1)`
+type UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	TokenId string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
-	Token_0 string `protobuf:"bytes,2,opt,name=token_0,json=token0,proto3" json:"token_0,omitempty"`
-	Token_1 string `protobuf:"bytes,3,opt,name=token_1,json=token1,proto3" json:"token_1,omitempty"`
+	Token_0 string `protobuf:"bytes,1,opt,name=token_0,json=token0,proto3" json:"token_0,omitempty"`
+	Token_1 string `protobuf:"bytes,2,opt,name=token_1,json=token1,proto3" json:"token_1,omitempty"`
 }
 
-func (x *UniswapV3Adaptor_RemoveUnownedPositionFromTracker) Reset() {
-	*x = UniswapV3Adaptor_RemoveUnownedPositionFromTracker{}
+func (x *UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions) Reset() {
+	*x = UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -833,13 +957,13 @@ func (x *UniswapV3Adaptor_RemoveUnownedPositionFromTracker) Reset() {
 	}
 }
 
-func (x *UniswapV3Adaptor_RemoveUnownedPositionFromTracker) String() string {
+func (x *UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UniswapV3Adaptor_RemoveUnownedPositionFromTracker) ProtoMessage() {}
+func (*UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions) ProtoMessage() {}
 
-func (x *UniswapV3Adaptor_RemoveUnownedPositionFromTracker) ProtoReflect() protoreflect.Message {
+func (x *UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions) ProtoReflect() protoreflect.Message {
 	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -851,26 +975,729 @@ func (x *UniswapV3Adaptor_RemoveUnownedPositionFromTracker) ProtoReflect() proto
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UniswapV3Adaptor_RemoveUnownedPositionFromTracker.ProtoReflect.Descriptor instead.
-func (*UniswapV3Adaptor_RemoveUnownedPositionFromTracker) Descriptor() ([]byte, []int) {
-	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0, 7}
+// Deprecated: Use UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0, 5}
 }
 
-func (x *UniswapV3Adaptor_RemoveUnownedPositionFromTracker) GetTokenId() string {
-	if x != nil {
-		return x.TokenId
-	}
-	return ""
-}
-
-func (x *UniswapV3Adaptor_RemoveUnownedPositionFromTracker) GetToken_0() string {
+func (x *UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions) GetToken_0() string {
 	if x != nil {
 		return x.Token_0
 	}
 	return ""
 }
 
-func (x *UniswapV3Adaptor_RemoveUnownedPositionFromTracker) GetToken_1() string {
+func (x *UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions) GetToken_1() string {
+	if x != nil {
+		return x.Token_1
+	}
+	return ""
+}
+
+//
+// Allows strategist to purge a single zero liquidity LP position from tracker.
+//
+// Represents function `purgeSinglePosition(uint256 tokenId)`
+type UniswapV3AdaptorV1_PurgeSinglePosition struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TokenId string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
+}
+
+func (x *UniswapV3AdaptorV1_PurgeSinglePosition) Reset() {
+	*x = UniswapV3AdaptorV1_PurgeSinglePosition{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UniswapV3AdaptorV1_PurgeSinglePosition) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UniswapV3AdaptorV1_PurgeSinglePosition) ProtoMessage() {}
+
+func (x *UniswapV3AdaptorV1_PurgeSinglePosition) ProtoReflect() protoreflect.Message {
+	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UniswapV3AdaptorV1_PurgeSinglePosition.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV1_PurgeSinglePosition) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0, 6}
+}
+
+func (x *UniswapV3AdaptorV1_PurgeSinglePosition) GetTokenId() string {
+	if x != nil {
+		return x.TokenId
+	}
+	return ""
+}
+
+//
+// Allows strategist to remove tracked positions that are not owned by the cellar.
+//
+// Represents function `removeUnOwnedPositionFromTracker(uint256 tokenId, ERC20 token0, ERC20 token1)`
+type UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TokenId string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
+	Token_0 string `protobuf:"bytes,2,opt,name=token_0,json=token0,proto3" json:"token_0,omitempty"`
+	Token_1 string `protobuf:"bytes,3,opt,name=token_1,json=token1,proto3" json:"token_1,omitempty"`
+}
+
+func (x *UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker) Reset() {
+	*x = UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker) ProtoMessage() {}
+
+func (x *UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker) ProtoReflect() protoreflect.Message {
+	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{0, 7}
+}
+
+func (x *UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker) GetTokenId() string {
+	if x != nil {
+		return x.TokenId
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker) GetToken_0() string {
+	if x != nil {
+		return x.Token_0
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker) GetToken_1() string {
+	if x != nil {
+		return x.Token_1
+	}
+	return ""
+}
+
+//
+// Allows strategist to open up arbritray Uniswap V3 positions.
+//
+// Represents function openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)
+type UniswapV3AdaptorV2_OpenPosition struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Token_0   string `protobuf:"bytes,1,opt,name=token_0,json=token0,proto3" json:"token_0,omitempty"`
+	Token_1   string `protobuf:"bytes,2,opt,name=token_1,json=token1,proto3" json:"token_1,omitempty"`
+	PoolFee   uint32 `protobuf:"varint,3,opt,name=pool_fee,json=poolFee,proto3" json:"pool_fee,omitempty"`
+	Amount_0  string `protobuf:"bytes,4,opt,name=amount_0,json=amount0,proto3" json:"amount_0,omitempty"`
+	Amount_1  string `protobuf:"bytes,5,opt,name=amount_1,json=amount1,proto3" json:"amount_1,omitempty"`
+	Min_0     string `protobuf:"bytes,6,opt,name=min_0,json=min0,proto3" json:"min_0,omitempty"`
+	Min_1     string `protobuf:"bytes,7,opt,name=min_1,json=min1,proto3" json:"min_1,omitempty"`
+	TickLower int32  `protobuf:"varint,8,opt,name=tick_lower,json=tickLower,proto3" json:"tick_lower,omitempty"`
+	TickUpper int32  `protobuf:"varint,9,opt,name=tick_upper,json=tickUpper,proto3" json:"tick_upper,omitempty"`
+}
+
+func (x *UniswapV3AdaptorV2_OpenPosition) Reset() {
+	*x = UniswapV3AdaptorV2_OpenPosition{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UniswapV3AdaptorV2_OpenPosition) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UniswapV3AdaptorV2_OpenPosition) ProtoMessage() {}
+
+func (x *UniswapV3AdaptorV2_OpenPosition) ProtoReflect() protoreflect.Message {
+	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UniswapV3AdaptorV2_OpenPosition.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV2_OpenPosition) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{1, 0}
+}
+
+func (x *UniswapV3AdaptorV2_OpenPosition) GetToken_0() string {
+	if x != nil {
+		return x.Token_0
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_OpenPosition) GetToken_1() string {
+	if x != nil {
+		return x.Token_1
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_OpenPosition) GetPoolFee() uint32 {
+	if x != nil {
+		return x.PoolFee
+	}
+	return 0
+}
+
+func (x *UniswapV3AdaptorV2_OpenPosition) GetAmount_0() string {
+	if x != nil {
+		return x.Amount_0
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_OpenPosition) GetAmount_1() string {
+	if x != nil {
+		return x.Amount_1
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_OpenPosition) GetMin_0() string {
+	if x != nil {
+		return x.Min_0
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_OpenPosition) GetMin_1() string {
+	if x != nil {
+		return x.Min_1
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_OpenPosition) GetTickLower() int32 {
+	if x != nil {
+		return x.TickLower
+	}
+	return 0
+}
+
+func (x *UniswapV3AdaptorV2_OpenPosition) GetTickUpper() int32 {
+	if x != nil {
+		return x.TickUpper
+	}
+	return 0
+}
+
+//
+// Allows strategist to close Uniswap V3 positions.
+//
+// Represents function `closePosition(uint256 tokenId, uint256 min0, uint256 min1)`
+type UniswapV3AdaptorV2_ClosePosition struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TokenId string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
+	Min_0   string `protobuf:"bytes,2,opt,name=min_0,json=min0,proto3" json:"min_0,omitempty"`
+	Min_1   string `protobuf:"bytes,3,opt,name=min_1,json=min1,proto3" json:"min_1,omitempty"`
+}
+
+func (x *UniswapV3AdaptorV2_ClosePosition) Reset() {
+	*x = UniswapV3AdaptorV2_ClosePosition{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UniswapV3AdaptorV2_ClosePosition) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UniswapV3AdaptorV2_ClosePosition) ProtoMessage() {}
+
+func (x *UniswapV3AdaptorV2_ClosePosition) ProtoReflect() protoreflect.Message {
+	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UniswapV3AdaptorV2_ClosePosition.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV2_ClosePosition) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{1, 1}
+}
+
+func (x *UniswapV3AdaptorV2_ClosePosition) GetTokenId() string {
+	if x != nil {
+		return x.TokenId
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_ClosePosition) GetMin_0() string {
+	if x != nil {
+		return x.Min_0
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_ClosePosition) GetMin_1() string {
+	if x != nil {
+		return x.Min_1
+	}
+	return ""
+}
+
+//
+// Allows strategist to add to existing Uniswap V3 positions.
+//
+// Represents function `addToPosition(uint256 tokenId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
+type UniswapV3AdaptorV2_AddToPosition struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TokenId  string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
+	Amount_0 string `protobuf:"bytes,2,opt,name=amount_0,json=amount0,proto3" json:"amount_0,omitempty"`
+	Amount_1 string `protobuf:"bytes,3,opt,name=amount_1,json=amount1,proto3" json:"amount_1,omitempty"`
+	Min_0    string `protobuf:"bytes,4,opt,name=min_0,json=min0,proto3" json:"min_0,omitempty"`
+	Min_1    string `protobuf:"bytes,5,opt,name=min_1,json=min1,proto3" json:"min_1,omitempty"`
+}
+
+func (x *UniswapV3AdaptorV2_AddToPosition) Reset() {
+	*x = UniswapV3AdaptorV2_AddToPosition{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UniswapV3AdaptorV2_AddToPosition) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UniswapV3AdaptorV2_AddToPosition) ProtoMessage() {}
+
+func (x *UniswapV3AdaptorV2_AddToPosition) ProtoReflect() protoreflect.Message {
+	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UniswapV3AdaptorV2_AddToPosition.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV2_AddToPosition) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{1, 2}
+}
+
+func (x *UniswapV3AdaptorV2_AddToPosition) GetTokenId() string {
+	if x != nil {
+		return x.TokenId
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_AddToPosition) GetAmount_0() string {
+	if x != nil {
+		return x.Amount_0
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_AddToPosition) GetAmount_1() string {
+	if x != nil {
+		return x.Amount_1
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_AddToPosition) GetMin_0() string {
+	if x != nil {
+		return x.Min_0
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_AddToPosition) GetMin_1() string {
+	if x != nil {
+		return x.Min_1
+	}
+	return ""
+}
+
+//
+// Allows strategist to take from existing Uniswap V3 positions.
+//
+// Represents function `takeFromPosition(uint256 tokenId, uint128 liquidity, uint256 min0, uint256 min1, bool takeFees)`
+type UniswapV3AdaptorV2_TakeFromPosition struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TokenId   string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
+	Liquidity string `protobuf:"bytes,2,opt,name=liquidity,proto3" json:"liquidity,omitempty"`
+	Min_0     string `protobuf:"bytes,3,opt,name=min_0,json=min0,proto3" json:"min_0,omitempty"`
+	Min_1     string `protobuf:"bytes,4,opt,name=min_1,json=min1,proto3" json:"min_1,omitempty"`
+	TakeFees  bool   `protobuf:"varint,5,opt,name=take_fees,json=takeFees,proto3" json:"take_fees,omitempty"`
+}
+
+func (x *UniswapV3AdaptorV2_TakeFromPosition) Reset() {
+	*x = UniswapV3AdaptorV2_TakeFromPosition{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UniswapV3AdaptorV2_TakeFromPosition) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UniswapV3AdaptorV2_TakeFromPosition) ProtoMessage() {}
+
+func (x *UniswapV3AdaptorV2_TakeFromPosition) ProtoReflect() protoreflect.Message {
+	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UniswapV3AdaptorV2_TakeFromPosition.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV2_TakeFromPosition) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{1, 3}
+}
+
+func (x *UniswapV3AdaptorV2_TakeFromPosition) GetTokenId() string {
+	if x != nil {
+		return x.TokenId
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_TakeFromPosition) GetLiquidity() string {
+	if x != nil {
+		return x.Liquidity
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_TakeFromPosition) GetMin_0() string {
+	if x != nil {
+		return x.Min_0
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_TakeFromPosition) GetMin_1() string {
+	if x != nil {
+		return x.Min_1
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_TakeFromPosition) GetTakeFees() bool {
+	if x != nil {
+		return x.TakeFees
+	}
+	return false
+}
+
+//
+// Allows strategist to collect fees from existing Uniswap V3 positions.
+//
+// Represents function `collectFees(uint256 tokenId, uint128 amount0, uint128 amount1)`
+type UniswapV3AdaptorV2_CollectFees struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TokenId  string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
+	Amount_0 string `protobuf:"bytes,2,opt,name=amount_0,json=amount0,proto3" json:"amount_0,omitempty"`
+	Amount_1 string `protobuf:"bytes,3,opt,name=amount_1,json=amount1,proto3" json:"amount_1,omitempty"`
+}
+
+func (x *UniswapV3AdaptorV2_CollectFees) Reset() {
+	*x = UniswapV3AdaptorV2_CollectFees{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UniswapV3AdaptorV2_CollectFees) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UniswapV3AdaptorV2_CollectFees) ProtoMessage() {}
+
+func (x *UniswapV3AdaptorV2_CollectFees) ProtoReflect() protoreflect.Message {
+	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UniswapV3AdaptorV2_CollectFees.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV2_CollectFees) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{1, 4}
+}
+
+func (x *UniswapV3AdaptorV2_CollectFees) GetTokenId() string {
+	if x != nil {
+		return x.TokenId
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_CollectFees) GetAmount_0() string {
+	if x != nil {
+		return x.Amount_0
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_CollectFees) GetAmount_1() string {
+	if x != nil {
+		return x.Amount_1
+	}
+	return ""
+}
+
+//
+// Allows strategist to purge zero liquidity LP positions from tracker.
+//
+// Represents function `purgeAllZeroLiquidityPositions(ERC20 token0, ERC20 token1)`
+type UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Token_0 string `protobuf:"bytes,1,opt,name=token_0,json=token0,proto3" json:"token_0,omitempty"`
+	Token_1 string `protobuf:"bytes,2,opt,name=token_1,json=token1,proto3" json:"token_1,omitempty"`
+}
+
+func (x *UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions) Reset() {
+	*x = UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions) ProtoMessage() {}
+
+func (x *UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions) ProtoReflect() protoreflect.Message {
+	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{1, 5}
+}
+
+func (x *UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions) GetToken_0() string {
+	if x != nil {
+		return x.Token_0
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions) GetToken_1() string {
+	if x != nil {
+		return x.Token_1
+	}
+	return ""
+}
+
+//
+// Allows strategist to purge a single zero liquidity LP position from tracker.
+//
+// Represents function `purgeSinglePosition(uint256 tokenId)`
+type UniswapV3AdaptorV2_PurgeSinglePosition struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TokenId string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
+}
+
+func (x *UniswapV3AdaptorV2_PurgeSinglePosition) Reset() {
+	*x = UniswapV3AdaptorV2_PurgeSinglePosition{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[18]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UniswapV3AdaptorV2_PurgeSinglePosition) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UniswapV3AdaptorV2_PurgeSinglePosition) ProtoMessage() {}
+
+func (x *UniswapV3AdaptorV2_PurgeSinglePosition) ProtoReflect() protoreflect.Message {
+	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[18]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UniswapV3AdaptorV2_PurgeSinglePosition.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV2_PurgeSinglePosition) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{1, 6}
+}
+
+func (x *UniswapV3AdaptorV2_PurgeSinglePosition) GetTokenId() string {
+	if x != nil {
+		return x.TokenId
+	}
+	return ""
+}
+
+//
+// Allows strategist to remove tracked positions that are not owned by the cellar.
+//
+// Represents function `removeUnOwnedPositionFromTracker(uint256 tokenId, ERC20 token0, ERC20 token1)`
+type UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TokenId string `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
+	Token_0 string `protobuf:"bytes,2,opt,name=token_0,json=token0,proto3" json:"token_0,omitempty"`
+	Token_1 string `protobuf:"bytes,3,opt,name=token_1,json=token1,proto3" json:"token_1,omitempty"`
+}
+
+func (x *UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker) Reset() {
+	*x = UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[19]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker) ProtoMessage() {}
+
+func (x *UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker) ProtoReflect() protoreflect.Message {
+	mi := &file_adaptors_uniswap_uniswap_v3_proto_msgTypes[19]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker.ProtoReflect.Descriptor instead.
+func (*UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker) Descriptor() ([]byte, []int) {
+	return file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP(), []int{1, 7}
+}
+
+func (x *UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker) GetTokenId() string {
+	if x != nil {
+		return x.TokenId
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker) GetToken_0() string {
+	if x != nil {
+		return x.Token_0
+	}
+	return ""
+}
+
+func (x *UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker) GetToken_1() string {
 	if x != nil {
 		return x.Token_1
 	}
@@ -882,140 +1709,265 @@ var File_adaptors_uniswap_uniswap_v3_proto protoreflect.FileDescriptor
 var file_adaptors_uniswap_uniswap_v3_proto_rawDesc = []byte{
 	0x0a, 0x21, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x73, 0x2f, 0x75, 0x6e, 0x69, 0x73, 0x77,
 	0x61, 0x70, 0x2f, 0x75, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x76, 0x33, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x12, 0x0a, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x1a,
+	0x6f, 0x74, 0x6f, 0x12, 0x0a, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x34, 0x1a,
 	0x13, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x73, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x22, 0xc4, 0x0f, 0x0a, 0x10, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70,
-	0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x12, 0x26, 0x0a, 0x04, 0x73, 0x77, 0x61,
-	0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72,
-	0x64, 0x2e, 0x76, 0x33, 0x2e, 0x53, 0x77, 0x61, 0x70, 0x48, 0x00, 0x52, 0x04, 0x73, 0x77, 0x61,
-	0x70, 0x12, 0x39, 0x0a, 0x0b, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x5f, 0x73, 0x77, 0x61, 0x70,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64,
-	0x2e, 0x76, 0x33, 0x2e, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x53, 0x77, 0x61, 0x70, 0x48, 0x00,
-	0x52, 0x0a, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x53, 0x77, 0x61, 0x70, 0x12, 0x45, 0x0a, 0x0f,
-	0x72, 0x65, 0x76, 0x6f, 0x6b, 0x65, 0x5f, 0x61, 0x70, 0x70, 0x72, 0x6f, 0x76, 0x61, 0x6c, 0x18,
-	0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e,
-	0x76, 0x33, 0x2e, 0x52, 0x65, 0x76, 0x6f, 0x6b, 0x65, 0x41, 0x70, 0x70, 0x72, 0x6f, 0x76, 0x61,
-	0x6c, 0x48, 0x00, 0x52, 0x0e, 0x72, 0x65, 0x76, 0x6f, 0x6b, 0x65, 0x41, 0x70, 0x70, 0x72, 0x6f,
-	0x76, 0x61, 0x6c, 0x12, 0x50, 0x0a, 0x0d, 0x6f, 0x70, 0x65, 0x6e, 0x5f, 0x70, 0x6f, 0x73, 0x69,
-	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x29, 0x2e, 0x73, 0x74, 0x65,
-	0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56,
-	0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x2e, 0x4f, 0x70, 0x65, 0x6e, 0x50, 0x6f, 0x73,
-	0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x0c, 0x6f, 0x70, 0x65, 0x6e, 0x50, 0x6f, 0x73,
-	0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x53, 0x0a, 0x0e, 0x63, 0x6c, 0x6f, 0x73, 0x65, 0x5f, 0x70,
-	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2a, 0x2e,
-	0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77,
-	0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x2e, 0x43, 0x6c, 0x6f, 0x73,
-	0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x0d, 0x63, 0x6c, 0x6f,
-	0x73, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x54, 0x0a, 0x0f, 0x61, 0x64,
-	0x64, 0x5f, 0x74, 0x6f, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x06, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x2a, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33,
-	0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f,
-	0x72, 0x2e, 0x41, 0x64, 0x64, 0x54, 0x6f, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48,
-	0x00, 0x52, 0x0d, 0x61, 0x64, 0x64, 0x54, 0x6f, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e,
-	0x12, 0x5d, 0x0a, 0x12, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x66, 0x72, 0x6f, 0x6d, 0x5f, 0x70, 0x6f,
-	0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2d, 0x2e, 0x73,
-	0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61,
-	0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x2e, 0x54, 0x61, 0x6b, 0x65, 0x46,
-	0x72, 0x6f, 0x6d, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x10, 0x74,
-	0x61, 0x6b, 0x65, 0x46, 0x72, 0x6f, 0x6d, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12,
-	0x4d, 0x0a, 0x0c, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x5f, 0x66, 0x65, 0x65, 0x73, 0x18,
-	0x08, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x28, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e,
-	0x76, 0x33, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70,
-	0x74, 0x6f, 0x72, 0x2e, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x46, 0x65, 0x65, 0x73, 0x48,
-	0x00, 0x52, 0x0b, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x46, 0x65, 0x65, 0x73, 0x12, 0x89,
-	0x01, 0x0a, 0x22, 0x70, 0x75, 0x72, 0x67, 0x65, 0x5f, 0x61, 0x6c, 0x6c, 0x5f, 0x7a, 0x65, 0x72,
-	0x6f, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x70, 0x6f, 0x73, 0x69,
-	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x09, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x3b, 0x2e, 0x73, 0x74,
-	0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70,
-	0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x2e, 0x50, 0x75, 0x72, 0x67, 0x65, 0x41,
+	0x72, 0x6f, 0x74, 0x6f, 0x22, 0xd6, 0x0f, 0x0a, 0x12, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70,
+	0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x12, 0x26, 0x0a, 0x04, 0x73,
+	0x77, 0x61, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x73, 0x74, 0x65, 0x77,
+	0x61, 0x72, 0x64, 0x2e, 0x76, 0x34, 0x2e, 0x53, 0x77, 0x61, 0x70, 0x48, 0x00, 0x52, 0x04, 0x73,
+	0x77, 0x61, 0x70, 0x12, 0x39, 0x0a, 0x0b, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x5f, 0x73, 0x77,
+	0x61, 0x70, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61,
+	0x72, 0x64, 0x2e, 0x76, 0x34, 0x2e, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x53, 0x77, 0x61, 0x70,
+	0x48, 0x00, 0x52, 0x0a, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x53, 0x77, 0x61, 0x70, 0x12, 0x45,
+	0x0a, 0x0f, 0x72, 0x65, 0x76, 0x6f, 0x6b, 0x65, 0x5f, 0x61, 0x70, 0x70, 0x72, 0x6f, 0x76, 0x61,
+	0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x2e, 0x76, 0x34, 0x2e, 0x52, 0x65, 0x76, 0x6f, 0x6b, 0x65, 0x41, 0x70, 0x70, 0x72, 0x6f,
+	0x76, 0x61, 0x6c, 0x48, 0x00, 0x52, 0x0e, 0x72, 0x65, 0x76, 0x6f, 0x6b, 0x65, 0x41, 0x70, 0x70,
+	0x72, 0x6f, 0x76, 0x61, 0x6c, 0x12, 0x52, 0x0a, 0x0d, 0x6f, 0x70, 0x65, 0x6e, 0x5f, 0x70, 0x6f,
+	0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2b, 0x2e, 0x73,
+	0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x34, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61,
+	0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x2e, 0x4f, 0x70, 0x65,
+	0x6e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x0c, 0x6f, 0x70, 0x65,
+	0x6e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x55, 0x0a, 0x0e, 0x63, 0x6c, 0x6f,
+	0x73, 0x65, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x2c, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x34, 0x2e, 0x55,
+	0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56,
+	0x31, 0x2e, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48,
+	0x00, 0x52, 0x0d, 0x63, 0x6c, 0x6f, 0x73, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e,
+	0x12, 0x56, 0x0a, 0x0f, 0x61, 0x64, 0x64, 0x5f, 0x74, 0x6f, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74,
+	0x69, 0x6f, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2c, 0x2e, 0x73, 0x74, 0x65, 0x77,
+	0x61, 0x72, 0x64, 0x2e, 0x76, 0x34, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33,
+	0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x2e, 0x41, 0x64, 0x64, 0x54, 0x6f, 0x50,
+	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x0d, 0x61, 0x64, 0x64, 0x54, 0x6f,
+	0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x5f, 0x0a, 0x12, 0x74, 0x61, 0x6b, 0x65,
+	0x5f, 0x66, 0x72, 0x6f, 0x6d, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x07,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x2f, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76,
+	0x34, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74,
+	0x6f, 0x72, 0x56, 0x31, 0x2e, 0x54, 0x61, 0x6b, 0x65, 0x46, 0x72, 0x6f, 0x6d, 0x50, 0x6f, 0x73,
+	0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x10, 0x74, 0x61, 0x6b, 0x65, 0x46, 0x72, 0x6f,
+	0x6d, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x4f, 0x0a, 0x0c, 0x63, 0x6f, 0x6c,
+	0x6c, 0x65, 0x63, 0x74, 0x5f, 0x66, 0x65, 0x65, 0x73, 0x18, 0x08, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x2a, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x34, 0x2e, 0x55, 0x6e, 0x69,
+	0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x2e,
+	0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x46, 0x65, 0x65, 0x73, 0x48, 0x00, 0x52, 0x0b, 0x63,
+	0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x46, 0x65, 0x65, 0x73, 0x12, 0x8b, 0x01, 0x0a, 0x22, 0x70,
+	0x75, 0x72, 0x67, 0x65, 0x5f, 0x61, 0x6c, 0x6c, 0x5f, 0x7a, 0x65, 0x72, 0x6f, 0x5f, 0x6c, 0x69,
+	0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e,
+	0x73, 0x18, 0x09, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x3d, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x2e, 0x76, 0x34, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64,
+	0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x2e, 0x50, 0x75, 0x72, 0x67, 0x65, 0x41, 0x6c, 0x6c,
+	0x5a, 0x65, 0x72, 0x6f, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x50, 0x6f, 0x73,
+	0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x48, 0x00, 0x52, 0x1e, 0x70, 0x75, 0x72, 0x67, 0x65, 0x41,
 	0x6c, 0x6c, 0x5a, 0x65, 0x72, 0x6f, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x50,
-	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x48, 0x00, 0x52, 0x1e, 0x70, 0x75, 0x72, 0x67,
-	0x65, 0x41, 0x6c, 0x6c, 0x5a, 0x65, 0x72, 0x6f, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74,
-	0x79, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x66, 0x0a, 0x15, 0x70, 0x75,
-	0x72, 0x67, 0x65, 0x5f, 0x73, 0x69, 0x6e, 0x67, 0x6c, 0x65, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74,
-	0x69, 0x6f, 0x6e, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x30, 0x2e, 0x73, 0x74, 0x65, 0x77,
-	0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33,
-	0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x2e, 0x50, 0x75, 0x72, 0x67, 0x65, 0x53, 0x69, 0x6e,
+	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x68, 0x0a, 0x15, 0x70, 0x75, 0x72, 0x67,
+	0x65, 0x5f, 0x73, 0x69, 0x6e, 0x67, 0x6c, 0x65, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f,
+	0x6e, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x32, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x2e, 0x76, 0x34, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64,
+	0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x2e, 0x50, 0x75, 0x72, 0x67, 0x65, 0x53, 0x69, 0x6e,
 	0x67, 0x6c, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x13, 0x70,
 	0x75, 0x72, 0x67, 0x65, 0x53, 0x69, 0x6e, 0x67, 0x6c, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69,
-	0x6f, 0x6e, 0x12, 0x8f, 0x01, 0x0a, 0x24, 0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x5f, 0x75, 0x6e,
+	0x6f, 0x6e, 0x12, 0x91, 0x01, 0x0a, 0x24, 0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x5f, 0x75, 0x6e,
 	0x6f, 0x77, 0x6e, 0x65, 0x64, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x66,
 	0x72, 0x6f, 0x6d, 0x5f, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x65, 0x72, 0x18, 0x0b, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x3d, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x55,
-	0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x2e,
-	0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x55, 0x6e, 0x6f, 0x77, 0x6e, 0x65, 0x64, 0x50, 0x6f, 0x73,
-	0x69, 0x74, 0x69, 0x6f, 0x6e, 0x46, 0x72, 0x6f, 0x6d, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x65, 0x72,
-	0x48, 0x00, 0x52, 0x20, 0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x55, 0x6e, 0x6f, 0x77, 0x6e, 0x65,
-	0x64, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x46, 0x72, 0x6f, 0x6d, 0x54, 0x72, 0x61,
-	0x63, 0x6b, 0x65, 0x72, 0x1a, 0xf9, 0x01, 0x0a, 0x0c, 0x4f, 0x70, 0x65, 0x6e, 0x50, 0x6f, 0x73,
-	0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x17, 0x0a, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x30,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x30, 0x12, 0x17,
-	0x0a, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x31, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x06, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x31, 0x12, 0x19, 0x0a, 0x08, 0x70, 0x6f, 0x6f, 0x6c, 0x5f,
-	0x66, 0x65, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x46,
-	0x65, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x30, 0x18, 0x04,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x30, 0x12, 0x19, 0x0a,
-	0x08, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x31, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x07, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x31, 0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f,
-	0x30, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x69, 0x6e, 0x30, 0x12, 0x13, 0x0a,
-	0x05, 0x6d, 0x69, 0x6e, 0x5f, 0x31, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x69,
-	0x6e, 0x31, 0x12, 0x1d, 0x0a, 0x0a, 0x74, 0x69, 0x63, 0x6b, 0x5f, 0x6c, 0x6f, 0x77, 0x65, 0x72,
-	0x18, 0x08, 0x20, 0x01, 0x28, 0x05, 0x52, 0x09, 0x74, 0x69, 0x63, 0x6b, 0x4c, 0x6f, 0x77, 0x65,
-	0x72, 0x12, 0x1d, 0x0a, 0x0a, 0x74, 0x69, 0x63, 0x6b, 0x5f, 0x75, 0x70, 0x70, 0x65, 0x72, 0x18,
-	0x09, 0x20, 0x01, 0x28, 0x05, 0x52, 0x09, 0x74, 0x69, 0x63, 0x6b, 0x55, 0x70, 0x70, 0x65, 0x72,
-	0x1a, 0x54, 0x0a, 0x0d, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f,
-	0x6e, 0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x64, 0x12, 0x13, 0x0a, 0x05,
-	0x6d, 0x69, 0x6e, 0x5f, 0x30, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x69, 0x6e,
-	0x30, 0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f, 0x31, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x04, 0x6d, 0x69, 0x6e, 0x31, 0x1a, 0x8a, 0x01, 0x0a, 0x0d, 0x41, 0x64, 0x64, 0x54, 0x6f,
-	0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65,
-	0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65,
-	0x6e, 0x49, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x30, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x30, 0x12, 0x19,
-	0x0a, 0x08, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x31, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x07, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x31, 0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e,
-	0x5f, 0x30, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x69, 0x6e, 0x30, 0x12, 0x13,
-	0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f, 0x31, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d,
-	0x69, 0x6e, 0x31, 0x1a, 0x92, 0x01, 0x0a, 0x10, 0x54, 0x61, 0x6b, 0x65, 0x46, 0x72, 0x6f, 0x6d,
-	0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65,
-	0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65,
-	0x6e, 0x49, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74,
-	0x79, 0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f, 0x30, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x04, 0x6d, 0x69, 0x6e, 0x30, 0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f, 0x31, 0x18,
-	0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x69, 0x6e, 0x31, 0x12, 0x1b, 0x0a, 0x09, 0x74,
-	0x61, 0x6b, 0x65, 0x5f, 0x66, 0x65, 0x65, 0x73, 0x18, 0x05, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08,
-	0x74, 0x61, 0x6b, 0x65, 0x46, 0x65, 0x65, 0x73, 0x1a, 0x5e, 0x0a, 0x0b, 0x43, 0x6f, 0x6c, 0x6c,
-	0x65, 0x63, 0x74, 0x46, 0x65, 0x65, 0x73, 0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
-	0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
-	0x49, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x30, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x30, 0x12, 0x19, 0x0a,
-	0x08, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x31, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x07, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x31, 0x1a, 0x52, 0x0a, 0x1e, 0x50, 0x75, 0x72, 0x67,
-	0x65, 0x41, 0x6c, 0x6c, 0x5a, 0x65, 0x72, 0x6f, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74,
-	0x79, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x17, 0x0a, 0x07, 0x74, 0x6f,
-	0x6b, 0x65, 0x6e, 0x5f, 0x30, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x6f, 0x6b,
-	0x65, 0x6e, 0x30, 0x12, 0x17, 0x0a, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x31, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x31, 0x1a, 0x30, 0x0a, 0x13,
-	0x50, 0x75, 0x72, 0x67, 0x65, 0x53, 0x69, 0x6e, 0x67, 0x6c, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74,
-	0x69, 0x6f, 0x6e, 0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x64, 0x1a, 0x6f,
-	0x0a, 0x20, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x55, 0x6e, 0x6f, 0x77, 0x6e, 0x65, 0x64, 0x50,
+	0x0b, 0x32, 0x3f, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x34, 0x2e, 0x55,
+	0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56,
+	0x31, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x55, 0x6e, 0x6f, 0x77, 0x6e, 0x65, 0x64, 0x50,
 	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x46, 0x72, 0x6f, 0x6d, 0x54, 0x72, 0x61, 0x63, 0x6b,
-	0x65, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x64, 0x12, 0x17, 0x0a,
-	0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x30, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x65, 0x72, 0x48, 0x00, 0x52, 0x20, 0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x55, 0x6e, 0x6f, 0x77,
+	0x6e, 0x65, 0x64, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x46, 0x72, 0x6f, 0x6d, 0x54,
+	0x72, 0x61, 0x63, 0x6b, 0x65, 0x72, 0x1a, 0xf9, 0x01, 0x0a, 0x0c, 0x4f, 0x70, 0x65, 0x6e, 0x50,
+	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x17, 0x0a, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
+	0x5f, 0x30, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x30,
+	0x12, 0x17, 0x0a, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x31, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x06, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x31, 0x12, 0x19, 0x0a, 0x08, 0x70, 0x6f, 0x6f,
+	0x6c, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x07, 0x70, 0x6f, 0x6f,
+	0x6c, 0x46, 0x65, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x30,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x30, 0x12,
+	0x19, 0x0a, 0x08, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x31, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x31, 0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69,
+	0x6e, 0x5f, 0x30, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x69, 0x6e, 0x30, 0x12,
+	0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f, 0x31, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
+	0x6d, 0x69, 0x6e, 0x31, 0x12, 0x1d, 0x0a, 0x0a, 0x74, 0x69, 0x63, 0x6b, 0x5f, 0x6c, 0x6f, 0x77,
+	0x65, 0x72, 0x18, 0x08, 0x20, 0x01, 0x28, 0x05, 0x52, 0x09, 0x74, 0x69, 0x63, 0x6b, 0x4c, 0x6f,
+	0x77, 0x65, 0x72, 0x12, 0x1d, 0x0a, 0x0a, 0x74, 0x69, 0x63, 0x6b, 0x5f, 0x75, 0x70, 0x70, 0x65,
+	0x72, 0x18, 0x09, 0x20, 0x01, 0x28, 0x05, 0x52, 0x09, 0x74, 0x69, 0x63, 0x6b, 0x55, 0x70, 0x70,
+	0x65, 0x72, 0x1a, 0x54, 0x0a, 0x0d, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74,
+	0x69, 0x6f, 0x6e, 0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x64, 0x12, 0x13,
+	0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f, 0x30, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d,
+	0x69, 0x6e, 0x30, 0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f, 0x31, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x6d, 0x69, 0x6e, 0x31, 0x1a, 0x8a, 0x01, 0x0a, 0x0d, 0x41, 0x64, 0x64,
+	0x54, 0x6f, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x49, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f,
+	0x30, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x30,
+	0x12, 0x19, 0x0a, 0x08, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x31, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x31, 0x12, 0x13, 0x0a, 0x05, 0x6d,
+	0x69, 0x6e, 0x5f, 0x30, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x69, 0x6e, 0x30,
+	0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f, 0x31, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x04, 0x6d, 0x69, 0x6e, 0x31, 0x1a, 0x92, 0x01, 0x0a, 0x10, 0x54, 0x61, 0x6b, 0x65, 0x46, 0x72,
+	0x6f, 0x6d, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x49, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69,
+	0x74, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64,
+	0x69, 0x74, 0x79, 0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f, 0x30, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x6d, 0x69, 0x6e, 0x30, 0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f,
+	0x31, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x69, 0x6e, 0x31, 0x12, 0x1b, 0x0a,
+	0x09, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x66, 0x65, 0x65, 0x73, 0x18, 0x05, 0x20, 0x01, 0x28, 0x08,
+	0x52, 0x08, 0x74, 0x61, 0x6b, 0x65, 0x46, 0x65, 0x65, 0x73, 0x1a, 0x5e, 0x0a, 0x0b, 0x43, 0x6f,
+	0x6c, 0x6c, 0x65, 0x63, 0x74, 0x46, 0x65, 0x65, 0x73, 0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b,
+	0x65, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b,
+	0x65, 0x6e, 0x49, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x30,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x30, 0x12,
+	0x19, 0x0a, 0x08, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x31, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x31, 0x1a, 0x52, 0x0a, 0x1e, 0x50, 0x75,
+	0x72, 0x67, 0x65, 0x41, 0x6c, 0x6c, 0x5a, 0x65, 0x72, 0x6f, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64,
+	0x69, 0x74, 0x79, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x17, 0x0a, 0x07,
+	0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x30, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74,
+	0x6f, 0x6b, 0x65, 0x6e, 0x30, 0x12, 0x17, 0x0a, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x31,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x31, 0x1a, 0x30,
+	0x0a, 0x13, 0x50, 0x75, 0x72, 0x67, 0x65, 0x53, 0x69, 0x6e, 0x67, 0x6c, 0x65, 0x50, 0x6f, 0x73,
+	0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x64,
+	0x1a, 0x6f, 0x0a, 0x20, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x55, 0x6e, 0x6f, 0x77, 0x6e, 0x65,
+	0x64, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x46, 0x72, 0x6f, 0x6d, 0x54, 0x72, 0x61,
+	0x63, 0x6b, 0x65, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x64, 0x12,
+	0x17, 0x0a, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x30, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x06, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x30, 0x12, 0x17, 0x0a, 0x07, 0x74, 0x6f, 0x6b, 0x65,
+	0x6e, 0x5f, 0x31, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
+	0x31, 0x42, 0x0a, 0x0a, 0x08, 0x66, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0xf3, 0x0e,
+	0x0a, 0x12, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74,
+	0x6f, 0x72, 0x56, 0x32, 0x12, 0x45, 0x0a, 0x0f, 0x72, 0x65, 0x76, 0x6f, 0x6b, 0x65, 0x5f, 0x61,
+	0x70, 0x70, 0x72, 0x6f, 0x76, 0x61, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e,
+	0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x34, 0x2e, 0x52, 0x65, 0x76, 0x6f, 0x6b,
+	0x65, 0x41, 0x70, 0x70, 0x72, 0x6f, 0x76, 0x61, 0x6c, 0x48, 0x00, 0x52, 0x0e, 0x72, 0x65, 0x76,
+	0x6f, 0x6b, 0x65, 0x41, 0x70, 0x70, 0x72, 0x6f, 0x76, 0x61, 0x6c, 0x12, 0x52, 0x0a, 0x0d, 0x6f,
+	0x70, 0x65, 0x6e, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x2b, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x34, 0x2e,
+	0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72,
+	0x56, 0x32, 0x2e, 0x4f, 0x70, 0x65, 0x6e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48,
+	0x00, 0x52, 0x0c, 0x6f, 0x70, 0x65, 0x6e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12,
+	0x55, 0x0a, 0x0e, 0x63, 0x6c, 0x6f, 0x73, 0x65, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f,
+	0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2c, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x2e, 0x76, 0x34, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64,
+	0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x32, 0x2e, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x50, 0x6f, 0x73,
+	0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x0d, 0x63, 0x6c, 0x6f, 0x73, 0x65, 0x50, 0x6f,
+	0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x56, 0x0a, 0x0f, 0x61, 0x64, 0x64, 0x5f, 0x74, 0x6f,
+	0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x2c, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x34, 0x2e, 0x55, 0x6e, 0x69,
+	0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x32, 0x2e,
+	0x41, 0x64, 0x64, 0x54, 0x6f, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52,
+	0x0d, 0x61, 0x64, 0x64, 0x54, 0x6f, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x5f,
+	0x0a, 0x12, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x66, 0x72, 0x6f, 0x6d, 0x5f, 0x70, 0x6f, 0x73, 0x69,
+	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2f, 0x2e, 0x73, 0x74, 0x65,
+	0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x34, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56,
+	0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x32, 0x2e, 0x54, 0x61, 0x6b, 0x65, 0x46,
+	0x72, 0x6f, 0x6d, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x10, 0x74,
+	0x61, 0x6b, 0x65, 0x46, 0x72, 0x6f, 0x6d, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12,
+	0x4f, 0x0a, 0x0c, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x5f, 0x66, 0x65, 0x65, 0x73, 0x18,
+	0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2a, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e,
+	0x76, 0x34, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70,
+	0x74, 0x6f, 0x72, 0x56, 0x32, 0x2e, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x46, 0x65, 0x65,
+	0x73, 0x48, 0x00, 0x52, 0x0b, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x46, 0x65, 0x65, 0x73,
+	0x12, 0x8b, 0x01, 0x0a, 0x22, 0x70, 0x75, 0x72, 0x67, 0x65, 0x5f, 0x61, 0x6c, 0x6c, 0x5f, 0x7a,
+	0x65, 0x72, 0x6f, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x70, 0x6f,
+	0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x3d, 0x2e,
+	0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x34, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77,
+	0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x32, 0x2e, 0x50, 0x75,
+	0x72, 0x67, 0x65, 0x41, 0x6c, 0x6c, 0x5a, 0x65, 0x72, 0x6f, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64,
+	0x69, 0x74, 0x79, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x48, 0x00, 0x52, 0x1e,
+	0x70, 0x75, 0x72, 0x67, 0x65, 0x41, 0x6c, 0x6c, 0x5a, 0x65, 0x72, 0x6f, 0x4c, 0x69, 0x71, 0x75,
+	0x69, 0x64, 0x69, 0x74, 0x79, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x68,
+	0x0a, 0x15, 0x70, 0x75, 0x72, 0x67, 0x65, 0x5f, 0x73, 0x69, 0x6e, 0x67, 0x6c, 0x65, 0x5f, 0x70,
+	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x08, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x32, 0x2e,
+	0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x34, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77,
+	0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x32, 0x2e, 0x50, 0x75,
+	0x72, 0x67, 0x65, 0x53, 0x69, 0x6e, 0x67, 0x6c, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f,
+	0x6e, 0x48, 0x00, 0x52, 0x13, 0x70, 0x75, 0x72, 0x67, 0x65, 0x53, 0x69, 0x6e, 0x67, 0x6c, 0x65,
+	0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x91, 0x01, 0x0a, 0x24, 0x72, 0x65, 0x6d,
+	0x6f, 0x76, 0x65, 0x5f, 0x75, 0x6e, 0x6f, 0x77, 0x6e, 0x65, 0x64, 0x5f, 0x70, 0x6f, 0x73, 0x69,
+	0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x66, 0x72, 0x6f, 0x6d, 0x5f, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x65,
+	0x72, 0x18, 0x09, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x3f, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x2e, 0x76, 0x34, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64,
+	0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x32, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x55, 0x6e,
+	0x6f, 0x77, 0x6e, 0x65, 0x64, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x46, 0x72, 0x6f,
+	0x6d, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x65, 0x72, 0x48, 0x00, 0x52, 0x20, 0x72, 0x65, 0x6d, 0x6f,
+	0x76, 0x65, 0x55, 0x6e, 0x6f, 0x77, 0x6e, 0x65, 0x64, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f,
+	0x6e, 0x46, 0x72, 0x6f, 0x6d, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x65, 0x72, 0x1a, 0xf9, 0x01, 0x0a,
+	0x0c, 0x4f, 0x70, 0x65, 0x6e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x17, 0x0a,
+	0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x30, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
 	0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x30, 0x12, 0x17, 0x0a, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f,
-	0x31, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x31, 0x42,
-	0x0a, 0x0a, 0x08, 0x66, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x4b, 0x0a, 0x15, 0x55,
-	0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x43,
-	0x61, 0x6c, 0x6c, 0x73, 0x12, 0x32, 0x0a, 0x05, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x01, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33,
-	0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f,
-	0x72, 0x52, 0x05, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x42, 0x10, 0x5a, 0x0e, 0x2f, 0x73, 0x74, 0x65,
-	0x77, 0x61, 0x72, 0x64, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x31, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x31, 0x12,
+	0x19, 0x0a, 0x08, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x0d, 0x52, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x46, 0x65, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x30, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x30, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f,
+	0x31, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x31,
+	0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f, 0x30, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x04, 0x6d, 0x69, 0x6e, 0x30, 0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f, 0x31, 0x18, 0x07,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x69, 0x6e, 0x31, 0x12, 0x1d, 0x0a, 0x0a, 0x74, 0x69,
+	0x63, 0x6b, 0x5f, 0x6c, 0x6f, 0x77, 0x65, 0x72, 0x18, 0x08, 0x20, 0x01, 0x28, 0x05, 0x52, 0x09,
+	0x74, 0x69, 0x63, 0x6b, 0x4c, 0x6f, 0x77, 0x65, 0x72, 0x12, 0x1d, 0x0a, 0x0a, 0x74, 0x69, 0x63,
+	0x6b, 0x5f, 0x75, 0x70, 0x70, 0x65, 0x72, 0x18, 0x09, 0x20, 0x01, 0x28, 0x05, 0x52, 0x09, 0x74,
+	0x69, 0x63, 0x6b, 0x55, 0x70, 0x70, 0x65, 0x72, 0x1a, 0x54, 0x0a, 0x0d, 0x43, 0x6c, 0x6f, 0x73,
+	0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b,
+	0x65, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b,
+	0x65, 0x6e, 0x49, 0x64, 0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f, 0x30, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x69, 0x6e, 0x30, 0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e,
+	0x5f, 0x31, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x69, 0x6e, 0x31, 0x1a, 0x8a,
+	0x01, 0x0a, 0x0d, 0x41, 0x64, 0x64, 0x54, 0x6f, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e,
+	0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x61,
+	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x30, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61,
+	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x30, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
+	0x5f, 0x31, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
+	0x31, 0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f, 0x30, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x04, 0x6d, 0x69, 0x6e, 0x30, 0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f, 0x31, 0x18,
+	0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x69, 0x6e, 0x31, 0x1a, 0x92, 0x01, 0x0a, 0x10,
+	0x54, 0x61, 0x6b, 0x65, 0x46, 0x72, 0x6f, 0x6d, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e,
+	0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x6c,
+	0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
+	0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x12, 0x13, 0x0a, 0x05, 0x6d, 0x69, 0x6e,
+	0x5f, 0x30, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x69, 0x6e, 0x30, 0x12, 0x13,
+	0x0a, 0x05, 0x6d, 0x69, 0x6e, 0x5f, 0x31, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d,
+	0x69, 0x6e, 0x31, 0x12, 0x1b, 0x0a, 0x09, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x66, 0x65, 0x65, 0x73,
+	0x18, 0x05, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x74, 0x61, 0x6b, 0x65, 0x46, 0x65, 0x65, 0x73,
+	0x1a, 0x5e, 0x0a, 0x0b, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x46, 0x65, 0x65, 0x73, 0x12,
+	0x19, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x30, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x30, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f,
+	0x31, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x31,
+	0x1a, 0x52, 0x0a, 0x1e, 0x50, 0x75, 0x72, 0x67, 0x65, 0x41, 0x6c, 0x6c, 0x5a, 0x65, 0x72, 0x6f,
+	0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f,
+	0x6e, 0x73, 0x12, 0x17, 0x0a, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x30, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x30, 0x12, 0x17, 0x0a, 0x07, 0x74,
+	0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x31, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x31, 0x1a, 0x30, 0x0a, 0x13, 0x50, 0x75, 0x72, 0x67, 0x65, 0x53, 0x69, 0x6e,
+	0x67, 0x6c, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x19, 0x0a, 0x08, 0x74,
+	0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x74,
+	0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x64, 0x1a, 0x6f, 0x0a, 0x20, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65,
+	0x55, 0x6e, 0x6f, 0x77, 0x6e, 0x65, 0x64, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x46,
+	0x72, 0x6f, 0x6d, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x65, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x49, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x30,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x30, 0x12, 0x17,
+	0x0a, 0x07, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x31, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x06, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x31, 0x42, 0x0a, 0x0a, 0x08, 0x66, 0x75, 0x6e, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x22, 0x4f, 0x0a, 0x17, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33,
+	0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x34,
+	0x0a, 0x05, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1e, 0x2e,
+	0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x34, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77,
+	0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x52, 0x05, 0x63,
+	0x61, 0x6c, 0x6c, 0x73, 0x22, 0x4f, 0x0a, 0x17, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56,
+	0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x32, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12,
+	0x34, 0x0a, 0x05, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1e,
+	0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x34, 0x2e, 0x55, 0x6e, 0x69, 0x73,
+	0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x32, 0x52, 0x05,
+	0x63, 0x61, 0x6c, 0x6c, 0x73, 0x42, 0x10, 0x5a, 0x0e, 0x2f, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1030,40 +1982,60 @@ func file_adaptors_uniswap_uniswap_v3_proto_rawDescGZIP() []byte {
 	return file_adaptors_uniswap_uniswap_v3_proto_rawDescData
 }
 
-var file_adaptors_uniswap_uniswap_v3_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_adaptors_uniswap_uniswap_v3_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_adaptors_uniswap_uniswap_v3_proto_goTypes = []interface{}{
-	(*UniswapV3Adaptor)(nil),                                  // 0: steward.v3.UniswapV3Adaptor
-	(*UniswapV3AdaptorCalls)(nil),                             // 1: steward.v3.UniswapV3AdaptorCalls
-	(*UniswapV3Adaptor_OpenPosition)(nil),                     // 2: steward.v3.UniswapV3Adaptor.OpenPosition
-	(*UniswapV3Adaptor_ClosePosition)(nil),                    // 3: steward.v3.UniswapV3Adaptor.ClosePosition
-	(*UniswapV3Adaptor_AddToPosition)(nil),                    // 4: steward.v3.UniswapV3Adaptor.AddToPosition
-	(*UniswapV3Adaptor_TakeFromPosition)(nil),                 // 5: steward.v3.UniswapV3Adaptor.TakeFromPosition
-	(*UniswapV3Adaptor_CollectFees)(nil),                      // 6: steward.v3.UniswapV3Adaptor.CollectFees
-	(*UniswapV3Adaptor_PurgeAllZeroLiquidityPositions)(nil),   // 7: steward.v3.UniswapV3Adaptor.PurgeAllZeroLiquidityPositions
-	(*UniswapV3Adaptor_PurgeSinglePosition)(nil),              // 8: steward.v3.UniswapV3Adaptor.PurgeSinglePosition
-	(*UniswapV3Adaptor_RemoveUnownedPositionFromTracker)(nil), // 9: steward.v3.UniswapV3Adaptor.RemoveUnownedPositionFromTracker
-	(*Swap)(nil),           // 10: steward.v3.Swap
-	(*OracleSwap)(nil),     // 11: steward.v3.OracleSwap
-	(*RevokeApproval)(nil), // 12: steward.v3.RevokeApproval
+	(*UniswapV3AdaptorV1)(nil),                                  // 0: steward.v4.UniswapV3AdaptorV1
+	(*UniswapV3AdaptorV2)(nil),                                  // 1: steward.v4.UniswapV3AdaptorV2
+	(*UniswapV3AdaptorV1Calls)(nil),                             // 2: steward.v4.UniswapV3AdaptorV1Calls
+	(*UniswapV3AdaptorV2Calls)(nil),                             // 3: steward.v4.UniswapV3AdaptorV2Calls
+	(*UniswapV3AdaptorV1_OpenPosition)(nil),                     // 4: steward.v4.UniswapV3AdaptorV1.OpenPosition
+	(*UniswapV3AdaptorV1_ClosePosition)(nil),                    // 5: steward.v4.UniswapV3AdaptorV1.ClosePosition
+	(*UniswapV3AdaptorV1_AddToPosition)(nil),                    // 6: steward.v4.UniswapV3AdaptorV1.AddToPosition
+	(*UniswapV3AdaptorV1_TakeFromPosition)(nil),                 // 7: steward.v4.UniswapV3AdaptorV1.TakeFromPosition
+	(*UniswapV3AdaptorV1_CollectFees)(nil),                      // 8: steward.v4.UniswapV3AdaptorV1.CollectFees
+	(*UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions)(nil),   // 9: steward.v4.UniswapV3AdaptorV1.PurgeAllZeroLiquidityPositions
+	(*UniswapV3AdaptorV1_PurgeSinglePosition)(nil),              // 10: steward.v4.UniswapV3AdaptorV1.PurgeSinglePosition
+	(*UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker)(nil), // 11: steward.v4.UniswapV3AdaptorV1.RemoveUnownedPositionFromTracker
+	(*UniswapV3AdaptorV2_OpenPosition)(nil),                     // 12: steward.v4.UniswapV3AdaptorV2.OpenPosition
+	(*UniswapV3AdaptorV2_ClosePosition)(nil),                    // 13: steward.v4.UniswapV3AdaptorV2.ClosePosition
+	(*UniswapV3AdaptorV2_AddToPosition)(nil),                    // 14: steward.v4.UniswapV3AdaptorV2.AddToPosition
+	(*UniswapV3AdaptorV2_TakeFromPosition)(nil),                 // 15: steward.v4.UniswapV3AdaptorV2.TakeFromPosition
+	(*UniswapV3AdaptorV2_CollectFees)(nil),                      // 16: steward.v4.UniswapV3AdaptorV2.CollectFees
+	(*UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions)(nil),   // 17: steward.v4.UniswapV3AdaptorV2.PurgeAllZeroLiquidityPositions
+	(*UniswapV3AdaptorV2_PurgeSinglePosition)(nil),              // 18: steward.v4.UniswapV3AdaptorV2.PurgeSinglePosition
+	(*UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker)(nil), // 19: steward.v4.UniswapV3AdaptorV2.RemoveUnownedPositionFromTracker
+	(*Swap)(nil),           // 20: steward.v4.Swap
+	(*OracleSwap)(nil),     // 21: steward.v4.OracleSwap
+	(*RevokeApproval)(nil), // 22: steward.v4.RevokeApproval
 }
 var file_adaptors_uniswap_uniswap_v3_proto_depIdxs = []int32{
-	10, // 0: steward.v3.UniswapV3Adaptor.swap:type_name -> steward.v3.Swap
-	11, // 1: steward.v3.UniswapV3Adaptor.oracle_swap:type_name -> steward.v3.OracleSwap
-	12, // 2: steward.v3.UniswapV3Adaptor.revoke_approval:type_name -> steward.v3.RevokeApproval
-	2,  // 3: steward.v3.UniswapV3Adaptor.open_position:type_name -> steward.v3.UniswapV3Adaptor.OpenPosition
-	3,  // 4: steward.v3.UniswapV3Adaptor.close_position:type_name -> steward.v3.UniswapV3Adaptor.ClosePosition
-	4,  // 5: steward.v3.UniswapV3Adaptor.add_to_position:type_name -> steward.v3.UniswapV3Adaptor.AddToPosition
-	5,  // 6: steward.v3.UniswapV3Adaptor.take_from_position:type_name -> steward.v3.UniswapV3Adaptor.TakeFromPosition
-	6,  // 7: steward.v3.UniswapV3Adaptor.collect_fees:type_name -> steward.v3.UniswapV3Adaptor.CollectFees
-	7,  // 8: steward.v3.UniswapV3Adaptor.purge_all_zero_liquidity_positions:type_name -> steward.v3.UniswapV3Adaptor.PurgeAllZeroLiquidityPositions
-	8,  // 9: steward.v3.UniswapV3Adaptor.purge_single_position:type_name -> steward.v3.UniswapV3Adaptor.PurgeSinglePosition
-	9,  // 10: steward.v3.UniswapV3Adaptor.remove_unowned_position_from_tracker:type_name -> steward.v3.UniswapV3Adaptor.RemoveUnownedPositionFromTracker
-	0,  // 11: steward.v3.UniswapV3AdaptorCalls.calls:type_name -> steward.v3.UniswapV3Adaptor
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	20, // 0: steward.v4.UniswapV3AdaptorV1.swap:type_name -> steward.v4.Swap
+	21, // 1: steward.v4.UniswapV3AdaptorV1.oracle_swap:type_name -> steward.v4.OracleSwap
+	22, // 2: steward.v4.UniswapV3AdaptorV1.revoke_approval:type_name -> steward.v4.RevokeApproval
+	4,  // 3: steward.v4.UniswapV3AdaptorV1.open_position:type_name -> steward.v4.UniswapV3AdaptorV1.OpenPosition
+	5,  // 4: steward.v4.UniswapV3AdaptorV1.close_position:type_name -> steward.v4.UniswapV3AdaptorV1.ClosePosition
+	6,  // 5: steward.v4.UniswapV3AdaptorV1.add_to_position:type_name -> steward.v4.UniswapV3AdaptorV1.AddToPosition
+	7,  // 6: steward.v4.UniswapV3AdaptorV1.take_from_position:type_name -> steward.v4.UniswapV3AdaptorV1.TakeFromPosition
+	8,  // 7: steward.v4.UniswapV3AdaptorV1.collect_fees:type_name -> steward.v4.UniswapV3AdaptorV1.CollectFees
+	9,  // 8: steward.v4.UniswapV3AdaptorV1.purge_all_zero_liquidity_positions:type_name -> steward.v4.UniswapV3AdaptorV1.PurgeAllZeroLiquidityPositions
+	10, // 9: steward.v4.UniswapV3AdaptorV1.purge_single_position:type_name -> steward.v4.UniswapV3AdaptorV1.PurgeSinglePosition
+	11, // 10: steward.v4.UniswapV3AdaptorV1.remove_unowned_position_from_tracker:type_name -> steward.v4.UniswapV3AdaptorV1.RemoveUnownedPositionFromTracker
+	22, // 11: steward.v4.UniswapV3AdaptorV2.revoke_approval:type_name -> steward.v4.RevokeApproval
+	12, // 12: steward.v4.UniswapV3AdaptorV2.open_position:type_name -> steward.v4.UniswapV3AdaptorV2.OpenPosition
+	13, // 13: steward.v4.UniswapV3AdaptorV2.close_position:type_name -> steward.v4.UniswapV3AdaptorV2.ClosePosition
+	14, // 14: steward.v4.UniswapV3AdaptorV2.add_to_position:type_name -> steward.v4.UniswapV3AdaptorV2.AddToPosition
+	15, // 15: steward.v4.UniswapV3AdaptorV2.take_from_position:type_name -> steward.v4.UniswapV3AdaptorV2.TakeFromPosition
+	16, // 16: steward.v4.UniswapV3AdaptorV2.collect_fees:type_name -> steward.v4.UniswapV3AdaptorV2.CollectFees
+	17, // 17: steward.v4.UniswapV3AdaptorV2.purge_all_zero_liquidity_positions:type_name -> steward.v4.UniswapV3AdaptorV2.PurgeAllZeroLiquidityPositions
+	18, // 18: steward.v4.UniswapV3AdaptorV2.purge_single_position:type_name -> steward.v4.UniswapV3AdaptorV2.PurgeSinglePosition
+	19, // 19: steward.v4.UniswapV3AdaptorV2.remove_unowned_position_from_tracker:type_name -> steward.v4.UniswapV3AdaptorV2.RemoveUnownedPositionFromTracker
+	0,  // 20: steward.v4.UniswapV3AdaptorV1Calls.calls:type_name -> steward.v4.UniswapV3AdaptorV1
+	1,  // 21: steward.v4.UniswapV3AdaptorV2Calls.calls:type_name -> steward.v4.UniswapV3AdaptorV2
+	22, // [22:22] is the sub-list for method output_type
+	22, // [22:22] is the sub-list for method input_type
+	22, // [22:22] is the sub-list for extension type_name
+	22, // [22:22] is the sub-list for extension extendee
+	0,  // [0:22] is the sub-list for field type_name
 }
 
 func init() { file_adaptors_uniswap_uniswap_v3_proto_init() }
@@ -1074,7 +2046,7 @@ func file_adaptors_uniswap_uniswap_v3_proto_init() {
 	file_adaptors_base_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UniswapV3Adaptor); i {
+			switch v := v.(*UniswapV3AdaptorV1); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1086,7 +2058,7 @@ func file_adaptors_uniswap_uniswap_v3_proto_init() {
 			}
 		}
 		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UniswapV3AdaptorCalls); i {
+			switch v := v.(*UniswapV3AdaptorV2); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1098,7 +2070,7 @@ func file_adaptors_uniswap_uniswap_v3_proto_init() {
 			}
 		}
 		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UniswapV3Adaptor_OpenPosition); i {
+			switch v := v.(*UniswapV3AdaptorV1Calls); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1110,7 +2082,7 @@ func file_adaptors_uniswap_uniswap_v3_proto_init() {
 			}
 		}
 		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UniswapV3Adaptor_ClosePosition); i {
+			switch v := v.(*UniswapV3AdaptorV2Calls); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1122,7 +2094,7 @@ func file_adaptors_uniswap_uniswap_v3_proto_init() {
 			}
 		}
 		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UniswapV3Adaptor_AddToPosition); i {
+			switch v := v.(*UniswapV3AdaptorV1_OpenPosition); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1134,7 +2106,7 @@ func file_adaptors_uniswap_uniswap_v3_proto_init() {
 			}
 		}
 		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UniswapV3Adaptor_TakeFromPosition); i {
+			switch v := v.(*UniswapV3AdaptorV1_ClosePosition); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1146,7 +2118,7 @@ func file_adaptors_uniswap_uniswap_v3_proto_init() {
 			}
 		}
 		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UniswapV3Adaptor_CollectFees); i {
+			switch v := v.(*UniswapV3AdaptorV1_AddToPosition); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1158,7 +2130,7 @@ func file_adaptors_uniswap_uniswap_v3_proto_init() {
 			}
 		}
 		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UniswapV3Adaptor_PurgeAllZeroLiquidityPositions); i {
+			switch v := v.(*UniswapV3AdaptorV1_TakeFromPosition); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1170,7 +2142,7 @@ func file_adaptors_uniswap_uniswap_v3_proto_init() {
 			}
 		}
 		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UniswapV3Adaptor_PurgeSinglePosition); i {
+			switch v := v.(*UniswapV3AdaptorV1_CollectFees); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1182,7 +2154,127 @@ func file_adaptors_uniswap_uniswap_v3_proto_init() {
 			}
 		}
 		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UniswapV3Adaptor_RemoveUnownedPositionFromTracker); i {
+			switch v := v.(*UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UniswapV3AdaptorV1_PurgeSinglePosition); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UniswapV3AdaptorV2_OpenPosition); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UniswapV3AdaptorV2_ClosePosition); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UniswapV3AdaptorV2_AddToPosition); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UniswapV3AdaptorV2_TakeFromPosition); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UniswapV3AdaptorV2_CollectFees); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UniswapV3AdaptorV2_PurgeSinglePosition); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_adaptors_uniswap_uniswap_v3_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1195,17 +2287,28 @@ func file_adaptors_uniswap_uniswap_v3_proto_init() {
 		}
 	}
 	file_adaptors_uniswap_uniswap_v3_proto_msgTypes[0].OneofWrappers = []interface{}{
-		(*UniswapV3Adaptor_Swap)(nil),
-		(*UniswapV3Adaptor_OracleSwap)(nil),
-		(*UniswapV3Adaptor_RevokeApproval)(nil),
-		(*UniswapV3Adaptor_OpenPosition_)(nil),
-		(*UniswapV3Adaptor_ClosePosition_)(nil),
-		(*UniswapV3Adaptor_AddToPosition_)(nil),
-		(*UniswapV3Adaptor_TakeFromPosition_)(nil),
-		(*UniswapV3Adaptor_CollectFees_)(nil),
-		(*UniswapV3Adaptor_PurgeAllZeroLiquidityPositions_)(nil),
-		(*UniswapV3Adaptor_PurgeSinglePosition_)(nil),
-		(*UniswapV3Adaptor_RemoveUnownedPositionFromTracker_)(nil),
+		(*UniswapV3AdaptorV1_Swap)(nil),
+		(*UniswapV3AdaptorV1_OracleSwap)(nil),
+		(*UniswapV3AdaptorV1_RevokeApproval)(nil),
+		(*UniswapV3AdaptorV1_OpenPosition_)(nil),
+		(*UniswapV3AdaptorV1_ClosePosition_)(nil),
+		(*UniswapV3AdaptorV1_AddToPosition_)(nil),
+		(*UniswapV3AdaptorV1_TakeFromPosition_)(nil),
+		(*UniswapV3AdaptorV1_CollectFees_)(nil),
+		(*UniswapV3AdaptorV1_PurgeAllZeroLiquidityPositions_)(nil),
+		(*UniswapV3AdaptorV1_PurgeSinglePosition_)(nil),
+		(*UniswapV3AdaptorV1_RemoveUnownedPositionFromTracker_)(nil),
+	}
+	file_adaptors_uniswap_uniswap_v3_proto_msgTypes[1].OneofWrappers = []interface{}{
+		(*UniswapV3AdaptorV2_RevokeApproval)(nil),
+		(*UniswapV3AdaptorV2_OpenPosition_)(nil),
+		(*UniswapV3AdaptorV2_ClosePosition_)(nil),
+		(*UniswapV3AdaptorV2_AddToPosition_)(nil),
+		(*UniswapV3AdaptorV2_TakeFromPosition_)(nil),
+		(*UniswapV3AdaptorV2_CollectFees_)(nil),
+		(*UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions_)(nil),
+		(*UniswapV3AdaptorV2_PurgeSinglePosition_)(nil),
+		(*UniswapV3AdaptorV2_RemoveUnownedPositionFromTracker_)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1213,7 +2316,7 @@ func file_adaptors_uniswap_uniswap_v3_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_adaptors_uniswap_uniswap_v3_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

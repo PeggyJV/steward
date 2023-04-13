@@ -1,29 +1,54 @@
-//! Handlers for V2 of the Cellar.sol contract functions
+//! Handlers for V2.2 of the Cellar.sol contract functions
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
 use abscissa_core::tracing::debug;
 use ethers::{abi::AbiEncode, contract::EthCall, types::Bytes};
-use steward_abi::cellar_v2::{AdaptorCall as AbiAdaptorCall, *};
+use steward_abi::cellar_v2_2::{AdaptorCall as AbiAdaptorCall, *};
 use steward_proto::steward::{
-    adaptor_call::CallData::*, cellar_v2::Function as StrategyFunction,
-    cellar_v2_governance::Function as GovernanceFunction, AdaptorCall,
+    adaptor_call::CallData::*,
+    cellar_v2_2::{function_call::Function as StrategistFunction, CallType, FunctionCall},
+    cellar_v2_2governance::Function as GovernanceFunction,
+    AdaptorCall,
 };
 use GovernanceFunction::*;
-use StrategyFunction::*;
+use StrategistFunction::*;
 
-use crate::cellars::{adaptors, BLOCKED_ADAPTORS};
+use crate::cellars::adaptors;
 use crate::{
     error::{Error, ErrorKind},
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
 };
 
-use super::{log_cellar_call, log_governance_cellar_call, normalize_address, BLOCKED_POSITIONS};
+use super::{
+    log_cellar_call, log_governance_cellar_call, normalize_address, BLOCKED_ADAPTORS,
+    BLOCKED_POSITIONS,
+};
 
-const CELLAR_NAME: &str = "CellarV2";
+const CELLAR_NAME: &str = "CellarV2.2";
 const LOG_PREFIX: &str = CELLAR_NAME;
 
-/// Encodes a call to a CellarV2 contract
-pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {
+/// Encodes a call to a CellarV2.2 contract
+pub fn get_encoded_call(call_type: CallType, cellar_id: String) -> Result<Vec<u8>, Error> {
+    match call_type {
+        CallType::FunctionCall(f) => get_encoded_function(f, cellar_id),
+        CallType::Multicall(m) => {
+            let mut multicall = MulticallCall::default();
+            m.function_calls
+                .iter()
+                .map(|f| get_encoded_function(f.clone(), cellar_id.clone()))
+                .collect::<Result<Vec<Vec<u8>>, Error>>()?
+                .iter()
+                .for_each(|f| multicall.data.push(Bytes::from(f.clone())));
+
+            Ok(multicall.encode())
+        }
+    }
+}
+
+pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec<u8>, Error> {
+    let function = call
+        .function
+        .ok_or_else(|| sp_call_error("call data is empty".to_string()))?;
     match function {
         AddPosition(params) => {
             if BLOCKED_POSITIONS.contains(&params.position_id) {
@@ -41,7 +66,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 in_debt_array: params.in_debt_array,
             };
 
-            Ok(CellarV2Calls::AddPosition(call).encode())
+            Ok(CellarV2_2Calls::AddPosition(call).encode())
         }
         CallOnAdaptor(params) => {
             for adaptor_call in params.data.clone() {
@@ -58,7 +83,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 data: get_encoded_adaptor_calls(params.data)?,
             };
 
-            Ok(CellarV2Calls::CallOnAdaptor(call).encode())
+            Ok(CellarV2_2Calls::CallOnAdaptor(call).encode())
         }
         RemovePosition(params) => {
             log_cellar_call(
@@ -71,7 +96,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 in_debt_array: params.in_debt_array,
             };
 
-            Ok(CellarV2Calls::RemovePosition(call).encode())
+            Ok(CellarV2_2Calls::RemovePosition(call).encode())
         }
         SetHoldingPosition(params) => {
             log_cellar_call(
@@ -83,7 +108,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 position_id: params.position_id,
             };
 
-            Ok(CellarV2Calls::SetHoldingPosition(call).encode())
+            Ok(CellarV2_2Calls::SetHoldingPosition(call).encode())
         }
         SetStrategistPayoutAddress(params) => {
             log_cellar_call(
@@ -95,7 +120,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 payout: sp_call_parse_address(params.payout)?,
             };
 
-            Ok(CellarV2Calls::SetStrategistPayoutAddress(call).encode())
+            Ok(CellarV2_2Calls::SetStrategistPayoutAddress(call).encode())
         }
         SwapPositions(params) => {
             log_cellar_call(CELLAR_NAME, &SwapPositionsCall::function_name(), &cellar_id);
@@ -105,7 +130,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 in_debt_array: params.in_debt_array,
             };
 
-            Ok(CellarV2Calls::SwapPositions(call).encode())
+            Ok(CellarV2_2Calls::SwapPositions(call).encode())
         }
         SetShareLockPeriod(params) => {
             log_cellar_call(
@@ -117,21 +142,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 new_lock: string_to_u256(params.new_lock)?,
             };
 
-            Ok(CellarV2Calls::SetShareLockPeriod(call).encode())
-        }
-        // This will ultimately need to be a governance function, but for Seven Sea's live testing we are keeping
-        // it here until they get a feel for what an appropriate value is.
-        SetRebalanceDeviation(params) => {
-            log_cellar_call(
-                CELLAR_NAME,
-                &SetRebalanceDeviationCall::function_name(),
-                &cellar_id,
-            );
-            let call = SetRebalanceDeviationCall {
-                new_deviation: string_to_u256(params.new_deviation)?,
-            };
-
-            Ok(CellarV2Calls::SetRebalanceDeviation(call).encode())
+            Ok(CellarV2_2Calls::SetShareLockPeriod(call).encode())
         }
     }
 }
@@ -142,7 +153,93 @@ pub fn get_encoded_governance_call(
     proposal_id: u64,
 ) -> Result<Vec<u8>, Error> {
     match function {
-        InitiateShutdown(_) => {
+        AddPositionToCatalogue(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &AddPositionToCatalogueCall::function_name(),
+                cellar_id,
+            );
+            let call = AddPositionToCatalogueCall {
+                position_id: params.position_id,
+            };
+            Ok(CellarV2_2Calls::AddPositionToCatalogue(call).encode())
+        }
+        RemovePositionFromCatalogue(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &RemovePositionFromCatalogueCall::function_name(),
+                cellar_id,
+            );
+            let call = RemovePositionFromCatalogueCall {
+                position_id: params.position_id,
+            };
+            Ok(CellarV2_2Calls::RemovePositionFromCatalogue(call).encode())
+        }
+        AddAdaptorToCatalogue(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &AddAdaptorToCatalogueCall::function_name(),
+                cellar_id,
+            );
+            let call = AddAdaptorToCatalogueCall {
+                adaptor: sp_call_parse_address(params.adaptor)?,
+            };
+            Ok(CellarV2_2Calls::AddAdaptorToCatalogue(call).encode())
+        }
+        RemoveAdaptorFromCatalogue(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &RemoveAdaptorFromCatalogueCall::function_name(),
+                cellar_id,
+            );
+            let call = RemoveAdaptorFromCatalogueCall {
+                adaptor: sp_call_parse_address(params.adaptor)?,
+            };
+            Ok(CellarV2_2Calls::RemoveAdaptorFromCatalogue(call).encode())
+        }
+        ForcePositionOut(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &ForcePositionOutCall::function_name(),
+                cellar_id,
+            );
+            let call = ForcePositionOutCall {
+                index: params.index,
+                position_id: params.position_id,
+                in_debt_array: params.in_debt_array,
+            };
+            Ok(CellarV2_2Calls::ForcePositionOut(call).encode())
+        }
+        ToggleIgnorePause(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &ToggleIgnorePauseCall::function_name(),
+                cellar_id,
+            );
+            let call = ToggleIgnorePauseCall {
+                toggle: params.ignore_pause,
+            };
+            Ok(CellarV2_2Calls::ToggleIgnorePause(call).encode())
+        }
+        SetRebalanceDeviation(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &SetRebalanceDeviationCall::function_name(),
+                cellar_id,
+            );
+            let call = SetRebalanceDeviationCall {
+                new_deviation: string_to_u256(params.new_deviation)?,
+            };
+            Ok(CellarV2_2Calls::SetRebalanceDeviation(call).encode())
+        }
+        InitiateShutdown(params) => {
             log_governance_cellar_call(
                 proposal_id,
                 CELLAR_NAME,
@@ -150,9 +247,9 @@ pub fn get_encoded_governance_call(
                 cellar_id,
             );
             let call = InitiateShutdownCall {};
-            Ok(CellarV2Calls::InitiateShutdown(call).encode())
+            Ok(CellarV2_2Calls::InitiateShutdown(call).encode())
         }
-        LiftShutdown(_) => {
+        LiftShutdown(params) => {
             log_governance_cellar_call(
                 proposal_id,
                 CELLAR_NAME,
@@ -160,19 +257,7 @@ pub fn get_encoded_governance_call(
                 cellar_id,
             );
             let call = LiftShutdownCall {};
-            Ok(CellarV2Calls::LiftShutdown(call).encode())
-        }
-        SetPlatformFee(params) => {
-            log_governance_cellar_call(
-                proposal_id,
-                CELLAR_NAME,
-                &SetPlatformFeeCall::function_name(),
-                cellar_id,
-            );
-            let call = SetPlatformFeeCall {
-                new_platform_fee: params.amount,
-            };
-            Ok(CellarV2Calls::SetPlatformFee(call).encode())
+            Ok(CellarV2_2Calls::LiftShutdown(call).encode())
         }
         SetStrategistPlatformCut(params) => {
             log_governance_cellar_call(
@@ -181,21 +266,10 @@ pub fn get_encoded_governance_call(
                 &SetStrategistPlatformCutCall::function_name(),
                 cellar_id,
             );
-            let call = SetStrategistPlatformCutCall { cut: params.amount };
-            Ok(CellarV2Calls::SetStrategistPlatformCut(call).encode())
-        }
-        SetupAdaptor(params) => {
-            log_governance_cellar_call(
-                proposal_id,
-                CELLAR_NAME,
-                &SetupAdaptorCall::function_name(),
-                cellar_id,
-            );
-            let call = SetupAdaptorCall {
-                adaptor: sp_call_parse_address(params.adaptor)?,
+            let call = SetStrategistPlatformCutCall {
+                cut: params.new_cut,
             };
-
-            Ok(CellarV2Calls::SetupAdaptor(call).encode())
+            Ok(CellarV2_2Calls::SetStrategistPlatformCut(call).encode())
         }
     }
 }

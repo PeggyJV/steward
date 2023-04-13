@@ -37,7 +37,7 @@ func NewContractCallClient(cc grpc.ClientConnInterface) ContractCallClient {
 
 func (c *contractCallClient) Schedule(ctx context.Context, in *ScheduleRequest, opts ...grpc.CallOption) (*ScheduleResponse, error) {
 	out := new(ScheduleResponse)
-	err := c.cc.Invoke(ctx, "/steward.v3.ContractCall/Schedule", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/steward.v4.ContractCall/Schedule", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *contractCallClient) Schedule(ctx context.Context, in *ScheduleRequest, 
 
 func (c *contractCallClient) Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
 	out := new(StatusResponse)
-	err := c.cc.Invoke(ctx, "/steward.v3.ContractCall/Status", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/steward.v4.ContractCall/Status", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func _ContractCall_Schedule_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/steward.v3.ContractCall/Schedule",
+		FullMethod: "/steward.v4.ContractCall/Schedule",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ContractCallServer).Schedule(ctx, req.(*ScheduleRequest))
@@ -114,7 +114,7 @@ func _ContractCall_Status_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/steward.v3.ContractCall/Status",
+		FullMethod: "/steward.v4.ContractCall/Status",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ContractCallServer).Status(ctx, req.(*StatusRequest))
@@ -126,7 +126,7 @@ func _ContractCall_Status_Handler(srv interface{}, ctx context.Context, dec func
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ContractCall_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "steward.v3.ContractCall",
+	ServiceName: "steward.v4.ContractCall",
 	HandlerType: (*ContractCallServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

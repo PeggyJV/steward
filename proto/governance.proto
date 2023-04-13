@@ -20,9 +20,9 @@ message GovernanceCall {
         // Governance function calls to the AaveV2Stablecoin cellar
         AaveV2StablecoinGovernance aave_v2_stablecoin = 2;
         // Governance function calls to V1 cellars
-        CellarV1Governance cellar_v1 = 3;
+        CellarV1Governance cellar_v1_governance = 3;
         // Governance function calls to V2 cellars
-        CellarV2Governance cellar_v2 = 4;
+        CellarV2Governance cellar_v2_governance = 4;
         // Governance function calls to V2.2 cellars
         CellarV2_2Governance cellar_v2dot2_governance = 5;
     }
