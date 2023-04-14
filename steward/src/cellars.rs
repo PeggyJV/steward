@@ -21,7 +21,7 @@ pub const BLOCKED_ADAPTORS: [&str; 3] = [
     "26dba82495f6189dde7648ae88bead46c402f078",
 ];
 pub const BLOCKED_POSITIONS: [u32; 9] = [4, 5, 6, 7, 8, 9, 10, 11, 12];
-pub const ALLOWED_SETUP_ADAPTORS: [&str; 10] = [
+pub const ALLOWED_SETUP_ADAPTORS: [&str; 9] = [
     // UniswapV3Adaptor v2
     "0bd9a2c1917e3a932a4a712aee38ff63d35733fb",
     // VestingSimpleAdaptor v2
@@ -40,8 +40,6 @@ pub const ALLOWED_SETUP_ADAPTORS: [&str; 10] = [
     "647d264d800a2461e594796af61a39b7735d8933",
     // CTokenAdaptor v2
     "9a384df333588428843d128120becd72434ec078",
-    // AaveV2EnableAssetAsCollateralAdaptor v1
-    "724feb5819d1717aec5adbc0974a655a498b2614",
 ];
 pub const ALLOWED_CATALOGUE_ADAPTORS: [&str; 1] = [
     // AaveV2EnableAssetAsCollateralAdaptor v1
