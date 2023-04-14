@@ -19,6 +19,7 @@ import "adaptors/1inch/oneinch.proto";
 import "adaptors/vesting_simple.proto";
 import "adaptors/base.proto";
 import "adaptors/sommelier/cellar_adaptor.proto";
+import "adaptors/aave/aave_v2_enable_asset_as_collateral_adaptor.proto";
 
 // Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
 message AaveV3DebtTokenAdaptorV1 {
@@ -128,6 +129,8 @@ message AaveV3DebtTokenAdaptorV1 {
             CellarAdaptorV1Calls cellar_v1_calls = 15;
             // Represents function calls to the UniswapV3Adaptor V2
             UniswapV3AdaptorV2Calls uniswap_v3_v2_calls = 16;
+            // Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1
+            AaveV2EnableAssetAsCollateralAdaptorV1Calls aave_v2_enable_asset_as_collateral_v1_calls = 17;
         }
     }
 }

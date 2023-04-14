@@ -1493,6 +1493,48 @@ pub struct OneInchAdaptorV1Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<OneInchAdaptorV1>,
 }
+/// Represents call data for the Aave AToken adaptor, used to manage lending positions on Aave
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct AaveV2EnableAssetAsCollateralAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(
+        oneof = "aave_v2_enable_asset_as_collateral_adaptor_v1::Function",
+        tags = "1, 2"
+    )]
+    pub function: ::core::option::Option<aave_v2_enable_asset_as_collateral_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `AaveV2EnableAssetAsCollateralAdaptorV1`.
+pub mod aave_v2_enable_asset_as_collateral_adaptor_v1 {
+    ///
+    /// Allows a strategist to choose to use an asset as collateral or not.
+    ///
+    /// Represents function `setUserUseReserveAsCollateral(address asset, bool useAsCollateral)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SetUserUseReserveAsCollateral {
+        /// The address of the asset to set as collateral
+        #[prost(string, tag = "1")]
+        pub asset: ::prost::alloc::string::String,
+        /// Whether to use the asset as collateral
+        #[prost(bool, tag = "2")]
+        pub use_as_collateral: bool,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `setUserUseReserveAsCollateral(address asset, bool useAsCollateral)`
+        #[prost(message, tag = "2")]
+        SetUserUseReserveAsCollateral(SetUserUseReserveAsCollateral),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct AaveV2EnableAssetAsCollateralAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<AaveV2EnableAssetAsCollateralAdaptorV1>,
+}
 /// Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct AaveV3DebtTokenAdaptorV1 {
@@ -1571,7 +1613,7 @@ pub mod aave_v3_debt_token_adaptor_v1 {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_aave_v3_flashloan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flashloan::CallData>,
     }
@@ -1625,6 +1667,11 @@ pub mod aave_v3_debt_token_adaptor_v1 {
             /// Represents function calls to the UniswapV3Adaptor V2
             #[prost(message, tag = "16")]
             UniswapV3V2Calls(super::super::UniswapV3AdaptorV2Calls),
+            /// Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1
+            #[prost(message, tag = "17")]
+            AaveV2EnableAssetAsCollateralV1Calls(
+                super::super::AaveV2EnableAssetAsCollateralAdaptorV1Calls,
+            ),
         }
     }
     ///**** BASE ADAPTOR FUNCTIONS ****
@@ -1845,7 +1892,7 @@ pub mod cellar_v2_2 {
     pub struct FunctionCall {
         #[prost(
             oneof = "function_call::Function",
-            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11"
+            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12"
         )]
         pub function: ::core::option::Option<function_call::Function>,
     }
@@ -1886,6 +1933,9 @@ pub mod cellar_v2_2 {
             /// Represents function `liftShutdown()`
             #[prost(message, tag = "11")]
             LiftShutdown(super::LiftShutdown),
+            /// Represents function `addAdaptorToCatalogue(address adaptor)`
+            #[prost(message, tag = "12")]
+            AddAdaptorToCatalogue(super::AddAdaptorToCatalogue),
         }
     }
     ///
@@ -2006,6 +2056,15 @@ pub mod cellar_v2_2 {
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct LiftShutdown {}
     ///
+    /// Allows the owner to add an adaptor to the Cellar's adaptor catalogue
+    ///
+    /// Represents function `addAdaptorToCatalogue(address adaptor)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct AddAdaptorToCatalogue {
+        #[prost(string, tag = "1")]
+        pub adaptor: ::prost::alloc::string::String,
+    }
+    ///
     /// Allows caller to call multiple functions in a single TX.
     ///
     /// Represents function `multicall(bytes[] data)`
@@ -2033,7 +2092,7 @@ pub struct AdaptorCall {
     /// The function call data for the adaptor
     #[prost(
         oneof = "adaptor_call::CallData",
-        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16"
+        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17"
     )]
     pub call_data: ::core::option::Option<adaptor_call::CallData>,
 }
@@ -2087,6 +2146,9 @@ pub mod adaptor_call {
         /// Represents function calls to the UniswapV3Adaptor V2
         #[prost(message, tag = "16")]
         UniswapV3V2Calls(super::UniswapV3AdaptorV2Calls),
+        /// Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1
+        #[prost(message, tag = "17")]
+        AaveV2EnableAssetAsCollateralV1Calls(super::AaveV2EnableAssetAsCollateralAdaptorV1Calls),
     }
 }
 ///

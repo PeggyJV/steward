@@ -227,6 +227,11 @@ fn get_encoded_adaptor_calls(
             UniswapV3V2Calls(params) => {
                 calls.extend(adaptors::uniswap_v3::uniswap_v3_adaptor_v2_calls(params)?)
             }
+            AaveV2EnableAssetAsCollateralV1Calls(params) => calls.extend(
+                adaptors::aave_v2_collateral::aave_v2_enable_asset_as_collateral_adaptor_v1_calls(
+                    params,
+                )?,
+            ),
         };
 
         result.push(AbiAdaptorCall {

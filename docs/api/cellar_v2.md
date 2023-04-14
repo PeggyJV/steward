@@ -68,6 +68,7 @@ Represents a call to adaptor an. The cellar must be authorized to call the targe
 | vesting_simple_v2_calls | [VestingSimpleAdaptorV2Calls](#steward-v3-VestingSimpleAdaptorV2Calls) |  | Represents function calls to VestingSimpleAdaptor |
 | cellar_v1_calls | [CellarAdaptorV1Calls](#steward-v3-CellarAdaptorV1Calls) |  | Represents function calls to the CellarAdaptor |
 | uniswap_v3_v2_calls | [UniswapV3AdaptorV2Calls](#steward-v3-UniswapV3AdaptorV2Calls) |  | Represents function calls to the UniswapV3Adaptor V2 |
+| aave_v2_enable_asset_as_collateral_v1_calls | [AaveV2EnableAssetAsCollateralAdaptorV1Calls](#steward-v3-AaveV2EnableAssetAsCollateralAdaptorV1Calls) |  | Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1 |
 
 
 

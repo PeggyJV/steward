@@ -27,11 +27,11 @@ pub const ALLOWED_SETUP_ADAPTORS: [&str; 9] = [
     // VestingSimpleAdaptor v2
     "508e6ae090ea92cb90571e4269b799257cd78ca1",
     // OneInchAdaptor v1
-    "b8952ce4010cff3c74586d712a4402285a3a3afb",
+    "a99ae6a11db22ff50bb17ca24c49a2bad8ece7de",
     // SwapWithUniswapAdaptor v1
-    "d6bc6df1ed43e3101bc27a4254593a06598a3fdd",
+    "2fe64ae823afc8100bdb99eead876d1e618d4814",
     // ZeroXAdaptor v1
-    "1039a9b61dff6a3fb8dbf4e924aa749e5cfe35ef",
+    "b65b7e4776c3e5bc8863c357b3192257cef0962b",
     // AaveV3ATokenAdaptor v1
     "3184cbea47ed519fa04a23c4207cd15b7545f1a6",
     // AaveATokenAdaptor v2
@@ -40,6 +40,10 @@ pub const ALLOWED_SETUP_ADAPTORS: [&str; 9] = [
     "647d264d800a2461e594796af61a39b7735d8933",
     // CTokenAdaptor v2
     "9a384df333588428843d128120becd72434ec078",
+];
+pub const ALLOWED_CATALOGUE_ADAPTORS: [&str; 1] = [
+    // AaveV2EnableAssetAsCollateralAdaptor v1
+    "724feb5819d1717aec5adbc0974a655a498b2614",
 ];
 
 pub trait CellarAdaptorCall {}

@@ -21,6 +21,7 @@ import "adaptors/0x/zero_x.proto";
 import "adaptors/1inch/oneinch.proto";
 import "adaptors/vesting_simple.proto";
 import "adaptors/sommelier/cellar_adaptor.proto";
+import "adaptors/aave/aave_v2_enable_asset_as_collateral_adaptor.proto";
 
 /*
 * Represents a function call to a cellar that implements Cellar.sol
@@ -211,6 +212,8 @@ message CellarV2_2 {
             SetStrategistPlatformCut set_strategist_platform_cut = 10;
             // Represents function `liftShutdown()`
             LiftShutdown lift_shutdown = 11;
+            // Represents function `addAdaptorToCatalogue(address adaptor)`
+            AddAdaptorToCatalogue add_adaptor_to_catalogue = 12;
         }
     }
 
@@ -328,6 +331,15 @@ message CellarV2_2 {
     message LiftShutdown {}
 
     /*
+    * Allows the owner to add an adaptor to the Cellar's adaptor catalogue
+    *
+    * Represents function `addAdaptorToCatalogue(address adaptor)`
+    */
+    message AddAdaptorToCatalogue {
+        string adaptor = 1;
+    }
+
+    /*
     * Allows caller to call multiple functions in a single TX.
     *
     * Represents function `multicall(bytes[] data)`
@@ -373,5 +385,7 @@ message AdaptorCall {
         CellarAdaptorV1Calls cellar_v1_calls = 15;
         // Represents function calls to the UniswapV3Adaptor V2
         UniswapV3AdaptorV2Calls uniswap_v3_v2_calls = 16;
+        // Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1
+        AaveV2EnableAssetAsCollateralAdaptorV1Calls aave_v2_enable_asset_as_collateral_v1_calls = 17;
     }
 }
