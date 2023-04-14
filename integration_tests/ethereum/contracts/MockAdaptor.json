@@ -27,37 +27,6 @@
         "anonymous": false,
         "inputs": [
             {
-                "indexed": false,
-                "internalType": "contract ERC20",
-                "name": "assetOut",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "enum Cellar.Exchange",
-                "name": "exchange",
-                "type": "uint8"
-            },
-            {
-                "indexed": false,
-                "internalType": "bytes",
-                "name": "params",
-                "type": "bytes"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint64",
-                "name": "slippage",
-                "type": "uint64"
-            }
-        ],
-        "name": "ClaimCompAndSwap",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
                 "indexed": true,
                 "internalType": "address",
                 "name": "user",
@@ -111,6 +80,37 @@
         "type": "event"
     },
     {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address[]",
+                "name": "path",
+                "type": "address[]"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint24[]",
+                "name": "poolFees",
+                "type": "uint24[]"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amountOutMin",
+                "type": "uint256"
+            }
+        ],
+        "name": "SwapWithUniV3",
+        "type": "event"
+    },
+    {
         "inputs": [
             {
                 "internalType": "address",
@@ -124,34 +124,6 @@
             }
         ],
         "name": "borrowFromAave",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "contract ERC20",
-                "name": "assetOut",
-                "type": "address"
-            },
-            {
-                "internalType": "enum Cellar.Exchange",
-                "name": "exchange",
-                "type": "uint8"
-            },
-            {
-                "internalType": "bytes",
-                "name": "params",
-                "type": "bytes"
-            },
-            {
-                "internalType": "uint64",
-                "name": "slippage",
-                "type": "uint64"
-            }
-        ],
-        "name": "claimCompAndSwap",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -211,6 +183,34 @@
             }
         ],
         "name": "swapAndRepay",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address[]",
+                "name": "path",
+                "type": "address[]"
+            },
+            {
+                "internalType": "uint24[]",
+                "name": "poolFees",
+                "type": "uint24[]"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amountOutMin",
+                "type": "uint256"
+            }
+        ],
+        "name": "swapWithUniV3",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
