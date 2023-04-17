@@ -48,8 +48,8 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         request: Request<ScheduleRequest>,
     ) -> Result<Response<ScheduleResponse>, Status> {
         let request = request.get_ref().to_owned();
-        let cellar_id = request.cellar_id.clone();
-        if let Err(err) = cellars::validate_cellar_id(&cellar_id).await {
+        let (cellar_id, chain_id) = (request.cellar_id.clone(), request.chain_id);
+        if let Err(err) = cellars::validate_cellar_id(&cellar_id, chain_id).await {
             let message = format!("cellar ID validation failed: {}", err);
             match err.kind() {
                 CacheError => return Err(Status::new(Code::Internal, message)),
@@ -60,7 +60,6 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         }
 
         // Build and send cork
-        let cellar_id = request.cellar_id.clone();
         let height = request.block_height;
         let encoded_call = match get_encoded_call(request) {
             Ok(c) => c,
@@ -71,16 +70,23 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         };
         debug!("cork: {:?}", encoded_call);
 
-        if let Err(err) = schedule_cork(&cellar_id, encoded_call.clone(), height).await {
-            error!("failed to schedule cork for cellar {}: {}", cellar_id, err);
+
+
+        if let Err(err) = match chain_id {
+            // Ethereum
+            1 => schedule_cork(&cellar_id, encoded_call.clone(), height).await,
+            // Other chains
+            _ => schedule_axelar_cork(&cellar_id, chain_id, encoded_call.clone(), height).await,
+        } {
+            error!("failed to schedule cork for cellar {} on chain {}: {}", cellar_id, chain_id, err);
             return Err(Status::new(
                 Code::Internal,
                 format!("failed to send cork to sommelier: {}", err),
             ));
         }
         info!(
-            "scheduled cork for cellar {} at height {}",
-            cellar_id, height
+            "scheduled cork for cellar {} on chain {} at height {}",
+            cellar_id, chain_id, height
         );
 
         Ok(Response::new(ScheduleResponse {
@@ -125,8 +131,49 @@ fn get_encoded_call(request: ScheduleRequest) -> Result<Vec<u8>, Error> {
     }
 }
 
+pub async fn handle_gravity_cork(
+    contract: &str,
+    encoded_call: Vec<u8>,
+    height: u64,
+) -> Result<TxResponse, Error> {
+    schedule_cork(contract, encoded_call, height).await
+}
+
 pub async fn schedule_cork(
     contract: &str,
+    encoded_call: Vec<u8>,
+    height: u64,
+) -> Result<TxResponse, Error> {
+    debug!("establishing grpc connection");
+    let config = APP.config();
+    let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX).unwrap();
+
+    debug!("getting cosmos fee");
+    let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
+    let fee = Coin {
+        amount: (cosmos_gas_price.0 as u64).into(),
+        denom: cosmos_gas_price.1,
+    };
+    let cork = Cork {
+        encoded_contract_call: encoded_call,
+        target_contract_address: contract.to_string(),
+    };
+    somm_send::schedule_cork(
+        &contact,
+        cork,
+        config::DELEGATE_ADDRESS.to_string(),
+        &config::DELEGATE_KEY,
+        fee,
+        height,
+    )
+    .await
+    .map_err(|e| e.into())
+}
+
+// TODO: Update sommelier proto to include AxelarCork and change this method.
+pub async fn schedule_axelar_cork(
+    contract: &str,
+    chain_id: u64,
     encoded_call: Vec<u8>,
     height: u64,
 ) -> Result<TxResponse, Error> {

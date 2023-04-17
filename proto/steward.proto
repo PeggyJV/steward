@@ -36,6 +36,8 @@ message ScheduleRequest {
         CellarV1 cellar_v1 = 4;
         CellarV2 cellar_v2 = 5;
     }
+    // The ID of the EVM chain where the cellar is deployed
+    uint64 chain_id = 6;
 }
 
 message ScheduleResponse {

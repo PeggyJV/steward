@@ -32,7 +32,7 @@ pub struct InitiateShutdownCmd {
 impl Runnable for InitiateShutdownCmd {
     fn run(&self) {
         abscissa_tokio::run_with_actix(&APP, async {
-            cellars::validate_cellar_id(&self.cellar_id)
+            cellars::validate_cellar_id(&self.cellar_id, 1)
                 .await
                 .unwrap_or_else(|err| {
                     status_err!("cellar ID validation error:: {}", err);

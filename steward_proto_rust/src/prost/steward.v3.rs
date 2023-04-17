@@ -1497,6 +1497,9 @@ pub struct ScheduleRequest {
     /// The block height at which to schedule the contract call
     #[prost(uint64, tag = "2")]
     pub block_height: u64,
+    /// The ID of the EVM chain where the cellar is deployed
+    #[prost(uint64, tag = "6")]
+    pub chain_id: u64,
     /// The data from which the desired contract function will be encoded
     #[prost(oneof = "schedule_request::CallData", tags = "3, 4, 5")]
     pub call_data: ::core::option::Option<schedule_request::CallData>,

@@ -20,6 +20,10 @@ pub struct SetStrategistPlatformCutCmd {
     #[clap(short, long)]
     cellar_id: String,
 
+    /// ID of the EVM chain where the cellar is deployed.
+    #[clap(long)]
+    chain_id: u64,
+
     /// Block height to schedule cork.
     #[clap(short, long)]
     block_height: u64,
@@ -32,7 +36,7 @@ pub struct SetStrategistPlatformCutCmd {
 impl Runnable for SetStrategistPlatformCutCmd {
     fn run(&self) {
         abscissa_tokio::run_with_actix(&APP, async {
-            cellars::validate_cellar_id(&self.cellar_id)
+            cellars::validate_cellar_id(&self.cellar_id, self.chain_id)
                 .await
                 .unwrap_or_else(|err| {
                     status_err!("invalid cellar ID: {}", err);

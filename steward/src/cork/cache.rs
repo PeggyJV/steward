@@ -8,18 +8,19 @@ use tokio::task::JoinHandle;
 
 use crate::{cork::client::CorkQueryClient, error::Error, prelude::APP};
 
-pub type ApprovedCellarsCache = RwLock<HashSet<String>>;
+pub type ApprovedCellarsCache = RwLock<HashSet<(String, u64)>>;
 
 lazy_static! {
     static ref APPROVED_CELLARS: ApprovedCellarsCache = ApprovedCellarsCache::default();
 }
 
 /// Indicates whether an address is in the approved cellars cache
-pub fn is_approved(cellar_id: &str) -> bool {
+pub fn is_approved(cellar_id: &str, chain_id: u64) -> bool {
     let cellar_id = cellar_id.trim().to_lowercase();
-    APPROVED_CELLARS.read().unwrap().contains(&cellar_id)
+    APPROVED_CELLARS.read().unwrap().contains(&(cellar_id, chain_id))
 }
 
+// TODO: Cover other chain IDs
 /// Overwrites the cache with the latest queried cellar IDs
 pub async fn refresh_approved_cellars() -> Result<(), Error> {
     debug!("refreshing approved cellars cache");
@@ -31,7 +32,7 @@ pub async fn refresh_approved_cellars() -> Result<(), Error> {
                 .into_inner()
                 .cellar_ids
                 .into_iter()
-                .map(|id| id.trim().to_lowercase())
+                .map(|id| (id.trim().to_lowercase(),1))
                 .collect();
         }
         Err(err) => return Err(err.into()),
