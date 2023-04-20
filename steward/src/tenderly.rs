@@ -1,5 +1,6 @@
 use abscissa_core::tracing::log::error;
 use abscissa_core::Application;
+use reqwest::Response;
 use serde::Deserialize;
 use serde::Serialize;
 use tonic::{Code, Status};
@@ -7,7 +8,6 @@ use tonic::{Code, Status};
 use crate::{config::StewardConfig, prelude::APP};
 
 const TENDERLY_BASE_URL: &str = "https://api.tenderly.co/api/v1";
-const GRAVITY_ADDRESS: &str = "0x69592e6f9d21989a043646fe8225da2600e5a0f7";
 
 pub fn validate_tenderly_config(config: &StewardConfig) {
     if config.simulate.tenderly_access_key.is_empty() {
@@ -32,11 +32,11 @@ pub struct SimulateRequest {
     pub simulation_type: String,
 }
 
-pub async fn simulate(cellar_id: String, encoded_call: String) -> Result<String, Status> {
+pub async fn simulate(cellar_id: String, encoded_call: String) -> Result<Response, Status> {
     let config = APP.config();
     let body = serde_json::to_string(&SimulateRequest {
         network_id: config.simulate.network_id.clone(),
-        from: GRAVITY_ADDRESS.to_string(),
+        from: config.simulate.gravity_address.clone(),
         to: cellar_id,
         input: encoded_call,
         save: true,
@@ -61,14 +61,8 @@ pub async fn simulate(cellar_id: String, encoded_call: String) -> Result<String,
         }
     };
 
-    client
-        .execute(request)
-        .await
-        .unwrap()
-        .text()
-        .await
-        .map_err(|e| {
-            error!("simulate error: {}", e);
-            Status::new(Code::Unknown, format!("simulate error: {e}"))
-        })
+    client.execute(request).await.map_err(|e| {
+        error!("simulate error: {}", e);
+        Status::new(Code::Unknown, format!("simulate error: {e}"))
+    })
 }

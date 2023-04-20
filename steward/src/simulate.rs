@@ -1,17 +1,8 @@
 use abscissa_core::tracing::log::{info, warn};
-use steward_proto::steward::{
-    self,
-    schedule_request::CallData::{AaveV2Stablecoin, CellarV1, CellarV2},
-    ScheduleRequest, SimulateRequest, SimulateResponse,
-};
+use steward_proto::steward::{self, ScheduleRequest, SimulateRequest, SimulateResponse};
 use tonic::{async_trait, Code, Request, Response, Status};
 
-use crate::{
-    cellars::{aave_v2_stablecoin, cellar_v1, cellar_v2},
-    error::{Error, ErrorKind},
-    tenderly,
-    utils::bytes_to_hex_str,
-};
+use crate::{cork::get_encoded_call, error::Error, tenderly, utils::bytes_to_hex_str};
 
 pub struct SimulateHandler;
 
@@ -40,47 +31,27 @@ impl steward::simulate_contract_call_server::SimulateContractCall for SimulateHa
             }
         };
         info!("encoded call: {encoded_call}");
-        let response = if request.encode_only {
+        let response_body = if request.encode_only {
             String::default()
         } else {
             info!("simulating call to {cellar_id} with tenderly");
-            tenderly::simulate(cellar_id, encoded_call.clone()).await?
+            let response = tenderly::simulate(cellar_id, encoded_call.clone()).await?;
+            info!("response object: {response:?}");
+            response.text().await.map_err(|e| {
+                Status::new(
+                    Code::Internal,
+                    format!("failed to deserialize response body: {e}"),
+                )
+            })?
         };
 
         Ok(Response::new(SimulateResponse {
             encoded_call,
-            response_body: response,
+            response_body,
         }))
     }
 }
 
 pub fn get_string_encoded_call(request: ScheduleRequest) -> Result<String, Error> {
-    if request.call_data.is_none() {
-        return Err(ErrorKind::Http.context("empty contract call data").into());
-    }
-
-    match request.call_data.unwrap() {
-        AaveV2Stablecoin(call) => {
-            if call.function.is_none() {
-                return Err(ErrorKind::Http.context("empty function data").into());
-            }
-
-            aave_v2_stablecoin::get_encoded_call(call.function.unwrap(), request.cellar_id)
-        }
-        CellarV1(call) => {
-            if call.function.is_none() {
-                return Err(ErrorKind::Http.context("empty function data").into());
-            }
-
-            cellar_v1::get_encoded_call(call.function.unwrap(), request.cellar_id)
-        }
-        CellarV2(call) => {
-            if call.function.is_none() {
-                return Err(ErrorKind::Http.context("empty function data").into());
-            }
-
-            cellar_v2::get_encoded_call(call.function.unwrap(), request.cellar_id)
-        }
-    }
-    .map(|b| bytes_to_hex_str(&b))
+    get_encoded_call(request).map(|b| bytes_to_hex_str(&b))
 }

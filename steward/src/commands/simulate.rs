@@ -4,14 +4,12 @@
 /// accessors along with logging macros. Customize as you see fit.
 use crate::{
     application::APP,
-    config::StewardConfig,
     prelude::*,
     server::{self, with_tls},
     simulate::SimulateHandler,
     tenderly::validate_tenderly_config,
 };
-use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
-use std::result::Result;
+use abscissa_core::{clap::Parser, Command, Runnable};
 use steward_proto::steward::simulate_contract_call_server::SimulateContractCallServer;
 
 /// Runs the Simulate server which uses Tenderly to simulate contract calls
@@ -74,14 +72,5 @@ impl Runnable for SimulateCmd {
             status_err!("executor exited with error: {}", e);
             std::process::exit(1)
         });
-    }
-}
-
-impl config::Override<StewardConfig> for SimulateCmd {
-    // Process the given command line options, overriding settings from
-    // a configuration file using explicit flags taken from command-line
-    // arguments.
-    fn override_config(&self, config: StewardConfig) -> Result<StewardConfig, FrameworkError> {
-        Ok(config)
     }
 }

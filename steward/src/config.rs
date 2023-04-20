@@ -257,6 +257,7 @@ pub struct SimulateSection {
     pub tenderly_access_key: String,
     pub tenderly_project_name: String,
     pub tenderly_username: String,
+    pub gravity_address: String,
 }
 
 impl Default for SimulateSection {
@@ -267,6 +268,7 @@ impl Default for SimulateSection {
             tenderly_access_key: "".to_string(),
             tenderly_project_name: "".to_string(),
             tenderly_username: "".to_string(),
+            gravity_address: "0x69592e6f9d21989a043646fe8225da2600e5a0f7".to_string(),
         }
     }
 }
