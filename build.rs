@@ -27,11 +27,26 @@ fn generate_contract_abis() {
         ("AaveV2StablecoinCellar", "aave_v2_stablecoin"),
         ("CellarV1", "cellar_v1"),
         ("CellarV2", "cellar_v2"),
-        ("UniswapV3Adaptor", "uniswap_v3"),
-        ("AaveATokenAdaptor", "aave_a_token"),
-        ("AaveDebtTokenAdaptor", "aave_debt_token"),
-        ("CompoundCTokenAdaptor", "compound_c_token"),
-        ("VestingSimpleAdaptor", "vesting_simple"),
+        ("CellarV2_2", "cellar_v2_2"),
+        ("UniswapV3AdaptorV1", "uniswap_v3_adaptor_v1"),
+        ("UniswapV3AdaptorV2", "uniswap_v3_adaptor_v2"),
+        ("AaveATokenAdaptorV1", "aave_a_token_adaptor_v1"),
+        ("AaveDebtTokenAdaptorV1", "aave_debt_token_adaptor_v1"),
+        ("AaveATokenAdaptorV2", "aave_a_token_adaptor_v2"),
+        ("AaveDebtTokenAdaptorV2", "aave_debt_token_adaptor_v2"),
+        ("AaveV3ATokenAdaptorV1", "aave_v3_a_token_adaptor_v1"),
+        ("AaveV3DebtTokenAdaptorV1", "aave_v3_debt_token_adaptor_v1"),
+        ("CellarAdaptorV1", "cellar_adaptor_v1"),
+        ("CompoundCTokenAdaptorV2", "compound_c_token_adaptor_v2"),
+        ("OneInchAdaptorV1", "oneinch_adaptor_v1"),
+        ("ZeroXAdaptorV1", "zero_x_adaptor_v1"),
+        ("SwapWithUniswapAdaptorV1", "swap_with_uniswap_adaptor_v1"),
+        ("FeesAndReservesAdaptorV1", "fees_and_reserves_adaptor_v1"),
+        ("VestingSimpleAdaptorV2", "vesting_simple_adaptor_v2"),
+        (
+            "AaveV2EnableAssetAsCollateralAdaptorV1",
+            "aave_v2_enable_asset_as_collateral_adaptor_v1",
+        ),
     ];
 
     contracts.iter().for_each(|n| {
@@ -148,13 +163,21 @@ fn copy_generated_files(from_dir: &Path, to_dir: &Path) {
 }
 
 fn generate_go_protos() {
-    Command::new("scripts/build_go_protos.sh")
+    let output = Command::new("scripts/build_go_protos.sh")
         .output()
         .expect("failed to generate Go protos");
+
+    if !output.status.success() {
+        panic!("error generating Go protos");
+    }
 }
 
 fn generate_api_docs() {
-    Command::new("scripts/build_api_docs.sh")
+    let output = Command::new("scripts/build_api_docs.sh")
         .output()
         .expect("failed to build API docs");
+
+    if !output.status.success() {
+        panic!("error building API docs")
+    }
 }

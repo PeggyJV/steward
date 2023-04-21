@@ -82,9 +82,6 @@ jobs:
           key: ${{ runner.os }}-multi-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-multi-buildx
-      # To avoid an image push, which requires a PR author to have write permissions
-      # to our image repo, we create a local image artifact that can be downloaded by other
-      # jobs in the workflow.
       - name: build-and-push
         uses: docker/build-push-action@v2
         with:

@@ -4,8 +4,7 @@ VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:main"
 ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:latest"
 
 protos:
-	scripts/build_go_protos.sh
-	scripts/build_api_docs.sh
+	@cargo check --locked
 
 e2e_build_images: e2e_clean_slate
 	@docker pull $(VALIDATOR_IMAGE)
