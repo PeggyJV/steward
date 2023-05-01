@@ -4,6 +4,8 @@
 ## Table of Contents
 
 - [steward.proto](#steward-proto)
+    - [StatusRequest](#steward-v3-StatusRequest)
+    - [StatusResponse](#steward-v3-StatusResponse)
     - [SubmitRequest](#steward-v3-SubmitRequest)
     - [SubmitResponse](#steward-v3-SubmitResponse)
   
@@ -17,6 +19,31 @@
 <p align="right"><a href="#top">Top</a></p>
 
 ## steward.proto
+
+
+
+<a name="steward-v3-StatusRequest"></a>
+
+### StatusRequest
+
+
+
+
+
+
+
+<a name="steward-v3-StatusResponse"></a>
+
+### StatusResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| version | [string](#string) |  |  |
+
+
+
 
 
 
@@ -63,6 +90,7 @@ Service for handling Cellar contract calls
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
 | Submit | [SubmitRequest](#steward-v3-SubmitRequest) | [SubmitResponse](#steward-v3-SubmitResponse) | Handles simple contract call submission |
+| Status | [StatusRequest](#steward-v3-StatusRequest) | [StatusResponse](#steward-v3-StatusResponse) |  |
 
  
 

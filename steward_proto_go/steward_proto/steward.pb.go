@@ -184,6 +184,91 @@ func (*SubmitResponse) Descriptor() ([]byte, []int) {
 	return file_steward_proto_rawDescGZIP(), []int{1}
 }
 
+type StatusRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *StatusRequest) Reset() {
+	*x = StatusRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_steward_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StatusRequest) ProtoMessage() {}
+
+func (x *StatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_steward_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StatusRequest.ProtoReflect.Descriptor instead.
+func (*StatusRequest) Descriptor() ([]byte, []int) {
+	return file_steward_proto_rawDescGZIP(), []int{2}
+}
+
+type StatusResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Version string `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
+}
+
+func (x *StatusResponse) Reset() {
+	*x = StatusResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_steward_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StatusResponse) ProtoMessage() {}
+
+func (x *StatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_steward_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StatusResponse.ProtoReflect.Descriptor instead.
+func (*StatusResponse) Descriptor() ([]byte, []int) {
+	return file_steward_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *StatusResponse) GetVersion() string {
+	if x != nil {
+		return x.Version
+	}
+	return ""
+}
+
 var File_steward_proto protoreflect.FileDescriptor
 
 var file_steward_proto_rawDesc = []byte{
@@ -212,14 +297,22 @@ var file_steward_proto_rawDesc = []byte{
 	0x76, 0x33, 0x2e, 0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x32, 0x48, 0x00, 0x52,
 	0x0c, 0x63, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x64, 0x6f, 0x74, 0x32, 0x42, 0x0b, 0x0a,
 	0x09, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 0x64, 0x61, 0x74, 0x61, 0x22, 0x10, 0x0a, 0x0e, 0x53, 0x75,
-	0x62, 0x6d, 0x69, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0x51, 0x0a, 0x0c,
-	0x43, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x43, 0x61, 0x6c, 0x6c, 0x12, 0x41, 0x0a, 0x06,
-	0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x12, 0x19, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64,
-	0x2e, 0x76, 0x33, 0x2e, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x1a, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x53,
-	0x75, 0x62, 0x6d, 0x69, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42,
-	0x10, 0x5a, 0x0e, 0x2f, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x62, 0x6d, 0x69, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x0f, 0x0a, 0x0d,
+	0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x2a, 0x0a,
+	0x0e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x18, 0x0a, 0x07, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x32, 0x94, 0x01, 0x0a, 0x0c, 0x43, 0x6f,
+	0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x43, 0x61, 0x6c, 0x6c, 0x12, 0x41, 0x0a, 0x06, 0x53, 0x75,
+	0x62, 0x6d, 0x69, 0x74, 0x12, 0x19, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76,
+	0x33, 0x2e, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x1a, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x53, 0x75, 0x62,
+	0x6d, 0x69, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x41, 0x0a,
+	0x06, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x19, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x2e, 0x76, 0x33, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e,
+	0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
+	0x42, 0x10, 0x5a, 0x0e, 0x2f, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -234,24 +327,28 @@ func file_steward_proto_rawDescGZIP() []byte {
 	return file_steward_proto_rawDescData
 }
 
-var file_steward_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_steward_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_steward_proto_goTypes = []interface{}{
 	(*SubmitRequest)(nil),    // 0: steward.v3.SubmitRequest
 	(*SubmitResponse)(nil),   // 1: steward.v3.SubmitResponse
-	(*AaveV2Stablecoin)(nil), // 2: steward.v3.AaveV2Stablecoin
-	(*CellarV1)(nil),         // 3: steward.v3.CellarV1
-	(*CellarV2)(nil),         // 4: steward.v3.CellarV2
-	(*CellarV2_2)(nil),       // 5: steward.v3.CellarV2_2
+	(*StatusRequest)(nil),    // 2: steward.v3.StatusRequest
+	(*StatusResponse)(nil),   // 3: steward.v3.StatusResponse
+	(*AaveV2Stablecoin)(nil), // 4: steward.v3.AaveV2Stablecoin
+	(*CellarV1)(nil),         // 5: steward.v3.CellarV1
+	(*CellarV2)(nil),         // 6: steward.v3.CellarV2
+	(*CellarV2_2)(nil),       // 7: steward.v3.CellarV2_2
 }
 var file_steward_proto_depIdxs = []int32{
-	2, // 0: steward.v3.SubmitRequest.aave_v2_stablecoin:type_name -> steward.v3.AaveV2Stablecoin
-	3, // 1: steward.v3.SubmitRequest.cellar_v1:type_name -> steward.v3.CellarV1
-	4, // 2: steward.v3.SubmitRequest.cellar_v2:type_name -> steward.v3.CellarV2
-	5, // 3: steward.v3.SubmitRequest.cellar_v2dot2:type_name -> steward.v3.CellarV2_2
+	4, // 0: steward.v3.SubmitRequest.aave_v2_stablecoin:type_name -> steward.v3.AaveV2Stablecoin
+	5, // 1: steward.v3.SubmitRequest.cellar_v1:type_name -> steward.v3.CellarV1
+	6, // 2: steward.v3.SubmitRequest.cellar_v2:type_name -> steward.v3.CellarV2
+	7, // 3: steward.v3.SubmitRequest.cellar_v2dot2:type_name -> steward.v3.CellarV2_2
 	0, // 4: steward.v3.ContractCall.Submit:input_type -> steward.v3.SubmitRequest
-	1, // 5: steward.v3.ContractCall.Submit:output_type -> steward.v3.SubmitResponse
-	5, // [5:6] is the sub-list for method output_type
-	4, // [4:5] is the sub-list for method input_type
+	2, // 5: steward.v3.ContractCall.Status:input_type -> steward.v3.StatusRequest
+	1, // 6: steward.v3.ContractCall.Submit:output_type -> steward.v3.SubmitResponse
+	3, // 7: steward.v3.ContractCall.Status:output_type -> steward.v3.StatusResponse
+	6, // [6:8] is the sub-list for method output_type
+	4, // [4:6] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name
 	4, // [4:4] is the sub-list for extension extendee
 	0, // [0:4] is the sub-list for field type_name
@@ -290,6 +387,30 @@ func file_steward_proto_init() {
 				return nil
 			}
 		}
+		file_steward_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StatusRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_steward_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StatusResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_steward_proto_msgTypes[0].OneofWrappers = []interface{}{
 		(*SubmitRequest_AaveV2Stablecoin)(nil),
@@ -303,7 +424,7 @@ func file_steward_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_steward_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

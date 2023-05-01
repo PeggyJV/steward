@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type ContractCallClient interface {
 	// Handles simple contract call submission
 	Submit(ctx context.Context, in *SubmitRequest, opts ...grpc.CallOption) (*SubmitResponse, error)
+	Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 }
 
 type contractCallClient struct {
@@ -43,12 +44,22 @@ func (c *contractCallClient) Submit(ctx context.Context, in *SubmitRequest, opts
 	return out, nil
 }
 
+func (c *contractCallClient) Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, "/steward.v3.ContractCall/Status", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ContractCallServer is the server API for ContractCall service.
 // All implementations must embed UnimplementedContractCallServer
 // for forward compatibility
 type ContractCallServer interface {
 	// Handles simple contract call submission
 	Submit(context.Context, *SubmitRequest) (*SubmitResponse, error)
+	Status(context.Context, *StatusRequest) (*StatusResponse, error)
 	mustEmbedUnimplementedContractCallServer()
 }
 
@@ -58,6 +69,9 @@ type UnimplementedContractCallServer struct {
 
 func (UnimplementedContractCallServer) Submit(context.Context, *SubmitRequest) (*SubmitResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Submit not implemented")
+}
+func (UnimplementedContractCallServer) Status(context.Context, *StatusRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Status not implemented")
 }
 func (UnimplementedContractCallServer) mustEmbedUnimplementedContractCallServer() {}
 
@@ -90,6 +104,24 @@ func _ContractCall_Submit_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ContractCall_Status_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContractCallServer).Status(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/steward.v3.ContractCall/Status",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContractCallServer).Status(ctx, req.(*StatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ContractCall_ServiceDesc is the grpc.ServiceDesc for ContractCall service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -100,6 +132,10 @@ var ContractCall_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Submit",
 			Handler:    _ContractCall_Submit_Handler,
+		},
+		{
+			MethodName: "Status",
+			Handler:    _ContractCall_Status_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -11,16 +11,21 @@ use abscissa_core::{
 };
 use deep_space::{Coin, Contact};
 use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
+use lazy_static::lazy_static;
 use somm_proto::cork::{query_client::QueryClient as CorkQueryClient, Cork, QueryCellarIDsRequest};
 use std::time::Duration;
 use steward_proto::{
     self,
-    steward::{self, submit_request::CallData::*, SubmitRequest, SubmitResponse},
+    steward::{self, submit_request::CallData::*, SubmitRequest, SubmitResponse, StatusRequest, StatusResponse},
 };
 use tonic::{self, async_trait, Code, Request, Response, Status};
 
 const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
 const CHAIN_PREFIX: &str = "somm";
+
+lazy_static! {
+    static ref STEWARD_VERSION: &'static str = env!("CARGO_PKG_VERSION");
+}
 
 pub struct CorkHandler;
 
@@ -87,6 +92,12 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         info!("submitted cork for {}", cellar_id);
 
         Ok(Response::new(SubmitResponse {}))
+    }
+
+    async fn status(&self, _: Request<StatusRequest>) -> Result<Response<StatusResponse>, Status> {
+        Ok(Response::new(StatusResponse {
+            version: STEWARD_VERSION.to_string(),
+        }))
     }
 }
 // Because of Rusts handling of enums, we have no easy way to log what cellar type and function are

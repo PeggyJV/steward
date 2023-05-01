@@ -19,6 +19,7 @@ import "cellar_v2.proto";
 service ContractCall {
     // Handles simple contract call submission
     rpc Submit(SubmitRequest) returns (SubmitResponse) {}
+    rpc Status(StatusRequest) returns (StatusResponse) {}
 }
 
 /*
@@ -37,3 +38,9 @@ message SubmitRequest {
 }
 
 message SubmitResponse {}
+
+message StatusRequest {}
+
+message StatusResponse {
+    string version = 1;
+}
