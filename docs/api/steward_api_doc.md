@@ -112,8 +112,13 @@
 - [steward.proto](#steward-proto)
     - [ScheduleRequest](#steward-v3-ScheduleRequest)
     - [ScheduleResponse](#steward-v3-ScheduleResponse)
+    - [SimulateRequest](#steward-v3-SimulateRequest)
+    - [SimulateResponse](#steward-v3-SimulateResponse)
+    - [StatusRequest](#steward-v3-StatusRequest)
+    - [StatusResponse](#steward-v3-StatusResponse)
   
     - [ContractCallService](#steward-v3-ContractCallService)
+    - [SimulateContractCall](#steward-v3-SimulateContractCall)
   
 - [uniswap_v3.proto](#uniswap_v3-proto)
     - [UniswapV3Adaptor](#steward-v3-UniswapV3Adaptor)
@@ -121,6 +126,9 @@
     - [UniswapV3Adaptor.ClosePosition](#steward-v3-UniswapV3Adaptor-ClosePosition)
     - [UniswapV3Adaptor.CollectFees](#steward-v3-UniswapV3Adaptor-CollectFees)
     - [UniswapV3Adaptor.OpenPosition](#steward-v3-UniswapV3Adaptor-OpenPosition)
+    - [UniswapV3Adaptor.PurgeAllZeroLiquidityPositions](#steward-v3-UniswapV3Adaptor-PurgeAllZeroLiquidityPositions)
+    - [UniswapV3Adaptor.PurgeSinglePosition](#steward-v3-UniswapV3Adaptor-PurgeSinglePosition)
+    - [UniswapV3Adaptor.RemoveUnownedPositionFromTracker](#steward-v3-UniswapV3Adaptor-RemoveUnownedPositionFromTracker)
     - [UniswapV3Adaptor.TakeFromPosition](#steward-v3-UniswapV3Adaptor-TakeFromPosition)
     - [UniswapV3AdaptorCalls](#steward-v3-UniswapV3AdaptorCalls)
   
@@ -1730,7 +1738,7 @@ Represents a governance-executed cellar function call. Used for Scheduled Cork P
 <a name="steward-v3-ScheduleRequest"></a>
 
 ### ScheduleRequest
-Represents a single, scheduled function call to a particular Cellar
+Represents a scheduled function call to a particular Cellar
 
 
 | Field | Type | Label | Description |
@@ -1760,6 +1768,63 @@ Represents a single, scheduled function call to a particular Cellar
 
 
 
+
+<a name="steward-v3-SimulateRequest"></a>
+
+### SimulateRequest
+Represents a simulated function call to a particular Cellar
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| request | [ScheduleRequest](#steward-v3-ScheduleRequest) |  |  |
+| encode_only | [bool](#bool) |  | Whether to simply encode and return the contract call data, skipping the Tenderly simulation |
+
+
+
+
+
+
+<a name="steward-v3-SimulateResponse"></a>
+
+### SimulateResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| encoded_call | [string](#string) |  | The encoded contract call |
+| response_body | [string](#string) |  | The response body from the Tenderly simulation |
+
+
+
+
+
+
+<a name="steward-v3-StatusRequest"></a>
+
+### StatusRequest
+Represents a request for Steward&#39;s current status
+
+
+
+
+
+
+<a name="steward-v3-StatusResponse"></a>
+
+### StatusResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| version | [string](#string) |  |  |
+
+
+
+
+
  
 
  
@@ -1775,6 +1840,17 @@ Service for handling Cellar contract calls
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
 | Schedule | [ScheduleRequest](#steward-v3-ScheduleRequest) | [ScheduleResponse](#steward-v3-ScheduleResponse) | Handles scheduled contract call submission |
+| Status | [StatusRequest](#steward-v3-StatusRequest) | [StatusResponse](#steward-v3-StatusResponse) |  |
+
+
+<a name="steward-v3-SimulateContractCall"></a>
+
+### SimulateContractCall
+Service for simulating contract calls encoded by Steward using Tenderly
+
+| Method Name | Request Type | Response Type | Description |
+| ----------- | ------------ | ------------- | ------------|
+| Simulate | [SimulateRequest](#steward-v3-SimulateRequest) | [SimulateResponse](#steward-v3-SimulateResponse) | Handles simulated contract call submission |
 
  
 
@@ -1803,6 +1879,9 @@ Represents call data for the Uniswap V3 adaptor
 | add_to_position | [UniswapV3Adaptor.AddToPosition](#steward-v3-UniswapV3Adaptor-AddToPosition) |  | Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)` |
 | take_from_position | [UniswapV3Adaptor.TakeFromPosition](#steward-v3-UniswapV3Adaptor-TakeFromPosition) |  | Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)` |
 | collect_fees | [UniswapV3Adaptor.CollectFees](#steward-v3-UniswapV3Adaptor-CollectFees) |  | Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)` |
+| purge_all_zero_liquidity_positions | [UniswapV3Adaptor.PurgeAllZeroLiquidityPositions](#steward-v3-UniswapV3Adaptor-PurgeAllZeroLiquidityPositions) |  | Represents function `purgeAllZeroLiquidityPositions(ERC20 token0, ERC20 token1)` |
+| purge_single_position | [UniswapV3Adaptor.PurgeSinglePosition](#steward-v3-UniswapV3Adaptor-PurgeSinglePosition) |  | Represents function `purgeSinglePosition(uint256 tokenId)` |
+| remove_unowned_position_from_tracker | [UniswapV3Adaptor.RemoveUnownedPositionFromTracker](#steward-v3-UniswapV3Adaptor-RemoveUnownedPositionFromTracker) |  | Represents function `removeUnOwnedPositionFromTracker(uint256 tokenId, ERC20 token0, ERC20 token1)` |
 
 
 
@@ -1814,12 +1893,12 @@ Represents call data for the Uniswap V3 adaptor
 ### UniswapV3Adaptor.AddToPosition
 Allows strategist to add to existing Uniswap V3 positions.
 
-Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
+Represents function `addToPosition(uint256 tokenId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| position_id | [string](#string) |  |  |
+| token_id | [string](#string) |  |  |
 | amount_0 | [string](#string) |  |  |
 | amount_1 | [string](#string) |  |  |
 | min_0 | [string](#string) |  |  |
@@ -1835,12 +1914,12 @@ Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 
 ### UniswapV3Adaptor.ClosePosition
 Allows strategist to close Uniswap V3 positions.
 
-Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)`
+Represents function `closePosition(uint256 tokenId, uint256 min0, uint256 min1)`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| position_id | [string](#string) |  |  |
+| token_id | [string](#string) |  |  |
 | min_0 | [string](#string) |  |  |
 | min_1 | [string](#string) |  |  |
 
@@ -1854,12 +1933,12 @@ Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min
 ### UniswapV3Adaptor.CollectFees
 Allows strategist to collect fees from existing Uniswap V3 positions.
 
-Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
+Represents function `collectFees(uint256 tokenId, uint128 amount0, uint128 amount1)`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| position_id | [string](#string) |  |  |
+| token_id | [string](#string) |  |  |
 | amount_0 | [string](#string) |  |  |
 | amount_1 | [string](#string) |  |  |
 
@@ -1893,21 +1972,75 @@ Represents function openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uin
 
 
 
+<a name="steward-v3-UniswapV3Adaptor-PurgeAllZeroLiquidityPositions"></a>
+
+### UniswapV3Adaptor.PurgeAllZeroLiquidityPositions
+Allows strategist to purge zero liquidity LP positions from tracker.
+
+Represents function `purgeAllZeroLiquidityPositions(ERC20 token0, ERC20 token1)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token_0 | [string](#string) |  |  |
+| token_1 | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v3-UniswapV3Adaptor-PurgeSinglePosition"></a>
+
+### UniswapV3Adaptor.PurgeSinglePosition
+Allows strategist to purge a single zero liquidity LP position from tracker.
+
+Represents function `purgeSinglePosition(uint256 tokenId)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token_id | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v3-UniswapV3Adaptor-RemoveUnownedPositionFromTracker"></a>
+
+### UniswapV3Adaptor.RemoveUnownedPositionFromTracker
+Allows strategist to remove tracked positions that are not owned by the cellar.
+
+Represents function `removeUnOwnedPositionFromTracker(uint256 tokenId, ERC20 token0, ERC20 token1)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token_id | [string](#string) |  |  |
+| token_0 | [string](#string) |  |  |
+| token_1 | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="steward-v3-UniswapV3Adaptor-TakeFromPosition"></a>
 
 ### UniswapV3Adaptor.TakeFromPosition
 Allows strategist to take from existing Uniswap V3 positions.
 
-Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
+Represents function `takeFromPosition(uint256 tokenId, uint128 liquidity, uint256 min0, uint256 min1, bool takeFees)`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| position_id | [string](#string) |  |  |
+| token_id | [string](#string) |  |  |
 | liquidity | [string](#string) |  |  |
 | min_0 | [string](#string) |  |  |
 | min_1 | [string](#string) |  |  |
-| collect_fees | [bool](#bool) |  |  |
+| take_fees | [bool](#bool) |  |  |
 
 
 

@@ -39,23 +39,23 @@ pub mod abi {
 
     pub mod adaptors {
         pub mod aave_a_token_adaptor {
-            include!("gen/abi/aave_a_token.rs");
+            include!("gen/abi/aave_a_token_adaptor.rs");
         }
 
         pub mod aave_debt_token_adaptor {
-            include!("gen/abi/aave_debt_token.rs");
+            include!("gen/abi/aave_debt_token_adaptor.rs");
         }
 
         pub mod compound_c_token_adaptor {
-            include!("gen/abi/compound_c_token.rs");
+            include!("gen/abi/compound_c_token_adaptor.rs");
         }
 
         pub mod uniswap_v3_adaptor {
-            include!("gen/abi/uniswap_v3.rs");
+            include!("gen/abi/uniswap_v3_adaptor.rs");
         }
 
         pub mod vesting_simple_adaptor {
-            include!("gen/abi/vesting_simple.rs");
+            include!("gen/abi/vesting_simple_adaptor.rs");
         }
     }
 }

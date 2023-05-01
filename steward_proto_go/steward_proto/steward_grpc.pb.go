@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.12
-// source: steward/v3/steward.proto
+// source: steward.proto
 
 package steward_proto
 
@@ -139,7 +139,7 @@ var ContractCallService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "steward/v3/steward.proto",
+	Metadata: "steward.proto",
 }
 
 // SimulateContractCallClient is the client API for SimulateContractCall service.
@@ -227,5 +227,5 @@ var SimulateContractCall_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "steward/v3/steward.proto",
+	Metadata: "steward.proto",
 }
