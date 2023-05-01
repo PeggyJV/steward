@@ -751,46 +751,6 @@ pub struct UniswapV3AdaptorV2Calls {
     pub calls: ::prost::alloc::vec::Vec<UniswapV3AdaptorV2>,
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct ZeroXAdaptorV1 {
-    ///**** BASE ADAPTOR FUNCTIONS ****
-    #[prost(oneof = "zero_x_adaptor_v1::Function", tags = "1, 2")]
-    pub function: ::core::option::Option<zero_x_adaptor_v1::Function>,
-}
-/// Nested message and enum types in `ZeroXAdaptorV1`.
-pub mod zero_x_adaptor_v1 {
-    ///
-    /// Allows strategists to make ERC20 swaps using 0x.
-    ///
-    /// Represents function `swapWith0x(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes memory swapCallData)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct SwapWith0x {
-        #[prost(string, tag = "1")]
-        pub token_in: ::prost::alloc::string::String,
-        #[prost(string, tag = "2")]
-        pub token_out: ::prost::alloc::string::String,
-        #[prost(string, tag = "3")]
-        pub amount: ::prost::alloc::string::String,
-        #[prost(bytes = "vec", tag = "4")]
-        pub swap_call_data: ::prost::alloc::vec::Vec<u8>,
-    }
-    ///**** BASE ADAPTOR FUNCTIONS ****
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum Function {
-        /// Represents function `revokeApproval(ERC20 asset, address spender)`
-        #[prost(message, tag = "1")]
-        RevokeApproval(super::RevokeApproval),
-        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
-        /// Represents function `swapWith0x(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes memory swapCallData)`
-        #[prost(message, tag = "2")]
-        SwapWith0x(SwapWith0x),
-    }
-}
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct ZeroXAdaptorV1Calls {
-    #[prost(message, repeated, tag = "1")]
-    pub calls: ::prost::alloc::vec::Vec<ZeroXAdaptorV1>,
-}
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct CellarAdaptorV1 {
     ///**** BASE ADAPTOR FUNCTIONS ****
     #[prost(oneof = "cellar_adaptor_v1::Function", tags = "1, 2, 3")]
@@ -839,6 +799,46 @@ pub mod cellar_adaptor_v1 {
 pub struct CellarAdaptorV1Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<CellarAdaptorV1>,
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct ZeroXAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(oneof = "zero_x_adaptor_v1::Function", tags = "1, 2")]
+    pub function: ::core::option::Option<zero_x_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `ZeroXAdaptorV1`.
+pub mod zero_x_adaptor_v1 {
+    ///
+    /// Allows strategists to make ERC20 swaps using 0x.
+    ///
+    /// Represents function `swapWith0x(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes memory swapCallData)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SwapWith0x {
+        #[prost(string, tag = "1")]
+        pub token_in: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub token_out: ::prost::alloc::string::String,
+        #[prost(string, tag = "3")]
+        pub amount: ::prost::alloc::string::String,
+        #[prost(bytes = "vec", tag = "4")]
+        pub swap_call_data: ::prost::alloc::vec::Vec<u8>,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `swapWith0x(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes memory swapCallData)`
+        #[prost(message, tag = "2")]
+        SwapWith0x(SwapWith0x),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct ZeroXAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<ZeroXAdaptorV1>,
 }
 /// Represents call data for the Vesting Simple adaptor
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
