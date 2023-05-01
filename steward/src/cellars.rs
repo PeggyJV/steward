@@ -21,30 +21,9 @@ pub const BLOCKED_ADAPTORS: [&str; 3] = [
     "26dba82495f6189dde7648ae88bead46c402f078",
 ];
 pub const BLOCKED_POSITIONS: [u32; 9] = [4, 5, 6, 7, 8, 9, 10, 11, 12];
-pub const ALLOWED_SETUP_ADAPTORS: [&str; 9] = [
-    // UniswapV3Adaptor v2
-    "0bd9a2c1917e3a932a4a712aee38ff63d35733fb",
-    // VestingSimpleAdaptor v2
-    "508e6ae090ea92cb90571e4269b799257cd78ca1",
-    // OneInchAdaptor v1
-    "a99ae6a11db22ff50bb17ca24c49a2bad8ece7de",
-    // SwapWithUniswapAdaptor v1
-    "2fe64ae823afc8100bdb99eead876d1e618d4814",
-    // ZeroXAdaptor v1
-    "b65b7e4776c3e5bc8863c357b3192257cef0962b",
-    // AaveV3ATokenAdaptor v1
-    "3184cbea47ed519fa04a23c4207cd15b7545f1a6",
-    // AaveATokenAdaptor v2
-    "25570a77dca06fda89c1ef41fab6ee48a2377e81",
-    // FeesAndReservesAdaptor v1
-    "647d264d800a2461e594796af61a39b7735d8933",
-    // CTokenAdaptor v2
-    "9a384df333588428843d128120becd72434ec078",
-];
-pub const ALLOWED_CATALOGUE_ADAPTORS: [&str; 1] = [
-    // AaveV2EnableAssetAsCollateralAdaptor v1
-    "724feb5819d1717aec5adbc0974a655a498b2614",
-];
+pub const ALLOWED_SETUP_ADAPTORS: [&str; 0] = [];
+pub const ALLOWED_CATALOGUE_ADAPTORS: [&str; 0] = [];
+pub const ALLOWED_CATALOGUE_POSITIONS: [u32; 3] = [140, 141, 142];
 
 pub trait CellarAdaptorCall {}
 

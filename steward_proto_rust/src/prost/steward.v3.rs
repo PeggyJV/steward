@@ -1892,7 +1892,7 @@ pub mod cellar_v2_2 {
     pub struct FunctionCall {
         #[prost(
             oneof = "function_call::Function",
-            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12"
+            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13"
         )]
         pub function: ::core::option::Option<function_call::Function>,
     }
@@ -1936,6 +1936,9 @@ pub mod cellar_v2_2 {
             /// Represents function `addAdaptorToCatalogue(address adaptor)`
             #[prost(message, tag = "12")]
             AddAdaptorToCatalogue(super::AddAdaptorToCatalogue),
+            /// Represents function `addPositionToCatalogue(uint32 positionId)`
+            #[prost(message, tag = "13")]
+            AddPositionToCatalogue(super::AddPositionToCatalogue),
         }
     }
     ///
@@ -2072,6 +2075,15 @@ pub mod cellar_v2_2 {
     pub struct Multicall {
         #[prost(message, repeated, tag = "1")]
         pub function_calls: ::prost::alloc::vec::Vec<FunctionCall>,
+    }
+    ///
+    /// Allows the owner to add a position to the Cellar's position catalogue
+    ///
+    /// Represents function `addPositionToCatalogue(uint32 positionId)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct AddPositionToCatalogue {
+        #[prost(uint32, tag = "1")]
+        pub position_id: u32,
     }
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum CallType {

@@ -16,7 +16,10 @@ use somm_proto::cork::{query_client::QueryClient as CorkQueryClient, Cork, Query
 use std::time::Duration;
 use steward_proto::{
     self,
-    steward::{self, submit_request::CallData::*, SubmitRequest, SubmitResponse, StatusRequest, StatusResponse},
+    steward::{
+        self, submit_request::CallData::*, StatusRequest, StatusResponse, SubmitRequest,
+        SubmitResponse,
+    },
 };
 use tonic::{self, async_trait, Code, Request, Response, Status};
 
