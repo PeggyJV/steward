@@ -2,7 +2,7 @@
 name = "steward"
 authors = []
 version = "3.0.0"
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 abscissa_tokio = "0.6.0"

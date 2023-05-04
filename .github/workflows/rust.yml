@@ -3,6 +3,10 @@ name: Rust tests
 on:
   push:
     branches:
+      - main
+  pull_request:
+
+env:
   CARGO_TERM_COLOR: always
 
 jobs:
@@ -10,7 +14,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Rust caches
         uses: actions/cache@v2
         id: rust-cache
@@ -21,7 +25,7 @@ jobs:
             ~/.cargo/registry/cache
             ~/.cargo/git/db
             target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
       - name: Run steward acceptance tests
         run: cargo test --all --verbose
 
@@ -29,7 +33,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Rust caches
         uses: actions/cache@v2
         id: rust-cache
@@ -40,7 +44,7 @@ jobs:
             ~/.cargo/registry/cache
             ~/.cargo/git/db
             target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
       - name: Run Cargo build
         run: cargo build
 
@@ -49,11 +53,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v2
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
+        uses: actions/checkout@v3
       - name: Add rustfmt
         run: rustup component add rustfmt
       - name: Run fmt
@@ -64,11 +64,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v2
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
+        uses: actions/checkout@v3
       - name: Add clippy
         run: rustup component add clippy
       - name: Run clippy
