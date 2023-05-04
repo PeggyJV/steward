@@ -20,4 +20,5 @@ pub mod gas;
 pub mod prelude;
 pub mod server;
 pub mod somm_send;
+pub mod status;
 pub mod utils;

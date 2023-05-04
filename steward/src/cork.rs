@@ -16,10 +16,7 @@ use somm_proto::cork::{query_client::QueryClient as CorkQueryClient, Cork, Query
 use std::time::Duration;
 use steward_proto::{
     self,
-    steward::{
-        self, submit_request::CallData::*, StatusRequest, StatusResponse, SubmitRequest,
-        SubmitResponse,
-    },
+    steward::{self, submit_request::CallData::*, SubmitRequest, SubmitResponse},
 };
 use tonic::{self, async_trait, Code, Request, Response, Status};
 
@@ -95,12 +92,6 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
         info!("submitted cork for {}", cellar_id);
 
         Ok(Response::new(SubmitResponse {}))
-    }
-
-    async fn status(&self, _: Request<StatusRequest>) -> Result<Response<StatusResponse>, Status> {
-        Ok(Response::new(StatusResponse {
-            version: STEWARD_VERSION.to_string(),
-        }))
     }
 }
 // Because of Rusts handling of enums, we have no easy way to log what cellar type and function are
