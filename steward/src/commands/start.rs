@@ -33,7 +33,6 @@ impl Runnable for StartCmd {
             start_approved_cellar_cache_thread().await;
             start_scheduled_cork_proposal_polling_thread().await;
 
-            // Reflection required for certain clients to function... such as grpcurl
             let contents = server::DESCRIPTOR.to_vec();
             let proto_descriptor_service = tonic_reflection::server::Builder::configure()
                 .register_encoded_file_descriptor_set(contents.as_slice())

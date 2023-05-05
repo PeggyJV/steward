@@ -32,7 +32,6 @@ impl Runnable for SimulateCmd {
         abscissa_tokio::run(&APP, async {
             validate_tenderly_config(&config);
 
-            // Reflection required for certain clients to function... such as grpcurl
             let contents = server::DESCRIPTOR.to_vec();
             let proto_descriptor_service = tonic_reflection::server::Builder::configure()
                 .register_encoded_file_descriptor_set(contents.as_slice())
