@@ -6,6 +6,9 @@ ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:latest"
 go_protos:
 	@scripts/build_go_protos.sh
 
+api_docs:
+	@scripts/build_api_docs.sh
+
 e2e_build_images: e2e_clean_slate
 	@docker pull $(VALIDATOR_IMAGE)
 	@docker tag $(VALIDATOR_IMAGE) sommelier:prebuilt

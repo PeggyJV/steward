@@ -17,7 +17,6 @@ const OUT_PATH: &str = "src/gen/proto/";
 fn main() {
     generate_contract_abis();
     generate_rust_protos();
-    generate_api_docs();
 }
 
 fn generate_contract_abis() {
@@ -143,15 +142,5 @@ fn copy_generated_files(from_dir: &Path, to_dir: &Path) {
         }
 
         panic!("[error] Aborted.");
-    }
-}
-
-fn generate_api_docs() {
-    let output = Command::new("scripts/build_api_docs.sh")
-        .output()
-        .expect("failed to build API docs");
-
-    if !output.status.success() {
-        panic!("error building API docs")
     }
 }
