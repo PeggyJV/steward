@@ -17,8 +17,8 @@ import "adaptors/compound/c_token.proto";
 import "adaptors/uniswap/uniswap_v3.proto";
 import "adaptors/uniswap/swap_with_uniswap.proto";
 import "adaptors/fees_and_reserves.proto";
-import "adaptors/0x/zero_x.proto";
-import "adaptors/1inch/oneinch.proto";
+import "adaptors/zero_x/zero_x.proto";
+import "adaptors/oneinch/oneinch.proto";
 import "adaptors/vesting_simple.proto";
 import "adaptors/sommelier/cellar_adaptor.proto";
 import "adaptors/aave/aave_v2_enable_asset_as_collateral_adaptor.proto";
@@ -214,6 +214,8 @@ message CellarV2_2 {
             LiftShutdown lift_shutdown = 11;
             // Represents function `addAdaptorToCatalogue(address adaptor)`
             AddAdaptorToCatalogue add_adaptor_to_catalogue = 12;
+            // Represents function `addPositionToCatalogue(uint32 positionId)`
+            AddPositionToCatalogue add_position_to_catalogue = 13;
         }
     }
 
@@ -346,6 +348,15 @@ message CellarV2_2 {
     */
     message Multicall {
         repeated FunctionCall function_calls = 1;
+    }
+
+    /*
+    * Allows the owner to add a position to the Cellar's position catalogue
+    *
+    * Represents function `addPositionToCatalogue(uint32 positionId)`
+    */
+    message AddPositionToCatalogue {
+        uint32 position_id = 1;
     }
 }
 

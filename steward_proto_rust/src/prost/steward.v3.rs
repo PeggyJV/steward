@@ -751,46 +751,6 @@ pub struct UniswapV3AdaptorV2Calls {
     pub calls: ::prost::alloc::vec::Vec<UniswapV3AdaptorV2>,
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct ZeroXAdaptorV1 {
-    ///**** BASE ADAPTOR FUNCTIONS ****
-    #[prost(oneof = "zero_x_adaptor_v1::Function", tags = "1, 2")]
-    pub function: ::core::option::Option<zero_x_adaptor_v1::Function>,
-}
-/// Nested message and enum types in `ZeroXAdaptorV1`.
-pub mod zero_x_adaptor_v1 {
-    ///
-    /// Allows strategists to make ERC20 swaps using 0x.
-    ///
-    /// Represents function `swapWith0x(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes memory swapCallData)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct SwapWith0x {
-        #[prost(string, tag = "1")]
-        pub token_in: ::prost::alloc::string::String,
-        #[prost(string, tag = "2")]
-        pub token_out: ::prost::alloc::string::String,
-        #[prost(string, tag = "3")]
-        pub amount: ::prost::alloc::string::String,
-        #[prost(bytes = "vec", tag = "4")]
-        pub swap_call_data: ::prost::alloc::vec::Vec<u8>,
-    }
-    ///**** BASE ADAPTOR FUNCTIONS ****
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum Function {
-        /// Represents function `revokeApproval(ERC20 asset, address spender)`
-        #[prost(message, tag = "1")]
-        RevokeApproval(super::RevokeApproval),
-        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
-        /// Represents function `swapWith0x(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes memory swapCallData)`
-        #[prost(message, tag = "2")]
-        SwapWith0x(SwapWith0x),
-    }
-}
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct ZeroXAdaptorV1Calls {
-    #[prost(message, repeated, tag = "1")]
-    pub calls: ::prost::alloc::vec::Vec<ZeroXAdaptorV1>,
-}
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct CellarAdaptorV1 {
     ///**** BASE ADAPTOR FUNCTIONS ****
     #[prost(oneof = "cellar_adaptor_v1::Function", tags = "1, 2, 3")]
@@ -839,6 +799,46 @@ pub mod cellar_adaptor_v1 {
 pub struct CellarAdaptorV1Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<CellarAdaptorV1>,
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct ZeroXAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(oneof = "zero_x_adaptor_v1::Function", tags = "1, 2")]
+    pub function: ::core::option::Option<zero_x_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `ZeroXAdaptorV1`.
+pub mod zero_x_adaptor_v1 {
+    ///
+    /// Allows strategists to make ERC20 swaps using 0x.
+    ///
+    /// Represents function `swapWith0x(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes memory swapCallData)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SwapWith0x {
+        #[prost(string, tag = "1")]
+        pub token_in: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub token_out: ::prost::alloc::string::String,
+        #[prost(string, tag = "3")]
+        pub amount: ::prost::alloc::string::String,
+        #[prost(bytes = "vec", tag = "4")]
+        pub swap_call_data: ::prost::alloc::vec::Vec<u8>,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `swapWith0x(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes memory swapCallData)`
+        #[prost(message, tag = "2")]
+        SwapWith0x(SwapWith0x),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct ZeroXAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<ZeroXAdaptorV1>,
 }
 /// Represents call data for the Vesting Simple adaptor
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -1892,7 +1892,7 @@ pub mod cellar_v2_2 {
     pub struct FunctionCall {
         #[prost(
             oneof = "function_call::Function",
-            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12"
+            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13"
         )]
         pub function: ::core::option::Option<function_call::Function>,
     }
@@ -1936,6 +1936,9 @@ pub mod cellar_v2_2 {
             /// Represents function `addAdaptorToCatalogue(address adaptor)`
             #[prost(message, tag = "12")]
             AddAdaptorToCatalogue(super::AddAdaptorToCatalogue),
+            /// Represents function `addPositionToCatalogue(uint32 positionId)`
+            #[prost(message, tag = "13")]
+            AddPositionToCatalogue(super::AddPositionToCatalogue),
         }
     }
     ///
@@ -2072,6 +2075,15 @@ pub mod cellar_v2_2 {
     pub struct Multicall {
         #[prost(message, repeated, tag = "1")]
         pub function_calls: ::prost::alloc::vec::Vec<FunctionCall>,
+    }
+    ///
+    /// Allows the owner to add a position to the Cellar's position catalogue
+    ///
+    /// Represents function `addPositionToCatalogue(uint32 positionId)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct AddPositionToCatalogue {
+        #[prost(uint32, tag = "1")]
+        pub position_id: u32,
     }
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum CallType {
@@ -2388,6 +2400,13 @@ pub mod submit_request {
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct SubmitResponse {}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct VersionRequest {}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct VersionResponse {
+    #[prost(string, tag = "1")]
+    pub version: ::prost::alloc::string::String,
+}
 #[doc = r" Generated client implementations."]
 pub mod contract_call_client {
     #![allow(unused_variables, dead_code, missing_docs)]
@@ -2449,6 +2468,67 @@ pub mod contract_call_client {
     impl<T> std::fmt::Debug for ContractCallClient<T> {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             write!(f, "ContractCallClient {{ ... }}")
+        }
+    }
+}
+#[doc = r" Generated client implementations."]
+pub mod status_client {
+    #![allow(unused_variables, dead_code, missing_docs)]
+    use tonic::codegen::*;
+    pub struct StatusClient<T> {
+        inner: tonic::client::Grpc<T>,
+    }
+    impl StatusClient<tonic::transport::Channel> {
+        #[doc = r" Attempt to create a new client by connecting to a given endpoint."]
+        pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
+        where
+            D: std::convert::TryInto<tonic::transport::Endpoint>,
+            D::Error: Into<StdError>,
+        {
+            let conn = tonic::transport::Endpoint::new(dst)?.connect().await?;
+            Ok(Self::new(conn))
+        }
+    }
+    impl<T> StatusClient<T>
+    where
+        T: tonic::client::GrpcService<tonic::body::BoxBody>,
+        T::ResponseBody: Body + HttpBody + Send + 'static,
+        T::Error: Into<StdError>,
+        <T::ResponseBody as HttpBody>::Error: Into<StdError> + Send,
+    {
+        pub fn new(inner: T) -> Self {
+            let inner = tonic::client::Grpc::new(inner);
+            Self { inner }
+        }
+        pub fn with_interceptor(inner: T, interceptor: impl Into<tonic::Interceptor>) -> Self {
+            let inner = tonic::client::Grpc::with_interceptor(inner, interceptor);
+            Self { inner }
+        }
+        pub async fn version(
+            &mut self,
+            request: impl tonic::IntoRequest<super::VersionRequest>,
+        ) -> Result<tonic::Response<super::VersionResponse>, tonic::Status> {
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::new(
+                    tonic::Code::Unknown,
+                    format!("Service was not ready: {}", e.into()),
+                )
+            })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/steward.v3.Status/Version");
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+    }
+    impl<T: Clone> Clone for StatusClient<T> {
+        fn clone(&self) -> Self {
+            Self {
+                inner: self.inner.clone(),
+            }
+        }
+    }
+    impl<T> std::fmt::Debug for StatusClient<T> {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            write!(f, "StatusClient {{ ... }}")
         }
     }
 }
@@ -2559,5 +2639,111 @@ pub mod contract_call_server {
     }
     impl<T: ContractCall> tonic::transport::NamedService for ContractCallServer<T> {
         const NAME: &'static str = "steward.v3.ContractCall";
+    }
+}
+#[doc = r" Generated server implementations."]
+pub mod status_server {
+    #![allow(unused_variables, dead_code, missing_docs)]
+    use tonic::codegen::*;
+    #[doc = "Generated trait containing gRPC methods that should be implemented for use with StatusServer."]
+    #[async_trait]
+    pub trait Status: Send + Sync + 'static {
+        async fn version(
+            &self,
+            request: tonic::Request<super::VersionRequest>,
+        ) -> Result<tonic::Response<super::VersionResponse>, tonic::Status>;
+    }
+    #[derive(Debug)]
+    pub struct StatusServer<T: Status> {
+        inner: _Inner<T>,
+    }
+    struct _Inner<T>(Arc<T>, Option<tonic::Interceptor>);
+    impl<T: Status> StatusServer<T> {
+        pub fn new(inner: T) -> Self {
+            let inner = Arc::new(inner);
+            let inner = _Inner(inner, None);
+            Self { inner }
+        }
+        pub fn with_interceptor(inner: T, interceptor: impl Into<tonic::Interceptor>) -> Self {
+            let inner = Arc::new(inner);
+            let inner = _Inner(inner, Some(interceptor.into()));
+            Self { inner }
+        }
+    }
+    impl<T, B> Service<http::Request<B>> for StatusServer<T>
+    where
+        T: Status,
+        B: HttpBody + Send + Sync + 'static,
+        B::Error: Into<StdError> + Send + 'static,
+    {
+        type Response = http::Response<tonic::body::BoxBody>;
+        type Error = Never;
+        type Future = BoxFuture<Self::Response, Self::Error>;
+        fn poll_ready(&mut self, _cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+            Poll::Ready(Ok(()))
+        }
+        fn call(&mut self, req: http::Request<B>) -> Self::Future {
+            let inner = self.inner.clone();
+            match req.uri().path() {
+                "/steward.v3.Status/Version" => {
+                    #[allow(non_camel_case_types)]
+                    struct VersionSvc<T: Status>(pub Arc<T>);
+                    impl<T: Status> tonic::server::UnaryService<super::VersionRequest> for VersionSvc<T> {
+                        type Response = super::VersionResponse;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::VersionRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).version(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let interceptor = inner.1.clone();
+                        let inner = inner.0;
+                        let method = VersionSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = if let Some(interceptor) = interceptor {
+                            tonic::server::Grpc::with_interceptor(codec, interceptor)
+                        } else {
+                            tonic::server::Grpc::new(codec)
+                        };
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                _ => Box::pin(async move {
+                    Ok(http::Response::builder()
+                        .status(200)
+                        .header("grpc-status", "12")
+                        .header("content-type", "application/grpc")
+                        .body(tonic::body::BoxBody::empty())
+                        .unwrap())
+                }),
+            }
+        }
+    }
+    impl<T: Status> Clone for StatusServer<T> {
+        fn clone(&self) -> Self {
+            let inner = self.inner.clone();
+            Self { inner }
+        }
+    }
+    impl<T: Status> Clone for _Inner<T> {
+        fn clone(&self) -> Self {
+            Self(self.0.clone(), self.1.clone())
+        }
+    }
+    impl<T: std::fmt::Debug> std::fmt::Debug for _Inner<T> {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            write!(f, "{:?}", self.0)
+        }
+    }
+    impl<T: Status> tonic::transport::NamedService for StatusServer<T> {
+        const NAME: &'static str = "steward.v3.Status";
     }
 }

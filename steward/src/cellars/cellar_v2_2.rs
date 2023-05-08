@@ -21,8 +21,8 @@ use crate::{
 };
 
 use super::{
-    log_cellar_call, normalize_address, ALLOWED_CATALOGUE_ADAPTORS, BLOCKED_ADAPTORS,
-    BLOCKED_POSITIONS,
+    log_cellar_call, normalize_address, ALLOWED_CATALOGUE_ADAPTORS, ALLOWED_CATALOGUE_POSITIONS,
+    BLOCKED_ADAPTORS, BLOCKED_POSITIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2.2";
@@ -230,6 +230,27 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             };
 
             Ok(CellarV2_2Calls::AddAdaptorToCatalogue(call).encode())
+        }
+        Function::AddPositionToCatalogue(params) => {
+            if !ALLOWED_CATALOGUE_POSITIONS.contains(&params.position_id) {
+                return Err(ErrorKind::SPCallError
+                    .context(format!(
+                        "adding this position to catalogue is not allowed: {}",
+                        params.position_id
+                    ))
+                    .into());
+            }
+
+            log_cellar_call(
+                CELLAR_NAME,
+                &AddPositionToCatalogueCall::function_name(),
+                &cellar_id,
+            );
+            let call = AddPositionToCatalogueCall {
+                position_id: params.position_id,
+            };
+
+            Ok(CellarV2_2Calls::AddPositionToCatalogue(call).encode())
         }
     }
 }

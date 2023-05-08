@@ -11,6 +11,7 @@ use abscissa_core::{
 };
 use deep_space::{Coin, Contact};
 use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
+use lazy_static::lazy_static;
 use somm_proto::cork::{query_client::QueryClient as CorkQueryClient, Cork, QueryCellarIDsRequest};
 use std::time::Duration;
 use steward_proto::{
@@ -21,6 +22,10 @@ use tonic::{self, async_trait, Code, Request, Response, Status};
 
 const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
 const CHAIN_PREFIX: &str = "somm";
+
+lazy_static! {
+    static ref STEWARD_VERSION: &'static str = env!("CARGO_PKG_VERSION");
+}
 
 pub struct CorkHandler;
 

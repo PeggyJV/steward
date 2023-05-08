@@ -19,7 +19,9 @@
     - [CellarV2.SetupAdaptor](#steward-v3-CellarV2-SetupAdaptor)
     - [CellarV2.SwapPositions](#steward-v3-CellarV2-SwapPositions)
     - [CellarV2_2](#steward-v3-CellarV2_2)
+    - [CellarV2_2.AddAdaptorToCatalogue](#steward-v3-CellarV2_2-AddAdaptorToCatalogue)
     - [CellarV2_2.AddPosition](#steward-v3-CellarV2_2-AddPosition)
+    - [CellarV2_2.AddPositionToCatalogue](#steward-v3-CellarV2_2-AddPositionToCatalogue)
     - [CellarV2_2.CallOnAdaptor](#steward-v3-CellarV2_2-CallOnAdaptor)
     - [CellarV2_2.FunctionCall](#steward-v3-CellarV2_2-FunctionCall)
     - [CellarV2_2.InitiateShutdown](#steward-v3-CellarV2_2-InitiateShutdown)
@@ -318,6 +320,23 @@ Represents function `swapPositions(uint32 index1, uint32 index2, bool inDebtArra
 
 
 
+<a name="steward-v3-CellarV2_2-AddAdaptorToCatalogue"></a>
+
+### CellarV2_2.AddAdaptorToCatalogue
+Allows the owner to add an adaptor to the Cellar&#39;s adaptor catalogue
+
+Represents function `addAdaptorToCatalogue(address adaptor)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| adaptor | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="steward-v3-CellarV2_2-AddPosition"></a>
 
 ### CellarV2_2.AddPosition
@@ -332,6 +351,23 @@ Represents function `addPosition(uint32 index, uint32 positionId, bytes configur
 | position_id | [uint32](#uint32) |  | The position&#39;s ID in the cellar registry |
 | configuration_data | [bytes](#bytes) |  | Data used to configure how the position behaves |
 | in_debt_array | [bool](#bool) |  | Whether to add position in the debt array, or the credit array. |
+
+
+
+
+
+
+<a name="steward-v3-CellarV2_2-AddPositionToCatalogue"></a>
+
+### CellarV2_2.AddPositionToCatalogue
+Allows the owner to add a position to the Cellar&#39;s position catalogue
+
+Represents function `addPositionToCatalogue(uint32 positionId)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [uint32](#uint32) |  |  |
 
 
 
@@ -374,6 +410,8 @@ The function you wish to execute on the target cellar
 | initiate_shutdown | [CellarV2_2.InitiateShutdown](#steward-v3-CellarV2_2-InitiateShutdown) |  | Represents function `initiateShutdown()` |
 | set_strategist_platform_cut | [CellarV2_2.SetStrategistPlatformCut](#steward-v3-CellarV2_2-SetStrategistPlatformCut) |  | Represents function `setStrategistPlatformCut(uint64 cut)` |
 | lift_shutdown | [CellarV2_2.LiftShutdown](#steward-v3-CellarV2_2-LiftShutdown) |  | Represents function `liftShutdown()` |
+| add_adaptor_to_catalogue | [CellarV2_2.AddAdaptorToCatalogue](#steward-v3-CellarV2_2-AddAdaptorToCatalogue) |  | Represents function `addAdaptorToCatalogue(address adaptor)` |
+| add_position_to_catalogue | [CellarV2_2.AddPositionToCatalogue](#steward-v3-CellarV2_2-AddPositionToCatalogue) |  | Represents function `addPositionToCatalogue(uint32 positionId)` |
 
 
 
