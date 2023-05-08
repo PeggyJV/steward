@@ -17,7 +17,6 @@ const OUT_PATH: &str = "src/gen/proto/";
 fn main() {
     generate_contract_abis();
     generate_rust_protos();
-    generate_go_protos();
     generate_api_docs();
 }
 
@@ -144,16 +143,6 @@ fn copy_generated_files(from_dir: &Path, to_dir: &Path) {
         }
 
         panic!("[error] Aborted.");
-    }
-}
-
-fn generate_go_protos() {
-    let output = Command::new("scripts/build_go_protos.sh")
-        .output()
-        .expect("failed to generate Go protos");
-
-    if !output.status.success() {
-        panic!("error generating Go protos");
     }
 }
 

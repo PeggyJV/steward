@@ -3,9 +3,8 @@
 VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:main"
 ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:latest"
 
-# this implicitly runs the build.rs build script which generates all proto bindings
-protos:
-	@cargo check --locked
+go_protos:
+	@scripts/build_go_protos.sh
 
 e2e_build_images: e2e_clean_slate
 	@docker pull $(VALIDATOR_IMAGE)
