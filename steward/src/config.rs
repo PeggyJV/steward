@@ -171,6 +171,7 @@ pub struct CosmosSection {
     pub key_derivation_path: String,
     pub prefix: String,
     pub msg_batch_size: u32,
+    pub gas_limit_per_msg: u64,
     pub gas_price: GasPrice,
 }
 
@@ -182,6 +183,7 @@ impl Default for CosmosSection {
             key_derivation_path: "m/44'/118'/0'/0/0".to_owned(),
             prefix: "somm".to_owned(),
             msg_batch_size: 5,
+            gas_limit_per_msg: 2_000_000u64,
             gas_price: GasPrice::default(),
         }
     }

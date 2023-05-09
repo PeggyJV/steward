@@ -163,6 +163,7 @@ async fn send_cork(cork: Cork) -> Result<TxResponse, Error> {
         config::DELEGATE_ADDRESS.to_string(),
         &config::DELEGATE_KEY,
         fee,
+        config.cosmos.gas_limit_per_msg,
     )
     .await
     .map_err(|e| e.into())
@@ -193,6 +194,7 @@ pub async fn schedule_cork(
         config::DELEGATE_ADDRESS.to_string(),
         &config::DELEGATE_KEY,
         fee,
+        config.cosmos.gas_limit_per_msg,
         height,
     )
     .await
