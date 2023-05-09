@@ -1,6 +1,6 @@
 #![allow(clippy::all)]
 use ethers::contract::Abigen;
-use std::process::{self, Command};
+use std::process;
 
 use std::path::Path;
 use std::{
