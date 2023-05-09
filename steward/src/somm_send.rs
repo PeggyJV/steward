@@ -20,14 +20,14 @@ pub async fn send_cork(
     delegate_address: String,
     delegate_key: &CosmosPrivateKey,
     fee: Coin,
-    gas_limit: u64,
+    gas_limit_per_msg: u64,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let msg = MsgSubmitCorkRequest {
         cork: Some(cork),
         signer: delegate_address,
     };
     let msg = Msg::new("/cork.v1.MsgSubmitCorkRequest", msg);
-    __send_messages(contact, delegate_key, fee, gas_limit, vec![msg]).await
+    __send_messages(contact, delegate_key, fee, gas_limit_per_msg, vec![msg]).await
 }
 
 pub async fn schedule_cork(
@@ -36,7 +36,7 @@ pub async fn schedule_cork(
     delegate_address: String,
     delegate_key: &CosmosPrivateKey,
     fee: Coin,
-    gas_limit: u64,
+    gas_limit_per_msg: u64,
     block_height: u64,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let msg = MsgScheduleCorkRequest {
@@ -45,21 +45,28 @@ pub async fn schedule_cork(
         block_height,
     };
     let msg = Msg::new("/cork.v1.MsgScheduleCorkRequest", msg);
-    __send_messages(contact, delegate_key, fee, gas_limit, vec![msg]).await
+    __send_messages(contact, delegate_key, fee, gas_limit_per_msg, vec![msg]).await
 }
 
 async fn __send_messages(
     contact: &Contact,
     cosmos_key: &CosmosPrivateKey,
     fee: Coin,
-    gas_limit: u64,
+    gas_limit_per_msg: u64,
     messages: Vec<Msg>,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let cosmos_address = cosmos_key.to_address(&contact.get_prefix())?;
+    let gas_limit = gas_limit_per_msg * (messages.len() as u64);
+    // block gas limit check
+    if gas_limit > 20_000_000u64 {
+        return Err(CosmosGrpcError::BadInput(
+            "total gas limit too high. (gas limit) * (number of messages) exceeded 20M".to_string(),
+        ));
+    }
 
     let fee = Fee {
         amount: vec![fee],
-        gas_limit: gas_limit * (messages.len() as u64),
+        gas_limit,
         granter: None,
         payer: None,
     };

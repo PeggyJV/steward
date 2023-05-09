@@ -172,7 +172,7 @@ pub struct CosmosSection {
     pub prefix: String,
     pub msg_batch_size: u32,
     pub gas_price: GasPrice,
-    pub gas_limit: u64,
+    pub gas_limit_per_msg: u64,
 }
 
 impl Default for CosmosSection {
@@ -184,7 +184,7 @@ impl Default for CosmosSection {
             prefix: "somm".to_owned(),
             msg_batch_size: 5,
             gas_price: GasPrice::default(),
-            gas_limit: 2_000_000u64,
+            gas_limit_per_msg: 2_000_000u64,
         }
     }
 }
