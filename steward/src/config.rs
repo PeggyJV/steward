@@ -27,6 +27,8 @@ lazy_static! {
     };
 }
 
+const GRAVITY_ADDRESS: &str = "0x69592e6f9d21989a043646fe8225da2600e5a0f7";
+
 /// Steward Configuration
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields)]
@@ -39,6 +41,7 @@ pub struct StewardConfig {
     pub cork: CorkConfig,
     pub metrics: MetricsSection,
     pub server: ServerSection,
+    pub simulate: SimulateSection,
 }
 
 impl StewardConfig {
@@ -87,6 +90,7 @@ impl Default for StewardConfig {
             cork: CorkConfig::default(),
             metrics: MetricsSection::default(),
             server: ServerSection::default(),
+            simulate: SimulateSection::default(),
         }
     }
 }
@@ -243,6 +247,30 @@ impl Default for MetricsSection {
     fn default() -> Self {
         Self {
             listen_addr: "127.0.0.1:3000".parse().unwrap(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct SimulateSection {
+    pub use_tls: bool,
+    pub network_id: String,
+    pub tenderly_access_key: String,
+    pub tenderly_project_name: String,
+    pub tenderly_username: String,
+    pub gravity_address: String,
+}
+
+impl Default for SimulateSection {
+    fn default() -> Self {
+        Self {
+            use_tls: false,
+            network_id: "1".to_string(),
+            tenderly_access_key: "".to_string(),
+            tenderly_project_name: "".to_string(),
+            tenderly_username: "".to_string(),
+            gravity_address: GRAVITY_ADDRESS.to_string(),
         }
     }
 }

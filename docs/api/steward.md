@@ -6,10 +6,13 @@
 - [steward.proto](#steward-proto)
     - [ScheduleRequest](#steward-v3-ScheduleRequest)
     - [ScheduleResponse](#steward-v3-ScheduleResponse)
+    - [SimulateRequest](#steward-v3-SimulateRequest)
+    - [SimulateResponse](#steward-v3-SimulateResponse)
     - [StatusRequest](#steward-v3-StatusRequest)
     - [StatusResponse](#steward-v3-StatusResponse)
   
     - [ContractCall](#steward-v3-ContractCall)
+    - [SimulateContractCall](#steward-v3-SimulateContractCall)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -25,7 +28,7 @@
 <a name="steward-v3-ScheduleRequest"></a>
 
 ### ScheduleRequest
-Represents a single, scheduled function call to a particular Cellar
+Represents a scheduled function call to a particular Cellar
 
 
 | Field | Type | Label | Description |
@@ -50,6 +53,38 @@ Represents a single, scheduled function call to a particular Cellar
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | id | [string](#string) |  | The hex encoded ID of the scheduled cork |
+
+
+
+
+
+
+<a name="steward-v3-SimulateRequest"></a>
+
+### SimulateRequest
+Represents a simulated function call to a particular Cellar
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| request | [ScheduleRequest](#steward-v3-ScheduleRequest) |  |  |
+| encode_only | [bool](#bool) |  | Whether to simply encode and return the contract call data, skipping the Tenderly simulation |
+
+
+
+
+
+
+<a name="steward-v3-SimulateResponse"></a>
+
+### SimulateResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| encoded_call | [string](#string) |  | The encoded contract call |
+| response_body | [string](#string) |  | The response body from the Tenderly simulation |
 
 
 
@@ -96,6 +131,16 @@ Service for handling Cellar contract calls
 | ----------- | ------------ | ------------- | ------------|
 | Schedule | [ScheduleRequest](#steward-v3-ScheduleRequest) | [ScheduleResponse](#steward-v3-ScheduleResponse) | Handles scheduled contract call submission |
 | Status | [StatusRequest](#steward-v3-StatusRequest) | [StatusResponse](#steward-v3-StatusResponse) |  |
+
+
+<a name="steward-v3-SimulateContractCall"></a>
+
+### SimulateContractCall
+Service for simulating contract calls encoded by Steward using Tenderly
+
+| Method Name | Request Type | Response Type | Description |
+| ----------- | ------------ | ------------- | ------------|
+| Simulate | [SimulateRequest](#steward-v3-SimulateRequest) | [SimulateResponse](#steward-v3-SimulateResponse) | Handles simulated contract call submission |
 
  
 

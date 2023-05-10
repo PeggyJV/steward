@@ -95,7 +95,7 @@ impl steward::contract_call_server::ContractCall for CorkHandler {
     }
 }
 
-fn get_encoded_call(request: ScheduleRequest) -> Result<Vec<u8>, Error> {
+pub fn get_encoded_call(request: ScheduleRequest) -> Result<Vec<u8>, Error> {
     if request.call_data.is_none() {
         return Err(ErrorKind::Http.context("empty contract call data").into());
     }

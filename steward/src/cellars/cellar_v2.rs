@@ -47,6 +47,10 @@ pub fn normalize_address(address: String) -> String {
 }
 
 pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {
+    get_call(function, cellar_id).map(|call| call.encode())
+}
+
+pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV2Calls, Error> {
     match function {
         AddPosition(params) => {
             if BLOCKED_POSITIONS.contains(&params.position_id) {
@@ -64,7 +68,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 in_debt_array: params.in_debt_array,
             };
 
-            Ok(CellarV2Calls::AddPosition(call).encode())
+            Ok(CellarV2Calls::AddPosition(call))
         }
         CallOnAdaptor(params) => {
             for adaptor_call in params.data.clone() {
@@ -81,7 +85,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 data: get_encoded_adaptor_call(params.data)?,
             };
 
-            Ok(CellarV2Calls::CallOnAdaptor(call).encode())
+            Ok(CellarV2Calls::CallOnAdaptor(call))
         }
         RemovePosition(params) => {
             log_cellar_call(
@@ -94,7 +98,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 in_debt_array: params.in_debt_array,
             };
 
-            Ok(CellarV2Calls::RemovePosition(call).encode())
+            Ok(CellarV2Calls::RemovePosition(call))
         }
         SetHoldingPosition(params) => {
             log_cellar_call(
@@ -106,7 +110,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 position_id: params.position_id,
             };
 
-            Ok(CellarV2Calls::SetHoldingPosition(call).encode())
+            Ok(CellarV2Calls::SetHoldingPosition(call))
         }
         SetStrategistPayoutAddress(params) => {
             log_cellar_call(
@@ -118,7 +122,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 payout: sp_call_parse_address(params.payout)?,
             };
 
-            Ok(CellarV2Calls::SetStrategistPayoutAddress(call).encode())
+            Ok(CellarV2Calls::SetStrategistPayoutAddress(call))
         }
         SwapPositions(params) => {
             log_cellar_call(CELLAR_NAME, &SwapPositionsCall::function_name(), &cellar_id);
@@ -128,7 +132,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 in_debt_array: params.in_debt_array,
             };
 
-            Ok(CellarV2Calls::SwapPositions(call).encode())
+            Ok(CellarV2Calls::SwapPositions(call))
         }
         SetShareLockPeriod(params) => {
             log_cellar_call(
@@ -140,7 +144,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 new_lock: string_to_u256(params.new_lock)?,
             };
 
-            Ok(CellarV2Calls::SetShareLockPeriod(call).encode())
+            Ok(CellarV2Calls::SetShareLockPeriod(call))
         }
         // This will ultimately need to be a governance function, but for Seven Sea's live testing we are keeping
         // it here until they get a feel for what an appropriate value is.
@@ -154,7 +158,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 new_deviation: string_to_u256(params.new_deviation)?,
             };
 
-            Ok(CellarV2Calls::SetRebalanceDeviation(call).encode())
+            Ok(CellarV2Calls::SetRebalanceDeviation(call))
         }
     }
 }

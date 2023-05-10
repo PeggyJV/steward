@@ -1,7 +1,6 @@
 //! Handlers for the Cellar.sol vault interface contract functions
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
-use abscissa_core::tracing::info;
 use deep_space::Address as CosmosAddress;
 use ethers::{abi::AbiEncode, contract::EthCall, types::Address as EthereumAddress};
 use steward_abi::cellar_v1::*;
@@ -26,6 +25,10 @@ const CELLAR_NAME: &str = "CellarV1";
 const LOG_PREFIX: &str = CELLAR_NAME;
 
 pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {
+    get_call(function, cellar_id).map(|call| call.encode())
+}
+
+pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV1Calls, Error> {
     match function {
         AddPosition(params) => {
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
@@ -34,7 +37,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 position: sp_call_parse_address(params.position)?,
             };
 
-            Ok(CellarV1Calls::AddPosition(call).encode())
+            Ok(CellarV1Calls::AddPosition(call))
         }
         PushPosition(params) => {
             log_cellar_call(CELLAR_NAME, &PushPositionCall::function_name(), &cellar_id);
@@ -42,7 +45,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 position: sp_call_parse_address(params.position)?,
             };
 
-            Ok(CellarV1Calls::PushPosition(call).encode())
+            Ok(CellarV1Calls::PushPosition(call))
         }
         RemovePosition(params) => {
             log_cellar_call(
@@ -54,7 +57,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 index: string_to_u256(params.index)?,
             };
 
-            Ok(CellarV1Calls::RemovePosition(call).encode())
+            Ok(CellarV1Calls::RemovePosition(call))
         }
         SetHoldingPosition(params) => {
             log_cellar_call(
@@ -66,7 +69,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 new_holding_position: sp_call_parse_address(params.new_holding_position)?,
             };
 
-            Ok(CellarV1Calls::SetHoldingPosition(call).encode())
+            Ok(CellarV1Calls::SetHoldingPosition(call))
         }
         Rebalance(params) => {
             log_cellar_call(CELLAR_NAME, &RebalanceCall::function_name(), &cellar_id);
@@ -76,8 +79,6 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                     .ok_or_else(|| sp_call_error("swap params cannot be empty".to_string()))?,
             )?;
 
-            info!("encoded: {:?}", hex::encode(&swap_params));
-
             let call = RebalanceCall {
                 from_position: sp_call_parse_address(params.from_position)?,
                 to_position: sp_call_parse_address(params.to_position)?,
@@ -85,9 +86,8 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 exchange: convert_exchange(params.exchange),
                 params: swap_params.into(),
             };
-            let call = CellarV1Calls::Rebalance(call).encode();
-            info!("final call: {:?}", hex::encode(&call));
-            Ok(call)
+
+            Ok(CellarV1Calls::Rebalance(call))
         }
         SetStrategistPayoutAddress(params) => {
             log_cellar_call(
@@ -99,7 +99,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 payout: sp_call_parse_address(params.payout)?,
             };
 
-            Ok(CellarV1Calls::SetStrategistPayoutAddress(call).encode())
+            Ok(CellarV1Calls::SetStrategistPayoutAddress(call))
         }
         SetWithdrawType(params) => {
             log_cellar_call(
@@ -113,7 +113,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 new_withdraw_type: (params.new_withdraw_type - 1) as u8,
             };
 
-            Ok(CellarV1Calls::SetWithdrawType(call).encode())
+            Ok(CellarV1Calls::SetWithdrawType(call))
         }
         SwapPositions(params) => {
             log_cellar_call(CELLAR_NAME, &SwapPositionsCall::function_name(), &cellar_id);
@@ -122,7 +122,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 index_2: string_to_u256(params.index_2)?,
             };
 
-            Ok(CellarV1Calls::SwapPositions(call).encode())
+            Ok(CellarV1Calls::SwapPositions(call))
         }
         SetDepositLimit(params) => {
             log_cellar_call(
@@ -134,7 +134,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 new_limit: string_to_u256(params.new_limit)?,
             };
 
-            Ok(CellarV1Calls::SetDepositLimit(call).encode())
+            Ok(CellarV1Calls::SetDepositLimit(call))
         }
         SetLiquidityLimit(params) => {
             log_cellar_call(
@@ -146,7 +146,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 new_limit: string_to_u256(params.new_limit)?,
             };
 
-            Ok(CellarV1Calls::SetLiquidityLimit(call).encode())
+            Ok(CellarV1Calls::SetLiquidityLimit(call))
         }
         SetShareLockPeriod(params) => {
             log_cellar_call(
@@ -158,7 +158,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 new_lock: string_to_u256(params.new_lock)?,
             };
 
-            Ok(CellarV1Calls::SetShareLockPeriod(call).encode())
+            Ok(CellarV1Calls::SetShareLockPeriod(call))
         }
         SetRebalanceDeviation(params) => {
             log_cellar_call(
@@ -170,7 +170,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
                 new_deviation: string_to_u256(params.new_deviation)?,
             };
 
-            Ok(CellarV1Calls::SetRebalanceDeviation(call).encode())
+            Ok(CellarV1Calls::SetRebalanceDeviation(call))
         }
     }
 }

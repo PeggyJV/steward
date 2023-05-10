@@ -18,6 +18,7 @@ mod eth_to_cosmos;
 mod keys;
 mod orchestrator;
 mod sign_delegate_keys;
+mod simulate;
 mod start;
 
 use self::{config_cmd::ConfigCmd, cork_proposal::CorkProposalCmd, keys::KeysCmd, start::StartCmd};
@@ -45,6 +46,7 @@ pub enum StewardCmd {
     #[clap(subcommand)]
     Orchestrator(orchestrator::OrchestratorCmd),
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
+    Simulate(simulate::SimulateCmd),
     Start(StartCmd),
 }
 
