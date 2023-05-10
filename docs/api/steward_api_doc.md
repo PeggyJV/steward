@@ -118,7 +118,7 @@
     - [StatusResponse](#steward-v3-StatusResponse)
   
     - [ContractCallService](#steward-v3-ContractCallService)
-    - [SimulateContractCall](#steward-v3-SimulateContractCall)
+    - [SimulateContractCallService](#steward-v3-SimulateContractCallService)
   
 - [uniswap_v3.proto](#uniswap_v3-proto)
     - [UniswapV3Adaptor](#steward-v3-UniswapV3Adaptor)
@@ -1843,9 +1843,9 @@ Service for handling Cellar contract calls
 | Status | [StatusRequest](#steward-v3-StatusRequest) | [StatusResponse](#steward-v3-StatusResponse) |  |
 
 
-<a name="steward-v3-SimulateContractCall"></a>
+<a name="steward-v3-SimulateContractCallService"></a>
 
-### SimulateContractCall
+### SimulateContractCallService
 Service for simulating contract calls encoded by Steward using Tenderly
 
 | Method Name | Request Type | Response Type | Description |
