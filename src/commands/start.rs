@@ -11,7 +11,7 @@ use crate::{
     },
     prelude::*,
     proto::contract_call_service_server::ContractCallServiceServer,
-    server::{self, FILE_DESCRIPTOR_SET},
+    server::{self, FILE_DESCRIPTOR_SET, with_tls},
 };
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
@@ -33,7 +33,7 @@ impl Runnable for StartCmd {
             start_approved_cellar_cache_thread().await;
             start_scheduled_cork_proposal_polling_thread().await;
 
-            let contents = server::DESCRIPTOR.to_vec();
+            let contents = FILE_DESCRIPTOR_SET.to_vec();
             let proto_descriptor_service = tonic_reflection::server::Builder::configure()
                 .register_encoded_file_descriptor_set(contents.as_slice())
                 .build()
@@ -51,11 +51,11 @@ impl Runnable for StartCmd {
 
             // build appropriate server
             info!("listening on {}", server_config.address);
-            if let Err(err) = tonic::transport::Server::builder()
-                .tls_config(server_config.tls_config)
-                .unwrap_or_else(|err| {
-                    panic!("{:?}", err);
-                })
+            let builder = tonic::transport::Server::builder();
+            let tls_config = &server_config
+                .tls_config
+                .expect("tls config was not initialized");
+            if let Err(err) = with_tls(builder, tls_config)
                 .add_service(ContractCallServiceServer::new(CorkHandler))
                 .add_service(proto_descriptor_service)
                 .serve(server_config.address)

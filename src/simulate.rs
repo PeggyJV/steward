@@ -1,13 +1,12 @@
 use abscissa_core::tracing::log::{info, warn};
-use steward_proto::steward::{self, ScheduleRequest, SimulateRequest, SimulateResponse};
 use tonic::{async_trait, Code, Request, Response, Status};
 
-use crate::{cork::get_encoded_call, error::Error, tenderly, utils::bytes_to_hex_str};
+use crate::{cork::get_encoded_call, error::Error, proto::{self, ScheduleRequest, SimulateRequest, SimulateResponse}, tenderly, utils::bytes_to_hex_str};
 
 pub struct SimulateHandler;
 
 #[async_trait]
-impl steward::simulate_contract_call_server::SimulateContractCall for SimulateHandler {
+impl proto::simulate_contract_call_service_server::SimulateContractCallService for SimulateHandler {
     async fn simulate(
         &self,
         request: Request<SimulateRequest>,

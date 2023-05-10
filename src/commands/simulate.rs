@@ -5,12 +5,12 @@
 use crate::{
     application::APP,
     prelude::*,
-    server::{self, with_tls},
+    proto::simulate_contract_call_service_server::SimulateContractCallServiceServer,
+    server::{self, with_tls, FILE_DESCRIPTOR_SET},
     simulate::SimulateHandler,
     tenderly::validate_tenderly_config,
 };
 use abscissa_core::{clap::Parser, Command, Runnable};
-use steward_proto::steward::simulate_contract_call_server::SimulateContractCallServer;
 
 /// Runs the Simulate server which uses Tenderly to simulate contract calls
 #[derive(Command, Debug, Default, Parser)]
@@ -32,7 +32,7 @@ impl Runnable for SimulateCmd {
         abscissa_tokio::run(&APP, async {
             validate_tenderly_config(&config);
 
-            let contents = server::DESCRIPTOR.to_vec();
+            let contents = FILE_DESCRIPTOR_SET.to_vec();
             let proto_descriptor_service = tonic_reflection::server::Builder::configure()
                 .register_encoded_file_descriptor_set(contents.as_slice())
                 .build()
@@ -58,7 +58,7 @@ impl Runnable for SimulateCmd {
 
             info!("simulate server listening on {}", server_config.address);
             if let Err(err) = builder
-                .add_service(SimulateContractCallServer::new(SimulateHandler))
+                .add_service(SimulateContractCallServiceServer::new(SimulateHandler))
                 .add_service(proto_descriptor_service)
                 .serve(server_config.address)
                 .await

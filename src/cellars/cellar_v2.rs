@@ -6,6 +6,7 @@ use ethers::{abi::AbiEncode, contract::EthCall, types::Bytes};
 use GovernanceFunction::*;
 use StrategyFunction::*;
 
+use crate::error::ErrorKind;
 use crate::utils::{encode_oracle_swap_params, encode_swap_params};
 use crate::{
     abi::{
@@ -260,7 +261,7 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
                         }
                         uniswap_v3_adaptor::Function::ClosePosition(p) => {
                             let call = adaptors::uniswap_v3_adaptor::ClosePositionCall {
-                                position_id: string_to_u256(p.position_id)?,
+                                token_id: string_to_u256(p.token_id)?,
                                 min_0: string_to_u256(p.min_0)?,
                                 min_1: string_to_u256(p.min_1)?,
                             };
@@ -268,7 +269,7 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
                         }
                         uniswap_v3_adaptor::Function::AddToPosition(p) => {
                             let call = adaptors::uniswap_v3_adaptor::AddToPositionCall {
-                                position_id: string_to_u256(p.position_id)?,
+                                token_id: string_to_u256(p.token_id)?,
                                 amount_0: string_to_u256(p.amount_0)?,
                                 amount_1: string_to_u256(p.amount_1)?,
                                 min_0: string_to_u256(p.min_0)?,
@@ -278,7 +279,7 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
                         }
                         uniswap_v3_adaptor::Function::TakeFromPosition(p) => {
                             let call = adaptors::uniswap_v3_adaptor::TakeFromPositionCall {
-                                position_id: string_to_u256(p.position_id)?,
+                                token_id: string_to_u256(p.token_id)?,
                                 liquidity: string_to_u128(p.liquidity)?.as_u128(),
                                 min_0: string_to_u256(p.min_0)?,
                                 min_1: string_to_u256(p.min_1)?,
@@ -331,7 +332,7 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
                         }
                         uniswap_v3_adaptor::Function::CollectFees(p) => {
                             let call = adaptors::uniswap_v3_adaptor::CollectFeesCall {
-                                position_id: string_to_u256(p.position_id)?,
+                                token_id: string_to_u256(p.token_id)?,
                                 amount_0: string_to_u128(p.amount_0)?.as_u128(),
                                 amount_1: string_to_u128(p.amount_1)?.as_u128(),
                             };
@@ -350,7 +351,7 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
                             )
                         }
                         uniswap_v3_adaptor::Function::PurgeSinglePosition(p) => {
-                            let call = steward_abi::uniswap_v3_adaptor::PurgeSinglePositionCall {
+                            let call = adaptors::uniswap_v3_adaptor::PurgeSinglePositionCall {
                                 token_id: string_to_u256(p.token_id)?,
                             };
                             calls.push(
@@ -360,7 +361,7 @@ fn get_encoded_adaptor_call(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCall
                             )
                         }
                         uniswap_v3_adaptor::Function::RemoveUnownedPositionFromTracker(p) => {
-                            let call = steward_abi::uniswap_v3_adaptor::RemoveUnOwnedPositionFromTrackerCall {
+                            let call = adaptors::uniswap_v3_adaptor::RemoveUnOwnedPositionFromTrackerCall {
                                 token_id: string_to_u256(p.token_id)?,
                                 token_0: sp_call_parse_address(p.token_0)?,
                                 token_1: sp_call_parse_address(p.token_1)?,

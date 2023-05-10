@@ -19,7 +19,9 @@ pub mod error;
 pub mod gas;
 pub mod prelude;
 pub mod server;
+pub mod simulate;
 pub mod somm_send;
+pub mod tenderly;
 pub mod utils;
 
 // Generated ABI definitions. This has to be manually updated when new contracts are added.

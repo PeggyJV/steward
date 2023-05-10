@@ -25,7 +25,7 @@ service ContractCallService {
 /*
  * Service for simulating contract calls encoded by Steward using Tenderly
  */
- service SimulateContractCall {
+ service SimulateContractCallService {
     // Handles simulated contract call submission
     rpc Simulate(SimulateRequest) returns (SimulateResponse) {}
  }

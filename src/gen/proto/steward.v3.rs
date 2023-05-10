@@ -1629,15 +1629,15 @@ pub mod contract_call_service_client {
     }
 }
 #[doc = r" Generated client implementations."]
-pub mod simulate_contract_call_client {
+pub mod simulate_contract_call_service_client {
     #![allow(unused_variables, dead_code, missing_docs)]
     use tonic::codegen::*;
     #[doc = ""]
     #[doc = " Service for simulating contract calls encoded by Steward using Tenderly"]
-    pub struct SimulateContractCallClient<T> {
+    pub struct SimulateContractCallServiceClient<T> {
         inner: tonic::client::Grpc<T>,
     }
-    impl SimulateContractCallClient<tonic::transport::Channel> {
+    impl SimulateContractCallServiceClient<tonic::transport::Channel> {
         #[doc = r" Attempt to create a new client by connecting to a given endpoint."]
         pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
         where
@@ -1648,7 +1648,7 @@ pub mod simulate_contract_call_client {
             Ok(Self::new(conn))
         }
     }
-    impl<T> SimulateContractCallClient<T>
+    impl<T> SimulateContractCallServiceClient<T>
     where
         T: tonic::client::GrpcService<tonic::body::BoxBody>,
         T::ResponseBody: Body + HttpBody + Send + 'static,
@@ -1675,21 +1675,22 @@ pub mod simulate_contract_call_client {
                 )
             })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path =
-                http::uri::PathAndQuery::from_static("/steward.v3.SimulateContractCall/Simulate");
+            let path = http::uri::PathAndQuery::from_static(
+                "/steward.v3.SimulateContractCallService/Simulate",
+            );
             self.inner.unary(request.into_request(), path, codec).await
         }
     }
-    impl<T: Clone> Clone for SimulateContractCallClient<T> {
+    impl<T: Clone> Clone for SimulateContractCallServiceClient<T> {
         fn clone(&self) -> Self {
             Self {
                 inner: self.inner.clone(),
             }
         }
     }
-    impl<T> std::fmt::Debug for SimulateContractCallClient<T> {
+    impl<T> std::fmt::Debug for SimulateContractCallServiceClient<T> {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-            write!(f, "SimulateContractCallClient {{ ... }}")
+            write!(f, "SimulateContractCallServiceClient {{ ... }}")
         }
     }
 }
@@ -1840,12 +1841,12 @@ pub mod contract_call_service_server {
     }
 }
 #[doc = r" Generated server implementations."]
-pub mod simulate_contract_call_server {
+pub mod simulate_contract_call_service_server {
     #![allow(unused_variables, dead_code, missing_docs)]
     use tonic::codegen::*;
-    #[doc = "Generated trait containing gRPC methods that should be implemented for use with SimulateContractCallServer."]
+    #[doc = "Generated trait containing gRPC methods that should be implemented for use with SimulateContractCallServiceServer."]
     #[async_trait]
-    pub trait SimulateContractCall: Send + Sync + 'static {
+    pub trait SimulateContractCallService: Send + Sync + 'static {
         #[doc = " Handles simulated contract call submission"]
         async fn simulate(
             &self,
@@ -1855,11 +1856,11 @@ pub mod simulate_contract_call_server {
     #[doc = ""]
     #[doc = " Service for simulating contract calls encoded by Steward using Tenderly"]
     #[derive(Debug)]
-    pub struct SimulateContractCallServer<T: SimulateContractCall> {
+    pub struct SimulateContractCallServiceServer<T: SimulateContractCallService> {
         inner: _Inner<T>,
     }
     struct _Inner<T>(Arc<T>, Option<tonic::Interceptor>);
-    impl<T: SimulateContractCall> SimulateContractCallServer<T> {
+    impl<T: SimulateContractCallService> SimulateContractCallServiceServer<T> {
         pub fn new(inner: T) -> Self {
             let inner = Arc::new(inner);
             let inner = _Inner(inner, None);
@@ -1871,9 +1872,9 @@ pub mod simulate_contract_call_server {
             Self { inner }
         }
     }
-    impl<T, B> Service<http::Request<B>> for SimulateContractCallServer<T>
+    impl<T, B> Service<http::Request<B>> for SimulateContractCallServiceServer<T>
     where
-        T: SimulateContractCall,
+        T: SimulateContractCallService,
         B: HttpBody + Send + Sync + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
@@ -1886,10 +1887,10 @@ pub mod simulate_contract_call_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/steward.v3.SimulateContractCall/Simulate" => {
+                "/steward.v3.SimulateContractCallService/Simulate" => {
                     #[allow(non_camel_case_types)]
-                    struct SimulateSvc<T: SimulateContractCall>(pub Arc<T>);
-                    impl<T: SimulateContractCall>
+                    struct SimulateSvc<T: SimulateContractCallService>(pub Arc<T>);
+                    impl<T: SimulateContractCallService>
                         tonic::server::UnaryService<super::SimulateRequest> for SimulateSvc<T>
                     {
                         type Response = super::SimulateResponse;
@@ -1930,13 +1931,13 @@ pub mod simulate_contract_call_server {
             }
         }
     }
-    impl<T: SimulateContractCall> Clone for SimulateContractCallServer<T> {
+    impl<T: SimulateContractCallService> Clone for SimulateContractCallServiceServer<T> {
         fn clone(&self) -> Self {
             let inner = self.inner.clone();
             Self { inner }
         }
     }
-    impl<T: SimulateContractCall> Clone for _Inner<T> {
+    impl<T: SimulateContractCallService> Clone for _Inner<T> {
         fn clone(&self) -> Self {
             Self(self.0.clone(), self.1.clone())
         }
@@ -1946,7 +1947,9 @@ pub mod simulate_contract_call_server {
             write!(f, "{:?}", self.0)
         }
     }
-    impl<T: SimulateContractCall> tonic::transport::NamedService for SimulateContractCallServer<T> {
-        const NAME: &'static str = "steward.v3.SimulateContractCall";
+    impl<T: SimulateContractCallService> tonic::transport::NamedService
+        for SimulateContractCallServiceServer<T>
+    {
+        const NAME: &'static str = "steward.v3.SimulateContractCallService";
     }
 }
