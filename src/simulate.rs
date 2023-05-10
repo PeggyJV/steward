@@ -1,7 +1,13 @@
 use abscissa_core::tracing::log::{info, warn};
 use tonic::{async_trait, Code, Request, Response, Status};
 
-use crate::{cork::get_encoded_call, error::Error, proto::{self, ScheduleRequest, SimulateRequest, SimulateResponse}, tenderly, utils::bytes_to_hex_str};
+use crate::{
+    cork::get_encoded_call,
+    error::Error,
+    proto::{self, ScheduleRequest, SimulateRequest, SimulateResponse},
+    tenderly,
+    utils::bytes_to_hex_str,
+};
 
 pub struct SimulateHandler;
 

@@ -11,7 +11,7 @@ use crate::{
     },
     prelude::*,
     proto::contract_call_service_server::ContractCallServiceServer,
-    server::{self, FILE_DESCRIPTOR_SET, with_tls},
+    server::{self, with_tls, FILE_DESCRIPTOR_SET},
 };
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
