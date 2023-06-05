@@ -22,7 +22,7 @@ use crate::{
 
 use super::{
     log_cellar_call, normalize_address, ALLOWED_CATALOGUE_ADAPTORS, ALLOWED_CATALOGUE_POSITIONS,
-    BLOCKED_ADAPTORS, BLOCKED_POSITIONS,
+    BLOCKED_ADAPTORS, BLOCKED_POSITIONS, RYGOV_CELLARS,
 };
 
 const CELLAR_NAME: &str = "CellarV2.2";
@@ -210,6 +210,16 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             Ok(CellarV2_2Calls::LiftShutdown(call).encode())
         }
         Function::AddAdaptorToCatalogue(params) => {
+            let cellar_address = normalize_address(cellar_id.clone());
+            if !RYGOV_CELLARS.contains(&cellar_address.as_str()) {
+                return Err(ErrorKind::SPCallError
+                    .context(format!(
+                        "adding adaptors to non-RYGOV cellars is not allowed: {}",
+                        cellar_address
+                    ))
+                    .into());
+            }
+
             let adaptor_address = normalize_address(params.adaptor.clone());
             if !ALLOWED_CATALOGUE_ADAPTORS.contains(&adaptor_address.as_str()) {
                 return Err(ErrorKind::SPCallError
@@ -232,6 +242,16 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             Ok(CellarV2_2Calls::AddAdaptorToCatalogue(call).encode())
         }
         Function::AddPositionToCatalogue(params) => {
+            let cellar_address = normalize_address(cellar_id.clone());
+            if !RYGOV_CELLARS.contains(&cellar_address.as_str()) {
+                return Err(ErrorKind::SPCallError
+                    .context(format!(
+                        "adding positions to non-RYGOV cellars is not allowed: {}",
+                        cellar_address
+                    ))
+                    .into());
+            }
+
             if !ALLOWED_CATALOGUE_POSITIONS.contains(&params.position_id) {
                 return Err(ErrorKind::SPCallError
                     .context(format!(
