@@ -22,8 +22,15 @@ pub const BLOCKED_ADAPTORS: [&str; 3] = [
 ];
 pub const BLOCKED_POSITIONS: [u32; 9] = [4, 5, 6, 7, 8, 9, 10, 11, 12];
 pub const ALLOWED_SETUP_ADAPTORS: [&str; 0] = [];
-pub const ALLOWED_CATALOGUE_ADAPTORS: [&str; 0] = [];
-pub const ALLOWED_CATALOGUE_POSITIONS: [u32; 3] = [140, 141, 142];
+pub const ALLOWED_CATALOGUE_ADAPTORS: [&str; 1] = ["24eeaa1111dac1c0fe0cf3c03bba03adde1e7fe4"]; // cellar adaptor
+pub const ALLOWED_CATALOGUE_POSITIONS: [u32; 1] = [143]; // RYETH position
+pub const RYGOV_CELLARS: [&str; 5] = [
+    "4068bdd217a45f8f668ef19f1e3a1f043e4c4934", // RYLINK
+    "c7b69e15d86c5c1581dacce3cacaf5b68cd6596f", // RY1INCH
+    "6a6af5393dc23d7e3db28d28ef422db7c40932b6", // RYUNI
+    "cbf2250f33c4161e18d4a2fa47464520af5216b5", // RYSNX
+    "18ea937aba6053bc232d9ae2c42abe7a8a2be440", // RYENS
+];
 
 pub trait CellarAdaptorCall {}
 
