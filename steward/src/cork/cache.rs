@@ -50,7 +50,6 @@ pub async fn start_approved_cellar_cache_thread() -> JoinHandle<()> {
     tokio::spawn(async move {
         let mut fail_count = 0;
         loop {
-            tokio::time::sleep(query_period).await;
             if let Err(err) = refresh_approved_cellars().await {
                 fail_count += 1;
                 error!(
@@ -60,6 +59,8 @@ pub async fn start_approved_cellar_cache_thread() -> JoinHandle<()> {
             } else {
                 fail_count = 0;
             }
+
+            tokio::time::sleep(query_period).await;
         }
     })
 }

@@ -54,8 +54,6 @@ pub async fn start_scheduled_cork_proposal_polling_thread() -> JoinHandle<()> {
 
     tokio::spawn(async move {
         loop {
-            tokio::time::sleep(query_period).await;
-
             debug!("polling for new approved scheduled cork proposals");
             state
                 .update_last_observed_height(config.cosmos.grpc.clone())
@@ -67,6 +65,8 @@ pub async fn start_scheduled_cork_proposal_polling_thread() -> JoinHandle<()> {
                     err
                 );
             }
+
+            tokio::time::sleep(query_period).await;
         }
     })
 }
