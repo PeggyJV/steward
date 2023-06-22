@@ -36,6 +36,7 @@ import (
 	"github.com/ory/dockertest/v3/docker"
 	auctiontypes "github.com/peggyjv/sommelier/v4/x/auction/types"
 	cellarfeestypes "github.com/peggyjv/sommelier/v4/x/cellarfees/types"
+	pubsubtypes "github.com/peggyjv/sommelier/v4/x/pubsub/types"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 	tmconfig "github.com/tendermint/tendermint/config"
@@ -385,13 +386,28 @@ func (s *IntegrationTestSuite) initGenesis() {
 
 	cellarfeesGenState := cellarfeestypes.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[cellarfeestypes.ModuleName], &cellarfeesGenState))
+	bz, err = cdc.MarshalJSON(&cellarfeesGenState)
+	s.Require().NoError(err)
+	appGenState[cellarfeestypes.ModuleName] = bz
 
 	incentivesGenState := incentivestypes.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[incentivestypes.ModuleName], &incentivesGenState))
 
-	bz, err = cdc.MarshalJSON(&cellarfeesGenState)
+	pubsubGenState := pubsubtypes.DefaultGenesisState()
+	s.Require().NoError(cdc.UnmarshalJSON(appGenState[pubsubtypes.ModuleName], &pubsubGenState))
+	pubsubGenState.PublisherIntents = []*pubsubtypes.PublisherIntent{
+		{
+			SubscriptionId:     aaveCellar.Hex(),
+			PublisherDomain:    "localhost",
+			Method:             0,
+			PullUrl:            "https://localhost/somm1p78uz3z9sgav0m325y0tmzzx3a56h583t3x7cx/cacert.pem",
+			AllowedSubscribers: 0,
+			AllowedAddresses:   []string{},
+		},
+	}
+	bz, err = cdc.MarshalJSON(&pubsubGenState)
 	s.Require().NoError(err)
-	appGenState[cellarfeestypes.ModuleName] = bz
+	appGenState[pubsubtypes.ModuleName] = bz
 
 	// set contract addr
 	var gravityGenState gravitytypes.GenesisState
@@ -579,7 +595,7 @@ func (s *IntegrationTestSuite) runEthContainer() {
 
 	s.T().Logf("gravity contract deployed at %s", gravityContract.String())
 	s.T().Logf("aave contract deployed at %s", aaveCellar.String())
-	s.T().Logf("vault cellar contract deployed at %s", aaveCellar.String())
+	s.T().Logf("vault cellar contract deployed at %s", vaultCellar.String())
 	s.T().Logf("adaptor contract deployed at %s", adaptorContract.String())
 
 	s.T().Logf("started Ethereum container: %s", s.ethResource.Container.ID)
@@ -766,7 +782,7 @@ msg_batch_size = 5
 				return strings.Contains(containerLogsBuf.String(), match)
 			},
 			3*time.Minute,
-			20*time.Second,
+			3*time.Second,
 			"orchestrator %s not healthy",
 			resource.Container.ID,
 		)
@@ -783,6 +799,7 @@ proposal_poll_period = 10
 
 [cosmos]
 grpc = "http://%s:9090"
+key_derivation_path = "m/44'/118'/0'/0/0"
 
 [cosmos.gas_price]
 amount = 1000000000
@@ -795,6 +812,9 @@ delegate_key = "steward-key"
 client_ca_cert_path = "/root/steward/test_client_ca.crt"
 server_cert_path = "/root/steward/test_server.crt"
 server_key_path = "/root/steward/test_server_key_pkcs8.pem"
+
+[pubsub]
+cache_refresh_period = 3
 `,
 			s.valResources[i].Container.Name[1:],
 			testDenom,

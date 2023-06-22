@@ -16,3 +16,5 @@ package-lock.json
 
 # editors
 .vscode
+
+dev_vendor/
