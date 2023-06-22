@@ -5,11 +5,11 @@ use abscissa_core::{
     Application,
 };
 use lazy_static::lazy_static;
+use somm_proto::pubsub::Publisher;
 use tokio::{
     sync::{mpsc::Sender, RwLock},
     task::JoinHandle,
 };
-use somm_proto::pubsub::Publisher;
 use x509_parser::prelude::X509Certificate;
 
 use crate::{

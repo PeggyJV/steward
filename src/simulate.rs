@@ -86,7 +86,7 @@ pub async fn load_simulate_server_config(
     use_tls: bool,
 ) -> Result<ServerConfig, Error> {
     let tls_config = if use_tls {
-        validate_simulate_tls_config(&config);
+        validate_simulate_tls_config(config);
         Some(load_simulate_tls_config(config).await?)
     } else {
         None

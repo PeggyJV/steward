@@ -83,11 +83,11 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
                     );
                     return Err(Status::new(
                         Code::Internal,
-                        format!("cork submission failed. this may be a steward configuration problem."),
+                        "cork submission failed. this may be a steward configuration problem.".to_string(),
                     ));
                 }
                 info!("cork response: {:?}", res)
-            },
+            }
             Err(err) => {
                 error!("failed to schedule cork for cellar {}: {}", cellar_id, err);
                 return Err(Status::new(
