@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"math/big"
 	"os"
 	"path"
@@ -395,6 +396,15 @@ func (s *IntegrationTestSuite) initGenesis() {
 
 	pubsubGenState := pubsubtypes.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[pubsubtypes.ModuleName], &pubsubGenState))
+	caCert, err := ioutil.ReadFile("integration_tests/tls/client/test_client_ca.crt")
+	s.Require().NoError(err)
+	pubsubGenState.Publishers = []*pubsubtypes.Publisher{
+		{
+			Address: s.chain.orchestrators[0].keyInfo.GetAddress().String(),
+			Domain:  "localhost",
+			CaCert:  string(caCert),
+		},
+	}
 	pubsubGenState.PublisherIntents = []*pubsubtypes.PublisherIntent{
 		{
 			SubscriptionId:     aaveCellar.Hex(),
@@ -403,6 +413,16 @@ func (s *IntegrationTestSuite) initGenesis() {
 			PullUrl:            "https://localhost/somm1p78uz3z9sgav0m325y0tmzzx3a56h583t3x7cx/cacert.pem",
 			AllowedSubscribers: 0,
 			AllowedAddresses:   []string{},
+		},
+	}
+	pubsubGenState.DefaultSubscriptions = []*pubsubtypes.DefaultSubscription{
+		{
+			SubscriptionId:  aaveCellar.Hex(),
+			PublisherDomain: "localhost",
+		},
+		{
+			SubscriptionId:  vaultCellar.Hex(),
+			PublisherDomain: "localhost",
 		},
 	}
 	bz, err = cdc.MarshalJSON(&pubsubGenState)
@@ -799,7 +819,7 @@ proposal_poll_period = 10
 
 [cosmos]
 grpc = "http://%s:9090"
-key_derivation_path = "m/44'/118'/0'/0/0"
+key_derivation_path = "m/44'/118'/1'/0/0"
 
 [cosmos.gas_price]
 amount = 1000000000
