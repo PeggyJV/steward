@@ -5,8 +5,8 @@ use abscissa_core::{
     Application,
 };
 use somm_proto::pubsub::{
-    query_client::QueryClient, QueryDefaultSubscriptionsRequest,
-    QueryDefaultSubscriptionsResponse, QueryPublisherRequest, QueryPublisherResponse,
+    query_client::QueryClient, QueryDefaultSubscriptionsRequest, QueryDefaultSubscriptionsResponse,
+    QueryPublisherRequest, QueryPublisherResponse,
     QuerySubscriberIntentsBySubscriberAddressRequest,
     QuerySubscriberIntentsBySubscriberAddressResponse,
 };

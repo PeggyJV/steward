@@ -6,7 +6,7 @@ use crate::{
     application::APP,
     prelude::*,
     proto::simulate_contract_call_service_server::SimulateContractCallServiceServer,
-    server::{FILE_DESCRIPTOR_SET, ServerConfig},
+    server::{ServerConfig, FILE_DESCRIPTOR_SET},
     simulate::{self, SimulateHandler},
     tenderly::validate_tenderly_config,
 };
@@ -41,12 +41,13 @@ impl Runnable for SimulateCmd {
                     std::process::exit(1)
                 });
 
-            let server_config: ServerConfig = simulate::load_simulate_server_config(&config, self.use_tls)
-                .await
-                .unwrap_or_else(|err| {
-                    status_err!("failed to load server config: {}", err);
-                    std::process::exit(1)
-                });
+            let server_config: ServerConfig =
+                simulate::load_simulate_server_config(&config, self.use_tls)
+                    .await
+                    .unwrap_or_else(|err| {
+                        status_err!("failed to load server config: {}", err);
+                        std::process::exit(1)
+                    });
 
             let mut builder = tonic::transport::Server::builder();
             if self.use_tls {

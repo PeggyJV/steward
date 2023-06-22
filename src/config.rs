@@ -56,18 +56,18 @@ impl StewardConfig {
 
     pub fn load_clarity_key(&self, name: String) -> clarity::PrivateKey {
         let key = self.load_secret_key(name).to_bytes();
-        clarity::PrivateKey::from_slice(&*key).expect("Could not convert key")
+        clarity::PrivateKey::from_slice(&key).expect("Could not convert key")
     }
 
     pub fn load_deep_space_key(&self, name: String) -> PrivateKey {
         let key = self.load_secret_key(name).to_bytes();
-        let key = deep_space::utils::bytes_to_hex_str(&*key);
+        let key = deep_space::utils::bytes_to_hex_str(&key);
         key.parse().expect("Could not parse private key")
     }
 
     pub fn load_gravity_deep_space_key(&self, name: String) -> cosmos_gravity::crypto::PrivateKey {
         let key = self.load_secret_key(name).to_bytes();
-        let key = deep_space::utils::bytes_to_hex_str(&*key);
+        let key = deep_space::utils::bytes_to_hex_str(&key);
         key.parse().expect("Could not parse private key")
     }
 
