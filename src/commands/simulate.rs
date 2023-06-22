@@ -6,8 +6,8 @@ use crate::{
     application::APP,
     prelude::*,
     proto::simulate_contract_call_service_server::SimulateContractCallServiceServer,
-    server::{self, with_tls, FILE_DESCRIPTOR_SET},
-    simulate::SimulateHandler,
+    server::{FILE_DESCRIPTOR_SET, ServerConfig},
+    simulate::{self, SimulateHandler},
     tenderly::validate_tenderly_config,
 };
 use abscissa_core::{clap::Parser, Command, Runnable};
@@ -41,7 +41,7 @@ impl Runnable for SimulateCmd {
                     std::process::exit(1)
                 });
 
-            let server_config = server::load_server_config(&config)
+            let server_config: ServerConfig = simulate::load_simulate_server_config(&config, self.use_tls)
                 .await
                 .unwrap_or_else(|err| {
                     status_err!("failed to load server config: {}", err);
@@ -53,7 +53,11 @@ impl Runnable for SimulateCmd {
                 let tls_config = &server_config
                     .tls_config
                     .expect("tls config was not initialized");
-                builder = with_tls(builder, tls_config);
+                builder = builder
+                    .tls_config(tls_config.to_owned())
+                    .unwrap_or_else(|err| {
+                        panic!("{:?}", err);
+                    })
             }
 
             info!("simulate server listening on {}", server_config.address);
