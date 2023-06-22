@@ -28,10 +28,10 @@ pub async fn schedule_cork(
         block_height,
     };
     let msg = Msg::new("/cork.v2.MsgScheduleCorkRequest", msg);
-    __send_messages(contact, delegate_key, fee, vec![msg]).await
+    send_messages(contact, delegate_key, fee, vec![msg]).await
 }
 
-async fn __send_messages(
+pub(crate) async fn send_messages(
     contact: &Contact,
     cosmos_key: &CosmosPrivateKey,
     fee: Coin,

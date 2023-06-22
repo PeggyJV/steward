@@ -41,6 +41,10 @@ e2e_proposal_test:
 	@scripts/clean_slate.sh
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestScheduledCorkProposal || make -s fail
 
+e2e_pubsub_test:
+	@scripts/clean_slate.sh
+	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestPubsub || make -s fail
+
 fail:
 	@echo 'test failed; dumping container logs into ./testdata for review'
 	@mkdir -p ./testdata

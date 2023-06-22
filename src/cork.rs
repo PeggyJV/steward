@@ -1,3 +1,17 @@
+use abscissa_core::{
+    tracing::log::{debug, error, info, warn},
+    Application,
+};
+use deep_space::{Coin, Contact};
+use ethers::types::H160;
+use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
+use lazy_static::lazy_static;
+use sha3::{Digest, Keccak256};
+use somm_proto::cork::Cork;
+use std::time::Duration;
+use tonic::{self, async_trait, Code, Request, Response, Status};
+
+use crate::server::handle_authorization;
 use crate::{
     cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2},
     config,
@@ -12,18 +26,6 @@ use crate::{
     },
     somm_send,
 };
-use abscissa_core::{
-    tracing::log::{debug, error, info, warn},
-    Application,
-};
-use deep_space::{Coin, Contact};
-use ethers::types::H160;
-use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
-use lazy_static::lazy_static;
-use sha3::{Digest, Keccak256};
-use somm_proto::cork::Cork;
-use std::time::Duration;
-use tonic::{self, async_trait, Code, Request, Response, Status};
 
 pub mod cache;
 pub mod client;
@@ -44,7 +46,9 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
         &self,
         request: Request<ScheduleRequest>,
     ) -> Result<Response<ScheduleResponse>, Status> {
+        let certs = request.peer_certs().unwrap();
         let request = request.get_ref().to_owned();
+
         let cellar_id = request.cellar_id.clone();
         if let Err(err) = cellars::validate_cellar_id(&cellar_id).await {
             let message = format!("cellar ID validation failed: {}", err);
@@ -56,8 +60,10 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
             }
         }
 
+        debug!("checking publisher authorization for {cellar_id}");
+        handle_authorization(&cellar_id, certs).await?;
+
         // Build and send cork
-        let cellar_id = request.cellar_id.clone();
         let height = request.block_height;
         let encoded_call = match get_encoded_call(request) {
             Ok(c) => c,
@@ -68,21 +74,35 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
         };
         debug!("cork: {:?}", encoded_call);
 
-        if let Err(err) = schedule_cork(&cellar_id, encoded_call.clone(), height).await {
-            error!("failed to schedule cork for cellar {}: {}", cellar_id, err);
-            return Err(Status::new(
-                Code::Internal,
-                format!("failed to send cork to sommelier: {}", err),
-            ));
+        match schedule_cork(&cellar_id, encoded_call.clone(), height).await {
+            Ok(res) => {
+                if res.code != 0 {
+                    error!(
+                        "failed to schedule cork for cellar {}. code {}, raw log: {}",
+                        cellar_id, res.code, res.raw_log
+                    );
+                    return Err(Status::new(
+                        Code::Internal,
+                        format!("cork submission failed. this may be a steward configuration problem."),
+                    ));
+                }
+                info!("cork response: {:?}", res)
+            },
+            Err(err) => {
+                error!("failed to schedule cork for cellar {}: {}", cellar_id, err);
+                return Err(Status::new(
+                    Code::Internal,
+                    format!("failed to send cork to sommelier: {}", err),
+                ));
+            }
         }
+        let id = id_hash(height, &cellar_id, encoded_call);
         info!(
-            "scheduled cork for cellar {} at height {}",
-            cellar_id, height
+            "scheduled cork {} for cellar {} at height {}",
+            id, cellar_id, height
         );
 
-        Ok(Response::new(ScheduleResponse {
-            id: id_hash(height, &cellar_id, encoded_call),
-        }))
+        Ok(Response::new(ScheduleResponse { id }))
     }
 
     async fn status(&self, _: Request<StatusRequest>) -> Result<Response<StatusResponse>, Status> {
