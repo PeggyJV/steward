@@ -4,7 +4,7 @@ set -e
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
 GO_OUT=$REPO_ROOT/steward_proto_go
-PROTO_PATH=$REPO_ROOT/proto/steward/v3
+PROTO_PATH=$REPO_ROOT/proto/steward/v4
 
 echo
 echo Building Go bindings. Output will be in ./steward_proto_go/steward_proto

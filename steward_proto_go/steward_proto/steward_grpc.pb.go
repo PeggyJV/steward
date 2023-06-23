@@ -37,7 +37,7 @@ func NewContractCallServiceClient(cc grpc.ClientConnInterface) ContractCallServi
 
 func (c *contractCallServiceClient) Schedule(ctx context.Context, in *ScheduleRequest, opts ...grpc.CallOption) (*ScheduleResponse, error) {
 	out := new(ScheduleResponse)
-	err := c.cc.Invoke(ctx, "/steward.v3.ContractCallService/Schedule", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/steward.v4.ContractCallService/Schedule", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *contractCallServiceClient) Schedule(ctx context.Context, in *ScheduleRe
 
 func (c *contractCallServiceClient) Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
 	out := new(StatusResponse)
-	err := c.cc.Invoke(ctx, "/steward.v3.ContractCallService/Status", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/steward.v4.ContractCallService/Status", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func _ContractCallService_Schedule_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/steward.v3.ContractCallService/Schedule",
+		FullMethod: "/steward.v4.ContractCallService/Schedule",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ContractCallServiceServer).Schedule(ctx, req.(*ScheduleRequest))
@@ -114,7 +114,7 @@ func _ContractCallService_Status_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/steward.v3.ContractCallService/Status",
+		FullMethod: "/steward.v4.ContractCallService/Status",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ContractCallServiceServer).Status(ctx, req.(*StatusRequest))
@@ -126,7 +126,7 @@ func _ContractCallService_Status_Handler(srv interface{}, ctx context.Context, d
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ContractCallService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "steward.v3.ContractCallService",
+	ServiceName: "steward.v4.ContractCallService",
 	HandlerType: (*ContractCallServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -142,88 +142,89 @@ var ContractCallService_ServiceDesc = grpc.ServiceDesc{
 	Metadata: "steward.proto",
 }
 
-// SimulateContractCallClient is the client API for SimulateContractCall service.
+// SimulateContractCallServiceClient is the client API for SimulateContractCallService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type SimulateContractCallClient interface {
+type SimulateContractCallServiceClient interface {
 	// Handles simulated contract call submission
 	Simulate(ctx context.Context, in *SimulateRequest, opts ...grpc.CallOption) (*SimulateResponse, error)
 }
 
-type simulateContractCallClient struct {
+type simulateContractCallServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewSimulateContractCallClient(cc grpc.ClientConnInterface) SimulateContractCallClient {
-	return &simulateContractCallClient{cc}
+func NewSimulateContractCallServiceClient(cc grpc.ClientConnInterface) SimulateContractCallServiceClient {
+	return &simulateContractCallServiceClient{cc}
 }
 
-func (c *simulateContractCallClient) Simulate(ctx context.Context, in *SimulateRequest, opts ...grpc.CallOption) (*SimulateResponse, error) {
+func (c *simulateContractCallServiceClient) Simulate(ctx context.Context, in *SimulateRequest, opts ...grpc.CallOption) (*SimulateResponse, error) {
 	out := new(SimulateResponse)
-	err := c.cc.Invoke(ctx, "/steward.v3.SimulateContractCall/Simulate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/steward.v4.SimulateContractCallService/Simulate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// SimulateContractCallServer is the server API for SimulateContractCall service.
-// All implementations must embed UnimplementedSimulateContractCallServer
+// SimulateContractCallServiceServer is the server API for SimulateContractCallService service.
+// All implementations must embed UnimplementedSimulateContractCallServiceServer
 // for forward compatibility
-type SimulateContractCallServer interface {
+type SimulateContractCallServiceServer interface {
 	// Handles simulated contract call submission
 	Simulate(context.Context, *SimulateRequest) (*SimulateResponse, error)
-	mustEmbedUnimplementedSimulateContractCallServer()
+	mustEmbedUnimplementedSimulateContractCallServiceServer()
 }
 
-// UnimplementedSimulateContractCallServer must be embedded to have forward compatible implementations.
-type UnimplementedSimulateContractCallServer struct {
+// UnimplementedSimulateContractCallServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedSimulateContractCallServiceServer struct {
 }
 
-func (UnimplementedSimulateContractCallServer) Simulate(context.Context, *SimulateRequest) (*SimulateResponse, error) {
+func (UnimplementedSimulateContractCallServiceServer) Simulate(context.Context, *SimulateRequest) (*SimulateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Simulate not implemented")
 }
-func (UnimplementedSimulateContractCallServer) mustEmbedUnimplementedSimulateContractCallServer() {}
+func (UnimplementedSimulateContractCallServiceServer) mustEmbedUnimplementedSimulateContractCallServiceServer() {
+}
 
-// UnsafeSimulateContractCallServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to SimulateContractCallServer will
+// UnsafeSimulateContractCallServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to SimulateContractCallServiceServer will
 // result in compilation errors.
-type UnsafeSimulateContractCallServer interface {
-	mustEmbedUnimplementedSimulateContractCallServer()
+type UnsafeSimulateContractCallServiceServer interface {
+	mustEmbedUnimplementedSimulateContractCallServiceServer()
 }
 
-func RegisterSimulateContractCallServer(s grpc.ServiceRegistrar, srv SimulateContractCallServer) {
-	s.RegisterService(&SimulateContractCall_ServiceDesc, srv)
+func RegisterSimulateContractCallServiceServer(s grpc.ServiceRegistrar, srv SimulateContractCallServiceServer) {
+	s.RegisterService(&SimulateContractCallService_ServiceDesc, srv)
 }
 
-func _SimulateContractCall_Simulate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _SimulateContractCallService_Simulate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SimulateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SimulateContractCallServer).Simulate(ctx, in)
+		return srv.(SimulateContractCallServiceServer).Simulate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/steward.v3.SimulateContractCall/Simulate",
+		FullMethod: "/steward.v4.SimulateContractCallService/Simulate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SimulateContractCallServer).Simulate(ctx, req.(*SimulateRequest))
+		return srv.(SimulateContractCallServiceServer).Simulate(ctx, req.(*SimulateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// SimulateContractCall_ServiceDesc is the grpc.ServiceDesc for SimulateContractCall service.
+// SimulateContractCallService_ServiceDesc is the grpc.ServiceDesc for SimulateContractCallService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var SimulateContractCall_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "steward.v3.SimulateContractCall",
-	HandlerType: (*SimulateContractCallServer)(nil),
+var SimulateContractCallService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "steward.v4.SimulateContractCallService",
+	HandlerType: (*SimulateContractCallServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Simulate",
-			Handler:    _SimulateContractCall_Simulate_Handler,
+			Handler:    _SimulateContractCallService_Simulate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

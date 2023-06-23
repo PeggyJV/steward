@@ -68,7 +68,7 @@ fn generate_rust_protos() {
     let root = env!("CARGO_MANIFEST_DIR");
     let root: PathBuf = root.parse().unwrap();
     let mut steward_proto_dir = root;
-    steward_proto_dir.push("proto/steward/v3");
+    steward_proto_dir.push("proto/steward/v4");
     let steward_proto_dir = [steward_proto_dir];
 
     // List available proto files
