@@ -36,7 +36,7 @@ jobs:
             ~/.cargo/registry/cache
             ~/.cargo/git/db
             target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
       # Install OpenSSL dependencies
       - name: install-packages
         run: sudo apt-get install -y libssl-dev musl-tools
