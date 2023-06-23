@@ -11,6 +11,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: steward-steward
+  PR_NUMBER: ${{ github.event.number }}
   HARDHAT_IMAGE: ghcr.io/peggyjv/steward-hardhat
   ORCHESTRATOR_IMAGE_NAME: ghcr.io/peggyjv/gravity-bridge-orchestrator:main
   SOMMELIER_IMAGE: ghcr.io/peggyjv/sommelier-sommelier:main
@@ -95,7 +96,7 @@ jobs:
       - name: Make Steward artifact available to other jobs
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.IMAGE_NAME }}
+          name: ${{ env.IMAGE_NAME }}-pr-${{ env.PR_NUMBER }}
           path: /tmp/${{ env.STEWARD_ARTIFACT }}
       - name: Move Docker cache
         run: |
@@ -160,7 +161,7 @@ jobs:
       - name: Get steward artifact
         uses: actions/download-artifact@v3
         with:
-          name: ${{ env.IMAGE_NAME }}
+          name: ${{ env.IMAGE_NAME }}-pr-${{ env.PR_NUMBER }}
           path: /tmp
       # The steward image is already tagged at this point by the steward-build job
       - name: Load steward image
