@@ -64,5 +64,5 @@ pub mod abi {
 
 #[allow(clippy::all)]
 pub mod proto {
-    include!("gen/proto/steward.v3.rs");
+    include!("gen/proto/steward.v4.rs");
 }
