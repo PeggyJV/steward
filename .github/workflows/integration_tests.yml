@@ -174,10 +174,8 @@ jobs:
       # The image is already tagged at this point by the hardhat-build job
       - name: Load hardhat image
         run: docker load --input ${{ env.DOWNLOAD_DIR }}/${{ env.HARDHAT_ARTIFACT }}
-      - name: ls
-        run: echo ${{ env.HARDHAT_ARTIFACT }} && docker image ls
       - name: Rename hardhat image
-        run: docker tag ${{ env.HARDHAT_ARTIFACT }} ethereum:prebuilt
+        run: docker tag ${{ env.HARDHAT_IMAGE }} ethereum:prebuilt
       - name: Get steward artifact
         uses: actions/download-artifact@v3
         with:
