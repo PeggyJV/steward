@@ -16,8 +16,8 @@ env:
   HARDHAT_IMAGE_NAME: steward-hardhat
   ORCHESTRATOR_IMAGE_NAME: ghcr.io/peggyjv/gravity-bridge-orchestrator:main
   SOMMELIER_IMAGE: ghcr.io/peggyjv/sommelier-sommelier:main
-  STEWARD_ARTIFACT: steward_steward.tar
-  HARDHAT_ARTIFACT: steward_hardhat.tar
+  STEWARD_ARTIFACT: steward_steward
+  HARDHAT_ARTIFACT: steward_hardhat
   UPLOAD_DIR: /tmp/uploaded_artifacts
   DOWNLOAD_DIR: /tmp/downloaded_artifacts
 
@@ -174,6 +174,8 @@ jobs:
       # The image is already tagged at this point by the hardhat-build job
       - name: Load hardhat image
         run: docker load --input ${{ env.DOWNLOAD_DIR }}/${{ env.HARDHAT_ARTIFACT }}
+      - name: Rename hardhat image
+        run: docker tag ${{ env.HARDHAT_ARTIFACT }} ethereum:prebuilt
       - name: Get steward artifact
         uses: actions/download-artifact@v3
         with:
