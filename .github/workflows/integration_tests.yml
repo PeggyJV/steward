@@ -175,7 +175,7 @@ jobs:
       - name: Load hardhat image
         run: docker load --input ${{ env.DOWNLOAD_DIR }}/${{ env.HARDHAT_ARTIFACT }}
       - name: Rename hardhat image
-        run: docker tag ${{ env.HARDHAT_IMAGE }} ethereum:prebuilt
+        run: docker tag ${{ env.HARDHAT_IMAGE }}:pr-${{ env.PR_NUMBER }} ethereum:prebuilt
       - name: Get steward artifact
         uses: actions/download-artifact@v3
         with:
