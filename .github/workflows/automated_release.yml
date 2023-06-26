@@ -24,18 +24,19 @@ jobs:
       - name: checkout-code
         uses: actions/checkout@v2
       - name: "Check version"
-        run: ./check_version.sh
+        run: scripts/check_version.sh
       # Rust Cache
       - name: rust-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
+        id: rust-cache
         with:
           path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            steward/target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('steward/Cargo.lock') }}
+            ~/.cargo/bin
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
       # Install OpenSSL dependencies
       - name: install-packages
         run: sudo apt-get install -y libssl-dev musl-tools

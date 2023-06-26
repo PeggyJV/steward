@@ -1,0 +1,60 @@
+/*
+* Protos for function calls in the BaseAdaptor interface.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "common.proto";
+
+/*
+* Helper function that allows swaps using the Swap Router
+*
+* Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
+*/
+message Swap {
+    // Asset to swap from
+    string asset_in = 1;
+    // Asset to swap to
+    string asset_out = 2;
+    // Amount to swap
+    string amount_in = 3;
+    // The exchange to make the swap on
+    Exchange exchange = 4;
+    // The parameters for the swap
+    SwapParams params = 5;
+}
+
+/*
+* Helper function to make safe "blind" Uniswap Swaps by comparing value in vs value out of the swap.
+*
+* Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
+*/
+message OracleSwap {
+    // Asset to swap from
+    string asset_in = 1;
+    // Asset to swap to
+    string asset_out = 2;
+    // Amount to swap
+    string amount_in = 3;
+    // The exchange to make the swap on
+    Exchange exchange = 4;
+    // The parameters for the swap
+    OracleSwapParams params = 5;
+    // The slippage allowed for the swap
+    uint64 slippage = 6;
+}
+
+/*
+* Allows strategists to zero out an approval for a given `asset`.
+*
+* Represents function `revokeApproval(ERC20 asset, address spender)`
+*/
+message RevokeApproval {
+    // ERC20 Asset to revoke spender's approval for
+    string asset = 1;
+    // The spender to revoke approval of asset for
+    string spender = 2;
+}

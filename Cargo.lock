@@ -4879,18 +4879,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sommelier_steward"
-version = "3.0.0"
-dependencies = [
- "lazy_static",
- "steward",
- "steward_abi",
- "steward_abi_build",
- "steward_proto",
- "steward_proto_rust_build",
-]
-
-[[package]]
 name = "spin"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4998,6 +4986,7 @@ dependencies = [
  "openssl-sys",
  "pkcs8",
  "prost",
+ "prost-build",
  "prost-types",
  "rand 0.8.5",
  "rand_core 0.6.4",
@@ -5010,55 +4999,15 @@ dependencies = [
  "sha3 0.10.6",
  "signatory",
  "somm_proto",
- "steward_abi",
- "steward_proto",
  "tempdir",
  "thiserror",
  "tokio 1.23.0",
  "toml",
  "tonic",
+ "tonic-build",
  "tonic-reflection",
  "tower",
  "url",
-]
-
-[[package]]
-name = "steward_abi"
-version = "3.0.0"
-dependencies = [
- "ethers",
- "serde",
- "serde_derive",
- "serde_json",
-]
-
-[[package]]
-name = "steward_abi_build"
-version = "1.0.0"
-dependencies = [
- "ethers",
- "serde",
- "serde_derive",
- "serde_json",
-]
-
-[[package]]
-name = "steward_proto"
-version = "3.0.0"
-dependencies = [
- "prost",
- "prost-types",
- "serde",
- "tonic",
-]
-
-[[package]]
-name = "steward_proto_rust_build"
-version = "1.0.0"
-dependencies = [
- "prost",
- "prost-build",
- "tonic-build",
  "walkdir",
 ]
 

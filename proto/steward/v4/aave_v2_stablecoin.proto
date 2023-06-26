@@ -1,0 +1,223 @@
+/*
+ * This is Steward's Strategy Provider API for the AaveV2StablecoinCellar.sol Cellar contract which can be found in this repo:
+ * https://github.com/PeggyJV/cellar-contracts
+ *
+ */
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+/*
+ * Represents a function call to the Aave V2 Stablecoin cellar
+ */
+message AaveV2Stablecoin {
+    // The function you wish to execute on the target cellar
+    oneof function {
+        // Represents function `accruePlatformFees()`
+        Accrue accrue = 1;
+        // Represents function `claimAndUnstake()`
+        ClaimAndUnstake claim_and_unstake = 2;
+        // Represents function `enterPosition()`
+        EnterPosition enter_position = 3;
+        // Represents function `enterPosition(uint256 assets)`
+        EnterPositionWithAssets enter_position_with_assets = 4;
+        // Represents function `exitPosition()`
+        ExitPosition exit_position = 5;
+        // Represents function `exitPosition(uint256 assets)`
+        ExitPositionWithAssets exit_position_with_assets = 6;
+        // Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`
+        Rebalance rebalance = 7;
+        // Represents function `reinvest(uint256 minAssetsOut)`
+        Reinvest reinvest = 8;
+        // Represents function `setAccrualPeriod(uint32 newAccrualPeriod)`
+        SetAccrualPeriod set_accrual_period = 9;
+        // Represents function `setDepositLimit(uint256 limit)`
+        SetDepositLimit set_deposit_limit = 10;
+        // Represents function `setLiquidityLimit(uint256 limit)`
+        SetLiquidityLimit set_liquidity_limit = 11;
+        // Represents function `transferFees()`
+        SendFees send_fees = 12;
+    }
+
+    /*
+     * Accrue yield, platform fees, and performance fees..
+     *
+     * Represents function `accrue()`
+     */
+    message Accrue {}
+
+    /*
+     * Claim rewards from Aave and begin cooldown period to unstake them.
+     *
+     * Represents function `claimAndUnstake()`
+     */
+    message ClaimAndUnstake {}
+
+    /*
+     * Pushes total assets into the current Aave lending position.
+     *
+     * Represents function `enterPosition()`
+     */
+     message EnterPosition {}
+
+    /*
+     * Pushes assets into the current Aave lending position.
+     *
+     * Represents function `enterPosition(uint256 assets)`
+     */
+    message EnterPositionWithAssets {
+        // amount of assets to enter into the current position
+        string assets = 1;
+    }
+
+    /*
+     * Pulls total assets from the current Aave lending position.
+     *
+     * Represents function `enterPosition()`
+     */
+     message ExitPosition {}
+
+    /*
+     * Pulls assets from the current Aave lending position.
+     *
+     * Represents function `exitPosition(uint256 assets)`
+     */
+     message ExitPositionWithAssets {
+        // amount of assets to exit from the current position
+        string assets = 1;
+    }
+
+    /*
+     * Rebalances current assets into a new asset position.
+     *
+     * Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`
+     *
+     * This function is based on the Curve Pool Registry exchange_multiple() function:
+     * https://github.com/curvefi/curve-pool-registry/blob/16a8664952cf61d7fed06acca79ad5ac696f4b20/contracts/Swaps.vy#L461-L489
+     */
+    message Rebalance {
+        // array of [initial token, pool, token, pool, token, ...] that specifies the swap route on Curve.
+        repeated string route = 1;
+        // An array of up to 4 swap params. Attempting more than four swaps will fail.
+        repeated SwapParams swap_params = 2;
+        // Minimum acceptable assets to be received from the swap (slippage parameter).  Must be parsable as an unsigned 256-bit integer.
+        string min_assets_out = 3;
+
+        /*
+         * Represents parameters for a single swap. Each swap needs the indeces in Rebalance.route of the in/out token addresses and the swap type. See the Curve contract linked above for more detail.
+         */
+        message SwapParams {
+            // Index in the `route` array of the swap's input token address
+            uint64 in_index = 1;
+            // Index in the `route` array of the swap's output token address
+            uint64 out_index = 2;
+            /* 1 - stableswap `exchange`
+             * 2 - stableswap `exchange_underlying`
+             * 3 - cryptoswap `exchange`
+             * 4 - cryptoswap `exchange_underlying`
+             * 5 - Polygon factory metapools `exchange_underlying`
+             * See the Curve Pool Registry exchange_multiple() function for more information.
+             */
+            uint64 swap_type = 3;
+        }
+    }
+
+    /*
+     * Reinvest rewards back into cellar's current position. Must be called within 2 day unstake period 10 days after `claimAndUnstake` was run.
+     *
+     * Represents function `reinvest(uint256 minAssetsOut)`
+     */
+    message Reinvest {
+        // Minimum acceptable assets to be received from the swap (slippage parameter).  Must be parsable as an unsigned 256-bit integer.
+        string min_assets_out = 1;
+    }
+
+    /*
+     * Set the accrual period over which yield is distributed.
+     *
+     * Represents function `setAccrualPeriod(uint32 newAccrualPeriod)`
+     */
+    message SetAccrualPeriod {
+        uint32 new_accrual_period = 1;
+    }
+
+    /*
+     * Set the per-wallet deposit limit. Uses the same decimals as the current asset.
+     *
+     * Represents function `setDepositLimit(uint256 limit)`
+     */
+    message SetDepositLimit {
+        // Amount of assets to set as the new limit. Must be parsable as an unsigned 256-bit integer.
+        string limit = 1;
+    }
+
+    /*
+     * Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.
+     *
+     * Represents function `setLiquidityLimit(uint256 limit)`
+     */
+     message SetLiquidityLimit {
+        // Amount of assets to set as the new limit
+        string limit = 1;
+    }
+
+    /*
+     * Transfer accrued fees to the Sommelier Chain to distribute.
+     *
+     * Represents function `sendFees()`
+     */
+    message SendFees {}
+}
+
+/*
+ * Represents a function call initiated by governance
+ */
+ message AaveV2StablecoinGovernance {
+    // The function to call on the target cellar
+    oneof function {
+        // Represents function `setFeesDistributor(bytes32)`
+        SetFeesDistributor set_fees_distributor = 1;
+        // Represents function `initiateShutdown(bool)`
+        InitiateShutdown initiate_shutdown = 2;
+        // Represents function `liftShutdown()`
+        LiftShutdown lift_shutdown = 3;
+        // Represents function `setTrust(address, bool)`
+        SetTrust set_trust = 4;
+        // Represents function `sweep(address, address)`
+        Sweep sweep = 5;
+    }
+
+
+    // Represents function `setFeesDistributor(bytes32)`
+    message SetFeesDistributor {
+        // The new fees distributor
+        string new_fees_distributor = 1;
+    }
+
+    // Represents function `initiateShutdown(bool)`
+    message InitiateShutdown {
+        // Whether to empty the position
+        bool empty_position = 1;
+    }
+
+    // Represents function `liftShutdown()`
+    message LiftShutdown {}
+
+    // Represents function `setTrust(address, bool)`
+    message SetTrust {
+        // The position to set trust for
+        string position = 1;
+        // Whether to trust the address
+        bool trust = 2;
+    }
+
+    // Represents function `sweep(address, address)`
+    message Sweep {
+        // The address of the ERC20 token to sweep
+        string token = 1;
+        // The recipient of the sweep
+        string recipient = 2;
+    }
+ }

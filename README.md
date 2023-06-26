@@ -24,7 +24,13 @@ Steward provides a suite of utility functions for interacting with Sommelier, th
 
 ## Getting Started for Validators
 
-Please refer to the [Steward for Validators](docs/02-StewardForValidators.md) document.
+If you choose to build the `steward` binary from source, you will need to have rustfmt installed to the relevant toolchain:
+
+```bash
+rustup component add rustfmt
+```
+
+Please refer to the [Steward for Validators](docs/02-StewardForValidators.md) document for a complete setup guide.
 
 ## Getting Started for Strategists
 
