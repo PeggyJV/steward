@@ -38,7 +38,7 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
                     amounts_in: p
                         .amounts_in
                         .into_iter()
-                        .map(|x| string_to_u256(x))
+                        .map(string_to_u256)
                         .collect::<Result<Vec<_>, _>>()?,
                     bpt_out: sp_call_parse_address(p.btp_out)?,
                     call_data: p.call_data.into_iter().map(Into::into).collect(),
@@ -86,7 +86,11 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
                 let call = steward_abi::balancer_pool_adaptor_v1::ClaimRewardsCall {
                     gauge: sp_call_parse_address(p.guage)?,
                 };
-                calls.push(BalancerPoolAdaptorV1Calls::ClaimRewards(call).encode().into())
+                calls.push(
+                    BalancerPoolAdaptorV1Calls::ClaimRewards(call)
+                        .encode()
+                        .into(),
+                )
             }
         }
     }
