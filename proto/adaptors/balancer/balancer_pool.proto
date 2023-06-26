@@ -1,0 +1,118 @@
+/*
+* Protos for function calls to the Compound CToken adaptor.
+*/
+
+syntax = "proto3";
+package steward.v3;
+
+option go_package = "/steward_proto";
+
+import "adaptors/base.proto";
+
+// Represents call data for the Compound C Token adaptor V2, managing lending positions on Compound.
+message BalancerPoolAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `relayerJoinPool(ERC20[] tokensIn, uint256[] amountsIn, ERC20 btpOut, bytes[] memory callData)`
+        RelayerJoinPool relayer_join_pool = 2;
+        // Represents function `relayerExitPool(ERC20 bptIn, uint256 amountIn, ERC20[] memory tokensOut, bytes[] memory callData)`
+        RelayerExitPool relayer_exit_pool = 3;
+        // Represents function `stakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountIn)`
+        StakeBPT stake_bpt = 4;
+        // Represents function `unstakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountOut)`
+        UnstakeBPT unstake_bpt = 5;
+        // Represents function `claimRewards(address gauge)`
+        ClaimRewards claim_rewards = 6;
+
+    }
+
+    /*
+    * Call `BalancerRelayer` on mainnet to carry out join txs
+    *
+    * Represents function `relayerJoinPool(ERC20[] tokensIn, uint256[] amountsIn, ERC20 btpOut, bytes[] memory callData)`
+    */
+    message RelayerJoinPool {
+        // The tokens to join.
+        repeated string tokens_in = 1;
+
+        // The amounts to join
+        repeated string amounts_in = 2;
+
+        // The token to receive
+        string btp_out = 3;
+
+        // The call data for the relayer
+        repeated bytes call_data = 4;
+    }
+
+    /*
+    * Call `BalancerRelayer` on mainnet to carry out exit txs
+    *
+    * Represents function `relayerExitPool(ERC20 bptIn, uint256 amountIn, ERC20[] memory tokensOut, bytes[] memory callData)``
+    */
+    message RelayerExitPool {
+        // The token to exit
+        string bpt_in = 1;
+
+        // The amount to exit
+        string amount_in = 2;
+
+        // The tokens to receive
+        repeated string tokens_out = 3;
+
+        // The call data for the relayer
+        repeated bytes call_data = 4;
+    }
+
+    /*
+    * Stake (deposit) BPTs into respective pool gauge
+    *
+    * Represents `function stakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountIn)``
+    */
+    message StakeBPT {
+        // The BPT to stake
+        string bpt = 1;
+
+        // The liquidity gauge to stake into
+        string liquidity_gauge = 2;
+
+        // The amount to stake
+        string amount_in = 3;
+    }
+
+    /*
+    * Unstake (withdraw) BPT from respective pool gauge
+    *
+    * Represents `function unstakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountOut)``
+    */
+    message UnstakeBPT {
+        // The BPT to unstake
+        string bpt = 1;
+
+        // The liquidity gauge to unstake from
+        string liquidity_gauge = 2;
+
+        // The amount to unstake
+        string amount_out = 3;
+    }
+
+    /*
+    * Claim rewards ($BAL) from LP position
+    *
+    * Represents `function claimRewards(address gauge)`
+    */
+    message ClaimRewards {
+        // The gauge to claim rewards from
+        string guage = 1;
+    }
+}
+
+message BalancerPoolAdaptorV1Calls {
+    repeated BalancerPoolAdaptorV1 calls = 1;
+}

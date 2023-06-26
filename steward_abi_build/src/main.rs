@@ -28,6 +28,7 @@ fn main() {
             "AaveV2EnableAssetAsCollateralAdaptorV1",
             "aave_v2_enable_asset_as_collateral_adaptor_v1",
         ),
+        ("BalancerPoolAdaptorV1", "balancer_pool_adaptor_v1")
     ];
 
     contracts

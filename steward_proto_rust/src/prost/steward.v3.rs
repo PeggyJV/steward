@@ -1327,6 +1327,127 @@ pub struct CompoundCTokenAdaptorV2Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<CompoundCTokenAdaptorV2>,
 }
+/// Represents call data for the Compound C Token adaptor V2, managing lending positions on Compound.
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct BalancerPoolAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(
+        oneof = "balancer_pool_adaptor_v1::Function",
+        tags = "1, 2, 3, 4, 5, 6"
+    )]
+    pub function: ::core::option::Option<balancer_pool_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `BalancerPoolAdaptorV1`.
+pub mod balancer_pool_adaptor_v1 {
+    ///
+    /// Call `BalancerRelayer` on mainnet to carry out join txs
+    ///
+    /// Represents function `relayerJoinPool(ERC20[] tokensIn, uint256[] amountsIn, ERC20 btpOut, bytes[] memory callData)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RelayerJoinPool {
+        /// The tokens to join.
+        #[prost(string, repeated, tag = "1")]
+        pub tokens_in: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+        /// The amounts to join
+        #[prost(string, repeated, tag = "2")]
+        pub amounts_in: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+        /// The token to receive
+        #[prost(string, tag = "3")]
+        pub btp_out: ::prost::alloc::string::String,
+        /// The call data for the relayer
+        #[prost(bytes = "vec", repeated, tag = "4")]
+        pub call_data: ::prost::alloc::vec::Vec<::prost::alloc::vec::Vec<u8>>,
+    }
+    ///
+    /// Call `BalancerRelayer` on mainnet to carry out exit txs
+    ///
+    /// Represents function `relayerExitPool(ERC20 bptIn, uint256 amountIn, ERC20[] memory tokensOut, bytes[] memory callData)``
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RelayerExitPool {
+        /// The token to exit
+        #[prost(string, tag = "1")]
+        pub bpt_in: ::prost::alloc::string::String,
+        /// The amount to exit
+        #[prost(string, tag = "2")]
+        pub amount_in: ::prost::alloc::string::String,
+        /// The tokens to receive
+        #[prost(string, repeated, tag = "3")]
+        pub tokens_out: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+        /// The call data for the relayer
+        #[prost(bytes = "vec", repeated, tag = "4")]
+        pub call_data: ::prost::alloc::vec::Vec<::prost::alloc::vec::Vec<u8>>,
+    }
+    ///
+    /// Stake (deposit) BPTs into respective pool gauge
+    ///
+    /// Represents `function stakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountIn)``
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct StakeBpt {
+        /// The BPT to stake
+        #[prost(string, tag = "1")]
+        pub bpt: ::prost::alloc::string::String,
+        /// The liquidity gauge to stake into
+        #[prost(string, tag = "2")]
+        pub liquidity_gauge: ::prost::alloc::string::String,
+        /// The amount to stake
+        #[prost(string, tag = "3")]
+        pub amount_in: ::prost::alloc::string::String,
+    }
+    ///
+    /// Unstake (withdraw) BPT from respective pool gauge
+    ///
+    /// Represents `function unstakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountOut)``
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct UnstakeBpt {
+        /// The BPT to unstake
+        #[prost(string, tag = "1")]
+        pub bpt: ::prost::alloc::string::String,
+        /// The liquidity gauge to unstake from
+        #[prost(string, tag = "2")]
+        pub liquidity_gauge: ::prost::alloc::string::String,
+        /// The amount to unstake
+        #[prost(string, tag = "3")]
+        pub amount_out: ::prost::alloc::string::String,
+    }
+    ///
+    /// Claim rewards ($BAL) from LP position
+    ///
+    /// Represents `function claimRewards(address gauge)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct ClaimRewards {
+        /// The gauge to claim rewards from
+        #[prost(string, tag = "1")]
+        pub guage: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `relayerJoinPool(ERC20[] tokensIn, uint256[] amountsIn, ERC20 btpOut, bytes[] memory callData)`
+        #[prost(message, tag = "2")]
+        RelayerJoinPool(RelayerJoinPool),
+        /// Represents function `relayerExitPool(ERC20 bptIn, uint256 amountIn, ERC20[] memory tokensOut, bytes[] memory callData)`
+        #[prost(message, tag = "3")]
+        RelayerExitPool(RelayerExitPool),
+        /// Represents function `stakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountIn)`
+        #[prost(message, tag = "4")]
+        StakeBpt(StakeBpt),
+        /// Represents function `unstakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountOut)`
+        #[prost(message, tag = "5")]
+        UnstakeBpt(UnstakeBpt),
+        /// Represents function `claimRewards(address gauge)`
+        #[prost(message, tag = "6")]
+        ClaimRewards(ClaimRewards),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct BalancerPoolAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<BalancerPoolAdaptorV1>,
+}
 // TODO: Comments
 
 /// Represents call data for the FeesAndReserves and FeesAndReservesAdaptor contracts.
@@ -1613,7 +1734,7 @@ pub mod aave_v3_debt_token_adaptor_v1 {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_aave_v3_flashloan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flashloan::CallData>,
     }
@@ -1672,6 +1793,9 @@ pub mod aave_v3_debt_token_adaptor_v1 {
             AaveV2EnableAssetAsCollateralV1Calls(
                 super::super::AaveV2EnableAssetAsCollateralAdaptorV1Calls,
             ),
+            /// Represents function calls to the BalancerPoolAdaptor V1
+            #[prost(message, tag = "18")]
+            BalancerPoolV1Calls(super::super::BalancerPoolAdaptorV1Calls),
         }
     }
     ///**** BASE ADAPTOR FUNCTIONS ****
@@ -2104,7 +2228,7 @@ pub struct AdaptorCall {
     /// The function call data for the adaptor
     #[prost(
         oneof = "adaptor_call::CallData",
-        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17"
+        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18"
     )]
     pub call_data: ::core::option::Option<adaptor_call::CallData>,
 }
@@ -2161,6 +2285,9 @@ pub mod adaptor_call {
         /// Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1
         #[prost(message, tag = "17")]
         AaveV2EnableAssetAsCollateralV1Calls(super::AaveV2EnableAssetAsCollateralAdaptorV1Calls),
+        /// Represents function calls to the BalancerPoolAdaptor V1
+        #[prost(message, tag = "18")]
+        BalancerPoolV1Calls(super::BalancerPoolAdaptorV1Calls),
     }
 }
 ///
