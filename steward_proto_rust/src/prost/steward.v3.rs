@@ -750,6 +750,90 @@ pub struct UniswapV3AdaptorV2Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<UniswapV3AdaptorV2>,
 }
+/// Represents call data for the OneInch adaptor.
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct FTokenAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(oneof = "f_token_adaptor_v1::Function", tags = "1, 2, 3, 4, 5")]
+    pub function: ::core::option::Option<f_token_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `FTokenAdaptorV1`.
+pub mod f_token_adaptor_v1 {
+    ///
+    /// Allows strategists to lend FRAX on FraxLend
+    ///
+    /// Represents `function lendFrax(IFToken fToken, uint256 amountToDeposit)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct LendFrax {
+        /// The address of the fToken to lend.
+        #[prost(string, tag = "1")]
+        pub f_token: ::prost::alloc::string::String,
+        /// The amount of the fToken to lend.
+        #[prost(string, tag = "2")]
+        pub amount_to_deposit: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to redeem FRAX shares on FraxLend
+    ///
+    /// Represents `function redeemFraxShare(IFToken fToken, uint256 amountToRedeem)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RedeemFraxShare {
+        /// The address of the fToken to redeem.
+        #[prost(string, tag = "1")]
+        pub f_token: ::prost::alloc::string::String,
+        /// The amount of the fToken to redeem.
+        #[prost(string, tag = "2")]
+        pub amount_to_redeem: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to withdraw FRAX from FraxLend
+    ///
+    /// Represents `function withdrawFrax(IFToken fToken, uint256 amountToWithdraw)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct WithdrawFrax {
+        /// The address of the fToken to withdraw.
+        #[prost(string, tag = "1")]
+        pub f_token: ::prost::alloc::string::String,
+        /// The amount of the fToken to withdraw.
+        #[prost(string, tag = "2")]
+        pub amount_to_withdraw: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows a strategist to call `addInterest` on a Frax Pair they are using
+    ///
+    /// Represents `function callAddInterest(IFToken fToken)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct CallAddInterest {
+        /// The address of the fToken to call `addInterest` on.
+        #[prost(string, tag = "1")]
+        pub f_token: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `lendFrax(IFToken fToken, uint256 amountToDeposit)`
+        #[prost(message, tag = "2")]
+        LendFrax(LendFrax),
+        /// Represents function `redeemFraxShare(IFToken fToken, uint256 amountToRedeem)`
+        #[prost(message, tag = "3")]
+        RedeemFraxShare(RedeemFraxShare),
+        /// Represents function `withdrawFrax(IFToken fToken, uint256 amountToWithdraw)`
+        #[prost(message, tag = "4")]
+        WithdrawFrax(WithdrawFrax),
+        /// Represents function `callAddInterest(IFToken fToken)`
+        #[prost(message, tag = "5")]
+        CallAddInterest(CallAddInterest),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct FTokenAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<FTokenAdaptorV1>,
+}
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct CellarAdaptorV1 {
     ///**** BASE ADAPTOR FUNCTIONS ****
@@ -1734,7 +1818,7 @@ pub mod aave_v3_debt_token_adaptor_v1 {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_aave_v3_flashloan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flashloan::CallData>,
     }
@@ -1796,6 +1880,9 @@ pub mod aave_v3_debt_token_adaptor_v1 {
             /// Represents function calls to the BalancerPoolAdaptor V1
             #[prost(message, tag = "18")]
             BalancerPoolV1Calls(super::super::BalancerPoolAdaptorV1Calls),
+            /// Represents function calls to the FTokenAdaptor V1
+            #[prost(message, tag = "19")]
+            FTokenV1Calls(super::super::FTokenAdaptorV1Calls),
         }
     }
     ///**** BASE ADAPTOR FUNCTIONS ****
@@ -2228,7 +2315,7 @@ pub struct AdaptorCall {
     /// The function call data for the adaptor
     #[prost(
         oneof = "adaptor_call::CallData",
-        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18"
+        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19"
     )]
     pub call_data: ::core::option::Option<adaptor_call::CallData>,
 }
@@ -2288,6 +2375,9 @@ pub mod adaptor_call {
         /// Represents function calls to the BalancerPoolAdaptor V1
         #[prost(message, tag = "18")]
         BalancerPoolV1Calls(super::BalancerPoolAdaptorV1Calls),
+        /// Represents function calls to the FTokenAdaptor V1
+        #[prost(message, tag = "19")]
+        FTokenV1Calls(super::FTokenAdaptorV1Calls),
     }
 }
 ///

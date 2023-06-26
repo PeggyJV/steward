@@ -12,6 +12,7 @@ import "adaptors/aave/debt_token.proto";
 import "adaptors/aave/aave_v3_a_token.proto";
 import "adaptors/compound/c_token.proto";
 import "adaptors/balancer/balancer_pool.proto";
+import "adaptors/frax/f_token.proto";
 import "adaptors/uniswap/uniswap_v3.proto";
 import "adaptors/uniswap/swap_with_uniswap.proto";
 import "adaptors/fees_and_reserves.proto";
@@ -134,6 +135,8 @@ message AaveV3DebtTokenAdaptorV1 {
             AaveV2EnableAssetAsCollateralAdaptorV1Calls aave_v2_enable_asset_as_collateral_v1_calls = 17;
             // Represents function calls to the BalancerPoolAdaptor V1
             BalancerPoolAdaptorV1Calls balancer_pool_v1_calls = 18;
+            // Represents function calls to the FTokenAdaptor V1
+            FTokenAdaptorV1Calls f_token_v1_calls = 19;
         }
     }
 }
