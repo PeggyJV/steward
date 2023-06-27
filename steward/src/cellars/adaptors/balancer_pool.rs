@@ -57,12 +57,12 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
                         min_amounts_for_swaps: d
                             .min_amounts_for_swaps
                             .into_iter()
-                            .map(|a| string_to_u256(a))
+                            .map(string_to_u256)
                             .collect::<Result<Vec<_>, Error>>()?,
                         swap_deadlines: d
                             .swap_deadlines
                             .into_iter()
-                            .map(|a| string_to_u256(a))
+                            .map(string_to_u256)
                             .collect::<Result<Vec<_>, Error>>()?,
                     },
                     // need to confirm with contract team this is safe. should we error on None?
@@ -104,12 +104,12 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
                         min_amounts_for_swaps: d
                             .min_amounts_for_swaps
                             .into_iter()
-                            .map(|a| string_to_u256(a))
+                            .map(string_to_u256)
                             .collect::<Result<Vec<_>, Error>>()?,
                         swap_deadlines: d
                             .swap_deadlines
                             .into_iter()
-                            .map(|a| string_to_u256(a))
+                            .map(string_to_u256)
                             .collect::<Result<Vec<_>, Error>>()?,
                     },
                     // need to confirm with contract team this is safe. should we error on None?
@@ -121,12 +121,12 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
                         assets: r
                             .assets
                             .into_iter()
-                            .map(|a| sp_call_parse_address(a))
+                            .map(sp_call_parse_address)
                             .collect::<Result<Vec<_>, Error>>()?,
                         min_amounts_out: r
                             .min_amounts_out
                             .into_iter()
-                            .map(|a| string_to_u256(a))
+                            .map(string_to_u256)
                             .collect::<Result<Vec<_>, Error>>()?,
                         user_data: r.user_data.into(),
                         to_internal_balance: r.to_internal_balance,
