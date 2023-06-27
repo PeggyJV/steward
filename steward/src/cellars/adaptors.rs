@@ -5,6 +5,7 @@ pub mod balancer_pool;
 pub mod compound;
 pub mod f_token;
 pub mod fees_and_reserves;
+pub mod morpho;
 pub mod oneinch;
 pub mod sommelier;
 pub mod swap_with_uniswap;

@@ -750,7 +750,303 @@ pub struct UniswapV3AdaptorV2Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<UniswapV3AdaptorV2>,
 }
-/// Represents call data for the OneInch adaptor.
+/// Represents call data for the Morpho Aave V2 AToken adaptor.
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MorphoAaveV2aTokenAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(oneof = "morpho_aave_v2a_token_adaptor_v1::Function", tags = "1, 2, 3")]
+    pub function: ::core::option::Option<morpho_aave_v2a_token_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `MorphoAaveV2ATokenAdaptorV1`.
+pub mod morpho_aave_v2a_token_adaptor_v1 {
+    ///
+    /// Allows strategists to lend assets on Morpho.
+    ///
+    /// Represents function `depositToAaveV2Morpho(IAaveToken aToken, uint256 amountToDeposit)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct DepositToAaveV2Morpho {
+        /// The address of the Aave V2 aToken to deposit to.
+        #[prost(string, tag = "1")]
+        pub a_token: ::prost::alloc::string::String,
+        /// The amount of the asset to deposit.
+        #[prost(string, tag = "2")]
+        pub amount_to_deposit: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to withdraw assets from Morpho.
+    ///
+    /// Represents function `withdrawFromAaveV2Morpho(IAaveToken aToken, uint256 amountToWithdraw)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct WithdrawFromAaveV2Morpho {
+        /// The address of the Aave V2 aToken to withdraw from.
+        #[prost(string, tag = "1")]
+        pub a_token: ::prost::alloc::string::String,
+        /// The amount of the asset to withdraw.
+        #[prost(string, tag = "2")]
+        pub amount_to_withdraw: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `depositToAaveV2Morpho(IAaveToken aToken, uint256 amountToDeposit)`
+        #[prost(message, tag = "2")]
+        DepositToAaveV2Morpho(DepositToAaveV2Morpho),
+        /// Represents function `withdrawFromAaveV2Morpho(IAaveToken aToken, uint256 amountToWithdraw)`
+        #[prost(message, tag = "3")]
+        WithdrawFromAaveV2Morpho(WithdrawFromAaveV2Morpho),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MorphoAaveV2aTokenAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<MorphoAaveV2aTokenAdaptorV1>,
+}
+/// Represents call data for the Morpho Aave V3 AToken Collateral adaptor.
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MorphoAaveV3aTokenCollateralAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(
+        oneof = "morpho_aave_v3a_token_collateral_adaptor_v1::Function",
+        tags = "1, 2, 3"
+    )]
+    pub function: ::core::option::Option<morpho_aave_v3a_token_collateral_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `MorphoAaveV3ATokenCollateralAdaptorV1`.
+pub mod morpho_aave_v3a_token_collateral_adaptor_v1 {
+    ///
+    /// Allows strategists to lend assets on Morpho
+    ///
+    /// Represents function `depositToAaveV3Morpho(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct DepositToAaveV3Morpho {
+        /// The address of the token to deposit
+        #[prost(string, tag = "1")]
+        pub token_to_deposit: ::prost::alloc::string::String,
+        /// The amount of tokens to deposit
+        #[prost(string, tag = "2")]
+        pub amount_to_deposit: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to withdraw assets from Morpho
+    ///
+    /// Represents function `withdrawFromAaveV3Morpho(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct WithdrawFromAaveV3Morpho {
+        /// The address of the token to withdraw
+        #[prost(string, tag = "1")]
+        pub token_to_withdraw: ::prost::alloc::string::String,
+        /// The amount of tokens to withdraw
+        #[prost(string, tag = "2")]
+        pub amount_to_withdraw: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `depositToAaveV3Morpho(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+        #[prost(message, tag = "2")]
+        DepositToAaveV3Morpho(DepositToAaveV3Morpho),
+        /// Represents function `withdrawFromAaveV3Morpho(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
+        #[prost(message, tag = "3")]
+        WithdrawFromAaveV3Morpho(WithdrawFromAaveV3Morpho),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MorphoAaveV3aTokenCollateralAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<MorphoAaveV3aTokenCollateralAdaptorV1>,
+}
+/// Represents call data for the Morpho Aave V3 A Token P2P adaptor.
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MorphoAaveV3aTokenP2pAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(
+        oneof = "morpho_aave_v3a_token_p2p_adaptor_v1::Function",
+        tags = "1, 2, 3"
+    )]
+    pub function: ::core::option::Option<morpho_aave_v3a_token_p2p_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `MorphoAaveV3ATokenP2PAdaptorV1`.
+pub mod morpho_aave_v3a_token_p2p_adaptor_v1 {
+    ///
+    /// Allows strategists to lend assets on Morpho
+    ///
+    /// Represents function `depositToAaveV3Morpho(ERC20 tokenToDeposit, uint256 amountToDeposit, uint256 maxIterations)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct DepositToAaveV3Morpho {
+        /// The address of the token to deposit
+        #[prost(string, tag = "1")]
+        pub token_to_deposit: ::prost::alloc::string::String,
+        /// The amount of tokens to deposit
+        #[prost(string, tag = "2")]
+        pub amount_to_deposit: ::prost::alloc::string::String,
+        /// The maximum number of iterations to run
+        #[prost(string, tag = "3")]
+        pub max_iterations: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to withdraw assets from Morpho
+    ///
+    /// Represents function `withdrawFromAaveV3Morpho(ERC20 tokenToWithdraw, uint256 amountToWithdraw, uint256 maxIterations)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct WithdrawFromAaveV3Morpho {
+        /// The address of the token to withdraw
+        #[prost(string, tag = "1")]
+        pub token_to_withdraw: ::prost::alloc::string::String,
+        /// The amount of tokens to withdraw
+        #[prost(string, tag = "2")]
+        pub amount_to_withdraw: ::prost::alloc::string::String,
+        /// The maximum number of iterations to run
+        #[prost(string, tag = "3")]
+        pub max_iterations: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `depositToAaveV3Morpho(ERC20 tokenToDeposit, uint256 amountToDeposit, uint256 maxIterations)`
+        #[prost(message, tag = "2")]
+        DepositToAaveV3Morpho(DepositToAaveV3Morpho),
+        /// Represents function `withdrawFromAaveV3Morpho(ERC20 tokenToWithdraw, uint256 amountToWithdraw, uint256 maxIterations)`
+        #[prost(message, tag = "3")]
+        WithdrawFromAaveV3Morpho(WithdrawFromAaveV3Morpho),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MorphoAaveV3aTokenP2pAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<MorphoAaveV3aTokenP2pAdaptorV1>,
+}
+/// Represents call data for the Morpho Aave V3 Debt Token adaptor.
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MorphoAaveV3DebtTokenAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(
+        oneof = "morpho_aave_v3_debt_token_adaptor_v1::Function",
+        tags = "1, 2, 3"
+    )]
+    pub function: ::core::option::Option<morpho_aave_v3_debt_token_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `MorphoAaveV3DebtTokenAdaptorV1`.
+pub mod morpho_aave_v3_debt_token_adaptor_v1 {
+    ///
+    /// Allows strategists to borrow assets from Morpho
+    ///
+    /// Represents function `borrowFromAaveV3Morpho(address underlying, uint256 amountToBorrow, uint256 maxIterations)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct BorrowFromAaveV3Morpho {
+        /// The underlying asset to borrow
+        #[prost(string, tag = "1")]
+        pub underlying: ::prost::alloc::string::String,
+        /// The amount of the underlying asset to borrow
+        #[prost(string, tag = "2")]
+        pub amount_to_borrow: ::prost::alloc::string::String,
+        /// The maximum number of iterations to perform
+        #[prost(string, tag = "3")]
+        pub max_iterations: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to repay loan debt on Morpho
+    ///
+    /// Represents function `repayAaveV3MorphoDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RepayAaveV3MorphoDebt {
+        /// The token to repay
+        #[prost(string, tag = "1")]
+        pub token_to_repay: ::prost::alloc::string::String,
+        /// The amount of the token to repay
+        #[prost(string, tag = "2")]
+        pub amount_to_repay: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `borrowFromAaveV3Morpho(address underlying, uint256 amountToBorrow, uint256 maxIterations)`
+        #[prost(message, tag = "2")]
+        BorrowFromAaveV3Morpho(BorrowFromAaveV3Morpho),
+        /// Represents function `repayAaveV3MorphoDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
+        #[prost(message, tag = "3")]
+        RepayAaveV3MorphoDebt(RepayAaveV3MorphoDebt),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MorphoAaveV3DebtTokenAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<MorphoAaveV3DebtTokenAdaptorV1>,
+}
+/// Represents call data for the Morpho Aave V2 Debt Token adaptor.
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MorphoAaveV2DebtTokenAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(
+        oneof = "morpho_aave_v2_debt_token_adaptor_v1::Function",
+        tags = "1, 2, 3"
+    )]
+    pub function: ::core::option::Option<morpho_aave_v2_debt_token_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `MorphoAaveV2DebtTokenAdaptorV1`.
+pub mod morpho_aave_v2_debt_token_adaptor_v1 {
+    ///
+    /// Allows strategists to borrow assets from Aave.
+    ///
+    /// Represents function `borrowFromAaveV2Morpho(address aToken, uint256 amountToBorrow)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct BorrowFromAaveV2Morpho {
+        /// The address of the Aave V2 aToken to borrow.
+        #[prost(string, tag = "1")]
+        pub a_token: ::prost::alloc::string::String,
+        /// The amount of the asset to borrow.
+        #[prost(string, tag = "2")]
+        pub amount_to_borrow: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to repay loan debt on Aave.
+    ///
+    /// Represents function `repayAaveV2MorphoDebt(IAaveToken aToken, uint256 amountToRepay)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RepayAaveV2MorphoDebt {
+        /// The address of the Aave V2 aToken to repay.
+        #[prost(string, tag = "1")]
+        pub a_token: ::prost::alloc::string::String,
+        /// The amount of the asset to repay.
+        #[prost(string, tag = "2")]
+        pub amount_to_repay: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `borrowFromAaveV2Morpho(address aToken, uint256 amountToBorrow)`
+        #[prost(message, tag = "2")]
+        BorrowFromAaveV2Morpho(BorrowFromAaveV2Morpho),
+        /// Represents function `repayAaveV2MorphoDebt(IAaveToken aToken, uint256 amountToRepay)`
+        #[prost(message, tag = "3")]
+        RepayAaveV2MorphoDebt(RepayAaveV2MorphoDebt),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MorphoAaveV2DebtTokenAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<MorphoAaveV2DebtTokenAdaptorV1>,
+}
+/// Represents call data for the Frax adaptor.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct FTokenAdaptorV1 {
     ///**** BASE ADAPTOR FUNCTIONS ****
@@ -1411,7 +1707,7 @@ pub struct CompoundCTokenAdaptorV2Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<CompoundCTokenAdaptorV2>,
 }
-/// Represents call data for the Compound C Token adaptor V2, managing lending positions on Compound.
+/// Represents call data for the Balancer Pool adaptor V1, for managing pool positions on Balancer.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct BalancerPoolAdaptorV1 {
     ///**** BASE ADAPTOR FUNCTIONS ****
@@ -1879,7 +2175,7 @@ pub mod aave_v3_debt_token_adaptor_v1 {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_aave_v3_flashloan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flashloan::CallData>,
     }
@@ -1944,6 +2240,23 @@ pub mod aave_v3_debt_token_adaptor_v1 {
             /// Represents function calls to the FTokenAdaptor V1
             #[prost(message, tag = "19")]
             FTokenV1Calls(super::super::FTokenAdaptorV1Calls),
+            /// Represents function calls to the MorphoAaveV2AToken V1
+            #[prost(message, tag = "20")]
+            MorphoAaveV2ATokenV1Calls(super::super::MorphoAaveV2aTokenAdaptorV1Calls),
+            /// Represents function calls to the MorphoAaveV2DebtToken V1
+            #[prost(message, tag = "21")]
+            MorphoAaveV2DebtTokenV1Calls(super::super::MorphoAaveV2DebtTokenAdaptorV1Calls),
+            /// Represents function calls to the MorphoAaveV3ATokenCollateral V1
+            #[prost(message, tag = "22")]
+            MorphoAaveV3ATokenCollateralV1Calls(
+                super::super::MorphoAaveV3aTokenCollateralAdaptorV1Calls,
+            ),
+            /// Represents function calls to the MorphoAaveV3ATokenP2P V1
+            #[prost(message, tag = "23")]
+            MorphoAaveV3ATokenP2pV1Calls(super::super::MorphoAaveV3aTokenP2pAdaptorV1Calls),
+            /// Represents function calls to the MorphoAaveV3DebtToken V1
+            #[prost(message, tag = "24")]
+            MorphoAaveV3DebtTokenV1Calls(super::super::MorphoAaveV3DebtTokenAdaptorV1Calls),
         }
     }
     ///**** BASE ADAPTOR FUNCTIONS ****
@@ -2376,7 +2689,7 @@ pub struct AdaptorCall {
     /// The function call data for the adaptor
     #[prost(
         oneof = "adaptor_call::CallData",
-        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19"
+        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24"
     )]
     pub call_data: ::core::option::Option<adaptor_call::CallData>,
 }
@@ -2439,6 +2752,21 @@ pub mod adaptor_call {
         /// Represents function calls to the FTokenAdaptor V1
         #[prost(message, tag = "19")]
         FTokenV1Calls(super::FTokenAdaptorV1Calls),
+        /// Represents function calls to the MorphoAaveV2AToken V1
+        #[prost(message, tag = "20")]
+        MorphoAaveV2ATokenV1Calls(super::MorphoAaveV2aTokenAdaptorV1Calls),
+        /// Represents function calls to the MorphoAaveV2DebtToken V1
+        #[prost(message, tag = "21")]
+        MorphoAaveV2DebtTokenV1Calls(super::MorphoAaveV2DebtTokenAdaptorV1Calls),
+        /// Represents function calls to the MorphoAaveV3ATokenCollateral V1
+        #[prost(message, tag = "22")]
+        MorphoAaveV3ATokenCollateralV1Calls(super::MorphoAaveV3aTokenCollateralAdaptorV1Calls),
+        /// Represents function calls to the MorphoAaveV3ATokenP2P V1
+        #[prost(message, tag = "23")]
+        MorphoAaveV3ATokenP2pV1Calls(super::MorphoAaveV3aTokenP2pAdaptorV1Calls),
+        /// Represents function calls to the MorphoAaveV3DebtToken V1
+        #[prost(message, tag = "24")]
+        MorphoAaveV3DebtTokenV1Calls(super::MorphoAaveV3DebtTokenAdaptorV1Calls),
     }
 }
 ///

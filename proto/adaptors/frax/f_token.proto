@@ -1,5 +1,5 @@
 /*
-* Protos for function calls to the OneInch adaptor.
+* Protos for function calls to the Frax adaptor.
 */
 
 syntax = "proto3";
@@ -9,7 +9,7 @@ option go_package = "/steward_proto";
 
 import "adaptors/base.proto";
 
-// Represents call data for the OneInch adaptor.
+// Represents call data for the Frax adaptor.
 message FTokenAdaptorV1 {
     oneof function {
         /***** BASE ADAPTOR FUNCTIONS *****/

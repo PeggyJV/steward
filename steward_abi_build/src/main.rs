@@ -30,6 +30,26 @@ fn main() {
         ),
         ("BalancerPoolAdaptorV1", "balancer_pool_adaptor_v1"),
         ("FTokenAdaptor", "f_token_adaptor"),
+        (
+            "MorphoAaveV2ATokenAdaptorV1",
+            "morpho_aave_v2_a_token_adaptor_v1",
+        ),
+        (
+            "MorphoAaveV2DebtTokenAdaptorV1",
+            "morpho_aave_v2_debt_token_adaptor_v1",
+        ),
+        (
+            "MorphoAaveV3ATokenCollateralAdaptorV1",
+            "morpho_aave_v3_a_token_collateral_adaptor_v1",
+        ),
+        (
+            "MorphoAaveV3ATokenP2PAdaptorV1",
+            "morpho_aave_v3_a_token_p2p_adaptor_v1",
+        ),
+        (
+            "MorphoAaveV3DebtTokenAdaptorV1",
+            "morpho_aave_v3_debt_token_adaptor_v1",
+        ),
     ];
 
     contracts
@@ -38,7 +58,7 @@ fn main() {
 }
 
 fn generate_contract_abi(name: &str, file_name: &str) {
-    let abigen = match Abigen::new(name, format!("../steward_abi/{}.json", name)) {
+    let abigen = match Abigen::new(name, format!("../steward_abi/abi/{}.json", name)) {
         Ok(abigen) => abigen,
         Err(e) => {
             println!("Could not open {}.json: {}", name, e);

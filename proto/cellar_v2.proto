@@ -16,6 +16,11 @@ import "adaptors/aave/aave_v3_debt_token.proto";
 import "adaptors/balancer/balancer_pool.proto";
 import "adaptors/compound/c_token.proto";
 import "adaptors/frax/f_token.proto";
+import "adaptors/morpho/morpho_aave_v2_a_token.proto";
+import "adaptors/morpho/morpho_aave_v2_debt_token.proto";
+import "adaptors/morpho/morpho_aave_v3_a_token_collateral.proto";
+import "adaptors/morpho/morpho_aave_v3_a_token_p2p.proto";
+import "adaptors/morpho/morpho_aave_v3_debt_token.proto";
 import "adaptors/uniswap/uniswap_v3.proto";
 import "adaptors/uniswap/swap_with_uniswap.proto";
 import "adaptors/fees_and_reserves.proto";
@@ -404,5 +409,15 @@ message AdaptorCall {
         BalancerPoolAdaptorV1Calls balancer_pool_v1_calls = 18;
         // Represents function calls to the FTokenAdaptor V1
         FTokenAdaptorV1Calls f_token_v1_calls = 19;
+        // Represents function calls to the MorphoAaveV2AToken V1
+        MorphoAaveV2ATokenAdaptorV1Calls morpho_aave_v2_a_token_v1_calls = 20;
+        // Represents function calls to the MorphoAaveV2DebtToken V1
+        MorphoAaveV2DebtTokenAdaptorV1Calls morpho_aave_v2_debt_token_v1_calls = 21;
+        // Represents function calls to the MorphoAaveV3ATokenCollateral V1
+        MorphoAaveV3ATokenCollateralAdaptorV1Calls morpho_aave_v3_a_token_collateral_v1_calls = 22;
+        // Represents function calls to the MorphoAaveV3ATokenP2P V1
+        MorphoAaveV3ATokenP2PAdaptorV1Calls morpho_aave_v3_a_token_p2p_v1_calls = 23;
+        // Represents function calls to the MorphoAaveV3DebtToken V1
+        MorphoAaveV3DebtTokenAdaptorV1Calls morpho_aave_v3_debt_token_v1_calls = 24;
     }
 }

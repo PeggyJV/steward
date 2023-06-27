@@ -258,6 +258,21 @@ fn get_encoded_adaptor_calls(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCal
             FTokenV1Calls(params) => {
                 calls.extend(adaptors::f_token::f_token_adaptor_v1_calls(params)?)
             }
+            MorphoAaveV2ATokenV1Calls(params) => calls.extend(
+                adaptors::morpho::morpho_aave_v2_a_token_adaptor_v1_calls(params)?,
+            ),
+            MorphoAaveV2DebtTokenV1Calls(params) => {
+                calls.extend(adaptors::morpho::morpho_aave_v2_debt_token_adaptor_v1_calls(params)?)
+            }
+            MorphoAaveV3ATokenCollateralV1Calls(params) => calls.extend(
+                adaptors::morpho::morpho_aave_v3_a_token_collateral_adaptor_v1_calls(params)?,
+            ),
+            MorphoAaveV3ATokenP2pV1Calls(params) => {
+                calls.extend(adaptors::morpho::morpho_aave_v3_a_token_p2p_adaptor_v1_calls(params)?)
+            }
+            MorphoAaveV3DebtTokenV1Calls(params) => {
+                calls.extend(adaptors::morpho::morpho_aave_v3_debt_token_adaptor_v1_calls(params)?)
+            }
         };
 
         result.push(AbiAdaptorCall {

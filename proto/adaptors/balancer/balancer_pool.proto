@@ -1,5 +1,5 @@
 /*
-* Protos for function calls to the Compound CToken adaptor.
+* Protos for function calls to the Balancer Pool adaptor.
 */
 
 syntax = "proto3";
@@ -9,7 +9,7 @@ option go_package = "/steward_proto";
 
 import "adaptors/base.proto";
 
-// Represents call data for the Compound C Token adaptor V2, managing lending positions on Compound.
+// Represents call data for the Balancer Pool adaptor V1, for managing pool positions on Balancer.
 message BalancerPoolAdaptorV1 {
     oneof function {
         /***** BASE ADAPTOR FUNCTIONS *****/
