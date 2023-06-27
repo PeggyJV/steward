@@ -20,9 +20,9 @@ message BalancerPoolAdaptorV1 {
         /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
 
         // Represents function `relayerJoinPool(ERC20[] tokensIn, uint256[] amountsIn, ERC20 btpOut, bytes[] memory callData)`
-        RelayerJoinPool relayer_join_pool = 2;
+        JoinPool join_pool = 2;
         // Represents function `relayerExitPool(ERC20 bptIn, uint256 amountIn, ERC20[] memory tokensOut, bytes[] memory callData)`
-        RelayerExitPool relayer_exit_pool = 3;
+        ExitPool exit_pool = 3;
         // Represents function `stakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountIn)`
         StakeBPT stake_bpt = 4;
         // Represents function `unstakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountOut)`
@@ -32,42 +32,85 @@ message BalancerPoolAdaptorV1 {
 
     }
 
+    enum SwapKind {
+        SWAP_KIND_UNSPECIFIED = 0;
+        SWAP_KIND_GIVEN_IN = 1;
+        SWAP_KIND_GIVEN_OUT = 2;
+    }
+
+    // Data for a single swap executed by `swap`. `amount` is either `amountIn` or `amountOut` depending on the `kind` value.
+    message SingleSwap {
+        // The pool ID
+        string pool_id = 1;
+
+        // The swap kind
+        SwapKind kind = 2;
+
+        // The asset in
+        string asset_in = 3;
+
+        // The asset out
+        string asset_out = 4;
+
+        // The amount
+        string amount = 5;
+
+        // The user data
+        bytes user_data = 6;
+    }
+
+    // Stores each swaps min amount, and deadline
+    message SwapData {
+        // The minimum amounts for swaps
+        repeated string min_amounts_for_swaps = 1;
+
+        // The swap deadlines
+        repeated string swap_deadlines = 2;
+    }
+
     /*
-    * Call `BalancerRelayer` on mainnet to carry out join txs
+    * Allows strategists to join Balancer pools using EXACT_TOKENS_IN_FOR_BPT_OUT joins
     *
-    * Represents function `relayerJoinPool(ERC20[] tokensIn, uint256[] amountsIn, ERC20 btpOut, bytes[] memory callData)`
+    * Represents function `joinPool(ERC20 targetBpt, IVault.SingleSwap[] memory swapsBeforeJoin, SwapData memory swapData, uint256 minimumBpt)`
     */
-    message RelayerJoinPool {
-        // The tokens to join.
-        repeated string tokens_in = 1;
+    message JoinPool {
+        // The target pool
+        string target_bpt = 1;
 
-        // The amounts to join
-        repeated string amounts_in = 2;
+        // Swap to execute before joining pool
+        repeated SingleSwap swaps_before_join = 2;
 
-        // The token to receive
-        string btp_out = 3;
+        // Data for swaps
+        SwapData swap_data = 3;
 
-        // The call data for the relayer
-        repeated bytes call_data = 4;
+        // The minimum BPT to mint
+        string minimum_bpt = 4;
+    }
+
+
+    message ExitPoolRequest {
+        repeated string assets = 1;
+        repeated string min_amounts_out = 2;
+        bytes user_data = 3;
+        bool to_internal_balance = 4;
     }
 
     /*
     * Call `BalancerRelayer` on mainnet to carry out exit txs
     *
-    * Represents function `relayerExitPool(ERC20 bptIn, uint256 amountIn, ERC20[] memory tokensOut, bytes[] memory callData)``
+    * Represents function `exitPool(ERC20 targetBpt, IVault.SingleSwap[] memory swapsBeforeJoin, SwapData memory swapData, IVault.ExitPoolRequest request)`
     */
-    message RelayerExitPool {
-        // The token to exit
-        string bpt_in = 1;
+    message ExitPool {
+        // The target pool
+        string target_bpt = 1;
 
-        // The amount to exit
-        string amount_in = 2;
+        // Swaps to execute after exiting pool
+        repeated SingleSwap swaps_after_exit = 2;
 
-        // The tokens to receive
-        repeated string tokens_out = 3;
+        // Data for swaps
+        SwapData swap_data = 3;
 
-        // The call data for the relayer
-        repeated bytes call_data = 4;
+        ExitPoolRequest request = 4;
     }
 
     /*
