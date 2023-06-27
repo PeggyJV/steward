@@ -68,6 +68,7 @@ impl proto::simulate_contract_call_service_server::SimulateContractCallService f
 pub fn get_string_encoded_call(request: ScheduleRequest) -> Result<String, Error> {
     get_encoded_call(request).map(|b| bytes_to_hex_str(&b))
 }
+<<<<<<< HEAD
 
 pub fn validate_simulate_tls_config(config: &StewardConfig) {
     if config.simulate.server_cert_path.is_empty() {
@@ -114,3 +115,5 @@ pub async fn load_simulate_tls_config(
         .identity(server_identity.clone())
         .client_ca_root(client_ca_cert))
 }
+=======
+>>>>>>> main

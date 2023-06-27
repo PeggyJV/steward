@@ -10,6 +10,7 @@ use crate::{
         proposals::start_scheduled_cork_proposal_polling_thread,
     },
     prelude::*,
+    proto::contract_call_service_server::ContractCallServiceServer,
     pubsub::cache::start_publisher_trust_state_cache_thread,
     server::start_server_management_thread,
 };
