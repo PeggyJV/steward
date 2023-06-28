@@ -170,12 +170,12 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.SOMMELIER_IMAGE }}
-      - name: docker sommelier metadata
+      - name: docker hardhat metadata
         id: meta-hardhat
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.HARDHAT_IMAGE }}
-      - name: docker sommelier metadata
+      - name: docker steward metadata
         id: meta-steward
         uses: docker/metadata-action@v3
         with:
