@@ -42,6 +42,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-multi-buildx
       - name: container-login
+        # if: github.event_name != 'pull_request'
         uses: docker/login-action@v1
         with:
           registry: ${{ env.REGISTRY }}
@@ -51,7 +52,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.HARDHAT_IMAGE }}
+          images: ${{ env.HARDHAT_IMAGE_NAME }}
       - name: Make upload dir
         run: mkdir -p ${{ env.UPLOAD_DIR }}
       - name: build-and-push
@@ -59,7 +60,8 @@ jobs:
         with:
           context: integration_tests/ethereum
           file: integration_tests/ethereum/Dockerfile
-          push: false
+          # uncomment this before merging. commented to make sure images are getting pushes properly
+          # push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           builder: ${{ steps.buildx.outputs.name }}
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -95,14 +97,26 @@ jobs:
           key: ${{ runner.os }}-multi-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-multi-buildx
+      - name: container-login
+        # if: github.event_name != 'pull_request'
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: labels
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.IMAGE_NAME }}
       - name: Make upload dir
         run: mkdir -p ${{ env.UPLOAD_DIR }}
       - name: build-and-push
         uses: docker/build-push-action@v2
         with:
           file: Dockerfile
-          push: false
-          tags: steward:prebuilt
+          # push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
           builder: ${{ steps.buildx.outputs.name }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
@@ -156,6 +170,16 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.SOMMELIER_IMAGE }}
+      - name: docker sommelier metadata
+        id: meta-hardhat
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.HARDHAT_IMAGE }}
+      - name: docker sommelier metadata
+        id: meta-steward
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.IMAGE_NAME }}
       - name: pull sommelier image
         run: docker pull ${{ env.SOMMELIER_IMAGE }}
       - name: rename sommelier image
@@ -175,7 +199,7 @@ jobs:
       - name: Load hardhat image
         run: docker load --input ${{ env.DOWNLOAD_DIR }}/${{ env.HARDHAT_ARTIFACT }}
       - name: Rename hardhat image
-        run: docker tag ${{ env.HARDHAT_IMAGE }}:pr-${{ env.PR_NUMBER }} ethereum:prebuilt
+        run: docker tag ${{ steps.meta-hardhat.outputs.tags }} ethereum:prebuilt
       - name: Get steward artifact
         uses: actions/download-artifact@v3
         with:
@@ -184,6 +208,8 @@ jobs:
       # The image is already tagged at this point by the steward-build job
       - name: Load steward image
         run: docker load --input ${{ env.DOWNLOAD_DIR }}/${{ env.STEWARD_ARTIFACT }}
+      - name: Rename steward image
+        run: docker tag ${{ steps.meta-steward.outpupts.tags }} steward:prebuilt
       - name: clean the slate
         run: make e2e_clean_slate
       - name: build go test binary
