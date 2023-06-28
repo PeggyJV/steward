@@ -209,7 +209,7 @@ jobs:
       - name: Load steward image
         run: docker load --input ${{ env.DOWNLOAD_DIR }}/${{ env.STEWARD_ARTIFACT }}
       - name: Rename steward image
-        run: docker tag ${{ steps.meta-steward.outpupts.tags }} steward:prebuilt
+        run: docker tag ${{ steps.meta-steward.outputs.tags }} steward:prebuilt
       - name: clean the slate
         run: make e2e_clean_slate
       - name: build go test binary
