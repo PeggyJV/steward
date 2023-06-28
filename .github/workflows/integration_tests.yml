@@ -174,7 +174,7 @@ jobs:
         id: meta-hardhat
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.HARDHAT_IMAGE }}
+          images: ${{ env.HARDHAT_IMAGE_NAME }}
       - name: docker steward metadata
         id: meta-steward
         uses: docker/metadata-action@v3
