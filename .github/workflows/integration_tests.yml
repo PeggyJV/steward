@@ -11,8 +11,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: steward-steward
-  PR_NUMBER: ${{ github.event.number }}
-  HARDHAT_IMAGE: ghcr.io/peggyjv/steward-hardhat
   HARDHAT_IMAGE_NAME: steward-hardhat
   ORCHESTRATOR_IMAGE_NAME: ghcr.io/peggyjv/gravity-bridge-orchestrator:main
   SOMMELIER_IMAGE: ghcr.io/peggyjv/sommelier-sommelier:main
