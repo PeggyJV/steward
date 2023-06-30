@@ -1707,188 +1707,6 @@ pub struct CompoundCTokenAdaptorV2Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<CompoundCTokenAdaptorV2>,
 }
-/// Represents call data for the Balancer Pool adaptor V1, for managing pool positions on Balancer.
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct BalancerPoolAdaptorV1 {
-    ///**** BASE ADAPTOR FUNCTIONS ****
-    #[prost(
-        oneof = "balancer_pool_adaptor_v1::Function",
-        tags = "1, 2, 3, 4, 5, 6"
-    )]
-    pub function: ::core::option::Option<balancer_pool_adaptor_v1::Function>,
-}
-/// Nested message and enum types in `BalancerPoolAdaptorV1`.
-pub mod balancer_pool_adaptor_v1 {
-    /// Data for a single swap executed by `swap`. `amount` is either `amountIn` or `amountOut` depending on the `kind` value.
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct SingleSwap {
-        /// The pool ID
-        #[prost(string, tag = "1")]
-        pub pool_id: ::prost::alloc::string::String,
-        /// The swap kind
-        #[prost(enumeration = "SwapKind", tag = "2")]
-        pub kind: i32,
-        /// The asset in
-        #[prost(string, tag = "3")]
-        pub asset_in: ::prost::alloc::string::String,
-        /// The asset out
-        #[prost(string, tag = "4")]
-        pub asset_out: ::prost::alloc::string::String,
-        /// The amount
-        #[prost(string, tag = "5")]
-        pub amount: ::prost::alloc::string::String,
-        /// The user data
-        #[prost(bytes = "vec", tag = "6")]
-        pub user_data: ::prost::alloc::vec::Vec<u8>,
-    }
-    /// Stores each swaps min amount, and deadline
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct SwapData {
-        /// The minimum amounts for swaps
-        #[prost(string, repeated, tag = "1")]
-        pub min_amounts_for_swaps: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-        /// The swap deadlines
-        #[prost(string, repeated, tag = "2")]
-        pub swap_deadlines: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-    }
-    ///
-    /// Allows strategists to join Balancer pools using EXACT_TOKENS_IN_FOR_BPT_OUT joins
-    ///
-    /// Represents function `joinPool(ERC20 targetBpt, IVault.SingleSwap[] memory swapsBeforeJoin, SwapData memory swapData, uint256 minimumBpt)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct JoinPool {
-        /// The target pool
-        #[prost(string, tag = "1")]
-        pub target_bpt: ::prost::alloc::string::String,
-        /// Swap to execute before joining pool
-        #[prost(message, repeated, tag = "2")]
-        pub swaps_before_join: ::prost::alloc::vec::Vec<SingleSwap>,
-        /// Data for swaps
-        #[prost(message, optional, tag = "3")]
-        pub swap_data: ::core::option::Option<SwapData>,
-        /// The minimum BPT to mint
-        #[prost(string, tag = "4")]
-        pub minimum_bpt: ::prost::alloc::string::String,
-    }
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct ExitPoolRequest {
-        #[prost(string, repeated, tag = "1")]
-        pub assets: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-        #[prost(string, repeated, tag = "2")]
-        pub min_amounts_out: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-        #[prost(bytes = "vec", tag = "3")]
-        pub user_data: ::prost::alloc::vec::Vec<u8>,
-        #[prost(bool, tag = "4")]
-        pub to_internal_balance: bool,
-    }
-    ///
-    /// Call `BalancerRelayer` on mainnet to carry out exit txs
-    ///
-    /// Represents function `exitPool(ERC20 targetBpt, IVault.SingleSwap[] memory swapsBeforeJoin, SwapData memory swapData, IVault.ExitPoolRequest request)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct ExitPool {
-        /// The target pool
-        #[prost(string, tag = "1")]
-        pub target_bpt: ::prost::alloc::string::String,
-        /// Swaps to execute after exiting pool
-        #[prost(message, repeated, tag = "2")]
-        pub swaps_after_exit: ::prost::alloc::vec::Vec<SingleSwap>,
-        /// Data for swaps
-        #[prost(message, optional, tag = "3")]
-        pub swap_data: ::core::option::Option<SwapData>,
-        #[prost(message, optional, tag = "4")]
-        pub request: ::core::option::Option<ExitPoolRequest>,
-    }
-    ///
-    /// Stake (deposit) BPTs into respective pool gauge
-    ///
-    /// Represents `function stakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountIn)``
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct StakeBpt {
-        /// The BPT to stake
-        #[prost(string, tag = "1")]
-        pub bpt: ::prost::alloc::string::String,
-        /// The liquidity gauge to stake into
-        #[prost(string, tag = "2")]
-        pub liquidity_gauge: ::prost::alloc::string::String,
-        /// The amount to stake
-        #[prost(string, tag = "3")]
-        pub amount_in: ::prost::alloc::string::String,
-    }
-    ///
-    /// Unstake (withdraw) BPT from respective pool gauge
-    ///
-    /// Represents `function unstakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountOut)``
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct UnstakeBpt {
-        /// The BPT to unstake
-        #[prost(string, tag = "1")]
-        pub bpt: ::prost::alloc::string::String,
-        /// The liquidity gauge to unstake from
-        #[prost(string, tag = "2")]
-        pub liquidity_gauge: ::prost::alloc::string::String,
-        /// The amount to unstake
-        #[prost(string, tag = "3")]
-        pub amount_out: ::prost::alloc::string::String,
-    }
-    ///
-    /// Claim rewards ($BAL) from LP position
-    ///
-    /// Represents `function claimRewards(address gauge)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct ClaimRewards {
-        /// The gauge to claim rewards from
-        #[prost(string, tag = "1")]
-        pub guage: ::prost::alloc::string::String,
-    }
-    #[derive(
-        serde::Deserialize,
-        serde::Serialize,
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::prost::Enumeration,
-    )]
-    #[repr(i32)]
-    pub enum SwapKind {
-        Unspecified = 0,
-        GivenIn = 1,
-        GivenOut = 2,
-    }
-    ///**** BASE ADAPTOR FUNCTIONS ****
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum Function {
-        /// Represents function `revokeApproval(ERC20 asset, address spender)`
-        #[prost(message, tag = "1")]
-        RevokeApproval(super::RevokeApproval),
-        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
-        /// Represents function `relayerJoinPool(ERC20[] tokensIn, uint256[] amountsIn, ERC20 btpOut, bytes[] memory callData)`
-        #[prost(message, tag = "2")]
-        JoinPool(JoinPool),
-        /// Represents function `relayerExitPool(ERC20 bptIn, uint256 amountIn, ERC20[] memory tokensOut, bytes[] memory callData)`
-        #[prost(message, tag = "3")]
-        ExitPool(ExitPool),
-        /// Represents function `stakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountIn)`
-        #[prost(message, tag = "4")]
-        StakeBpt(StakeBpt),
-        /// Represents function `unstakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountOut)`
-        #[prost(message, tag = "5")]
-        UnstakeBpt(UnstakeBpt),
-        /// Represents function `claimRewards(address gauge)`
-        #[prost(message, tag = "6")]
-        ClaimRewards(ClaimRewards),
-    }
-}
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct BalancerPoolAdaptorV1Calls {
-    #[prost(message, repeated, tag = "1")]
-    pub calls: ::prost::alloc::vec::Vec<BalancerPoolAdaptorV1>,
-}
 // TODO: Comments
 
 /// Represents call data for the FeesAndReserves and FeesAndReservesAdaptor contracts.
@@ -2175,7 +1993,7 @@ pub mod aave_v3_debt_token_adaptor_v1 {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_aave_v3_flashloan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flashloan::CallData>,
     }
@@ -2234,28 +2052,25 @@ pub mod aave_v3_debt_token_adaptor_v1 {
             AaveV2EnableAssetAsCollateralV1Calls(
                 super::super::AaveV2EnableAssetAsCollateralAdaptorV1Calls,
             ),
-            /// Represents function calls to the BalancerPoolAdaptor V1
-            #[prost(message, tag = "18")]
-            BalancerPoolV1Calls(super::super::BalancerPoolAdaptorV1Calls),
             /// Represents function calls to the FTokenAdaptor V1
-            #[prost(message, tag = "19")]
+            #[prost(message, tag = "18")]
             FTokenV1Calls(super::super::FTokenAdaptorV1Calls),
             /// Represents function calls to the MorphoAaveV2AToken V1
-            #[prost(message, tag = "20")]
+            #[prost(message, tag = "19")]
             MorphoAaveV2ATokenV1Calls(super::super::MorphoAaveV2aTokenAdaptorV1Calls),
             /// Represents function calls to the MorphoAaveV2DebtToken V1
-            #[prost(message, tag = "21")]
+            #[prost(message, tag = "20")]
             MorphoAaveV2DebtTokenV1Calls(super::super::MorphoAaveV2DebtTokenAdaptorV1Calls),
             /// Represents function calls to the MorphoAaveV3ATokenCollateral V1
-            #[prost(message, tag = "22")]
+            #[prost(message, tag = "21")]
             MorphoAaveV3ATokenCollateralV1Calls(
                 super::super::MorphoAaveV3aTokenCollateralAdaptorV1Calls,
             ),
             /// Represents function calls to the MorphoAaveV3ATokenP2P V1
-            #[prost(message, tag = "23")]
+            #[prost(message, tag = "22")]
             MorphoAaveV3ATokenP2pV1Calls(super::super::MorphoAaveV3aTokenP2pAdaptorV1Calls),
             /// Represents function calls to the MorphoAaveV3DebtToken V1
-            #[prost(message, tag = "24")]
+            #[prost(message, tag = "23")]
             MorphoAaveV3DebtTokenV1Calls(super::super::MorphoAaveV3DebtTokenAdaptorV1Calls),
         }
     }
@@ -2689,7 +2504,7 @@ pub struct AdaptorCall {
     /// The function call data for the adaptor
     #[prost(
         oneof = "adaptor_call::CallData",
-        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24"
+        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23"
     )]
     pub call_data: ::core::option::Option<adaptor_call::CallData>,
 }
@@ -2746,26 +2561,23 @@ pub mod adaptor_call {
         /// Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1
         #[prost(message, tag = "17")]
         AaveV2EnableAssetAsCollateralV1Calls(super::AaveV2EnableAssetAsCollateralAdaptorV1Calls),
-        /// Represents function calls to the BalancerPoolAdaptor V1
-        #[prost(message, tag = "18")]
-        BalancerPoolV1Calls(super::BalancerPoolAdaptorV1Calls),
         /// Represents function calls to the FTokenAdaptor V1
-        #[prost(message, tag = "19")]
+        #[prost(message, tag = "18")]
         FTokenV1Calls(super::FTokenAdaptorV1Calls),
         /// Represents function calls to the MorphoAaveV2AToken V1
-        #[prost(message, tag = "20")]
+        #[prost(message, tag = "19")]
         MorphoAaveV2ATokenV1Calls(super::MorphoAaveV2aTokenAdaptorV1Calls),
         /// Represents function calls to the MorphoAaveV2DebtToken V1
-        #[prost(message, tag = "21")]
+        #[prost(message, tag = "20")]
         MorphoAaveV2DebtTokenV1Calls(super::MorphoAaveV2DebtTokenAdaptorV1Calls),
         /// Represents function calls to the MorphoAaveV3ATokenCollateral V1
-        #[prost(message, tag = "22")]
+        #[prost(message, tag = "21")]
         MorphoAaveV3ATokenCollateralV1Calls(super::MorphoAaveV3aTokenCollateralAdaptorV1Calls),
         /// Represents function calls to the MorphoAaveV3ATokenP2P V1
-        #[prost(message, tag = "23")]
+        #[prost(message, tag = "22")]
         MorphoAaveV3ATokenP2pV1Calls(super::MorphoAaveV3aTokenP2pAdaptorV1Calls),
         /// Represents function calls to the MorphoAaveV3DebtToken V1
-        #[prost(message, tag = "24")]
+        #[prost(message, tag = "23")]
         MorphoAaveV3DebtTokenV1Calls(super::MorphoAaveV3DebtTokenAdaptorV1Calls),
     }
 }

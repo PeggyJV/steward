@@ -252,9 +252,6 @@ fn get_encoded_adaptor_calls(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCal
                     params,
                 )?,
             ),
-            BalancerPoolV1Calls(params) => calls.extend(
-                adaptors::balancer_pool::balancer_pool_adaptor_v1_calls(params)?,
-            ),
             FTokenV1Calls(params) => {
                 calls.extend(adaptors::f_token::f_token_adaptor_v1_calls(params)?)
             }
