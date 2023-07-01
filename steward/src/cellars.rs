@@ -121,10 +121,7 @@ pub fn validate_add_position(cellar_id: &str, position: u32) -> Result<(), Error
     Ok(())
 }
 
-pub fn validate_add_adaptor_to_catalogue(
-    cellar_id: &str,
-    adaptor_id: &str,
-) -> Result<(), Error> {
+pub fn validate_add_adaptor_to_catalogue(cellar_id: &str, adaptor_id: &str) -> Result<(), Error> {
     let adaptor_id = normalize_address(adaptor_id.to_string());
     check_blocked_adaptor(&adaptor_id)?;
     let cellar_id = normalize_address(cellar_id.to_string());
@@ -137,10 +134,7 @@ pub fn validate_add_adaptor_to_catalogue(
     Ok(())
 }
 
-pub fn validate_add_position_to_catalogue(
-    cellar_id: &str,
-    position: u32,
-) -> Result<(), Error> {
+pub fn validate_add_position_to_catalogue(cellar_id: &str, position: u32) -> Result<(), Error> {
     let cellar_id = normalize_address(cellar_id.to_string());
     if !ALLOWED_CATALOGUE_POSITIONS.contains(&(&cellar_id, position)) {
         return Err(sp_call_error(format!(
@@ -206,9 +200,8 @@ mod tests {
         assert!(BLOCKED_ADAPTORS.contains(&normalize_address(blocked3).as_str()));
         assert!(BLOCKED_ADAPTORS.contains(&normalize_address(blocked4).as_str()));
 
-        assert!(
-            !ALLOWED_SETUP_ADAPTORS.contains(&(CELLAR_RYUSD, normalize_address(blocked1.clone()).as_ref()))
-        );
+        assert!(!ALLOWED_SETUP_ADAPTORS
+            .contains(&(CELLAR_RYUSD, normalize_address(blocked1.clone()).as_ref())));
 
         // idempotent
         let once = normalize_address(blocked1);

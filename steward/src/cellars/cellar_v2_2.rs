@@ -21,7 +21,8 @@ use crate::{
 };
 
 use super::{
-    log_cellar_call, validate_add_position, check_blocked_adaptor, validate_add_adaptor_to_catalogue, validate_add_position_to_catalogue,
+    check_blocked_adaptor, log_cellar_call, validate_add_adaptor_to_catalogue,
+    validate_add_position, validate_add_position_to_catalogue,
 };
 
 const CELLAR_NAME: &str = "CellarV2.2";

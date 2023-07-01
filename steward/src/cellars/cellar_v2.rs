@@ -15,7 +15,10 @@ use crate::{
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
 };
 
-use super::{log_cellar_call, normalize_address, validate_add_position, check_blocked_adaptor, validate_setup_adaptor};
+use super::{
+    check_blocked_adaptor, log_cellar_call, normalize_address, validate_add_position,
+    validate_setup_adaptor,
+};
 
 const CELLAR_NAME: &str = "CellarV2";
 
