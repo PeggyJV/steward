@@ -21,8 +21,7 @@ use crate::{
 };
 
 use super::{
-    log_cellar_call, normalize_address, ALLOWED_CATALOGUE_ADAPTORS, ALLOWED_CATALOGUE_POSITIONS,
-    BLOCKED_ADAPTORS, BLOCKED_POSITIONS, RYGOV_CELLARS,
+    log_cellar_call, validate_add_position, check_blocked_adaptor, validate_add_adaptor_to_catalogue, validate_add_position_to_catalogue,
 };
 
 const CELLAR_NAME: &str = "CellarV2.2";
@@ -51,12 +50,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
         .ok_or_else(|| sp_call_error("call data is empty".to_string()))?;
     match function {
         Function::AddPosition(params) => {
-            if BLOCKED_POSITIONS.contains(&params.position_id) {
-                return Err(ErrorKind::SPCallError
-                    .context(format!("position is blocked: {}", params.position_id))
-                    .into());
-            }
-
+            validate_add_position(&cellar_id, params.position_id)?;
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
 
             let call = AddPositionCall {
@@ -70,12 +64,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
         }
         Function::CallOnAdaptor(params) => {
             for adaptor_call in params.data.clone() {
-                let adaptor_address = normalize_address(adaptor_call.adaptor.clone());
-                if BLOCKED_ADAPTORS.contains(&adaptor_address.as_str()) {
-                    return Err(ErrorKind::SPCallError
-                        .context(format!("adaptor is blocked: {}", adaptor_call.adaptor))
-                        .into());
-                }
+                check_blocked_adaptor(&adaptor_call.adaptor)?;
             }
 
             log_cellar_call(CELLAR_NAME, &CallOnAdaptorCall::function_name(), &cellar_id);
@@ -181,22 +170,6 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
                 &cellar_id,
             );
 
-            if normalize_address(cellar_id) != "b5b29320d2dde5ba5bafa1ebcd270052070483ec" {
-                return Err(ErrorKind::SPCallError
-                    .context(
-                        "this proto is a temporary measure. can only be called on RealYield ETH"
-                            .to_string(),
-                    )
-                    .into());
-            } else if params.new_cut != 750000000000000000 {
-                return Err(ErrorKind::SPCallError
-                    .context(
-                        "this proto is a temporary measure. can only set strategist platform cut to 0.75%"
-                            .to_string(),
-                    )
-                    .into());
-            }
-
             let call = SetStrategistPlatformCutCall {
                 cut: params.new_cut,
             };
@@ -210,26 +183,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             Ok(CellarV2_2Calls::LiftShutdown(call).encode())
         }
         Function::AddAdaptorToCatalogue(params) => {
-            let cellar_address = normalize_address(cellar_id.clone());
-            if !RYGOV_CELLARS.contains(&cellar_address.as_str()) {
-                return Err(ErrorKind::SPCallError
-                    .context(format!(
-                        "adding adaptors to non-RYGOV cellars is not allowed: {}",
-                        cellar_address
-                    ))
-                    .into());
-            }
-
-            let adaptor_address = normalize_address(params.adaptor.clone());
-            if !ALLOWED_CATALOGUE_ADAPTORS.contains(&adaptor_address.as_str()) {
-                return Err(ErrorKind::SPCallError
-                    .context(format!(
-                        "adding this adaptor to catalogue is not allowed: {}",
-                        params.adaptor
-                    ))
-                    .into());
-            }
-
+            validate_add_adaptor_to_catalogue(&cellar_id, &params.adaptor)?;
             log_cellar_call(
                 CELLAR_NAME,
                 &AddAdaptorToCatalogueCall::function_name(),
@@ -242,25 +196,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             Ok(CellarV2_2Calls::AddAdaptorToCatalogue(call).encode())
         }
         Function::AddPositionToCatalogue(params) => {
-            let cellar_address = normalize_address(cellar_id.clone());
-            if !RYGOV_CELLARS.contains(&cellar_address.as_str()) {
-                return Err(ErrorKind::SPCallError
-                    .context(format!(
-                        "adding positions to non-RYGOV cellars is not allowed: {}",
-                        cellar_address
-                    ))
-                    .into());
-            }
-
-            if !ALLOWED_CATALOGUE_POSITIONS.contains(&params.position_id) {
-                return Err(ErrorKind::SPCallError
-                    .context(format!(
-                        "adding this position to catalogue is not allowed: {}",
-                        params.position_id
-                    ))
-                    .into());
-            }
-
+            validate_add_position_to_catalogue(&cellar_id, params.position_id)?;
             log_cellar_call(
                 CELLAR_NAME,
                 &AddPositionToCatalogueCall::function_name(),

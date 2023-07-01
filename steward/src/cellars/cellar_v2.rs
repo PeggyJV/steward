@@ -9,13 +9,13 @@ use steward_proto::steward::{
 };
 use StrategyFunction::*;
 
-use crate::cellars::{adaptors, ALLOWED_SETUP_ADAPTORS, BLOCKED_ADAPTORS};
+use crate::cellars::adaptors;
 use crate::{
     error::{Error, ErrorKind},
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
 };
 
-use super::{log_cellar_call, normalize_address, BLOCKED_POSITIONS};
+use super::{log_cellar_call, normalize_address, validate_add_position, check_blocked_adaptor, validate_setup_adaptor};
 
 const CELLAR_NAME: &str = "CellarV2";
 
@@ -23,12 +23,7 @@ const CELLAR_NAME: &str = "CellarV2";
 pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {
     match function {
         AddPosition(params) => {
-            if BLOCKED_POSITIONS.contains(&params.position_id) {
-                return Err(ErrorKind::SPCallError
-                    .context(format!("position is blocked: {}", params.position_id))
-                    .into());
-            }
-
+            validate_add_position(&cellar_id, params.position_id)?;
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
 
             let call = AddPositionCall {
@@ -42,12 +37,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
         }
         CallOnAdaptor(params) => {
             for adaptor_call in params.data.clone() {
-                let adaptor_address = normalize_address(adaptor_call.adaptor.clone());
-                if BLOCKED_ADAPTORS.contains(&adaptor_address.as_str()) {
-                    return Err(ErrorKind::SPCallError
-                        .context(format!("adaptor is blocked: {}", adaptor_call.adaptor))
-                        .into());
-                }
+                check_blocked_adaptor(&adaptor_call.adaptor)?;
             }
 
             log_cellar_call(CELLAR_NAME, &CallOnAdaptorCall::function_name(), &cellar_id);
@@ -131,13 +121,7 @@ pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result
             Ok(CellarV2Calls::SetRebalanceDeviation(call).encode())
         }
         SetupAdaptor(params) => {
-            let adaptor_address = normalize_address(params.adaptor.clone());
-            if !ALLOWED_SETUP_ADAPTORS.contains(&adaptor_address.as_str()) {
-                return Err(ErrorKind::SPCallError
-                    .context(format!("adaptor setup not allowed: {}", params.adaptor))
-                    .into());
-            }
-
+            validate_setup_adaptor(&cellar_id, &params.adaptor)?;
             log_cellar_call(CELLAR_NAME, &SetupAdaptorCall::function_name(), &cellar_id);
             let call = SetupAdaptorCall {
                 adaptor: sp_call_parse_address(params.adaptor)?,
