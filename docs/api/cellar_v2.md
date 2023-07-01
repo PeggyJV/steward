@@ -27,7 +27,9 @@
     - [CellarV2_2.InitiateShutdown](#steward-v3-CellarV2_2-InitiateShutdown)
     - [CellarV2_2.LiftShutdown](#steward-v3-CellarV2_2-LiftShutdown)
     - [CellarV2_2.Multicall](#steward-v3-CellarV2_2-Multicall)
+    - [CellarV2_2.RemoveAdaptorFromCatalogue](#steward-v3-CellarV2_2-RemoveAdaptorFromCatalogue)
     - [CellarV2_2.RemovePosition](#steward-v3-CellarV2_2-RemovePosition)
+    - [CellarV2_2.RemovePositionFromCatalogue](#steward-v3-CellarV2_2-RemovePositionFromCatalogue)
     - [CellarV2_2.SetHoldingPosition](#steward-v3-CellarV2_2-SetHoldingPosition)
     - [CellarV2_2.SetRebalanceDeviation](#steward-v3-CellarV2_2-SetRebalanceDeviation)
     - [CellarV2_2.SetShareLockPeriod](#steward-v3-CellarV2_2-SetShareLockPeriod)
@@ -418,6 +420,8 @@ The function you wish to execute on the target cellar
 | lift_shutdown | [CellarV2_2.LiftShutdown](#steward-v3-CellarV2_2-LiftShutdown) |  | Represents function `liftShutdown()` |
 | add_adaptor_to_catalogue | [CellarV2_2.AddAdaptorToCatalogue](#steward-v3-CellarV2_2-AddAdaptorToCatalogue) |  | Represents function `addAdaptorToCatalogue(address adaptor)` |
 | add_position_to_catalogue | [CellarV2_2.AddPositionToCatalogue](#steward-v3-CellarV2_2-AddPositionToCatalogue) |  | Represents function `addPositionToCatalogue(uint32 positionId)` |
+| remove_adaptor_from_catalogue | [CellarV2_2.RemoveAdaptorFromCatalogue](#steward-v3-CellarV2_2-RemoveAdaptorFromCatalogue) |  | Represents function `removeAdaptorFromCatalogue(address adaptor)` |
+| remove_position_from_catalogue | [CellarV2_2.RemovePositionFromCatalogue](#steward-v3-CellarV2_2-RemovePositionFromCatalogue) |  | Represents function `removePositionFromCatalogue(uint32 positionId)` |
 
 
 
@@ -465,6 +469,23 @@ Represents function `multicall(bytes[] data)`
 
 
 
+<a name="steward-v3-CellarV2_2-RemoveAdaptorFromCatalogue"></a>
+
+### CellarV2_2.RemoveAdaptorFromCatalogue
+Allows callers to remove adaptors from this cellar&#39;s catalogue
+
+Represents function `removeAdaptorFromCatalogue(address adaptor)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| adaptor | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="steward-v3-CellarV2_2-RemovePosition"></a>
 
 ### CellarV2_2.RemovePosition
@@ -477,6 +498,23 @@ Represents function `removePosition(uint32 index, bool inDebtArray)`
 | ----- | ---- | ----- | ----------- |
 | index | [uint32](#uint32) |  | Index at which to remove the position |
 | in_debt_array | [bool](#bool) |  | Whether to remove position from the debt array, or the credit array. |
+
+
+
+
+
+
+<a name="steward-v3-CellarV2_2-RemovePositionFromCatalogue"></a>
+
+### CellarV2_2.RemovePositionFromCatalogue
+Allows caller to remove positions from this cellar&#39;s catalogue
+
+Represents function `removePositionFromCatalogue(uint32 positionId)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [uint32](#uint32) |  |  |
 
 
 
