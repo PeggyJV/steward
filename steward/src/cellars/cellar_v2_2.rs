@@ -272,6 +272,30 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_2Calls::AddPositionToCatalogue(call).encode())
         }
+        Function::RemoveAdaptorFromCatalogue(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &RemoveAdaptorFromCatalogueCall::function_name(),
+                &cellar_id,
+            );
+            let call = RemoveAdaptorFromCatalogueCall {
+                adaptor: sp_call_parse_address(params.adaptor)?,
+            };
+
+            Ok(CellarV2_2Calls::RemoveAdaptorFromCatalogue(call).encode())
+        }
+        Function::RemovePositionFromCatalogue(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &RemovePositionFromCatalogueCall::function_name(),
+                &cellar_id,
+            );
+            let call = RemovePositionFromCatalogueCall {
+                position_id: params.position_id,
+            };
+
+            Ok(CellarV2_2Calls::RemovePositionFromCatalogue(call).encode())
+        }
     }
 }
 

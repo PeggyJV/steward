@@ -2292,7 +2292,7 @@ pub mod cellar_v2_2 {
     pub struct FunctionCall {
         #[prost(
             oneof = "function_call::Function",
-            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13"
+            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15"
         )]
         pub function: ::core::option::Option<function_call::Function>,
     }
@@ -2339,6 +2339,12 @@ pub mod cellar_v2_2 {
             /// Represents function `addPositionToCatalogue(uint32 positionId)`
             #[prost(message, tag = "13")]
             AddPositionToCatalogue(super::AddPositionToCatalogue),
+            /// Represents function `removeAdaptorFromCatalogue(address adaptor)`
+            #[prost(message, tag = "14")]
+            RemoveAdaptorFromCatalogue(super::RemoveAdaptorFromCatalogue),
+            /// Represents function `removePositionFromCatalogue(uint32 positionId)`
+            #[prost(message, tag = "15")]
+            RemovePositionFromCatalogue(super::RemovePositionFromCatalogue),
         }
     }
     ///
@@ -2482,6 +2488,24 @@ pub mod cellar_v2_2 {
     /// Represents function `addPositionToCatalogue(uint32 positionId)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct AddPositionToCatalogue {
+        #[prost(uint32, tag = "1")]
+        pub position_id: u32,
+    }
+    ///
+    /// Allows callers to remove adaptors from this cellar's catalogue
+    ///
+    /// Represents function `removeAdaptorFromCatalogue(address adaptor)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RemoveAdaptorFromCatalogue {
+        #[prost(string, tag = "1")]
+        pub adaptor: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows caller to remove positions from this cellar's catalogue
+    ///
+    /// Represents function `removePositionFromCatalogue(uint32 positionId)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RemovePositionFromCatalogue {
         #[prost(uint32, tag = "1")]
         pub position_id: u32,
     }

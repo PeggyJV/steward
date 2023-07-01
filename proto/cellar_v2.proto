@@ -222,6 +222,10 @@ message CellarV2_2 {
             AddAdaptorToCatalogue add_adaptor_to_catalogue = 12;
             // Represents function `addPositionToCatalogue(uint32 positionId)`
             AddPositionToCatalogue add_position_to_catalogue = 13;
+            // Represents function `removeAdaptorFromCatalogue(address adaptor)`
+            RemoveAdaptorFromCatalogue remove_adaptor_from_catalogue = 14;
+            // Represents function `removePositionFromCatalogue(uint32 positionId)`
+            RemovePositionFromCatalogue remove_position_from_catalogue = 15;
         }
     }
 
@@ -362,6 +366,24 @@ message CellarV2_2 {
     * Represents function `addPositionToCatalogue(uint32 positionId)`
     */
     message AddPositionToCatalogue {
+        uint32 position_id = 1;
+    }
+
+    /*
+    * Allows callers to remove adaptors from this cellar's catalogue
+    *
+    * Represents function `removeAdaptorFromCatalogue(address adaptor)`
+    */
+    message RemoveAdaptorFromCatalogue {
+        string adaptor = 1;
+    }
+
+    /*
+    * Allows caller to remove positions from this cellar's catalogue
+    *
+    * Represents function `removePositionFromCatalogue(uint32 positionId)`
+    */
+    message RemovePositionFromCatalogue {
         uint32 position_id = 1;
     }
 }
