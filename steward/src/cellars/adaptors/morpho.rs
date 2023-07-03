@@ -1,3 +1,5 @@
+use std::convert::TryInto;
+
 use ethers::{abi::AbiEncode, types::Bytes};
 use steward_abi::{
     morpho_aave_v2_a_token_adaptor_v1::MorphoAaveV2ATokenAdaptorV1Calls,
@@ -58,6 +60,17 @@ pub(crate) fn morpho_aave_v2_a_token_adaptor_v1_calls(
                     };
                 calls.push(
                     MorphoAaveV2ATokenAdaptorV1Calls::WithdrawFromAaveV2Morpho(call)
+                        .encode()
+                        .into(),
+                )
+            }
+            morpho_aave_v2a_token_adaptor_v1::Function::Claim(p) => {
+                let call = steward_abi::morpho_aave_v2_a_token_adaptor_v1::ClaimCall {
+                    claimable: string_to_u256(p.claimable)?,
+                    proof: parse_proof_bytes(p.proof)?,
+                };
+                calls.push(
+                    MorphoAaveV2ATokenAdaptorV1Calls::Claim(call)
                         .encode()
                         .into(),
                 )
@@ -163,6 +176,17 @@ pub(crate) fn morpho_aave_v3_a_token_collateral_adaptor_v1_calls(
                         .into(),
                 )
             }
+            morpho_aave_v3a_token_collateral_adaptor_v1::Function::Claim(p) => {
+                let call = steward_abi::morpho_aave_v3_a_token_collateral_adaptor_v1::ClaimCall {
+                    claimable: string_to_u256(p.claimable)?,
+                    proof: parse_proof_bytes(p.proof)?,
+                };
+                calls.push(
+                    MorphoAaveV3ATokenCollateralAdaptorV1Calls::Claim(call)
+                        .encode()
+                        .into(),
+                )
+            }
         }
     }
 
@@ -211,6 +235,17 @@ pub(crate) fn morpho_aave_v3_a_token_p2p_adaptor_v1_calls(
                 };
                 calls.push(
                     MorphoAaveV3ATokenP2PAdaptorV1Calls::WithdrawFromAaveV3Morpho(call)
+                        .encode()
+                        .into(),
+                )
+            }
+            morpho_aave_v3a_token_p2p_adaptor_v1::Function::Claim(p) => {
+                let call = steward_abi::morpho_aave_v3_a_token_p2p_adaptor_v1::ClaimCall {
+                    claimable: string_to_u256(p.claimable)?,
+                    proof: parse_proof_bytes(p.proof)?,
+                };
+                calls.push(
+                    MorphoAaveV3ATokenP2PAdaptorV1Calls::Claim(call)
                         .encode()
                         .into(),
                 )
@@ -271,4 +306,62 @@ pub(crate) fn morpho_aave_v3_debt_token_adaptor_v1_calls(
     }
 
     Ok(calls)
+}
+
+fn parse_proof_bytes(
+    proof: Vec<Vec<u8>>,
+) -> Result<Vec<[u8; 32]>, Error> {
+    proof
+        .iter()
+        .map(Vec::as_slice)
+        .map(TryInto::try_into)
+        .collect::<Result<_, std::array::TryFromSliceError>>()
+        .map_err(|e| sp_call_error(format!("failed to parse proof bytes: {}", e.to_string())))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_proof_bytes() {
+        let valid_proof = vec![
+            // 32 bytes
+            vec![
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            ],
+            // 32 bytes
+            vec![
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            ],
+        ];
+        let invalid_proof = vec![
+            // 31 bytes
+            vec![
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            ],
+            // 32 bytes
+            vec![
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            ],
+        ];
+
+        assert!(parse_proof_bytes(valid_proof).is_ok());
+
+        let err_res = parse_proof_bytes(invalid_proof);
+        assert!(err_res.is_err());
+        assert_eq!("SP call error: failed to parse proof bytes: could not convert slice to array", &err_res.unwrap_err().to_string());
+    }
 }

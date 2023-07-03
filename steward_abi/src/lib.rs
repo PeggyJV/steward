@@ -19,6 +19,7 @@ pub mod morpho_aave_v2_debt_token_adaptor_v1;
 pub mod morpho_aave_v3_a_token_collateral_adaptor_v1;
 pub mod morpho_aave_v3_a_token_p2p_adaptor_v1;
 pub mod morpho_aave_v3_debt_token_adaptor_v1;
+pub mod morpho_reward_handler;
 pub mod oneinch_adaptor_v1;
 pub mod swap_with_uniswap_adaptor_v1;
 pub mod uniswap_v3_adaptor_v1;

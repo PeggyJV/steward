@@ -8,6 +8,7 @@ package steward.v3;
 option go_package = "/steward_proto";
 
 import "adaptors/base.proto";
+import "adaptors/morpho/morpho_reward_handler.proto";
 
 // Represents call data for the Morpho Aave V3 AToken Collateral adaptor.
 message MorphoAaveV3ATokenCollateralAdaptorV1 {
@@ -23,6 +24,8 @@ message MorphoAaveV3ATokenCollateralAdaptorV1 {
         DepositToAaveV3Morpho deposit_to_aave_v3_morpho = 2;
         // Represents function `withdrawFromAaveV3Morpho(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
         WithdrawFromAaveV3Morpho withdraw_from_aave_v3_morpho = 3;
+        // Represents function `claim(uint256 claimable, bytes32[] memory proof)`
+        Claim claim = 4;
     }
 
     /*

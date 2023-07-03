@@ -49,6 +49,7 @@ fn main() {
             "MorphoAaveV3DebtTokenAdaptorV1",
             "morpho_aave_v3_debt_token_adaptor_v1",
         ),
+        ("MorphoRewardHandler", "morpho_reward_handler"),
     ];
 
     contracts

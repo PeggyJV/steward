@@ -750,11 +750,27 @@ pub struct UniswapV3AdaptorV2Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<UniswapV3AdaptorV2>,
 }
+///
+/// Allows Morpho A Token cellars to claim Morpho Rewards
+///
+/// Represents function `claim(uint256 claimable, bytes32[] memory proof)`
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct Claim {
+    /// The amount of the asset to withdraw.
+    #[prost(string, tag = "1")]
+    pub claimable: ::prost::alloc::string::String,
+    /// Proof of claim
+    #[prost(bytes = "vec", repeated, tag = "2")]
+    pub proof: ::prost::alloc::vec::Vec<::prost::alloc::vec::Vec<u8>>,
+}
 /// Represents call data for the Morpho Aave V2 AToken adaptor.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct MorphoAaveV2aTokenAdaptorV1 {
     ///**** BASE ADAPTOR FUNCTIONS ****
-    #[prost(oneof = "morpho_aave_v2a_token_adaptor_v1::Function", tags = "1, 2, 3")]
+    #[prost(
+        oneof = "morpho_aave_v2a_token_adaptor_v1::Function",
+        tags = "1, 2, 3, 4"
+    )]
     pub function: ::core::option::Option<morpho_aave_v2a_token_adaptor_v1::Function>,
 }
 /// Nested message and enum types in `MorphoAaveV2ATokenAdaptorV1`.
@@ -798,6 +814,9 @@ pub mod morpho_aave_v2a_token_adaptor_v1 {
         /// Represents function `withdrawFromAaveV2Morpho(IAaveToken aToken, uint256 amountToWithdraw)`
         #[prost(message, tag = "3")]
         WithdrawFromAaveV2Morpho(WithdrawFromAaveV2Morpho),
+        /// Represents function `claim(uint256 claimable, bytes32[] memory proof)`
+        #[prost(message, tag = "4")]
+        Claim(super::Claim),
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -811,7 +830,7 @@ pub struct MorphoAaveV3aTokenCollateralAdaptorV1 {
     ///**** BASE ADAPTOR FUNCTIONS ****
     #[prost(
         oneof = "morpho_aave_v3a_token_collateral_adaptor_v1::Function",
-        tags = "1, 2, 3"
+        tags = "1, 2, 3, 4"
     )]
     pub function: ::core::option::Option<morpho_aave_v3a_token_collateral_adaptor_v1::Function>,
 }
@@ -856,6 +875,9 @@ pub mod morpho_aave_v3a_token_collateral_adaptor_v1 {
         /// Represents function `withdrawFromAaveV3Morpho(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
         #[prost(message, tag = "3")]
         WithdrawFromAaveV3Morpho(WithdrawFromAaveV3Morpho),
+        /// Represents function `claim(uint256 claimable, bytes32[] memory proof)`
+        #[prost(message, tag = "4")]
+        Claim(super::Claim),
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -869,7 +891,7 @@ pub struct MorphoAaveV3aTokenP2pAdaptorV1 {
     ///**** BASE ADAPTOR FUNCTIONS ****
     #[prost(
         oneof = "morpho_aave_v3a_token_p2p_adaptor_v1::Function",
-        tags = "1, 2, 3"
+        tags = "1, 2, 3, 4"
     )]
     pub function: ::core::option::Option<morpho_aave_v3a_token_p2p_adaptor_v1::Function>,
 }
@@ -920,6 +942,9 @@ pub mod morpho_aave_v3a_token_p2p_adaptor_v1 {
         /// Represents function `withdrawFromAaveV3Morpho(ERC20 tokenToWithdraw, uint256 amountToWithdraw, uint256 maxIterations)`
         #[prost(message, tag = "3")]
         WithdrawFromAaveV3Morpho(WithdrawFromAaveV3Morpho),
+        /// Represents function `claim(uint256 claimable, bytes32[] memory proof)`
+        #[prost(message, tag = "4")]
+        Claim(super::Claim),
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]

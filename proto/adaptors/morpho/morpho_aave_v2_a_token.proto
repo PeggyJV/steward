@@ -8,6 +8,7 @@ package steward.v3;
 option go_package = "/steward_proto";
 
 import "adaptors/base.proto";
+import "adaptors/morpho/morpho_reward_handler.proto";
 
 // Represents call data for the Morpho Aave V2 AToken adaptor.
 message MorphoAaveV2ATokenAdaptorV1 {
@@ -23,6 +24,8 @@ message MorphoAaveV2ATokenAdaptorV1 {
         DepositToAaveV2Morpho deposit_to_aave_v2_morpho = 2;
         // Represents function `withdrawFromAaveV2Morpho(IAaveToken aToken, uint256 amountToWithdraw)`
         WithdrawFromAaveV2Morpho withdraw_from_aave_v2_morpho = 3;
+        // Represents function `claim(uint256 claimable, bytes32[] memory proof)`
+        Claim claim = 4;
     }
 
     /*
@@ -50,7 +53,6 @@ message MorphoAaveV2ATokenAdaptorV1 {
         // The amount of the asset to withdraw.
         string amount_to_withdraw = 2;
     }
-
 }
 
 message MorphoAaveV2ATokenAdaptorV1Calls {
