@@ -4,12 +4,13 @@
 ## Table of Contents
 
 - [steward.proto](#steward-proto)
-    - [StatusRequest](#steward-v3-StatusRequest)
-    - [StatusResponse](#steward-v3-StatusResponse)
     - [SubmitRequest](#steward-v3-SubmitRequest)
     - [SubmitResponse](#steward-v3-SubmitResponse)
+    - [VersionRequest](#steward-v3-VersionRequest)
+    - [VersionResponse](#steward-v3-VersionResponse)
   
     - [ContractCall](#steward-v3-ContractCall)
+    - [Status](#steward-v3-Status)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -19,31 +20,6 @@
 <p align="right"><a href="#top">Top</a></p>
 
 ## steward.proto
-
-
-
-<a name="steward-v3-StatusRequest"></a>
-
-### StatusRequest
-
-
-
-
-
-
-
-<a name="steward-v3-StatusResponse"></a>
-
-### StatusResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| version | [string](#string) |  |  |
-
-
-
 
 
 
@@ -75,6 +51,31 @@ Represents a single function call on a particular Cellar
 
 
 
+
+<a name="steward-v3-VersionRequest"></a>
+
+### VersionRequest
+
+
+
+
+
+
+
+<a name="steward-v3-VersionResponse"></a>
+
+### VersionResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| version | [string](#string) |  |  |
+
+
+
+
+
  
 
  
@@ -90,7 +91,16 @@ Service for handling Cellar contract calls
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
 | Submit | [SubmitRequest](#steward-v3-SubmitRequest) | [SubmitResponse](#steward-v3-SubmitResponse) | Handles simple contract call submission |
-| Status | [StatusRequest](#steward-v3-StatusRequest) | [StatusResponse](#steward-v3-StatusResponse) |  |
+
+
+<a name="steward-v3-Status"></a>
+
+### Status
+
+
+| Method Name | Request Type | Response Type | Description |
+| ----------- | ------------ | ------------- | ------------|
+| Version | [VersionRequest](#steward-v3-VersionRequest) | [VersionResponse](#steward-v3-VersionResponse) |  |
 
  
 

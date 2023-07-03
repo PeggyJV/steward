@@ -84,6 +84,7 @@ fn main() {
         .unwrap();
 
     copy_generated_files(tmp_dir, out_dir);
+    cleanup_files(tmp_dir);
     println!("Done!");
 }
 
@@ -113,6 +114,27 @@ fn copy_generated_files(from_dir: &Path, to_dir: &Path) {
     if !errors.is_empty() {
         for e in errors {
             eprintln!("[error] Error while copying compiled file: {}", e);
+        }
+
+        panic!("[error] Aborted.");
+    }
+}
+
+fn cleanup_files(tmp_dir: &Path) {
+    println!("Cleaning up temporary files...");
+
+    // Remove temporary files
+    let errors = WalkDir::new(tmp_dir)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| e.file_type().is_file())
+        .map(|e| fs::remove_file(e.path()))
+        .filter_map(|e| e.err())
+        .collect::<Vec<_>>();
+
+    if !errors.is_empty() {
+        for e in errors {
+            eprintln!("[error] Error while removing file: {}", e);
         }
 
         panic!("[error] Aborted.");

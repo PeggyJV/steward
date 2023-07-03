@@ -1,0 +1,830 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_morphoRewardsDistributor",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "claimable",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32[]",
+          "name": "proof",
+          "type": "bytes32[]"
+        }
+      ],
+      "name": "claim",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "morphoRewardsDistributor",
+      "outputs": [
+        {
+          "internalType": "contract RewardsDistributor",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x60a060405234801561001057600080fd5b5060405161031c38038061031c83398101604081905261002f91610040565b6001600160a01b0316608052610070565b60006020828403121561005257600080fd5b81516001600160a01b038116811461006957600080fd5b9392505050565b60805161028c610090600039600081816055015260aa015261028c6000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80632f52ebb71461003b5780635b5d4d7814610050575b600080fd5b61004e61004936600461012f565b610093565b005b6100777f000000000000000000000000000000000000000000000000000000000000000081565b6040516001600160a01b03909116815260200160405180910390f35b604051630f44fe1d60e21b81526001600160a01b037f00000000000000000000000000000000000000000000000000000000000000001690633d13f874906100e3903090869086906004016101f9565b600060405180830381600087803b1580156100fd57600080fd5b505af1158015610111573d6000803e3d6000fd5b505050505050565b634e487b7160e01b600052604160045260246000fd5b6000806040838503121561014257600080fd5b8235915060208084013567ffffffffffffffff8082111561016257600080fd5b818601915086601f83011261017657600080fd5b81358181111561018857610188610119565b8060051b604051601f19603f830116810181811085821117156101ad576101ad610119565b6040529182528482019250838101850191898311156101cb57600080fd5b938501935b828510156101e9578435845293850193928501926101d0565b8096505050505050509250929050565b6001600160a01b038416815260208082018490526060604083018190528351908301819052600091848101916080850190845b818110156102485784518352938301939183019160010161022c565b50909897505050505050505056fea264697066735822122095172c1f437abb49f54a9016e5132ff730f3ce61eaae519403598179b116c36f64736f6c63430008100033",
+    "sourceMap": "300:749:203:-:0;;;572:136;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;-1:-1:-1;;;;;629:72:203;;;300:749;;14:290:258;84:6;137:2;125:9;116:7;112:23;108:32;105:52;;;153:1;150;143:12;105:52;179:16;;-1:-1:-1;;;;;224:31:258;;214:42;;204:70;;270:1;267;260:12;204:70;293:5;14:290;-1:-1:-1;;;14:290:258:o;:::-;300:749:203;;;;;;;;;;;;;;;;;",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x608060405234801561001057600080fd5b50600436106100365760003560e01c80632f52ebb71461003b5780635b5d4d7814610050575b600080fd5b61004e61004936600461012f565b610093565b005b6100777f000000000000000000000000000000000000000000000000000000000000000081565b6040516001600160a01b03909116815260200160405180910390f35b604051630f44fe1d60e21b81526001600160a01b037f00000000000000000000000000000000000000000000000000000000000000001690633d13f874906100e3903090869086906004016101f9565b600060405180830381600087803b1580156100fd57600080fd5b505af1158015610111573d6000803e3d6000fd5b505050505050565b634e487b7160e01b600052604160045260246000fd5b6000806040838503121561014257600080fd5b8235915060208084013567ffffffffffffffff8082111561016257600080fd5b818601915086601f83011261017657600080fd5b81358181111561018857610188610119565b8060051b604051601f19603f830116810181811085821117156101ad576101ad610119565b6040529182528482019250838101850191898311156101cb57600080fd5b938501935b828510156101e9578435845293850193928501926101d0565b8096505050505050509250929050565b6001600160a01b038416815260208082018490526060604083018190528351908301819052600091848101916080850190845b818110156102485784518352938301939183019160010161022c565b50909897505050505050505056fea264697066735822122095172c1f437abb49f54a9016e5132ff730f3ce61eaae519403598179b116c36f64736f6c63430008100033",
+    "sourceMap": "300:749:203:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;902:145;;;;;;:::i;:::-;;:::i;:::-;;505:60;;;;;;;;-1:-1:-1;;;;;1526:32:258;;;1508:51;;1496:2;1481:18;505:60:203;;;;;;;902:145;977:63;;-1:-1:-1;;;977:63:203;;-1:-1:-1;;;;;977:24:203;:30;;;;:63;;1016:4;;1023:9;;1034:5;;977:63;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;902:145;;:::o;14:127:258:-;75:10;70:3;66:20;63:1;56:31;106:4;103:1;96:15;130:4;127:1;120:15;146:1183;239:6;247;300:2;288:9;279:7;275:23;271:32;268:52;;;316:1;313;306:12;268:52;352:9;339:23;329:33;;381:2;434;423:9;419:18;406:32;457:18;498:2;490:6;487:14;484:34;;;514:1;511;504:12;484:34;552:6;541:9;537:22;527:32;;597:7;590:4;586:2;582:13;578:27;568:55;;619:1;616;609:12;568:55;655:2;642:16;677:2;673;670:10;667:36;;;683:18;;:::i;:::-;729:2;726:1;722:10;761:2;755:9;824:2;820:7;815:2;811;807:11;803:25;795:6;791:38;879:6;867:10;864:22;859:2;847:10;844:18;841:46;838:72;;;890:18;;:::i;:::-;926:2;919:22;976:18;;;1010:15;;;;-1:-1:-1;1052:11:258;;;1048:20;;;1080:19;;;1077:39;;;1112:1;1109;1102:12;1077:39;1136:11;;;;1156:142;1172:6;1167:3;1164:15;1156:142;;;1238:17;;1226:30;;1189:12;;;;1276;;;;1156:142;;;1317:6;1307:16;;;;;;;;146:1183;;;;;:::o;1570:801::-;-1:-1:-1;;;;;1846:32:258;;1828:51;;1898:2;1916:18;;;1909:34;;;1816:2;1974;1959:18;;1952:30;;;2031:13;;1801:18;;;2053:22;;;1768:4;;2133:15;;;;2106:3;2091:19;;;1768:4;2176:169;2190:6;2187:1;2184:13;2176:169;;;2251:13;;2239:26;;2320:15;;;;2285:12;;;;2212:1;2205:9;2176:169;;;-1:-1:-1;2362:3:258;;1570:801;-1:-1:-1;;;;;;;;1570:801:258:o",
+    "linkReferences": {},
+    "immutableReferences": {
+      "66662": [
+        {
+          "start": 85,
+          "length": 32
+        },
+        {
+          "start": 170,
+          "length": 32
+        }
+      ]
+    }
+  },
+  "methodIdentifiers": {
+    "claim(uint256,bytes32[])": "2f52ebb7",
+    "morphoRewardsDistributor()": "5b5d4d78"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.16+commit.07a7930e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_morphoRewardsDistributor\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"claimable\",\"type\":\"uint256\"},{\"internalType\":\"bytes32[]\",\"name\":\"proof\",\"type\":\"bytes32[]\"}],\"name\":\"claim\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"morphoRewardsDistributor\",\"outputs\":[{\"internalType\":\"contract RewardsDistributor\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"crispymangoes\",\"kind\":\"dev\",\"methods\":{},\"title\":\"Morpho Reward Handler\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"claim(uint256,bytes32[])\":{\"notice\":\"Allows cellars to claim Morpho Rewards.\"},\"morphoRewardsDistributor()\":{\"notice\":\"The Morpho Aave V3 rewards handler contract on current network.For mainnet use 0x3B14E5C73e0A56D607A8688098326fD4b4292135.\"}},\"notice\":\"Allows Cellars to claim MORPHO rewards.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/modules/adaptors/Morpho/MorphoRewardHandler.sol\":\"MorphoRewardHandler\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@balancer-labs/=lib/balancer-v2-monorepo/../../node_modules/@balancer-labs/\",\":@balancer/=lib/balancer-v2-monorepo/pkg/\",\":@chainlink/=lib/chainlink/\",\":@ds-test/=lib/forge-std/lib/ds-test/src/\",\":@ensdomains/=node_modules/@ensdomains/\",\":@forge-std/=lib/forge-std/src/\",\":@openzeppelin/=lib/openzeppelin-contracts/\",\":@solmate/=lib/solmate/src/\",\":@uniswap/v3-core/=lib/v3-core/\",\":@uniswap/v3-periphery/=lib/v3-periphery/\",\":@uniswapV3C/=lib/v3-core/contracts/\",\":@uniswapV3P/=lib/v3-periphery/contracts/\",\":axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity/contracts/\",\":balancer-v2-monorepo/=lib/balancer-v2-monorepo/\",\":chainlink/=lib/chainlink/integration-tests/contracts/ethereum/src/\",\":compound-protocol/=lib/compound-protocol/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":eth-gas-reporter/=node_modules/eth-gas-reporter/\",\":forge-std/=lib/forge-std/src/\",\":hardhat/=node_modules/hardhat/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":solmate/=lib/solmate/src/\",\":v3-core.git/=lib/v3-core.git/contracts/\",\":v3-core/=lib/v3-core/contracts/\",\":v3-periphery.git/=lib/v3-periphery.git/contracts/\",\":v3-periphery/=lib/v3-periphery/contracts/\"]},\"sources\":{\"src/modules/adaptors/Morpho/MorphoRewardHandler.sol\":{\"keccak256\":\"0xc1461e49dacbb75fe03a4aa08a58bec9639416d57fed6c6595ade2f343520480\",\"license\":\"Apache-2.0\",\"urls\":[\"bzz-raw://b2cc897411f203e04233ee37d60e70bed92f310df63beb5adede89009c8cfc54\",\"dweb:/ipfs/QmSgJ6xXXqRLTcmyDf5uPtd5FqLvEmuK4QQ5LBXuk5dbhp\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.16+commit.07a7930e"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_morphoRewardsDistributor",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "constructor"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "claimable",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "proof",
+              "type": "bytes32[]"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "claim"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "morphoRewardsDistributor",
+          "outputs": [
+            {
+              "internalType": "contract RewardsDistributor",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "claim(uint256,bytes32[])": {
+            "notice": "Allows cellars to claim Morpho Rewards."
+          },
+          "morphoRewardsDistributor()": {
+            "notice": "The Morpho Aave V3 rewards handler contract on current network.For mainnet use 0x3B14E5C73e0A56D607A8688098326fD4b4292135."
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@balancer-labs/=lib/balancer-v2-monorepo/../../node_modules/@balancer-labs/",
+        ":@balancer/=lib/balancer-v2-monorepo/pkg/",
+        ":@chainlink/=lib/chainlink/",
+        ":@ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":@ensdomains/=node_modules/@ensdomains/",
+        ":@forge-std/=lib/forge-std/src/",
+        ":@openzeppelin/=lib/openzeppelin-contracts/",
+        ":@solmate/=lib/solmate/src/",
+        ":@uniswap/v3-core/=lib/v3-core/",
+        ":@uniswap/v3-periphery/=lib/v3-periphery/",
+        ":@uniswapV3C/=lib/v3-core/contracts/",
+        ":@uniswapV3P/=lib/v3-periphery/contracts/",
+        ":axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity/contracts/",
+        ":balancer-v2-monorepo/=lib/balancer-v2-monorepo/",
+        ":chainlink/=lib/chainlink/integration-tests/contracts/ethereum/src/",
+        ":compound-protocol/=lib/compound-protocol/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":eth-gas-reporter/=node_modules/eth-gas-reporter/",
+        ":forge-std/=lib/forge-std/src/",
+        ":hardhat/=node_modules/hardhat/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/",
+        ":solmate/=lib/solmate/src/",
+        ":v3-core.git/=lib/v3-core.git/contracts/",
+        ":v3-core/=lib/v3-core/contracts/",
+        ":v3-periphery.git/=lib/v3-periphery.git/contracts/",
+        ":v3-periphery/=lib/v3-periphery/contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "src/modules/adaptors/Morpho/MorphoRewardHandler.sol": "MorphoRewardHandler"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "src/modules/adaptors/Morpho/MorphoRewardHandler.sol": {
+        "keccak256": "0xc1461e49dacbb75fe03a4aa08a58bec9639416d57fed6c6595ade2f343520480",
+        "urls": [
+          "bzz-raw://b2cc897411f203e04233ee37d60e70bed92f310df63beb5adede89009c8cfc54",
+          "dweb:/ipfs/QmSgJ6xXXqRLTcmyDf5uPtd5FqLvEmuK4QQ5LBXuk5dbhp"
+        ],
+        "license": "Apache-2.0"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "src/modules/adaptors/Morpho/MorphoRewardHandler.sol",
+    "id": 66697,
+    "exportedSymbols": {
+      "MorphoRewardHandler": [
+        66696
+      ],
+      "RewardsDistributor": [
+        66657
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "39:1011:203",
+    "nodes": [
+      {
+        "id": 66646,
+        "nodeType": "PragmaDirective",
+        "src": "39:23:203",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".16"
+        ]
+      },
+      {
+        "id": 66657,
+        "nodeType": "ContractDefinition",
+        "src": "64:118:203",
+        "nodes": [
+          {
+            "id": 66656,
+            "nodeType": "FunctionDefinition",
+            "src": "99:81:203",
+            "nodes": [],
+            "functionSelector": "3d13f874",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "claim",
+            "nameLocation": "108:5:203",
+            "parameters": {
+              "id": 66654,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 66648,
+                  "mutability": "mutable",
+                  "name": "user",
+                  "nameLocation": "122:4:203",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 66656,
+                  "src": "114:12:203",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 66647,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "114:7:203",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 66650,
+                  "mutability": "mutable",
+                  "name": "claimable",
+                  "nameLocation": "136:9:203",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 66656,
+                  "src": "128:17:203",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 66649,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "128:7:203",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 66653,
+                  "mutability": "mutable",
+                  "name": "proof",
+                  "nameLocation": "164:5:203",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 66656,
+                  "src": "147:22:203",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
+                    "typeString": "bytes32[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 66651,
+                      "name": "bytes32",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "147:7:203",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "id": 66652,
+                    "nodeType": "ArrayTypeName",
+                    "src": "147:9:203",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
+                      "typeString": "bytes32[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "113:57:203"
+            },
+            "returnParameters": {
+              "id": 66655,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "179:0:203"
+            },
+            "scope": 66657,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "RewardsDistributor",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          66657
+        ],
+        "name": "RewardsDistributor",
+        "nameLocation": "74:18:203",
+        "scope": 66697,
+        "usedErrors": []
+      },
+      {
+        "id": 66696,
+        "nodeType": "ContractDefinition",
+        "src": "300:749:203",
+        "nodes": [
+          {
+            "id": 66662,
+            "nodeType": "VariableDeclaration",
+            "src": "505:60:203",
+            "nodes": [],
+            "constant": false,
+            "documentation": {
+              "id": 66659,
+              "nodeType": "StructuredDocumentation",
+              "src": "335:165:203",
+              "text": " @notice The Morpho Aave V3 rewards handler contract on current network.\n @notice For mainnet use 0x3B14E5C73e0A56D607A8688098326fD4b4292135."
+            },
+            "functionSelector": "5b5d4d78",
+            "mutability": "immutable",
+            "name": "morphoRewardsDistributor",
+            "nameLocation": "541:24:203",
+            "scope": 66696,
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_RewardsDistributor_$66657",
+              "typeString": "contract RewardsDistributor"
+            },
+            "typeName": {
+              "id": 66661,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 66660,
+                "name": "RewardsDistributor",
+                "nameLocations": [
+                  "505:18:203"
+                ],
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 66657,
+                "src": "505:18:203"
+              },
+              "referencedDeclaration": 66657,
+              "src": "505:18:203",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_RewardsDistributor_$66657",
+                "typeString": "contract RewardsDistributor"
+              }
+            },
+            "visibility": "public"
+          },
+          {
+            "id": 66674,
+            "nodeType": "FunctionDefinition",
+            "src": "572:136:203",
+            "nodes": [],
+            "body": {
+              "id": 66673,
+              "nodeType": "Block",
+              "src": "619:89:203",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "id": 66671,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 66667,
+                      "name": "morphoRewardsDistributor",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 66662,
+                      "src": "629:24:203",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_RewardsDistributor_$66657",
+                        "typeString": "contract RewardsDistributor"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "arguments": [
+                        {
+                          "id": 66669,
+                          "name": "_morphoRewardsDistributor",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 66664,
+                          "src": "675:25:203",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": [
+                          {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        ],
+                        "id": 66668,
+                        "name": "RewardsDistributor",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 66657,
+                        "src": "656:18:203",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_contract$_RewardsDistributor_$66657_$",
+                          "typeString": "type(contract RewardsDistributor)"
+                        }
+                      },
+                      "id": 66670,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "kind": "typeConversion",
+                      "lValueRequested": false,
+                      "nameLocations": [],
+                      "names": [],
+                      "nodeType": "FunctionCall",
+                      "src": "656:45:203",
+                      "tryCall": false,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_RewardsDistributor_$66657",
+                        "typeString": "contract RewardsDistributor"
+                      }
+                    },
+                    "src": "629:72:203",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_RewardsDistributor_$66657",
+                      "typeString": "contract RewardsDistributor"
+                    }
+                  },
+                  "id": 66672,
+                  "nodeType": "ExpressionStatement",
+                  "src": "629:72:203"
+                }
+              ]
+            },
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nameLocation": "-1:-1:-1",
+            "parameters": {
+              "id": 66665,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 66664,
+                  "mutability": "mutable",
+                  "name": "_morphoRewardsDistributor",
+                  "nameLocation": "592:25:203",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 66674,
+                  "src": "584:33:203",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 66663,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "584:7:203",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "583:35:203"
+            },
+            "returnParameters": {
+              "id": 66666,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "619:0:203"
+            },
+            "scope": 66696,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          },
+          {
+            "id": 66695,
+            "nodeType": "FunctionDefinition",
+            "src": "902:145:203",
+            "nodes": [],
+            "body": {
+              "id": 66694,
+              "nodeType": "Block",
+              "src": "967:80:203",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "id": 66688,
+                            "name": "this",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": -28,
+                            "src": "1016:4:203",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_contract$_MorphoRewardHandler_$66696",
+                              "typeString": "contract MorphoRewardHandler"
+                            }
+                          }
+                        ],
+                        "expression": {
+                          "argumentTypes": [
+                            {
+                              "typeIdentifier": "t_contract$_MorphoRewardHandler_$66696",
+                              "typeString": "contract MorphoRewardHandler"
+                            }
+                          ],
+                          "id": 66687,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "nodeType": "ElementaryTypeNameExpression",
+                          "src": "1008:7:203",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_type$_t_address_$",
+                            "typeString": "type(address)"
+                          },
+                          "typeName": {
+                            "id": 66686,
+                            "name": "address",
+                            "nodeType": "ElementaryTypeName",
+                            "src": "1008:7:203",
+                            "typeDescriptions": {}
+                          }
+                        },
+                        "id": 66689,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "kind": "typeConversion",
+                        "lValueRequested": false,
+                        "nameLocations": [],
+                        "names": [],
+                        "nodeType": "FunctionCall",
+                        "src": "1008:13:203",
+                        "tryCall": false,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      },
+                      {
+                        "id": 66690,
+                        "name": "claimable",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 66677,
+                        "src": "1023:9:203",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "id": 66691,
+                        "name": "proof",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 66680,
+                        "src": "1034:5:203",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
+                          "typeString": "bytes32[] memory"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
+                          "typeString": "bytes32[] memory"
+                        }
+                      ],
+                      "expression": {
+                        "id": 66683,
+                        "name": "morphoRewardsDistributor",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 66662,
+                        "src": "977:24:203",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_RewardsDistributor_$66657",
+                          "typeString": "contract RewardsDistributor"
+                        }
+                      },
+                      "id": 66685,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberLocation": "1002:5:203",
+                      "memberName": "claim",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 66656,
+                      "src": "977:30:203",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_nonpayable$_t_address_$_t_uint256_$_t_array$_t_bytes32_$dyn_memory_ptr_$returns$__$",
+                        "typeString": "function (address,uint256,bytes32[] memory) external"
+                      }
+                    },
+                    "id": 66692,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "977:63:203",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 66693,
+                  "nodeType": "ExpressionStatement",
+                  "src": "977:63:203"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 66675,
+              "nodeType": "StructuredDocumentation",
+              "src": "831:66:203",
+              "text": " @notice Allows cellars to claim Morpho Rewards."
+            },
+            "functionSelector": "2f52ebb7",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "claim",
+            "nameLocation": "911:5:203",
+            "parameters": {
+              "id": 66681,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 66677,
+                  "mutability": "mutable",
+                  "name": "claimable",
+                  "nameLocation": "925:9:203",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 66695,
+                  "src": "917:17:203",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 66676,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "917:7:203",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 66680,
+                  "mutability": "mutable",
+                  "name": "proof",
+                  "nameLocation": "953:5:203",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 66695,
+                  "src": "936:22:203",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
+                    "typeString": "bytes32[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 66678,
+                      "name": "bytes32",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "936:7:203",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "id": 66679,
+                    "nodeType": "ArrayTypeName",
+                    "src": "936:9:203",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
+                      "typeString": "bytes32[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "916:43:203"
+            },
+            "returnParameters": {
+              "id": 66682,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "967:0:203"
+            },
+            "scope": 66696,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "MorphoRewardHandler",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": {
+          "id": 66658,
+          "nodeType": "StructuredDocumentation",
+          "src": "184:115:203",
+          "text": " @title Morpho Reward Handler\n @notice Allows Cellars to claim MORPHO rewards.\n @author crispymangoes"
+        },
+        "fullyImplemented": true,
+        "linearizedBaseContracts": [
+          66696
+        ],
+        "name": "MorphoRewardHandler",
+        "nameLocation": "309:19:203",
+        "scope": 66697,
+        "usedErrors": []
+      }
+    ],
+    "license": "Apache-2.0"
+  },
+  "id": 203
+}

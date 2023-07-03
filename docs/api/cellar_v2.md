@@ -27,7 +27,9 @@
     - [CellarV2_2.InitiateShutdown](#steward-v3-CellarV2_2-InitiateShutdown)
     - [CellarV2_2.LiftShutdown](#steward-v3-CellarV2_2-LiftShutdown)
     - [CellarV2_2.Multicall](#steward-v3-CellarV2_2-Multicall)
+    - [CellarV2_2.RemoveAdaptorFromCatalogue](#steward-v3-CellarV2_2-RemoveAdaptorFromCatalogue)
     - [CellarV2_2.RemovePosition](#steward-v3-CellarV2_2-RemovePosition)
+    - [CellarV2_2.RemovePositionFromCatalogue](#steward-v3-CellarV2_2-RemovePositionFromCatalogue)
     - [CellarV2_2.SetHoldingPosition](#steward-v3-CellarV2_2-SetHoldingPosition)
     - [CellarV2_2.SetRebalanceDeviation](#steward-v3-CellarV2_2-SetRebalanceDeviation)
     - [CellarV2_2.SetShareLockPeriod](#steward-v3-CellarV2_2-SetShareLockPeriod)
@@ -71,6 +73,12 @@ Represents a call to adaptor an. The cellar must be authorized to call the targe
 | cellar_v1_calls | [CellarAdaptorV1Calls](#steward-v3-CellarAdaptorV1Calls) |  | Represents function calls to the CellarAdaptor |
 | uniswap_v3_v2_calls | [UniswapV3AdaptorV2Calls](#steward-v3-UniswapV3AdaptorV2Calls) |  | Represents function calls to the UniswapV3Adaptor V2 |
 | aave_v2_enable_asset_as_collateral_v1_calls | [AaveV2EnableAssetAsCollateralAdaptorV1Calls](#steward-v3-AaveV2EnableAssetAsCollateralAdaptorV1Calls) |  | Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1 |
+| f_token_v1_calls | [FTokenAdaptorV1Calls](#steward-v3-FTokenAdaptorV1Calls) |  | Represents function calls to the FTokenAdaptor V1 |
+| morpho_aave_v2_a_token_v1_calls | [MorphoAaveV2ATokenAdaptorV1Calls](#steward-v3-MorphoAaveV2ATokenAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV2AToken V1 |
+| morpho_aave_v2_debt_token_v1_calls | [MorphoAaveV2DebtTokenAdaptorV1Calls](#steward-v3-MorphoAaveV2DebtTokenAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV2DebtToken V1 |
+| morpho_aave_v3_a_token_collateral_v1_calls | [MorphoAaveV3ATokenCollateralAdaptorV1Calls](#steward-v3-MorphoAaveV3ATokenCollateralAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV3ATokenCollateral V1 |
+| morpho_aave_v3_a_token_p2p_v1_calls | [MorphoAaveV3ATokenP2PAdaptorV1Calls](#steward-v3-MorphoAaveV3ATokenP2PAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV3ATokenP2P V1 |
+| morpho_aave_v3_debt_token_v1_calls | [MorphoAaveV3DebtTokenAdaptorV1Calls](#steward-v3-MorphoAaveV3DebtTokenAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV3DebtToken V1 |
 
 
 
@@ -412,6 +420,8 @@ The function you wish to execute on the target cellar
 | lift_shutdown | [CellarV2_2.LiftShutdown](#steward-v3-CellarV2_2-LiftShutdown) |  | Represents function `liftShutdown()` |
 | add_adaptor_to_catalogue | [CellarV2_2.AddAdaptorToCatalogue](#steward-v3-CellarV2_2-AddAdaptorToCatalogue) |  | Represents function `addAdaptorToCatalogue(address adaptor)` |
 | add_position_to_catalogue | [CellarV2_2.AddPositionToCatalogue](#steward-v3-CellarV2_2-AddPositionToCatalogue) |  | Represents function `addPositionToCatalogue(uint32 positionId)` |
+| remove_adaptor_from_catalogue | [CellarV2_2.RemoveAdaptorFromCatalogue](#steward-v3-CellarV2_2-RemoveAdaptorFromCatalogue) |  | Represents function `removeAdaptorFromCatalogue(address adaptor)` |
+| remove_position_from_catalogue | [CellarV2_2.RemovePositionFromCatalogue](#steward-v3-CellarV2_2-RemovePositionFromCatalogue) |  | Represents function `removePositionFromCatalogue(uint32 positionId)` |
 
 
 
@@ -459,6 +469,23 @@ Represents function `multicall(bytes[] data)`
 
 
 
+<a name="steward-v3-CellarV2_2-RemoveAdaptorFromCatalogue"></a>
+
+### CellarV2_2.RemoveAdaptorFromCatalogue
+Allows callers to remove adaptors from this cellar&#39;s catalogue
+
+Represents function `removeAdaptorFromCatalogue(address adaptor)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| adaptor | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="steward-v3-CellarV2_2-RemovePosition"></a>
 
 ### CellarV2_2.RemovePosition
@@ -471,6 +498,23 @@ Represents function `removePosition(uint32 index, bool inDebtArray)`
 | ----- | ---- | ----- | ----------- |
 | index | [uint32](#uint32) |  | Index at which to remove the position |
 | in_debt_array | [bool](#bool) |  | Whether to remove position from the debt array, or the credit array. |
+
+
+
+
+
+
+<a name="steward-v3-CellarV2_2-RemovePositionFromCatalogue"></a>
+
+### CellarV2_2.RemovePositionFromCatalogue
+Allows caller to remove positions from this cellar&#39;s catalogue
+
+Represents function `removePositionFromCatalogue(uint32 positionId)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [uint32](#uint32) |  |  |
 
 
 
