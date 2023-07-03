@@ -22,7 +22,7 @@ pub const ALLOWED_ADD_POSITION: [(&str, u32); 3] =
 pub const ALLOWED_CATALOGUE_ADAPTORS: [(&str, &str); 6] = [
     (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1),
     (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V2_DEBT_TOKEN_V1),
-    (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V3_A_TOKEN_V1),
+    (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V3_A_TOKEN_COLLATERAL_V1),
     (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V3_DEBT_TOKEN_V1),
     (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V3_P2P_V1),
     (CELLAR_RYLINK, ADAPTOR_CELLAR_V2),
@@ -40,9 +40,9 @@ pub const ALLOWED_CATALOGUE_POSITIONS: [(&str, u32); 8] = [
 pub const ALLOWED_SETUP_ADAPTORS: [(&str, &str); 1] =
     [(CELLAR_RYUSD, ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1)];
 pub const BLOCKED_ADAPTORS: [&str; 3] = [
-    CELLAR_UNIV3_V1,
-    CELLAR_VESTING_SIMPLE_V1,
-    CELLAR_COMPOUND_C_TOKEN_V1,
+    ADAPTOR_UNIV3_V1,
+    ADAPTOR_VESTING_SIMPLE_V1,
+    ADAPTOR_COMPOUND_C_TOKEN_V1,
 ];
 pub const BLOCKED_POSITIONS: [u32; 9] = [4, 5, 6, 7, 8, 9, 10, 11, 12];
 
@@ -56,18 +56,19 @@ pub const CELLAR_RYSNX: &str = "cbf2250f33c4161e18d4a2fa47464520af5216b5";
 pub const CELLAR_RYUNI: &str = "6a6af5393dc23d7e3db28d28ef422db7c40932b6";
 pub const CELLAR_RYUSD: &str = "97e6e0a40a3d02f12d1cec30ebfbae04e37c119e";
 
-// deprecated cellars
+// deprecated adaptors
 
-pub const CELLAR_UNIV3_V1: &str = "7c4262f83e6775d6ff6fe8d9ab268611ed9d13ee";
-pub const CELLAR_VESTING_SIMPLE_V1: &str = "1eaa1a100a460f46a2032f0402bc01fe89faab60";
-pub const CELLAR_COMPOUND_C_TOKEN_V1: &str = "26dba82495f6189dde7648ae88bead46c402f078";
+pub const ADAPTOR_UNIV3_V1: &str = "7c4262f83e6775d6ff6fe8d9ab268611ed9d13ee";
+pub const ADAPTOR_VESTING_SIMPLE_V1: &str = "1eaa1a100a460f46a2032f0402bc01fe89faab60";
+pub const ADAPTOR_COMPOUND_C_TOKEN_V1: &str = "26dba82495f6189dde7648ae88bead46c402f078";
 
 // adaptors
 
-pub const ADAPTOR_CELLAR_V2: &str = "24eeaa1111dac1c0fe0cf3c03bba03adde1e7fe4";
+pub const ADAPTOR_CELLAR_V2: &str = "3b5ca5de4d808cd793d3a7b3a731d3e67e707b27";
 pub const ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1: &str = "1a4cb53edb8c65c3df6aa9d88c1ab4cf35312b73";
 pub const ADAPTOR_MORPHO_AAVE_V2_DEBT_TOKEN_V1: &str = "407d5489f201013ee6a6ca20fccb05047c548138";
-pub const ADAPTOR_MORPHO_AAVE_V3_A_TOKEN_V1: &str = "b46e8a03b1aafffb50f281397c57b5b87080363e";
+pub const ADAPTOR_MORPHO_AAVE_V3_A_TOKEN_COLLATERAL_V1: &str =
+    "b46e8a03b1aafffb50f281397c57b5b87080363e";
 pub const ADAPTOR_MORPHO_AAVE_V3_DEBT_TOKEN_V1: &str = "25a61f771af9a38c10ddd93c2bbab39a88926fa9";
 pub const ADAPTOR_MORPHO_AAVE_V3_P2P_V1: &str = "4fe068caad05b82bf3f86e1f7d1a7b8bbf516111";
 
@@ -101,8 +102,8 @@ pub fn check_blocked_adaptor(adaptor_id: &str) -> Result<(), Error> {
     Ok(())
 }
 
-pub fn check_blocked_position(position: u32) -> Result<(), Error> {
-    if BLOCKED_POSITIONS.contains(&position) {
+pub fn check_blocked_position(position: &u32) -> Result<(), Error> {
+    if BLOCKED_POSITIONS.contains(position) {
         return Err(sp_call_error(format!("position {position} is blocked")));
     }
 
@@ -110,7 +111,7 @@ pub fn check_blocked_position(position: u32) -> Result<(), Error> {
 }
 
 pub fn validate_add_position(cellar_id: &str, position: u32) -> Result<(), Error> {
-    check_blocked_position(position)?;
+    check_blocked_position(&position)?;
     let cellar_id = normalize_address(cellar_id.to_string());
     if !ALLOWED_ADD_POSITION.contains(&(&cellar_id, position)) {
         return Err(sp_call_error(format!(
