@@ -136,6 +136,7 @@ pub fn validate_add_adaptor_to_catalogue(cellar_id: &str, adaptor_id: &str) -> R
 }
 
 pub fn validate_add_position_to_catalogue(cellar_id: &str, position: u32) -> Result<(), Error> {
+    check_blocked_position(&position)?;
     let cellar_id = normalize_address(cellar_id.to_string());
     if !ALLOWED_CATALOGUE_POSITIONS.contains(&(&cellar_id, position)) {
         return Err(sp_call_error(format!(
@@ -208,5 +209,107 @@ mod tests {
         let once = normalize_address(blocked1);
         let twice = normalize_address(once.clone());
         assert_eq!(&once, &twice);
+    }
+
+    #[test]
+    fn test_validate_add_position() {
+        // allows approved cellar/position ID pairs
+        let (cellar_id, approved_pos) = (CELLAR_RYUSD, 25);
+        assert!(validate_add_position(cellar_id, approved_pos).is_ok());
+
+        let error_prefix = "SP call error: ".to_string();
+
+        // rejects blocked position ID
+        let blocked_pos = 4;
+        let res = validate_add_position(cellar_id, blocked_pos);
+        let expected_err = error_prefix.clone() + &format!("position {blocked_pos} is blocked");
+        assert!(res.is_err());
+        assert_eq!(expected_err, res.unwrap_err().to_string());
+
+        // rejects unapproved cellar/position ID pair
+        let unapproved_pos = 20;
+        let res = validate_add_position(cellar_id, unapproved_pos);
+        let expected_err = error_prefix
+            + &format!("position {unapproved_pos} not allowed to be added for {cellar_id}");
+        assert!(res.is_err());
+        assert_eq!(expected_err, res.unwrap_err().to_string());
+    }
+
+    #[test]
+    fn test_validate_add_adaptor_to_catalogue() {
+        // allows approved cellar/adaptor ID pairs
+        let (cellar_id, approved_adaptor_id) = (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1);
+        assert!(validate_add_adaptor_to_catalogue(cellar_id, approved_adaptor_id).is_ok());
+
+        let error_prefix = "SP call error: ".to_string();
+
+        // rejects blocked adaptor ID
+        let blocked_adaptor_id = ADAPTOR_UNIV3_V1;
+        let res = validate_add_adaptor_to_catalogue(cellar_id, blocked_adaptor_id);
+        let expected_err =
+            error_prefix.clone() + &format!("adaptor {blocked_adaptor_id} is blocked");
+        assert!(res.is_err());
+        assert_eq!(expected_err, res.unwrap_err().to_string());
+
+        // rejects unapproved cellar/adaptor ID pair
+        let unapproved_adaptor_id = ADAPTOR_CELLAR_V2;
+        let res = validate_add_adaptor_to_catalogue(cellar_id, unapproved_adaptor_id);
+        let expected_err = error_prefix
+            + &format!(
+                "adaptor {unapproved_adaptor_id} not allowed to be added to catalogue for {cellar_id}"
+            );
+        assert!(res.is_err());
+        assert_eq!(expected_err, res.unwrap_err().to_string());
+    }
+
+    #[test]
+    fn test_validate_add_position_to_catalogue() {
+        // allows approved cellar/position ID pairs
+        let (cellar_id, approved_pos) = (CELLAR_RYLINK, 154);
+        assert!(validate_add_position_to_catalogue(cellar_id, approved_pos).is_ok());
+
+        let error_prefix = "SP call error: ".to_string();
+
+        // rejects blocked position ID
+        let blocked_pos = 4;
+        let res = validate_add_position_to_catalogue(cellar_id, blocked_pos);
+        let expected_err = error_prefix.clone() + &format!("position {blocked_pos} is blocked");
+        assert!(res.is_err());
+        assert_eq!(expected_err, res.unwrap_err().to_string());
+
+        // rejects unapproved cellar/position ID pair
+        let unapproved_pos = 153;
+        let res = validate_add_position_to_catalogue(cellar_id, unapproved_pos);
+        let expected_err = error_prefix
+            + &format!(
+                "position {unapproved_pos} not allowed to be added to catalogue for {cellar_id}"
+            );
+        assert!(res.is_err());
+        assert_eq!(expected_err, res.unwrap_err().to_string());
+    }
+
+    #[test]
+    fn test_validate_setup_adaptor() {
+        // allows approved cellar/adaptor ID pairs
+        let (cellar_id, approved_adaptor_id) = (CELLAR_RYUSD, ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1);
+        assert!(validate_setup_adaptor(cellar_id, approved_adaptor_id).is_ok());
+
+        let error_prefix = "SP call error: ".to_string();
+
+        // rejects blocked adaptor ID
+        let blocked_adaptor_id = ADAPTOR_UNIV3_V1;
+        let res = validate_setup_adaptor(cellar_id, blocked_adaptor_id);
+        let expected_err =
+            error_prefix.clone() + &format!("adaptor {blocked_adaptor_id} is blocked");
+        assert!(res.is_err());
+        assert_eq!(expected_err, res.unwrap_err().to_string());
+
+        // rejects unapproved cellar/adaptor ID pair
+        let unapproved_adaptor_id = ADAPTOR_CELLAR_V2;
+        let res = validate_setup_adaptor(cellar_id, unapproved_adaptor_id);
+        let expected_err = error_prefix
+            + &format!("adaptor {unapproved_adaptor_id} not allowed to be setup for {cellar_id}");
+        assert!(res.is_err());
+        assert_eq!(expected_err, res.unwrap_err().to_string());
     }
 }
