@@ -212,6 +212,38 @@ mod tests {
     }
 
     #[test]
+    fn test_check_blocked_position() {
+        // allows unblocked position ID
+        let unblocked_pos = 25;
+        assert!(check_blocked_position(&unblocked_pos).is_ok());
+
+        let error_prefix = "SP call error: ".to_string();
+
+        // rejects blocked position ID
+        let blocked_pos = 4;
+        let res = check_blocked_position(&blocked_pos);
+        let expected_err = error_prefix.clone() + &format!("position {blocked_pos} is blocked");
+        assert!(res.is_err());
+        assert_eq!(expected_err, res.unwrap_err().to_string());
+    }
+
+    #[test]
+    fn test_check_blocked_adaptor() {
+        // allows unblocked adaptor ID
+        let unblocked_adaptor = ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1;
+        assert!(check_blocked_adaptor(&unblocked_adaptor).is_ok());
+
+        let error_prefix = "SP call error: ".to_string();
+
+        // rejects blocked adaptor ID
+        let blocked_adaptor = ADAPTOR_UNIV3_V1;
+        let res = check_blocked_adaptor(&blocked_adaptor);
+        let expected_err = error_prefix.clone() + &format!("adaptor {blocked_adaptor} is blocked");
+        assert!(res.is_err());
+        assert_eq!(expected_err, res.unwrap_err().to_string());
+    }
+
+    #[test]
     fn test_validate_add_position() {
         // allows approved cellar/position ID pairs
         let (cellar_id, approved_pos) = (CELLAR_RYUSD, 25);
@@ -229,8 +261,15 @@ mod tests {
         // rejects unapproved cellar/position ID pair
         let unapproved_pos = 20;
         let res = validate_add_position(cellar_id, unapproved_pos);
-        let expected_err = error_prefix
+        let expected_err = error_prefix.clone()
             + &format!("position {unapproved_pos} not allowed to be added for {cellar_id}");
+        assert!(res.is_err());
+        assert_eq!(expected_err, res.unwrap_err().to_string());
+
+        let unapproved_cellar = "0000000000000000000000000000000000000000";
+        let res = validate_add_position(unapproved_cellar, approved_pos);
+        let expected_err = error_prefix
+            + &format!("position {approved_pos} not allowed to be added for {unapproved_cellar}");
         assert!(res.is_err());
         assert_eq!(expected_err, res.unwrap_err().to_string());
     }
@@ -254,10 +293,17 @@ mod tests {
         // rejects unapproved cellar/adaptor ID pair
         let unapproved_adaptor_id = ADAPTOR_CELLAR_V2;
         let res = validate_add_adaptor_to_catalogue(cellar_id, unapproved_adaptor_id);
-        let expected_err = error_prefix
+        let expected_err = error_prefix.clone()
             + &format!(
                 "adaptor {unapproved_adaptor_id} not allowed to be added to catalogue for {cellar_id}"
             );
+        assert!(res.is_err());
+        assert_eq!(expected_err, res.unwrap_err().to_string());
+
+        let unapproved_cellar = "0000000000000000000000000000000000000000";
+        let res = validate_add_adaptor_to_catalogue(unapproved_cellar, approved_adaptor_id);
+        let expected_err = error_prefix
+            + &format!("adaptor {approved_adaptor_id} not allowed to be added to catalogue for {unapproved_cellar}");
         assert!(res.is_err());
         assert_eq!(expected_err, res.unwrap_err().to_string());
     }
@@ -280,9 +326,18 @@ mod tests {
         // rejects unapproved cellar/position ID pair
         let unapproved_pos = 153;
         let res = validate_add_position_to_catalogue(cellar_id, unapproved_pos);
-        let expected_err = error_prefix
+        let expected_err = error_prefix.clone()
             + &format!(
                 "position {unapproved_pos} not allowed to be added to catalogue for {cellar_id}"
+            );
+        assert!(res.is_err());
+        assert_eq!(expected_err, res.unwrap_err().to_string());
+
+        let unapproved_cellar = "0000000000000000000000000000000000000000";
+        let res = validate_add_position_to_catalogue(unapproved_cellar, approved_pos);
+        let expected_err = error_prefix
+            + &format!(
+                "position {approved_pos} not allowed to be added to catalogue for {unapproved_cellar}"
             );
         assert!(res.is_err());
         assert_eq!(expected_err, res.unwrap_err().to_string());
@@ -307,8 +362,17 @@ mod tests {
         // rejects unapproved cellar/adaptor ID pair
         let unapproved_adaptor_id = ADAPTOR_CELLAR_V2;
         let res = validate_setup_adaptor(cellar_id, unapproved_adaptor_id);
-        let expected_err = error_prefix
+        let expected_err = error_prefix.clone()
             + &format!("adaptor {unapproved_adaptor_id} not allowed to be setup for {cellar_id}");
+        assert!(res.is_err());
+        assert_eq!(expected_err, res.unwrap_err().to_string());
+
+        let unapproved_cellar = "0000000000000000000000000000000000000000";
+        let res = validate_setup_adaptor(unapproved_cellar, approved_adaptor_id);
+        let expected_err = error_prefix
+            + &format!(
+                "adaptor {approved_adaptor_id} not allowed to be setup for {unapproved_cellar}"
+            );
         assert!(res.is_err());
         assert_eq!(expected_err, res.unwrap_err().to_string());
     }
