@@ -21,8 +21,8 @@ use crate::{
 };
 
 use super::{
-    check_blocked_adaptor, log_cellar_call, validate_add_adaptor_to_catalogue,
-    validate_add_position, validate_add_position_to_catalogue,
+    check_blocked_adaptor, check_blocked_position, log_cellar_call,
+    validate_add_adaptor_to_catalogue, validate_add_position_to_catalogue,
 };
 
 const CELLAR_NAME: &str = "CellarV2.2";
@@ -51,7 +51,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
         .ok_or_else(|| sp_call_error("call data is empty".to_string()))?;
     match function {
         Function::AddPosition(params) => {
-            validate_add_position(&cellar_id, params.position_id)?;
+            check_blocked_position(&params.position_id)?;
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
 
             let call = AddPositionCall {
