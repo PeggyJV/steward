@@ -25,11 +25,47 @@ fn generate_contract_abis() {
         ("AaveV2StablecoinCellar", "aave_v2_stablecoin"),
         ("CellarV1", "cellar_v1"),
         ("CellarV2", "cellar_v2"),
-        ("UniswapV3Adaptor", "uniswap_v3_adaptor"),
-        ("AaveATokenAdaptor", "aave_a_token_adaptor"),
-        ("AaveDebtTokenAdaptor", "aave_debt_token_adaptor"),
-        ("CompoundCTokenAdaptor", "compound_c_token_adaptor"),
-        ("VestingSimpleAdaptor", "vesting_simple_adaptor"),
+        ("CellarV2_2", "cellar_v2_2"),
+        ("UniswapV3AdaptorV2", "uniswap_v3_adaptor_v2"),
+        ("AaveATokenAdaptorV1", "aave_a_token_adaptor_v1"),
+        ("AaveDebtTokenAdaptorV1", "aave_debt_token_adaptor_v1"),
+        ("AaveATokenAdaptorV2", "aave_a_token_adaptor_v2"),
+        ("AaveDebtTokenAdaptorV2", "aave_debt_token_adaptor_v2"),
+        ("AaveV3ATokenAdaptorV1", "aave_v3_a_token_adaptor_v1"),
+        ("AaveV3DebtTokenAdaptorV1", "aave_v3_debt_token_adaptor_v1"),
+        ("CellarAdaptorV1", "cellar_adaptor_v1"),
+        ("CompoundCTokenAdaptorV2", "compound_c_token_adaptor_v2"),
+        ("OneInchAdaptorV1", "oneinch_adaptor_v1"),
+        ("ZeroXAdaptorV1", "zero_x_adaptor_v1"),
+        ("SwapWithUniswapAdaptorV1", "swap_with_uniswap_adaptor_v1"),
+        ("FeesAndReservesAdaptorV1", "fees_and_reserves_adaptor_v1"),
+        ("VestingSimpleAdaptorV2", "vesting_simple_adaptor_v2"),
+        (
+            "AaveV2EnableAssetAsCollateralAdaptorV1",
+            "aave_v2_enable_asset_as_collateral_adaptor_v1",
+        ),
+        ("FTokenAdaptor", "f_token_adaptor"),
+        (
+            "MorphoAaveV2ATokenAdaptorV1",
+            "morpho_aave_v2_a_token_adaptor_v1",
+        ),
+        (
+            "MorphoAaveV2DebtTokenAdaptorV1",
+            "morpho_aave_v2_debt_token_adaptor_v1",
+        ),
+        (
+            "MorphoAaveV3ATokenCollateralAdaptorV1",
+            "morpho_aave_v3_a_token_collateral_adaptor_v1",
+        ),
+        (
+            "MorphoAaveV3ATokenP2PAdaptorV1",
+            "morpho_aave_v3_a_token_p2p_adaptor_v1",
+        ),
+        (
+            "MorphoAaveV3DebtTokenAdaptorV1",
+            "morpho_aave_v3_debt_token_adaptor_v1",
+        ),
+        ("MorphoRewardHandler", "morpho_reward_handler"),
     ];
 
     contracts.iter().for_each(|n| {
