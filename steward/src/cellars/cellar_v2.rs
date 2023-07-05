@@ -16,7 +16,7 @@ use crate::{
 };
 
 use super::{
-    check_blocked_adaptor, log_cellar_call, normalize_address, validate_add_position,
+    check_blocked_adaptor, check_blocked_position, log_cellar_call, normalize_address,
     validate_setup_adaptor,
 };
 
@@ -26,7 +26,7 @@ const CELLAR_NAME: &str = "CellarV2";
 pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {
     match function {
         AddPosition(params) => {
-            validate_add_position(&cellar_id, params.position_id)?;
+            check_blocked_position(&params.position_id)?;
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
 
             let call = AddPositionCall {
