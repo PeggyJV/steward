@@ -1,5 +1,5 @@
 use crate::{
-    cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2},
+    cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2},
     config,
     error::{
         Error,
@@ -67,6 +67,7 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
             }
         };
         debug!("cork: {:?}", encoded_call);
+        info!("hex cork: {:?}", hex::encode(&encoded_call));
 
         if let Err(err) = schedule_cork(&cellar_id, encoded_call.clone(), height).await {
             error!("failed to schedule cork for cellar {}: {}", cellar_id, err);
@@ -118,6 +119,13 @@ pub fn get_encoded_call(request: ScheduleRequest) -> Result<Vec<u8>, Error> {
             }
 
             cellar_v2::get_encoded_call(call.function.unwrap(), request.cellar_id)
+        }
+        CellarV22(call) => {
+            if call.call_type.is_none() {
+                return Err(ErrorKind::Http.context("empty function data").into());
+            }
+
+            cellar_v2_2::get_encoded_call(call.call_type.unwrap(), request.cellar_id)
         }
     }
 }

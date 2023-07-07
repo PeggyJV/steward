@@ -29,6 +29,10 @@ fn generate_contract_abis() {
         ("UniswapV3AdaptorV2", "uniswap_v3_adaptor_v2"),
         ("AaveATokenAdaptorV1", "aave_a_token_adaptor_v1"),
         ("AaveDebtTokenAdaptorV1", "aave_debt_token_adaptor_v1"),
+        (
+            "AaveV2EnableAssetAsCollateralAdaptorV1",
+            "aave_v2_collateral_adaptor_v1",
+        ),
         ("AaveATokenAdaptorV2", "aave_a_token_adaptor_v2"),
         ("AaveDebtTokenAdaptorV2", "aave_debt_token_adaptor_v2"),
         ("AaveV3ATokenAdaptorV1", "aave_v3_a_token_adaptor_v1"),

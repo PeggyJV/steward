@@ -404,14 +404,6 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 				},
 			},
 		}
-		oracleSwapParamsUniV3 := &steward_proto.OracleSwapParams{
-			Params: &steward_proto.OracleSwapParams_Univ3Params{
-				Univ3Params: &steward_proto.UniV3OracleSwapParams{
-					Path:     []string{"0x1111111111111111111111111111111111111111", "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"},
-					PoolFees: []uint32{1000, 2000},
-				},
-			},
-		}
 
 		// Contains two adaptor calls, the first of which has two function calls inside of it, for a total of three function calls.
 		request := &steward_proto.ScheduleRequest{
@@ -420,23 +412,23 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 				CellarV2: &steward_proto.CellarV2{
 					Function: &steward_proto.CellarV2_CallOnAdaptor_{
 						CallOnAdaptor: &steward_proto.CellarV2_CallOnAdaptor{
-							Data: []*steward_proto.CellarV2_AdaptorCall{
+							Data: []*steward_proto.AdaptorCall{
 								{
 									Adaptor: adaptorContract.Hex(),
-									CallData: &steward_proto.CellarV2_AdaptorCall_AaveDebtTokenCalls{
-										AaveDebtTokenCalls: &steward_proto.AaveDebtTokenAdaptorCalls{
-											Calls: []*steward_proto.AaveDebtTokenAdaptor{
+									CallData: &steward_proto.AdaptorCall_AaveDebtTokenV1Calls{
+										AaveDebtTokenV1Calls: &steward_proto.AaveDebtTokenAdaptorV1Calls{
+											Calls: []*steward_proto.AaveDebtTokenAdaptorV1{
 												{
-													Function: &steward_proto.AaveDebtTokenAdaptor_BorrowFromAave_{
-														BorrowFromAave: &steward_proto.AaveDebtTokenAdaptor_BorrowFromAave{
+													Function: &steward_proto.AaveDebtTokenAdaptorV1_BorrowFromAave_{
+														BorrowFromAave: &steward_proto.AaveDebtTokenAdaptorV1_BorrowFromAave{
 															Token:  "0x2222222222222222222222222222222222222222",
 															Amount: "250000",
 														},
 													},
 												},
 												{
-													Function: &steward_proto.AaveDebtTokenAdaptor_SwapAndRepay_{
-														SwapAndRepay: &steward_proto.AaveDebtTokenAdaptor_SwapAndRepay{
+													Function: &steward_proto.AaveDebtTokenAdaptorV1_SwapAndRepay_{
+														SwapAndRepay: &steward_proto.AaveDebtTokenAdaptorV1_SwapAndRepay{
 															TokenIn:      "0x3333333333333333333333333333333333333333",
 															TokenToRepay: "0x4444444444444444444444444444444444444444",
 															AmountIn:     "5000",
@@ -451,16 +443,16 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 								},
 								{
 									Adaptor: adaptorContract.Hex(),
-									CallData: &steward_proto.CellarV2_AdaptorCall_CompoundCTokenCalls{
-										CompoundCTokenCalls: &steward_proto.CompoundCTokenAdaptorCalls{
-											Calls: []*steward_proto.CompoundCTokenAdaptor{
+									CallData: &steward_proto.AdaptorCall_ZeroXV1Calls{
+										ZeroXV1Calls: &steward_proto.ZeroXAdaptorV1Calls{
+											Calls: []*steward_proto.ZeroXAdaptorV1{
 												{
-													Function: &steward_proto.CompoundCTokenAdaptor_ClaimCompAndSwap_{
-														ClaimCompAndSwap: &steward_proto.CompoundCTokenAdaptor_ClaimCompAndSwap{
-															AssetOut: "0x5555555555555555555555555555555555555555",
-															Exchange: steward_proto.Exchange_EXCHANGE_UNIV3,
-															Params:   oracleSwapParamsUniV3,
-															Slippage: 0,
+													Function: &steward_proto.ZeroXAdaptorV1_SwapWith_0X{
+														SwapWith_0X: &steward_proto.ZeroXAdaptorV1_SwapWith0X{
+															TokenIn:      "0x5555555555555555555555555555555555555555",
+															TokenOut:     "0x6666666666666666666666666666666666666666",
+															Amount:       "6000",
+															SwapCallData: []byte("0xdeadbeef"),
 														},
 													},
 												},
@@ -537,7 +529,7 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 			return false
 		}, 3*time.Minute, 20*time.Second, "cellar event never seen")
 
-		s.T().Logf("checking for ClaimCompAndSwap event")
+		s.T().Logf("checking for SwapWithZeroX event")
 		s.Require().Eventuallyf(func() bool {
 			s.T().Log("querying cellar events...")
 			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
@@ -547,7 +539,7 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 
 			// For non-anonymous events, the first log topic is a keccak256 hash of the
 			// event signature.
-			eventSignature := []byte("ClaimCompAndSwap(address,uint8,bytes,uint64)")
+			eventSignature := []byte("SwapWithZeroX(address,address,uint256,bytes)")
 			mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
 			query := ethereum.FilterQuery{
 				FromBlock: nil,
@@ -572,13 +564,13 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 			if len(logs) > 0 {
 				for _, log := range logs {
 					if len(log.Data) > 0 {
-						var event AdaptorClaimCompAndSwap
-						err := adaptor_abi.UnpackIntoInterface(&event, "ClaimCompAndSwap", log.Data)
-						s.Require().NoError(err, "failed to unpack ClaimCompAndSwap event from log data")
+						var event AdaptorSwapWithZeroX
+						err := adaptor_abi.UnpackIntoInterface(&event, "SwapWithZeroX", log.Data)
+						s.Require().NoError(err, "failed to unpack SwapWithZeroX event from log data")
 						// 1 == UniswapV3
-						s.Require().Equal(uint8(1), event.Exchange)
+						s.Require().Equal(big.NewInt(6000), event.Amount)
 
-						s.T().Log("Saw ClaimCompAndSwap event!")
+						s.T().Log("Saw SwapWithZeroX event!")
 						return true
 					}
 				}

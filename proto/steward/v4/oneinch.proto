@@ -1,0 +1,39 @@
+/*
+* Protos for function calls to the OneInch adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+// Represents call data for the OneInch adaptor.
+message OneInchAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        // Represents function `swapWithOneInch(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes swapCallData)`
+        SwapWithOneInch swap_with_one_inch = 2;
+    }
+
+    /*
+    * Allows strategists to make ERC20 swaps using 1Inch.
+    *
+    * Represents function `swapWithOneInch(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes swapCallData)`
+    */
+    message SwapWithOneInch {
+        string token_in = 1;
+        string token_out = 2;
+        string amount = 3;
+        bytes swap_call_data = 4;
+    }
+}
+
+message OneInchAdaptorV1Calls {
+    repeated OneInchAdaptorV1 calls = 1;
+}

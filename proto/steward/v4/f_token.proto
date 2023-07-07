@@ -1,0 +1,84 @@
+/*
+* Protos for function calls to the Frax adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+// Represents call data for the Frax adaptor.
+message FTokenAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `lendFrax(IFToken fToken, uint256 amountToDeposit)`
+        LendFrax lend_frax = 2;
+        // Represents function `redeemFraxShare(IFToken fToken, uint256 amountToRedeem)`
+        RedeemFraxShare redeem_frax_share = 3;
+        // Represents function `withdrawFrax(IFToken fToken, uint256 amountToWithdraw)`
+        WithdrawFrax withdraw_frax = 4;
+        // Represents function `callAddInterest(IFToken fToken)`
+        CallAddInterest call_add_interest = 5;
+    }
+
+    /*
+    * Allows strategists to lend FRAX on FraxLend
+    *
+    * Represents `function lendFrax(IFToken fToken, uint256 amountToDeposit)`
+    */
+    message LendFrax {
+        // The address of the fToken to lend.
+        string f_token = 1;
+
+        // The amount of the fToken to lend.
+        string amount_to_deposit = 2;
+    }
+
+    /*
+    * Allows strategists to redeem FRAX shares on FraxLend
+    *
+    * Represents `function redeemFraxShare(IFToken fToken, uint256 amountToRedeem)`
+    */
+    message RedeemFraxShare {
+        // The address of the fToken to redeem.
+        string f_token = 1;
+
+        // The amount of the fToken to redeem.
+        string amount_to_redeem = 2;
+    }
+
+    /*
+    * Allows strategists to withdraw FRAX from FraxLend
+    *
+    * Represents `function withdrawFrax(IFToken fToken, uint256 amountToWithdraw)`
+    */
+    message WithdrawFrax {
+        // The address of the fToken to withdraw.
+        string f_token = 1;
+
+        // The amount of the fToken to withdraw.
+        string amount_to_withdraw = 2;
+    }
+
+    /*
+    * Allows a strategist to call `addInterest` on a Frax Pair they are using
+    *
+    * Represents `function callAddInterest(IFToken fToken)`
+    */
+    message CallAddInterest {
+        // The address of the fToken to call `addInterest` on.
+        string f_token = 1;
+    }
+}
+
+message FTokenAdaptorV1Calls {
+    repeated FTokenAdaptorV1 calls = 1;
+}
