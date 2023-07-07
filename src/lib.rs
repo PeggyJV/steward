@@ -21,6 +21,7 @@ pub mod prelude;
 pub mod server;
 pub mod simulate;
 pub mod somm_send;
+pub mod status;
 pub mod tenderly;
 pub mod utils;
 

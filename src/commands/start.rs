@@ -10,8 +10,8 @@ use crate::{
         proposals::start_scheduled_cork_proposal_polling_thread, CorkHandler,
     },
     prelude::*,
-    proto::contract_call_service_server::ContractCallServiceServer,
-    server::{self, with_tls, FILE_DESCRIPTOR_SET},
+    proto::{contract_call_service_server::ContractCallServiceServer, status_service_server::StatusServiceServer},
+    server::{self, with_tls, FILE_DESCRIPTOR_SET}, status::StatusHandler,
 };
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
@@ -57,6 +57,7 @@ impl Runnable for StartCmd {
                 .expect("tls config was not initialized");
             if let Err(err) = with_tls(builder, tls_config)
                 .add_service(ContractCallServiceServer::new(CorkHandler))
+                .add_service(StatusServiceServer::new(StatusHandler))
                 .add_service(proto_descriptor_service)
                 .serve(server_config.address)
                 .await

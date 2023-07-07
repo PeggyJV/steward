@@ -230,3 +230,89 @@ var SimulateContractCallService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "steward.proto",
 }
+
+// StatusServiceClient is the client API for StatusService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type StatusServiceClient interface {
+	Version(ctx context.Context, in *VersionRequest, opts ...grpc.CallOption) (*VersionResponse, error)
+}
+
+type statusServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewStatusServiceClient(cc grpc.ClientConnInterface) StatusServiceClient {
+	return &statusServiceClient{cc}
+}
+
+func (c *statusServiceClient) Version(ctx context.Context, in *VersionRequest, opts ...grpc.CallOption) (*VersionResponse, error) {
+	out := new(VersionResponse)
+	err := c.cc.Invoke(ctx, "/steward.v4.StatusService/Version", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// StatusServiceServer is the server API for StatusService service.
+// All implementations must embed UnimplementedStatusServiceServer
+// for forward compatibility
+type StatusServiceServer interface {
+	Version(context.Context, *VersionRequest) (*VersionResponse, error)
+	mustEmbedUnimplementedStatusServiceServer()
+}
+
+// UnimplementedStatusServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedStatusServiceServer struct {
+}
+
+func (UnimplementedStatusServiceServer) Version(context.Context, *VersionRequest) (*VersionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Version not implemented")
+}
+func (UnimplementedStatusServiceServer) mustEmbedUnimplementedStatusServiceServer() {}
+
+// UnsafeStatusServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to StatusServiceServer will
+// result in compilation errors.
+type UnsafeStatusServiceServer interface {
+	mustEmbedUnimplementedStatusServiceServer()
+}
+
+func RegisterStatusServiceServer(s grpc.ServiceRegistrar, srv StatusServiceServer) {
+	s.RegisterService(&StatusService_ServiceDesc, srv)
+}
+
+func _StatusService_Version_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VersionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StatusServiceServer).Version(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/steward.v4.StatusService/Version",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StatusServiceServer).Version(ctx, req.(*VersionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// StatusService_ServiceDesc is the grpc.ServiceDesc for StatusService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var StatusService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "steward.v4.StatusService",
+	HandlerType: (*StatusServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Version",
+			Handler:    _StatusService_Version_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "steward.proto",
+}

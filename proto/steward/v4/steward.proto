@@ -30,6 +30,10 @@ service ContractCallService {
     rpc Simulate(SimulateRequest) returns (SimulateResponse) {}
  }
 
+ service StatusService {
+    rpc Version(VersionRequest) returns (VersionResponse) {}
+ }
+
 /*
  * Represents a scheduled function call to a particular Cellar
  */
@@ -75,4 +79,10 @@ message SimulateResponse {
     string encoded_call = 1;
     /// The response body from the Tenderly simulation
     string response_body = 2;
+}
+
+message VersionRequest {}
+
+message VersionResponse {
+    string version = 1;
 }
