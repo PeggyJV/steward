@@ -2540,7 +2540,7 @@ pub mod cellar_v2_2 {
     pub struct FunctionCall {
         #[prost(
             oneof = "function_call::Function",
-            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15"
+            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11"
         )]
         pub function: ::core::option::Option<function_call::Function>,
     }
@@ -2581,18 +2581,6 @@ pub mod cellar_v2_2 {
             /// Represents function `liftShutdown()`
             #[prost(message, tag = "11")]
             LiftShutdown(super::LiftShutdown),
-            /// Represents function `addAdaptorToCatalogue(address adaptor)`
-            #[prost(message, tag = "12")]
-            AddAdaptorToCatalogue(super::AddAdaptorToCatalogue),
-            /// Represents function `addPositionToCatalogue(uint32 positionId)`
-            #[prost(message, tag = "13")]
-            AddPositionToCatalogue(super::AddPositionToCatalogue),
-            /// Represents function `removeAdaptorFromCatalogue(address adaptor)`
-            #[prost(message, tag = "14")]
-            RemoveAdaptorFromCatalogue(super::RemoveAdaptorFromCatalogue),
-            /// Represents function `removePositionFromCatalogue(uint32 positionId)`
-            #[prost(message, tag = "15")]
-            RemovePositionFromCatalogue(super::RemovePositionFromCatalogue),
         }
     }
     ///
@@ -2713,15 +2701,6 @@ pub mod cellar_v2_2 {
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct LiftShutdown {}
     ///
-    /// Allows the owner to add an adaptor to the Cellar's adaptor catalogue
-    ///
-    /// Represents function `addAdaptorToCatalogue(address adaptor)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct AddAdaptorToCatalogue {
-        #[prost(string, tag = "1")]
-        pub adaptor: ::prost::alloc::string::String,
-    }
-    ///
     /// Allows caller to call multiple functions in a single TX.
     ///
     /// Represents function `multicall(bytes[] data)`
@@ -2729,6 +2708,35 @@ pub mod cellar_v2_2 {
     pub struct Multicall {
         #[prost(message, repeated, tag = "1")]
         pub function_calls: ::prost::alloc::vec::Vec<FunctionCall>,
+    }
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum CallType {
+        /// Represents a single function call
+        #[prost(message, tag = "1")]
+        FunctionCall(FunctionCall),
+        /// Represents multiple, ordered function calls
+        #[prost(message, tag = "2")]
+        Multicall(Multicall),
+    }
+}
+///
+/// Represent a function call initiated through a governance proposal
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct CellarV22governance {
+    /// The function to call on the target cellar
+    #[prost(oneof = "cellar_v2_2governance::Function", tags = "1, 2, 3, 4, 5, 6")]
+    pub function: ::core::option::Option<cellar_v2_2governance::Function>,
+}
+/// Nested message and enum types in `CellarV2_2Governance`.
+pub mod cellar_v2_2governance {
+    ///
+    /// Allows the owner to add an adaptor to the Cellar's adaptor catalogue
+    ///
+    /// Represents function `addAdaptorToCatalogue(address adaptor)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct AddAdaptorToCatalogue {
+        #[prost(string, tag = "1")]
+        pub adaptor: ::prost::alloc::string::String,
     }
     ///
     /// Allows the owner to add a position to the Cellar's position catalogue
@@ -2757,14 +2765,49 @@ pub mod cellar_v2_2 {
         #[prost(uint32, tag = "1")]
         pub position_id: u32,
     }
+    ///
+    /// Allows caller to force a position out of the cellar
+    ///
+    /// Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct ForcePositionOut {
+        #[prost(uint32, tag = "1")]
+        pub index: u32,
+        #[prost(uint32, tag = "2")]
+        pub position_id: u32,
+        #[prost(bool, tag = "3")]
+        pub in_debt_array: bool,
+    }
+    ///
+    /// Allows caller to toggle the ignorePause flag on the cellar
+    ///
+    /// Represents function `toggleIgnorePause(bool ignore)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct ToggleIgnorePause {
+        #[prost(bool, tag = "1")]
+        pub ignore: bool,
+    }
+    /// The function to call on the target cellar
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum CallType {
-        /// Represents a single function call
+    pub enum Function {
+        /// Represents function `addAdaptorToCatalogue(address adaptor)`
         #[prost(message, tag = "1")]
-        FunctionCall(FunctionCall),
-        /// Represents multiple, ordered function calls
+        AddAdaptorToCatalogue(AddAdaptorToCatalogue),
+        /// Represents function `addPositionToCatalogue(uint32 positionId)`
         #[prost(message, tag = "2")]
-        Multicall(Multicall),
+        AddPositionToCatalogue(AddPositionToCatalogue),
+        /// Represents function `removeAdaptorFromCatalogue(address adaptor)`
+        #[prost(message, tag = "3")]
+        RemoveAdaptorFromCatalogue(RemoveAdaptorFromCatalogue),
+        /// Represents function `removePositionFromCatalogue(uint32 positionId)`
+        #[prost(message, tag = "4")]
+        RemovePositionFromCatalogue(RemovePositionFromCatalogue),
+        /// Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+        #[prost(message, tag = "5")]
+        ForcePositionOut(ForcePositionOut),
+        /// Represents function `toggleIgnorePause(bool ignore)`
+        #[prost(message, tag = "6")]
+        ToggleIgnorePause(ToggleIgnorePause),
     }
 }
 /// Represents a call to adaptor an. The cellar must be authorized to call the target adaptor.
@@ -2855,7 +2898,7 @@ pub mod adaptor_call {
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct GovernanceCall {
     /// The type of Cellar to call
-    #[prost(oneof = "governance_call::Call", tags = "2, 3, 4")]
+    #[prost(oneof = "governance_call::Call", tags = "2, 3, 4, 5")]
     pub call: ::core::option::Option<governance_call::Call>,
 }
 /// Nested message and enum types in `GovernanceCall`.
@@ -2872,6 +2915,9 @@ pub mod governance_call {
         /// Governance function calls to V2 cellars
         #[prost(message, tag = "4")]
         CellarV2(super::CellarV2Governance),
+        /// Governance function calls to the V2.2 cellars
+        #[prost(message, tag = "5")]
+        CellarV22(super::CellarV22governance),
     }
 }
 ///

@@ -5,6 +5,7 @@ use crate::abi::cellar_v2_2::{AdaptorCall as AbiAdaptorCall, *};
 use crate::proto::{
     adaptor_call::CallData::*,
     cellar_v2_2::{function_call::Function, CallType, FunctionCall},
+    cellar_v2_2governance::Function as GovernanceFunction,
     AdaptorCall,
 };
 use abscissa_core::tracing::debug;
@@ -21,8 +22,7 @@ use crate::{
 };
 
 use super::{
-    check_blocked_adaptor, check_blocked_position, log_cellar_call,
-    validate_add_adaptor_to_catalogue, validate_add_position_to_catalogue,
+    check_blocked_adaptor, check_blocked_position, log_cellar_call, log_governance_cellar_call,
 };
 
 const CELLAR_NAME: &str = "CellarV2.2";
@@ -183,12 +183,21 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_2Calls::LiftShutdown(call).encode())
         }
-        Function::AddAdaptorToCatalogue(params) => {
-            validate_add_adaptor_to_catalogue(&cellar_id, &params.adaptor)?;
-            log_cellar_call(
+    }
+}
+
+pub fn get_encoded_governance_call(
+    function: GovernanceFunction,
+    cellar_id: &str,
+    proposal_id: u64,
+) -> Result<Vec<u8>, Error> {
+    match function {
+        GovernanceFunction::AddAdaptorToCatalogue(params) => {
+            log_governance_cellar_call(
+                proposal_id,
                 CELLAR_NAME,
                 &AddAdaptorToCatalogueCall::function_name(),
-                &cellar_id,
+                cellar_id,
             );
             let call = AddAdaptorToCatalogueCall {
                 adaptor: sp_call_parse_address(params.adaptor)?,
@@ -196,12 +205,12 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_2Calls::AddAdaptorToCatalogue(call).encode())
         }
-        Function::AddPositionToCatalogue(params) => {
-            validate_add_position_to_catalogue(&cellar_id, params.position_id)?;
-            log_cellar_call(
+        GovernanceFunction::AddPositionToCatalogue(params) => {
+            log_governance_cellar_call(
+                proposal_id,
                 CELLAR_NAME,
                 &AddPositionToCatalogueCall::function_name(),
-                &cellar_id,
+                cellar_id,
             );
             let call = AddPositionToCatalogueCall {
                 position_id: params.position_id,
@@ -209,11 +218,12 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_2Calls::AddPositionToCatalogue(call).encode())
         }
-        Function::RemoveAdaptorFromCatalogue(params) => {
-            log_cellar_call(
+        GovernanceFunction::RemoveAdaptorFromCatalogue(params) => {
+            log_governance_cellar_call(
+                proposal_id,
                 CELLAR_NAME,
                 &RemoveAdaptorFromCatalogueCall::function_name(),
-                &cellar_id,
+                cellar_id,
             );
             let call = RemoveAdaptorFromCatalogueCall {
                 adaptor: sp_call_parse_address(params.adaptor)?,
@@ -221,17 +231,46 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_2Calls::RemoveAdaptorFromCatalogue(call).encode())
         }
-        Function::RemovePositionFromCatalogue(params) => {
-            log_cellar_call(
+        GovernanceFunction::RemovePositionFromCatalogue(params) => {
+            log_governance_cellar_call(
+                proposal_id,
                 CELLAR_NAME,
                 &RemovePositionFromCatalogueCall::function_name(),
-                &cellar_id,
+                cellar_id,
             );
             let call = RemovePositionFromCatalogueCall {
                 position_id: params.position_id,
             };
 
             Ok(CellarV2_2Calls::RemovePositionFromCatalogue(call).encode())
+        }
+        GovernanceFunction::ForcePositionOut(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &ForcePositionOutCall::function_name(),
+                cellar_id,
+            );
+            let call = ForcePositionOutCall {
+                position_id: params.position_id,
+                index: params.index,
+                in_debt_array: params.in_debt_array,
+            };
+
+            Ok(CellarV2_2Calls::ForcePositionOut(call).encode())
+        }
+        GovernanceFunction::ToggleIgnorePause(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &ToggleIgnorePauseCall::function_name(),
+                cellar_id,
+            );
+            let call = ToggleIgnorePauseCall {
+                toggle: params.ignore,
+            };
+
+            Ok(CellarV2_2Calls::ToggleIgnorePause(call).encode())
         }
     }
 }

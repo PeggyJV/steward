@@ -16,28 +16,8 @@ pub(crate) mod cellar_v2_2;
 // constants
 // addresses are normalized by removing the 0x prefix and converting to lowercase for reliable comparison
 
-// allow/block lists
+// block lists
 
-pub const ALLOWED_CATALOGUE_ADAPTORS: [(&str, &str); 6] = [
-    (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1),
-    (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V2_DEBT_TOKEN_V1),
-    (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V3_A_TOKEN_COLLATERAL_V1),
-    (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V3_DEBT_TOKEN_V1),
-    (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V3_P2P_V1),
-    (CELLAR_RYLINK, ADAPTOR_CELLAR_V2),
-];
-pub const ALLOWED_CATALOGUE_POSITIONS: [(&str, u32); 8] = [
-    (CELLAR_RYETH, 155),
-    (CELLAR_RYETH, 156),
-    (CELLAR_RYETH, 161),
-    (CELLAR_RYETH, 162),
-    (CELLAR_RYETH, 163),
-    (CELLAR_RYETH, 165),
-    (CELLAR_RYETH, 166),
-    (CELLAR_RYLINK, 154),
-];
-pub const ALLOWED_SETUP_ADAPTORS: [(&str, &str); 1] =
-    [(CELLAR_RYUSD, ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1)];
 pub const BLOCKED_ADAPTORS: [&str; 3] = [
     ADAPTOR_UNIV3_V1,
     ADAPTOR_VESTING_SIMPLE_V1,
@@ -121,44 +101,6 @@ pub fn check_blocked_position(position: &u32) -> Result<(), Error> {
     Ok(())
 }
 
-pub fn validate_add_adaptor_to_catalogue(cellar_id: &str, adaptor_id: &str) -> Result<(), Error> {
-    let adaptor_id = normalize_address(adaptor_id.to_string());
-    check_blocked_adaptor(&adaptor_id)?;
-    let cellar_id = normalize_address(cellar_id.to_string());
-    if !ALLOWED_CATALOGUE_ADAPTORS.contains(&(&cellar_id, &adaptor_id)) {
-        return Err(sp_call_error(format!(
-            "adaptor {adaptor_id} not allowed to be added to catalogue for {cellar_id}"
-        )));
-    }
-
-    Ok(())
-}
-
-pub fn validate_add_position_to_catalogue(cellar_id: &str, position: u32) -> Result<(), Error> {
-    check_blocked_position(&position)?;
-    let cellar_id = normalize_address(cellar_id.to_string());
-    if !ALLOWED_CATALOGUE_POSITIONS.contains(&(&cellar_id, position)) {
-        return Err(sp_call_error(format!(
-            "position {position} not allowed to be added to catalogue for {cellar_id}"
-        )));
-    }
-
-    Ok(())
-}
-
-pub fn validate_setup_adaptor(cellar_id: &str, adaptor_id: &str) -> Result<(), Error> {
-    let adaptor_id = normalize_address(adaptor_id.to_string());
-    check_blocked_adaptor(&adaptor_id)?;
-    let cellar_id = normalize_address(cellar_id.to_string());
-    if !ALLOWED_SETUP_ADAPTORS.contains(&(&cellar_id, &adaptor_id)) {
-        return Err(sp_call_error(format!(
-            "adaptor {adaptor_id} not allowed to be setup for {cellar_id}"
-        )));
-    }
-
-    Ok(())
-}
-
 pub fn is_evm_address(address: &str) -> bool {
     address.parse::<Address>().is_ok()
 }
@@ -226,9 +168,6 @@ mod tests {
         assert!(BLOCKED_ADAPTORS.contains(&normalize_address(blocked3).as_str()));
         assert!(BLOCKED_ADAPTORS.contains(&normalize_address(blocked4).as_str()));
 
-        assert!(!ALLOWED_SETUP_ADAPTORS
-            .contains(&(CELLAR_RYUSD, normalize_address(blocked1.clone()).as_ref())));
-
         // idempotent
         let once = normalize_address(blocked1);
         let twice = normalize_address(once.clone());
@@ -263,109 +202,6 @@ mod tests {
         let blocked_adaptor = ADAPTOR_UNIV3_V1;
         let res = check_blocked_adaptor(&blocked_adaptor);
         let expected_err = error_prefix.clone() + &format!("adaptor {blocked_adaptor} is blocked");
-        assert!(res.is_err());
-        assert_eq!(expected_err, res.unwrap_err().to_string());
-    }
-
-    #[test]
-    fn test_validate_add_adaptor_to_catalogue() {
-        // allows approved cellar/adaptor ID pairs
-        let (cellar_id, approved_adaptor_id) = (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1);
-        assert!(validate_add_adaptor_to_catalogue(cellar_id, approved_adaptor_id).is_ok());
-
-        let error_prefix = "SP call error: ".to_string();
-
-        // rejects blocked adaptor ID
-        let blocked_adaptor_id = ADAPTOR_UNIV3_V1;
-        let res = validate_add_adaptor_to_catalogue(cellar_id, blocked_adaptor_id);
-        let expected_err =
-            error_prefix.clone() + &format!("adaptor {blocked_adaptor_id} is blocked");
-        assert!(res.is_err());
-        assert_eq!(expected_err, res.unwrap_err().to_string());
-
-        // rejects unapproved cellar/adaptor ID pair
-        let unapproved_adaptor_id = ADAPTOR_CELLAR_V2;
-        let res = validate_add_adaptor_to_catalogue(cellar_id, unapproved_adaptor_id);
-        let expected_err = error_prefix.clone()
-            + &format!(
-                "adaptor {unapproved_adaptor_id} not allowed to be added to catalogue for {cellar_id}"
-            );
-        assert!(res.is_err());
-        assert_eq!(expected_err, res.unwrap_err().to_string());
-
-        let unapproved_cellar = "0000000000000000000000000000000000000000";
-        let res = validate_add_adaptor_to_catalogue(unapproved_cellar, approved_adaptor_id);
-        let expected_err = error_prefix
-            + &format!("adaptor {approved_adaptor_id} not allowed to be added to catalogue for {unapproved_cellar}");
-        assert!(res.is_err());
-        assert_eq!(expected_err, res.unwrap_err().to_string());
-    }
-
-    #[test]
-    fn test_validate_add_position_to_catalogue() {
-        // allows approved cellar/position ID pairs
-        let (cellar_id, approved_pos) = (CELLAR_RYLINK, 154);
-        assert!(validate_add_position_to_catalogue(cellar_id, approved_pos).is_ok());
-
-        let error_prefix = "SP call error: ".to_string();
-
-        // rejects blocked position ID
-        let blocked_pos = 4;
-        let res = validate_add_position_to_catalogue(cellar_id, blocked_pos);
-        let expected_err = error_prefix.clone() + &format!("position {blocked_pos} is blocked");
-        assert!(res.is_err());
-        assert_eq!(expected_err, res.unwrap_err().to_string());
-
-        // rejects unapproved cellar/position ID pair
-        let unapproved_pos = 153;
-        let res = validate_add_position_to_catalogue(cellar_id, unapproved_pos);
-        let expected_err = error_prefix.clone()
-            + &format!(
-                "position {unapproved_pos} not allowed to be added to catalogue for {cellar_id}"
-            );
-        assert!(res.is_err());
-        assert_eq!(expected_err, res.unwrap_err().to_string());
-
-        let unapproved_cellar = "0000000000000000000000000000000000000000";
-        let res = validate_add_position_to_catalogue(unapproved_cellar, approved_pos);
-        let expected_err = error_prefix
-            + &format!(
-                "position {approved_pos} not allowed to be added to catalogue for {unapproved_cellar}"
-            );
-        assert!(res.is_err());
-        assert_eq!(expected_err, res.unwrap_err().to_string());
-    }
-
-    #[test]
-    fn test_validate_setup_adaptor() {
-        // allows approved cellar/adaptor ID pairs
-        let (cellar_id, approved_adaptor_id) = (CELLAR_RYUSD, ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1);
-        assert!(validate_setup_adaptor(cellar_id, approved_adaptor_id).is_ok());
-
-        let error_prefix = "SP call error: ".to_string();
-
-        // rejects blocked adaptor ID
-        let blocked_adaptor_id = ADAPTOR_UNIV3_V1;
-        let res = validate_setup_adaptor(cellar_id, blocked_adaptor_id);
-        let expected_err =
-            error_prefix.clone() + &format!("adaptor {blocked_adaptor_id} is blocked");
-        assert!(res.is_err());
-        assert_eq!(expected_err, res.unwrap_err().to_string());
-
-        // rejects unapproved cellar/adaptor ID pair
-        let unapproved_adaptor_id = ADAPTOR_CELLAR_V2;
-        let res = validate_setup_adaptor(cellar_id, unapproved_adaptor_id);
-        let expected_err = error_prefix.clone()
-            + &format!("adaptor {unapproved_adaptor_id} not allowed to be setup for {cellar_id}");
-        assert!(res.is_err());
-        assert_eq!(expected_err, res.unwrap_err().to_string());
-
-        let unapproved_cellar = "0000000000000000000000000000000000000000";
-        let res = validate_setup_adaptor(unapproved_cellar, approved_adaptor_id);
-        let expected_err = error_prefix
-            + &format!(
-                "adaptor {approved_adaptor_id} not allowed to be setup for {unapproved_cellar}"
-            );
         assert!(res.is_err());
         assert_eq!(expected_err, res.unwrap_err().to_string());
     }

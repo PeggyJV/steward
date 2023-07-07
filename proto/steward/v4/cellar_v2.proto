@@ -225,14 +225,6 @@ message CellarV2_2 {
             SetStrategistPlatformCut set_strategist_platform_cut = 10;
             // Represents function `liftShutdown()`
             LiftShutdown lift_shutdown = 11;
-            // Represents function `addAdaptorToCatalogue(address adaptor)`
-            AddAdaptorToCatalogue add_adaptor_to_catalogue = 12;
-            // Represents function `addPositionToCatalogue(uint32 positionId)`
-            AddPositionToCatalogue add_position_to_catalogue = 13;
-            // Represents function `removeAdaptorFromCatalogue(address adaptor)`
-            RemoveAdaptorFromCatalogue remove_adaptor_from_catalogue = 14;
-            // Represents function `removePositionFromCatalogue(uint32 positionId)`
-            RemovePositionFromCatalogue remove_position_from_catalogue = 15;
         }
     }
 
@@ -350,21 +342,42 @@ message CellarV2_2 {
     message LiftShutdown {}
 
     /*
-    * Allows the owner to add an adaptor to the Cellar's adaptor catalogue
-    *
-    * Represents function `addAdaptorToCatalogue(address adaptor)`
-    */
-    message AddAdaptorToCatalogue {
-        string adaptor = 1;
-    }
-
-    /*
     * Allows caller to call multiple functions in a single TX.
     *
     * Represents function `multicall(bytes[] data)`
     */
     message Multicall {
         repeated FunctionCall function_calls = 1;
+    }
+}
+
+/*
+* Represent a function call initiated through a governance proposal
+*/
+message CellarV2_2Governance {
+    // The function to call on the target cellar
+    oneof function {
+        // Represents function `addAdaptorToCatalogue(address adaptor)`
+        AddAdaptorToCatalogue add_adaptor_to_catalogue = 1;
+        // Represents function `addPositionToCatalogue(uint32 positionId)`
+        AddPositionToCatalogue add_position_to_catalogue = 2;
+        // Represents function `removeAdaptorFromCatalogue(address adaptor)`
+        RemoveAdaptorFromCatalogue remove_adaptor_from_catalogue = 3;
+        // Represents function `removePositionFromCatalogue(uint32 positionId)`
+        RemovePositionFromCatalogue remove_position_from_catalogue = 4;
+        // Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+        ForcePositionOut force_position_out = 5;
+        // Represents function `toggleIgnorePause(bool ignore)`
+        ToggleIgnorePause toggle_ignore_pause = 6;
+    }
+
+    /*
+    * Allows the owner to add an adaptor to the Cellar's adaptor catalogue
+    *
+    * Represents function `addAdaptorToCatalogue(address adaptor)`
+    */
+    message AddAdaptorToCatalogue {
+        string adaptor = 1;
     }
 
     /*
@@ -392,6 +405,26 @@ message CellarV2_2 {
     */
     message RemovePositionFromCatalogue {
         uint32 position_id = 1;
+    }
+
+    /*
+    * Allows caller to force a position out of the cellar
+    *
+    * Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+    */
+    message ForcePositionOut {
+        uint32 index = 1;
+        uint32 position_id = 2;
+        bool in_debt_array = 3;
+    }
+
+    /*
+    * Allows caller to toggle the ignorePause flag on the cellar
+    *
+    * Represents function `toggleIgnorePause(bool ignore)`
+    */
+    message ToggleIgnorePause {
+        bool ignore = 1;
     }
 }
 
