@@ -3041,21 +3041,6 @@ pub mod contract_call_service_client {
                 http::uri::PathAndQuery::from_static("/steward.v4.ContractCallService/Schedule");
             self.inner.unary(request.into_request(), path, codec).await
         }
-        pub async fn status(
-            &mut self,
-            request: impl tonic::IntoRequest<super::StatusRequest>,
-        ) -> Result<tonic::Response<super::StatusResponse>, tonic::Status> {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    format!("Service was not ready: {}", e.into()),
-                )
-            })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path =
-                http::uri::PathAndQuery::from_static("/steward.v4.ContractCallService/Status");
-            self.inner.unary(request.into_request(), path, codec).await
-        }
     }
     impl<T: Clone> Clone for ContractCallServiceClient<T> {
         fn clone(&self) -> Self {
@@ -3209,10 +3194,6 @@ pub mod contract_call_service_server {
             &self,
             request: tonic::Request<super::ScheduleRequest>,
         ) -> Result<tonic::Response<super::ScheduleResponse>, tonic::Status>;
-        async fn status(
-            &self,
-            request: tonic::Request<super::StatusRequest>,
-        ) -> Result<tonic::Response<super::StatusResponse>, tonic::Status>;
     }
     #[doc = ""]
     #[doc = " Service for handling Cellar contract calls"]
@@ -3270,37 +3251,6 @@ pub mod contract_call_service_server {
                         let interceptor = inner.1.clone();
                         let inner = inner.0;
                         let method = ScheduleSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = if let Some(interceptor) = interceptor {
-                            tonic::server::Grpc::with_interceptor(codec, interceptor)
-                        } else {
-                            tonic::server::Grpc::new(codec)
-                        };
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/steward.v4.ContractCallService/Status" => {
-                    #[allow(non_camel_case_types)]
-                    struct StatusSvc<T: ContractCallService>(pub Arc<T>);
-                    impl<T: ContractCallService> tonic::server::UnaryService<super::StatusRequest> for StatusSvc<T> {
-                        type Response = super::StatusResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::StatusRequest>,
-                        ) -> Self::Future {
-                            let inner = self.0.clone();
-                            let fut = async move { (*inner).status(request).await };
-                            Box::pin(fut)
-                        }
-                    }
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let interceptor = inner.1.clone();
-                        let inner = inner.0;
-                        let method = StatusSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = if let Some(interceptor) = interceptor {
                             tonic::server::Grpc::with_interceptor(codec, interceptor)

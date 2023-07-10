@@ -6,10 +6,7 @@ use crate::{
         ErrorKind::{self, *},
     },
     prelude::APP,
-    proto::{
-        self, schedule_request::CallData::*, ScheduleRequest, ScheduleResponse, StatusRequest,
-        StatusResponse,
-    },
+    proto::{self, schedule_request::CallData::*, ScheduleRequest, ScheduleResponse},
     somm_send,
 };
 use abscissa_core::{
@@ -19,7 +16,6 @@ use abscissa_core::{
 use deep_space::{Coin, Contact};
 use ethers::types::H160;
 use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
-use lazy_static::lazy_static;
 use sha3::{Digest, Keccak256};
 use somm_proto::cork::Cork;
 use std::time::Duration;
@@ -31,10 +27,6 @@ pub mod proposals;
 
 const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
 const CHAIN_PREFIX: &str = "somm";
-
-lazy_static! {
-    static ref STEWARD_VERSION: &'static str = env!("CARGO_PKG_VERSION");
-}
 
 pub struct CorkHandler;
 
@@ -83,12 +75,6 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
 
         Ok(Response::new(ScheduleResponse {
             id: id_hash(height, &cellar_id, encoded_call),
-        }))
-    }
-
-    async fn status(&self, _: Request<StatusRequest>) -> Result<Response<StatusResponse>, Status> {
-        Ok(Response::new(StatusResponse {
-            version: STEWARD_VERSION.to_string(),
         }))
     }
 }

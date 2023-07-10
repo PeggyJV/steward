@@ -19,7 +19,6 @@ import "cellar_v2.proto";
 service ContractCallService {
     // Handles scheduled contract call submission
     rpc Schedule(ScheduleRequest) returns (ScheduleResponse) {}
-    rpc Status(StatusRequest) returns (StatusResponse) {}
 }
 
 /*
