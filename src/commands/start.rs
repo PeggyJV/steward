@@ -10,8 +10,12 @@ use crate::{
         proposals::start_scheduled_cork_proposal_polling_thread, CorkHandler,
     },
     prelude::*,
-    proto::{contract_call_service_server::ContractCallServiceServer, status_service_server::StatusServiceServer},
-    server::{self, with_tls, FILE_DESCRIPTOR_SET}, status::StatusHandler,
+    proto::{
+        contract_call_service_server::ContractCallServiceServer,
+        status_service_server::StatusServiceServer,
+    },
+    server::{self, with_tls, FILE_DESCRIPTOR_SET},
+    status::StatusHandler,
 };
 use abscissa_core::{clap::Parser, config, Command, FrameworkError, Runnable};
 use std::result::Result;
