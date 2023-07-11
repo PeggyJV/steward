@@ -24,7 +24,6 @@ const _ = grpc.SupportPackageIsVersion7
 type ContractCallServiceClient interface {
 	// Handles scheduled contract call submission
 	Schedule(ctx context.Context, in *ScheduleRequest, opts ...grpc.CallOption) (*ScheduleResponse, error)
-	Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 }
 
 type contractCallServiceClient struct {
@@ -44,22 +43,12 @@ func (c *contractCallServiceClient) Schedule(ctx context.Context, in *ScheduleRe
 	return out, nil
 }
 
-func (c *contractCallServiceClient) Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
-	out := new(StatusResponse)
-	err := c.cc.Invoke(ctx, "/steward.v4.ContractCallService/Status", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // ContractCallServiceServer is the server API for ContractCallService service.
 // All implementations must embed UnimplementedContractCallServiceServer
 // for forward compatibility
 type ContractCallServiceServer interface {
 	// Handles scheduled contract call submission
 	Schedule(context.Context, *ScheduleRequest) (*ScheduleResponse, error)
-	Status(context.Context, *StatusRequest) (*StatusResponse, error)
 	mustEmbedUnimplementedContractCallServiceServer()
 }
 
@@ -69,9 +58,6 @@ type UnimplementedContractCallServiceServer struct {
 
 func (UnimplementedContractCallServiceServer) Schedule(context.Context, *ScheduleRequest) (*ScheduleResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Schedule not implemented")
-}
-func (UnimplementedContractCallServiceServer) Status(context.Context, *StatusRequest) (*StatusResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Status not implemented")
 }
 func (UnimplementedContractCallServiceServer) mustEmbedUnimplementedContractCallServiceServer() {}
 
@@ -104,24 +90,6 @@ func _ContractCallService_Schedule_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ContractCallService_Status_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StatusRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ContractCallServiceServer).Status(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/steward.v4.ContractCallService/Status",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContractCallServiceServer).Status(ctx, req.(*StatusRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // ContractCallService_ServiceDesc is the grpc.ServiceDesc for ContractCallService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -132,10 +100,6 @@ var ContractCallService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Schedule",
 			Handler:    _ContractCallService_Schedule_Handler,
-		},
-		{
-			MethodName: "Status",
-			Handler:    _ContractCallService_Status_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

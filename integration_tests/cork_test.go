@@ -631,6 +631,155 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 	})
 }
 
+func (s *IntegrationTestSuite) TestCellarV2_2() {
+	s.Run("Submit callOnAdaptor to MockCellar", func() {
+		s.checkCellarExists(v2_2Cellar)
+
+		val := s.chain.validators[0]
+		kb, err := val.keyring()
+		s.Require().NoError(err)
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		s.Require().NoError(err)
+
+		// Create the cork requests to send to Steward
+		cellarId := v2_2Cellar.Hex()
+
+		// Contains two adaptor calls, the first of which has two function calls inside of it, for a total of three function calls.
+		request := &steward_proto.ScheduleRequest{
+			CellarId: cellarId,
+			CallData: &steward_proto.ScheduleRequest_CellarV2_2{
+				CellarV2_2: &steward_proto.CellarV2_2{
+					CallType: &steward_proto.CellarV2_2_Multicall_{
+						Multicall: &steward_proto.CellarV2_2_Multicall{
+							FunctionCalls: []*steward_proto.CellarV2_2_FunctionCall{
+								{
+									Function: &steward_proto.CellarV2_2_FunctionCall_CallOnAdaptor{
+										CallOnAdaptor: &steward_proto.CellarV2_2_CallOnAdaptor{
+											Data: []*steward_proto.AdaptorCall{
+												{
+													Adaptor: adaptorContract.Hex(),
+													CallData: &steward_proto.AdaptorCall_SwapWithUniswapV1Calls{
+														SwapWithUniswapV1Calls: &steward_proto.SwapWithUniswapAdaptorV1Calls{
+															Calls: []*steward_proto.SwapWithUniswapAdaptorV1{
+																{
+																	Function: &steward_proto.SwapWithUniswapAdaptorV1_SwapWithUniV3_{
+																		SwapWithUniV3: &steward_proto.SwapWithUniswapAdaptorV1_SwapWithUniV3{
+																			Path:         []string{"0x1111111111111111111111111111111111111111", "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"},
+																			PoolFees:     []uint32{1000, 2000},
+																			Amount:       "2",
+																			AmountOutMin: "2",
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+								{
+									Function: &steward_proto.CellarV2_2_FunctionCall_CallOnAdaptor{
+										CallOnAdaptor: &steward_proto.CellarV2_2_CallOnAdaptor{
+											Data: []*steward_proto.AdaptorCall{
+												{
+													Adaptor: adaptorContract.Hex(),
+													CallData: &steward_proto.AdaptorCall_SwapWithUniswapV1Calls{
+														SwapWithUniswapV1Calls: &steward_proto.SwapWithUniswapAdaptorV1Calls{
+															Calls: []*steward_proto.SwapWithUniswapAdaptorV1{
+																{
+																	Function: &steward_proto.SwapWithUniswapAdaptorV1_SwapWithUniV3_{
+																		SwapWithUniV3: &steward_proto.SwapWithUniswapAdaptorV1_SwapWithUniV3{
+																			Path:         []string{"0x1111111111111111111111111111111111111111", "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"},
+																			PoolFees:     []uint32{1000, 2000},
+																			Amount:       "3",
+																			AmountOutMin: "3",
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+
+		currentHeight, err := s.GetLatestBlockHeight(clientCtx)
+		s.Require().NoError(err)
+		scheduledHeight := currentHeight + 10
+		request.BlockHeight = uint64(scheduledHeight)
+		s.executeStewardCalls(request)
+		s.waitForScheduledHeight(clientCtx, scheduledHeight)
+		s.queryLogicCallTransactionByAddress(clientCtx, v2_2Cellar.Hex())
+
+		adaptor_abi, err := AdaptorMetaData.GetAbi()
+		s.Require().NoError(err)
+
+		s.T().Logf("checking for SwapWithUniV3 event")
+		s.Require().Eventuallyf(func() bool {
+			s.T().Log("querying cellar events...")
+			ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
+			if err != nil {
+				return false
+			}
+
+			// For non-anonymous events, the first log topic is a keccak256 hash of the
+			// event signature.
+			eventSignature := []byte("SwapWithUniV3(address[],uint24[],uint256,uint256)")
+			mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
+			query := ethereum.FilterQuery{
+				FromBlock: nil,
+				ToBlock:   nil,
+				Addresses: []common.Address{
+					v2_2Cellar,
+				},
+				Topics: [][]common.Hash{
+					{
+						mockEventSignatureTopic,
+					},
+				},
+			}
+
+			logs, err := ethClient.FilterLogs(context.Background(), query)
+			if err != nil {
+				ethClient.Close()
+				return false
+			}
+
+			s.T().Logf("got %v logs: %v", len(logs), logs)
+			if len(logs) > 0 {
+				for _, log := range logs {
+					if len(log.Data) > 0 {
+						var event AdaptorSwapWithUniV3
+						err := adaptor_abi.UnpackIntoInterface(&event, "SwapWithUniV3", log.Data)
+						s.Require().NoError(err, "failed to unpack SwapWithUniV3 event from log data")
+
+						if event.AmountOutMin.Cmp(big.NewInt(2)) == 0 {
+							continue
+						}
+
+						s.Require().Equal(big.NewInt(3), event.AmountOutMin)
+
+						s.T().Log("Saw SwapWithUniV3 event!")
+						return true
+					}
+				}
+			}
+
+			return false
+		}, 3*time.Minute, 20*time.Second, "cellar event never seen")
+	})
+}
+
 func (s *IntegrationTestSuite) checkCellarExists(cellar common.Address) {
 	s.T().Logf("checking that cellar %s exists in the chain", cellar.String())
 	queryClient, err := s.chain.validators[0].GetQueryClient()
@@ -756,7 +905,7 @@ func (s *IntegrationTestSuite) queryLogicCallTransactionByAddress(clientCtx *cli
 		}
 
 		return false
-	}, 1*time.Minute, 5*time.Second, "cellar event never seen")
+	}, 1*time.Minute, 5*time.Second, "logic call transaction never seen")
 	time.Sleep(time.Duration(2000000000))
 }
 

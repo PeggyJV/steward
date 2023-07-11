@@ -40,6 +40,11 @@ task(
         await vaultCellar.deployed();
         console.log(`vault cellar contract deployed at - ${vaultCellar.address}`);
 
+        const CellarV2_2 = await hre.ethers.getContractFactory("CellarV2_2");
+        const cellarV2_2 = (await CellarV2_2.deploy());
+        await cellarV2_2.deployed();
+        console.log(`cellar v2.2 contract deployed at - ${cellarV2_2.address}`);
+
         const Adaptor = await hre.ethers.getContractFactory("Adaptor");
         const adaptor = (await Adaptor.deploy());
         await adaptor.deployed();
@@ -57,6 +62,14 @@ task(
         });
         console.log(
             `Aave Cellar contract at ${aaveCellar.address} is now owned by Gravity contract at ${gravity.address} with hash ${aaveHash}`,
+        );
+
+        let { cellarV2_2Hash } = await cellarV2_2.setOwner(gravity.address, {
+            gasPrice: hre.ethers.BigNumber.from('99916001694'),
+            from: cellarSignerAddress
+        });
+        console.log(
+            `CellarV2.2 contract at ${cellarV2_2.address} is now owned by Gravity contract at ${gravity.address} with hash ${cellarV2_2Hash}`,
         );
 
         let { vaultHash } = await vaultCellar.setOwner(gravity.address, {

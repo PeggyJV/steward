@@ -84,6 +84,37 @@
         "inputs": [
             {
                 "indexed": false,
+                "internalType": "address[]",
+                "name": "path",
+                "type": "address[]"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint24[]",
+                "name": "poolFees",
+                "type": "uint24[]"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amountOutMin",
+                "type": "uint256"
+            }
+        ],
+        "name": "SwapWithUniV3",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
                 "internalType": "contract ERC20",
                 "name": "tokenIn",
                 "type": "address"
@@ -211,6 +242,34 @@
             }
         ],
         "name": "swapWith0x",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address[]",
+                "name": "path",
+                "type": "address[]"
+            },
+            {
+                "internalType": "uint24[]",
+                "name": "poolFees",
+                "type": "uint24[]"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amountOutMin",
+                "type": "uint256"
+            }
+        ],
+        "name": "swapWithUniV3",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
