@@ -88,6 +88,30 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_2Calls::RemovePosition(call).encode())
         }
+        Function::RemoveAdaptorFromCatalogue(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &RemoveAdaptorFromCatalogueCall::function_name(),
+                &cellar_id,
+            );
+            let call = RemoveAdaptorFromCatalogueCall {
+                adaptor: sp_call_parse_address(params.adaptor)?,
+            };
+
+            Ok(CellarV2_2Calls::RemoveAdaptorFromCatalogue(call).encode())
+        }
+        Function::RemovePositionFromCatalogue(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &RemovePositionFromCatalogueCall::function_name(),
+                &cellar_id,
+            );
+            let call = RemovePositionFromCatalogueCall {
+                position_id: params.position_id,
+            };
+
+            Ok(CellarV2_2Calls::RemovePositionFromCatalogue(call).encode())
+        }
         Function::SetHoldingPosition(params) => {
             log_cellar_call(
                 CELLAR_NAME,
@@ -121,67 +145,6 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             };
 
             Ok(CellarV2_2Calls::SwapPositions(call).encode())
-        }
-        Function::SetShareLockPeriod(params) => {
-            log_cellar_call(
-                CELLAR_NAME,
-                &SetShareLockPeriodCall::function_name(),
-                &cellar_id,
-            );
-            let call = SetShareLockPeriodCall {
-                new_lock: string_to_u256(params.new_lock)?,
-            };
-
-            Ok(CellarV2_2Calls::SetShareLockPeriod(call).encode())
-        }
-        // This will ultimately need to be a governance function, but for Seven Sea's live testing we are keeping
-        // it here until they get a feel for what an appropriate value is.
-        Function::SetRebalanceDeviation(params) => {
-            log_cellar_call(
-                CELLAR_NAME,
-                &SetRebalanceDeviationCall::function_name(),
-                &cellar_id,
-            );
-
-            let new_deviation = string_to_u256(params.new_deviation)?;
-            if new_deviation > U256::from(5000000000000000u64) {
-                return Err(ErrorKind::SPCallError
-                    .context("deviation must be 0.5% or less".to_string())
-                    .into());
-            }
-
-            let call = SetRebalanceDeviationCall { new_deviation };
-
-            Ok(CellarV2_2Calls::SetRebalanceDeviation(call).encode())
-        }
-        Function::InitiateShutdown(_) => {
-            log_cellar_call(
-                CELLAR_NAME,
-                &InitiateShutdownCall::function_name(),
-                &cellar_id,
-            );
-            let call = InitiateShutdownCall {};
-
-            Ok(CellarV2_2Calls::InitiateShutdown(call).encode())
-        }
-        Function::SetStrategistPlatformCut(params) => {
-            log_cellar_call(
-                CELLAR_NAME,
-                &SetStrategistPlatformCutCall::function_name(),
-                &cellar_id,
-            );
-
-            let call = SetStrategistPlatformCutCall {
-                cut: params.new_cut,
-            };
-
-            Ok(CellarV2_2Calls::SetStrategistPlatformCut(call).encode())
-        }
-        Function::LiftShutdown(_) => {
-            log_cellar_call(CELLAR_NAME, &LiftShutdownCall::function_name(), &cellar_id);
-            let call = LiftShutdownCall {};
-
-            Ok(CellarV2_2Calls::LiftShutdown(call).encode())
         }
     }
 }
@@ -218,31 +181,75 @@ pub fn get_encoded_governance_call(
 
             Ok(CellarV2_2Calls::AddPositionToCatalogue(call).encode())
         }
-        GovernanceFunction::RemoveAdaptorFromCatalogue(params) => {
+        GovernanceFunction::SetShareLockPeriod(params) => {
             log_governance_cellar_call(
                 proposal_id,
                 CELLAR_NAME,
-                &RemoveAdaptorFromCatalogueCall::function_name(),
+                &SetShareLockPeriodCall::function_name(),
                 cellar_id,
             );
-            let call = RemoveAdaptorFromCatalogueCall {
-                adaptor: sp_call_parse_address(params.adaptor)?,
+            let call = SetShareLockPeriodCall {
+                new_lock: string_to_u256(params.new_lock)?,
             };
 
-            Ok(CellarV2_2Calls::RemoveAdaptorFromCatalogue(call).encode())
+            Ok(CellarV2_2Calls::SetShareLockPeriod(call).encode())
         }
-        GovernanceFunction::RemovePositionFromCatalogue(params) => {
+        // This will ultimately need to be a governance function, but for Seven Sea's live testing we are keeping
+        // it here until they get a feel for what an appropriate value is.
+        GovernanceFunction::SetRebalanceDeviation(params) => {
             log_governance_cellar_call(
                 proposal_id,
                 CELLAR_NAME,
-                &RemovePositionFromCatalogueCall::function_name(),
+                &SetRebalanceDeviationCall::function_name(),
                 cellar_id,
             );
-            let call = RemovePositionFromCatalogueCall {
-                position_id: params.position_id,
+
+            let new_deviation = string_to_u256(params.new_deviation)?;
+            if new_deviation > U256::from(5000000000000000u64) {
+                return Err(ErrorKind::SPCallError
+                    .context("deviation must be 0.5% or less".to_string())
+                    .into());
+            }
+
+            let call = SetRebalanceDeviationCall { new_deviation };
+
+            Ok(CellarV2_2Calls::SetRebalanceDeviation(call).encode())
+        }
+        GovernanceFunction::InitiateShutdown(_) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &InitiateShutdownCall::function_name(),
+                cellar_id,
+            );
+            let call = InitiateShutdownCall {};
+
+            Ok(CellarV2_2Calls::InitiateShutdown(call).encode())
+        }
+        GovernanceFunction::SetStrategistPlatformCut(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &SetStrategistPlatformCutCall::function_name(),
+                cellar_id,
+            );
+
+            let call = SetStrategistPlatformCutCall {
+                cut: params.new_cut,
             };
 
-            Ok(CellarV2_2Calls::RemovePositionFromCatalogue(call).encode())
+            Ok(CellarV2_2Calls::SetStrategistPlatformCut(call).encode())
+        }
+        GovernanceFunction::LiftShutdown(_) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &LiftShutdownCall::function_name(),
+                cellar_id,
+            );
+            let call = LiftShutdownCall {};
+
+            Ok(CellarV2_2Calls::LiftShutdown(call).encode())
         }
         GovernanceFunction::ForcePositionOut(params) => {
             log_governance_cellar_call(

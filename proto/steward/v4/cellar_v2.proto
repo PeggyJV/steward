@@ -207,24 +207,18 @@ message CellarV2_2 {
             AddPosition add_position = 1;
             // Represents function `callOnAdaptor(AdaptorCall[] memory data)`
             CallOnAdaptor call_on_adaptor = 2;
-            // Represents function `removePosition(uint256 index)`
+            // Represents function `removePosition(uint256 index, bool inDebtArray)`
             RemovePosition remove_position = 3;
+            // Represents function `removeAdaptorFromCatalogue(address adaptor)`
+            RemoveAdaptorFromCatalogue remove_adaptor_from_catalogue = 4;
+            // Represents function `removePositionFromCatalogue(uint32 positionId)`
+            RemovePositionFromCatalogue remove_position_from_catalogue = 5;
             // Represents function `setHoldingPosition(uint32 position_id)`
-            SetHoldingPosition set_holding_position = 4;
+            SetHoldingPosition set_holding_position = 6;
             // Represents function `setStrategistPayoutAddress(address payout)`
-            SetStrategistPayoutAddress set_strategist_payout_address = 5;
+            SetStrategistPayoutAddress set_strategist_payout_address = 7;
             // Represents function `swapPositions(uint256 index1, uint256 index2)`
-            SwapPositions swap_positions = 6;
-            // Represents function `setRebalanceDeviation(uint265)`
-            SetRebalanceDeviation set_rebalance_deviation = 7;
-            // Represents function `setShareLockPeriod(uint256 newLock)`
-            SetShareLockPeriod set_share_lock_period = 8;
-            // Represents function `initiateShutdown()`
-            InitiateShutdown initiate_shutdown = 9;
-            // Represents function `setStrategistPlatformCut(uint64 cut)`
-            SetStrategistPlatformCut set_strategist_platform_cut = 10;
-            // Represents function `liftShutdown()`
-            LiftShutdown lift_shutdown = 11;
+            SwapPositions swap_positions = 8;
         }
     }
 
@@ -266,6 +260,24 @@ message CellarV2_2 {
     }
 
     /*
+    * Allows callers to remove adaptors from this cellar's catalogue
+    *
+    * Represents function `removeAdaptorFromCatalogue(address adaptor)`
+    */
+    message RemoveAdaptorFromCatalogue {
+        string adaptor = 1;
+    }
+
+    /*
+    * Allows caller to remove positions from this cellar's catalogue
+    *
+    * Represents function `removePositionFromCatalogue(uint32 positionId)`
+    */
+    message RemovePositionFromCatalogue {
+        uint32 position_id = 1;
+    }
+
+    /*
     * Set the holding position used of the cellar.
     *
     * Represents function `setHoldingIndex(uint8 index)`
@@ -296,6 +308,60 @@ message CellarV2_2 {
         uint32 index_2 = 2;
         // Whether to switch positions in the debt array, or the credit array.
         bool in_debt_array = 3;
+    }
+
+    /*
+    * Allows caller to call multiple functions in a single TX.
+    *
+    * Represents function `multicall(bytes[] data)`
+    */
+    message Multicall {
+        repeated FunctionCall function_calls = 1;
+    }
+}
+
+/*
+* Represent a function call initiated through a governance proposal
+*/
+message CellarV2_2Governance {
+    // The function to call on the target cellar
+    oneof function {
+        // Represents function `addAdaptorToCatalogue(address adaptor)`
+        AddAdaptorToCatalogue add_adaptor_to_catalogue = 1;
+        // Represents function `addPositionToCatalogue(uint32 positionId)`
+        AddPositionToCatalogue add_position_to_catalogue = 2;
+        // Represents function `setRebalanceDeviation(uint265)`
+        SetRebalanceDeviation set_rebalance_deviation = 3;
+        // Represents function `setShareLockPeriod(uint256 newLock)`
+        SetShareLockPeriod set_share_lock_period = 4;
+        // Represents function `setStrategistPlatformCut(uint64 cut)`
+        SetStrategistPlatformCut set_strategist_platform_cut = 5;
+        // Represents function `initiateShutdown()`
+        InitiateShutdown initiate_shutdown = 6;
+        // Represents function `liftShutdown()`
+        LiftShutdown lift_shutdown = 7;
+        // Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+        ForcePositionOut force_position_out = 8;
+        // Represents function `toggleIgnorePause(bool ignore)`
+        ToggleIgnorePause toggle_ignore_pause = 9;
+    }
+
+    /*
+    * Allows the owner to add an adaptor to the Cellar's adaptor catalogue
+    *
+    * Represents function `addAdaptorToCatalogue(address adaptor)`
+    */
+    message AddAdaptorToCatalogue {
+        string adaptor = 1;
+    }
+
+    /*
+    * Allows the owner to add a position to the Cellar's position catalogue
+    *
+    * Represents function `addPositionToCatalogue(uint32 positionId)`
+    */
+    message AddPositionToCatalogue {
+        uint32 position_id = 1;
     }
 
     /*
@@ -340,72 +406,6 @@ message CellarV2_2 {
     * Represents function `liftShutdown()`
     */
     message LiftShutdown {}
-
-    /*
-    * Allows caller to call multiple functions in a single TX.
-    *
-    * Represents function `multicall(bytes[] data)`
-    */
-    message Multicall {
-        repeated FunctionCall function_calls = 1;
-    }
-}
-
-/*
-* Represent a function call initiated through a governance proposal
-*/
-message CellarV2_2Governance {
-    // The function to call on the target cellar
-    oneof function {
-        // Represents function `addAdaptorToCatalogue(address adaptor)`
-        AddAdaptorToCatalogue add_adaptor_to_catalogue = 1;
-        // Represents function `addPositionToCatalogue(uint32 positionId)`
-        AddPositionToCatalogue add_position_to_catalogue = 2;
-        // Represents function `removeAdaptorFromCatalogue(address adaptor)`
-        RemoveAdaptorFromCatalogue remove_adaptor_from_catalogue = 3;
-        // Represents function `removePositionFromCatalogue(uint32 positionId)`
-        RemovePositionFromCatalogue remove_position_from_catalogue = 4;
-        // Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
-        ForcePositionOut force_position_out = 5;
-        // Represents function `toggleIgnorePause(bool ignore)`
-        ToggleIgnorePause toggle_ignore_pause = 6;
-    }
-
-    /*
-    * Allows the owner to add an adaptor to the Cellar's adaptor catalogue
-    *
-    * Represents function `addAdaptorToCatalogue(address adaptor)`
-    */
-    message AddAdaptorToCatalogue {
-        string adaptor = 1;
-    }
-
-    /*
-    * Allows the owner to add a position to the Cellar's position catalogue
-    *
-    * Represents function `addPositionToCatalogue(uint32 positionId)`
-    */
-    message AddPositionToCatalogue {
-        uint32 position_id = 1;
-    }
-
-    /*
-    * Allows callers to remove adaptors from this cellar's catalogue
-    *
-    * Represents function `removeAdaptorFromCatalogue(address adaptor)`
-    */
-    message RemoveAdaptorFromCatalogue {
-        string adaptor = 1;
-    }
-
-    /*
-    * Allows caller to remove positions from this cellar's catalogue
-    *
-    * Represents function `removePositionFromCatalogue(uint32 positionId)`
-    */
-    message RemovePositionFromCatalogue {
-        uint32 position_id = 1;
-    }
 
     /*
     * Allows caller to force a position out of the cellar
