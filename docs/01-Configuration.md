@@ -39,11 +39,11 @@ Configuration related interactions with the Cosmos chain in question
 
 Type: float
 
-Multiplied by estimated gas fee per transaction. It is recommended to set this to a value above 1.0 to avoid gas estimation issues.
+Multiplied by estimated gas fee per transaction. Currently Sommelier fee requirements are 0.0 so this can be left as default.
 
 ```
 [cosmos]
-gas_adjustment = 1.1
+gas_adjustment = 1.0
 ```
 
 #### `grpc`
@@ -302,7 +302,7 @@ This example will not work as is, you'll need to supply your own values.
 keystore = "/some/path/keystore"
 
 [cosmos]
-gas_adjustment = 1.1
+gas_adjustment = 1.0
 grpc = "https://127.0.0.1:9090"
 key_derivation_path = "m/44'/118'/0'/0/0"
 prefix = "somm"
