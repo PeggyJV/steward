@@ -58,7 +58,7 @@ jobs:
         with:
           context: integration_tests/ethereum
           file: integration_tests/ethereum/Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
+          push: false
           tags: ${{ steps.meta.outputs.tags }}
           builder: ${{ steps.buildx.outputs.name }}
           cache-from: type=local,src=/tmp/.buildx-cache
