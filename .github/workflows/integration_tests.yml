@@ -46,7 +46,7 @@ jobs:
           images: ${{ env.HARDHAT_IMAGE_NAME }}
       - name: Make upload dir
         run: mkdir -p ${{ env.UPLOAD_DIR }}
-      - name: build-and-push
+      - name: build
         uses: docker/build-push-action@v2
         with:
           context: integration_tests/ethereum
@@ -94,7 +94,7 @@ jobs:
           images: ${{ env.IMAGE_NAME }}
       - name: Make upload dir
         run: mkdir -p ${{ env.UPLOAD_DIR }}
-      - name: build-and-push
+      - name: build
         uses: docker/build-push-action@v2
         with:
           file: Dockerfile
