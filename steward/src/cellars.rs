@@ -228,7 +228,7 @@ mod tests {
     #[test]
     fn test_validate_add_adaptor_to_catalogue() {
         // allows approved cellar/adaptor ID pairs
-        let (cellar_id, approved_adaptor_id) = (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1);
+        let (cellar_id, approved_adaptor_id) = (CELLAR_RYETH, ADAPTOR_UNIV3_V3);
         assert!(validate_add_adaptor_to_catalogue(cellar_id, approved_adaptor_id).is_ok());
 
         let error_prefix = "SP call error: ".to_string();
@@ -262,7 +262,7 @@ mod tests {
     #[test]
     fn test_validate_add_position_to_catalogue() {
         // allows approved cellar/position ID pairs
-        let (cellar_id, approved_pos) = (CELLAR_RYLINK, 154);
+        let (cellar_id, approved_pos) = (CELLAR_RYETH, 185);
         assert!(validate_add_position_to_catalogue(cellar_id, approved_pos).is_ok());
 
         let error_prefix = "SP call error: ".to_string();
