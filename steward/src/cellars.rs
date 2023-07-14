@@ -17,23 +17,17 @@ pub(crate) mod cellar_v2_2;
 
 // allow/block lists.
 
-pub const ALLOWED_CATALOGUE_ADAPTORS: [(&str, &str); 6] = [
-    (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1),
-    (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V2_DEBT_TOKEN_V1),
-    (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V3_A_TOKEN_COLLATERAL_V1),
-    (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V3_DEBT_TOKEN_V1),
-    (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V3_P2P_V1),
-    (CELLAR_RYLINK, ADAPTOR_CELLAR_V2),
+pub const ALLOWED_CATALOGUE_ADAPTORS: [(&str, &str); 2] = [
+    (CELLAR_RYETH, ADAPTOR_UNIV3_V3),
+    (CELLAR_RYBTC, ADAPTOR_UNIV3_V3),
 ];
-pub const ALLOWED_CATALOGUE_POSITIONS: [(&str, u32); 8] = [
-    (CELLAR_RYETH, 155),
-    (CELLAR_RYETH, 156),
-    (CELLAR_RYETH, 161),
-    (CELLAR_RYETH, 162),
-    (CELLAR_RYETH, 163),
-    (CELLAR_RYETH, 165),
-    (CELLAR_RYETH, 166),
-    (CELLAR_RYLINK, 154),
+pub const ALLOWED_CATALOGUE_POSITIONS: [(&str, u32); 6] = [
+    (CELLAR_RYETH, 185),
+    (CELLAR_RYETH, 186),
+    (CELLAR_RYETH, 187),
+    (CELLAR_RYBTC, 185),
+    (CELLAR_RYBTC, 186),
+    (CELLAR_RYBTC, 187),
 ];
 pub const ALLOWED_SETUP_ADAPTORS: [(&str, &str); 1] =
     [(CELLAR_RYUSD, ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1)];
@@ -53,6 +47,7 @@ pub const CELLAR_RYLINK: &str = "4068bdd217a45f8f668ef19f1e3a1f043e4c4934";
 pub const CELLAR_RYSNX: &str = "cbf2250f33c4161e18d4a2fa47464520af5216b5";
 pub const CELLAR_RYUNI: &str = "6a6af5393dc23d7e3db28d28ef422db7c40932b6";
 pub const CELLAR_RYUSD: &str = "97e6e0a40a3d02f12d1cec30ebfbae04e37c119e";
+pub const CELLAR_RYBTC: &str = "0274a704a6d9129f90a62ddc6f6024b33ecdad36";
 
 // deprecated adaptors
 
@@ -69,6 +64,7 @@ pub const ADAPTOR_MORPHO_AAVE_V3_A_TOKEN_COLLATERAL_V1: &str =
     "b46e8a03b1aafffb50f281397c57b5b87080363e";
 pub const ADAPTOR_MORPHO_AAVE_V3_DEBT_TOKEN_V1: &str = "25a61f771af9a38c10ddd93c2bbab39a88926fa9";
 pub const ADAPTOR_MORPHO_AAVE_V3_P2P_V1: &str = "4fe068caad05b82bf3f86e1f7d1a7b8bbf516111";
+pub const ADAPTOR_UNIV3_V3: &str = "92611574ec9bc13c6137917481dab7bb7b173c9b";
 
 // utils
 
@@ -232,7 +228,7 @@ mod tests {
     #[test]
     fn test_validate_add_adaptor_to_catalogue() {
         // allows approved cellar/adaptor ID pairs
-        let (cellar_id, approved_adaptor_id) = (CELLAR_RYETH, ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1);
+        let (cellar_id, approved_adaptor_id) = (CELLAR_RYETH, ADAPTOR_UNIV3_V3);
         assert!(validate_add_adaptor_to_catalogue(cellar_id, approved_adaptor_id).is_ok());
 
         let error_prefix = "SP call error: ".to_string();
@@ -266,7 +262,7 @@ mod tests {
     #[test]
     fn test_validate_add_position_to_catalogue() {
         // allows approved cellar/position ID pairs
-        let (cellar_id, approved_pos) = (CELLAR_RYLINK, 154);
+        let (cellar_id, approved_pos) = (CELLAR_RYETH, 185);
         assert!(validate_add_position_to_catalogue(cellar_id, approved_pos).is_ok());
 
         let error_prefix = "SP call error: ".to_string();
