@@ -8,7 +8,7 @@ use crate::proto::{
     cellar_v2_2governance::Function as GovernanceFunction,
     AdaptorCall,
 };
-use abscissa_core::tracing::debug;
+use abscissa_core::tracing::{debug, info};
 use ethers::{
     abi::AbiEncode,
     contract::EthCall,
@@ -162,6 +162,12 @@ pub fn get_encoded_governance_call(
                 &AddAdaptorToCatalogueCall::function_name(),
                 cellar_id,
             );
+
+            if let Err(err) = check_blocked_adaptor(&params.adaptor) {
+                info!("did not process governance call due to blocked adaptor {}", params.adaptor);
+                return Err(err);
+            }
+
             let call = AddAdaptorToCatalogueCall {
                 adaptor: sp_call_parse_address(params.adaptor)?,
             };
@@ -175,6 +181,12 @@ pub fn get_encoded_governance_call(
                 &AddPositionToCatalogueCall::function_name(),
                 cellar_id,
             );
+
+            if let Err(err) = check_blocked_position(&params.position_id) {
+                info!("did not process governance call due to blocked position id {}", params.position_id);
+                return Err(err);
+            }
+
             let call = AddPositionToCatalogueCall {
                 position_id: params.position_id,
             };

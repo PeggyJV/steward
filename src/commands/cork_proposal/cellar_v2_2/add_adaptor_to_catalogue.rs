@@ -17,7 +17,7 @@ use crate::{
     long_about = "DESCRIPTION\n\nCalls addAdaptorToCatalogue() on the target V2.2 cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol"
 )]
 pub struct AddAdaptorToCatalogueCmd {
-    #[clap(short = 'a', long)]
+    #[clap(short, long)]
     /// Address of the adaptor contract.
     adaptor_address: String,
 

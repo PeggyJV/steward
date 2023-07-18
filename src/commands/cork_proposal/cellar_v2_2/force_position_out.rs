@@ -26,6 +26,7 @@ pub struct ForcePositionOutCmd {
     index: u32,
 
     /// Whether the position is a debt position
+    #[clap(short, long)]
     debt: bool,
 
     /// Target contract for scheduled cork.

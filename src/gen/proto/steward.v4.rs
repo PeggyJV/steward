@@ -1251,8 +1251,6 @@ pub struct SwapWithUniswapAdaptorV1Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<SwapWithUniswapAdaptorV1>,
 }
-// TODO: Comments
-
 /// Represents call data for the FeesAndReserves and FeesAndReservesAdaptor contracts.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct FeesAndReservesAdaptorV1 {

@@ -9,8 +9,6 @@ option go_package = "/steward_proto";
 
 import "base.proto";
 
-// TODO: Comments
-
 // Represents call data for the FeesAndReserves and FeesAndReservesAdaptor contracts.
 message FeesAndReservesAdaptorV1 {
     oneof function {

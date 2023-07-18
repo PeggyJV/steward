@@ -39,7 +39,7 @@ Configuration related interactions with the Cosmos chain in question
 
 Type: float
 
-Multiplied by estimated gas fee per transaction. Currently Sommelier fee requirements are 0.0 so this can be left as default.
+Multiplied by estimated gas fee per transaction. It is recommended to set this to a value above 1.0 to avoid gas estimation issues.
 
 ```
 [cosmos]

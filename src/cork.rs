@@ -58,8 +58,8 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
                 return Err(Status::new(Code::InvalidArgument, err.to_string()));
             }
         };
-        debug!("cork: {:?}", encoded_call);
-        info!("hex cork: {:?}", hex::encode(&encoded_call));
+
+        debug!("hex encoded call: {:?}", hex::encode(&encoded_call));
 
         if let Err(err) = schedule_cork(&cellar_id, encoded_call.clone(), height).await {
             error!("failed to schedule cork for cellar {}: {}", cellar_id, err);
