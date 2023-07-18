@@ -1,8 +1,9 @@
 use ethers::{abi::AbiEncode, types::Bytes};
 use steward_abi::balancer_pool_adaptor_v1::{
-    BalancerPoolAdaptorV1Calls, ExitPoolRequest, SwapData,
+    BalancerPoolAdaptorV1Calls, ExitPoolRequest, SingleSwap as AbiSingleSwap,
+    SwapData as AbiSwapData,
 };
-use steward_proto::steward::balancer_pool_adaptor_v1;
+use steward_proto::steward::balancer_pool_adaptor_v1::{self, SingleSwap, SwapData};
 
 use crate::{
     error::Error,
@@ -37,36 +38,13 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
                     return Err(sp_call_error("invalid swap kind".to_string()));
                 }
 
-                let swaps_before_join = p
-                    .swaps_before_join
-                    .into_iter()
-                    .map(|s| {
-                        Ok(steward_abi::balancer_pool_adaptor_v1::SingleSwap {
-                            pool_id: sp_call_parse_h256(s.pool_id)?.into(),
-                            kind: (s.kind - 1) as u8,
-                            asset_in: sp_call_parse_address(s.asset_in)?,
-                            asset_out: sp_call_parse_address(s.asset_out)?,
-                            amount: string_to_u256(s.amount)?,
-                            user_data: s.user_data.into(),
-                        })
-                    })
-                    .collect::<Result<Vec<_>, Error>>()?;
+                let swaps_before_join = convert_single_swap(p.swaps_before_join)?;
 
-                let swap_data = match p.swap_data {
-                    Some(d) => SwapData {
-                        min_amounts_for_swaps: d
-                            .min_amounts_for_swaps
-                            .into_iter()
-                            .map(string_to_u256)
-                            .collect::<Result<Vec<_>, Error>>()?,
-                        swap_deadlines: d
-                            .swap_deadlines
-                            .into_iter()
-                            .map(string_to_u256)
-                            .collect::<Result<Vec<_>, Error>>()?,
-                    },
-                    None => return Err(sp_call_error("swap data must be set".to_string())),
-                };
+                if p.swap_data.is_none() {
+                    return Err(sp_call_error("swap data must be set".to_string()));
+                }
+
+                let swap_data = convert_swap_data(p.swap_data.unwrap())?;
 
                 let call = steward_abi::balancer_pool_adaptor_v1::JoinPoolCall {
                     target_bpt: sp_call_parse_address(p.target_bpt)?,
@@ -83,36 +61,13 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
                     return Err(sp_call_error("invalid swap kind".to_string()));
                 }
 
-                let swaps_after_exit = p
-                    .swaps_after_exit
-                    .into_iter()
-                    .map(|s| {
-                        Ok(steward_abi::balancer_pool_adaptor_v1::SingleSwap {
-                            pool_id: sp_call_parse_h256(s.pool_id)?.into(),
-                            kind: (s.kind - 1) as u8,
-                            asset_in: sp_call_parse_address(s.asset_in)?,
-                            asset_out: sp_call_parse_address(s.asset_out)?,
-                            amount: string_to_u256(s.amount)?,
-                            user_data: s.user_data.into(),
-                        })
-                    })
-                    .collect::<Result<Vec<_>, Error>>()?;
+                let swaps_after_exit = convert_single_swap(p.swaps_after_exit)?;
 
-                let swap_data = match p.swap_data {
-                    Some(d) => SwapData {
-                        min_amounts_for_swaps: d
-                            .min_amounts_for_swaps
-                            .into_iter()
-                            .map(string_to_u256)
-                            .collect::<Result<Vec<_>, Error>>()?,
-                        swap_deadlines: d
-                            .swap_deadlines
-                            .into_iter()
-                            .map(string_to_u256)
-                            .collect::<Result<Vec<_>, Error>>()?,
-                    },
-                    None => return Err(sp_call_error("swap data must be set".to_string())),
-                };
+                if p.swap_data.is_none() {
+                    return Err(sp_call_error("swap data must be set".to_string()));
+                }
+
+                let swap_data = convert_swap_data(p.swap_data.unwrap())?;
 
                 let request = match p.request {
                     Some(r) => ExitPoolRequest {
@@ -159,7 +114,7 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
             }
             balancer_pool_adaptor_v1::Function::ClaimRewards(p) => {
                 let call = steward_abi::balancer_pool_adaptor_v1::ClaimRewardsCall {
-                    gauge: sp_call_parse_address(p.guage)?,
+                    gauge: sp_call_parse_address(p.gauge)?,
                 };
                 calls.push(
                     BalancerPoolAdaptorV1Calls::ClaimRewards(call)
@@ -171,4 +126,35 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
     }
 
     Ok(calls)
+}
+
+fn convert_single_swap(swaps: Vec<SingleSwap>) -> Result<Vec<AbiSingleSwap>, Error> {
+    swaps
+        .into_iter()
+        .map(|s| {
+            Ok(AbiSingleSwap {
+                pool_id: sp_call_parse_h256(s.pool_id)?.into(),
+                kind: (s.kind - 1) as u8,
+                asset_in: sp_call_parse_address(s.asset_in)?,
+                asset_out: sp_call_parse_address(s.asset_out)?,
+                amount: string_to_u256(s.amount)?,
+                user_data: s.user_data.into(),
+            })
+        })
+        .collect::<Result<Vec<_>, Error>>()
+}
+
+fn convert_swap_data(data: SwapData) -> Result<AbiSwapData, Error> {
+    Ok(AbiSwapData {
+        min_amounts_for_swaps: data
+            .min_amounts_for_swaps
+            .into_iter()
+            .map(string_to_u256)
+            .collect::<Result<Vec<_>, Error>>()?,
+        swap_deadlines: data
+            .swap_deadlines
+            .into_iter()
+            .map(string_to_u256)
+            .collect::<Result<Vec<_>, Error>>()?,
+    })
 }

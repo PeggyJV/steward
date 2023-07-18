@@ -1685,24 +1685,26 @@ pub struct BalancerPoolAdaptorV1 {
 /// Nested message and enum types in `BalancerPoolAdaptorV1`.
 pub mod balancer_pool_adaptor_v1 {
     /// Data for a single swap executed by `swap`. `amount` is either `amountIn` or `amountOut` depending on the `kind` value.
+    /// Represents the SingleSwap struct defined here:
+    /// https://github.com/PeggyJV/cellar-contracts/blob/main/src/interfaces/external/Balancer/IVault.sol
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct SingleSwap {
-        /// The pool ID
+        /// The pool ID (bytes32)
         #[prost(string, tag = "1")]
         pub pool_id: ::prost::alloc::string::String,
-        /// The swap kind
+        /// The swap kind (enum)
         #[prost(enumeration = "SwapKind", tag = "2")]
         pub kind: i32,
-        /// The asset in
+        /// The asset in (address)
         #[prost(string, tag = "3")]
         pub asset_in: ::prost::alloc::string::String,
-        /// The asset out
+        /// The asset out (address)
         #[prost(string, tag = "4")]
         pub asset_out: ::prost::alloc::string::String,
-        /// The amount
+        /// The amount (uint256)
         #[prost(string, tag = "5")]
         pub amount: ::prost::alloc::string::String,
-        /// The user data
+        /// The user data (bytes)
         #[prost(bytes = "vec", tag = "6")]
         pub user_data: ::prost::alloc::vec::Vec<u8>,
     }
@@ -1804,8 +1806,10 @@ pub mod balancer_pool_adaptor_v1 {
     pub struct ClaimRewards {
         /// The gauge to claim rewards from
         #[prost(string, tag = "1")]
-        pub guage: ::prost::alloc::string::String,
+        pub gauge: ::prost::alloc::string::String,
     }
+    /// Represents the SwapKind enum defined here:
+    /// https://github.com/PeggyJV/cellar-contracts/blob/main/src/interfaces/external/Balancer/IVault.sol
     #[derive(
         serde::Deserialize,
         serde::Serialize,

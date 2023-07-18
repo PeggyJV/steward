@@ -23,6 +23,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Represents the SwapKind enum defined here:
+// https://github.com/PeggyJV/cellar-contracts/blob/main/src/interfaces/external/Balancer/IVault.sol
 type BalancerPoolAdaptorV1_SwapKind int32
 
 const (
@@ -263,22 +265,24 @@ func (x *BalancerPoolAdaptorV1Calls) GetCalls() []*BalancerPoolAdaptorV1 {
 }
 
 // Data for a single swap executed by `swap`. `amount` is either `amountIn` or `amountOut` depending on the `kind` value.
+// Represents the SingleSwap struct defined here:
+// https://github.com/PeggyJV/cellar-contracts/blob/main/src/interfaces/external/Balancer/IVault.sol
 type BalancerPoolAdaptorV1_SingleSwap struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The pool ID
+	// The pool ID (bytes32)
 	PoolId string `protobuf:"bytes,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
-	// The swap kind
+	// The swap kind (enum)
 	Kind BalancerPoolAdaptorV1_SwapKind `protobuf:"varint,2,opt,name=kind,proto3,enum=steward.v3.BalancerPoolAdaptorV1_SwapKind" json:"kind,omitempty"`
-	// The asset in
+	// The asset in (address)
 	AssetIn string `protobuf:"bytes,3,opt,name=asset_in,json=assetIn,proto3" json:"asset_in,omitempty"`
-	// The asset out
+	// The asset out (address)
 	AssetOut string `protobuf:"bytes,4,opt,name=asset_out,json=assetOut,proto3" json:"asset_out,omitempty"`
-	// The amount
+	// The amount (uint256)
 	Amount string `protobuf:"bytes,5,opt,name=amount,proto3" json:"amount,omitempty"`
-	// The user data
+	// The user data (bytes)
 	UserData []byte `protobuf:"bytes,6,opt,name=user_data,json=userData,proto3" json:"user_data,omitempty"`
 }
 
@@ -792,7 +796,7 @@ type BalancerPoolAdaptorV1_ClaimRewards struct {
 	unknownFields protoimpl.UnknownFields
 
 	// The gauge to claim rewards from
-	Guage string `protobuf:"bytes,1,opt,name=guage,proto3" json:"guage,omitempty"`
+	Gauge string `protobuf:"bytes,1,opt,name=gauge,proto3" json:"gauge,omitempty"`
 }
 
 func (x *BalancerPoolAdaptorV1_ClaimRewards) Reset() {
@@ -827,9 +831,9 @@ func (*BalancerPoolAdaptorV1_ClaimRewards) Descriptor() ([]byte, []int) {
 	return file_adaptors_balancer_balancer_pool_proto_rawDescGZIP(), []int{0, 7}
 }
 
-func (x *BalancerPoolAdaptorV1_ClaimRewards) GetGuage() string {
+func (x *BalancerPoolAdaptorV1_ClaimRewards) GetGauge() string {
 	if x != nil {
-		return x.Guage
+		return x.Gauge
 	}
 	return ""
 }
@@ -948,8 +952,8 @@ var file_adaptors_balancer_balancer_pool_proto_rawDesc = []byte{
 	0x47, 0x61, 0x75, 0x67, 0x65, 0x12, 0x1d, 0x0a, 0x0a, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f,
 	0x6f, 0x75, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x6d, 0x6f, 0x75, 0x6e,
 	0x74, 0x4f, 0x75, 0x74, 0x1a, 0x24, 0x0a, 0x0c, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77,
-	0x61, 0x72, 0x64, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x67, 0x75, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x05, 0x67, 0x75, 0x61, 0x67, 0x65, 0x22, 0x56, 0x0a, 0x08, 0x53, 0x77,
+	0x61, 0x72, 0x64, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x67, 0x61, 0x75, 0x67, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x05, 0x67, 0x61, 0x75, 0x67, 0x65, 0x22, 0x56, 0x0a, 0x08, 0x53, 0x77,
 	0x61, 0x70, 0x4b, 0x69, 0x6e, 0x64, 0x12, 0x19, 0x0a, 0x15, 0x53, 0x57, 0x41, 0x50, 0x5f, 0x4b,
 	0x49, 0x4e, 0x44, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10,
 	0x00, 0x12, 0x16, 0x0a, 0x12, 0x53, 0x57, 0x41, 0x50, 0x5f, 0x4b, 0x49, 0x4e, 0x44, 0x5f, 0x47,

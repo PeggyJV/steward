@@ -32,6 +32,8 @@ message BalancerPoolAdaptorV1 {
 
     }
 
+    // Represents the SwapKind enum defined here:
+    // https://github.com/PeggyJV/cellar-contracts/blob/main/src/interfaces/external/Balancer/IVault.sol
     enum SwapKind {
         SWAP_KIND_UNSPECIFIED = 0;
         SWAP_KIND_GIVEN_IN = 1;
@@ -39,23 +41,25 @@ message BalancerPoolAdaptorV1 {
     }
 
     // Data for a single swap executed by `swap`. `amount` is either `amountIn` or `amountOut` depending on the `kind` value.
+    // Represents the SingleSwap struct defined here:
+    // https://github.com/PeggyJV/cellar-contracts/blob/main/src/interfaces/external/Balancer/IVault.sol
     message SingleSwap {
-        // The pool ID
+        // The pool ID (bytes32)
         string pool_id = 1;
 
-        // The swap kind
+        // The swap kind (enum)
         SwapKind kind = 2;
 
-        // The asset in
+        // The asset in (address)
         string asset_in = 3;
 
-        // The asset out
+        // The asset out (address)
         string asset_out = 4;
 
-        // The amount
+        // The amount (uint256)
         string amount = 5;
 
-        // The user data
+        // The user data (bytes)
         bytes user_data = 6;
     }
 
@@ -152,7 +156,7 @@ message BalancerPoolAdaptorV1 {
     */
     message ClaimRewards {
         // The gauge to claim rewards from
-        string guage = 1;
+        string gauge = 1;
     }
 }
 
