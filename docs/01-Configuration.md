@@ -43,7 +43,7 @@ Multiplied by estimated gas fee per transaction. It is recommended to set this t
 
 ```
 [cosmos]
-gas_adjustment = 1.0
+gas_adjustment = 1.1
 ```
 
 #### `grpc`
@@ -302,7 +302,7 @@ This example will not work as is, you'll need to supply your own values.
 keystore = "/some/path/keystore"
 
 [cosmos]
-gas_adjustment = 1.0
+gas_adjustment = 1.1
 grpc = "https://127.0.0.1:9090"
 key_derivation_path = "m/44'/118'/0'/0/0"
 prefix = "somm"
