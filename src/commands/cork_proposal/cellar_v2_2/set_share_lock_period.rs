@@ -18,7 +18,7 @@ use crate::{
     long_about = "DESCRIPTION\n\nCalls setShareLockPeriod() on the target V2.2 cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol"
 )]
 pub struct SetShareLockPeriodCmd {
-    #[clap(short = 'p', long)]
+    #[clap(short, long)]
     /// New lock period
     period: String,
 

@@ -3,6 +3,7 @@ use abscissa_core::{clap::Parser, Command, Runnable};
 mod initiate_shutdown;
 mod lift_shutdown;
 mod set_platform_fee;
+mod set_rebalance_deviation;
 mod set_strategist_platform_cut;
 mod setup_adaptor;
 

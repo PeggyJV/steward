@@ -4,9 +4,9 @@ use crate::{
     commands::cork_proposal::print_proposal,
     prelude::*,
     proto::{
-        cellar_v1_governance::{Function, SetStrategistPerformanceCut},
+        cellar_v2_governance::{Function, SetRebalanceDeviation},
         governance_call::Call,
-        CellarV1Governance, GovernanceCall,
+        CellarV2Governance, GovernanceCall,
     },
 };
 use abscissa_core::{clap::Parser, Command, Runnable};
@@ -14,12 +14,12 @@ use abscissa_core::{clap::Parser, Command, Runnable};
 /// Fees Distributor subcommand
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION\n\nCalls setStrategistPerformanceCut() on the target cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-v1_5/blob/release/src/base/Cellar.sol"
+    long_about = "DESCRIPTION\n\nCalls SetRebalanceDeviation() on the target V2 cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol"
 )]
-pub struct SetStrategistPerformanceCutCmd {
+pub struct SetRebalanceDeviationCmd {
     #[clap(short, long)]
-    /// New performance cut proportion for the Strategy Provider between 0 and 1e18 representing 0% and 100% respectively.
-    new_performance_cut: u64,
+    /// New rebalance deviation
+    deviation: String,
 
     /// Target contract for scheduled cork.
     #[clap(short, long)]
@@ -34,7 +34,7 @@ pub struct SetStrategistPerformanceCutCmd {
     quiet: bool,
 }
 
-impl Runnable for SetStrategistPerformanceCutCmd {
+impl Runnable for SetRebalanceDeviationCmd {
     fn run(&self) {
         abscissa_tokio::run_with_actix(&APP, async {
             cellars::validate_cellar_id(&self.cellar_id)
@@ -45,12 +45,10 @@ impl Runnable for SetStrategistPerformanceCutCmd {
                 });
 
             let governance_call = GovernanceCall {
-                call: Some(Call::CellarV1(CellarV1Governance {
-                    function: Some(Function::SetStrategistPerformanceCut(
-                        SetStrategistPerformanceCut {
-                            amount: self.new_performance_cut,
-                        },
-                    )),
+                call: Some(Call::CellarV2(CellarV2Governance {
+                    function: Some(Function::SetRebalanceDeviation(SetRebalanceDeviation {
+                        new_deviation: self.deviation.clone(),
+                    })),
                 })),
             };
 

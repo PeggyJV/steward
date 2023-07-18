@@ -2337,7 +2337,7 @@ pub mod cellar_v1_governance {
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct CellarV2 {
     /// The function you wish to execute on the target cellar
-    #[prost(oneof = "cellar_v2::Function", tags = "1, 2, 3, 4, 5, 6, 7, 8")]
+    #[prost(oneof = "cellar_v2::Function", tags = "1, 2, 3, 4, 5, 6, 7")]
     pub function: ::core::option::Option<cellar_v2::Function>,
 }
 /// Nested message and enum types in `CellarV2`.
@@ -2427,16 +2427,6 @@ pub mod cellar_v2 {
         #[prost(string, tag = "1")]
         pub new_lock: ::prost::alloc::string::String,
     }
-    ///
-    /// Changes the cellar's allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
-    /// during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
-    ///
-    /// Represents function `setRebalanceDeviation(uint256)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct SetRebalanceDeviation {
-        #[prost(string, tag = "1")]
-        pub new_deviation: ::prost::alloc::string::String,
-    }
     /// The function you wish to execute on the target cellar
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum Function {
@@ -2458,11 +2448,8 @@ pub mod cellar_v2 {
         /// Represents function `swapPositions(uint256 index1, uint256 index2)`
         #[prost(message, tag = "6")]
         SwapPositions(SwapPositions),
-        /// Represents function `setRebalanceDeviation(uint265)`
-        #[prost(message, tag = "7")]
-        SetRebalanceDeviation(SetRebalanceDeviation),
         /// Represents function `setShareLockPeriod(uint256 newLock)`
-        #[prost(message, tag = "8")]
+        #[prost(message, tag = "7")]
         SetShareLockPeriod(SetShareLockPeriod),
     }
 }
@@ -2471,7 +2458,7 @@ pub mod cellar_v2 {
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct CellarV2Governance {
     /// The function to call on the target cellar
-    #[prost(oneof = "cellar_v2_governance::Function", tags = "1, 2, 3, 4, 5")]
+    #[prost(oneof = "cellar_v2_governance::Function", tags = "1, 2, 3, 4, 5, 6")]
     pub function: ::core::option::Option<cellar_v2_governance::Function>,
 }
 /// Nested message and enum types in `CellarV2Governance`.
@@ -2506,6 +2493,16 @@ pub mod cellar_v2_governance {
         #[prost(string, tag = "1")]
         pub adaptor: ::prost::alloc::string::String,
     }
+    ///
+    /// Changes the cellar's allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
+    /// during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
+    ///
+    /// Represents function `setRebalanceDeviation(uint256)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SetRebalanceDeviation {
+        #[prost(string, tag = "1")]
+        pub new_deviation: ::prost::alloc::string::String,
+    }
     /// The function to call on the target cellar
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum Function {
@@ -2524,6 +2521,9 @@ pub mod cellar_v2_governance {
         /// Represents function `setupAdaptor(address adaptor)`
         #[prost(message, tag = "5")]
         SetupAdaptor(SetupAdaptor),
+        /// Represents function `setRebalanceDeviation(uint256)`
+        #[prost(message, tag = "6")]
+        SetRebalanceDeviation(SetRebalanceDeviation),
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]

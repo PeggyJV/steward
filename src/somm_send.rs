@@ -13,6 +13,7 @@ use std::{result::Result, time::Duration};
 
 pub const TIMEOUT: Duration = Duration::from_secs(60);
 pub const MEMO: &str = "Sent using Somm Orchestrator";
+pub const MAX_GAS_PER_BLOCK: u64 = 60_000_000;
 
 pub async fn schedule_cork(
     contact: &Contact,
@@ -43,9 +44,9 @@ async fn __send_messages(
     let gas_limit = gas_limit_per_msg * (messages.len() as u64);
 
     // block gas limit check
-    if gas_limit > 20_000_000u64 {
+    if gas_limit > MAX_GAS_PER_BLOCK {
         return Err(CosmosGrpcError::BadInput(
-            "total gas limit too high. (gas limit) * (number of messages) exceeded 20M".to_string(),
+            format!("total gas limit too high. (gas limit) * (number of messages) exceeded {MAX_GAS_PER_BLOCK}"),
         ));
     }
 

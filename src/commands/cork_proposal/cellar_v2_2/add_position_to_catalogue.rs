@@ -17,7 +17,7 @@ use crate::{
     long_about = "DESCRIPTION\n\nCalls addPositionToCatalogue() on the target V2.2 cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol"
 )]
 pub struct AddPositionToCatalogueCmd {
-    #[clap(short = 'p', long)]
+    #[clap(short, long)]
     /// The ID of the position
     position_id: u32,
 

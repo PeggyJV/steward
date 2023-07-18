@@ -47,10 +47,8 @@ message CellarV2 {
         SetStrategistPayoutAddress set_strategist_payout_address = 5;
         // Represents function `swapPositions(uint256 index1, uint256 index2)`
         SwapPositions swap_positions = 6;
-        // Represents function `setRebalanceDeviation(uint265)`
-        SetRebalanceDeviation set_rebalance_deviation = 7;
         // Represents function `setShareLockPeriod(uint256 newLock)`
-        SetShareLockPeriod set_share_lock_period = 8;
+        SetShareLockPeriod set_share_lock_period = 7;
     }
 
     /*
@@ -131,16 +129,6 @@ message CellarV2 {
     message SetShareLockPeriod {
         string new_lock = 1;
     }
-
-    /*
-    * Changes the cellar's allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
-    * during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
-    *
-    * Represents function `setRebalanceDeviation(uint256)`
-    */
-    message SetRebalanceDeviation {
-        string new_deviation = 1;
-    }
 }
 
 /*
@@ -159,6 +147,8 @@ message CellarV2Governance {
         SetStrategistPlatformCut set_strategist_platform_cut = 4;
         // Represents function `setupAdaptor(address adaptor)`
         SetupAdaptor setup_adaptor = 5;
+        // Represents function `setRebalanceDeviation(uint256)`
+        SetRebalanceDeviation set_rebalance_deviation = 6;
     }
 
     // Represents function `initiateShutdown()`
@@ -189,6 +179,16 @@ message CellarV2Governance {
     message SetupAdaptor {
         // Address of the adaptor
         string adaptor = 1;
+    }
+
+    /*
+    * Changes the cellar's allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
+    * during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
+    *
+    * Represents function `setRebalanceDeviation(uint256)`
+    */
+    message SetRebalanceDeviation {
+        string new_deviation = 1;
     }
 }
 

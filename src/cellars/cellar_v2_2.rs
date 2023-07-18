@@ -164,7 +164,10 @@ pub fn get_encoded_governance_call(
             );
 
             if let Err(err) = check_blocked_adaptor(&params.adaptor) {
-                info!("did not process governance call due to blocked adaptor {}", params.adaptor);
+                info!(
+                    "did not process governance call due to blocked adaptor {}",
+                    params.adaptor
+                );
                 return Err(err);
             }
 
@@ -183,7 +186,10 @@ pub fn get_encoded_governance_call(
             );
 
             if let Err(err) = check_blocked_position(&params.position_id) {
-                info!("did not process governance call due to blocked position id {}", params.position_id);
+                info!(
+                    "did not process governance call due to blocked position id {}",
+                    params.position_id
+                );
                 return Err(err);
             }
 

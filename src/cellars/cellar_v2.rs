@@ -1,7 +1,7 @@
 //! Handlers for V2 of the Cellar.sol contract functions
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
-use abscissa_core::tracing::debug;
+use abscissa_core::tracing::{debug, info};
 use ethers::{abi::AbiEncode, contract::EthCall, types::Bytes};
 use GovernanceFunction::*;
 use StrategyFunction::*;
@@ -113,20 +113,6 @@ pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV
 
             Ok(CellarV2Calls::SetShareLockPeriod(call))
         }
-        // This will ultimately need to be a governance function, but for Seven Sea's live testing we are keeping
-        // it here until they get a feel for what an appropriate value is.
-        SetRebalanceDeviation(params) => {
-            log_cellar_call(
-                CELLAR_NAME,
-                &SetRebalanceDeviationCall::function_name(),
-                &cellar_id,
-            );
-            let call = SetRebalanceDeviationCall {
-                new_deviation: string_to_u256(params.new_deviation)?,
-            };
-
-            Ok(CellarV2Calls::SetRebalanceDeviation(call))
-        }
     }
 }
 
@@ -185,11 +171,32 @@ pub fn get_encoded_governance_call(
                 &SetupAdaptorCall::function_name(),
                 cellar_id,
             );
+
+            if let Err(err) = check_blocked_adaptor(&params.adaptor) {
+                info!(
+                    "did not process governance call due to blocked adaptor {}",
+                    params.adaptor
+                );
+                return Err(err);
+            }
+
             let call = SetupAdaptorCall {
                 adaptor: sp_call_parse_address(params.adaptor)?,
             };
 
             Ok(CellarV2Calls::SetupAdaptor(call).encode())
+        }
+        SetRebalanceDeviation(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetRebalanceDeviationCall::function_name(),
+                cellar_id,
+            );
+            let call = SetRebalanceDeviationCall {
+                new_deviation: string_to_u256(params.new_deviation)?,
+            };
+
+            Ok(CellarV2Calls::SetRebalanceDeviation(call).encode())
         }
     }
 }
