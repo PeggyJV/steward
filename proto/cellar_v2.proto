@@ -13,6 +13,7 @@ import "adaptors/aave/a_token.proto";
 import "adaptors/aave/debt_token.proto";
 import "adaptors/aave/aave_v3_a_token.proto";
 import "adaptors/aave/aave_v3_debt_token.proto";
+import "adaptors/balancer/balancer_pool.proto";
 import "adaptors/compound/c_token.proto";
 import "adaptors/frax/f_token.proto";
 import "adaptors/morpho/morpho_aave_v2_a_token.proto";
@@ -438,5 +439,7 @@ message AdaptorCall {
         MorphoAaveV3ATokenP2PAdaptorV1Calls morpho_aave_v3_a_token_p2p_v1_calls = 22;
         // Represents function calls to the MorphoAaveV3DebtToken V1
         MorphoAaveV3DebtTokenAdaptorV1Calls morpho_aave_v3_debt_token_v1_calls = 23;
+        // Represents function calls to the BalancerPoolAdaptor V1
+        BalancerPoolAdaptorV1Calls balancer_pool_v1_calls = 24;
     }
 }

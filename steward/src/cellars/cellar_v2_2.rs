@@ -313,6 +313,9 @@ fn get_encoded_adaptor_calls(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCal
             MorphoAaveV3DebtTokenV1Calls(params) => {
                 calls.extend(adaptors::morpho::morpho_aave_v3_debt_token_adaptor_v1_calls(params)?)
             }
+            BalancerPoolV1Calls(params) => calls.extend(
+                adaptors::balancer_pool::balancer_pool_adaptor_v1_calls(params)?,
+            ),
         };
 
         result.push(AbiAdaptorCall {
