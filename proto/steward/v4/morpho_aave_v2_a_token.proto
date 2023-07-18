@@ -1,0 +1,60 @@
+/*
+* Protos for function calls to the Morpho Aave V2 AToken adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+import "morpho_reward_handler.proto";
+
+// Represents call data for the Morpho Aave V2 AToken adaptor.
+message MorphoAaveV2ATokenAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `depositToAaveV2Morpho(IAaveToken aToken, uint256 amountToDeposit)`
+        DepositToAaveV2Morpho deposit_to_aave_v2_morpho = 2;
+        // Represents function `withdrawFromAaveV2Morpho(IAaveToken aToken, uint256 amountToWithdraw)`
+        WithdrawFromAaveV2Morpho withdraw_from_aave_v2_morpho = 3;
+        // Represents function `claim(uint256 claimable, bytes32[] memory proof)`
+        Claim claim = 4;
+    }
+
+    /*
+    * Allows strategists to lend assets on Morpho.
+    *
+    * Represents function `depositToAaveV2Morpho(IAaveToken aToken, uint256 amountToDeposit)`
+    */
+    message DepositToAaveV2Morpho {
+        // The address of the Aave V2 aToken to deposit to.
+        string a_token = 1;
+
+        // The amount of the asset to deposit.
+        string amount_to_deposit = 2;
+    }
+
+    /*
+    * Allows strategists to withdraw assets from Morpho.
+    *
+    * Represents function `withdrawFromAaveV2Morpho(IAaveToken aToken, uint256 amountToWithdraw)`
+    */
+    message WithdrawFromAaveV2Morpho {
+        // The address of the Aave V2 aToken to withdraw from.
+        string a_token = 1;
+
+        // The amount of the asset to withdraw.
+        string amount_to_withdraw = 2;
+    }
+}
+
+message MorphoAaveV2ATokenAdaptorV1Calls {
+    repeated MorphoAaveV2ATokenAdaptorV1 calls = 1;
+}

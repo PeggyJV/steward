@@ -1,0 +1,81 @@
+/*
+* Protos for function calls to the Aave V3 AToken adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+// Represents call data for the Aave AToken adaptor, used to manage lending positions on Aave
+message AaveV3ATokenAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+        DepositToAave deposit_to_aave = 2;
+        // Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
+        WithdrawFromAave withdraw_from_aave = 3;
+        // Represents function `adjustIsolationModeAssetAsCollateral(ERC20 asset, bool useAsCollateral)`
+        AdjustIsolationModeAssetAsCollateral adjust_isolation_mode_asset_as_collateral = 4;
+        // Represents function `changeEMode(uint8 categoryId)`
+        ChangeEMode change_emode = 5;
+    }
+
+    /*
+    * Allows strategists to lend assets on Aave.
+    *
+    * Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+    */
+    message DepositToAave {
+        // The address of the ERC20 token to deposit
+        string token = 1;
+        // The amount to deposit
+        string amount = 2;
+    }
+
+    /*
+    * Allows strategists to withdraw assets from Aave.
+    *
+    * Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
+    */
+    message WithdrawFromAave {
+        // The address of the ERC20 token to withdraw
+        string token = 1;
+        // The amount to withdraw
+        string amount = 2;
+    }
+
+    /*
+    * Allows strategists to adjust an asset's isolation mode.
+    *
+    * Represents function `adjustIsolationModeAssetAsCollateral(ERC20 asset, bool useAsCollateral)`
+    */
+    message AdjustIsolationModeAssetAsCollateral {
+        // The address of the ERC20 token
+        string asset = 1;
+        // Whether to use the asset as collateral
+        bool use_as_collateral = 2;
+    }
+
+    /*
+    * Allows strategists to enter different EModes.
+    *
+    * Represents function `changeEMode(uint8 categoryId)`
+    */
+    message ChangeEMode {
+        // The category ID
+        uint32 category_id = 1;
+    }
+}
+
+message AaveV3ATokenAdaptorV1Calls {
+    repeated AaveV3ATokenAdaptorV1 calls = 1;
+}

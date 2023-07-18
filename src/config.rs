@@ -3,7 +3,7 @@
 //! See instructions in `commands.rs` to specify the path to your
 //! application's configuration file and/or command-line options
 //! for specifying it.
-use crate::prelude::APP;
+use crate::{prelude::APP, somm_send::MAX_GAS_PER_BLOCK};
 use abscissa_core::Application;
 use deep_space::{Address as CosmosAddress, PrivateKey};
 use ethers::signers::LocalWallet as EthWallet;
@@ -199,6 +199,7 @@ pub struct CosmosSection {
     pub key_derivation_path: String,
     pub prefix: String,
     pub msg_batch_size: u32,
+    pub gas_limit_per_msg: u64,
     pub gas_price: GasPrice,
 }
 
@@ -210,6 +211,7 @@ impl Default for CosmosSection {
             key_derivation_path: "m/44'/118'/0'/0/0".to_owned(),
             prefix: "somm".to_owned(),
             msg_batch_size: 5,
+            gas_limit_per_msg: MAX_GAS_PER_BLOCK,
             gas_price: GasPrice::default(),
         }
     }

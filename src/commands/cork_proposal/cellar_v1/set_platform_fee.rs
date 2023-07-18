@@ -17,7 +17,7 @@ use abscissa_core::{clap::Parser, Command, Runnable};
     long_about = "DESCRIPTION\n\nCalls setPlatformFee() on the target cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-v1_5/blob/release/src/base/Cellar.sol"
 )]
 pub struct SetPlatformFeeCmd {
-    #[clap(short = 'n', long)]
+    #[clap(short, long)]
     /// New platform fee proportion between 0 and 1e18 representing 0% and 100% respectively.
     new_platform_fee: u64,
 

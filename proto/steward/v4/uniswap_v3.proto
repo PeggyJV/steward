@@ -6,35 +6,31 @@ option go_package = "/steward_proto";
 import "base.proto";
 
 // Represents call data for the Uniswap V3 adaptor
-message UniswapV3Adaptor {
+message UniswapV3AdaptorV2 {
     oneof function {
         /***** BASE ADAPTOR FUNCTIONS *****/
 
-        // Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
-        Swap swap = 1;
-        // Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
-        OracleSwap oracle_swap = 2;
         // Represents function `revokeApproval(ERC20 asset, address spender)`
-        RevokeApproval revoke_approval = 3;
+        RevokeApproval revoke_approval = 1;
 
         /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
 
         // Represents function `openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)`
-        OpenPosition open_position = 4;
+        OpenPosition open_position = 2;
         // Represents function `closePosition(uint256 positionId, uint256 min0, uint256 min1)`
-        ClosePosition close_position = 5;
+        ClosePosition close_position = 3;
         // Represents function `addToPosition(uint256 positionId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
-        AddToPosition add_to_position = 6;
+        AddToPosition add_to_position = 4;
         // Represents function `takeFromPosition(uint256 positionId, uint128 liquidity, uint256 min0, uint256 min1, bool collectFees)`
-        TakeFromPosition take_from_position = 7;
+        TakeFromPosition take_from_position = 5;
         // Represents function `collectFees(uint256 positionId, uint128 amount0, uint128 amount1)`
-        CollectFees collect_fees = 8;
+        CollectFees collect_fees = 6;
         // Represents function `purgeAllZeroLiquidityPositions(ERC20 token0, ERC20 token1)`
-        PurgeAllZeroLiquidityPositions purge_all_zero_liquidity_positions = 9;
+        PurgeAllZeroLiquidityPositions purge_all_zero_liquidity_positions = 7;
         // Represents function `purgeSinglePosition(uint256 tokenId)`
-        PurgeSinglePosition purge_single_position = 10;
+        PurgeSinglePosition purge_single_position = 8;
         // Represents function `removeUnOwnedPositionFromTracker(uint256 tokenId, ERC20 token0, ERC20 token1)`
-        RemoveUnownedPositionFromTracker remove_unowned_position_from_tracker = 11;
+        RemoveUnownedPositionFromTracker remove_unowned_position_from_tracker = 9;
     }
 
     /*
@@ -132,6 +128,6 @@ message UniswapV3Adaptor {
     }
 }
 
-message UniswapV3AdaptorCalls {
-    repeated UniswapV3Adaptor calls = 1;
+message UniswapV3AdaptorV2Calls {
+    repeated UniswapV3AdaptorV2 calls = 1;
 }

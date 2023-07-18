@@ -1,6 +1,7 @@
 mod aave_v2_stablecoin;
 mod cellar_v1;
 mod cellar_v2;
+mod cellar_v2_2;
 
 use crate::{
     commands::cork_proposal::aave_v2_stablecoin::AaveV2StablecoinCellarCmd, proto::GovernanceCall,

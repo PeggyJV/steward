@@ -1,0 +1,38 @@
+// Protos for calling functions on the 0x adapter.
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+message ZeroXAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `swapWith0x(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes memory swapCallData)`
+        SwapWith0x swap_with_0x = 2;
+    }
+
+    /*
+    * Allows strategists to make ERC20 swaps using 0x.
+    *
+    * Represents function `swapWith0x(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes memory swapCallData)`
+    */
+    message SwapWith0x {
+        string token_in = 1;
+        string token_out = 2;
+        string amount = 3;
+        bytes swap_call_data = 4;
+    }
+}
+
+message ZeroXAdaptorV1Calls {
+    repeated ZeroXAdaptorV1 calls = 1;
+}

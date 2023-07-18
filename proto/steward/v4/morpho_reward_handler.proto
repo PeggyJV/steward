@@ -1,0 +1,21 @@
+/*
+* Enables the Morpho adaptors to claim rewards
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+/*
+* Allows Morpho A Token cellars to claim Morpho Rewards
+*
+* Represents function `claim(uint256 claimable, bytes32[] memory proof)`
+*/
+message Claim {
+    // The amount of the asset to withdraw.
+    string claimable = 1;
+
+    // Proof of claim
+    repeated bytes proof = 2;
+}

@@ -13,6 +13,7 @@ use std::{result::Result, time::Duration};
 
 pub const TIMEOUT: Duration = Duration::from_secs(60);
 pub const MEMO: &str = "Sent using Somm Orchestrator";
+pub const MAX_GAS_PER_BLOCK: u64 = 60_000_000;
 
 pub async fn schedule_cork(
     contact: &Contact,
@@ -20,6 +21,7 @@ pub async fn schedule_cork(
     delegate_address: String,
     delegate_key: &CosmosPrivateKey,
     fee: Coin,
+    gas_limit_per_msg: u64,
     block_height: u64,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let msg = MsgScheduleCorkRequest {
@@ -28,20 +30,29 @@ pub async fn schedule_cork(
         block_height,
     };
     let msg = Msg::new("/cork.v2.MsgScheduleCorkRequest", msg);
-    __send_messages(contact, delegate_key, fee, vec![msg]).await
+    __send_messages(contact, delegate_key, fee, gas_limit_per_msg, vec![msg]).await
 }
 
 async fn __send_messages(
     contact: &Contact,
     cosmos_key: &CosmosPrivateKey,
     fee: Coin,
+    gas_limit_per_msg: u64,
     messages: Vec<Msg>,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let cosmos_address = cosmos_key.to_address(&contact.get_prefix())?;
+    let gas_limit = gas_limit_per_msg * (messages.len() as u64);
+
+    // block gas limit check
+    if gas_limit > MAX_GAS_PER_BLOCK {
+        return Err(CosmosGrpcError::BadInput(
+            format!("total gas limit too high. (gas limit) * (number of messages) exceeded {MAX_GAS_PER_BLOCK}"),
+        ));
+    }
 
     let fee = Fee {
         amount: vec![fee],
-        gas_limit: 500_000u64 * (messages.len() as u64),
+        gas_limit,
         granter: None,
         payer: None,
     };

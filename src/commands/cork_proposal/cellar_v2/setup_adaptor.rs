@@ -19,7 +19,7 @@ use ethers::types::Address as EthereumAddress;
     long_about = "DESCRIPTION\n\nCalls setupAdaptor() on the target V2 cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol"
 )]
 pub struct SetupAdaptorCmd {
-    #[clap(short = 'a', long)]
+    #[clap(short, long)]
     /// Address of the adaptor contract.
     adaptor_address: EthereumAddress,
 

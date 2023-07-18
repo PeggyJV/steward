@@ -111,9 +111,9 @@ ERROR:
   Message: cellar ID  not approved by governance
 ```
 
-When you send this request, if you get an error to establishing a connection, there is probably something wrong with your configuration or your certificates.
+When you send this request, if you get an error establishing a connection, there is probably something wrong with your configuration or your certificates.
 
-An error like this one means the connection was established successfully:
+A correct configuration/certificate will result in errors like these, indicating the connection between the client and steward instance was established successfully:
 
 ```bash
 # steward log

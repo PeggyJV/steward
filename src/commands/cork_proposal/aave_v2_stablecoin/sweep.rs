@@ -19,11 +19,11 @@ use ethers::types::Address as EthereumAddress;
 )]
 pub struct SweepCmd {
     /// Token address to transfer out of Cellar.
-    #[clap(short = 't', long)]
+    #[clap(short, long)]
     token: EthereumAddress,
 
     /// Address to sweep token into
-    #[clap(short = 'd', long)]
+    #[clap(short, long)]
     destination_address: EthereumAddress,
 
     /// Target contract for scheduled cork.
