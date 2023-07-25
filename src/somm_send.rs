@@ -90,7 +90,7 @@ pub async fn schedule_cork(cork: Cork, block_height: u64) -> Result<TxResponse, 
     send_messages(vec![msg]).await
 }
 
-pub(crate) async fn send_messages(messages: Vec<Msg>) -> Result<TxResponse, CosmosGrpcError> {
+async fn send_messages(messages: Vec<Msg>) -> Result<TxResponse, CosmosGrpcError> {
     let contact = get_cosmos_client()?;
     let msg_bytes = get_signed_messages(messages, &contact).await?;
     let response = contact
