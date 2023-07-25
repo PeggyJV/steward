@@ -3,7 +3,7 @@ use abscissa_core::{clap::Parser, status_err, Application, Command, Runnable};
 use clarity::Uint256;
 use deep_space::coin::Coin;
 use ethers::types::Address as EthAddress;
-use gravity_bridge::cosmos_gravity::send::{send_request_batch_tx, send_to_eth};
+use gravity_bridge::cosmos_gravity::send::send_to_eth;
 use gravity_bridge::gravity_proto::gravity::DenomToErc20Request;
 use gravity_bridge::gravity_utils::connection_prep::{check_for_fee_denom, create_rpc_connections};
 use std::{process::exit, time::Duration};
@@ -173,9 +173,9 @@ impl Runnable for CosmosToEthCmd {
 
         if !self.wait_for_batch {
             println!("Requesting a batch to push transaction along immediately");
-            send_request_batch_tx(cosmos_key, denom,config.cosmos.gas_price.as_tuple(), &contact,config.cosmos.gas_adjustment)
-                .await
-                .expect("Failed to request batch");
+            // send_request_batch_tx(cosmos_key, denom,config.cosmos.gas_price.as_tuple(), &contact,config.cosmos.gas_adjustment)
+            //     .await
+            //     .expect("Failed to request batch");
         } else {
             println!("--no-batch specified, your transfer will wait until someone requests a batch for this token type")
         }

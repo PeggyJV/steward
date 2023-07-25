@@ -4,18 +4,23 @@ use abscissa_core::{
     tracing::log::{debug, error},
     Application,
 };
-use somm_proto::pubsub::{
-    query_client::QueryClient, QueryDefaultSubscriptionsRequest, QueryDefaultSubscriptionsResponse,
-    QueryPublisherRequest, QueryPublisherResponse,
-    QuerySubscriberIntentsBySubscriberAddressRequest,
-    QuerySubscriberIntentsBySubscriberAddressResponse,
+use somm_proto::{
+    cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse,
+    pubsub::{
+        query_client::QueryClient, QueryDefaultSubscriptionsRequest,
+        QueryDefaultSubscriptionsResponse, QueryPublisherRequest, QueryPublisherResponse,
+        QuerySubscriberIntentsBySubscriberAddressRequest,
+        QuerySubscriberIntentsBySubscriberAddressResponse, Subscriber,
+    },
 };
+use url::Url;
 use x509_parser::prelude::parse_x509_pem;
 
 use crate::{
-    config::DELEGATE_ADDRESS,
+    config::get_delegate_address,
     error::{Error, ErrorKind},
     prelude::APP,
+    somm_send,
 };
 
 use self::cache::PublisherTrustData;
@@ -43,7 +48,8 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
                 })
                 .or_insert(vec![s.subscription_id.to_owned()]);
         });
-    get_subscriber_intents_by_subscriber_address(DELEGATE_ADDRESS.to_string())
+    let delegate_address = get_delegate_address().to_string();
+    get_subscriber_intents_by_subscriber_address(delegate_address)
         .await?
         .subscriber_intents
         .iter()
@@ -151,4 +157,71 @@ pub(crate) async fn get_publisher(domain: String) -> Result<QueryPublisherRespon
             _ => ErrorKind::GrpcError.context(e),
         })?
         .into_inner())
+}
+
+pub(crate) async fn add_subscriber(domain: String, ca_cert: String) -> Result<TxResponse, Error> {
+    let subscriber = Subscriber {
+        address: get_delegate_address().to_string(),
+        domain,
+        ca_cert,
+    };
+
+    somm_send::add_subscriber(subscriber)
+        .await
+        .map_err(|e| ErrorKind::GrpcError.context(e).into())
+}
+
+pub(crate) async fn remove_subscriber() -> Result<TxResponse, Error> {
+    somm_send::remove_subscriber()
+        .await
+        .map_err(|e| ErrorKind::GrpcError.context(e).into())
+}
+
+pub(crate) async fn subscribe(
+    cellar_id: String,
+    publisher_domain: String,
+    subscriber_url: String,
+) -> Result<TxResponse, Error> {
+    somm_send::subscribe(cellar_id, publisher_domain, subscriber_url)
+        .await
+        .map_err(|e| ErrorKind::GrpcError.context(e).into())
+}
+
+pub(crate) async fn unsubscribe(cellar_id: String) -> Result<TxResponse, Error> {
+    somm_send::unsubscribe(cellar_id)
+        .await
+        .map_err(|e| ErrorKind::GrpcError.context(e).into())
+}
+
+/// Validates that a given domain is a valid FQDN
+pub(crate) fn validate_domain_name(dn: &str) -> Result<(), Error> {
+    addr::parse_domain_name(dn).map_err(|_| {
+        Into::<Error>::into(
+            ErrorKind::InvalidDomainName.context(format!("failed to parse domain name {dn}")),
+        )
+    })?;
+
+    Ok(())
+}
+
+/// Validates a URL is parsable as such
+/// (Collin): How can we make this more thorough? Seems like a step that
+/// will pay dividends in avoided validator onboarding overhead.
+pub(crate) fn validate_url(url: &str) -> Result<(), Error> {
+    Url::parse(url).map_err(|_e| {
+        Into::<Error>::into(ErrorKind::ParsingError.context(format!("failed to parse URL {url}")))
+    })?;
+
+    Ok(())
+}
+
+/// Validate PEM encoded CA cert
+pub(crate) fn validate_ca_cert(data: &[u8]) -> Result<(), Error> {
+    let (_, pem) = parse_x509_pem(data)
+        .map_err(|e| Into::<Error>::into(ErrorKind::InvalidCertificate.context(e)))?;
+    let _ = pem
+        .parse_x509()
+        .map_err(|e| Into::<Error>::into(ErrorKind::InvalidCertificate.context(e)))?;
+
+    Ok(())
 }

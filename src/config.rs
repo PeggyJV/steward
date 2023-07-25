@@ -5,7 +5,7 @@
 //! for specifying it.
 use crate::prelude::APP;
 use abscissa_core::Application;
-use deep_space::{Address as CosmosAddress, PrivateKey};
+use deep_space::{Address as CosmosAddress, PrivateKey as CosmosPrivateKey};
 use ethers::signers::LocalWallet as EthWallet;
 use gravity_bridge::cosmos_gravity;
 use lazy_static::lazy_static;
@@ -14,12 +14,12 @@ use signatory::FsKeyStore;
 use std::{net::SocketAddr, path::Path};
 
 lazy_static! {
-    pub static ref DELEGATE_KEY: PrivateKey = {
+    static ref DELEGATE_KEY: CosmosPrivateKey = {
         let config = APP.config();
         let name = &config.keys.delegate_key;
         config.load_deep_space_key(name.clone())
     };
-    pub static ref DELEGATE_ADDRESS: CosmosAddress = {
+    static ref DELEGATE_ADDRESS: CosmosAddress = {
         let config = APP.config();
         DELEGATE_KEY
             .to_address(&config.cosmos.prefix)
@@ -28,6 +28,14 @@ lazy_static! {
 }
 
 const GRAVITY_ADDRESS: &str = "0x69592e6f9d21989a043646fe8225da2600e5a0f7";
+
+pub(crate) fn get_delegate_address() -> &'static CosmosAddress {
+    &DELEGATE_ADDRESS
+}
+
+pub(crate) fn get_delegate_key() -> &'static CosmosPrivateKey {
+    &DELEGATE_KEY
+}
 
 /// Steward Configuration
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -56,18 +64,18 @@ impl StewardConfig {
 
     pub fn load_clarity_key(&self, name: String) -> clarity::PrivateKey {
         let key = self.load_secret_key(name).to_bytes();
-        clarity::PrivateKey::from_slice(&key).expect("Could not convert key")
+        clarity::PrivateKey::from_slice(key.as_slice()).expect("Could not convert key")
     }
 
-    pub fn load_deep_space_key(&self, name: String) -> PrivateKey {
+    pub fn load_deep_space_key(&self, name: String) -> CosmosPrivateKey {
         let key = self.load_secret_key(name).to_bytes();
-        let key = deep_space::utils::bytes_to_hex_str(&key);
+        let key = deep_space::utils::bytes_to_hex_str(key.as_slice());
         key.parse().expect("Could not parse private key")
     }
 
     pub fn load_gravity_deep_space_key(&self, name: String) -> cosmos_gravity::crypto::PrivateKey {
         let key = self.load_secret_key(name).to_bytes();
-        let key = deep_space::utils::bytes_to_hex_str(&key);
+        let key = deep_space::utils::bytes_to_hex_str(key.as_slice());
         key.parse().expect("Could not parse private key")
     }
 

@@ -16,7 +16,7 @@ use tonic::{transport::Channel, Code};
 
 use crate::{
     cellars::{aave_v2_stablecoin, cellar_v1, cellar_v2},
-    config::DELEGATE_ADDRESS,
+    config::get_delegate_address,
     cork::schedule_cork,
     error::{Error, ErrorKind},
     prelude::APP,
@@ -43,7 +43,7 @@ pub async fn start_scheduled_cork_proposal_polling_thread() -> JoinHandle<()> {
         .await
         .expect("failed to connect gravity query client at startup");
     let request = DelegateKeysByOrchestratorRequest {
-        orchestrator_address: DELEGATE_ADDRESS.to_string(),
+        orchestrator_address: get_delegate_address().to_string(),
     };
     state.validator_address = client
         .delegate_keys_by_orchestrator(request)

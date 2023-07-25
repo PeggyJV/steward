@@ -79,6 +79,8 @@ pub enum ErrorKind {
     ParsingError,
     #[error("invalid certificate")]
     InvalidCertificate,
+    #[error("invalid domain name")]
+    InvalidDomainName,
 }
 
 impl ErrorKind {

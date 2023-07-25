@@ -1,25 +1,18 @@
-use abscissa_core::{
-    tracing::log::{debug, error, info, warn},
-    Application,
-};
-use deep_space::{Coin, Contact};
+use abscissa_core::tracing::log::{debug, error, info, warn};
 use ethers::types::H160;
 use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
 use lazy_static::lazy_static;
 use sha3::{Digest, Keccak256};
 use somm_proto::cork::Cork;
-use std::time::Duration;
 use tonic::{self, async_trait, Code, Request, Response, Status};
 
 use crate::server::handle_authorization;
 use crate::{
     cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2},
-    config,
     error::{
         Error,
         ErrorKind::{self, *},
     },
-    prelude::APP,
     proto::{
         self, schedule_request::CallData::*, ScheduleRequest, ScheduleResponse, StatusRequest,
         StatusResponse,
@@ -30,9 +23,6 @@ use crate::{
 pub mod cache;
 pub mod client;
 pub mod proposals;
-
-const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
-const CHAIN_PREFIX: &str = "somm";
 
 lazy_static! {
     static ref STEWARD_VERSION: &'static str = env!("CARGO_PKG_VERSION");
@@ -83,7 +73,8 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
                     );
                     return Err(Status::new(
                         Code::Internal,
-                        "cork submission failed. this may be a steward configuration problem.".to_string(),
+                        "cork submission failed. this may be a steward configuration problem."
+                            .to_string(),
                     ));
                 }
                 info!("cork response: {:?}", res)
@@ -148,29 +139,13 @@ pub async fn schedule_cork(
     height: u64,
 ) -> Result<TxResponse, Error> {
     debug!("establishing grpc connection");
-    let config = APP.config();
-    let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX).unwrap();
-
-    debug!("getting cosmos fee");
-    let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
-    let fee = Coin {
-        amount: (cosmos_gas_price.0 as u64).into(),
-        denom: cosmos_gas_price.1,
-    };
     let cork = Cork {
         encoded_contract_call: encoded_call,
         target_contract_address: contract.to_string(),
     };
-    somm_send::schedule_cork(
-        &contact,
-        cork,
-        config::DELEGATE_ADDRESS.to_string(),
-        &config::DELEGATE_KEY,
-        fee,
-        height,
-    )
-    .await
-    .map_err(|e| e.into())
+    somm_send::schedule_cork(cork, height)
+        .await
+        .map_err(|e| e.into())
 }
 
 pub fn id_hash(block_height: u64, contract_address: &str, encoded_call: Vec<u8>) -> String {

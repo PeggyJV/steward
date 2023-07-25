@@ -58,6 +58,7 @@ rustls = "0.19"
 x509-parser = { version = "0.14.0", features = ["verify"] }
 rustls-pemfile = "1.0.2"
 tokio-util = "0.7.7"
+addr = "0.15.6"
 
 
 [dependencies.abscissa_core]
