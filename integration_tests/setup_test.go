@@ -409,8 +409,7 @@ func (s *IntegrationTestSuite) initGenesis() {
 		{
 			SubscriptionId:     aaveCellar.Hex(),
 			PublisherDomain:    "localhost",
-			Method:             0,
-			PullUrl:            "https://localhost/somm1p78uz3z9sgav0m325y0tmzzx3a56h583t3x7cx/cacert.pem",
+			Method:             1,
 			AllowedSubscribers: 0,
 			AllowedAddresses:   []string{},
 		},
