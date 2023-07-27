@@ -1,8 +1,8 @@
-use crate::pubsub::{subscribe , validate_ca_cert, validate_domain_name, validate_url};
+use crate::pubsub::{subscribe, validate_domain_name, validate_url};
 use crate::{application::APP, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 
-/// Subscribe to handle a publisher's calls to a particular cellar 
+/// Subscribe to handle a publisher's calls to a particular cellar
 #[derive(Command, Debug, Parser)]
 #[clap(
     long_about = "DESCRIPTION\n\nSubscribe to updates for a given cellar from the specified publisher."

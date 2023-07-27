@@ -10,7 +10,7 @@ use crate::{
 };
 use abscissa_core::{
     status_err,
-    tracing::log::{debug, error, info},
+    tracing::log::{error, info},
     Application,
 };
 use tokio::sync::mpsc::Receiver;
@@ -102,7 +102,9 @@ pub(crate) async fn auth_config(
     let key = match rustls_pemfile::read_one(&mut key.as_slice())
         .expect("cannot parse private key .pem file")
     {
-        Some(rustls_pemfile::Item::RSAKey(key)) => rustls::PrivateKey(key),
+        Some(rustls_pemfile::Item::RSAKey(_)) => {
+            return Err(ErrorKind::InvalidKey.context("must use an elliptic-curve-derived key").into())
+        },
         Some(rustls_pemfile::Item::PKCS8Key(key)) => rustls::PrivateKey(key),
         Some(rustls_pemfile::Item::ECKey(key)) => rustls::PrivateKey(key),
         _ => panic!("cannot parse private key .pem file"),
@@ -170,14 +172,14 @@ pub(crate) async fn handle_authorization(
         {
             Some(p) => p,
             None => {
-                debug!("no publisher trust data found for authority key identifier: {client_cert_aki:?}");
+                error!("no publisher trust data found for authority key identifier: {client_cert_aki:?}");
                 continue;
             }
         };
 
         let ca_pub = publisher_trust_data.publisher_ca_cert.public_key();
         if let Err(e) = client_cert.verify_signature(Some(ca_pub)) {
-            debug!("failed to verify signature for certificate: {e}");
+            info!("failed to verify signature for certificate: {e}");
             continue;
         }
 
@@ -185,7 +187,7 @@ pub(crate) async fn handle_authorization(
             .subscription_ids
             .contains(subscription_id)
         {
-            debug!("publisher has no intent to publish to subscription {subscription_id}");
+            info!("not subscribed to this publisher for subscription {subscription_id}");
             continue;
         }
 

@@ -81,6 +81,8 @@ pub enum ErrorKind {
     InvalidCertificate,
     #[error("invalid domain name")]
     InvalidDomainName,
+    #[error("invalid key")]
+    InvalidKey,
 }
 
 impl ErrorKind {

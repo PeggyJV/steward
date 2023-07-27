@@ -27,39 +27,40 @@ impl Runnable for SimulateCmd {
     /// Simulate the application.
     fn run(&self) {
         let config = APP.config();
+        validate_tenderly_config(&config);
 
+        let contents = FILE_DESCRIPTOR_SET.to_vec();
+        let proto_descriptor_service = tonic_reflection::server::Builder::configure()
+            .register_encoded_file_descriptor_set(contents.as_slice())
+            .build()
+            .unwrap_or_else(|err| {
+                status_err!("failed to build descriptor service: {}", err);
+                std::process::exit(1)
+            });
         info!("Starting application");
-        abscissa_tokio::run(&APP, async {
-            validate_tenderly_config(&config);
+        abscissa_tokio::run(&APP, async move {
 
-            let contents = FILE_DESCRIPTOR_SET.to_vec();
-            let proto_descriptor_service = tonic_reflection::server::Builder::configure()
-                .register_encoded_file_descriptor_set(contents.as_slice())
-                .build()
-                .unwrap_or_else(|err| {
-                    status_err!("failed to build descriptor service: {}", err);
-                    std::process::exit(1)
-                });
+             let server_config: ServerConfig =
+                 simulate::load_simulate_server_config(&config, self.use_tls)
+                     .await
+                     .unwrap_or_else(|err| {
+                         status_err!("failed to load server config: {}", err);
+                         std::process::exit(1)
+                     });
+ 
+             let mut builder = tonic::transport::Server::builder();
+             if self.use_tls {
+                 let tls_config = &server_config
+                     .tls_config
+                     .expect("tls config was not initialized");
+                 builder = builder
+                     .tls_config(tls_config.to_owned())
+                     .unwrap_or_else(|err| {
+                         panic!("{:?}", err);
+                     })
+             }
 
-            let server_config: ServerConfig =
-                simulate::load_simulate_server_config(&config, self.use_tls)
-                    .await
-                    .unwrap_or_else(|err| {
-                        status_err!("failed to load server config: {}", err);
-                        std::process::exit(1)
-                    });
 
-            let mut builder = tonic::transport::Server::builder();
-            if self.use_tls {
-                let tls_config = &server_config
-                    .tls_config
-                    .expect("tls config was not initialized");
-                builder = builder
-                    .tls_config(tls_config.to_owned())
-                    .unwrap_or_else(|err| {
-                        panic!("{:?}", err);
-                    })
-            }
 
             info!("simulate server listening on {}", server_config.address);
             if let Err(err) = builder

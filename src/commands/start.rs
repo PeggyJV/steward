@@ -7,9 +7,9 @@ use crate::{
     config::StewardConfig,
     cork::{
         cache::start_approved_cellar_cache_thread,
-        proposals::start_scheduled_cork_proposal_polling_thread,
     },
     prelude::*,
+    proposals::start_approved_proposal_polling_thread,
     pubsub::cache::start_publisher_trust_state_cache_thread,
     server::start_server_management_thread,
 };
@@ -19,7 +19,7 @@ use std::result::Result;
 /// Starts steward
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
-    long_about = "DESCRIPTION\n\nCosmos mode, run Steward as a server.\n This command runs Steward as a server that will send updates to the Sommelier chain."
+    long_about = "DESCRIPTION\n\nRuns the Steward server to process strategists' calls to Cellars"
 )]
 pub struct StartCmd {}
 
@@ -30,9 +30,9 @@ impl Runnable for StartCmd {
         abscissa_tokio::run(&APP, async {
             // currently allows the threads to detach since we aren't capturing the JoinHandle
             start_approved_cellar_cache_thread().await;
-            start_scheduled_cork_proposal_polling_thread().await;
 
             let (tx, rx) = tokio::sync::mpsc::channel(1);
+            start_approved_proposal_polling_thread(tx.clone()).await;
             start_publisher_trust_state_cache_thread(tx).await;
             start_server_management_thread(rx).await;
         })
