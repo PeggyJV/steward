@@ -116,13 +116,6 @@ pub fn sp_call_parse_address(address: String) -> Result<H160, Error> {
     }
 }
 
-pub fn sp_call_parse_h256(hash: String) -> Result<H256, Error> {
-    match hash.parse::<H256>() {
-        Ok(hash) => Ok(hash),
-        Err(err) => Err(sp_call_error(err.to_string())),
-    }
-}
-
 /// Encodes the Cosmos address into a big-endian 32 byte array pre-padded with zeros. Since a Cosmos address is 20
 /// bytes, we copy it into a zeroed-out 32 byte array starting at index 12.
 pub fn encode_fees_distributor_address(address: CosmosAddress) -> [u8; 32] {

@@ -1,3 +1,5 @@
+use std::convert::TryInto;
+
 use ethers::{abi::AbiEncode, types::Bytes};
 use steward_abi::balancer_pool_adaptor_v1::{
     BalancerPoolAdaptorV1Calls, ExitPoolRequest, SingleSwap as AbiSingleSwap,
@@ -6,8 +8,8 @@ use steward_abi::balancer_pool_adaptor_v1::{
 use steward_proto::steward::balancer_pool_adaptor_v1::{self, SingleSwap, SwapData};
 
 use crate::{
-    error::Error,
-    utils::{sp_call_error, sp_call_parse_address, sp_call_parse_h256, string_to_u256},
+    error::{Error, ErrorKind},
+    utils::{sp_call_error, sp_call_parse_address, string_to_u256},
 };
 
 pub(crate) fn balancer_pool_adaptor_v1_calls(
@@ -132,8 +134,15 @@ fn convert_single_swap(swaps: Vec<SingleSwap>) -> Result<Vec<AbiSingleSwap>, Err
     swaps
         .into_iter()
         .map(|s| {
+            let pool_id = hex::decode(s.pool_id).map_err(|e|
+                ErrorKind::SPCallError.context(format!("failed to decode pool_id: {e}"))
+            )?
+            .try_into().map_err(|_| 
+                ErrorKind::SPCallError.context(format!("pool ID must be 32 bytes"))
+            )?;
+
             Ok(AbiSingleSwap {
-                pool_id: sp_call_parse_h256(s.pool_id)?.into(),
+                pool_id,
                 kind: (s.kind - 1) as u8,
                 asset_in: sp_call_parse_address(s.asset_in)?,
                 asset_out: sp_call_parse_address(s.asset_out)?,
