@@ -10,11 +10,11 @@ require (
 	github.com/ory/dockertest/v3 v3.8.1
 	github.com/peggyjv/gravity-bridge/module/v2 v2.0.2
 	github.com/peggyjv/sommelier/v4 v4.0.2-0.20230204015502-6839abb2ddbf
-	github.com/peggyjv/steward/steward_proto_go/steward_proto v0.0.0-00010101000000-000000000000
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.8.1
 	github.com/tendermint/tendermint v0.34.14
 	google.golang.org/grpc v1.56.1
+	google.golang.org/protobuf v1.27.1
 )
 
 replace google.golang.org/grpc => google.golang.org/grpc v1.33.2
