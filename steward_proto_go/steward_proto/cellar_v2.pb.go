@@ -343,6 +343,88 @@ func (*CellarV2_2_FunctionCall_) isCellarV2_2_CallType() {}
 
 func (*CellarV2_2_Multicall_) isCellarV2_2_CallType() {}
 
+type CellarV2_5 struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Types that are assignable to CallType:
+	//	*CellarV2_5_FunctionCall_
+	//	*CellarV2_5_Multicall_
+	CallType isCellarV2_5_CallType `protobuf_oneof:"call_type"`
+}
+
+func (x *CellarV2_5) Reset() {
+	*x = CellarV2_5{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5) ProtoMessage() {}
+
+func (x *CellarV2_5) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5.ProtoReflect.Descriptor instead.
+func (*CellarV2_5) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2}
+}
+
+func (m *CellarV2_5) GetCallType() isCellarV2_5_CallType {
+	if m != nil {
+		return m.CallType
+	}
+	return nil
+}
+
+func (x *CellarV2_5) GetFunctionCall() *CellarV2_5_FunctionCall {
+	if x, ok := x.GetCallType().(*CellarV2_5_FunctionCall_); ok {
+		return x.FunctionCall
+	}
+	return nil
+}
+
+func (x *CellarV2_5) GetMulticall() *CellarV2_5_Multicall {
+	if x, ok := x.GetCallType().(*CellarV2_5_Multicall_); ok {
+		return x.Multicall
+	}
+	return nil
+}
+
+type isCellarV2_5_CallType interface {
+	isCellarV2_5_CallType()
+}
+
+type CellarV2_5_FunctionCall_ struct {
+	// Represents a single function call
+	FunctionCall *CellarV2_5_FunctionCall `protobuf:"bytes,1,opt,name=function_call,json=functionCall,proto3,oneof"`
+}
+
+type CellarV2_5_Multicall_ struct {
+	// Represents multiple, ordered function calls
+	Multicall *CellarV2_5_Multicall `protobuf:"bytes,2,opt,name=multicall,proto3,oneof"`
+}
+
+func (*CellarV2_5_FunctionCall_) isCellarV2_5_CallType() {}
+
+func (*CellarV2_5_Multicall_) isCellarV2_5_CallType() {}
+
 // Represents a call to adaptor an. The cellar must be authorized to call the target adaptor.
 type AdaptorCall struct {
 	state         protoimpl.MessageState
@@ -383,7 +465,7 @@ type AdaptorCall struct {
 func (x *AdaptorCall) Reset() {
 	*x = AdaptorCall{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[2]
+		mi := &file_cellar_v2_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -396,7 +478,7 @@ func (x *AdaptorCall) String() string {
 func (*AdaptorCall) ProtoMessage() {}
 
 func (x *AdaptorCall) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[2]
+	mi := &file_cellar_v2_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -409,7 +491,7 @@ func (x *AdaptorCall) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AdaptorCall.ProtoReflect.Descriptor instead.
 func (*AdaptorCall) Descriptor() ([]byte, []int) {
-	return file_cellar_v2_proto_rawDescGZIP(), []int{2}
+	return file_cellar_v2_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *AdaptorCall) GetAdaptor() string {
@@ -774,7 +856,7 @@ type CellarV2_AddPosition struct {
 func (x *CellarV2_AddPosition) Reset() {
 	*x = CellarV2_AddPosition{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[3]
+		mi := &file_cellar_v2_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -787,7 +869,7 @@ func (x *CellarV2_AddPosition) String() string {
 func (*CellarV2_AddPosition) ProtoMessage() {}
 
 func (x *CellarV2_AddPosition) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[3]
+	mi := &file_cellar_v2_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -846,7 +928,7 @@ type CellarV2_CallOnAdaptor struct {
 func (x *CellarV2_CallOnAdaptor) Reset() {
 	*x = CellarV2_CallOnAdaptor{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[4]
+		mi := &file_cellar_v2_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -859,7 +941,7 @@ func (x *CellarV2_CallOnAdaptor) String() string {
 func (*CellarV2_CallOnAdaptor) ProtoMessage() {}
 
 func (x *CellarV2_CallOnAdaptor) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[4]
+	mi := &file_cellar_v2_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -900,7 +982,7 @@ type CellarV2_RemovePosition struct {
 func (x *CellarV2_RemovePosition) Reset() {
 	*x = CellarV2_RemovePosition{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[5]
+		mi := &file_cellar_v2_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -913,7 +995,7 @@ func (x *CellarV2_RemovePosition) String() string {
 func (*CellarV2_RemovePosition) ProtoMessage() {}
 
 func (x *CellarV2_RemovePosition) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[5]
+	mi := &file_cellar_v2_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -959,7 +1041,7 @@ type CellarV2_SetHoldingPosition struct {
 func (x *CellarV2_SetHoldingPosition) Reset() {
 	*x = CellarV2_SetHoldingPosition{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[6]
+		mi := &file_cellar_v2_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -972,7 +1054,7 @@ func (x *CellarV2_SetHoldingPosition) String() string {
 func (*CellarV2_SetHoldingPosition) ProtoMessage() {}
 
 func (x *CellarV2_SetHoldingPosition) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[6]
+	mi := &file_cellar_v2_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1010,7 +1092,7 @@ type CellarV2_SetStrategistPayoutAddress struct {
 func (x *CellarV2_SetStrategistPayoutAddress) Reset() {
 	*x = CellarV2_SetStrategistPayoutAddress{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[7]
+		mi := &file_cellar_v2_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1023,7 +1105,7 @@ func (x *CellarV2_SetStrategistPayoutAddress) String() string {
 func (*CellarV2_SetStrategistPayoutAddress) ProtoMessage() {}
 
 func (x *CellarV2_SetStrategistPayoutAddress) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[7]
+	mi := &file_cellar_v2_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1066,7 +1148,7 @@ type CellarV2_SwapPositions struct {
 func (x *CellarV2_SwapPositions) Reset() {
 	*x = CellarV2_SwapPositions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[8]
+		mi := &file_cellar_v2_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1079,7 +1161,7 @@ func (x *CellarV2_SwapPositions) String() string {
 func (*CellarV2_SwapPositions) ProtoMessage() {}
 
 func (x *CellarV2_SwapPositions) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[8]
+	mi := &file_cellar_v2_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1131,7 +1213,7 @@ type CellarV2_SetShareLockPeriod struct {
 func (x *CellarV2_SetShareLockPeriod) Reset() {
 	*x = CellarV2_SetShareLockPeriod{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[9]
+		mi := &file_cellar_v2_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1144,7 +1226,7 @@ func (x *CellarV2_SetShareLockPeriod) String() string {
 func (*CellarV2_SetShareLockPeriod) ProtoMessage() {}
 
 func (x *CellarV2_SetShareLockPeriod) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[9]
+	mi := &file_cellar_v2_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1183,7 +1265,7 @@ type CellarV2_SetRebalanceDeviation struct {
 func (x *CellarV2_SetRebalanceDeviation) Reset() {
 	*x = CellarV2_SetRebalanceDeviation{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[10]
+		mi := &file_cellar_v2_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1196,7 +1278,7 @@ func (x *CellarV2_SetRebalanceDeviation) String() string {
 func (*CellarV2_SetRebalanceDeviation) ProtoMessage() {}
 
 func (x *CellarV2_SetRebalanceDeviation) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[10]
+	mi := &file_cellar_v2_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1235,7 +1317,7 @@ type CellarV2_SetupAdaptor struct {
 func (x *CellarV2_SetupAdaptor) Reset() {
 	*x = CellarV2_SetupAdaptor{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[11]
+		mi := &file_cellar_v2_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1248,7 +1330,7 @@ func (x *CellarV2_SetupAdaptor) String() string {
 func (*CellarV2_SetupAdaptor) ProtoMessage() {}
 
 func (x *CellarV2_SetupAdaptor) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[11]
+	mi := &file_cellar_v2_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1286,7 +1368,7 @@ type CellarV2_SetPlatformFee struct {
 func (x *CellarV2_SetPlatformFee) Reset() {
 	*x = CellarV2_SetPlatformFee{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[12]
+		mi := &file_cellar_v2_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1299,7 +1381,7 @@ func (x *CellarV2_SetPlatformFee) String() string {
 func (*CellarV2_SetPlatformFee) ProtoMessage() {}
 
 func (x *CellarV2_SetPlatformFee) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[12]
+	mi := &file_cellar_v2_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1335,7 +1417,7 @@ type CellarV2_InitiateShutdown struct {
 func (x *CellarV2_InitiateShutdown) Reset() {
 	*x = CellarV2_InitiateShutdown{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[13]
+		mi := &file_cellar_v2_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1348,7 +1430,7 @@ func (x *CellarV2_InitiateShutdown) String() string {
 func (*CellarV2_InitiateShutdown) ProtoMessage() {}
 
 func (x *CellarV2_InitiateShutdown) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[13]
+	mi := &file_cellar_v2_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1377,7 +1459,7 @@ type CellarV2_LiftShutdown struct {
 func (x *CellarV2_LiftShutdown) Reset() {
 	*x = CellarV2_LiftShutdown{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[14]
+		mi := &file_cellar_v2_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1390,7 +1472,7 @@ func (x *CellarV2_LiftShutdown) String() string {
 func (*CellarV2_LiftShutdown) ProtoMessage() {}
 
 func (x *CellarV2_LiftShutdown) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[14]
+	mi := &file_cellar_v2_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1434,7 +1516,7 @@ type CellarV2_2_FunctionCall struct {
 func (x *CellarV2_2_FunctionCall) Reset() {
 	*x = CellarV2_2_FunctionCall{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[15]
+		mi := &file_cellar_v2_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1447,7 +1529,7 @@ func (x *CellarV2_2_FunctionCall) String() string {
 func (*CellarV2_2_FunctionCall) ProtoMessage() {}
 
 func (x *CellarV2_2_FunctionCall) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[15]
+	mi := &file_cellar_v2_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1706,7 +1788,7 @@ type CellarV2_2_AddPosition struct {
 func (x *CellarV2_2_AddPosition) Reset() {
 	*x = CellarV2_2_AddPosition{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[16]
+		mi := &file_cellar_v2_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1719,7 +1801,7 @@ func (x *CellarV2_2_AddPosition) String() string {
 func (*CellarV2_2_AddPosition) ProtoMessage() {}
 
 func (x *CellarV2_2_AddPosition) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[16]
+	mi := &file_cellar_v2_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1778,7 +1860,7 @@ type CellarV2_2_CallOnAdaptor struct {
 func (x *CellarV2_2_CallOnAdaptor) Reset() {
 	*x = CellarV2_2_CallOnAdaptor{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[17]
+		mi := &file_cellar_v2_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1791,7 +1873,7 @@ func (x *CellarV2_2_CallOnAdaptor) String() string {
 func (*CellarV2_2_CallOnAdaptor) ProtoMessage() {}
 
 func (x *CellarV2_2_CallOnAdaptor) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[17]
+	mi := &file_cellar_v2_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1832,7 +1914,7 @@ type CellarV2_2_RemovePosition struct {
 func (x *CellarV2_2_RemovePosition) Reset() {
 	*x = CellarV2_2_RemovePosition{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[18]
+		mi := &file_cellar_v2_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1845,7 +1927,7 @@ func (x *CellarV2_2_RemovePosition) String() string {
 func (*CellarV2_2_RemovePosition) ProtoMessage() {}
 
 func (x *CellarV2_2_RemovePosition) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[18]
+	mi := &file_cellar_v2_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1891,7 +1973,7 @@ type CellarV2_2_SetHoldingPosition struct {
 func (x *CellarV2_2_SetHoldingPosition) Reset() {
 	*x = CellarV2_2_SetHoldingPosition{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[19]
+		mi := &file_cellar_v2_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1904,7 +1986,7 @@ func (x *CellarV2_2_SetHoldingPosition) String() string {
 func (*CellarV2_2_SetHoldingPosition) ProtoMessage() {}
 
 func (x *CellarV2_2_SetHoldingPosition) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[19]
+	mi := &file_cellar_v2_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1942,7 +2024,7 @@ type CellarV2_2_SetStrategistPayoutAddress struct {
 func (x *CellarV2_2_SetStrategistPayoutAddress) Reset() {
 	*x = CellarV2_2_SetStrategistPayoutAddress{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[20]
+		mi := &file_cellar_v2_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1955,7 +2037,7 @@ func (x *CellarV2_2_SetStrategistPayoutAddress) String() string {
 func (*CellarV2_2_SetStrategistPayoutAddress) ProtoMessage() {}
 
 func (x *CellarV2_2_SetStrategistPayoutAddress) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[20]
+	mi := &file_cellar_v2_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1998,7 +2080,7 @@ type CellarV2_2_SwapPositions struct {
 func (x *CellarV2_2_SwapPositions) Reset() {
 	*x = CellarV2_2_SwapPositions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[21]
+		mi := &file_cellar_v2_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2011,7 +2093,7 @@ func (x *CellarV2_2_SwapPositions) String() string {
 func (*CellarV2_2_SwapPositions) ProtoMessage() {}
 
 func (x *CellarV2_2_SwapPositions) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[21]
+	mi := &file_cellar_v2_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2063,7 +2145,7 @@ type CellarV2_2_SetShareLockPeriod struct {
 func (x *CellarV2_2_SetShareLockPeriod) Reset() {
 	*x = CellarV2_2_SetShareLockPeriod{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[22]
+		mi := &file_cellar_v2_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2076,7 +2158,7 @@ func (x *CellarV2_2_SetShareLockPeriod) String() string {
 func (*CellarV2_2_SetShareLockPeriod) ProtoMessage() {}
 
 func (x *CellarV2_2_SetShareLockPeriod) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[22]
+	mi := &file_cellar_v2_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2115,7 +2197,7 @@ type CellarV2_2_SetRebalanceDeviation struct {
 func (x *CellarV2_2_SetRebalanceDeviation) Reset() {
 	*x = CellarV2_2_SetRebalanceDeviation{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[23]
+		mi := &file_cellar_v2_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2128,7 +2210,7 @@ func (x *CellarV2_2_SetRebalanceDeviation) String() string {
 func (*CellarV2_2_SetRebalanceDeviation) ProtoMessage() {}
 
 func (x *CellarV2_2_SetRebalanceDeviation) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[23]
+	mi := &file_cellar_v2_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2164,7 +2246,7 @@ type CellarV2_2_InitiateShutdown struct {
 func (x *CellarV2_2_InitiateShutdown) Reset() {
 	*x = CellarV2_2_InitiateShutdown{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[24]
+		mi := &file_cellar_v2_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2177,7 +2259,7 @@ func (x *CellarV2_2_InitiateShutdown) String() string {
 func (*CellarV2_2_InitiateShutdown) ProtoMessage() {}
 
 func (x *CellarV2_2_InitiateShutdown) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[24]
+	mi := &file_cellar_v2_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2209,7 +2291,7 @@ type CellarV2_2_SetStrategistPlatformCut struct {
 func (x *CellarV2_2_SetStrategistPlatformCut) Reset() {
 	*x = CellarV2_2_SetStrategistPlatformCut{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[25]
+		mi := &file_cellar_v2_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2222,7 +2304,7 @@ func (x *CellarV2_2_SetStrategistPlatformCut) String() string {
 func (*CellarV2_2_SetStrategistPlatformCut) ProtoMessage() {}
 
 func (x *CellarV2_2_SetStrategistPlatformCut) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[25]
+	mi := &file_cellar_v2_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2258,7 +2340,7 @@ type CellarV2_2_LiftShutdown struct {
 func (x *CellarV2_2_LiftShutdown) Reset() {
 	*x = CellarV2_2_LiftShutdown{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[26]
+		mi := &file_cellar_v2_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2271,7 +2353,7 @@ func (x *CellarV2_2_LiftShutdown) String() string {
 func (*CellarV2_2_LiftShutdown) ProtoMessage() {}
 
 func (x *CellarV2_2_LiftShutdown) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[26]
+	mi := &file_cellar_v2_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2302,7 +2384,7 @@ type CellarV2_2_AddAdaptorToCatalogue struct {
 func (x *CellarV2_2_AddAdaptorToCatalogue) Reset() {
 	*x = CellarV2_2_AddAdaptorToCatalogue{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[27]
+		mi := &file_cellar_v2_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2315,7 +2397,7 @@ func (x *CellarV2_2_AddAdaptorToCatalogue) String() string {
 func (*CellarV2_2_AddAdaptorToCatalogue) ProtoMessage() {}
 
 func (x *CellarV2_2_AddAdaptorToCatalogue) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[27]
+	mi := &file_cellar_v2_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2353,7 +2435,7 @@ type CellarV2_2_Multicall struct {
 func (x *CellarV2_2_Multicall) Reset() {
 	*x = CellarV2_2_Multicall{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[28]
+		mi := &file_cellar_v2_proto_msgTypes[29]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2366,7 +2448,7 @@ func (x *CellarV2_2_Multicall) String() string {
 func (*CellarV2_2_Multicall) ProtoMessage() {}
 
 func (x *CellarV2_2_Multicall) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[28]
+	mi := &file_cellar_v2_proto_msgTypes[29]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2404,7 +2486,7 @@ type CellarV2_2_AddPositionToCatalogue struct {
 func (x *CellarV2_2_AddPositionToCatalogue) Reset() {
 	*x = CellarV2_2_AddPositionToCatalogue{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[29]
+		mi := &file_cellar_v2_proto_msgTypes[30]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2417,7 +2499,7 @@ func (x *CellarV2_2_AddPositionToCatalogue) String() string {
 func (*CellarV2_2_AddPositionToCatalogue) ProtoMessage() {}
 
 func (x *CellarV2_2_AddPositionToCatalogue) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[29]
+	mi := &file_cellar_v2_proto_msgTypes[30]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2455,7 +2537,7 @@ type CellarV2_2_RemoveAdaptorFromCatalogue struct {
 func (x *CellarV2_2_RemoveAdaptorFromCatalogue) Reset() {
 	*x = CellarV2_2_RemoveAdaptorFromCatalogue{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[30]
+		mi := &file_cellar_v2_proto_msgTypes[31]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2468,7 +2550,7 @@ func (x *CellarV2_2_RemoveAdaptorFromCatalogue) String() string {
 func (*CellarV2_2_RemoveAdaptorFromCatalogue) ProtoMessage() {}
 
 func (x *CellarV2_2_RemoveAdaptorFromCatalogue) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[30]
+	mi := &file_cellar_v2_proto_msgTypes[31]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2506,7 +2588,7 @@ type CellarV2_2_RemovePositionFromCatalogue struct {
 func (x *CellarV2_2_RemovePositionFromCatalogue) Reset() {
 	*x = CellarV2_2_RemovePositionFromCatalogue{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cellar_v2_proto_msgTypes[31]
+		mi := &file_cellar_v2_proto_msgTypes[32]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2519,7 +2601,7 @@ func (x *CellarV2_2_RemovePositionFromCatalogue) String() string {
 func (*CellarV2_2_RemovePositionFromCatalogue) ProtoMessage() {}
 
 func (x *CellarV2_2_RemovePositionFromCatalogue) ProtoReflect() protoreflect.Message {
-	mi := &file_cellar_v2_proto_msgTypes[31]
+	mi := &file_cellar_v2_proto_msgTypes[32]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2540,6 +2622,1274 @@ func (x *CellarV2_2_RemovePositionFromCatalogue) GetPositionId() uint32 {
 		return x.PositionId
 	}
 	return 0
+}
+
+// The function you wish to execute on the target cellar
+type CellarV2_5_FunctionCall struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Types that are assignable to Function:
+	//	*CellarV2_5_FunctionCall_AddPosition
+	//	*CellarV2_5_FunctionCall_CallOnAdaptor
+	//	*CellarV2_5_FunctionCall_RemovePosition
+	//	*CellarV2_5_FunctionCall_SetHoldingPosition
+	//	*CellarV2_5_FunctionCall_SetStrategistPayoutAddress
+	//	*CellarV2_5_FunctionCall_SwapPositions
+	//	*CellarV2_5_FunctionCall_SetRebalanceDeviation
+	//	*CellarV2_5_FunctionCall_SetShareLockPeriod
+	//	*CellarV2_5_FunctionCall_InitiateShutdown
+	//	*CellarV2_5_FunctionCall_SetStrategistPlatformCut
+	//	*CellarV2_5_FunctionCall_LiftShutdown
+	//	*CellarV2_5_FunctionCall_AddAdaptorToCatalogue
+	//	*CellarV2_5_FunctionCall_AddPositionToCatalogue
+	//	*CellarV2_5_FunctionCall_RemoveAdaptorFromCatalogue
+	//	*CellarV2_5_FunctionCall_RemovePositionFromCatalogue
+	//	*CellarV2_5_FunctionCall_IncreaseShareSupplyCap
+	//	*CellarV2_5_FunctionCall_DecreaseShareSupplyCap
+	Function isCellarV2_5_FunctionCall_Function `protobuf_oneof:"function"`
+}
+
+func (x *CellarV2_5_FunctionCall) Reset() {
+	*x = CellarV2_5_FunctionCall{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[33]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_FunctionCall) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_FunctionCall) ProtoMessage() {}
+
+func (x *CellarV2_5_FunctionCall) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[33]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_FunctionCall.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_FunctionCall) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 0}
+}
+
+func (m *CellarV2_5_FunctionCall) GetFunction() isCellarV2_5_FunctionCall_Function {
+	if m != nil {
+		return m.Function
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetAddPosition() *CellarV2_5_AddPosition {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_AddPosition); ok {
+		return x.AddPosition
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetCallOnAdaptor() *CellarV2_5_CallOnAdaptor {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_CallOnAdaptor); ok {
+		return x.CallOnAdaptor
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetRemovePosition() *CellarV2_5_RemovePosition {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_RemovePosition); ok {
+		return x.RemovePosition
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetSetHoldingPosition() *CellarV2_5_SetHoldingPosition {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_SetHoldingPosition); ok {
+		return x.SetHoldingPosition
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetSetStrategistPayoutAddress() *CellarV2_5_SetStrategistPayoutAddress {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_SetStrategistPayoutAddress); ok {
+		return x.SetStrategistPayoutAddress
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetSwapPositions() *CellarV2_5_SwapPositions {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_SwapPositions); ok {
+		return x.SwapPositions
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetSetRebalanceDeviation() *CellarV2_5_SetRebalanceDeviation {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_SetRebalanceDeviation); ok {
+		return x.SetRebalanceDeviation
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetSetShareLockPeriod() *CellarV2_5_SetShareLockPeriod {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_SetShareLockPeriod); ok {
+		return x.SetShareLockPeriod
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetInitiateShutdown() *CellarV2_5_InitiateShutdown {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_InitiateShutdown); ok {
+		return x.InitiateShutdown
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetSetStrategistPlatformCut() *CellarV2_5_SetStrategistPlatformCut {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_SetStrategistPlatformCut); ok {
+		return x.SetStrategistPlatformCut
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetLiftShutdown() *CellarV2_5_LiftShutdown {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_LiftShutdown); ok {
+		return x.LiftShutdown
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetAddAdaptorToCatalogue() *CellarV2_5_AddAdaptorToCatalogue {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_AddAdaptorToCatalogue); ok {
+		return x.AddAdaptorToCatalogue
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetAddPositionToCatalogue() *CellarV2_5_AddPositionToCatalogue {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_AddPositionToCatalogue); ok {
+		return x.AddPositionToCatalogue
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetRemoveAdaptorFromCatalogue() *CellarV2_5_RemoveAdaptorFromCatalogue {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_RemoveAdaptorFromCatalogue); ok {
+		return x.RemoveAdaptorFromCatalogue
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetRemovePositionFromCatalogue() *CellarV2_5_RemovePositionFromCatalogue {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_RemovePositionFromCatalogue); ok {
+		return x.RemovePositionFromCatalogue
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetIncreaseShareSupplyCap() *CellarV2_5_IncreaseShareSupplyCap {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_IncreaseShareSupplyCap); ok {
+		return x.IncreaseShareSupplyCap
+	}
+	return nil
+}
+
+func (x *CellarV2_5_FunctionCall) GetDecreaseShareSupplyCap() *CellarV2_5_DecreaseShareSupplyCap {
+	if x, ok := x.GetFunction().(*CellarV2_5_FunctionCall_DecreaseShareSupplyCap); ok {
+		return x.DecreaseShareSupplyCap
+	}
+	return nil
+}
+
+type isCellarV2_5_FunctionCall_Function interface {
+	isCellarV2_5_FunctionCall_Function()
+}
+
+type CellarV2_5_FunctionCall_AddPosition struct {
+	// Represents function `addPosition(uint256 index, address position)`
+	AddPosition *CellarV2_5_AddPosition `protobuf:"bytes,1,opt,name=add_position,json=addPosition,proto3,oneof"`
+}
+
+type CellarV2_5_FunctionCall_CallOnAdaptor struct {
+	// Represents function `callOnAdaptor(AdaptorCall[] memory data)`
+	CallOnAdaptor *CellarV2_5_CallOnAdaptor `protobuf:"bytes,2,opt,name=call_on_adaptor,json=callOnAdaptor,proto3,oneof"`
+}
+
+type CellarV2_5_FunctionCall_RemovePosition struct {
+	// Represents function `removePosition(uint256 index)`
+	RemovePosition *CellarV2_5_RemovePosition `protobuf:"bytes,3,opt,name=remove_position,json=removePosition,proto3,oneof"`
+}
+
+type CellarV2_5_FunctionCall_SetHoldingPosition struct {
+	// Represents function `setHoldingPosition(uint32 position_id)`
+	SetHoldingPosition *CellarV2_5_SetHoldingPosition `protobuf:"bytes,4,opt,name=set_holding_position,json=setHoldingPosition,proto3,oneof"`
+}
+
+type CellarV2_5_FunctionCall_SetStrategistPayoutAddress struct {
+	// Represents function `setStrategistPayoutAddress(address payout)`
+	SetStrategistPayoutAddress *CellarV2_5_SetStrategistPayoutAddress `protobuf:"bytes,5,opt,name=set_strategist_payout_address,json=setStrategistPayoutAddress,proto3,oneof"`
+}
+
+type CellarV2_5_FunctionCall_SwapPositions struct {
+	// Represents function `swapPositions(uint256 index1, uint256 index2)`
+	SwapPositions *CellarV2_5_SwapPositions `protobuf:"bytes,6,opt,name=swap_positions,json=swapPositions,proto3,oneof"`
+}
+
+type CellarV2_5_FunctionCall_SetRebalanceDeviation struct {
+	// Represents function `setRebalanceDeviation(uint265)`
+	SetRebalanceDeviation *CellarV2_5_SetRebalanceDeviation `protobuf:"bytes,7,opt,name=set_rebalance_deviation,json=setRebalanceDeviation,proto3,oneof"`
+}
+
+type CellarV2_5_FunctionCall_SetShareLockPeriod struct {
+	// Represents function `setShareLockPeriod(uint256 newLock)`
+	SetShareLockPeriod *CellarV2_5_SetShareLockPeriod `protobuf:"bytes,8,opt,name=set_share_lock_period,json=setShareLockPeriod,proto3,oneof"`
+}
+
+type CellarV2_5_FunctionCall_InitiateShutdown struct {
+	// Represents function `initiateShutdown()`
+	InitiateShutdown *CellarV2_5_InitiateShutdown `protobuf:"bytes,9,opt,name=initiate_shutdown,json=initiateShutdown,proto3,oneof"`
+}
+
+type CellarV2_5_FunctionCall_SetStrategistPlatformCut struct {
+	// Represents function `setStrategistPlatformCut(uint64 cut)`
+	SetStrategistPlatformCut *CellarV2_5_SetStrategistPlatformCut `protobuf:"bytes,10,opt,name=set_strategist_platform_cut,json=setStrategistPlatformCut,proto3,oneof"`
+}
+
+type CellarV2_5_FunctionCall_LiftShutdown struct {
+	// Represents function `liftShutdown()`
+	LiftShutdown *CellarV2_5_LiftShutdown `protobuf:"bytes,11,opt,name=lift_shutdown,json=liftShutdown,proto3,oneof"`
+}
+
+type CellarV2_5_FunctionCall_AddAdaptorToCatalogue struct {
+	// Represents function `addAdaptorToCatalogue(address adaptor)`
+	AddAdaptorToCatalogue *CellarV2_5_AddAdaptorToCatalogue `protobuf:"bytes,12,opt,name=add_adaptor_to_catalogue,json=addAdaptorToCatalogue,proto3,oneof"`
+}
+
+type CellarV2_5_FunctionCall_AddPositionToCatalogue struct {
+	// Represents function `addPositionToCatalogue(uint32 positionId)`
+	AddPositionToCatalogue *CellarV2_5_AddPositionToCatalogue `protobuf:"bytes,13,opt,name=add_position_to_catalogue,json=addPositionToCatalogue,proto3,oneof"`
+}
+
+type CellarV2_5_FunctionCall_RemoveAdaptorFromCatalogue struct {
+	// Represents function `removeAdaptorFromCatalogue(address adaptor)`
+	RemoveAdaptorFromCatalogue *CellarV2_5_RemoveAdaptorFromCatalogue `protobuf:"bytes,14,opt,name=remove_adaptor_from_catalogue,json=removeAdaptorFromCatalogue,proto3,oneof"`
+}
+
+type CellarV2_5_FunctionCall_RemovePositionFromCatalogue struct {
+	// Represents function `removePositionFromCatalogue(uint32 positionId)`
+	RemovePositionFromCatalogue *CellarV2_5_RemovePositionFromCatalogue `protobuf:"bytes,15,opt,name=remove_position_from_catalogue,json=removePositionFromCatalogue,proto3,oneof"`
+}
+
+type CellarV2_5_FunctionCall_IncreaseShareSupplyCap struct {
+	// Represents function `increaseShareSupplyCap(uint192)
+	IncreaseShareSupplyCap *CellarV2_5_IncreaseShareSupplyCap `protobuf:"bytes,16,opt,name=increase_share_supply_cap,json=increaseShareSupplyCap,proto3,oneof"`
+}
+
+type CellarV2_5_FunctionCall_DecreaseShareSupplyCap struct {
+	// Represents function `decreaseShareSupplyCap(uint192)
+	DecreaseShareSupplyCap *CellarV2_5_DecreaseShareSupplyCap `protobuf:"bytes,17,opt,name=decrease_share_supply_cap,json=decreaseShareSupplyCap,proto3,oneof"`
+}
+
+func (*CellarV2_5_FunctionCall_AddPosition) isCellarV2_5_FunctionCall_Function() {}
+
+func (*CellarV2_5_FunctionCall_CallOnAdaptor) isCellarV2_5_FunctionCall_Function() {}
+
+func (*CellarV2_5_FunctionCall_RemovePosition) isCellarV2_5_FunctionCall_Function() {}
+
+func (*CellarV2_5_FunctionCall_SetHoldingPosition) isCellarV2_5_FunctionCall_Function() {}
+
+func (*CellarV2_5_FunctionCall_SetStrategistPayoutAddress) isCellarV2_5_FunctionCall_Function() {}
+
+func (*CellarV2_5_FunctionCall_SwapPositions) isCellarV2_5_FunctionCall_Function() {}
+
+func (*CellarV2_5_FunctionCall_SetRebalanceDeviation) isCellarV2_5_FunctionCall_Function() {}
+
+func (*CellarV2_5_FunctionCall_SetShareLockPeriod) isCellarV2_5_FunctionCall_Function() {}
+
+func (*CellarV2_5_FunctionCall_InitiateShutdown) isCellarV2_5_FunctionCall_Function() {}
+
+func (*CellarV2_5_FunctionCall_SetStrategistPlatformCut) isCellarV2_5_FunctionCall_Function() {}
+
+func (*CellarV2_5_FunctionCall_LiftShutdown) isCellarV2_5_FunctionCall_Function() {}
+
+func (*CellarV2_5_FunctionCall_AddAdaptorToCatalogue) isCellarV2_5_FunctionCall_Function() {}
+
+func (*CellarV2_5_FunctionCall_AddPositionToCatalogue) isCellarV2_5_FunctionCall_Function() {}
+
+func (*CellarV2_5_FunctionCall_RemoveAdaptorFromCatalogue) isCellarV2_5_FunctionCall_Function() {}
+
+func (*CellarV2_5_FunctionCall_RemovePositionFromCatalogue) isCellarV2_5_FunctionCall_Function() {}
+
+func (*CellarV2_5_FunctionCall_IncreaseShareSupplyCap) isCellarV2_5_FunctionCall_Function() {}
+
+func (*CellarV2_5_FunctionCall_DecreaseShareSupplyCap) isCellarV2_5_FunctionCall_Function() {}
+
+//
+// Insert a trusted position to the list of positions used by the cellar at a given index.
+//
+// Represents function `addPosition(uint32 index, uint32 positionId, bytes configurationData, bool inDebtArray)`
+type CellarV2_5_AddPosition struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Index at which to add the position
+	Index uint32 `protobuf:"varint,1,opt,name=index,proto3" json:"index,omitempty"`
+	// The position's ID in the cellar registry
+	PositionId uint32 `protobuf:"varint,2,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty"`
+	// Data used to configure how the position behaves
+	ConfigurationData []byte `protobuf:"bytes,3,opt,name=configuration_data,json=configurationData,proto3" json:"configuration_data,omitempty"`
+	// Whether to add position in the debt array, or the credit array.
+	InDebtArray bool `protobuf:"varint,4,opt,name=in_debt_array,json=inDebtArray,proto3" json:"in_debt_array,omitempty"`
+}
+
+func (x *CellarV2_5_AddPosition) Reset() {
+	*x = CellarV2_5_AddPosition{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[34]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_AddPosition) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_AddPosition) ProtoMessage() {}
+
+func (x *CellarV2_5_AddPosition) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[34]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_AddPosition.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_AddPosition) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 1}
+}
+
+func (x *CellarV2_5_AddPosition) GetIndex() uint32 {
+	if x != nil {
+		return x.Index
+	}
+	return 0
+}
+
+func (x *CellarV2_5_AddPosition) GetPositionId() uint32 {
+	if x != nil {
+		return x.PositionId
+	}
+	return 0
+}
+
+func (x *CellarV2_5_AddPosition) GetConfigurationData() []byte {
+	if x != nil {
+		return x.ConfigurationData
+	}
+	return nil
+}
+
+func (x *CellarV2_5_AddPosition) GetInDebtArray() bool {
+	if x != nil {
+		return x.InDebtArray
+	}
+	return false
+}
+
+//
+// Allows strategists to manage their Cellar using arbitrary logic calls to adaptors.
+//
+// Represents function `callOnAdaptor(AdaptorCall[] memory data)`
+type CellarV2_5_CallOnAdaptor struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Data []*AdaptorCall `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
+}
+
+func (x *CellarV2_5_CallOnAdaptor) Reset() {
+	*x = CellarV2_5_CallOnAdaptor{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[35]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_CallOnAdaptor) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_CallOnAdaptor) ProtoMessage() {}
+
+func (x *CellarV2_5_CallOnAdaptor) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[35]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_CallOnAdaptor.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_CallOnAdaptor) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 2}
+}
+
+func (x *CellarV2_5_CallOnAdaptor) GetData() []*AdaptorCall {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+//
+// Remove the position at a given index from the list of positions used by the cellar.
+//
+// Represents function `removePosition(uint32 index, bool inDebtArray)`
+type CellarV2_5_RemovePosition struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Index at which to remove the position
+	Index uint32 `protobuf:"varint,1,opt,name=index,proto3" json:"index,omitempty"`
+	// Whether to remove position from the debt array, or the credit array.
+	InDebtArray bool `protobuf:"varint,2,opt,name=in_debt_array,json=inDebtArray,proto3" json:"in_debt_array,omitempty"`
+}
+
+func (x *CellarV2_5_RemovePosition) Reset() {
+	*x = CellarV2_5_RemovePosition{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[36]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_RemovePosition) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_RemovePosition) ProtoMessage() {}
+
+func (x *CellarV2_5_RemovePosition) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[36]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_RemovePosition.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_RemovePosition) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 3}
+}
+
+func (x *CellarV2_5_RemovePosition) GetIndex() uint32 {
+	if x != nil {
+		return x.Index
+	}
+	return 0
+}
+
+func (x *CellarV2_5_RemovePosition) GetInDebtArray() bool {
+	if x != nil {
+		return x.InDebtArray
+	}
+	return false
+}
+
+//
+// Set the holding position used of the cellar.
+//
+// Represents function `setHoldingIndex(uint8 index)`
+type CellarV2_5_SetHoldingPosition struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// ID (index) of the new holding position to use
+	PositionId uint32 `protobuf:"varint,1,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty"`
+}
+
+func (x *CellarV2_5_SetHoldingPosition) Reset() {
+	*x = CellarV2_5_SetHoldingPosition{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[37]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_SetHoldingPosition) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_SetHoldingPosition) ProtoMessage() {}
+
+func (x *CellarV2_5_SetHoldingPosition) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[37]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_SetHoldingPosition.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_SetHoldingPosition) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 4}
+}
+
+func (x *CellarV2_5_SetHoldingPosition) GetPositionId() uint32 {
+	if x != nil {
+		return x.PositionId
+	}
+	return 0
+}
+
+//
+// Sets the Strategists payout address.
+//
+// Represents function `setStrategistPayoutAddress(address payout)`
+type CellarV2_5_SetStrategistPayoutAddress struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Payout string `protobuf:"bytes,1,opt,name=payout,proto3" json:"payout,omitempty"`
+}
+
+func (x *CellarV2_5_SetStrategistPayoutAddress) Reset() {
+	*x = CellarV2_5_SetStrategistPayoutAddress{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[38]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_SetStrategistPayoutAddress) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_SetStrategistPayoutAddress) ProtoMessage() {}
+
+func (x *CellarV2_5_SetStrategistPayoutAddress) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[38]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_SetStrategistPayoutAddress.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_SetStrategistPayoutAddress) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 5}
+}
+
+func (x *CellarV2_5_SetStrategistPayoutAddress) GetPayout() string {
+	if x != nil {
+		return x.Payout
+	}
+	return ""
+}
+
+//
+// Swap the positions at two given indeces.
+//
+// Represents function `swapPositions(uint32 index1, uint32 index2)`
+type CellarV2_5_SwapPositions struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Index of the first position
+	Index_1 uint32 `protobuf:"varint,1,opt,name=index_1,json=index1,proto3" json:"index_1,omitempty"`
+	// Index of the second position
+	Index_2 uint32 `protobuf:"varint,2,opt,name=index_2,json=index2,proto3" json:"index_2,omitempty"`
+	// Whether to switch positions in the debt array, or the credit array.
+	InDebtArray bool `protobuf:"varint,3,opt,name=in_debt_array,json=inDebtArray,proto3" json:"in_debt_array,omitempty"`
+}
+
+func (x *CellarV2_5_SwapPositions) Reset() {
+	*x = CellarV2_5_SwapPositions{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[39]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_SwapPositions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_SwapPositions) ProtoMessage() {}
+
+func (x *CellarV2_5_SwapPositions) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[39]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_SwapPositions.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_SwapPositions) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 6}
+}
+
+func (x *CellarV2_5_SwapPositions) GetIndex_1() uint32 {
+	if x != nil {
+		return x.Index_1
+	}
+	return 0
+}
+
+func (x *CellarV2_5_SwapPositions) GetIndex_2() uint32 {
+	if x != nil {
+		return x.Index_2
+	}
+	return 0
+}
+
+func (x *CellarV2_5_SwapPositions) GetInDebtArray() bool {
+	if x != nil {
+		return x.InDebtArray
+	}
+	return false
+}
+
+//
+// Allows share lock period to be updated.
+//
+// Represents function `setShareLockPeriod()`
+type CellarV2_5_SetShareLockPeriod struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	NewLock string `protobuf:"bytes,1,opt,name=new_lock,json=newLock,proto3" json:"new_lock,omitempty"`
+}
+
+func (x *CellarV2_5_SetShareLockPeriod) Reset() {
+	*x = CellarV2_5_SetShareLockPeriod{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[40]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_SetShareLockPeriod) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_SetShareLockPeriod) ProtoMessage() {}
+
+func (x *CellarV2_5_SetShareLockPeriod) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[40]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_SetShareLockPeriod.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_SetShareLockPeriod) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 7}
+}
+
+func (x *CellarV2_5_SetShareLockPeriod) GetNewLock() string {
+	if x != nil {
+		return x.NewLock
+	}
+	return ""
+}
+
+//
+// Changes the cellar's allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
+// during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
+//
+// Represents function `setRebalanceDeviation(uint256)`
+type CellarV2_5_SetRebalanceDeviation struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	NewDeviation string `protobuf:"bytes,1,opt,name=new_deviation,json=newDeviation,proto3" json:"new_deviation,omitempty"`
+}
+
+func (x *CellarV2_5_SetRebalanceDeviation) Reset() {
+	*x = CellarV2_5_SetRebalanceDeviation{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[41]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_SetRebalanceDeviation) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_SetRebalanceDeviation) ProtoMessage() {}
+
+func (x *CellarV2_5_SetRebalanceDeviation) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[41]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_SetRebalanceDeviation.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_SetRebalanceDeviation) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 8}
+}
+
+func (x *CellarV2_5_SetRebalanceDeviation) GetNewDeviation() string {
+	if x != nil {
+		return x.NewDeviation
+	}
+	return ""
+}
+
+//
+// Shutdown the cellar. Used in an emergency or if the cellar has been deprecated.
+//
+// Represents function `initiateShutdown()`
+type CellarV2_5_InitiateShutdown struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *CellarV2_5_InitiateShutdown) Reset() {
+	*x = CellarV2_5_InitiateShutdown{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[42]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_InitiateShutdown) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_InitiateShutdown) ProtoMessage() {}
+
+func (x *CellarV2_5_InitiateShutdown) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[42]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_InitiateShutdown.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_InitiateShutdown) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 9}
+}
+
+//
+// Allows strategist to set the platform cut for the cellar.
+//
+// Represents function `setStrategistPlatformCut(uint64 cut)`
+type CellarV2_5_SetStrategistPlatformCut struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The new strategist platform cut
+	NewCut uint64 `protobuf:"varint,1,opt,name=new_cut,json=newCut,proto3" json:"new_cut,omitempty"`
+}
+
+func (x *CellarV2_5_SetStrategistPlatformCut) Reset() {
+	*x = CellarV2_5_SetStrategistPlatformCut{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[43]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_SetStrategistPlatformCut) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_SetStrategistPlatformCut) ProtoMessage() {}
+
+func (x *CellarV2_5_SetStrategistPlatformCut) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[43]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_SetStrategistPlatformCut.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_SetStrategistPlatformCut) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 10}
+}
+
+func (x *CellarV2_5_SetStrategistPlatformCut) GetNewCut() uint64 {
+	if x != nil {
+		return x.NewCut
+	}
+	return 0
+}
+
+//
+// Allows the owner to restart a shut down Cellar
+//
+// Represents function `liftShutdown()`
+type CellarV2_5_LiftShutdown struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *CellarV2_5_LiftShutdown) Reset() {
+	*x = CellarV2_5_LiftShutdown{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[44]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_LiftShutdown) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_LiftShutdown) ProtoMessage() {}
+
+func (x *CellarV2_5_LiftShutdown) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[44]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_LiftShutdown.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_LiftShutdown) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 11}
+}
+
+//
+// Allows the owner to add an adaptor to the Cellar's adaptor catalogue
+//
+// Represents function `addAdaptorToCatalogue(address adaptor)`
+type CellarV2_5_AddAdaptorToCatalogue struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Adaptor string `protobuf:"bytes,1,opt,name=adaptor,proto3" json:"adaptor,omitempty"`
+}
+
+func (x *CellarV2_5_AddAdaptorToCatalogue) Reset() {
+	*x = CellarV2_5_AddAdaptorToCatalogue{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[45]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_AddAdaptorToCatalogue) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_AddAdaptorToCatalogue) ProtoMessage() {}
+
+func (x *CellarV2_5_AddAdaptorToCatalogue) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[45]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_AddAdaptorToCatalogue.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_AddAdaptorToCatalogue) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 12}
+}
+
+func (x *CellarV2_5_AddAdaptorToCatalogue) GetAdaptor() string {
+	if x != nil {
+		return x.Adaptor
+	}
+	return ""
+}
+
+//
+// Allows caller to call multiple functions in a single TX.
+//
+// Represents function `multicall(bytes[] data)`
+type CellarV2_5_Multicall struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FunctionCalls []*CellarV2_5_FunctionCall `protobuf:"bytes,1,rep,name=function_calls,json=functionCalls,proto3" json:"function_calls,omitempty"`
+}
+
+func (x *CellarV2_5_Multicall) Reset() {
+	*x = CellarV2_5_Multicall{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[46]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_Multicall) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_Multicall) ProtoMessage() {}
+
+func (x *CellarV2_5_Multicall) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[46]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_Multicall.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_Multicall) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 13}
+}
+
+func (x *CellarV2_5_Multicall) GetFunctionCalls() []*CellarV2_5_FunctionCall {
+	if x != nil {
+		return x.FunctionCalls
+	}
+	return nil
+}
+
+//
+// Allows the owner to add a position to the Cellar's position catalogue
+//
+// Represents function `addPositionToCatalogue(uint32 positionId)`
+type CellarV2_5_AddPositionToCatalogue struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PositionId uint32 `protobuf:"varint,1,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty"`
+}
+
+func (x *CellarV2_5_AddPositionToCatalogue) Reset() {
+	*x = CellarV2_5_AddPositionToCatalogue{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[47]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_AddPositionToCatalogue) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_AddPositionToCatalogue) ProtoMessage() {}
+
+func (x *CellarV2_5_AddPositionToCatalogue) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[47]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_AddPositionToCatalogue.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_AddPositionToCatalogue) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 14}
+}
+
+func (x *CellarV2_5_AddPositionToCatalogue) GetPositionId() uint32 {
+	if x != nil {
+		return x.PositionId
+	}
+	return 0
+}
+
+//
+// Allows callers to remove adaptors from this cellar's catalogue
+//
+// Represents function `removeAdaptorFromCatalogue(address adaptor)`
+type CellarV2_5_RemoveAdaptorFromCatalogue struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Adaptor string `protobuf:"bytes,1,opt,name=adaptor,proto3" json:"adaptor,omitempty"`
+}
+
+func (x *CellarV2_5_RemoveAdaptorFromCatalogue) Reset() {
+	*x = CellarV2_5_RemoveAdaptorFromCatalogue{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[48]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_RemoveAdaptorFromCatalogue) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_RemoveAdaptorFromCatalogue) ProtoMessage() {}
+
+func (x *CellarV2_5_RemoveAdaptorFromCatalogue) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[48]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_RemoveAdaptorFromCatalogue.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_RemoveAdaptorFromCatalogue) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 15}
+}
+
+func (x *CellarV2_5_RemoveAdaptorFromCatalogue) GetAdaptor() string {
+	if x != nil {
+		return x.Adaptor
+	}
+	return ""
+}
+
+//
+// Allows caller to remove positions from this cellar's catalogue
+//
+// Represents function `removePositionFromCatalogue(uint32 positionId)`
+type CellarV2_5_RemovePositionFromCatalogue struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PositionId uint32 `protobuf:"varint,1,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty"`
+}
+
+func (x *CellarV2_5_RemovePositionFromCatalogue) Reset() {
+	*x = CellarV2_5_RemovePositionFromCatalogue{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[49]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_RemovePositionFromCatalogue) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_RemovePositionFromCatalogue) ProtoMessage() {}
+
+func (x *CellarV2_5_RemovePositionFromCatalogue) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[49]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_RemovePositionFromCatalogue.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_RemovePositionFromCatalogue) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 16}
+}
+
+func (x *CellarV2_5_RemovePositionFromCatalogue) GetPositionId() uint32 {
+	if x != nil {
+		return x.PositionId
+	}
+	return 0
+}
+
+//
+// Allows strategist to increase the share supply cap
+//
+// Represents function `increaseShareSupplyCap(uint192)`
+type CellarV2_5_IncreaseShareSupplyCap struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	NewCap string `protobuf:"bytes,1,opt,name=new_cap,json=newCap,proto3" json:"new_cap,omitempty"`
+}
+
+func (x *CellarV2_5_IncreaseShareSupplyCap) Reset() {
+	*x = CellarV2_5_IncreaseShareSupplyCap{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[50]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_IncreaseShareSupplyCap) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_IncreaseShareSupplyCap) ProtoMessage() {}
+
+func (x *CellarV2_5_IncreaseShareSupplyCap) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[50]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_IncreaseShareSupplyCap.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_IncreaseShareSupplyCap) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 17}
+}
+
+func (x *CellarV2_5_IncreaseShareSupplyCap) GetNewCap() string {
+	if x != nil {
+		return x.NewCap
+	}
+	return ""
+}
+
+//
+// Allows strategist to decrease the share supply cap
+//
+// Represents function `decreaseShareSupplyCap(uint192)`
+type CellarV2_5_DecreaseShareSupplyCap struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	NewCap string `protobuf:"bytes,1,opt,name=new_cap,json=newCap,proto3" json:"new_cap,omitempty"`
+}
+
+func (x *CellarV2_5_DecreaseShareSupplyCap) Reset() {
+	*x = CellarV2_5_DecreaseShareSupplyCap{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cellar_v2_proto_msgTypes[51]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CellarV2_5_DecreaseShareSupplyCap) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CellarV2_5_DecreaseShareSupplyCap) ProtoMessage() {}
+
+func (x *CellarV2_5_DecreaseShareSupplyCap) ProtoReflect() protoreflect.Message {
+	mi := &file_cellar_v2_proto_msgTypes[51]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CellarV2_5_DecreaseShareSupplyCap.ProtoReflect.Descriptor instead.
+func (*CellarV2_5_DecreaseShareSupplyCap) Descriptor() ([]byte, []int) {
+	return file_cellar_v2_proto_rawDescGZIP(), []int{2, 18}
+}
+
+func (x *CellarV2_5_DecreaseShareSupplyCap) GetNewCap() string {
+	if x != nil {
+		return x.NewCap
+	}
+	return ""
 }
 
 var File_cellar_v2_proto protoreflect.FileDescriptor
@@ -2877,159 +4227,346 @@ var file_cellar_v2_proto_rawDesc = []byte{
 	0x75, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69,
 	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x0a, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f,
 	0x6e, 0x49, 0x64, 0x42, 0x0b, 0x0a, 0x09, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 0x74, 0x79, 0x70, 0x65,
-	0x22, 0xe8, 0x12, 0x0a, 0x0b, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x43, 0x61, 0x6c, 0x6c,
-	0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x07, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x12, 0x54, 0x0a, 0x13, 0x75, 0x6e,
-	0x69, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x76, 0x33, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c,
-	0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x23, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72,
-	0x64, 0x2e, 0x76, 0x33, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64,
-	0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x10,
-	0x75, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73,
-	0x12, 0x58, 0x0a, 0x15, 0x61, 0x61, 0x76, 0x65, 0x5f, 0x61, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
-	0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x24, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76,
-	0x65, 0x41, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31,
-	0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x11, 0x61, 0x61, 0x76, 0x65, 0x41, 0x54, 0x6f,
-	0x6b, 0x65, 0x6e, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x61, 0x0a, 0x18, 0x61, 0x61,
-	0x76, 0x65, 0x5f, 0x64, 0x65, 0x62, 0x74, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x76, 0x31,
-	0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x73,
-	0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x44, 0x65,
-	0x62, 0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31,
-	0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x14, 0x61, 0x61, 0x76, 0x65, 0x44, 0x65, 0x62,
-	0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x64, 0x0a,
-	0x19, 0x63, 0x6f, 0x6d, 0x70, 0x6f, 0x75, 0x6e, 0x64, 0x5f, 0x63, 0x5f, 0x74, 0x6f, 0x6b, 0x65,
-	0x6e, 0x5f, 0x76, 0x32, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x28, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43, 0x6f,
-	0x6d, 0x70, 0x6f, 0x75, 0x6e, 0x64, 0x43, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x64, 0x61, 0x70,
-	0x74, 0x6f, 0x72, 0x56, 0x32, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x15, 0x63, 0x6f,
-	0x6d, 0x70, 0x6f, 0x75, 0x6e, 0x64, 0x43, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x56, 0x32, 0x43, 0x61,
-	0x6c, 0x6c, 0x73, 0x12, 0x58, 0x0a, 0x15, 0x61, 0x61, 0x76, 0x65, 0x5f, 0x61, 0x5f, 0x74, 0x6f,
-	0x6b, 0x65, 0x6e, 0x5f, 0x76, 0x32, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x06, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x24, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e,
-	0x41, 0x61, 0x76, 0x65, 0x41, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f,
-	0x72, 0x56, 0x32, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x11, 0x61, 0x61, 0x76, 0x65,
-	0x41, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x56, 0x32, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x61, 0x0a,
-	0x18, 0x61, 0x61, 0x76, 0x65, 0x5f, 0x64, 0x65, 0x62, 0x74, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
-	0x5f, 0x76, 0x32, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x27, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76,
-	0x65, 0x44, 0x65, 0x62, 0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f,
-	0x72, 0x56, 0x32, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x14, 0x61, 0x61, 0x76, 0x65,
-	0x44, 0x65, 0x62, 0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x56, 0x32, 0x43, 0x61, 0x6c, 0x6c, 0x73,
-	0x12, 0x5f, 0x0a, 0x18, 0x61, 0x61, 0x76, 0x65, 0x5f, 0x76, 0x33, 0x5f, 0x61, 0x5f, 0x74, 0x6f,
-	0x6b, 0x65, 0x6e, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x08, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x26, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e,
-	0x41, 0x61, 0x76, 0x65, 0x56, 0x33, 0x41, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x64, 0x61, 0x70,
-	0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x13, 0x61, 0x61,
-	0x76, 0x65, 0x56, 0x33, 0x41, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c,
-	0x73, 0x12, 0x68, 0x0a, 0x1b, 0x61, 0x61, 0x76, 0x65, 0x5f, 0x76, 0x33, 0x5f, 0x64, 0x65, 0x62,
-	0x74, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73,
-	0x18, 0x09, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x29, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64,
-	0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x33, 0x44, 0x65, 0x62, 0x74, 0x54, 0x6f,
-	0x6b, 0x65, 0x6e, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c,
-	0x73, 0x48, 0x00, 0x52, 0x16, 0x61, 0x61, 0x76, 0x65, 0x56, 0x33, 0x44, 0x65, 0x62, 0x74, 0x54,
-	0x6f, 0x6b, 0x65, 0x6e, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x4e, 0x0a, 0x11, 0x6f,
-	0x6e, 0x65, 0x5f, 0x69, 0x6e, 0x63, 0x68, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73,
-	0x18, 0x0a, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x21, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64,
-	0x2e, 0x76, 0x33, 0x2e, 0x4f, 0x6e, 0x65, 0x49, 0x6e, 0x63, 0x68, 0x41, 0x64, 0x61, 0x70, 0x74,
-	0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x0e, 0x6f, 0x6e, 0x65,
-	0x49, 0x6e, 0x63, 0x68, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x67, 0x0a, 0x1a, 0x66,
-	0x65, 0x65, 0x73, 0x5f, 0x61, 0x6e, 0x64, 0x5f, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x73,
-	0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x29, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x46, 0x65, 0x65,
-	0x73, 0x41, 0x6e, 0x64, 0x52, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x73, 0x41, 0x64, 0x61, 0x70,
-	0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x16, 0x66, 0x65,
-	0x65, 0x73, 0x41, 0x6e, 0x64, 0x52, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x73, 0x56, 0x31, 0x43,
-	0x61, 0x6c, 0x6c, 0x73, 0x12, 0x48, 0x0a, 0x0f, 0x7a, 0x65, 0x72, 0x6f, 0x5f, 0x78, 0x5f, 0x76,
-	0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e,
-	0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x5a, 0x65, 0x72, 0x6f, 0x58,
-	0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00,
-	0x52, 0x0c, 0x7a, 0x65, 0x72, 0x6f, 0x58, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x67,
-	0x0a, 0x1a, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x77, 0x69, 0x74, 0x68, 0x5f, 0x75, 0x6e, 0x69, 0x73,
-	0x77, 0x61, 0x70, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x0d, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x29, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e,
-	0x53, 0x77, 0x61, 0x70, 0x57, 0x69, 0x74, 0x68, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x41,
-	0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52,
-	0x16, 0x73, 0x77, 0x61, 0x70, 0x57, 0x69, 0x74, 0x68, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70,
-	0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x60, 0x0a, 0x17, 0x76, 0x65, 0x73, 0x74, 0x69,
-	0x6e, 0x67, 0x5f, 0x73, 0x69, 0x6d, 0x70, 0x6c, 0x65, 0x5f, 0x76, 0x32, 0x5f, 0x63, 0x61, 0x6c,
-	0x6c, 0x73, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61,
-	0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x56, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x53, 0x69, 0x6d,
-	0x70, 0x6c, 0x65, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x32, 0x43, 0x61, 0x6c, 0x6c,
-	0x73, 0x48, 0x00, 0x52, 0x14, 0x76, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x53, 0x69, 0x6d, 0x70,
-	0x6c, 0x65, 0x56, 0x32, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x4a, 0x0a, 0x0f, 0x63, 0x65, 0x6c,
-	0x6c, 0x61, 0x72, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x0f, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x20, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e,
-	0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43,
-	0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x0d, 0x63, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x31,
-	0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x54, 0x0a, 0x13, 0x75, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70,
-	0x5f, 0x76, 0x33, 0x5f, 0x76, 0x32, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x10, 0x20, 0x01,
+	0x22, 0xb8, 0x17, 0x0a, 0x0a, 0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35, 0x12,
+	0x4a, 0x0a, 0x0d, 0x66, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x63, 0x61, 0x6c, 0x6c,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x23, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64,
+	0x2e, 0x76, 0x33, 0x2e, 0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35, 0x2e, 0x46,
+	0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x61, 0x6c, 0x6c, 0x48, 0x00, 0x52, 0x0c, 0x66,
+	0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x61, 0x6c, 0x6c, 0x12, 0x40, 0x0a, 0x09, 0x6d,
+	0x75, 0x6c, 0x74, 0x69, 0x63, 0x61, 0x6c, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20,
+	0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43, 0x65, 0x6c, 0x6c,
+	0x61, 0x72, 0x56, 0x32, 0x5f, 0x35, 0x2e, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x63, 0x61, 0x6c, 0x6c,
+	0x48, 0x00, 0x52, 0x09, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x63, 0x61, 0x6c, 0x6c, 0x1a, 0xa9, 0x0d,
+	0x0a, 0x0c, 0x46, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x61, 0x6c, 0x6c, 0x12, 0x47,
+	0x0a, 0x0c, 0x61, 0x64, 0x64, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76,
+	0x33, 0x2e, 0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35, 0x2e, 0x41, 0x64, 0x64,
+	0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x0b, 0x61, 0x64, 0x64, 0x50,
+	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x4e, 0x0a, 0x0f, 0x63, 0x61, 0x6c, 0x6c, 0x5f,
+	0x6f, 0x6e, 0x5f, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x24, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43, 0x65,
+	0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35, 0x2e, 0x43, 0x61, 0x6c, 0x6c, 0x4f, 0x6e, 0x41,
+	0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x48, 0x00, 0x52, 0x0d, 0x63, 0x61, 0x6c, 0x6c, 0x4f, 0x6e,
+	0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x12, 0x50, 0x0a, 0x0f, 0x72, 0x65, 0x6d, 0x6f, 0x76,
+	0x65, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x25, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43, 0x65,
+	0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50,
+	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x0e, 0x72, 0x65, 0x6d, 0x6f, 0x76,
+	0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x5d, 0x0a, 0x14, 0x73, 0x65, 0x74,
+	0x5f, 0x68, 0x6f, 0x6c, 0x64, 0x69, 0x6e, 0x67, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f,
+	0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x29, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35, 0x2e,
+	0x53, 0x65, 0x74, 0x48, 0x6f, 0x6c, 0x64, 0x69, 0x6e, 0x67, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69,
+	0x6f, 0x6e, 0x48, 0x00, 0x52, 0x12, 0x73, 0x65, 0x74, 0x48, 0x6f, 0x6c, 0x64, 0x69, 0x6e, 0x67,
+	0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x76, 0x0a, 0x1d, 0x73, 0x65, 0x74, 0x5f,
+	0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x73, 0x74, 0x5f, 0x70, 0x61, 0x79, 0x6f, 0x75,
+	0x74, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x31, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43, 0x65, 0x6c,
+	0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35, 0x2e, 0x53, 0x65, 0x74, 0x53, 0x74, 0x72, 0x61, 0x74,
+	0x65, 0x67, 0x69, 0x73, 0x74, 0x50, 0x61, 0x79, 0x6f, 0x75, 0x74, 0x41, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x48, 0x00, 0x52, 0x1a, 0x73, 0x65, 0x74, 0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67,
+	0x69, 0x73, 0x74, 0x50, 0x61, 0x79, 0x6f, 0x75, 0x74, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
+	0x12, 0x4d, 0x0a, 0x0e, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f,
+	0x6e, 0x73, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x24, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61,
+	0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35,
+	0x2e, 0x53, 0x77, 0x61, 0x70, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x48, 0x00,
+	0x52, 0x0d, 0x73, 0x77, 0x61, 0x70, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12,
+	0x66, 0x0a, 0x17, 0x73, 0x65, 0x74, 0x5f, 0x72, 0x65, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65,
+	0x5f, 0x64, 0x65, 0x76, 0x69, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x2c, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43, 0x65,
+	0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35, 0x2e, 0x53, 0x65, 0x74, 0x52, 0x65, 0x62, 0x61,
+	0x6c, 0x61, 0x6e, 0x63, 0x65, 0x44, 0x65, 0x76, 0x69, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00,
+	0x52, 0x15, 0x73, 0x65, 0x74, 0x52, 0x65, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x44, 0x65,
+	0x76, 0x69, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x5e, 0x0a, 0x15, 0x73, 0x65, 0x74, 0x5f, 0x73,
+	0x68, 0x61, 0x72, 0x65, 0x5f, 0x6c, 0x6f, 0x63, 0x6b, 0x5f, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64,
+	0x18, 0x08, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x29, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64,
+	0x2e, 0x76, 0x33, 0x2e, 0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35, 0x2e, 0x53,
+	0x65, 0x74, 0x53, 0x68, 0x61, 0x72, 0x65, 0x4c, 0x6f, 0x63, 0x6b, 0x50, 0x65, 0x72, 0x69, 0x6f,
+	0x64, 0x48, 0x00, 0x52, 0x12, 0x73, 0x65, 0x74, 0x53, 0x68, 0x61, 0x72, 0x65, 0x4c, 0x6f, 0x63,
+	0x6b, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x12, 0x56, 0x0a, 0x11, 0x69, 0x6e, 0x69, 0x74, 0x69,
+	0x61, 0x74, 0x65, 0x5f, 0x73, 0x68, 0x75, 0x74, 0x64, 0x6f, 0x77, 0x6e, 0x18, 0x09, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x27, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e,
+	0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35, 0x2e, 0x49, 0x6e, 0x69, 0x74, 0x69,
+	0x61, 0x74, 0x65, 0x53, 0x68, 0x75, 0x74, 0x64, 0x6f, 0x77, 0x6e, 0x48, 0x00, 0x52, 0x10, 0x69,
+	0x6e, 0x69, 0x74, 0x69, 0x61, 0x74, 0x65, 0x53, 0x68, 0x75, 0x74, 0x64, 0x6f, 0x77, 0x6e, 0x12,
+	0x70, 0x0a, 0x1b, 0x73, 0x65, 0x74, 0x5f, 0x73, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x73,
+	0x74, 0x5f, 0x70, 0x6c, 0x61, 0x74, 0x66, 0x6f, 0x72, 0x6d, 0x5f, 0x63, 0x75, 0x74, 0x18, 0x0a,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x2f, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76,
+	0x33, 0x2e, 0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35, 0x2e, 0x53, 0x65, 0x74,
+	0x53, 0x74, 0x72, 0x61, 0x74, 0x65, 0x67, 0x69, 0x73, 0x74, 0x50, 0x6c, 0x61, 0x74, 0x66, 0x6f,
+	0x72, 0x6d, 0x43, 0x75, 0x74, 0x48, 0x00, 0x52, 0x18, 0x73, 0x65, 0x74, 0x53, 0x74, 0x72, 0x61,
+	0x74, 0x65, 0x67, 0x69, 0x73, 0x74, 0x50, 0x6c, 0x61, 0x74, 0x66, 0x6f, 0x72, 0x6d, 0x43, 0x75,
+	0x74, 0x12, 0x4a, 0x0a, 0x0d, 0x6c, 0x69, 0x66, 0x74, 0x5f, 0x73, 0x68, 0x75, 0x74, 0x64, 0x6f,
+	0x77, 0x6e, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x23, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61,
+	0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35,
+	0x2e, 0x4c, 0x69, 0x66, 0x74, 0x53, 0x68, 0x75, 0x74, 0x64, 0x6f, 0x77, 0x6e, 0x48, 0x00, 0x52,
+	0x0c, 0x6c, 0x69, 0x66, 0x74, 0x53, 0x68, 0x75, 0x74, 0x64, 0x6f, 0x77, 0x6e, 0x12, 0x67, 0x0a,
+	0x18, 0x61, 0x64, 0x64, 0x5f, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x5f, 0x74, 0x6f, 0x5f,
+	0x63, 0x61, 0x74, 0x61, 0x6c, 0x6f, 0x67, 0x75, 0x65, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x2c, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43, 0x65, 0x6c,
+	0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35, 0x2e, 0x41, 0x64, 0x64, 0x41, 0x64, 0x61, 0x70, 0x74,
+	0x6f, 0x72, 0x54, 0x6f, 0x43, 0x61, 0x74, 0x61, 0x6c, 0x6f, 0x67, 0x75, 0x65, 0x48, 0x00, 0x52,
+	0x15, 0x61, 0x64, 0x64, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x54, 0x6f, 0x43, 0x61, 0x74,
+	0x61, 0x6c, 0x6f, 0x67, 0x75, 0x65, 0x12, 0x6a, 0x0a, 0x19, 0x61, 0x64, 0x64, 0x5f, 0x70, 0x6f,
+	0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x74, 0x6f, 0x5f, 0x63, 0x61, 0x74, 0x61, 0x6c, 0x6f,
+	0x67, 0x75, 0x65, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2d, 0x2e, 0x73, 0x74, 0x65, 0x77,
+	0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f,
+	0x35, 0x2e, 0x41, 0x64, 0x64, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x6f, 0x43,
+	0x61, 0x74, 0x61, 0x6c, 0x6f, 0x67, 0x75, 0x65, 0x48, 0x00, 0x52, 0x16, 0x61, 0x64, 0x64, 0x50,
+	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x6f, 0x43, 0x61, 0x74, 0x61, 0x6c, 0x6f, 0x67,
+	0x75, 0x65, 0x12, 0x76, 0x0a, 0x1d, 0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x5f, 0x61, 0x64, 0x61,
+	0x70, 0x74, 0x6f, 0x72, 0x5f, 0x66, 0x72, 0x6f, 0x6d, 0x5f, 0x63, 0x61, 0x74, 0x61, 0x6c, 0x6f,
+	0x67, 0x75, 0x65, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x31, 0x2e, 0x73, 0x74, 0x65, 0x77,
+	0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f,
+	0x35, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x46,
+	0x72, 0x6f, 0x6d, 0x43, 0x61, 0x74, 0x61, 0x6c, 0x6f, 0x67, 0x75, 0x65, 0x48, 0x00, 0x52, 0x1a,
+	0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x46, 0x72, 0x6f,
+	0x6d, 0x43, 0x61, 0x74, 0x61, 0x6c, 0x6f, 0x67, 0x75, 0x65, 0x12, 0x79, 0x0a, 0x1e, 0x72, 0x65,
+	0x6d, 0x6f, 0x76, 0x65, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x66, 0x72,
+	0x6f, 0x6d, 0x5f, 0x63, 0x61, 0x74, 0x61, 0x6c, 0x6f, 0x67, 0x75, 0x65, 0x18, 0x0f, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x32, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e,
+	0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x76,
+	0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x46, 0x72, 0x6f, 0x6d, 0x43, 0x61, 0x74,
+	0x61, 0x6c, 0x6f, 0x67, 0x75, 0x65, 0x48, 0x00, 0x52, 0x1b, 0x72, 0x65, 0x6d, 0x6f, 0x76, 0x65,
+	0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x46, 0x72, 0x6f, 0x6d, 0x43, 0x61, 0x74, 0x61,
+	0x6c, 0x6f, 0x67, 0x75, 0x65, 0x12, 0x6a, 0x0a, 0x19, 0x69, 0x6e, 0x63, 0x72, 0x65, 0x61, 0x73,
+	0x65, 0x5f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x5f, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x5f, 0x63,
+	0x61, 0x70, 0x18, 0x10, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2d, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61,
+	0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35,
+	0x2e, 0x49, 0x6e, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x53, 0x75,
+	0x70, 0x70, 0x6c, 0x79, 0x43, 0x61, 0x70, 0x48, 0x00, 0x52, 0x16, 0x69, 0x6e, 0x63, 0x72, 0x65,
+	0x61, 0x73, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x53, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x43, 0x61,
+	0x70, 0x12, 0x6a, 0x0a, 0x19, 0x64, 0x65, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x5f, 0x73, 0x68,
+	0x61, 0x72, 0x65, 0x5f, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x5f, 0x63, 0x61, 0x70, 0x18, 0x11,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x2d, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76,
+	0x33, 0x2e, 0x43, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35, 0x2e, 0x44, 0x65, 0x63,
+	0x72, 0x65, 0x61, 0x73, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x53, 0x75, 0x70, 0x70, 0x6c, 0x79,
+	0x43, 0x61, 0x70, 0x48, 0x00, 0x52, 0x16, 0x64, 0x65, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x53,
+	0x68, 0x61, 0x72, 0x65, 0x53, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x43, 0x61, 0x70, 0x42, 0x0a, 0x0a,
+	0x08, 0x66, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x1a, 0x97, 0x01, 0x0a, 0x0b, 0x41, 0x64,
+	0x64, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x64,
+	0x65, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x12,
+	0x1f, 0x0a, 0x0b, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x0d, 0x52, 0x0a, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64,
+	0x12, 0x2d, 0x0a, 0x12, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x5f, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x11, 0x63, 0x6f,
+	0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x61, 0x74, 0x61, 0x12,
+	0x22, 0x0a, 0x0d, 0x69, 0x6e, 0x5f, 0x64, 0x65, 0x62, 0x74, 0x5f, 0x61, 0x72, 0x72, 0x61, 0x79,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0b, 0x69, 0x6e, 0x44, 0x65, 0x62, 0x74, 0x41, 0x72,
+	0x72, 0x61, 0x79, 0x1a, 0x3c, 0x0a, 0x0d, 0x43, 0x61, 0x6c, 0x6c, 0x4f, 0x6e, 0x41, 0x64, 0x61,
+	0x70, 0x74, 0x6f, 0x72, 0x12, 0x2b, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x17, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e,
+	0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x43, 0x61, 0x6c, 0x6c, 0x52, 0x04, 0x64, 0x61, 0x74,
+	0x61, 0x1a, 0x4a, 0x0a, 0x0e, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74,
+	0x69, 0x6f, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0d, 0x52, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x22, 0x0a, 0x0d, 0x69, 0x6e, 0x5f,
+	0x64, 0x65, 0x62, 0x74, 0x5f, 0x61, 0x72, 0x72, 0x61, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08,
+	0x52, 0x0b, 0x69, 0x6e, 0x44, 0x65, 0x62, 0x74, 0x41, 0x72, 0x72, 0x61, 0x79, 0x1a, 0x35, 0x0a,
+	0x12, 0x53, 0x65, 0x74, 0x48, 0x6f, 0x6c, 0x64, 0x69, 0x6e, 0x67, 0x50, 0x6f, 0x73, 0x69, 0x74,
+	0x69, 0x6f, 0x6e, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x0a, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69,
+	0x6f, 0x6e, 0x49, 0x64, 0x1a, 0x34, 0x0a, 0x1a, 0x53, 0x65, 0x74, 0x53, 0x74, 0x72, 0x61, 0x74,
+	0x65, 0x67, 0x69, 0x73, 0x74, 0x50, 0x61, 0x79, 0x6f, 0x75, 0x74, 0x41, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x61, 0x79, 0x6f, 0x75, 0x74, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x06, 0x70, 0x61, 0x79, 0x6f, 0x75, 0x74, 0x1a, 0x65, 0x0a, 0x0d, 0x53, 0x77,
+	0x61, 0x70, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x17, 0x0a, 0x07, 0x69,
+	0x6e, 0x64, 0x65, 0x78, 0x5f, 0x31, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x06, 0x69, 0x6e,
+	0x64, 0x65, 0x78, 0x31, 0x12, 0x17, 0x0a, 0x07, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x5f, 0x32, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x06, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x32, 0x12, 0x22, 0x0a,
+	0x0d, 0x69, 0x6e, 0x5f, 0x64, 0x65, 0x62, 0x74, 0x5f, 0x61, 0x72, 0x72, 0x61, 0x79, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x08, 0x52, 0x0b, 0x69, 0x6e, 0x44, 0x65, 0x62, 0x74, 0x41, 0x72, 0x72, 0x61,
+	0x79, 0x1a, 0x2f, 0x0a, 0x12, 0x53, 0x65, 0x74, 0x53, 0x68, 0x61, 0x72, 0x65, 0x4c, 0x6f, 0x63,
+	0x6b, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x6e, 0x65, 0x77, 0x5f, 0x6c,
+	0x6f, 0x63, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6e, 0x65, 0x77, 0x4c, 0x6f,
+	0x63, 0x6b, 0x1a, 0x3c, 0x0a, 0x15, 0x53, 0x65, 0x74, 0x52, 0x65, 0x62, 0x61, 0x6c, 0x61, 0x6e,
+	0x63, 0x65, 0x44, 0x65, 0x76, 0x69, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x23, 0x0a, 0x0d, 0x6e,
+	0x65, 0x77, 0x5f, 0x64, 0x65, 0x76, 0x69, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0c, 0x6e, 0x65, 0x77, 0x44, 0x65, 0x76, 0x69, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x1a, 0x12, 0x0a, 0x10, 0x49, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x74, 0x65, 0x53, 0x68, 0x75, 0x74,
+	0x64, 0x6f, 0x77, 0x6e, 0x1a, 0x33, 0x0a, 0x18, 0x53, 0x65, 0x74, 0x53, 0x74, 0x72, 0x61, 0x74,
+	0x65, 0x67, 0x69, 0x73, 0x74, 0x50, 0x6c, 0x61, 0x74, 0x66, 0x6f, 0x72, 0x6d, 0x43, 0x75, 0x74,
+	0x12, 0x17, 0x0a, 0x07, 0x6e, 0x65, 0x77, 0x5f, 0x63, 0x75, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x04, 0x52, 0x06, 0x6e, 0x65, 0x77, 0x43, 0x75, 0x74, 0x1a, 0x0e, 0x0a, 0x0c, 0x4c, 0x69, 0x66,
+	0x74, 0x53, 0x68, 0x75, 0x74, 0x64, 0x6f, 0x77, 0x6e, 0x1a, 0x31, 0x0a, 0x15, 0x41, 0x64, 0x64,
+	0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x54, 0x6f, 0x43, 0x61, 0x74, 0x61, 0x6c, 0x6f, 0x67,
+	0x75, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x1a, 0x57, 0x0a, 0x09,
+	0x4d, 0x75, 0x6c, 0x74, 0x69, 0x63, 0x61, 0x6c, 0x6c, 0x12, 0x4a, 0x0a, 0x0e, 0x66, 0x75, 0x6e,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x23, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43,
+	0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x32, 0x5f, 0x35, 0x2e, 0x46, 0x75, 0x6e, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x43, 0x61, 0x6c, 0x6c, 0x52, 0x0d, 0x66, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x43, 0x61, 0x6c, 0x6c, 0x73, 0x1a, 0x39, 0x0a, 0x16, 0x41, 0x64, 0x64, 0x50, 0x6f, 0x73, 0x69,
+	0x74, 0x69, 0x6f, 0x6e, 0x54, 0x6f, 0x43, 0x61, 0x74, 0x61, 0x6c, 0x6f, 0x67, 0x75, 0x65, 0x12,
+	0x1f, 0x0a, 0x0b, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0d, 0x52, 0x0a, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64,
+	0x1a, 0x36, 0x0a, 0x1a, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f,
+	0x72, 0x46, 0x72, 0x6f, 0x6d, 0x43, 0x61, 0x74, 0x61, 0x6c, 0x6f, 0x67, 0x75, 0x65, 0x12, 0x18,
+	0x0a, 0x07, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x07, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x1a, 0x3e, 0x0a, 0x1b, 0x52, 0x65, 0x6d, 0x6f,
+	0x76, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x46, 0x72, 0x6f, 0x6d, 0x43, 0x61,
+	0x74, 0x61, 0x6c, 0x6f, 0x67, 0x75, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x6f, 0x73, 0x69, 0x74,
+	0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x0a, 0x70, 0x6f,
+	0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x1a, 0x31, 0x0a, 0x16, 0x49, 0x6e, 0x63, 0x72,
+	0x65, 0x61, 0x73, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x53, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x43,
+	0x61, 0x70, 0x12, 0x17, 0x0a, 0x07, 0x6e, 0x65, 0x77, 0x5f, 0x63, 0x61, 0x70, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x6e, 0x65, 0x77, 0x43, 0x61, 0x70, 0x1a, 0x31, 0x0a, 0x16, 0x44,
+	0x65, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x53, 0x75, 0x70, 0x70,
+	0x6c, 0x79, 0x43, 0x61, 0x70, 0x12, 0x17, 0x0a, 0x07, 0x6e, 0x65, 0x77, 0x5f, 0x63, 0x61, 0x70,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6e, 0x65, 0x77, 0x43, 0x61, 0x70, 0x42, 0x0b,
+	0x0a, 0x09, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x22, 0xe8, 0x12, 0x0a, 0x0b,
+	0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x43, 0x61, 0x6c, 0x6c, 0x12, 0x18, 0x0a, 0x07, 0x61,
+	0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64,
+	0x61, 0x70, 0x74, 0x6f, 0x72, 0x12, 0x54, 0x0a, 0x13, 0x75, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70,
+	0x5f, 0x76, 0x33, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x02, 0x20, 0x01,
 	0x28, 0x0b, 0x32, 0x23, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e,
 	0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72,
-	0x56, 0x32, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x10, 0x75, 0x6e, 0x69, 0x73, 0x77,
-	0x61, 0x70, 0x56, 0x33, 0x56, 0x32, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x94, 0x01, 0x0a, 0x2b,
-	0x61, 0x61, 0x76, 0x65, 0x5f, 0x76, 0x32, 0x5f, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x61,
-	0x73, 0x73, 0x65, 0x74, 0x5f, 0x61, 0x73, 0x5f, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72,
-	0x61, 0x6c, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x11, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x37, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41,
-	0x61, 0x76, 0x65, 0x56, 0x32, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74,
-	0x41, 0x73, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x41, 0x64, 0x61, 0x70,
-	0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x24, 0x61, 0x61,
-	0x76, 0x65, 0x56, 0x32, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x41,
-	0x73, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x56, 0x31, 0x43, 0x61, 0x6c,
-	0x6c, 0x73, 0x12, 0x4b, 0x0a, 0x10, 0x66, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x76, 0x31,
-	0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x12, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x73,
-	0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x46, 0x54, 0x6f, 0x6b, 0x65, 0x6e,
-	0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00,
-	0x52, 0x0d, 0x66, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12,
-	0x72, 0x0a, 0x1f, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x5f, 0x61, 0x61, 0x76, 0x65, 0x5f, 0x76,
-	0x32, 0x5f, 0x61, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c,
-	0x6c, 0x73, 0x18, 0x13, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2c, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61,
-	0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x4d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x41, 0x61, 0x76, 0x65,
-	0x56, 0x32, 0x41, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56,
-	0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x19, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f,
-	0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x41, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x56, 0x31, 0x43, 0x61,
-	0x6c, 0x6c, 0x73, 0x12, 0x7b, 0x0a, 0x22, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x5f, 0x61, 0x61,
-	0x76, 0x65, 0x5f, 0x76, 0x32, 0x5f, 0x64, 0x65, 0x62, 0x74, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
-	0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x14, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x2f, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x4d, 0x6f, 0x72,
-	0x70, 0x68, 0x6f, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x44, 0x65, 0x62, 0x74, 0x54, 0x6f, 0x6b,
+	0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x10, 0x75, 0x6e, 0x69, 0x73, 0x77,
+	0x61, 0x70, 0x56, 0x33, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x58, 0x0a, 0x15, 0x61,
+	0x61, 0x76, 0x65, 0x5f, 0x61, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x76, 0x31, 0x5f, 0x63,
+	0x61, 0x6c, 0x6c, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x24, 0x2e, 0x73, 0x74, 0x65,
+	0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x41, 0x54, 0x6f, 0x6b,
 	0x65, 0x6e, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73,
-	0x48, 0x00, 0x52, 0x1c, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32,
-	0x44, 0x65, 0x62, 0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73,
-	0x12, 0x91, 0x01, 0x0a, 0x2a, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x5f, 0x61, 0x61, 0x76, 0x65,
-	0x5f, 0x76, 0x33, 0x5f, 0x61, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x63, 0x6f, 0x6c, 0x6c,
-	0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18,
-	0x15, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x36, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e,
-	0x76, 0x33, 0x2e, 0x4d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x41, 0x61, 0x76, 0x65, 0x56, 0x33, 0x41,
-	0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x41,
+	0x48, 0x00, 0x52, 0x11, 0x61, 0x61, 0x76, 0x65, 0x41, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x56, 0x31,
+	0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x61, 0x0a, 0x18, 0x61, 0x61, 0x76, 0x65, 0x5f, 0x64, 0x65,
+	0x62, 0x74, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c,
+	0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x44, 0x65, 0x62, 0x74, 0x54, 0x6f, 0x6b,
+	0x65, 0x6e, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73,
+	0x48, 0x00, 0x52, 0x14, 0x61, 0x61, 0x76, 0x65, 0x44, 0x65, 0x62, 0x74, 0x54, 0x6f, 0x6b, 0x65,
+	0x6e, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x64, 0x0a, 0x19, 0x63, 0x6f, 0x6d, 0x70,
+	0x6f, 0x75, 0x6e, 0x64, 0x5f, 0x63, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x76, 0x32, 0x5f,
+	0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x28, 0x2e, 0x73, 0x74,
+	0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43, 0x6f, 0x6d, 0x70, 0x6f, 0x75, 0x6e,
+	0x64, 0x43, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x32,
+	0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x15, 0x63, 0x6f, 0x6d, 0x70, 0x6f, 0x75, 0x6e,
+	0x64, 0x43, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x56, 0x32, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x58,
+	0x0a, 0x15, 0x61, 0x61, 0x76, 0x65, 0x5f, 0x61, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x76,
+	0x32, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x24, 0x2e,
+	0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x41,
+	0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x32, 0x43, 0x61,
+	0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x11, 0x61, 0x61, 0x76, 0x65, 0x41, 0x54, 0x6f, 0x6b, 0x65,
+	0x6e, 0x56, 0x32, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x61, 0x0a, 0x18, 0x61, 0x61, 0x76, 0x65,
+	0x5f, 0x64, 0x65, 0x62, 0x74, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x76, 0x32, 0x5f, 0x63,
+	0x61, 0x6c, 0x6c, 0x73, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x73, 0x74, 0x65,
+	0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x44, 0x65, 0x62, 0x74,
+	0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x32, 0x43, 0x61,
+	0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x14, 0x61, 0x61, 0x76, 0x65, 0x44, 0x65, 0x62, 0x74, 0x54,
+	0x6f, 0x6b, 0x65, 0x6e, 0x56, 0x32, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x5f, 0x0a, 0x18, 0x61,
+	0x61, 0x76, 0x65, 0x5f, 0x76, 0x33, 0x5f, 0x61, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x76,
+	0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x08, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e,
+	0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56,
+	0x33, 0x41, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31,
+	0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x13, 0x61, 0x61, 0x76, 0x65, 0x56, 0x33, 0x41,
+	0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x68, 0x0a, 0x1b,
+	0x61, 0x61, 0x76, 0x65, 0x5f, 0x76, 0x33, 0x5f, 0x64, 0x65, 0x62, 0x74, 0x5f, 0x74, 0x6f, 0x6b,
+	0x65, 0x6e, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x09, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x29, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41,
+	0x61, 0x76, 0x65, 0x56, 0x33, 0x44, 0x65, 0x62, 0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x64,
+	0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x16,
+	0x61, 0x61, 0x76, 0x65, 0x56, 0x33, 0x44, 0x65, 0x62, 0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x56,
+	0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x4e, 0x0a, 0x11, 0x6f, 0x6e, 0x65, 0x5f, 0x69, 0x6e,
+	0x63, 0x68, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x0a, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x21, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x4f,
+	0x6e, 0x65, 0x49, 0x6e, 0x63, 0x68, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43,
+	0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x0e, 0x6f, 0x6e, 0x65, 0x49, 0x6e, 0x63, 0x68, 0x56,
+	0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x67, 0x0a, 0x1a, 0x66, 0x65, 0x65, 0x73, 0x5f, 0x61,
+	0x6e, 0x64, 0x5f, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x73, 0x5f, 0x76, 0x31, 0x5f, 0x63,
+	0x61, 0x6c, 0x6c, 0x73, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x29, 0x2e, 0x73, 0x74, 0x65,
+	0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x46, 0x65, 0x65, 0x73, 0x41, 0x6e, 0x64, 0x52,
+	0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x73, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31,
+	0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x16, 0x66, 0x65, 0x65, 0x73, 0x41, 0x6e, 0x64,
+	0x52, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x73, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12,
+	0x48, 0x0a, 0x0f, 0x7a, 0x65, 0x72, 0x6f, 0x5f, 0x78, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c,
+	0x6c, 0x73, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61,
+	0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x5a, 0x65, 0x72, 0x6f, 0x58, 0x41, 0x64, 0x61, 0x70, 0x74,
+	0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x0c, 0x7a, 0x65, 0x72,
+	0x6f, 0x58, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x67, 0x0a, 0x1a, 0x73, 0x77, 0x61,
+	0x70, 0x5f, 0x77, 0x69, 0x74, 0x68, 0x5f, 0x75, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x76,
+	0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x29, 0x2e,
+	0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x53, 0x77, 0x61, 0x70, 0x57,
+	0x69, 0x74, 0x68, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f,
+	0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x16, 0x73, 0x77, 0x61, 0x70,
+	0x57, 0x69, 0x74, 0x68, 0x55, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x31, 0x43, 0x61, 0x6c,
+	0x6c, 0x73, 0x12, 0x60, 0x0a, 0x17, 0x76, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x73, 0x69,
+	0x6d, 0x70, 0x6c, 0x65, 0x5f, 0x76, 0x32, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x0e, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33,
+	0x2e, 0x56, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x53, 0x69, 0x6d, 0x70, 0x6c, 0x65, 0x41, 0x64,
+	0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x32, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x14,
+	0x76, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x53, 0x69, 0x6d, 0x70, 0x6c, 0x65, 0x56, 0x32, 0x43,
+	0x61, 0x6c, 0x6c, 0x73, 0x12, 0x4a, 0x0a, 0x0f, 0x63, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x5f, 0x76,
+	0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x0f, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e,
+	0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x43, 0x65, 0x6c, 0x6c, 0x61,
+	0x72, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48,
+	0x00, 0x52, 0x0d, 0x63, 0x65, 0x6c, 0x6c, 0x61, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73,
+	0x12, 0x54, 0x0a, 0x13, 0x75, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x76, 0x33, 0x5f, 0x76,
+	0x32, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x10, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x23, 0x2e,
+	0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x55, 0x6e, 0x69, 0x73, 0x77,
+	0x61, 0x70, 0x56, 0x33, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x32, 0x43, 0x61, 0x6c,
+	0x6c, 0x73, 0x48, 0x00, 0x52, 0x10, 0x75, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x56, 0x33, 0x56,
+	0x32, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x94, 0x01, 0x0a, 0x2b, 0x61, 0x61, 0x76, 0x65, 0x5f,
+	0x76, 0x32, 0x5f, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f,
+	0x61, 0x73, 0x5f, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x5f, 0x76, 0x31,
+	0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x11, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x37, 0x2e, 0x73,
+	0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32,
+	0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x41, 0x73, 0x43, 0x6f, 0x6c,
+	0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31,
+	0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x24, 0x61, 0x61, 0x76, 0x65, 0x56, 0x32, 0x45,
+	0x6e, 0x61, 0x62, 0x6c, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x41, 0x73, 0x43, 0x6f, 0x6c, 0x6c,
+	0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x4b, 0x0a,
+	0x10, 0x66, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c,
+	0x73, 0x18, 0x12, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x2e, 0x76, 0x33, 0x2e, 0x46, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x64, 0x61, 0x70, 0x74,
+	0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x0d, 0x66, 0x54, 0x6f,
+	0x6b, 0x65, 0x6e, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x72, 0x0a, 0x1f, 0x6d, 0x6f,
+	0x72, 0x70, 0x68, 0x6f, 0x5f, 0x61, 0x61, 0x76, 0x65, 0x5f, 0x76, 0x32, 0x5f, 0x61, 0x5f, 0x74,
+	0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x13, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x2c, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33,
+	0x2e, 0x4d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x41, 0x54, 0x6f,
+	0x6b, 0x65, 0x6e, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c,
+	0x73, 0x48, 0x00, 0x52, 0x19, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x41, 0x61, 0x76, 0x65, 0x56,
+	0x32, 0x41, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x7b,
+	0x0a, 0x22, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x5f, 0x61, 0x61, 0x76, 0x65, 0x5f, 0x76, 0x32,
+	0x5f, 0x64, 0x65, 0x62, 0x74, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x76, 0x31, 0x5f, 0x63,
+	0x61, 0x6c, 0x6c, 0x73, 0x18, 0x14, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2f, 0x2e, 0x73, 0x74, 0x65,
+	0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x4d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x41, 0x61,
+	0x76, 0x65, 0x56, 0x32, 0x44, 0x65, 0x62, 0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x64, 0x61,
+	0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x1c, 0x6d,
+	0x6f, 0x72, 0x70, 0x68, 0x6f, 0x41, 0x61, 0x76, 0x65, 0x56, 0x32, 0x44, 0x65, 0x62, 0x74, 0x54,
+	0x6f, 0x6b, 0x65, 0x6e, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x91, 0x01, 0x0a, 0x2a,
+	0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x5f, 0x61, 0x61, 0x76, 0x65, 0x5f, 0x76, 0x33, 0x5f, 0x61,
+	0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61,
+	0x6c, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x15, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x36, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x4d, 0x6f,
+	0x72, 0x70, 0x68, 0x6f, 0x41, 0x61, 0x76, 0x65, 0x56, 0x33, 0x41, 0x54, 0x6f, 0x6b, 0x65, 0x6e,
+	0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f,
+	0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x23, 0x6d, 0x6f, 0x72, 0x70,
+	0x68, 0x6f, 0x41, 0x61, 0x76, 0x65, 0x56, 0x33, 0x41, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x43, 0x6f,
+	0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12,
+	0x7c, 0x0a, 0x23, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x5f, 0x61, 0x61, 0x76, 0x65, 0x5f, 0x76,
+	0x33, 0x5f, 0x61, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x70, 0x32, 0x70, 0x5f, 0x76, 0x31,
+	0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x16, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2f, 0x2e, 0x73,
+	0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x4d, 0x6f, 0x72, 0x70, 0x68, 0x6f,
+	0x41, 0x61, 0x76, 0x65, 0x56, 0x33, 0x41, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x50, 0x32, 0x50, 0x41,
 	0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52,
-	0x23, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x41, 0x61, 0x76, 0x65, 0x56, 0x33, 0x41, 0x54, 0x6f,
-	0x6b, 0x65, 0x6e, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x56, 0x31, 0x43,
-	0x61, 0x6c, 0x6c, 0x73, 0x12, 0x7c, 0x0a, 0x23, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x5f, 0x61,
-	0x61, 0x76, 0x65, 0x5f, 0x76, 0x33, 0x5f, 0x61, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x70,
-	0x32, 0x70, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x16, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x2f, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x4d,
-	0x6f, 0x72, 0x70, 0x68, 0x6f, 0x41, 0x61, 0x76, 0x65, 0x56, 0x33, 0x41, 0x54, 0x6f, 0x6b, 0x65,
-	0x6e, 0x50, 0x32, 0x50, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c,
-	0x6c, 0x73, 0x48, 0x00, 0x52, 0x1c, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x41, 0x61, 0x76, 0x65,
-	0x56, 0x33, 0x41, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x50, 0x32, 0x70, 0x56, 0x31, 0x43, 0x61, 0x6c,
-	0x6c, 0x73, 0x12, 0x7b, 0x0a, 0x22, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x5f, 0x61, 0x61, 0x76,
-	0x65, 0x5f, 0x76, 0x33, 0x5f, 0x64, 0x65, 0x62, 0x74, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f,
-	0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x17, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2f,
-	0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x4d, 0x6f, 0x72, 0x70,
-	0x68, 0x6f, 0x41, 0x61, 0x76, 0x65, 0x56, 0x33, 0x44, 0x65, 0x62, 0x74, 0x54, 0x6f, 0x6b, 0x65,
-	0x6e, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48,
-	0x00, 0x52, 0x1c, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x41, 0x61, 0x76, 0x65, 0x56, 0x33, 0x44,
-	0x65, 0x62, 0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12,
-	0x5d, 0x0a, 0x16, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x72, 0x5f, 0x70, 0x6f, 0x6f, 0x6c,
-	0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x18, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x26, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x42, 0x61, 0x6c,
-	0x61, 0x6e, 0x63, 0x65, 0x72, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72,
-	0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x13, 0x62, 0x61, 0x6c, 0x61, 0x6e,
-	0x63, 0x65, 0x72, 0x50, 0x6f, 0x6f, 0x6c, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x42, 0x0b,
-	0x0a, 0x09, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 0x64, 0x61, 0x74, 0x61, 0x42, 0x10, 0x5a, 0x0e, 0x2f,
-	0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x1c, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x41, 0x61, 0x76, 0x65, 0x56, 0x33, 0x41, 0x54, 0x6f,
+	0x6b, 0x65, 0x6e, 0x50, 0x32, 0x70, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x7b, 0x0a,
+	0x22, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x5f, 0x61, 0x61, 0x76, 0x65, 0x5f, 0x76, 0x33, 0x5f,
+	0x64, 0x65, 0x62, 0x74, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61,
+	0x6c, 0x6c, 0x73, 0x18, 0x17, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2f, 0x2e, 0x73, 0x74, 0x65, 0x77,
+	0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x4d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x41, 0x61, 0x76,
+	0x65, 0x56, 0x33, 0x44, 0x65, 0x62, 0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x64, 0x61, 0x70,
+	0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x1c, 0x6d, 0x6f,
+	0x72, 0x70, 0x68, 0x6f, 0x41, 0x61, 0x76, 0x65, 0x56, 0x33, 0x44, 0x65, 0x62, 0x74, 0x54, 0x6f,
+	0x6b, 0x65, 0x6e, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x5d, 0x0a, 0x16, 0x62, 0x61,
+	0x6c, 0x61, 0x6e, 0x63, 0x65, 0x72, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x76, 0x31, 0x5f, 0x63,
+	0x61, 0x6c, 0x6c, 0x73, 0x18, 0x18, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x73, 0x74, 0x65,
+	0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x72,
+	0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c,
+	0x6c, 0x73, 0x48, 0x00, 0x52, 0x13, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x72, 0x50, 0x6f,
+	0x6f, 0x6c, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x42, 0x0b, 0x0a, 0x09, 0x63, 0x61, 0x6c,
+	0x6c, 0x5f, 0x64, 0x61, 0x74, 0x61, 0x42, 0x10, 0x5a, 0x0e, 0x2f, 0x73, 0x74, 0x65, 0x77, 0x61,
+	0x72, 0x64, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3044,125 +4581,166 @@ func file_cellar_v2_proto_rawDescGZIP() []byte {
 	return file_cellar_v2_proto_rawDescData
 }
 
-var file_cellar_v2_proto_msgTypes = make([]protoimpl.MessageInfo, 32)
+var file_cellar_v2_proto_msgTypes = make([]protoimpl.MessageInfo, 52)
 var file_cellar_v2_proto_goTypes = []interface{}{
 	(*CellarV2)(nil),                                    // 0: steward.v3.CellarV2
 	(*CellarV2_2)(nil),                                  // 1: steward.v3.CellarV2_2
-	(*AdaptorCall)(nil),                                 // 2: steward.v3.AdaptorCall
-	(*CellarV2_AddPosition)(nil),                        // 3: steward.v3.CellarV2.AddPosition
-	(*CellarV2_CallOnAdaptor)(nil),                      // 4: steward.v3.CellarV2.CallOnAdaptor
-	(*CellarV2_RemovePosition)(nil),                     // 5: steward.v3.CellarV2.RemovePosition
-	(*CellarV2_SetHoldingPosition)(nil),                 // 6: steward.v3.CellarV2.SetHoldingPosition
-	(*CellarV2_SetStrategistPayoutAddress)(nil),         // 7: steward.v3.CellarV2.SetStrategistPayoutAddress
-	(*CellarV2_SwapPositions)(nil),                      // 8: steward.v3.CellarV2.SwapPositions
-	(*CellarV2_SetShareLockPeriod)(nil),                 // 9: steward.v3.CellarV2.SetShareLockPeriod
-	(*CellarV2_SetRebalanceDeviation)(nil),              // 10: steward.v3.CellarV2.SetRebalanceDeviation
-	(*CellarV2_SetupAdaptor)(nil),                       // 11: steward.v3.CellarV2.SetupAdaptor
-	(*CellarV2_SetPlatformFee)(nil),                     // 12: steward.v3.CellarV2.SetPlatformFee
-	(*CellarV2_InitiateShutdown)(nil),                   // 13: steward.v3.CellarV2.InitiateShutdown
-	(*CellarV2_LiftShutdown)(nil),                       // 14: steward.v3.CellarV2.LiftShutdown
-	(*CellarV2_2_FunctionCall)(nil),                     // 15: steward.v3.CellarV2_2.FunctionCall
-	(*CellarV2_2_AddPosition)(nil),                      // 16: steward.v3.CellarV2_2.AddPosition
-	(*CellarV2_2_CallOnAdaptor)(nil),                    // 17: steward.v3.CellarV2_2.CallOnAdaptor
-	(*CellarV2_2_RemovePosition)(nil),                   // 18: steward.v3.CellarV2_2.RemovePosition
-	(*CellarV2_2_SetHoldingPosition)(nil),               // 19: steward.v3.CellarV2_2.SetHoldingPosition
-	(*CellarV2_2_SetStrategistPayoutAddress)(nil),       // 20: steward.v3.CellarV2_2.SetStrategistPayoutAddress
-	(*CellarV2_2_SwapPositions)(nil),                    // 21: steward.v3.CellarV2_2.SwapPositions
-	(*CellarV2_2_SetShareLockPeriod)(nil),               // 22: steward.v3.CellarV2_2.SetShareLockPeriod
-	(*CellarV2_2_SetRebalanceDeviation)(nil),            // 23: steward.v3.CellarV2_2.SetRebalanceDeviation
-	(*CellarV2_2_InitiateShutdown)(nil),                 // 24: steward.v3.CellarV2_2.InitiateShutdown
-	(*CellarV2_2_SetStrategistPlatformCut)(nil),         // 25: steward.v3.CellarV2_2.SetStrategistPlatformCut
-	(*CellarV2_2_LiftShutdown)(nil),                     // 26: steward.v3.CellarV2_2.LiftShutdown
-	(*CellarV2_2_AddAdaptorToCatalogue)(nil),            // 27: steward.v3.CellarV2_2.AddAdaptorToCatalogue
-	(*CellarV2_2_Multicall)(nil),                        // 28: steward.v3.CellarV2_2.Multicall
-	(*CellarV2_2_AddPositionToCatalogue)(nil),           // 29: steward.v3.CellarV2_2.AddPositionToCatalogue
-	(*CellarV2_2_RemoveAdaptorFromCatalogue)(nil),       // 30: steward.v3.CellarV2_2.RemoveAdaptorFromCatalogue
-	(*CellarV2_2_RemovePositionFromCatalogue)(nil),      // 31: steward.v3.CellarV2_2.RemovePositionFromCatalogue
-	(*UniswapV3AdaptorV1Calls)(nil),                     // 32: steward.v3.UniswapV3AdaptorV1Calls
-	(*AaveATokenAdaptorV1Calls)(nil),                    // 33: steward.v3.AaveATokenAdaptorV1Calls
-	(*AaveDebtTokenAdaptorV1Calls)(nil),                 // 34: steward.v3.AaveDebtTokenAdaptorV1Calls
-	(*CompoundCTokenAdaptorV2Calls)(nil),                // 35: steward.v3.CompoundCTokenAdaptorV2Calls
-	(*AaveATokenAdaptorV2Calls)(nil),                    // 36: steward.v3.AaveATokenAdaptorV2Calls
-	(*AaveDebtTokenAdaptorV2Calls)(nil),                 // 37: steward.v3.AaveDebtTokenAdaptorV2Calls
-	(*AaveV3ATokenAdaptorV1Calls)(nil),                  // 38: steward.v3.AaveV3ATokenAdaptorV1Calls
-	(*AaveV3DebtTokenAdaptorV1Calls)(nil),               // 39: steward.v3.AaveV3DebtTokenAdaptorV1Calls
-	(*OneInchAdaptorV1Calls)(nil),                       // 40: steward.v3.OneInchAdaptorV1Calls
-	(*FeesAndReservesAdaptorV1Calls)(nil),               // 41: steward.v3.FeesAndReservesAdaptorV1Calls
-	(*ZeroXAdaptorV1Calls)(nil),                         // 42: steward.v3.ZeroXAdaptorV1Calls
-	(*SwapWithUniswapAdaptorV1Calls)(nil),               // 43: steward.v3.SwapWithUniswapAdaptorV1Calls
-	(*VestingSimpleAdaptorV2Calls)(nil),                 // 44: steward.v3.VestingSimpleAdaptorV2Calls
-	(*CellarAdaptorV1Calls)(nil),                        // 45: steward.v3.CellarAdaptorV1Calls
-	(*UniswapV3AdaptorV2Calls)(nil),                     // 46: steward.v3.UniswapV3AdaptorV2Calls
-	(*AaveV2EnableAssetAsCollateralAdaptorV1Calls)(nil), // 47: steward.v3.AaveV2EnableAssetAsCollateralAdaptorV1Calls
-	(*FTokenAdaptorV1Calls)(nil),                        // 48: steward.v3.FTokenAdaptorV1Calls
-	(*MorphoAaveV2ATokenAdaptorV1Calls)(nil),            // 49: steward.v3.MorphoAaveV2ATokenAdaptorV1Calls
-	(*MorphoAaveV2DebtTokenAdaptorV1Calls)(nil),         // 50: steward.v3.MorphoAaveV2DebtTokenAdaptorV1Calls
-	(*MorphoAaveV3ATokenCollateralAdaptorV1Calls)(nil),  // 51: steward.v3.MorphoAaveV3ATokenCollateralAdaptorV1Calls
-	(*MorphoAaveV3ATokenP2PAdaptorV1Calls)(nil),         // 52: steward.v3.MorphoAaveV3ATokenP2PAdaptorV1Calls
-	(*MorphoAaveV3DebtTokenAdaptorV1Calls)(nil),         // 53: steward.v3.MorphoAaveV3DebtTokenAdaptorV1Calls
-	(*BalancerPoolAdaptorV1Calls)(nil),                  // 54: steward.v3.BalancerPoolAdaptorV1Calls
+	(*CellarV2_5)(nil),                                  // 2: steward.v3.CellarV2_5
+	(*AdaptorCall)(nil),                                 // 3: steward.v3.AdaptorCall
+	(*CellarV2_AddPosition)(nil),                        // 4: steward.v3.CellarV2.AddPosition
+	(*CellarV2_CallOnAdaptor)(nil),                      // 5: steward.v3.CellarV2.CallOnAdaptor
+	(*CellarV2_RemovePosition)(nil),                     // 6: steward.v3.CellarV2.RemovePosition
+	(*CellarV2_SetHoldingPosition)(nil),                 // 7: steward.v3.CellarV2.SetHoldingPosition
+	(*CellarV2_SetStrategistPayoutAddress)(nil),         // 8: steward.v3.CellarV2.SetStrategistPayoutAddress
+	(*CellarV2_SwapPositions)(nil),                      // 9: steward.v3.CellarV2.SwapPositions
+	(*CellarV2_SetShareLockPeriod)(nil),                 // 10: steward.v3.CellarV2.SetShareLockPeriod
+	(*CellarV2_SetRebalanceDeviation)(nil),              // 11: steward.v3.CellarV2.SetRebalanceDeviation
+	(*CellarV2_SetupAdaptor)(nil),                       // 12: steward.v3.CellarV2.SetupAdaptor
+	(*CellarV2_SetPlatformFee)(nil),                     // 13: steward.v3.CellarV2.SetPlatformFee
+	(*CellarV2_InitiateShutdown)(nil),                   // 14: steward.v3.CellarV2.InitiateShutdown
+	(*CellarV2_LiftShutdown)(nil),                       // 15: steward.v3.CellarV2.LiftShutdown
+	(*CellarV2_2_FunctionCall)(nil),                     // 16: steward.v3.CellarV2_2.FunctionCall
+	(*CellarV2_2_AddPosition)(nil),                      // 17: steward.v3.CellarV2_2.AddPosition
+	(*CellarV2_2_CallOnAdaptor)(nil),                    // 18: steward.v3.CellarV2_2.CallOnAdaptor
+	(*CellarV2_2_RemovePosition)(nil),                   // 19: steward.v3.CellarV2_2.RemovePosition
+	(*CellarV2_2_SetHoldingPosition)(nil),               // 20: steward.v3.CellarV2_2.SetHoldingPosition
+	(*CellarV2_2_SetStrategistPayoutAddress)(nil),       // 21: steward.v3.CellarV2_2.SetStrategistPayoutAddress
+	(*CellarV2_2_SwapPositions)(nil),                    // 22: steward.v3.CellarV2_2.SwapPositions
+	(*CellarV2_2_SetShareLockPeriod)(nil),               // 23: steward.v3.CellarV2_2.SetShareLockPeriod
+	(*CellarV2_2_SetRebalanceDeviation)(nil),            // 24: steward.v3.CellarV2_2.SetRebalanceDeviation
+	(*CellarV2_2_InitiateShutdown)(nil),                 // 25: steward.v3.CellarV2_2.InitiateShutdown
+	(*CellarV2_2_SetStrategistPlatformCut)(nil),         // 26: steward.v3.CellarV2_2.SetStrategistPlatformCut
+	(*CellarV2_2_LiftShutdown)(nil),                     // 27: steward.v3.CellarV2_2.LiftShutdown
+	(*CellarV2_2_AddAdaptorToCatalogue)(nil),            // 28: steward.v3.CellarV2_2.AddAdaptorToCatalogue
+	(*CellarV2_2_Multicall)(nil),                        // 29: steward.v3.CellarV2_2.Multicall
+	(*CellarV2_2_AddPositionToCatalogue)(nil),           // 30: steward.v3.CellarV2_2.AddPositionToCatalogue
+	(*CellarV2_2_RemoveAdaptorFromCatalogue)(nil),       // 31: steward.v3.CellarV2_2.RemoveAdaptorFromCatalogue
+	(*CellarV2_2_RemovePositionFromCatalogue)(nil),      // 32: steward.v3.CellarV2_2.RemovePositionFromCatalogue
+	(*CellarV2_5_FunctionCall)(nil),                     // 33: steward.v3.CellarV2_5.FunctionCall
+	(*CellarV2_5_AddPosition)(nil),                      // 34: steward.v3.CellarV2_5.AddPosition
+	(*CellarV2_5_CallOnAdaptor)(nil),                    // 35: steward.v3.CellarV2_5.CallOnAdaptor
+	(*CellarV2_5_RemovePosition)(nil),                   // 36: steward.v3.CellarV2_5.RemovePosition
+	(*CellarV2_5_SetHoldingPosition)(nil),               // 37: steward.v3.CellarV2_5.SetHoldingPosition
+	(*CellarV2_5_SetStrategistPayoutAddress)(nil),       // 38: steward.v3.CellarV2_5.SetStrategistPayoutAddress
+	(*CellarV2_5_SwapPositions)(nil),                    // 39: steward.v3.CellarV2_5.SwapPositions
+	(*CellarV2_5_SetShareLockPeriod)(nil),               // 40: steward.v3.CellarV2_5.SetShareLockPeriod
+	(*CellarV2_5_SetRebalanceDeviation)(nil),            // 41: steward.v3.CellarV2_5.SetRebalanceDeviation
+	(*CellarV2_5_InitiateShutdown)(nil),                 // 42: steward.v3.CellarV2_5.InitiateShutdown
+	(*CellarV2_5_SetStrategistPlatformCut)(nil),         // 43: steward.v3.CellarV2_5.SetStrategistPlatformCut
+	(*CellarV2_5_LiftShutdown)(nil),                     // 44: steward.v3.CellarV2_5.LiftShutdown
+	(*CellarV2_5_AddAdaptorToCatalogue)(nil),            // 45: steward.v3.CellarV2_5.AddAdaptorToCatalogue
+	(*CellarV2_5_Multicall)(nil),                        // 46: steward.v3.CellarV2_5.Multicall
+	(*CellarV2_5_AddPositionToCatalogue)(nil),           // 47: steward.v3.CellarV2_5.AddPositionToCatalogue
+	(*CellarV2_5_RemoveAdaptorFromCatalogue)(nil),       // 48: steward.v3.CellarV2_5.RemoveAdaptorFromCatalogue
+	(*CellarV2_5_RemovePositionFromCatalogue)(nil),      // 49: steward.v3.CellarV2_5.RemovePositionFromCatalogue
+	(*CellarV2_5_IncreaseShareSupplyCap)(nil),           // 50: steward.v3.CellarV2_5.IncreaseShareSupplyCap
+	(*CellarV2_5_DecreaseShareSupplyCap)(nil),           // 51: steward.v3.CellarV2_5.DecreaseShareSupplyCap
+	(*UniswapV3AdaptorV1Calls)(nil),                     // 52: steward.v3.UniswapV3AdaptorV1Calls
+	(*AaveATokenAdaptorV1Calls)(nil),                    // 53: steward.v3.AaveATokenAdaptorV1Calls
+	(*AaveDebtTokenAdaptorV1Calls)(nil),                 // 54: steward.v3.AaveDebtTokenAdaptorV1Calls
+	(*CompoundCTokenAdaptorV2Calls)(nil),                // 55: steward.v3.CompoundCTokenAdaptorV2Calls
+	(*AaveATokenAdaptorV2Calls)(nil),                    // 56: steward.v3.AaveATokenAdaptorV2Calls
+	(*AaveDebtTokenAdaptorV2Calls)(nil),                 // 57: steward.v3.AaveDebtTokenAdaptorV2Calls
+	(*AaveV3ATokenAdaptorV1Calls)(nil),                  // 58: steward.v3.AaveV3ATokenAdaptorV1Calls
+	(*AaveV3DebtTokenAdaptorV1Calls)(nil),               // 59: steward.v3.AaveV3DebtTokenAdaptorV1Calls
+	(*OneInchAdaptorV1Calls)(nil),                       // 60: steward.v3.OneInchAdaptorV1Calls
+	(*FeesAndReservesAdaptorV1Calls)(nil),               // 61: steward.v3.FeesAndReservesAdaptorV1Calls
+	(*ZeroXAdaptorV1Calls)(nil),                         // 62: steward.v3.ZeroXAdaptorV1Calls
+	(*SwapWithUniswapAdaptorV1Calls)(nil),               // 63: steward.v3.SwapWithUniswapAdaptorV1Calls
+	(*VestingSimpleAdaptorV2Calls)(nil),                 // 64: steward.v3.VestingSimpleAdaptorV2Calls
+	(*CellarAdaptorV1Calls)(nil),                        // 65: steward.v3.CellarAdaptorV1Calls
+	(*UniswapV3AdaptorV2Calls)(nil),                     // 66: steward.v3.UniswapV3AdaptorV2Calls
+	(*AaveV2EnableAssetAsCollateralAdaptorV1Calls)(nil), // 67: steward.v3.AaveV2EnableAssetAsCollateralAdaptorV1Calls
+	(*FTokenAdaptorV1Calls)(nil),                        // 68: steward.v3.FTokenAdaptorV1Calls
+	(*MorphoAaveV2ATokenAdaptorV1Calls)(nil),            // 69: steward.v3.MorphoAaveV2ATokenAdaptorV1Calls
+	(*MorphoAaveV2DebtTokenAdaptorV1Calls)(nil),         // 70: steward.v3.MorphoAaveV2DebtTokenAdaptorV1Calls
+	(*MorphoAaveV3ATokenCollateralAdaptorV1Calls)(nil),  // 71: steward.v3.MorphoAaveV3ATokenCollateralAdaptorV1Calls
+	(*MorphoAaveV3ATokenP2PAdaptorV1Calls)(nil),         // 72: steward.v3.MorphoAaveV3ATokenP2PAdaptorV1Calls
+	(*MorphoAaveV3DebtTokenAdaptorV1Calls)(nil),         // 73: steward.v3.MorphoAaveV3DebtTokenAdaptorV1Calls
+	(*BalancerPoolAdaptorV1Calls)(nil),                  // 74: steward.v3.BalancerPoolAdaptorV1Calls
 }
 var file_cellar_v2_proto_depIdxs = []int32{
-	3,  // 0: steward.v3.CellarV2.add_position:type_name -> steward.v3.CellarV2.AddPosition
-	4,  // 1: steward.v3.CellarV2.call_on_adaptor:type_name -> steward.v3.CellarV2.CallOnAdaptor
-	5,  // 2: steward.v3.CellarV2.remove_position:type_name -> steward.v3.CellarV2.RemovePosition
-	6,  // 3: steward.v3.CellarV2.set_holding_position:type_name -> steward.v3.CellarV2.SetHoldingPosition
-	7,  // 4: steward.v3.CellarV2.set_strategist_payout_address:type_name -> steward.v3.CellarV2.SetStrategistPayoutAddress
-	8,  // 5: steward.v3.CellarV2.swap_positions:type_name -> steward.v3.CellarV2.SwapPositions
-	10, // 6: steward.v3.CellarV2.set_rebalance_deviation:type_name -> steward.v3.CellarV2.SetRebalanceDeviation
-	9,  // 7: steward.v3.CellarV2.set_share_lock_period:type_name -> steward.v3.CellarV2.SetShareLockPeriod
-	11, // 8: steward.v3.CellarV2.setup_adaptor:type_name -> steward.v3.CellarV2.SetupAdaptor
-	12, // 9: steward.v3.CellarV2.set_platform_fee:type_name -> steward.v3.CellarV2.SetPlatformFee
-	13, // 10: steward.v3.CellarV2.initiate_shutdown:type_name -> steward.v3.CellarV2.InitiateShutdown
-	14, // 11: steward.v3.CellarV2.lift_shutdown:type_name -> steward.v3.CellarV2.LiftShutdown
-	15, // 12: steward.v3.CellarV2_2.function_call:type_name -> steward.v3.CellarV2_2.FunctionCall
-	28, // 13: steward.v3.CellarV2_2.multicall:type_name -> steward.v3.CellarV2_2.Multicall
-	32, // 14: steward.v3.AdaptorCall.uniswap_v3_v1_calls:type_name -> steward.v3.UniswapV3AdaptorV1Calls
-	33, // 15: steward.v3.AdaptorCall.aave_a_token_v1_calls:type_name -> steward.v3.AaveATokenAdaptorV1Calls
-	34, // 16: steward.v3.AdaptorCall.aave_debt_token_v1_calls:type_name -> steward.v3.AaveDebtTokenAdaptorV1Calls
-	35, // 17: steward.v3.AdaptorCall.compound_c_token_v2_calls:type_name -> steward.v3.CompoundCTokenAdaptorV2Calls
-	36, // 18: steward.v3.AdaptorCall.aave_a_token_v2_calls:type_name -> steward.v3.AaveATokenAdaptorV2Calls
-	37, // 19: steward.v3.AdaptorCall.aave_debt_token_v2_calls:type_name -> steward.v3.AaveDebtTokenAdaptorV2Calls
-	38, // 20: steward.v3.AdaptorCall.aave_v3_a_token_v1_calls:type_name -> steward.v3.AaveV3ATokenAdaptorV1Calls
-	39, // 21: steward.v3.AdaptorCall.aave_v3_debt_token_v1_calls:type_name -> steward.v3.AaveV3DebtTokenAdaptorV1Calls
-	40, // 22: steward.v3.AdaptorCall.one_inch_v1_calls:type_name -> steward.v3.OneInchAdaptorV1Calls
-	41, // 23: steward.v3.AdaptorCall.fees_and_reserves_v1_calls:type_name -> steward.v3.FeesAndReservesAdaptorV1Calls
-	42, // 24: steward.v3.AdaptorCall.zero_x_v1_calls:type_name -> steward.v3.ZeroXAdaptorV1Calls
-	43, // 25: steward.v3.AdaptorCall.swap_with_uniswap_v1_calls:type_name -> steward.v3.SwapWithUniswapAdaptorV1Calls
-	44, // 26: steward.v3.AdaptorCall.vesting_simple_v2_calls:type_name -> steward.v3.VestingSimpleAdaptorV2Calls
-	45, // 27: steward.v3.AdaptorCall.cellar_v1_calls:type_name -> steward.v3.CellarAdaptorV1Calls
-	46, // 28: steward.v3.AdaptorCall.uniswap_v3_v2_calls:type_name -> steward.v3.UniswapV3AdaptorV2Calls
-	47, // 29: steward.v3.AdaptorCall.aave_v2_enable_asset_as_collateral_v1_calls:type_name -> steward.v3.AaveV2EnableAssetAsCollateralAdaptorV1Calls
-	48, // 30: steward.v3.AdaptorCall.f_token_v1_calls:type_name -> steward.v3.FTokenAdaptorV1Calls
-	49, // 31: steward.v3.AdaptorCall.morpho_aave_v2_a_token_v1_calls:type_name -> steward.v3.MorphoAaveV2ATokenAdaptorV1Calls
-	50, // 32: steward.v3.AdaptorCall.morpho_aave_v2_debt_token_v1_calls:type_name -> steward.v3.MorphoAaveV2DebtTokenAdaptorV1Calls
-	51, // 33: steward.v3.AdaptorCall.morpho_aave_v3_a_token_collateral_v1_calls:type_name -> steward.v3.MorphoAaveV3ATokenCollateralAdaptorV1Calls
-	52, // 34: steward.v3.AdaptorCall.morpho_aave_v3_a_token_p2p_v1_calls:type_name -> steward.v3.MorphoAaveV3ATokenP2PAdaptorV1Calls
-	53, // 35: steward.v3.AdaptorCall.morpho_aave_v3_debt_token_v1_calls:type_name -> steward.v3.MorphoAaveV3DebtTokenAdaptorV1Calls
-	54, // 36: steward.v3.AdaptorCall.balancer_pool_v1_calls:type_name -> steward.v3.BalancerPoolAdaptorV1Calls
-	2,  // 37: steward.v3.CellarV2.CallOnAdaptor.data:type_name -> steward.v3.AdaptorCall
-	16, // 38: steward.v3.CellarV2_2.FunctionCall.add_position:type_name -> steward.v3.CellarV2_2.AddPosition
-	17, // 39: steward.v3.CellarV2_2.FunctionCall.call_on_adaptor:type_name -> steward.v3.CellarV2_2.CallOnAdaptor
-	18, // 40: steward.v3.CellarV2_2.FunctionCall.remove_position:type_name -> steward.v3.CellarV2_2.RemovePosition
-	19, // 41: steward.v3.CellarV2_2.FunctionCall.set_holding_position:type_name -> steward.v3.CellarV2_2.SetHoldingPosition
-	20, // 42: steward.v3.CellarV2_2.FunctionCall.set_strategist_payout_address:type_name -> steward.v3.CellarV2_2.SetStrategistPayoutAddress
-	21, // 43: steward.v3.CellarV2_2.FunctionCall.swap_positions:type_name -> steward.v3.CellarV2_2.SwapPositions
-	23, // 44: steward.v3.CellarV2_2.FunctionCall.set_rebalance_deviation:type_name -> steward.v3.CellarV2_2.SetRebalanceDeviation
-	22, // 45: steward.v3.CellarV2_2.FunctionCall.set_share_lock_period:type_name -> steward.v3.CellarV2_2.SetShareLockPeriod
-	24, // 46: steward.v3.CellarV2_2.FunctionCall.initiate_shutdown:type_name -> steward.v3.CellarV2_2.InitiateShutdown
-	25, // 47: steward.v3.CellarV2_2.FunctionCall.set_strategist_platform_cut:type_name -> steward.v3.CellarV2_2.SetStrategistPlatformCut
-	26, // 48: steward.v3.CellarV2_2.FunctionCall.lift_shutdown:type_name -> steward.v3.CellarV2_2.LiftShutdown
-	27, // 49: steward.v3.CellarV2_2.FunctionCall.add_adaptor_to_catalogue:type_name -> steward.v3.CellarV2_2.AddAdaptorToCatalogue
-	29, // 50: steward.v3.CellarV2_2.FunctionCall.add_position_to_catalogue:type_name -> steward.v3.CellarV2_2.AddPositionToCatalogue
-	30, // 51: steward.v3.CellarV2_2.FunctionCall.remove_adaptor_from_catalogue:type_name -> steward.v3.CellarV2_2.RemoveAdaptorFromCatalogue
-	31, // 52: steward.v3.CellarV2_2.FunctionCall.remove_position_from_catalogue:type_name -> steward.v3.CellarV2_2.RemovePositionFromCatalogue
-	2,  // 53: steward.v3.CellarV2_2.CallOnAdaptor.data:type_name -> steward.v3.AdaptorCall
-	15, // 54: steward.v3.CellarV2_2.Multicall.function_calls:type_name -> steward.v3.CellarV2_2.FunctionCall
-	55, // [55:55] is the sub-list for method output_type
-	55, // [55:55] is the sub-list for method input_type
-	55, // [55:55] is the sub-list for extension type_name
-	55, // [55:55] is the sub-list for extension extendee
-	0,  // [0:55] is the sub-list for field type_name
+	4,  // 0: steward.v3.CellarV2.add_position:type_name -> steward.v3.CellarV2.AddPosition
+	5,  // 1: steward.v3.CellarV2.call_on_adaptor:type_name -> steward.v3.CellarV2.CallOnAdaptor
+	6,  // 2: steward.v3.CellarV2.remove_position:type_name -> steward.v3.CellarV2.RemovePosition
+	7,  // 3: steward.v3.CellarV2.set_holding_position:type_name -> steward.v3.CellarV2.SetHoldingPosition
+	8,  // 4: steward.v3.CellarV2.set_strategist_payout_address:type_name -> steward.v3.CellarV2.SetStrategistPayoutAddress
+	9,  // 5: steward.v3.CellarV2.swap_positions:type_name -> steward.v3.CellarV2.SwapPositions
+	11, // 6: steward.v3.CellarV2.set_rebalance_deviation:type_name -> steward.v3.CellarV2.SetRebalanceDeviation
+	10, // 7: steward.v3.CellarV2.set_share_lock_period:type_name -> steward.v3.CellarV2.SetShareLockPeriod
+	12, // 8: steward.v3.CellarV2.setup_adaptor:type_name -> steward.v3.CellarV2.SetupAdaptor
+	13, // 9: steward.v3.CellarV2.set_platform_fee:type_name -> steward.v3.CellarV2.SetPlatformFee
+	14, // 10: steward.v3.CellarV2.initiate_shutdown:type_name -> steward.v3.CellarV2.InitiateShutdown
+	15, // 11: steward.v3.CellarV2.lift_shutdown:type_name -> steward.v3.CellarV2.LiftShutdown
+	16, // 12: steward.v3.CellarV2_2.function_call:type_name -> steward.v3.CellarV2_2.FunctionCall
+	29, // 13: steward.v3.CellarV2_2.multicall:type_name -> steward.v3.CellarV2_2.Multicall
+	33, // 14: steward.v3.CellarV2_5.function_call:type_name -> steward.v3.CellarV2_5.FunctionCall
+	46, // 15: steward.v3.CellarV2_5.multicall:type_name -> steward.v3.CellarV2_5.Multicall
+	52, // 16: steward.v3.AdaptorCall.uniswap_v3_v1_calls:type_name -> steward.v3.UniswapV3AdaptorV1Calls
+	53, // 17: steward.v3.AdaptorCall.aave_a_token_v1_calls:type_name -> steward.v3.AaveATokenAdaptorV1Calls
+	54, // 18: steward.v3.AdaptorCall.aave_debt_token_v1_calls:type_name -> steward.v3.AaveDebtTokenAdaptorV1Calls
+	55, // 19: steward.v3.AdaptorCall.compound_c_token_v2_calls:type_name -> steward.v3.CompoundCTokenAdaptorV2Calls
+	56, // 20: steward.v3.AdaptorCall.aave_a_token_v2_calls:type_name -> steward.v3.AaveATokenAdaptorV2Calls
+	57, // 21: steward.v3.AdaptorCall.aave_debt_token_v2_calls:type_name -> steward.v3.AaveDebtTokenAdaptorV2Calls
+	58, // 22: steward.v3.AdaptorCall.aave_v3_a_token_v1_calls:type_name -> steward.v3.AaveV3ATokenAdaptorV1Calls
+	59, // 23: steward.v3.AdaptorCall.aave_v3_debt_token_v1_calls:type_name -> steward.v3.AaveV3DebtTokenAdaptorV1Calls
+	60, // 24: steward.v3.AdaptorCall.one_inch_v1_calls:type_name -> steward.v3.OneInchAdaptorV1Calls
+	61, // 25: steward.v3.AdaptorCall.fees_and_reserves_v1_calls:type_name -> steward.v3.FeesAndReservesAdaptorV1Calls
+	62, // 26: steward.v3.AdaptorCall.zero_x_v1_calls:type_name -> steward.v3.ZeroXAdaptorV1Calls
+	63, // 27: steward.v3.AdaptorCall.swap_with_uniswap_v1_calls:type_name -> steward.v3.SwapWithUniswapAdaptorV1Calls
+	64, // 28: steward.v3.AdaptorCall.vesting_simple_v2_calls:type_name -> steward.v3.VestingSimpleAdaptorV2Calls
+	65, // 29: steward.v3.AdaptorCall.cellar_v1_calls:type_name -> steward.v3.CellarAdaptorV1Calls
+	66, // 30: steward.v3.AdaptorCall.uniswap_v3_v2_calls:type_name -> steward.v3.UniswapV3AdaptorV2Calls
+	67, // 31: steward.v3.AdaptorCall.aave_v2_enable_asset_as_collateral_v1_calls:type_name -> steward.v3.AaveV2EnableAssetAsCollateralAdaptorV1Calls
+	68, // 32: steward.v3.AdaptorCall.f_token_v1_calls:type_name -> steward.v3.FTokenAdaptorV1Calls
+	69, // 33: steward.v3.AdaptorCall.morpho_aave_v2_a_token_v1_calls:type_name -> steward.v3.MorphoAaveV2ATokenAdaptorV1Calls
+	70, // 34: steward.v3.AdaptorCall.morpho_aave_v2_debt_token_v1_calls:type_name -> steward.v3.MorphoAaveV2DebtTokenAdaptorV1Calls
+	71, // 35: steward.v3.AdaptorCall.morpho_aave_v3_a_token_collateral_v1_calls:type_name -> steward.v3.MorphoAaveV3ATokenCollateralAdaptorV1Calls
+	72, // 36: steward.v3.AdaptorCall.morpho_aave_v3_a_token_p2p_v1_calls:type_name -> steward.v3.MorphoAaveV3ATokenP2PAdaptorV1Calls
+	73, // 37: steward.v3.AdaptorCall.morpho_aave_v3_debt_token_v1_calls:type_name -> steward.v3.MorphoAaveV3DebtTokenAdaptorV1Calls
+	74, // 38: steward.v3.AdaptorCall.balancer_pool_v1_calls:type_name -> steward.v3.BalancerPoolAdaptorV1Calls
+	3,  // 39: steward.v3.CellarV2.CallOnAdaptor.data:type_name -> steward.v3.AdaptorCall
+	17, // 40: steward.v3.CellarV2_2.FunctionCall.add_position:type_name -> steward.v3.CellarV2_2.AddPosition
+	18, // 41: steward.v3.CellarV2_2.FunctionCall.call_on_adaptor:type_name -> steward.v3.CellarV2_2.CallOnAdaptor
+	19, // 42: steward.v3.CellarV2_2.FunctionCall.remove_position:type_name -> steward.v3.CellarV2_2.RemovePosition
+	20, // 43: steward.v3.CellarV2_2.FunctionCall.set_holding_position:type_name -> steward.v3.CellarV2_2.SetHoldingPosition
+	21, // 44: steward.v3.CellarV2_2.FunctionCall.set_strategist_payout_address:type_name -> steward.v3.CellarV2_2.SetStrategistPayoutAddress
+	22, // 45: steward.v3.CellarV2_2.FunctionCall.swap_positions:type_name -> steward.v3.CellarV2_2.SwapPositions
+	24, // 46: steward.v3.CellarV2_2.FunctionCall.set_rebalance_deviation:type_name -> steward.v3.CellarV2_2.SetRebalanceDeviation
+	23, // 47: steward.v3.CellarV2_2.FunctionCall.set_share_lock_period:type_name -> steward.v3.CellarV2_2.SetShareLockPeriod
+	25, // 48: steward.v3.CellarV2_2.FunctionCall.initiate_shutdown:type_name -> steward.v3.CellarV2_2.InitiateShutdown
+	26, // 49: steward.v3.CellarV2_2.FunctionCall.set_strategist_platform_cut:type_name -> steward.v3.CellarV2_2.SetStrategistPlatformCut
+	27, // 50: steward.v3.CellarV2_2.FunctionCall.lift_shutdown:type_name -> steward.v3.CellarV2_2.LiftShutdown
+	28, // 51: steward.v3.CellarV2_2.FunctionCall.add_adaptor_to_catalogue:type_name -> steward.v3.CellarV2_2.AddAdaptorToCatalogue
+	30, // 52: steward.v3.CellarV2_2.FunctionCall.add_position_to_catalogue:type_name -> steward.v3.CellarV2_2.AddPositionToCatalogue
+	31, // 53: steward.v3.CellarV2_2.FunctionCall.remove_adaptor_from_catalogue:type_name -> steward.v3.CellarV2_2.RemoveAdaptorFromCatalogue
+	32, // 54: steward.v3.CellarV2_2.FunctionCall.remove_position_from_catalogue:type_name -> steward.v3.CellarV2_2.RemovePositionFromCatalogue
+	3,  // 55: steward.v3.CellarV2_2.CallOnAdaptor.data:type_name -> steward.v3.AdaptorCall
+	16, // 56: steward.v3.CellarV2_2.Multicall.function_calls:type_name -> steward.v3.CellarV2_2.FunctionCall
+	34, // 57: steward.v3.CellarV2_5.FunctionCall.add_position:type_name -> steward.v3.CellarV2_5.AddPosition
+	35, // 58: steward.v3.CellarV2_5.FunctionCall.call_on_adaptor:type_name -> steward.v3.CellarV2_5.CallOnAdaptor
+	36, // 59: steward.v3.CellarV2_5.FunctionCall.remove_position:type_name -> steward.v3.CellarV2_5.RemovePosition
+	37, // 60: steward.v3.CellarV2_5.FunctionCall.set_holding_position:type_name -> steward.v3.CellarV2_5.SetHoldingPosition
+	38, // 61: steward.v3.CellarV2_5.FunctionCall.set_strategist_payout_address:type_name -> steward.v3.CellarV2_5.SetStrategistPayoutAddress
+	39, // 62: steward.v3.CellarV2_5.FunctionCall.swap_positions:type_name -> steward.v3.CellarV2_5.SwapPositions
+	41, // 63: steward.v3.CellarV2_5.FunctionCall.set_rebalance_deviation:type_name -> steward.v3.CellarV2_5.SetRebalanceDeviation
+	40, // 64: steward.v3.CellarV2_5.FunctionCall.set_share_lock_period:type_name -> steward.v3.CellarV2_5.SetShareLockPeriod
+	42, // 65: steward.v3.CellarV2_5.FunctionCall.initiate_shutdown:type_name -> steward.v3.CellarV2_5.InitiateShutdown
+	43, // 66: steward.v3.CellarV2_5.FunctionCall.set_strategist_platform_cut:type_name -> steward.v3.CellarV2_5.SetStrategistPlatformCut
+	44, // 67: steward.v3.CellarV2_5.FunctionCall.lift_shutdown:type_name -> steward.v3.CellarV2_5.LiftShutdown
+	45, // 68: steward.v3.CellarV2_5.FunctionCall.add_adaptor_to_catalogue:type_name -> steward.v3.CellarV2_5.AddAdaptorToCatalogue
+	47, // 69: steward.v3.CellarV2_5.FunctionCall.add_position_to_catalogue:type_name -> steward.v3.CellarV2_5.AddPositionToCatalogue
+	48, // 70: steward.v3.CellarV2_5.FunctionCall.remove_adaptor_from_catalogue:type_name -> steward.v3.CellarV2_5.RemoveAdaptorFromCatalogue
+	49, // 71: steward.v3.CellarV2_5.FunctionCall.remove_position_from_catalogue:type_name -> steward.v3.CellarV2_5.RemovePositionFromCatalogue
+	50, // 72: steward.v3.CellarV2_5.FunctionCall.increase_share_supply_cap:type_name -> steward.v3.CellarV2_5.IncreaseShareSupplyCap
+	51, // 73: steward.v3.CellarV2_5.FunctionCall.decrease_share_supply_cap:type_name -> steward.v3.CellarV2_5.DecreaseShareSupplyCap
+	3,  // 74: steward.v3.CellarV2_5.CallOnAdaptor.data:type_name -> steward.v3.AdaptorCall
+	33, // 75: steward.v3.CellarV2_5.Multicall.function_calls:type_name -> steward.v3.CellarV2_5.FunctionCall
+	76, // [76:76] is the sub-list for method output_type
+	76, // [76:76] is the sub-list for method input_type
+	76, // [76:76] is the sub-list for extension type_name
+	76, // [76:76] is the sub-list for extension extendee
+	0,  // [0:76] is the sub-list for field type_name
 }
 
 func init() { file_cellar_v2_proto_init() }
@@ -3216,7 +4794,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AdaptorCall); i {
+			switch v := v.(*CellarV2_5); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3228,7 +4806,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_AddPosition); i {
+			switch v := v.(*AdaptorCall); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3240,7 +4818,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_CallOnAdaptor); i {
+			switch v := v.(*CellarV2_AddPosition); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3252,7 +4830,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_RemovePosition); i {
+			switch v := v.(*CellarV2_CallOnAdaptor); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3264,7 +4842,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_SetHoldingPosition); i {
+			switch v := v.(*CellarV2_RemovePosition); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3276,7 +4854,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_SetStrategistPayoutAddress); i {
+			switch v := v.(*CellarV2_SetHoldingPosition); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3288,7 +4866,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_SwapPositions); i {
+			switch v := v.(*CellarV2_SetStrategistPayoutAddress); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3300,7 +4878,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_SetShareLockPeriod); i {
+			switch v := v.(*CellarV2_SwapPositions); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3312,7 +4890,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_SetRebalanceDeviation); i {
+			switch v := v.(*CellarV2_SetShareLockPeriod); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3324,7 +4902,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_SetupAdaptor); i {
+			switch v := v.(*CellarV2_SetRebalanceDeviation); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3336,7 +4914,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_SetPlatformFee); i {
+			switch v := v.(*CellarV2_SetupAdaptor); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3348,7 +4926,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_InitiateShutdown); i {
+			switch v := v.(*CellarV2_SetPlatformFee); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3360,7 +4938,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_LiftShutdown); i {
+			switch v := v.(*CellarV2_InitiateShutdown); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3372,7 +4950,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_2_FunctionCall); i {
+			switch v := v.(*CellarV2_LiftShutdown); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3384,7 +4962,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_2_AddPosition); i {
+			switch v := v.(*CellarV2_2_FunctionCall); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3396,7 +4974,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_2_CallOnAdaptor); i {
+			switch v := v.(*CellarV2_2_AddPosition); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3408,7 +4986,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_2_RemovePosition); i {
+			switch v := v.(*CellarV2_2_CallOnAdaptor); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3420,7 +4998,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_2_SetHoldingPosition); i {
+			switch v := v.(*CellarV2_2_RemovePosition); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3432,7 +5010,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_2_SetStrategistPayoutAddress); i {
+			switch v := v.(*CellarV2_2_SetHoldingPosition); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3444,7 +5022,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_2_SwapPositions); i {
+			switch v := v.(*CellarV2_2_SetStrategistPayoutAddress); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3456,7 +5034,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_2_SetShareLockPeriod); i {
+			switch v := v.(*CellarV2_2_SwapPositions); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3468,7 +5046,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_2_SetRebalanceDeviation); i {
+			switch v := v.(*CellarV2_2_SetShareLockPeriod); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3480,7 +5058,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_2_InitiateShutdown); i {
+			switch v := v.(*CellarV2_2_SetRebalanceDeviation); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3492,7 +5070,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_2_SetStrategistPlatformCut); i {
+			switch v := v.(*CellarV2_2_InitiateShutdown); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3504,7 +5082,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_2_LiftShutdown); i {
+			switch v := v.(*CellarV2_2_SetStrategistPlatformCut); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3516,7 +5094,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_2_AddAdaptorToCatalogue); i {
+			switch v := v.(*CellarV2_2_LiftShutdown); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3528,7 +5106,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_2_Multicall); i {
+			switch v := v.(*CellarV2_2_AddAdaptorToCatalogue); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3540,7 +5118,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_2_AddPositionToCatalogue); i {
+			switch v := v.(*CellarV2_2_Multicall); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3552,7 +5130,7 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CellarV2_2_RemoveAdaptorFromCatalogue); i {
+			switch v := v.(*CellarV2_2_AddPositionToCatalogue); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3564,7 +5142,247 @@ func file_cellar_v2_proto_init() {
 			}
 		}
 		file_cellar_v2_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_2_RemoveAdaptorFromCatalogue); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CellarV2_2_RemovePositionFromCatalogue); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_FunctionCall); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_AddPosition); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_CallOnAdaptor); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[36].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_RemovePosition); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[37].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_SetHoldingPosition); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[38].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_SetStrategistPayoutAddress); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[39].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_SwapPositions); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[40].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_SetShareLockPeriod); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[41].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_SetRebalanceDeviation); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[42].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_InitiateShutdown); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[43].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_SetStrategistPlatformCut); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[44].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_LiftShutdown); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[45].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_AddAdaptorToCatalogue); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[46].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_Multicall); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[47].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_AddPositionToCatalogue); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[48].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_RemoveAdaptorFromCatalogue); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[49].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_RemovePositionFromCatalogue); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[50].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_IncreaseShareSupplyCap); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cellar_v2_proto_msgTypes[51].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CellarV2_5_DecreaseShareSupplyCap); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3595,6 +5413,10 @@ func file_cellar_v2_proto_init() {
 		(*CellarV2_2_Multicall_)(nil),
 	}
 	file_cellar_v2_proto_msgTypes[2].OneofWrappers = []interface{}{
+		(*CellarV2_5_FunctionCall_)(nil),
+		(*CellarV2_5_Multicall_)(nil),
+	}
+	file_cellar_v2_proto_msgTypes[3].OneofWrappers = []interface{}{
 		(*AdaptorCall_UniswapV3V1Calls)(nil),
 		(*AdaptorCall_AaveATokenV1Calls)(nil),
 		(*AdaptorCall_AaveDebtTokenV1Calls)(nil),
@@ -3619,7 +5441,7 @@ func file_cellar_v2_proto_init() {
 		(*AdaptorCall_MorphoAaveV3DebtTokenV1Calls)(nil),
 		(*AdaptorCall_BalancerPoolV1Calls)(nil),
 	}
-	file_cellar_v2_proto_msgTypes[15].OneofWrappers = []interface{}{
+	file_cellar_v2_proto_msgTypes[16].OneofWrappers = []interface{}{
 		(*CellarV2_2_FunctionCall_AddPosition)(nil),
 		(*CellarV2_2_FunctionCall_CallOnAdaptor)(nil),
 		(*CellarV2_2_FunctionCall_RemovePosition)(nil),
@@ -3636,13 +5458,32 @@ func file_cellar_v2_proto_init() {
 		(*CellarV2_2_FunctionCall_RemoveAdaptorFromCatalogue)(nil),
 		(*CellarV2_2_FunctionCall_RemovePositionFromCatalogue)(nil),
 	}
+	file_cellar_v2_proto_msgTypes[33].OneofWrappers = []interface{}{
+		(*CellarV2_5_FunctionCall_AddPosition)(nil),
+		(*CellarV2_5_FunctionCall_CallOnAdaptor)(nil),
+		(*CellarV2_5_FunctionCall_RemovePosition)(nil),
+		(*CellarV2_5_FunctionCall_SetHoldingPosition)(nil),
+		(*CellarV2_5_FunctionCall_SetStrategistPayoutAddress)(nil),
+		(*CellarV2_5_FunctionCall_SwapPositions)(nil),
+		(*CellarV2_5_FunctionCall_SetRebalanceDeviation)(nil),
+		(*CellarV2_5_FunctionCall_SetShareLockPeriod)(nil),
+		(*CellarV2_5_FunctionCall_InitiateShutdown)(nil),
+		(*CellarV2_5_FunctionCall_SetStrategistPlatformCut)(nil),
+		(*CellarV2_5_FunctionCall_LiftShutdown)(nil),
+		(*CellarV2_5_FunctionCall_AddAdaptorToCatalogue)(nil),
+		(*CellarV2_5_FunctionCall_AddPositionToCatalogue)(nil),
+		(*CellarV2_5_FunctionCall_RemoveAdaptorFromCatalogue)(nil),
+		(*CellarV2_5_FunctionCall_RemovePositionFromCatalogue)(nil),
+		(*CellarV2_5_FunctionCall_IncreaseShareSupplyCap)(nil),
+		(*CellarV2_5_FunctionCall_DecreaseShareSupplyCap)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_cellar_v2_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   32,
+			NumMessages:   52,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
