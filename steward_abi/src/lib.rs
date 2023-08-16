@@ -12,6 +12,7 @@ pub mod cellar_adaptor_v1;
 pub mod cellar_v1;
 pub mod cellar_v2;
 pub mod cellar_v2_2;
+pub mod cellar_v2_5;
 pub mod compound_c_token_adaptor_v2;
 pub mod f_token_adaptor;
 pub mod fees_and_reserves_adaptor_v1;
