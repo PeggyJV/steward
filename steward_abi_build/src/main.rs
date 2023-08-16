@@ -50,6 +50,7 @@ fn main() {
             "morpho_aave_v3_debt_token_adaptor_v1",
         ),
         ("MorphoRewardHandler", "morpho_reward_handler"),
+        ("BalancerPoolAdaptorV1", "balancer_pool_adaptor_v1"),
     ];
 
     contracts
