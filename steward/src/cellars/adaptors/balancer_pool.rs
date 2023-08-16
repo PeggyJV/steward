@@ -139,7 +139,9 @@ fn convert_single_swap(swaps: Vec<SingleSwap>) -> Result<Vec<AbiSingleSwap>, Err
                     ErrorKind::SPCallError.context(format!("failed to decode pool_id: {e}"))
                 })?
                 .try_into()
-                .map_err(|_| ErrorKind::SPCallError.context(format!("pool ID must be 32 bytes")))?;
+                .map_err(|_| {
+                    ErrorKind::SPCallError.context("pool ID must be 32 bytes".to_string())
+                })?;
 
             Ok(AbiSingleSwap {
                 pool_id,
