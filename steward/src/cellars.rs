@@ -11,6 +11,7 @@ pub(crate) mod adaptors;
 pub(crate) mod cellar_v1;
 pub(crate) mod cellar_v2;
 pub(crate) mod cellar_v2_2;
+pub(crate) mod cellar_v2_5;
 
 // constants
 // addresses are normalized by removing the 0x prefix and converting to lowercase for reliable comparison

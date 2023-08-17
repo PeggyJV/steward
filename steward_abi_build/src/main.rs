@@ -51,6 +51,11 @@ fn main() {
         ),
         ("MorphoRewardHandler", "morpho_reward_handler"),
         ("BalancerPoolAdaptorV1", "balancer_pool_adaptor_v1"),
+        ("CellarV2_5", "cellar_v2_5"),
+        (
+            "CellarWithShareLockPeriodV1",
+            "cellar_with_share_lock_period_v1",
+        ),
     ];
 
     contracts

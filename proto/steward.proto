@@ -37,6 +37,7 @@ message SubmitRequest {
         CellarV1 cellar_v1 = 3;
         CellarV2 cellar_v2 = 4;
         CellarV2_2 cellar_v2dot2 = 5;
+        CellarV2_5 cellar_v2dot5 = 6;
     }
 }
 
