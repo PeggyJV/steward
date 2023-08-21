@@ -18,20 +18,9 @@ pub(crate) mod cellar_v2_5;
 
 // allow/block lists.
 
-pub const ALLOWED_CATALOGUE_ADAPTORS: [(&str, &str); 2] = [
-    (CELLAR_RYETH, ADAPTOR_UNIV3_V3),
-    (CELLAR_RYBTC, ADAPTOR_UNIV3_V3),
-];
-pub const ALLOWED_CATALOGUE_POSITIONS: [(&str, u32); 6] = [
-    (CELLAR_RYETH, 185),
-    (CELLAR_RYETH, 186),
-    (CELLAR_RYETH, 187),
-    (CELLAR_RYBTC, 185),
-    (CELLAR_RYBTC, 186),
-    (CELLAR_RYBTC, 187),
-];
-pub const ALLOWED_SETUP_ADAPTORS: [(&str, &str); 1] =
-    [(CELLAR_RYUSD, ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1)];
+pub const ALLOWED_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
+pub const ALLOWED_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
+pub const ALLOWED_SETUP_ADAPTORS: [(&str, &str); 1] = [(CELLAR_RYUSD, ADAPTOR_DAI_SAVINGS_RATE_V1)];
 pub const BLOCKED_ADAPTORS: [&str; 3] = [
     ADAPTOR_UNIV3_V1,
     ADAPTOR_VESTING_SIMPLE_V1,
@@ -66,6 +55,7 @@ pub const ADAPTOR_MORPHO_AAVE_V3_A_TOKEN_COLLATERAL_V1: &str =
 pub const ADAPTOR_MORPHO_AAVE_V3_DEBT_TOKEN_V1: &str = "25a61f771af9a38c10ddd93c2bbab39a88926fa9";
 pub const ADAPTOR_MORPHO_AAVE_V3_P2P_V1: &str = "4fe068caad05b82bf3f86e1f7d1a7b8bbf516111";
 pub const ADAPTOR_UNIV3_V3: &str = "92611574ec9bc13c6137917481dab7bb7b173c9b";
+pub const ADAPTOR_DAI_SAVINGS_RATE_V1: &str = "3b5ca5de4d808cd793d3a7b3a731d3e67e707b27";
 
 // utils
 
