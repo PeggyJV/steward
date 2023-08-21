@@ -216,14 +216,12 @@ mod tests {
         assert_eq!(expected_err, res.unwrap_err().to_string());
     }
 
-    // Test currently ignored because there are no adaptors allowed to be added to the catalogue,
-    // update if any are added back
-    #[ignore]
     #[test]
     fn test_validate_add_adaptor_to_catalogue() {
         // allows approved cellar/adaptor ID pairs
         let (cellar_id, approved_adaptor_id) = (CELLAR_RYETH, ADAPTOR_UNIV3_V3);
-        assert!(validate_add_adaptor_to_catalogue(cellar_id, approved_adaptor_id).is_ok());
+        // "approved" assertion commented out since the list is empty, update if any elements are added
+        //assert!(validate_add_adaptor_to_catalogue(cellar_id, approved_adaptor_id).is_ok());
 
         let error_prefix = "SP call error: ".to_string();
 
@@ -253,14 +251,12 @@ mod tests {
         assert_eq!(expected_err, res.unwrap_err().to_string());
     }
 
-    // Test currently ignored because there are no positions allowed to be added to the catalogue,
-    // update if any are added back
-    #[ignore]
     #[test]
     fn test_validate_add_position_to_catalogue() {
         // allows approved cellar/position ID pairs
         let (cellar_id, approved_pos) = (CELLAR_RYETH, 185);
-        assert!(validate_add_position_to_catalogue(cellar_id, approved_pos).is_ok());
+        // "approved" assertion commented out since the list is empty, update if any elements are added
+        //assert!(validate_add_position_to_catalogue(cellar_id, approved_pos).is_ok());
 
         let error_prefix = "SP call error: ".to_string();
 
