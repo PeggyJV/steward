@@ -24,8 +24,8 @@ use crate::{
 };
 
 use super::{
-    check_blocked_adaptor, check_blocked_position, log_cellar_call,
-    validate_add_adaptor_to_catalogue, validate_add_position_to_catalogue,
+    check_blocked_adaptor, check_blocked_position, log_cellar_call, validate_new_adaptor,
+    validate_new_position, V2_5_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2.5";
@@ -54,7 +54,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
         .ok_or_else(|| sp_call_error("call data is empty".to_string()))?;
     match function {
         Function::AddPosition(params) => {
-            check_blocked_position(&params.position_id)?;
+            check_blocked_position(&params.position_id, &V2_5_PERMISSIONS)?;
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
 
             let call = AddPositionCall {
@@ -187,7 +187,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             Ok(CellarV2_5Calls::LiftShutdown(call).encode())
         }
         Function::AddAdaptorToCatalogue(params) => {
-            validate_add_adaptor_to_catalogue(&cellar_id, &params.adaptor)?;
+            validate_new_adaptor(&cellar_id, &params.adaptor, &V2_5_PERMISSIONS)?;
             log_cellar_call(
                 CELLAR_NAME,
                 &AddAdaptorToCatalogueCall::function_name(),
@@ -200,7 +200,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             Ok(CellarV2_5Calls::AddAdaptorToCatalogue(call).encode())
         }
         Function::AddPositionToCatalogue(params) => {
-            validate_add_position_to_catalogue(&cellar_id, params.position_id)?;
+            validate_new_position(&cellar_id, params.position_id, &V2_5_PERMISSIONS)?;
             log_cellar_call(
                 CELLAR_NAME,
                 &AddPositionToCatalogueCall::function_name(),
