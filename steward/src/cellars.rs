@@ -18,6 +18,7 @@ pub(crate) mod cellar_v2_5;
 
 // allow/block lists.
 
+// update catalogue unit tests if adding values to these zero length lists
 pub const ALLOWED_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
 pub const ALLOWED_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
 pub const ALLOWED_SETUP_ADAPTORS: [(&str, &str); 1] = [(CELLAR_RYUSD, ADAPTOR_CELLAR_V2)];
@@ -215,6 +216,9 @@ mod tests {
         assert_eq!(expected_err, res.unwrap_err().to_string());
     }
 
+    // Test currently ignored because there are no adaptors allowed to be added to the catalogue,
+    // update if any are added back
+    #[ignore]
     #[test]
     fn test_validate_add_adaptor_to_catalogue() {
         // allows approved cellar/adaptor ID pairs
@@ -249,6 +253,9 @@ mod tests {
         assert_eq!(expected_err, res.unwrap_err().to_string());
     }
 
+    // Test currently ignored because there are no positions allowed to be added to the catalogue,
+    // update if any are added back
+    #[ignore]
     #[test]
     fn test_validate_add_position_to_catalogue() {
         // allows approved cellar/position ID pairs
