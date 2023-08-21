@@ -18,20 +18,10 @@ pub(crate) mod cellar_v2_5;
 
 // allow/block lists.
 
-pub const ALLOWED_CATALOGUE_ADAPTORS: [(&str, &str); 2] = [
-    (CELLAR_RYETH, ADAPTOR_UNIV3_V3),
-    (CELLAR_RYBTC, ADAPTOR_UNIV3_V3),
-];
-pub const ALLOWED_CATALOGUE_POSITIONS: [(&str, u32); 6] = [
-    (CELLAR_RYETH, 185),
-    (CELLAR_RYETH, 186),
-    (CELLAR_RYETH, 187),
-    (CELLAR_RYBTC, 185),
-    (CELLAR_RYBTC, 186),
-    (CELLAR_RYBTC, 187),
-];
-pub const ALLOWED_SETUP_ADAPTORS: [(&str, &str); 1] =
-    [(CELLAR_RYUSD, ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1)];
+// update catalogue unit tests if adding values to these zero length lists
+pub const ALLOWED_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
+pub const ALLOWED_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
+pub const ALLOWED_SETUP_ADAPTORS: [(&str, &str); 1] = [(CELLAR_RYUSD, ADAPTOR_CELLAR_V2)];
 pub const BLOCKED_ADAPTORS: [&str; 3] = [
     ADAPTOR_UNIV3_V1,
     ADAPTOR_VESTING_SIMPLE_V1,
@@ -230,7 +220,8 @@ mod tests {
     fn test_validate_add_adaptor_to_catalogue() {
         // allows approved cellar/adaptor ID pairs
         let (cellar_id, approved_adaptor_id) = (CELLAR_RYETH, ADAPTOR_UNIV3_V3);
-        assert!(validate_add_adaptor_to_catalogue(cellar_id, approved_adaptor_id).is_ok());
+        // "approved" assertion commented out since the list is empty, update if any elements are added
+        //assert!(validate_add_adaptor_to_catalogue(cellar_id, approved_adaptor_id).is_ok());
 
         let error_prefix = "SP call error: ".to_string();
 
@@ -264,7 +255,8 @@ mod tests {
     fn test_validate_add_position_to_catalogue() {
         // allows approved cellar/position ID pairs
         let (cellar_id, approved_pos) = (CELLAR_RYETH, 185);
-        assert!(validate_add_position_to_catalogue(cellar_id, approved_pos).is_ok());
+        // "approved" assertion commented out since the list is empty, update if any elements are added
+        //assert!(validate_add_position_to_catalogue(cellar_id, approved_pos).is_ok());
 
         let error_prefix = "SP call error: ".to_string();
 
@@ -298,7 +290,7 @@ mod tests {
     #[test]
     fn test_validate_setup_adaptor() {
         // allows approved cellar/adaptor ID pairs
-        let (cellar_id, approved_adaptor_id) = (CELLAR_RYUSD, ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1);
+        let (cellar_id, approved_adaptor_id) = (CELLAR_RYUSD, ADAPTOR_CELLAR_V2);
         assert!(validate_setup_adaptor(cellar_id, approved_adaptor_id).is_ok());
 
         let error_prefix = "SP call error: ".to_string();
@@ -312,7 +304,7 @@ mod tests {
         assert_eq!(expected_err, res.unwrap_err().to_string());
 
         // rejects unapproved cellar/adaptor ID pair
-        let unapproved_adaptor_id = ADAPTOR_CELLAR_V2;
+        let unapproved_adaptor_id = ADAPTOR_UNIV3_V3;
         let res = validate_setup_adaptor(cellar_id, unapproved_adaptor_id);
         let expected_err = error_prefix.clone()
             + &format!("adaptor {unapproved_adaptor_id} not allowed to be setup for {cellar_id}");
