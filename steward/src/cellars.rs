@@ -22,6 +22,8 @@ pub const ALLOWED_V2_0_SETUP_ADAPTORS: [(&str, &str); 1] = [(CELLAR_RYUSD, ADAPT
 pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
 pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
 
+// due to position size limits in v2.0, positions must be added and removed from the limited list
+// and thus approved positions need to be allowed to be re-added, hence this large list
 pub const ALLOWED_V2_0_POSITIONS: [(&str, u32); 20] = [
     (CELLAR_RYUSD, 1),
     (CELLAR_RYUSD, 2),
