@@ -261,7 +261,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             Ok(CellarV2_5Calls::DecreaseShareSupplyCap(call).encode())
         }
         Function::SetSharePriceOracle(params) => {
-            validate_oracle(&cellar_id, &params.oracle, &params.registry_id)?;
+            validate_oracle(&cellar_id, &params.registry_id, &params.oracle)?;
             log_cellar_call(
                 CELLAR_NAME,
                 &SetSharePriceOracleCall::function_name(),
