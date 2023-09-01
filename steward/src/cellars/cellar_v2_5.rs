@@ -25,7 +25,8 @@ use crate::{
 
 use super::{
     check_blocked_adaptor, check_blocked_position, log_cellar_call, normalize_address,
-    validate_new_adaptor, validate_new_position, CELLAR_TURBO_SWETH, V2_5_PERMISSIONS,
+    validate_new_adaptor, validate_new_position, ALLOWED_PRICE_ORACLES, CELLAR_TURBO_SWETH,
+    V2_5_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2.5";
@@ -263,15 +264,9 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
         Function::SetSharePriceOracle(params) => {
             let cellar_id_normalized = normalize_address(cellar_id.clone());
             let oracle_in = normalize_address(params.oracle.clone());
-            let allowed_oracles = [
-                normalize_address("0x72249f0199EACf6230DEF33A31e80CF76de78f67".to_string()),
-                normalize_address("0xC47278B65443cE71CF47E8455BB343F2DB11B70e".to_string()),
-            ];
-            let allowed_registry_ids = [U256::from(3), U256::from(5)];
             let registry_id_in = string_to_u256(params.registry_id.clone())?;
             if !cellar_id_normalized.eq(CELLAR_TURBO_SWETH)
-                || !allowed_oracles.contains(&oracle_in)
-                || !allowed_registry_ids.contains(&registry_id_in)
+                || !ALLOWED_PRICE_ORACLES.contains(&(registry_id_in, &oracle_in))
             {
                 return Err(ErrorKind::SPCallError
                     .context("unauthorized oracle update".to_string())

@@ -16,6 +16,18 @@ pub(crate) mod cellar_v2_5;
 // constants
 // addresses are normalized by removing the 0x prefix and converting to lowercase for reliable comparison
 
+// oracles
+
+pub const ORACLE1: (U256, &'static str) = (
+    U256([3, 0, 0, 0]),
+    "72249f0199eacf6230def33a31e80cf76de78f67",
+);
+pub const ORACLE2: (U256, &'static str) = (
+    U256([5, 0, 0, 0]),
+    "c47278b65443ce71cf47e8455bb343f2db11b70e",
+);
+pub const ALLOWED_PRICE_ORACLES: [(U256, &'static str); 2] = [ORACLE1, ORACLE2];
+
 // permissions
 
 pub const ALLOWED_V2_0_SETUP_ADAPTORS: [(&str, &str); 1] = [(CELLAR_RYUSD, ADAPTOR_CELLAR_V2)];
@@ -358,5 +370,10 @@ mod tests {
             );
         assert!(res.is_err());
         assert_eq!(expected_err, res.unwrap_err().to_string());
+    }
+
+    #[test]
+    fn test_U256_sanity() {
+        assert_eq!(U256([5, 0, 0, 0]), U256::from(5));
     }
 }
