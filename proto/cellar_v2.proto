@@ -434,6 +434,8 @@ message CellarV2_5 {
             IncreaseShareSupplyCap increase_share_supply_cap = 16;
             // Represents function `decreaseShareSupplyCap(uint192)
             DecreaseShareSupplyCap decrease_share_supply_cap = 17;
+            // Represents function `setSharePriceOracle(uint256, address)
+            SetSharePriceOracle set_share_price_oracle = 18;
         }
     }
 
@@ -611,6 +613,18 @@ message CellarV2_5 {
     */
     message DecreaseShareSupplyCap {
         string new_cap = 1;
+    }
+
+    /*
+    * Allows strategist to set the share price oracle contract
+    *
+    * Represents function `setSharePriceOracle(uint256, address)`
+    */
+    message SetSharePriceOracle {
+        // The oracle registry ID
+        string registry_id = 1;
+        // The oracle contract address
+        string oracle = 2;
     }
 }
 

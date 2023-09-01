@@ -91,6 +91,7 @@ pub const CELLAR_RYSNX: &str = "cbf2250f33c4161e18d4a2fa47464520af5216b5";
 pub const CELLAR_RYUNI: &str = "6a6af5393dc23d7e3db28d28ef422db7c40932b6";
 pub const CELLAR_RYUSD: &str = "97e6e0a40a3d02f12d1cec30ebfbae04e37c119e";
 pub const CELLAR_RYBTC: &str = "0274a704a6d9129f90a62ddc6f6024b33ecdad36";
+pub const CELLAR_TURBO_SWETH: &str = "d33dad974b938744dac81fe00ac67cb5aa13958e";
 
 // deprecated adaptors
 
