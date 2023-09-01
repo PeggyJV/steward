@@ -24,9 +24,8 @@ use crate::{
 };
 
 use super::{
-    check_blocked_adaptor, check_blocked_position, log_cellar_call, normalize_address,
-    validate_new_adaptor, validate_new_position, ALLOWED_PRICE_ORACLES, CELLAR_TURBO_SWETH,
-    V2_5_PERMISSIONS,
+    check_blocked_adaptor, check_blocked_position, log_cellar_call, validate_new_adaptor,
+    validate_new_position, validate_oracle, V2_5_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2.5";
@@ -262,17 +261,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             Ok(CellarV2_5Calls::DecreaseShareSupplyCap(call).encode())
         }
         Function::SetSharePriceOracle(params) => {
-            let cellar_id_normalized = normalize_address(cellar_id.clone());
-            let oracle_in = normalize_address(params.oracle.clone());
-            let registry_id_in = string_to_u256(params.registry_id.clone())?;
-            if !cellar_id_normalized.eq(CELLAR_TURBO_SWETH)
-                || !ALLOWED_PRICE_ORACLES.contains(&(registry_id_in, &oracle_in))
-            {
-                return Err(ErrorKind::SPCallError
-                    .context("unauthorized oracle update".to_string())
-                    .into());
-            }
-
+            validate_oracle(&cellar_id, &params.oracle, &params.registry_id)?;
             log_cellar_call(
                 CELLAR_NAME,
                 &SetSharePriceOracleCall::function_name(),
