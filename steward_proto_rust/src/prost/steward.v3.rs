@@ -2745,7 +2745,7 @@ pub mod cellar_v2_5 {
     pub struct FunctionCall {
         #[prost(
             oneof = "function_call::Function",
-            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17"
+            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18"
         )]
         pub function: ::core::option::Option<function_call::Function>,
     }
@@ -2804,6 +2804,9 @@ pub mod cellar_v2_5 {
             /// Represents function `decreaseShareSupplyCap(uint192)
             #[prost(message, tag = "17")]
             DecreaseShareSupplyCap(super::DecreaseShareSupplyCap),
+            /// Represents function `setSharePriceOracle(uint256, address)
+            #[prost(message, tag = "18")]
+            SetSharePriceOracle(super::SetSharePriceOracle),
         }
     }
     ///
@@ -2985,6 +2988,19 @@ pub mod cellar_v2_5 {
     pub struct DecreaseShareSupplyCap {
         #[prost(string, tag = "1")]
         pub new_cap: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to set the share price oracle contract
+    ///
+    /// Represents function `setSharePriceOracle(uint256, address)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SetSharePriceOracle {
+        /// The oracle registry ID
+        #[prost(string, tag = "1")]
+        pub registry_id: ::prost::alloc::string::String,
+        /// The oracle contract address
+        #[prost(string, tag = "2")]
+        pub oracle: ::prost::alloc::string::String,
     }
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum CallType {

@@ -4,7 +4,10 @@ use std::result::Result;
 use abscissa_core::tracing::log::info;
 use ethers::prelude::*;
 
-use crate::{error::Error, utils::sp_call_error};
+use crate::{
+    error::Error,
+    utils::{sp_call_error, string_to_u256},
+};
 
 pub(crate) mod aave_v2_stablecoin;
 pub(crate) mod adaptors;
@@ -15,6 +18,18 @@ pub(crate) mod cellar_v2_5;
 
 // constants
 // addresses are normalized by removing the 0x prefix and converting to lowercase for reliable comparison
+
+// oracles
+
+pub const ORACLE1: (U256, &str) = (
+    U256([3, 0, 0, 0]),
+    "72249f0199eacf6230def33a31e80cf76de78f67",
+);
+pub const ORACLE2: (U256, &str) = (
+    U256([5, 0, 0, 0]),
+    "c47278b65443ce71cf47e8455bb343f2db11b70e",
+);
+pub const ALLOWED_PRICE_ORACLES: [(U256, &str); 2] = [ORACLE1, ORACLE2];
 
 // permissions
 
@@ -91,6 +106,7 @@ pub const CELLAR_RYSNX: &str = "cbf2250f33c4161e18d4a2fa47464520af5216b5";
 pub const CELLAR_RYUNI: &str = "6a6af5393dc23d7e3db28d28ef422db7c40932b6";
 pub const CELLAR_RYUSD: &str = "97e6e0a40a3d02f12d1cec30ebfbae04e37c119e";
 pub const CELLAR_RYBTC: &str = "0274a704a6d9129f90a62ddc6f6024b33ecdad36";
+pub const CELLAR_TURBO_SWETH: &str = "d33dad974b938744dac81fe00ac67cb5aa13958e";
 
 // deprecated adaptors
 
@@ -166,6 +182,23 @@ pub fn validate_new_position(
         return Err(sp_call_error(format!(
             "new position {position} not allowed to be added for cellar {cellar_id}"
         )));
+    }
+
+    Ok(())
+}
+
+pub fn validate_oracle(
+    cellar_id: &str,
+    registry_id_in: &str,
+    oracle_in: &str,
+) -> Result<(), Error> {
+    let cellar_id_normalized = normalize_address(cellar_id.to_string());
+    let oracle_in = normalize_address(oracle_in.to_string());
+    let registry_id_in = string_to_u256(registry_id_in.to_string())?;
+    if !cellar_id_normalized.eq(CELLAR_TURBO_SWETH)
+        || !ALLOWED_PRICE_ORACLES.contains(&(registry_id_in, oracle_in.as_str()))
+    {
+        return Err(sp_call_error("unauthorized oracle update".to_string()));
     }
 
     Ok(())
@@ -357,5 +390,20 @@ mod tests {
             );
         assert!(res.is_err());
         assert_eq!(expected_err, res.unwrap_err().to_string());
+    }
+
+    #[test]
+    fn test_u256_sanity() {
+        assert_eq!(U256([5, 0, 0, 0]), U256::from(5));
+    }
+
+    #[test]
+    fn test_validate_oracle() {
+        assert!(validate_oracle(CELLAR_RYBTC, &ORACLE1.0.to_string(), ORACLE1.1).is_err());
+        assert!(
+            validate_oracle(CELLAR_TURBO_SWETH, &U256::from(6).to_string(), ORACLE2.1).is_err()
+        );
+        assert!(validate_oracle(CELLAR_TURBO_SWETH, &ORACLE1.0.to_string(), ORACLE1.1).is_ok());
+        assert!(validate_oracle(CELLAR_TURBO_SWETH, &ORACLE2.0.to_string(), ORACLE2.1).is_ok());
     }
 }

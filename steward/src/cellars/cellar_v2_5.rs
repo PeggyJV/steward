@@ -25,7 +25,7 @@ use crate::{
 
 use super::{
     check_blocked_adaptor, check_blocked_position, log_cellar_call, validate_new_adaptor,
-    validate_new_position, V2_5_PERMISSIONS,
+    validate_new_position, validate_oracle, V2_5_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2.5";
@@ -259,6 +259,20 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             };
 
             Ok(CellarV2_5Calls::DecreaseShareSupplyCap(call).encode())
+        }
+        Function::SetSharePriceOracle(params) => {
+            validate_oracle(&cellar_id, &params.registry_id, &params.oracle)?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetSharePriceOracleCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetSharePriceOracleCall {
+                registry_id: string_to_u256(params.registry_id)?,
+                share_price_oracle: sp_call_parse_address(params.oracle)?,
+            };
+
+            Ok(CellarV2_5Calls::SetSharePriceOracle(call).encode())
         }
     }
 }
