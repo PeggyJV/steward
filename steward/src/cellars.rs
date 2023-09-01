@@ -189,8 +189,8 @@ pub fn validate_new_position(
 
 pub fn validate_oracle(
     cellar_id: &str,
-    registry_id_in: &str,
     oracle_in: &str,
+    registry_id_in: &str,
 ) -> Result<(), Error> {
     let cellar_id_normalized = normalize_address(cellar_id.to_string());
     let oracle_in = normalize_address(oracle_in.to_string());
