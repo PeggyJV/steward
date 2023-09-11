@@ -227,6 +227,8 @@ message CellarV2_2 {
             RemoveAdaptorFromCatalogue remove_adaptor_from_catalogue = 14;
             // Represents function `removePositionFromCatalogue(uint32 positionId)`
             RemovePositionFromCatalogue remove_position_from_catalogue = 15;
+            // Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address, expectedPriceRouter)`
+            CachePriceRouter cache_price_router = 16;
         }
     }
 
@@ -386,6 +388,20 @@ message CellarV2_2 {
     */
     message RemovePositionFromCatalogue {
         uint32 position_id = 1;
+    }
+
+    /*
+    * Updates the cellar to use the latest price router in the registry. 
+    *
+    * Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address, expectedPriceRouter)`
+    */
+    message CachePriceRouter {
+        // Whether to check the total assets of the cellar
+        bool check_total_assets = 1;
+        // The allowable range of the cellar's total assets to deviate between old and new routers
+        uint32 allowable_range = 2;
+        // The address of the router that is expected to be cached from the registry. 
+        string expected_price_router = 3;
     }
 }
 
