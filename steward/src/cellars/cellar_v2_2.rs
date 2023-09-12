@@ -234,7 +234,11 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             Ok(CellarV2_2Calls::RemovePositionFromCatalogue(call).encode())
         }
         Function::CachePriceRouter(params) => {
-            validate_cache_price_router(&cellar_id)?;
+            validate_cache_price_router(
+                &cellar_id,
+                params.check_total_assets,
+                params.allowable_range,
+            )?;
             log_cellar_call(
                 CELLAR_NAME,
                 &CachePriceRouterCall::function_name(),

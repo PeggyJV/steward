@@ -219,7 +219,16 @@ pub fn validate_oracle(
     Ok(())
 }
 
-pub fn validate_cache_price_router(cellar_id: &str) -> Result<(), Error> {
+pub fn validate_cache_price_router(
+    cellar_id: &str,
+    check_total_assets_value: bool,
+    allowable_range_value: u32,
+) -> Result<(), Error> {
+    if !check_total_assets_value || allowable_range_value != 500 {
+        return Err(sp_call_error(
+            "unauthorized arguments for cachePriceRouter call".to_string(),
+        ));
+    }
     let cellar_id_normalized = normalize_address(cellar_id.to_string());
     if !ALLOWED_CACHE_PRICE_ROUTER.contains(&cellar_id_normalized.as_str()) {
         return Err(sp_call_error("call not authorized for cellar".to_string()));
