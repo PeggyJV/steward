@@ -2559,7 +2559,7 @@ pub mod cellar_v2_2 {
             /// Represents function `removePositionFromCatalogue(uint32 positionId)`
             #[prost(message, tag = "15")]
             RemovePositionFromCatalogue(super::RemovePositionFromCatalogue),
-            /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address, expectedPriceRouter)`
+            /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange)`
             #[prost(message, tag = "16")]
             CachePriceRouter(super::CachePriceRouter),
         }
@@ -2729,7 +2729,7 @@ pub mod cellar_v2_2 {
     ///
     /// Updates the cellar to use the latest price router in the registry.
     ///
-    /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address, expectedPriceRouter)`
+    /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct CachePriceRouter {
         /// Whether to check the total assets of the cellar
@@ -2738,9 +2738,6 @@ pub mod cellar_v2_2 {
         /// The allowable range of the cellar's total assets to deviate between old and new routers
         #[prost(uint32, tag = "2")]
         pub allowable_range: u32,
-        /// The address of the router that is expected to be cached from the registry.
-        #[prost(string, tag = "3")]
-        pub expected_price_router: ::prost::alloc::string::String,
     }
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum CallType {
