@@ -21,8 +21,8 @@ use crate::{
 };
 
 use super::{
-    check_blocked_adaptor, check_blocked_position, log_cellar_call, validate_new_adaptor,
-    validate_new_position, V2_2_PERMISSIONS,
+    check_blocked_adaptor, check_blocked_position, log_cellar_call, validate_cache_price_router,
+    validate_new_adaptor, validate_new_position, V2_2_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2.2";
@@ -232,6 +232,24 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             };
 
             Ok(CellarV2_2Calls::RemovePositionFromCatalogue(call).encode())
+        }
+        Function::CachePriceRouter(params) => {
+            validate_cache_price_router(
+                &cellar_id,
+                params.check_total_assets,
+                params.allowable_range,
+            )?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &CachePriceRouterCall::function_name(),
+                &cellar_id,
+            );
+            let call = CachePriceRouterCall {
+                check_total_assets: params.check_total_assets,
+                allowable_range: params.allowable_range as u16,
+            };
+
+            Ok(CellarV2_2Calls::CachePriceRouter(call).encode())
         }
     }
 }

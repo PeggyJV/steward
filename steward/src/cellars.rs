@@ -30,11 +30,16 @@ pub const ORACLE2: (U256, &str) = (
     "c47278b65443ce71cf47e8455bb343f2db11b70e",
 );
 pub const ALLOWED_PRICE_ORACLES: [(U256, &str); 2] = [ORACLE1, ORACLE2];
+pub const ALLOWED_CACHE_PRICE_ROUTER: [&str; 1] = [CELLAR_RYETH];
 
 // permissions
 
 pub const ALLOWED_V2_0_SETUP_ADAPTORS: [(&str, &str); 1] = [(CELLAR_RYUSD, ADAPTOR_CELLAR_V2)];
-pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
+pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 3] = [
+    (CELLAR_RYETH, ADAPTOR_AAVE_V3_A_TOKEN_V1),
+    (CELLAR_RYBTC, ADAPTOR_AAVE_V3_A_TOKEN_V1),
+    (CELLAR_RYBTC, ADAPTOR_CELLAR_V1),
+];
 pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
 
 // due to position size limits in v2.0, positions must be added and removed from the limited list
@@ -61,7 +66,15 @@ pub const ALLOWED_V2_0_POSITIONS: [(&str, u32); 20] = [
     (CELLAR_RYUSD, 28),
     (CELLAR_RYUSD, 29),
 ];
-pub const ALLOWED_V2_2_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
+pub const ALLOWED_V2_2_CATALOGUE_POSITIONS: [(&str, u32); 7] = [
+    (CELLAR_RYETH, 188),
+    (CELLAR_RYETH, 189),
+    (CELLAR_RYETH, 190),
+    (CELLAR_RYETH, 191),
+    (CELLAR_RYBTC, 192),
+    (CELLAR_RYBTC, 193),
+    (CELLAR_RYBTC, 194),
+];
 pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
 
 pub const BLOCKED_ADAPTORS: [&str; 3] = [
@@ -116,6 +129,8 @@ pub const ADAPTOR_COMPOUND_C_TOKEN_V1: &str = "26dba82495f6189dde7648ae88bead46c
 
 // adaptors
 
+pub const ADAPTOR_AAVE_V3_A_TOKEN_V1: &str = "76cef5606c8b6ba38fe2e3c639e1659afa530b47";
+pub const ADAPTOR_CELLAR_V1: &str = "1e22adf9e63ef8f2a3626841ddddd19683e31068";
 pub const ADAPTOR_CELLAR_V2: &str = "3b5ca5de4d808cd793d3a7b3a731d3e67e707b27";
 pub const ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1: &str = "1a4cb53edb8c65c3df6aa9d88c1ab4cf35312b73";
 pub const ADAPTOR_MORPHO_AAVE_V2_DEBT_TOKEN_V1: &str = "407d5489f201013ee6a6ca20fccb05047c548138";
@@ -199,6 +214,24 @@ pub fn validate_oracle(
         || !ALLOWED_PRICE_ORACLES.contains(&(registry_id_in, oracle_in.as_str()))
     {
         return Err(sp_call_error("unauthorized oracle update".to_string()));
+    }
+
+    Ok(())
+}
+
+pub fn validate_cache_price_router(
+    cellar_id: &str,
+    check_total_assets_value: bool,
+    allowable_range_value: u32,
+) -> Result<(), Error> {
+    if !check_total_assets_value || allowable_range_value != 500 {
+        return Err(sp_call_error(
+            "unauthorized arguments for cachePriceRouter call".to_string(),
+        ));
+    }
+    let cellar_id_normalized = normalize_address(cellar_id.to_string());
+    if !ALLOWED_CACHE_PRICE_ROUTER.contains(&cellar_id_normalized.as_str()) {
+        return Err(sp_call_error("call not authorized for cellar".to_string()));
     }
 
     Ok(())

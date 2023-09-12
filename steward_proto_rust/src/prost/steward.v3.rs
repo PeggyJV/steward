@@ -2506,7 +2506,7 @@ pub mod cellar_v2_2 {
     pub struct FunctionCall {
         #[prost(
             oneof = "function_call::Function",
-            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15"
+            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16"
         )]
         pub function: ::core::option::Option<function_call::Function>,
     }
@@ -2559,6 +2559,9 @@ pub mod cellar_v2_2 {
             /// Represents function `removePositionFromCatalogue(uint32 positionId)`
             #[prost(message, tag = "15")]
             RemovePositionFromCatalogue(super::RemovePositionFromCatalogue),
+            /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange)`
+            #[prost(message, tag = "16")]
+            CachePriceRouter(super::CachePriceRouter),
         }
     }
     ///
@@ -2722,6 +2725,19 @@ pub mod cellar_v2_2 {
     pub struct RemovePositionFromCatalogue {
         #[prost(uint32, tag = "1")]
         pub position_id: u32,
+    }
+    ///
+    /// Updates the cellar to use the latest price router in the registry.
+    ///
+    /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct CachePriceRouter {
+        /// Whether to check the total assets of the cellar
+        #[prost(bool, tag = "1")]
+        pub check_total_assets: bool,
+        /// The allowable range of the cellar's total assets to deviate between old and new routers
+        #[prost(uint32, tag = "2")]
+        pub allowable_range: u32,
     }
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum CallType {
