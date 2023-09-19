@@ -29,3 +29,6 @@ pub mod uniswap_v3_adaptor_v1;
 pub mod uniswap_v3_adaptor_v2;
 pub mod vesting_simple_adaptor_v2;
 pub mod zero_x_adaptor_v1;
+pub mod debt_f_token_adaptor_v1;
+pub mod collateral_f_token_adaptor_v1;
+pub mod legacy_cellar_adaptor_v1;

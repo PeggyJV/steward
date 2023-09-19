@@ -56,6 +56,9 @@ fn main() {
             "CellarWithShareLockPeriodV1",
             "cellar_with_share_lock_period_v1",
         ),
+        ("DebtFTokenAdaptorV1", "debt_f_token_adaptor_v1"),
+        ("CollateralFTokenAdaptorV1", "collateral_f_token_adaptor_v1"),
+        ("LegacyCellarAdaptorV1", "legacy_cellar_adaptor_v1"),
     ];
 
     contracts
