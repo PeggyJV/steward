@@ -27,6 +27,9 @@ import "adaptors/vesting_simple.proto";
 import "adaptors/base.proto";
 import "adaptors/sommelier/cellar_adaptor.proto";
 import "adaptors/aave/aave_v2_enable_asset_as_collateral_adaptor.proto";
+import "adaptors/sommelier/legacy_cellar_adaptor.proto";
+import "adaptors/frax/debt_f_token.proto";
+import "adaptors/frax/collateral_f_token.proto";
 
 // Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
 message AaveV3DebtTokenAdaptorV1 {
@@ -152,6 +155,12 @@ message AaveV3DebtTokenAdaptorV1 {
             MorphoAaveV3DebtTokenAdaptorV1Calls morpho_aave_v3_debt_token_v1_calls = 23;
             // Represents function calls to the BalancerPoolAdaptor V1
             BalancerPoolAdaptorV1Calls balancer_pool_v1_calls = 24;
+            // Represents function calls to the LegacyCellarAdaptor V1
+            LegacyCellarAdaptorV1Calls legacy_cellar_v1_calls = 25;
+            // Represents function calls to the DebtFTokenAdaptor V1
+            DebtFTokenAdaptorV1Calls debt_f_token_v1_calls = 26;
+            // Represents function calls to the CollateralFTokenAdaptor V1
+            CollateralFTokenAdaptorV1Calls collateral_f_token_v1_calls = 27;
         }
     }
 }
