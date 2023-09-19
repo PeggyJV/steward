@@ -233,7 +233,7 @@ fn get_encoded_adaptor_calls(
                 )?,
             ),
             FTokenV1Calls(params) => {
-                calls.extend(adaptors::f_token::f_token_adaptor_v1_calls(params)?)
+                calls.extend(adaptors::frax::f_token_adaptor_v1_calls(params)?)
             }
             MorphoAaveV2ATokenV1Calls(params) => calls.extend(
                 adaptors::morpho::morpho_aave_v2_a_token_adaptor_v1_calls(params)?,
@@ -253,6 +253,15 @@ fn get_encoded_adaptor_calls(
             BalancerPoolV1Calls(params) => calls.extend(
                 adaptors::balancer_pool::balancer_pool_adaptor_v1_calls(params)?,
             ),
+            LegacyCellarV1Calls(params) => {
+                calls.extend(adaptors::sommelier::legacy_cellar_adaptor_v1_calls(params)?)
+            }
+            DebtFTokenV1Calls(params) => {
+                calls.extend(adaptors::frax::debt_f_token_adaptor_v1_calls(params)?)
+            }
+            CollateralFTokenV1Calls(params) => {
+                calls.extend(adaptors::frax::collateral_f_token_adaptor_v1_calls(params)?)
+            }
         };
 
         result.push(AbiAdaptorCall {
