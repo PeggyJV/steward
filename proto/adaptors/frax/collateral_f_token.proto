@@ -32,9 +32,9 @@ message CollateralFTokenAdaptorV1 {
     */
     message AddCollateral {
         // The FraxLend pair to add collateral to.
-        string fraxlend_pair = 2;
+        string fraxlend_pair = 1;
         // The amount of collateral to add to the cellar position.
-        string collateral_to_deposit = 1;
+        string collateral_to_deposit = 2;
     }
 
     /*

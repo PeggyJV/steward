@@ -309,7 +309,7 @@ func (x *DebtFTokenAdaptorV1_RepayFraxlendDebt) GetDebtTokenRepayAmount() string
 //
 // Allows a strategist to call `addInterest` on a Frax Pair they are using
 //
-// Represents `function callAddInterest(IFToken fToken)`
+// Represents `function callAddInterest(IFToken _fraxlendPair)`
 type DebtFTokenAdaptorV1_CallAddInterest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

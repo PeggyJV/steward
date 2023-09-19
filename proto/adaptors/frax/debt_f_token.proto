@@ -55,7 +55,7 @@ message DebtFTokenAdaptorV1 {
     /*
     * Allows a strategist to call `addInterest` on a Frax Pair they are using
     *
-    * Represents `function callAddInterest(IFToken fToken)`
+    * Represents `function callAddInterest(IFToken _fraxlendPair)`
     */
     message CallAddInterest {
         // The address of the pair to call addInterest on.

@@ -1087,10 +1087,10 @@ pub mod collateral_f_token_adaptor_v1 {
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct AddCollateral {
         /// The FraxLend pair to add collateral to.
-        #[prost(string, tag = "2")]
+        #[prost(string, tag = "1")]
         pub fraxlend_pair: ::prost::alloc::string::String,
         /// The amount of collateral to add to the cellar position.
-        #[prost(string, tag = "1")]
+        #[prost(string, tag = "2")]
         pub collateral_to_deposit: ::prost::alloc::string::String,
     }
     ///
@@ -1165,7 +1165,7 @@ pub mod debt_f_token_adaptor_v1 {
     ///
     /// Allows a strategist to call `addInterest` on a Frax Pair they are using
     ///
-    /// Represents `function callAddInterest(IFToken fToken)`
+    /// Represents `function callAddInterest(IFToken _fraxlendPair)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct CallAddInterest {
         /// The address of the pair to call addInterest on.
