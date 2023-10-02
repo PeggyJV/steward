@@ -33,12 +33,8 @@ pub const ORACLE3: (U256, &str) = (
     U256([5, 0, 0, 0]),
     "26cde3f5db92ea91c84c838e664fe42dec1b6747",
 );
-pub const ORACLE4: (U256, &str) = (
-    U256([5, 0, 0, 0]),
-    "26cde3f5db92ea91c84c838e664fe42dec1b6747",
-);
 
-pub const ALLOWED_PRICE_ORACLES: [(U256, &str); 4] = [ORACLE1, ORACLE2, ORACLE3, ORACLE4];
+pub const ALLOWED_PRICE_ORACLES: [(U256, &str); 3] = [ORACLE1, ORACLE2, ORACLE3];
 pub const ALLOWED_CACHE_PRICE_ROUTER: [&str; 1] = [CELLAR_RYETH];
 
 // permissions
