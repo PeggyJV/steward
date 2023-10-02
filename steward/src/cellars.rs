@@ -33,18 +33,22 @@ pub const ORACLE3: (U256, &str) = (
     U256([5, 0, 0, 0]),
     "26cde3f5db92ea91c84c838e664fe42dec1b6747",
 );
-pub const ALLOWED_PRICE_ORACLES: [(U256, &str); 2] = [ORACLE1, ORACLE2];
+pub const ORACLE4: (U256, &str) = (
+    U256([5, 0, 0, 0]),
+    "26cde3f5db92ea91c84c838e664fe42dec1b6747",
+);
+
+pub const ALLOWED_PRICE_ORACLES: [(U256, &str); 4] = [ORACLE1, ORACLE2, ORACLE3, ORACLE4];
 pub const ALLOWED_CACHE_PRICE_ROUTER: [&str; 1] = [CELLAR_RYETH];
 
 // permissions
 
 pub const ALLOWED_V2_0_SETUP_ADAPTORS: [(&str, &str); 1] = [(CELLAR_RYUSD, ADAPTOR_CELLAR_V2)];
-pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 3] = [
-    (CELLAR_RYBTC, ADAPTOR_LEGACY_CELLAR_V1),
-    (CELLAR_RYBTC, ADAPTOR_COLLATERAL_F_TOKEN_V1),
-    (CELLAR_RYBTC, ADAPTOR_DEBT_F_TOKEN_V1),
+pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
+pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 2] = [
+    (CELLAR_TURBO_GHO, ADAPTOR_VESTING_SIMPLE_V2),
+    (CELLAR_TURBO_SWETH, ADAPTOR_VESTING_SIMPLE_V2),
 ];
-pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
 
 // due to position size limits in v2.0, positions must be added and removed from the limited list
 // and thus approved positions need to be allowed to be re-added, hence this large list
@@ -70,13 +74,11 @@ pub const ALLOWED_V2_0_POSITIONS: [(&str, u32); 20] = [
     (CELLAR_RYUSD, 28),
     (CELLAR_RYUSD, 29),
 ];
-pub const ALLOWED_V2_2_CATALOGUE_POSITIONS: [(&str, u32); 4] = [
-    (CELLAR_RYBTC, 195),
-    (CELLAR_RYBTC, 196),
-    (CELLAR_RYBTC, 197),
-    (CELLAR_RYBTC, 198),
+pub const ALLOWED_V2_2_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
+pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 2] = [
+    (CELLAR_TURBO_GHO, 100000001),
+    (CELLAR_TURBO_SWETH, 100000002),
 ];
-pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
 
 pub const BLOCKED_ADAPTORS: [&str; 3] = [
     ADAPTOR_UNIV3_V1,
@@ -121,6 +123,7 @@ pub const CELLAR_RYUNI: &str = "6a6af5393dc23d7e3db28d28ef422db7c40932b6";
 pub const CELLAR_RYUSD: &str = "97e6e0a40a3d02f12d1cec30ebfbae04e37c119e";
 pub const CELLAR_RYBTC: &str = "0274a704a6d9129f90a62ddc6f6024b33ecdad36";
 pub const CELLAR_TURBO_SWETH: &str = "d33dad974b938744dac81fe00ac67cb5aa13958e";
+pub const CELLAR_TURBO_GHO: &str = "0c190ded9be5f512bd72827bdad4003e9cc7975c";
 
 // deprecated adaptors
 
@@ -142,6 +145,7 @@ pub const ADAPTOR_MORPHO_AAVE_V3_A_TOKEN_COLLATERAL_V1: &str =
 pub const ADAPTOR_MORPHO_AAVE_V3_DEBT_TOKEN_V1: &str = "25a61f771af9a38c10ddd93c2bbab39a88926fa9";
 pub const ADAPTOR_MORPHO_AAVE_V3_P2P_V1: &str = "4fe068caad05b82bf3f86e1f7d1a7b8bbf516111";
 pub const ADAPTOR_UNIV3_V3: &str = "92611574ec9bc13c6137917481dab7bb7b173c9b";
+pub const ADAPTOR_VESTING_SIMPLE_V2: &str = "3b98ba00f981342664969e609fb88280704ac479";
 
 // utils
 
