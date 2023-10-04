@@ -2931,6 +2931,9 @@ pub struct ScheduleRequest {
     /// The ID of the chain on which the target Cellar resides
     #[prost(uint64, tag = "7")]
     pub chain_id: u64,
+    /// The unix timestamp deadline for the contract call to be executed
+    #[prost(uint64, tag = "8")]
+    pub deadline: u64,
     /// The data from which the desired contract function will be encoded
     #[prost(oneof = "schedule_request::CallData", tags = "3, 4, 5, 6")]
     pub call_data: ::core::option::Option<schedule_request::CallData>,

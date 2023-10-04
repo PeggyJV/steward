@@ -1,18 +1,21 @@
-use abscissa_core::tracing::log::{debug, error, info, warn};
+use abscissa_core::tracing::log::debug;
+use deep_space::{Coin, Contact};
 use ethers::types::H160;
 use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
 use lazy_static::lazy_static;
 use sha3::{Digest, Keccak256};
-use somm_proto::cork::Cork;
+use somm_proto::{axelar_cork::AxelarCork, cork::Cork};
 use tonic::{self, async_trait, Code, Request, Response, Status};
 
 use crate::server::handle_authorization;
 use crate::{
     cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2},
+    config,
     error::{
         Error,
         ErrorKind::{self, *},
     },
+    prelude::{APP, Application, error, info, warn},
     proto::{self, schedule_request::CallData::*, ScheduleRequest, ScheduleResponse},
     somm_send,
 };
@@ -36,8 +39,9 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
         let certs = request.peer_certs().unwrap();
         let request = request.get_ref().to_owned();
 
+        let chain_id = request.chain_id;
         let cellar_id = request.cellar_id.clone();
-        if let Err(err) = cellars::validate_cellar_id(&cellar_id).await {
+        if let Err(err) = cellars::validate_cellar_id(chain_id, &cellar_id).await {
             let message = format!("cellar ID validation failed: {}", err);
             match err.kind() {
                 CacheError => return Err(Status::new(Code::Internal, message)),
@@ -85,13 +89,16 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
                 ));
             }
         }
-        let id = id_hash(height, &cellar_id, encoded_call);
+        let id = id_hash(height, &cellar_id, encoded_call.clone());
         info!(
             "scheduled cork {} for cellar {} at height {}",
             id, cellar_id, height
         );
 
-        Ok(Response::new(ScheduleResponse { id }))
+        Ok(Response::new(ScheduleResponse {
+            id: id_hash(height, &cellar_id, encoded_call),
+            chain_id,
+        }))
     }
 }
 
@@ -144,6 +151,26 @@ pub async fn schedule_cork(
     };
 
     somm_send::schedule_cork(cork, height)
+        .await
+        .map_err(|e| e.into())
+}
+
+pub async fn schedule_axelar_cork(
+    chain_id: u64,
+    contract: &str,
+    encoded_call: Vec<u8>,
+    height: u64,
+    deadline: u64,
+) -> Result<TxResponse, Error> {
+    debug!("establishing grpc connection");
+    let cork = AxelarCork {
+        encoded_contract_call: encoded_call,
+        target_contract_address: contract.to_string(),
+        chain_id,
+        deadline,
+    };
+
+    somm_send::schedule_axelar_cork(cork, height)
         .await
         .map_err(|e| e.into())
 }

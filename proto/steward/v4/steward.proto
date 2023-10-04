@@ -50,6 +50,8 @@ message ScheduleRequest {
     }
     // The ID of the chain on which the target Cellar resides
     uint64 chain_id = 7;
+    // The unix timestamp deadline for the contract call to be executed
+    uint64 deadline = 8;
 }
 
 message ScheduleResponse {

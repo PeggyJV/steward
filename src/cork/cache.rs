@@ -3,21 +3,31 @@ use abscissa_core::{
     Application,
 };
 use lazy_static::lazy_static;
-use std::{collections::HashSet, sync::RwLock, time::Duration};
+use std::{
+    collections::{HashMap, HashSet},
+    sync::RwLock,
+    time::Duration,
+};
 use tokio::task::JoinHandle;
 
 use crate::{cork::client::CorkQueryClient, error::Error, prelude::APP};
 
-pub type ApprovedCellarsCache = RwLock<HashSet<String>>;
+// Mapping of chain ID to set of cellar addresses
+pub type ApprovedCellarsCache = RwLock<HashMap<u64, HashSet<String>>>;
 
 lazy_static! {
     static ref APPROVED_CELLARS: ApprovedCellarsCache = ApprovedCellarsCache::default();
 }
 
 /// Indicates whether an address is in the approved cellars cache
-pub fn is_approved(cellar_id: &str) -> bool {
+pub fn is_approved(chain_id: u64, cellar_id: &str) -> bool {
     let cellar_id = cellar_id.trim().to_lowercase();
-    APPROVED_CELLARS.read().unwrap().contains(&cellar_id)
+    let Some(approved) = APPROVED_CELLARS
+        .read()
+        .unwrap()
+        .get(&chain_id) else { return false };
+
+    approved.contains(&cellar_id)
 }
 
 /// Overwrites the cache with the latest queried cellar IDs
@@ -28,11 +38,6 @@ pub async fn refresh_approved_cellars() -> Result<(), Error> {
         Ok(res) => {
             let mut cache = APPROVED_CELLARS.write().unwrap();
             *cache = res
-                .into_inner()
-                .cellar_ids
-                .into_iter()
-                .map(|id| id.trim().to_lowercase())
-                .collect();
         }
         Err(err) => return Err(err.into()),
     }
