@@ -8,6 +8,28 @@ package steward.v3;
 option go_package = "/steward_proto";
 
 import "adaptors/base.proto";
+import "adaptors/aave/a_token.proto";
+import "adaptors/aave/debt_token.proto";
+import "adaptors/aave/aave_v3_a_token.proto";
+import "adaptors/aave/aave_v3_debt_token.proto";
+import "adaptors/compound/c_token.proto";
+import "adaptors/frax/f_token.proto";
+import "adaptors/morpho/morpho_aave_v2_a_token.proto";
+import "adaptors/morpho/morpho_aave_v2_debt_token.proto";
+import "adaptors/morpho/morpho_aave_v3_a_token_collateral.proto";
+import "adaptors/morpho/morpho_aave_v3_a_token_p2p.proto";
+import "adaptors/morpho/morpho_aave_v3_debt_token.proto";
+import "adaptors/uniswap/uniswap_v3.proto";
+import "adaptors/uniswap/swap_with_uniswap.proto";
+import "adaptors/fees_and_reserves.proto";
+import "adaptors/zero_x/zero_x.proto";
+import "adaptors/oneinch/oneinch.proto";
+import "adaptors/vesting_simple.proto";
+import "adaptors/sommelier/cellar_adaptor.proto";
+import "adaptors/aave/aave_v2_enable_asset_as_collateral_adaptor.proto";
+import "adaptors/sommelier/legacy_cellar_adaptor.proto";
+import "adaptors/frax/debt_f_token.proto";
+import "adaptors/frax/collateral_f_token.proto";
 
 // Represents call data for the Balancer Pool adaptor V1, for managing pool positions on Balancer.
 message BalancerPoolAdaptorV1 {
@@ -29,7 +51,8 @@ message BalancerPoolAdaptorV1 {
         UnstakeBPT unstake_bpt = 5;
         // Represents function `claimRewards(address gauge)`
         ClaimRewards claim_rewards = 6;
-
+        // Represents function `makeFlashLoan(IERC20[] tokens, uint256[] amounts, bytes memory data)`
+        MakeFlashLoan make_flash_loan = 7;
     }
 
     // Represents the SwapKind enum defined here:
@@ -157,6 +180,82 @@ message BalancerPoolAdaptorV1 {
     message ClaimRewards {
         // The gauge to claim rewards from
         string gauge = 1;
+    }
+
+    /*
+    * Make a flash loan
+    *
+    * Represents `function makeFlashLoan(IERC20[] tokens, uint256[] amounts, bytes memory data)`
+    */
+    message MakeFlashLoan {
+        // The tokens to flash loan
+        repeated string tokens = 1;
+
+        // The amounts to flash loan
+        repeated string amounts = 2;
+
+        // The data to flash loan
+        repeated AdaptorCallForBalancerFlashloan data = 3;
+    }
+
+    message AdaptorCallForBalancerFlashloan {
+        // Address of the adaptor
+        string adaptor = 1;
+        // The function call data for the adaptor
+        oneof call_data {
+            // Represents function calls to the UniswapV3Adaptor V1
+            UniswapV3AdaptorV1Calls uniswap_v3_v1_calls = 2;
+            // Represents function calls to the AaveATokenAdaptor V1
+            AaveATokenAdaptorV1Calls aave_a_token_v1_calls = 3;
+            // Represents function calls to the AavaDebtTokenAdaptor V1
+            AaveDebtTokenAdaptorV1Calls aave_debt_token_v1_calls = 4;
+            // Represents function calls to the CompoundCTokenAdaptor V2
+            CompoundCTokenAdaptorV2Calls compound_c_token_v2_calls = 5;
+            // Represents function calls to the AaveATokenV2Adaptor
+            AaveATokenAdaptorV2Calls aave_a_token_v2_calls = 6;
+            // Represents function calls to the AavaDebtTokenV2Adaptor
+            AaveDebtTokenAdaptorV2Calls aave_debt_token_v2_calls = 7;
+            // Represents function calls to the AaveATokenV1Adaptor
+            AaveV3ATokenAdaptorV1Calls aave_v3_a_token_v1_calls = 8;
+            // Represents function calls to the AavaDebtTokenV1Adaptor
+            AaveV3DebtTokenAdaptorV1Calls aave_v3_debt_token_v1_calls = 9;
+            // Represents function calls to the OneInchAdaptorV1
+            OneInchAdaptorV1Calls one_inch_v1_calls = 10;
+            // Represents function calls to the FeesAndReservesAdaptorV1
+            FeesAndReservesAdaptorV1Calls fees_and_reserves_v1_calls = 11;
+            // Represents functionc alls to the ZeroXAdaptorV1
+            ZeroXAdaptorV1Calls zero_x_v1_calls = 12;
+            // Represents function calls to the SwapWithUniswapAdaptorV1
+            SwapWithUniswapAdaptorV1Calls swap_with_uniswap_v1_calls = 13;
+            // Represents function calls to VestingSimpleAdaptor
+            VestingSimpleAdaptorV2Calls vesting_simple_v2_calls = 14;
+            // Represents function calls to the CellarAdaptor
+            CellarAdaptorV1Calls cellar_v1_calls = 15;
+            // Represents function calls to the UniswapV3Adaptor V2
+            UniswapV3AdaptorV2Calls uniswap_v3_v2_calls = 16;
+            // Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1
+            AaveV2EnableAssetAsCollateralAdaptorV1Calls aave_v2_enable_asset_as_collateral_v1_calls = 17;
+            // Represents function calls to the FTokenAdaptor V1
+            FTokenAdaptorV1Calls f_token_v1_calls = 18;
+            // Represents function calls to the MorphoAaveV2AToken V1
+            MorphoAaveV2ATokenAdaptorV1Calls morpho_aave_v2_a_token_v1_calls = 19;
+            // Represents function calls to the MorphoAaveV2DebtToken V1
+            MorphoAaveV2DebtTokenAdaptorV1Calls morpho_aave_v2_debt_token_v1_calls = 20;
+            // Represents function calls to the MorphoAaveV3ATokenCollateral V1
+            MorphoAaveV3ATokenCollateralAdaptorV1Calls morpho_aave_v3_a_token_collateral_v1_calls = 21;
+            // Represents function calls to the MorphoAaveV3ATokenP2P V1
+            MorphoAaveV3ATokenP2PAdaptorV1Calls morpho_aave_v3_a_token_p2p_v1_calls = 22;
+            // Represents function calls to the MorphoAaveV3DebtToken V1
+            MorphoAaveV3DebtTokenAdaptorV1Calls morpho_aave_v3_debt_token_v1_calls = 23;
+            // Represents function calls to the BalancerPoolAdaptor V1
+            BalancerPoolAdaptorV1Calls balancer_pool_v1_calls = 24;
+            // Represents function calls to the LegacyCellarAdaptor V1
+            LegacyCellarAdaptorV1Calls legacy_cellar_v1_calls = 25;
+            // Represents function calls to the DebtFTokenAdaptor V1
+            DebtFTokenAdaptorV1Calls debt_f_token_v1_calls = 26;
+            // Represents function calls to the CollateralFTokenAdaptor V1
+            CollateralFTokenAdaptorV1Calls collateral_f_token_v1_calls = 27;
+        }
     }
 }
 
