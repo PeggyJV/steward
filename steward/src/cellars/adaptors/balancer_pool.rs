@@ -150,8 +150,8 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
                     BalancerPoolAdaptorV1Calls::MakeFlashLoan(call)
                         .encode()
                         .into(),
-                )               
-            },
+                )
+            }
         }
     }
 
