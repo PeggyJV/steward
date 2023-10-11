@@ -1,13 +1,21 @@
 use std::convert::TryInto;
 
+use abscissa_core::prelude::debug;
 use ethers::{abi::AbiEncode, types::Bytes};
-use steward_abi::balancer_pool_adaptor_v1::{
-    BalancerPoolAdaptorV1Calls, ExitPoolRequest, SingleSwap as AbiSingleSwap,
-    SwapData as AbiSwapData,
+use steward_abi::{
+    balancer_pool_adaptor_v1::{
+        BalancerPoolAdaptorV1Calls, ExitPoolRequest, SingleSwap as AbiSingleSwap,
+        SwapData as AbiSwapData,
+    },
+    cellar_v2_2::AdaptorCall as AbiAdaptorCall,
 };
-use steward_proto::steward::balancer_pool_adaptor_v1::{self, SingleSwap, SwapData};
+use steward_proto::steward::balancer_pool_adaptor_v1::{
+    self, adaptor_call_for_balancer_flashloan::CallData::*, AdaptorCallForBalancerFlashloan,
+    SingleSwap, SwapData,
+};
 
 use crate::{
+    cellars::adaptors,
     error::{Error, ErrorKind},
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
 };
@@ -124,6 +132,26 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
                         .into(),
                 )
             }
+            balancer_pool_adaptor_v1::Function::MakeFlashLoan(p) => {
+                let call = steward_abi::balancer_pool_adaptor_v1::MakeFlashLoanCall {
+                    tokens: p
+                        .tokens
+                        .iter()
+                        .map(|t| sp_call_parse_address(t.clone()))
+                        .collect::<Result<Vec<_>, _>>()?,
+                    amounts: p
+                        .amounts
+                        .iter()
+                        .map(|a| string_to_u256(a.clone()))
+                        .collect::<Result<Vec<_>, _>>()?,
+                    data: get_encoded_adaptor_calls(p.data)?.encode().into(),
+                };
+                calls.push(
+                    BalancerPoolAdaptorV1Calls::MakeFlashLoan(call)
+                        .encode()
+                        .into(),
+                )               
+            },
         }
     }
 
@@ -168,4 +196,106 @@ fn convert_swap_data(data: SwapData) -> Result<AbiSwapData, Error> {
             .map(string_to_u256)
             .collect::<Result<Vec<_>, Error>>()?,
     })
+}
+
+/// Encodes calls to the Adaptor contracts
+fn get_encoded_adaptor_calls(
+    data: Vec<AdaptorCallForBalancerFlashloan>,
+) -> Result<Vec<AbiAdaptorCall>, Error> {
+    let mut result: Vec<AbiAdaptorCall> = Vec::new();
+    for d in data {
+        debug!("adaptor call to {}", d.adaptor);
+        let mut calls: Vec<Bytes> = Vec::new();
+        let call_data = d
+            .call_data
+            .ok_or_else(|| sp_call_error("call data is empty".to_string()))?;
+
+        match call_data {
+            UniswapV3V1Calls(params) => {
+                calls.extend(adaptors::uniswap_v3::uniswap_v3_adaptor_v1_calls(params)?)
+            }
+            AaveATokenV1Calls(params) => {
+                calls.extend(adaptors::aave_v2::aave_a_token_adaptor_v1_calls(params)?)
+            }
+            AaveDebtTokenV1Calls(params) => {
+                calls.extend(adaptors::aave_v2::aave_debt_token_adaptor_v1_calls(params)?)
+            }
+            AaveATokenV2Calls(params) => {
+                calls.extend(adaptors::aave_v2::aave_a_token_adaptor_v2_calls(params)?)
+            }
+            AaveDebtTokenV2Calls(params) => {
+                calls.extend(adaptors::aave_v2::aave_debt_token_adaptor_v2_calls(params)?)
+            }
+            AaveV3ATokenV1Calls(params) => {
+                calls.extend(adaptors::aave_v3::aave_v3_a_token_adaptor_v1_calls(params)?)
+            }
+            AaveV3DebtTokenV1Calls(params) => calls.extend(
+                adaptors::aave_v3::aave_v3_debt_token_adaptor_v1_calls(params)?,
+            ),
+            OneInchV1Calls(params) => {
+                calls.extend(adaptors::oneinch::one_inch_adaptor_v1_calls(params)?)
+            }
+            FeesAndReservesV1Calls(params) => calls
+                .extend(adaptors::fees_and_reserves::fees_and_reserves_adaptor_v1_calls(params)?),
+            ZeroXV1Calls(params) => {
+                calls.extend(adaptors::zero_x::zero_x_adaptor_v1_calls(params)?)
+            }
+            SwapWithUniswapV1Calls(params) => calls
+                .extend(adaptors::swap_with_uniswap::swap_with_uniswap_adaptor_v1_calls(params)?),
+            CompoundCTokenV2Calls(params) => {
+                calls.extend(adaptors::compound::compound_c_token_v2_calls(params)?)
+            }
+            VestingSimpleV2Calls(params) => calls.extend(
+                adaptors::vesting_simple::vesting_simple_adaptor_v2_calls(params)?,
+            ),
+            CellarV1Calls(params) => {
+                calls.extend(adaptors::sommelier::cellar_adaptor_v1_calls(params)?)
+            }
+            UniswapV3V2Calls(params) => {
+                calls.extend(adaptors::uniswap_v3::uniswap_v3_adaptor_v2_calls(params)?)
+            }
+            AaveV2EnableAssetAsCollateralV1Calls(params) => calls.extend(
+                adaptors::aave_v2_collateral::aave_v2_enable_asset_as_collateral_adaptor_v1_calls(
+                    params,
+                )?,
+            ),
+            FTokenV1Calls(params) => {
+                calls.extend(adaptors::frax::f_token_adaptor_v1_calls(params)?)
+            }
+            MorphoAaveV2ATokenV1Calls(params) => calls.extend(
+                adaptors::morpho::morpho_aave_v2_a_token_adaptor_v1_calls(params)?,
+            ),
+            MorphoAaveV2DebtTokenV1Calls(params) => {
+                calls.extend(adaptors::morpho::morpho_aave_v2_debt_token_adaptor_v1_calls(params)?)
+            }
+            MorphoAaveV3ATokenCollateralV1Calls(params) => calls.extend(
+                adaptors::morpho::morpho_aave_v3_a_token_collateral_adaptor_v1_calls(params)?,
+            ),
+            MorphoAaveV3ATokenP2pV1Calls(params) => {
+                calls.extend(adaptors::morpho::morpho_aave_v3_a_token_p2p_adaptor_v1_calls(params)?)
+            }
+            MorphoAaveV3DebtTokenV1Calls(params) => {
+                calls.extend(adaptors::morpho::morpho_aave_v3_debt_token_adaptor_v1_calls(params)?)
+            }
+            BalancerPoolV1Calls(params) => calls.extend(
+                adaptors::balancer_pool::balancer_pool_adaptor_v1_calls(params)?,
+            ),
+            LegacyCellarV1Calls(params) => {
+                calls.extend(adaptors::sommelier::legacy_cellar_adaptor_v1_calls(params)?)
+            }
+            DebtFTokenV1Calls(params) => {
+                calls.extend(adaptors::frax::debt_f_token_adaptor_v1_calls(params)?)
+            }
+            CollateralFTokenV1Calls(params) => {
+                calls.extend(adaptors::frax::collateral_f_token_adaptor_v1_calls(params)?)
+            }
+        };
+
+        result.push(AbiAdaptorCall {
+            adaptor: sp_call_parse_address(d.adaptor)?,
+            call_data: calls,
+        })
+    }
+
+    Ok(result)
 }
