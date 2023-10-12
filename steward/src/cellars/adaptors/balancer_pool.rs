@@ -9,11 +9,13 @@ use steward_abi::{
     },
     cellar_v2_2::AdaptorCall as AbiAdaptorCall,
 };
-use steward_proto::steward::balancer_pool_adaptor_v1::{
-    self, adaptor_call_for_balancer_flashloan::CallData::*, AdaptorCallForBalancerFlashloan,
-    SingleSwap, SwapData,
+use steward_proto::steward::{
+    balancer_pool_adaptor_v1_flash_loan::{self, adaptor_call_for_balancer_pool_flash_loan::CallData::*, AdaptorCallForBalancerPoolFlashLoan},
+    balancer_pool_adaptor_v1::{
+        self, 
+        SingleSwap, SwapData,
+    }
 };
-
 use crate::{
     cellars::adaptors,
     error::{Error, ErrorKind},
@@ -131,28 +133,41 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
                         .encode()
                         .into(),
                 )
-            }
-            balancer_pool_adaptor_v1::Function::MakeFlashLoan(p) => {
-                let call = steward_abi::balancer_pool_adaptor_v1::MakeFlashLoanCall {
-                    tokens: p
-                        .tokens
-                        .iter()
-                        .map(|t| sp_call_parse_address(t.clone()))
-                        .collect::<Result<Vec<_>, _>>()?,
-                    amounts: p
-                        .amounts
-                        .iter()
-                        .map(|a| string_to_u256(a.clone()))
-                        .collect::<Result<Vec<_>, _>>()?,
-                    data: get_encoded_adaptor_calls(p.data)?.encode().into(),
-                };
-                calls.push(
-                    BalancerPoolAdaptorV1Calls::MakeFlashLoan(call)
-                        .encode()
-                        .into(),
-                )
-            }
+            } 
         }
+    }
+
+    Ok(calls)
+}
+
+pub(crate) fn balancer_pool_adaptor_v1_flash_loan_calls(
+    params: steward_proto::steward::BalancerPoolAdaptorV1FlashLoanCalls,
+) -> Result<Vec<Bytes>, Error> {
+    let mut calls = Vec::new();
+    for c in params.calls {
+        let function = c
+            .function
+            .ok_or_else(|| sp_call_error("function cannot be empty".to_string()))?;
+
+            let balancer_pool_adaptor_v1_flash_loan::Function::MakeFlashLoan(p) = function;
+            let call = steward_abi::balancer_pool_adaptor_v1::MakeFlashLoanCall {
+                tokens: p
+                    .tokens
+                    .iter()
+                    .map(|t| sp_call_parse_address(t.clone()))
+                    .collect::<Result<Vec<_>, _>>()?,
+                amounts: p
+                    .amounts
+                    .iter()
+                    .map(|a| string_to_u256(a.clone()))
+                    .collect::<Result<Vec<_>, _>>()?,
+                data: get_encoded_adaptor_calls(p.data)?.encode().into(),
+            };
+            calls.push(
+                BalancerPoolAdaptorV1Calls::MakeFlashLoan(call)
+                    .encode()
+                    .into(),
+            )
     }
 
     Ok(calls)
@@ -200,7 +215,7 @@ fn convert_swap_data(data: SwapData) -> Result<AbiSwapData, Error> {
 
 /// Encodes calls to the Adaptor contracts
 fn get_encoded_adaptor_calls(
-    data: Vec<AdaptorCallForBalancerFlashloan>,
+    data: Vec<AdaptorCallForBalancerPoolFlashLoan>,
 ) -> Result<Vec<AbiAdaptorCall>, Error> {
     let mut result: Vec<AbiAdaptorCall> = Vec::new();
     for d in data {
@@ -276,10 +291,7 @@ fn get_encoded_adaptor_calls(
             }
             MorphoAaveV3DebtTokenV1Calls(params) => {
                 calls.extend(adaptors::morpho::morpho_aave_v3_debt_token_adaptor_v1_calls(params)?)
-            }
-            BalancerPoolV1Calls(params) => calls.extend(
-                adaptors::balancer_pool::balancer_pool_adaptor_v1_calls(params)?,
-            ),
+            } 
             LegacyCellarV1Calls(params) => {
                 calls.extend(adaptors::sommelier::legacy_cellar_adaptor_v1_calls(params)?)
             }
