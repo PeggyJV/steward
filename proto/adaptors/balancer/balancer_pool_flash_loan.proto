@@ -28,9 +28,7 @@ import "adaptors/frax/collateral_f_token.proto";
 
 // Represents flash loan call data for the Balancer Pool adaptor V1, for managing pool positions on Balancer.
 message BalancerPoolAdaptorV1FlashLoan {
-    oneof function {
-        MakeFlashLoan make_flash_loan = 7;
-    }
+    MakeFlashLoan make_flash_loan = 1;
 
     /*
     * Make a flash loan
@@ -48,6 +46,7 @@ message BalancerPoolAdaptorV1FlashLoan {
         repeated AdaptorCallForBalancerPoolFlashLoan data = 3;
     }
 
+    // NOTE: Make FlashLoan takes an array of AdaptorCall. cellar_v2.proto defines it, but also imports this file, therefore we can't import cellar_v2.proto in order to use the AdaptorCall message here. To avoid the recursive import, we duplicate the message definition.
     message AdaptorCallForBalancerPoolFlashLoan {
         // Address of the adaptor
         string adaptor = 1;

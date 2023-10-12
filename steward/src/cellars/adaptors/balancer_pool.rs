@@ -17,8 +17,7 @@ use steward_abi::{
 use steward_proto::steward::{
     balancer_pool_adaptor_v1::{self, SingleSwap, SwapData},
     balancer_pool_adaptor_v1_flash_loan::{
-        self, adaptor_call_for_balancer_pool_flash_loan::CallData::*,
-        AdaptorCallForBalancerPoolFlashLoan,
+        adaptor_call_for_balancer_pool_flash_loan::CallData::*, AdaptorCallForBalancerPoolFlashLoan,
     },
 };
 
@@ -145,11 +144,7 @@ pub(crate) fn balancer_pool_adaptor_v1_flash_loan_calls(
 ) -> Result<Vec<Bytes>, Error> {
     let mut calls = Vec::new();
     for c in params.calls {
-        let function = c
-            .function
-            .ok_or_else(|| sp_call_error("function cannot be empty".to_string()))?;
-
-        let balancer_pool_adaptor_v1_flash_loan::Function::MakeFlashLoan(p) = function;
+        let Some(p) = c.make_flash_loan else { return Err(sp_call_error("make flash loan function call cannot be empty".to_string())) };
         let call = steward_abi::balancer_pool_adaptor_v1::MakeFlashLoanCall {
             tokens: p
                 .tokens

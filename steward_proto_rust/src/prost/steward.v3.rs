@@ -2378,11 +2378,9 @@ pub struct AaveV2EnableAssetAsCollateralAdaptorV1Calls {
 /// Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct AaveV3DebtTokenAdaptorV1FlashLoan {
-    #[prost(
-        oneof = "aave_v3_debt_token_adaptor_v1_flash_loan::Function",
-        tags = "5"
-    )]
-    pub function: ::core::option::Option<aave_v3_debt_token_adaptor_v1_flash_loan::Function>,
+    /// Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
+    #[prost(message, optional, tag = "1")]
+    pub flash_loan: ::core::option::Option<aave_v3_debt_token_adaptor_v1_flash_loan::FlashLoan>,
 }
 /// Nested message and enum types in `AaveV3DebtTokenAdaptorV1FlashLoan`.
 pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
@@ -2503,12 +2501,6 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
             CollateralFTokenV1Calls(super::super::CollateralFTokenAdaptorV1Calls),
         }
     }
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum Function {
-        /// Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
-        #[prost(message, tag = "5")]
-        FlashLoan(FlashLoan),
-    }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct AaveV3DebtTokenAdaptorV1FlashLoanCalls {
@@ -2518,8 +2510,8 @@ pub struct AaveV3DebtTokenAdaptorV1FlashLoanCalls {
 /// Represents flash loan call data for the Balancer Pool adaptor V1, for managing pool positions on Balancer.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct BalancerPoolAdaptorV1FlashLoan {
-    #[prost(oneof = "balancer_pool_adaptor_v1_flash_loan::Function", tags = "7")]
-    pub function: ::core::option::Option<balancer_pool_adaptor_v1_flash_loan::Function>,
+    #[prost(message, optional, tag = "1")]
+    pub make_flash_loan: ::core::option::Option<balancer_pool_adaptor_v1_flash_loan::MakeFlashLoan>,
 }
 /// Nested message and enum types in `BalancerPoolAdaptorV1FlashLoan`.
 pub mod balancer_pool_adaptor_v1_flash_loan {
@@ -2539,6 +2531,7 @@ pub mod balancer_pool_adaptor_v1_flash_loan {
         #[prost(message, repeated, tag = "3")]
         pub data: ::prost::alloc::vec::Vec<AdaptorCallForBalancerPoolFlashLoan>,
     }
+    /// NOTE: Make FlashLoan takes an array of AdaptorCall. cellar_v2.proto defines it, but also imports this file, therefore we can't import cellar_v2.proto in order to use the AdaptorCall message here. To avoid the recursive import, we duplicate the message definition.
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct AdaptorCallForBalancerPoolFlashLoan {
         /// Address of the adaptor
@@ -2636,11 +2629,6 @@ pub mod balancer_pool_adaptor_v1_flash_loan {
             #[prost(message, tag = "27")]
             CollateralFTokenV1Calls(super::super::CollateralFTokenAdaptorV1Calls),
         }
-    }
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum Function {
-        #[prost(message, tag = "7")]
-        MakeFlashLoan(MakeFlashLoan),
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]

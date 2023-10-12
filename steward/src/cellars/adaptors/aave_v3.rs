@@ -11,7 +11,7 @@ use steward_abi::{
 use steward_proto::steward::{
     aave_v3_debt_token_adaptor_v1,
     aave_v3_debt_token_adaptor_v1_flash_loan::{
-        self, adaptor_call_for_aave_v3_flash_loan::CallData::*, AdaptorCallForAaveV3FlashLoan,
+        adaptor_call_for_aave_v3_flash_loan::CallData::*, AdaptorCallForAaveV3FlashLoan,
     },
     aave_v3a_token_adaptor_v1, AaveV3DebtTokenAdaptorV1Calls,
     AaveV3DebtTokenAdaptorV1FlashLoanCalls, AaveV3aTokenAdaptorV1Calls,
@@ -158,11 +158,7 @@ pub(crate) fn aave_v3_debt_token_adaptor_v1_flash_loan_calls(
 ) -> Result<Vec<Bytes>, Error> {
     let mut calls = Vec::new();
     for c in params.calls {
-        let function = c
-            .function
-            .ok_or_else(|| sp_call_error("function cannot be empty".to_string()))?;
-
-        let aave_v3_debt_token_adaptor_v1_flash_loan::Function::FlashLoan(p) = function;
+        let Some(p) = c.flash_loan else { return Err(sp_call_error("flash loan function call cannot be empty".to_string())) };
         let call = FlashLoanCall {
             loan_token: p
                 .loan_tokens

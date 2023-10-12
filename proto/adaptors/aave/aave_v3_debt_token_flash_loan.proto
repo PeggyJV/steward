@@ -28,10 +28,8 @@ import "adaptors/frax/collateral_f_token.proto";
 
 // Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
 message AaveV3DebtTokenAdaptorV1FlashLoan {
-    oneof function {
-        // Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
-        FlashLoan flash_loan = 5;
-    }
+    // Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
+    FlashLoan flash_loan = 1;
 
     /*
     * Allows strategists to have Cellars take out flash loans
