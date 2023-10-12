@@ -286,9 +286,8 @@ fn get_encoded_adaptor_calls(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCal
             AaveV3DebtTokenV1Calls(params) => calls.extend(
                 adaptors::aave_v3::aave_v3_debt_token_adaptor_v1_calls(params)?,
             ),
-            AaveV3DebtTokenV1FlashLoanCalls(params) => calls.extend(
-                adaptors::aave_v3::aave_v3_debt_token_adaptor_v1_flash_loan_calls(params)?,
-            ),
+            AaveV3DebtTokenV1FlashLoanCalls(params) => calls
+                .extend(adaptors::aave_v3::aave_v3_debt_token_adaptor_v1_flash_loan_calls(params)?),
             OneInchV1Calls(params) => {
                 calls.extend(adaptors::oneinch::one_inch_adaptor_v1_calls(params)?)
             }

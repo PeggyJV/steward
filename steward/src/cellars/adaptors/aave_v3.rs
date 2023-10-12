@@ -9,9 +9,12 @@ use steward_abi::{
     cellar_v2_2::AdaptorCall as AbiAdaptorCall,
 };
 use steward_proto::steward::{
-    aave_v3_debt_token_adaptor_v1_flash_loan::{self, adaptor_call_for_aave_v3_flash_loan::CallData::*, AdaptorCallForAaveV3FlashLoan},
     aave_v3_debt_token_adaptor_v1,
-    aave_v3a_token_adaptor_v1, AaveV3DebtTokenAdaptorV1Calls, AaveV3aTokenAdaptorV1Calls, AaveV3DebtTokenAdaptorV1FlashLoanCalls,
+    aave_v3_debt_token_adaptor_v1_flash_loan::{
+        self, adaptor_call_for_aave_v3_flash_loan::CallData::*, AdaptorCallForAaveV3FlashLoan,
+    },
+    aave_v3a_token_adaptor_v1, AaveV3DebtTokenAdaptorV1Calls,
+    AaveV3DebtTokenAdaptorV1FlashLoanCalls, AaveV3aTokenAdaptorV1Calls,
 };
 
 use crate::{
@@ -213,7 +216,7 @@ fn get_encoded_adaptor_calls(
             }
             AaveV3ATokenV1Calls(params) => {
                 calls.extend(adaptors::aave_v3::aave_v3_a_token_adaptor_v1_calls(params)?)
-            } 
+            }
             OneInchV1Calls(params) => {
                 calls.extend(adaptors::oneinch::one_inch_adaptor_v1_calls(params)?)
             }
@@ -258,10 +261,10 @@ fn get_encoded_adaptor_calls(
             }
             MorphoAaveV3DebtTokenV1Calls(params) => {
                 calls.extend(adaptors::morpho::morpho_aave_v3_debt_token_adaptor_v1_calls(params)?)
-            } 
+            }
             BalancerPoolV1Calls(params) => calls.extend(
                 adaptors::balancer_pool::balancer_pool_adaptor_v1_calls(params)?,
-            ), 
+            ),
             LegacyCellarV1Calls(params) => {
                 calls.extend(adaptors::sommelier::legacy_cellar_adaptor_v1_calls(params)?)
             }
