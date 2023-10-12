@@ -158,11 +158,11 @@ pub(crate) fn aave_v3_debt_token_adaptor_v1_flash_loan_calls(
 ) -> Result<Vec<Bytes>, Error> {
     let mut calls = Vec::new();
     for c in params.calls {
-        let Some(p) = c.flash_loan else { 
+        let Some(p) = c.flash_loan else {
             return Err(sp_call_error(
-                "make flash loan function call cannot be empty".to_string()
-            )); 
-        };        
+                "make flash loan function call cannot be empty".to_string(),
+            ));
+        };
         let call = FlashLoanCall {
             loan_token: p
                 .loan_tokens

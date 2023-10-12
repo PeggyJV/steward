@@ -144,10 +144,10 @@ pub(crate) fn balancer_pool_adaptor_v1_flash_loan_calls(
 ) -> Result<Vec<Bytes>, Error> {
     let mut calls = Vec::new();
     for c in params.calls {
-        let Some(p) = c.make_flash_loan else { 
+        let Some(p) = c.make_flash_loan else {
             return Err(sp_call_error(
-                "make flash loan function call cannot be empty".to_string()
-            )); 
+                "make flash loan function call cannot be empty".to_string(),
+            ));
         };
         let call = steward_abi::balancer_pool_adaptor_v1::MakeFlashLoanCall {
             tokens: p
