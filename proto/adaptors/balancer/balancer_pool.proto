@@ -29,7 +29,6 @@ message BalancerPoolAdaptorV1 {
         UnstakeBPT unstake_bpt = 5;
         // Represents function `claimRewards(address gauge)`
         ClaimRewards claim_rewards = 6;
-
     }
 
     // Represents the SwapKind enum defined here:
