@@ -40,11 +40,11 @@ pub const ALLOWED_CACHE_PRICE_ROUTER: [&str; 1] = [CELLAR_RYETH];
 // permissions
 
 pub const ALLOWED_V2_0_SETUP_ADAPTORS: [(&str, &str); 1] = [(CELLAR_RYUSD, ADAPTOR_CELLAR_V2)];
-pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
-pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 2] = [
-    (CELLAR_TURBO_GHO, ADAPTOR_VESTING_SIMPLE_V2),
-    (CELLAR_TURBO_SWETH, ADAPTOR_VESTING_SIMPLE_V2),
+pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 2] = [
+    // According to Joe RYBTC already has this adaptor in its catalogue
+    (CELLAR_RYETH, ADAPTOR_CELLAR_V2),
 ];
+pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
 
 // due to position size limits in v2.0, positions must be added and removed from the limited list
 // and thus approved positions need to be allowed to be re-added, hence this large list
@@ -70,11 +70,12 @@ pub const ALLOWED_V2_0_POSITIONS: [(&str, u32); 20] = [
     (CELLAR_RYUSD, 28),
     (CELLAR_RYUSD, 29),
 ];
-pub const ALLOWED_V2_2_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
-pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 2] = [
-    (CELLAR_TURBO_GHO, 100000001),
-    (CELLAR_TURBO_SWETH, 100000002),
+pub const ALLOWED_V2_2_CATALOGUE_POSITIONS: [(&str, u32); 2] = [
+    // 199 is Turbo stETH position ID
+    (CELLAR_RYBTC, 199),
+    (CELLAR_RYETH, 199),
 ];
+pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
 
 pub const BLOCKED_ADAPTORS: [&str; 3] = [
     ADAPTOR_UNIV3_V1,
@@ -120,6 +121,7 @@ pub const CELLAR_RYUSD: &str = "97e6e0a40a3d02f12d1cec30ebfbae04e37c119e";
 pub const CELLAR_RYBTC: &str = "0274a704a6d9129f90a62ddc6f6024b33ecdad36";
 pub const CELLAR_TURBO_SWETH: &str = "d33dad974b938744dac81fe00ac67cb5aa13958e";
 pub const CELLAR_TURBO_GHO: &str = "0c190ded9be5f512bd72827bdad4003e9cc7975c";
+pub const CELLAR_TURBO_STETH: &str = "fd6db5011b171b05e1ea3b92f9eacaeeb055e971";
 
 // deprecated adaptors
 
