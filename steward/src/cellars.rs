@@ -40,7 +40,7 @@ pub const ALLOWED_CACHE_PRICE_ROUTER: [&str; 1] = [CELLAR_RYETH];
 // permissions
 
 pub const ALLOWED_V2_0_SETUP_ADAPTORS: [(&str, &str); 1] = [(CELLAR_RYUSD, ADAPTOR_CELLAR_V2)];
-pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 2] = [
+pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 1] = [
     // According to Joe RYBTC already has this adaptor in its catalogue
     (CELLAR_RYETH, ADAPTOR_CELLAR_V2),
 ];
