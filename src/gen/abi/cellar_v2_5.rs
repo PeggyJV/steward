@@ -1,6 +1,6 @@
-pub use cellarv2_2_mod::*;
+pub use cellarv2_5_mod::*;
 #[allow(clippy::too_many_arguments)]
-mod cellarv2_2_mod {
+mod cellarv2_5_mod {
     #![allow(clippy::enum_variant_names)]
     #![allow(dead_code)]
     #![allow(clippy::type_complexity)]
@@ -14,28 +14,28 @@ mod cellarv2_2_mod {
         types::*,
     };
     use ethers::providers::Middleware;
-    #[doc = "CellarV2_2 was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
+    #[doc = "CellarV2_5 was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
     use std::sync::Arc;
-    pub static CELLARV2_2_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
+    pub static CELLARV2_5_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
         ethers::contract::Lazy::new(|| {
-            serde_json :: from_str ("[\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract Registry\",\n                \"name\": \"_registry\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"constructor\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"asset\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"expectedAsset\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"Cellar__AssetMismatch\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"Cellar__CallToAdaptorNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__CallerNotAavePool\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ContractNotShutdown\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ContractShutdown\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"Cellar__DebtMismatch\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"maxDeposit\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__DepositRestricted\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ExternalInitiator\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"illiquidPosition\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"Cellar__IlliquidWithdraw\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assetsOwed\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__IncompleteWithdraw\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__InvalidFee\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__InvalidFeeCut\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"Cellar__InvalidHoldingPosition\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"requested\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"max\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__InvalidRebalanceDeviation\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__InvalidShareLockPeriod\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"depositor\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"Cellar__NotApprovedToDepositOnBehalf\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__Paused\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"Cellar__PositionAlreadyUsed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"maxPositions\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__PositionArrayFull\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"sharesRemaining\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__PositionNotEmpty\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"Cellar__PositionNotInCatalogue\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"Cellar__PositionNotUsed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__RemovingHoldingPosition\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"timeSharesAreUnlocked\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"currentBlock\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__SharesAreLocked\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"max\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__TotalAssetDeviatedOutsideRange\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"current\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"expected\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__TotalSharesMustRemainConstant\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ZeroAssets\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ZeroShares\",\n        \"type\": \"error\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"bytes\",\n                \"name\": \"data\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"AdaptorCalled\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"bool\",\n                \"name\": \"inCatalogue\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"AdaptorCatalogueAltered\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Approval\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"caller\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Deposit\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint8\",\n                \"name\": \"version\",\n                \"type\": \"uint8\"\n            }\n        ],\n        \"name\": \"Initialized\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"user\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"newOwner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"OwnershipTransferred\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint64\",\n                \"name\": \"oldPlatformFee\",\n                \"type\": \"uint64\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint64\",\n                \"name\": \"newPlatformFee\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"name\": \"PlatformFeeChanged\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"index\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"PositionAdded\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"bool\",\n                \"name\": \"inCatalogue\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"PositionCatalogueAltered\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"index\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"PositionRemoved\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint32\",\n                \"name\": \"newPosition1\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint32\",\n                \"name\": \"newPosition2\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"index1\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"index2\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"PositionSwapped\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"oldDeviation\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"newDeviation\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"RebalanceDeviationChanged\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"oldPeriod\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"newPeriod\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"ShareLockingPeriodChanged\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"bool\",\n                \"name\": \"isShutdown\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"ShutdownChanged\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"address\",\n                \"name\": \"oldPayoutAddress\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"address\",\n                \"name\": \"newPayoutAddress\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"StrategistPayoutAddressChanged\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint64\",\n                \"name\": \"oldPlatformCut\",\n                \"type\": \"uint64\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint64\",\n                \"name\": \"newPlatformCut\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"name\": \"StrategistPlatformCutChanged\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"from\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"to\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Transfer\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"caller\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Withdraw\",\n        \"type\": \"event\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"DOMAIN_SEPARATOR\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"\",\n                \"type\": \"bytes32\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"GRAVITY_BRIDGE_REGISTRY_SLOT\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"MAXIMUM_SHARE_LOCK_PERIOD\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"MAX_FEE_CUT\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"MAX_PLATFORM_FEE\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"MAX_POSITIONS\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"MAX_REBALANCE_DEVIATION\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"MINIMUM_SHARE_LOCK_PERIOD\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"PRICE_ROUTER_REGISTRY_SLOT\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"aavePool\",\n        \"outputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"adaptorCatalogue\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"addAdaptorToCatalogue\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"index\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"configurationData\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"inDebtArray\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"addPosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"addPositionToCatalogue\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"allowance\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"allowedRebalanceDeviation\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"approve\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"asset\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"balanceOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"blockExternalReceiver\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"checkTotalAssets\",\n                \"type\": \"bool\"\n            },\n            {\n                \"internalType\": \"uint16\",\n                \"name\": \"allowableRange\",\n                \"type\": \"uint16\"\n            }\n        ],\n        \"name\": \"cachePriceRouter\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"components\": [\n                    {\n                        \"internalType\": \"address\",\n                        \"name\": \"adaptor\",\n                        \"type\": \"address\"\n                    },\n                    {\n                        \"internalType\": \"bytes[]\",\n                        \"name\": \"callData\",\n                        \"type\": \"bytes[]\"\n                    }\n                ],\n                \"internalType\": \"struct Cellar.AdaptorCall[]\",\n                \"name\": \"data\",\n                \"type\": \"tuple[]\"\n            }\n        ],\n        \"name\": \"callOnAdaptor\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"convertToAssets\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"convertToShares\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"creditPositions\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"debtPositions\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"decimals\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint8\",\n                \"name\": \"\",\n                \"type\": \"uint8\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"deposit\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address[]\",\n                \"name\": \"assets\",\n                \"type\": \"address[]\"\n            },\n            {\n                \"internalType\": \"uint256[]\",\n                \"name\": \"amounts\",\n                \"type\": \"uint256[]\"\n            },\n            {\n                \"internalType\": \"uint256[]\",\n                \"name\": \"premiums\",\n                \"type\": \"uint256[]\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"initiator\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"executeOperation\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"feeData\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"strategistPlatformCut\",\n                \"type\": \"uint64\"\n            },\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"platformFee\",\n                \"type\": \"uint64\"\n            },\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"lastAccrual\",\n                \"type\": \"uint64\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"strategistPayoutAddress\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"index\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"inDebtArray\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"forcePositionOut\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"getCreditPositions\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32[]\",\n                \"name\": \"\",\n                \"type\": \"uint32[]\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"getDebtPositions\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32[]\",\n                \"name\": \"\",\n                \"type\": \"uint32[]\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"getPositionAssets\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20[]\",\n                \"name\": \"assets\",\n                \"type\": \"address[]\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"getPositionData\",\n        \"outputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"isDebt\",\n                \"type\": \"bool\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"configurationData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"holdingPosition\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"ignorePause\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"initialize\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"initiateShutdown\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"isPaused\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"isPositionUsed\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"isShutdown\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"liftShutdown\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"locked\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"maxDeposit\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"maxMint\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"maxRedeem\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"maxWithdraw\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"mint\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes[]\",\n                \"name\": \"data\",\n                \"type\": \"bytes[]\"\n            }\n        ],\n        \"name\": \"multicall\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"name\",\n        \"outputs\": [\n            {\n                \"internalType\": \"string\",\n                \"name\": \"\",\n                \"type\": \"string\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"nonces\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"onERC721Received\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bytes4\",\n                \"name\": \"\",\n                \"type\": \"bytes4\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"owner\",\n        \"outputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"value\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"deadline\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint8\",\n                \"name\": \"v\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"r\",\n                \"type\": \"bytes32\"\n            },\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"s\",\n                \"type\": \"bytes32\"\n            }\n        ],\n        \"name\": \"permit\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"positionCatalogue\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"previewDeposit\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"previewMint\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"previewRedeem\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"previewWithdraw\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"priceRouter\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract PriceRouter\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"redeem\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"registry\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract Registry\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"removeAdaptorFromCatalogue\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"index\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"inDebtArray\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"removePosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"removePositionFromCatalogue\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"setHoldingPosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"newDeviation\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"setRebalanceDeviation\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"newLock\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"setShareLockPeriod\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"payout\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"setStrategistPayoutAddress\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"cut\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"name\": \"setStrategistPlatformCut\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"shareLockPeriod\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"index1\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"index2\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"inDebtArray\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"swapPositions\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"symbol\",\n        \"outputs\": [\n            {\n                \"internalType\": \"string\",\n                \"name\": \"\",\n                \"type\": \"string\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"toggle\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"toggleIgnorePause\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"totalAssets\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"totalAssetsWithdrawable\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"totalSupply\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"to\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"transfer\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"from\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"to\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"transferFrom\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"newOwner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"transferOwnership\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"userShareLockStartTime\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"viewPositionBalances\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20[]\",\n                \"name\": \"assets\",\n                \"type\": \"address[]\"\n            },\n            {\n                \"internalType\": \"uint256[]\",\n                \"name\": \"balances\",\n                \"type\": \"uint256[]\"\n            },\n            {\n                \"internalType\": \"bool[]\",\n                \"name\": \"isDebt\",\n                \"type\": \"bool[]\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"withdraw\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    }\n]\n") . expect ("invalid abi")
+            serde_json :: from_str ("[\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"_owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract Registry\",\n                \"name\": \"_registry\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"_asset\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"string\",\n                \"name\": \"_name\",\n                \"type\": \"string\"\n            },\n            {\n                \"internalType\": \"string\",\n                \"name\": \"_symbol\",\n                \"type\": \"string\"\n            },\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"_holdingPosition\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"_holdingPositionConfig\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"_initialDeposit\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"_strategistPlatformCut\",\n                \"type\": \"uint64\"\n            },\n            {\n                \"internalType\": \"uint192\",\n                \"name\": \"_shareSupplyCap\",\n                \"type\": \"uint192\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"_balancerVault\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"constructor\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"asset\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"expectedAsset\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"Cellar__AssetMismatch\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"Cellar__CallToAdaptorNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__CallerNotApprovedToRebalance\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__CallerNotBalancerVault\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ContractNotShutdown\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ContractShutdown\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"Cellar__DebtMismatch\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ExpectedAddressDoesNotMatchActual\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ExternalInitiator\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__FailedToForceOutPosition\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"illiquidPosition\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"Cellar__IlliquidWithdraw\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assetsOwed\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__IncompleteWithdraw\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__InvalidFee\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__InvalidFeeCut\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"Cellar__InvalidHoldingPosition\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"requested\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"max\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__InvalidRebalanceDeviation\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__InvalidShareSupplyCap\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__MinimumConstructorMintNotMet\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__OracleFailure\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__Paused\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"Cellar__PositionAlreadyUsed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"maxPositions\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__PositionArrayFull\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"sharesRemaining\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__PositionNotEmpty\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"Cellar__PositionNotInCatalogue\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"Cellar__PositionNotUsed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__RemovingHoldingPosition\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__SettingValueToRegistryIdZeroIsProhibited\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ShareSupplyCapExceeded\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"max\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__TotalAssetDeviatedOutsideRange\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"current\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"expected\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__TotalSharesMustRemainConstant\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ZeroAssets\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ZeroShares\",\n        \"type\": \"error\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"bytes\",\n                \"name\": \"data\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"AdaptorCalled\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"bool\",\n                \"name\": \"inCatalogue\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"AdaptorCatalogueAltered\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Approval\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"address\",\n                \"name\": \"newAutomationActions\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"Cellar__AutomationActionsUpdated\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"caller\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Deposit\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"user\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"newOwner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"OwnershipTransferred\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"index\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"PositionAdded\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"bool\",\n                \"name\": \"inCatalogue\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"PositionCatalogueAltered\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"index\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"PositionRemoved\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint32\",\n                \"name\": \"newPosition1\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint32\",\n                \"name\": \"newPosition2\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"index1\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"index2\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"PositionSwapped\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"oldDeviation\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"newDeviation\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"RebalanceDeviationChanged\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"address\",\n                \"name\": \"newOracle\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"SharePriceOracleUpdated\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"bool\",\n                \"name\": \"isShutdown\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"ShutdownChanged\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"address\",\n                \"name\": \"oldPayoutAddress\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"address\",\n                \"name\": \"newPayoutAddress\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"StrategistPayoutAddressChanged\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint64\",\n                \"name\": \"oldPlatformCut\",\n                \"type\": \"uint64\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint64\",\n                \"name\": \"newPlatformCut\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"name\": \"StrategistPlatformCutChanged\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"from\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"to\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Transfer\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"caller\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Withdraw\",\n        \"type\": \"event\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"DOMAIN_SEPARATOR\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"\",\n                \"type\": \"bytes32\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"GRAVITY_BRIDGE_REGISTRY_SLOT\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"MAX_FEE_CUT\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"MAX_PLATFORM_FEE\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"MAX_POSITIONS\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"MAX_REBALANCE_DEVIATION\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"ORACLE_DECIMALS\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint8\",\n                \"name\": \"\",\n                \"type\": \"uint8\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"PRICE_ROUTER_REGISTRY_SLOT\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"adaptorCatalogue\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"addAdaptorToCatalogue\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"index\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"configurationData\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"inDebtArray\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"addPosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"addPositionToCatalogue\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"allowance\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"allowedRebalanceDeviation\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"approve\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"asset\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"automationActions\",\n        \"outputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"balanceOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"balancerVault\",\n        \"outputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"blockExternalReceiver\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"checkTotalAssets\",\n                \"type\": \"bool\"\n            },\n            {\n                \"internalType\": \"uint16\",\n                \"name\": \"allowableRange\",\n                \"type\": \"uint16\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"expectedPriceRouter\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"cachePriceRouter\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"components\": [\n                    {\n                        \"internalType\": \"address\",\n                        \"name\": \"adaptor\",\n                        \"type\": \"address\"\n                    },\n                    {\n                        \"internalType\": \"bytes[]\",\n                        \"name\": \"callData\",\n                        \"type\": \"bytes[]\"\n                    }\n                ],\n                \"internalType\": \"struct Cellar.AdaptorCall[]\",\n                \"name\": \"data\",\n                \"type\": \"tuple[]\"\n            }\n        ],\n        \"name\": \"callOnAdaptor\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"convertToAssets\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"convertToShares\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"creditPositions\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"debtPositions\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"decimals\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint8\",\n                \"name\": \"\",\n                \"type\": \"uint8\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint192\",\n                \"name\": \"_newShareSupplyCap\",\n                \"type\": \"uint192\"\n            }\n        ],\n        \"name\": \"decreaseShareSupplyCap\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"deposit\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"feeData\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"strategistPlatformCut\",\n                \"type\": \"uint64\"\n            },\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"platformFee\",\n                \"type\": \"uint64\"\n            },\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"lastAccrual\",\n                \"type\": \"uint64\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"strategistPayoutAddress\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"index\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"inDebtArray\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"forcePositionOut\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"getCreditPositions\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32[]\",\n                \"name\": \"\",\n                \"type\": \"uint32[]\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"getDebtPositions\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32[]\",\n                \"name\": \"\",\n                \"type\": \"uint32[]\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"getPositionData\",\n        \"outputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"isDebt\",\n                \"type\": \"bool\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"configurationData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"holdingPosition\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"ignorePause\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint192\",\n                \"name\": \"_newShareSupplyCap\",\n                \"type\": \"uint192\"\n            }\n        ],\n        \"name\": \"increaseShareSupplyCap\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"initiateShutdown\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"isPaused\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"isPositionUsed\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"isShutdown\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"liftShutdown\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"locked\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"maxDeposit\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"maxMint\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"maxRedeem\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"maxWithdraw\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"mint\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes[]\",\n                \"name\": \"data\",\n                \"type\": \"bytes[]\"\n            }\n        ],\n        \"name\": \"multicall\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"name\",\n        \"outputs\": [\n            {\n                \"internalType\": \"string\",\n                \"name\": \"\",\n                \"type\": \"string\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"nonces\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"onERC721Received\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bytes4\",\n                \"name\": \"\",\n                \"type\": \"bytes4\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"owner\",\n        \"outputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"value\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"deadline\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint8\",\n                \"name\": \"v\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"r\",\n                \"type\": \"bytes32\"\n            },\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"s\",\n                \"type\": \"bytes32\"\n            }\n        ],\n        \"name\": \"permit\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"positionCatalogue\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"previewDeposit\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"previewMint\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"previewRedeem\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"previewWithdraw\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"priceRouter\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract PriceRouter\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract IERC20[]\",\n                \"name\": \"tokens\",\n                \"type\": \"address[]\"\n            },\n            {\n                \"internalType\": \"uint256[]\",\n                \"name\": \"amounts\",\n                \"type\": \"uint256[]\"\n            },\n            {\n                \"internalType\": \"uint256[]\",\n                \"name\": \"feeAmounts\",\n                \"type\": \"uint256[]\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"userData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"receiveFlashLoan\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"redeem\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"registry\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract Registry\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"removeAdaptorFromCatalogue\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"index\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"inDebtArray\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"removePosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"removePositionFromCatalogue\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"_registryId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"_expectedAutomationActions\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"setAutomationActions\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"setHoldingPosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"newDeviation\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"setRebalanceDeviation\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"_registryId\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"contract ERC4626SharePriceOracle\",\n                \"name\": \"_sharePriceOracle\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"setSharePriceOracle\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"payout\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"setStrategistPayoutAddress\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"cut\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"name\": \"setStrategistPlatformCut\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"sharePriceOracle\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC4626SharePriceOracle\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"shareSupplyCap\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint192\",\n                \"name\": \"\",\n                \"type\": \"uint192\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"index1\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"index2\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"inDebtArray\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"swapPositions\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"symbol\",\n        \"outputs\": [\n            {\n                \"internalType\": \"string\",\n                \"name\": \"\",\n                \"type\": \"string\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"toggleIgnorePause\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"totalAssets\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"totalAssetsWithdrawable\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"totalSupply\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"to\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"transfer\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"from\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"to\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"transferFrom\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"newOwner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"transferOwnership\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"viewPositionBalances\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20[]\",\n                \"name\": \"assets\",\n                \"type\": \"address[]\"\n            },\n            {\n                \"internalType\": \"uint256[]\",\n                \"name\": \"balances\",\n                \"type\": \"uint256[]\"\n            },\n            {\n                \"internalType\": \"bool[]\",\n                \"name\": \"isDebt\",\n                \"type\": \"bool[]\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"withdraw\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    }\n]\n") . expect ("invalid abi")
         });
     #[derive(Clone)]
-    pub struct CellarV2_2<M>(ethers::contract::Contract<M>);
-    impl<M> std::ops::Deref for CellarV2_2<M> {
+    pub struct CellarV2_5<M>(ethers::contract::Contract<M>);
+    impl<M> std::ops::Deref for CellarV2_5<M> {
         type Target = ethers::contract::Contract<M>;
         fn deref(&self) -> &Self::Target {
             &self.0
         }
     }
-    impl<M: ethers::providers::Middleware> std::fmt::Debug for CellarV2_2<M> {
+    impl<M: ethers::providers::Middleware> std::fmt::Debug for CellarV2_5<M> {
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-            f.debug_tuple(stringify!(CellarV2_2))
+            f.debug_tuple(stringify!(CellarV2_5))
                 .field(&self.address())
                 .finish()
         }
     }
-    impl<'a, M: ethers::providers::Middleware> CellarV2_2<M> {
+    impl<'a, M: ethers::providers::Middleware> CellarV2_5<M> {
         #[doc = r" Creates a new contract instance with the specified `ethers`"]
         #[doc = r" client at the given `Address`. The contract derefs to a `ethers::Contract`"]
         #[doc = r" object"]
@@ -44,7 +44,7 @@ mod cellarv2_2_mod {
             client: ::std::sync::Arc<M>,
         ) -> Self {
             let contract =
-                ethers::contract::Contract::new(address.into(), CELLARV2_2_ABI.clone(), client);
+                ethers::contract::Contract::new(address.into(), CELLARV2_5_ABI.clone(), client);
             Self(contract)
         }
         #[doc = "Calls the contract's `DOMAIN_SEPARATOR` (0x3644e515) function"]
@@ -59,14 +59,6 @@ mod cellarv2_2_mod {
         ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
             self.0
                 .method_hash([205, 130, 248, 177], ())
-                .expect("method not found (this should never happen)")
-        }
-        #[doc = "Calls the contract's `MAXIMUM_SHARE_LOCK_PERIOD` (0x0402ab63) function"]
-        pub fn maximum_share_lock_period(
-            &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
-            self.0
-                .method_hash([4, 2, 171, 99], ())
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `MAX_FEE_CUT` (0xeef33eca) function"]
@@ -95,12 +87,10 @@ mod cellarv2_2_mod {
                 .method_hash([111, 241, 192, 42], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `MINIMUM_SHARE_LOCK_PERIOD` (0x0051a3b7) function"]
-        pub fn minimum_share_lock_period(
-            &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        #[doc = "Calls the contract's `ORACLE_DECIMALS` (0x1ea15502) function"]
+        pub fn oracle_decimals(&self) -> ethers::contract::builders::ContractCall<M, u8> {
             self.0
-                .method_hash([0, 81, 163, 183], ())
+                .method_hash([30, 161, 85, 2], ())
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `PRICE_ROUTER_REGISTRY_SLOT` (0x5a400d25) function"]
@@ -109,14 +99,6 @@ mod cellarv2_2_mod {
         ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
             self.0
                 .method_hash([90, 64, 13, 37], ())
-                .expect("method not found (this should never happen)")
-        }
-        #[doc = "Calls the contract's `aavePool` (0xa03e4bc3) function"]
-        pub fn aave_pool(
-            &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
-            self.0
-                .method_hash([160, 62, 75, 195], ())
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `adaptorCatalogue` (0x18d4c143) function"]
@@ -197,6 +179,14 @@ mod cellarv2_2_mod {
                 .method_hash([56, 213, 46, 15], ())
                 .expect("method not found (this should never happen)")
         }
+        #[doc = "Calls the contract's `automationActions` (0x88c4caba) function"]
+        pub fn automation_actions(
+            &self,
+        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+            self.0
+                .method_hash([136, 196, 202, 186], ())
+                .expect("method not found (this should never happen)")
+        }
         #[doc = "Calls the contract's `balanceOf` (0x70a08231) function"]
         pub fn balance_of(
             &self,
@@ -206,20 +196,32 @@ mod cellarv2_2_mod {
                 .method_hash([112, 160, 130, 49], p0)
                 .expect("method not found (this should never happen)")
         }
+        #[doc = "Calls the contract's `balancerVault` (0x158274a5) function"]
+        pub fn balancer_vault(
+            &self,
+        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+            self.0
+                .method_hash([21, 130, 116, 165], ())
+                .expect("method not found (this should never happen)")
+        }
         #[doc = "Calls the contract's `blockExternalReceiver` (0x4c4602da) function"]
         pub fn block_external_receiver(&self) -> ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([76, 70, 2, 218], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `cachePriceRouter` (0x58db626d) function"]
+        #[doc = "Calls the contract's `cachePriceRouter` (0xc588d8d6) function"]
         pub fn cache_price_router(
             &self,
             check_total_assets: bool,
             allowable_range: u16,
+            expected_price_router: ethers::core::types::Address,
         ) -> ethers::contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([88, 219, 98, 109], (check_total_assets, allowable_range))
+                .method_hash(
+                    [197, 136, 216, 214],
+                    (check_total_assets, allowable_range, expected_price_router),
+                )
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `callOnAdaptor` (0x4e84befe) function"]
@@ -273,6 +275,15 @@ mod cellarv2_2_mod {
                 .method_hash([49, 60, 229, 103], ())
                 .expect("method not found (this should never happen)")
         }
+        #[doc = "Calls the contract's `decreaseShareSupplyCap` (0x575bbce6) function"]
+        pub fn decrease_share_supply_cap(
+            &self,
+            new_share_supply_cap: ethers::core::types::U256,
+        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            self.0
+                .method_hash([87, 91, 188, 230], new_share_supply_cap)
+                .expect("method not found (this should never happen)")
+        }
         #[doc = "Calls the contract's `deposit` (0x6e553f65) function"]
         pub fn deposit(
             &self,
@@ -281,22 +292,6 @@ mod cellarv2_2_mod {
         ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
             self.0
                 .method_hash([110, 85, 63, 101], (assets, receiver))
-                .expect("method not found (this should never happen)")
-        }
-        #[doc = "Calls the contract's `executeOperation` (0x920f5c84) function"]
-        pub fn execute_operation(
-            &self,
-            assets: ::std::vec::Vec<ethers::core::types::Address>,
-            amounts: ::std::vec::Vec<ethers::core::types::U256>,
-            premiums: ::std::vec::Vec<ethers::core::types::U256>,
-            initiator: ethers::core::types::Address,
-            params: ethers::core::types::Bytes,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
-            self.0
-                .method_hash(
-                    [146, 15, 92, 132],
-                    (assets, amounts, premiums, initiator, params),
-                )
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `feeData` (0xe753e600) function"]
@@ -337,17 +332,6 @@ mod cellarv2_2_mod {
                 .method_hash([62, 51, 130, 186], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `getPositionAssets` (0x087ed837) function"]
-        pub fn get_position_assets(
-            &self,
-        ) -> ethers::contract::builders::ContractCall<
-            M,
-            ::std::vec::Vec<ethers::core::types::Address>,
-        > {
-            self.0
-                .method_hash([8, 126, 216, 55], ())
-                .expect("method not found (this should never happen)")
-        }
         #[doc = "Calls the contract's `getPositionData` (0x7384504f) function"]
         pub fn get_position_data(
             &self,
@@ -377,13 +361,13 @@ mod cellarv2_2_mod {
                 .method_hash([153, 89, 175, 148], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `initialize` (0x439fab91) function"]
-        pub fn initialize(
+        #[doc = "Calls the contract's `increaseShareSupplyCap` (0xb0646e27) function"]
+        pub fn increase_share_supply_cap(
             &self,
-            params: ethers::core::types::Bytes,
+            new_share_supply_cap: ethers::core::types::U256,
         ) -> ethers::contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([67, 159, 171, 145], params)
+                .method_hash([176, 100, 110, 39], new_share_supply_cap)
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `initiateShutdown` (0x0a680e18) function"]
@@ -420,9 +404,7 @@ mod cellarv2_2_mod {
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `locked` (0xcf309012) function"]
-        pub fn locked(
-            &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        pub fn locked(&self) -> ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([207, 48, 144, 18], ())
                 .expect("method not found (this should never happen)")
@@ -588,6 +570,18 @@ mod cellarv2_2_mod {
                 .method_hash([215, 212, 191, 69], ())
                 .expect("method not found (this should never happen)")
         }
+        #[doc = "Calls the contract's `receiveFlashLoan` (0xf04f2707) function"]
+        pub fn receive_flash_loan(
+            &self,
+            tokens: ::std::vec::Vec<ethers::core::types::Address>,
+            amounts: ::std::vec::Vec<ethers::core::types::U256>,
+            fee_amounts: ::std::vec::Vec<ethers::core::types::U256>,
+            user_data: ethers::core::types::Bytes,
+        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            self.0
+                .method_hash([240, 79, 39, 7], (tokens, amounts, fee_amounts, user_data))
+                .expect("method not found (this should never happen)")
+        }
         #[doc = "Calls the contract's `redeem` (0xba087652) function"]
         pub fn redeem(
             &self,
@@ -635,6 +629,19 @@ mod cellarv2_2_mod {
                 .method_hash([209, 232, 132, 4], position_id)
                 .expect("method not found (this should never happen)")
         }
+        #[doc = "Calls the contract's `setAutomationActions` (0xc8e81950) function"]
+        pub fn set_automation_actions(
+            &self,
+            registry_id: ethers::core::types::U256,
+            expected_automation_actions: ethers::core::types::Address,
+        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            self.0
+                .method_hash(
+                    [200, 232, 25, 80],
+                    (registry_id, expected_automation_actions),
+                )
+                .expect("method not found (this should never happen)")
+        }
         #[doc = "Calls the contract's `setHoldingPosition` (0x0780fd3a) function"]
         pub fn set_holding_position(
             &self,
@@ -653,13 +660,14 @@ mod cellarv2_2_mod {
                 .method_hash([83, 10, 55, 20], new_deviation)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `setShareLockPeriod` (0x9c552ca8) function"]
-        pub fn set_share_lock_period(
+        #[doc = "Calls the contract's `setSharePriceOracle` (0xf5743bc9) function"]
+        pub fn set_share_price_oracle(
             &self,
-            new_lock: ethers::core::types::U256,
+            registry_id: ethers::core::types::U256,
+            share_price_oracle: ethers::core::types::Address,
         ) -> ethers::contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([156, 85, 44, 168], new_lock)
+                .method_hash([245, 116, 59, 201], (registry_id, share_price_oracle))
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `setStrategistPayoutAddress` (0xb0a75d36) function"]
@@ -680,12 +688,20 @@ mod cellarv2_2_mod {
                 .method_hash([181, 41, 42, 153], cut)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `shareLockPeriod` (0x9fdb11b6) function"]
-        pub fn share_lock_period(
+        #[doc = "Calls the contract's `sharePriceOracle` (0x196e8285) function"]
+        pub fn share_price_oracle(
+            &self,
+        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+            self.0
+                .method_hash([25, 110, 130, 133], ())
+                .expect("method not found (this should never happen)")
+        }
+        #[doc = "Calls the contract's `shareSupplyCap` (0xd446bbcc) function"]
+        pub fn share_supply_cap(
             &self,
         ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
             self.0
-                .method_hash([159, 219, 17, 182], ())
+                .method_hash([212, 70, 187, 204], ())
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `swapPositions` (0x379e0b13) function"]
@@ -705,13 +721,10 @@ mod cellarv2_2_mod {
                 .method_hash([149, 216, 155, 65], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `toggleIgnorePause` (0xebe3c328) function"]
-        pub fn toggle_ignore_pause(
-            &self,
-            toggle: bool,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        #[doc = "Calls the contract's `toggleIgnorePause` (0xa373e3ff) function"]
+        pub fn toggle_ignore_pause(&self) -> ethers::contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([235, 227, 195, 40], toggle)
+                .method_hash([163, 115, 227, 255], ())
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `totalAssets` (0x01e1d114) function"]
@@ -768,15 +781,6 @@ mod cellarv2_2_mod {
                 .method_hash([242, 253, 227, 139], new_owner)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `userShareLockStartTime` (0x687c2b50) function"]
-        pub fn user_share_lock_start_time(
-            &self,
-            p0: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
-            self.0
-                .method_hash([104, 124, 43, 80], p0)
-                .expect("method not found (this should never happen)")
-        }
         #[doc = "Calls the contract's `viewPositionBalances` (0x78e0233e) function"]
         pub fn view_position_balances(
             &self,
@@ -819,26 +823,20 @@ mod cellarv2_2_mod {
         pub fn approval_filter(&self) -> ethers::contract::builders::Event<M, ApprovalFilter> {
             self.0.event()
         }
-        #[doc = "Gets the contract's `Deposit` event"]
-        pub fn deposit_filter(&self) -> ethers::contract::builders::Event<M, DepositFilter> {
+        #[doc = "Gets the contract's `Cellar__AutomationActionsUpdated` event"]
+        pub fn cellar_automation_actions_updated_filter(
+            &self,
+        ) -> ethers::contract::builders::Event<M, CellarAutomationActionsUpdatedFilter> {
             self.0.event()
         }
-        #[doc = "Gets the contract's `Initialized` event"]
-        pub fn initialized_filter(
-            &self,
-        ) -> ethers::contract::builders::Event<M, InitializedFilter> {
+        #[doc = "Gets the contract's `Deposit` event"]
+        pub fn deposit_filter(&self) -> ethers::contract::builders::Event<M, DepositFilter> {
             self.0.event()
         }
         #[doc = "Gets the contract's `OwnershipTransferred` event"]
         pub fn ownership_transferred_filter(
             &self,
         ) -> ethers::contract::builders::Event<M, OwnershipTransferredFilter> {
-            self.0.event()
-        }
-        #[doc = "Gets the contract's `PlatformFeeChanged` event"]
-        pub fn platform_fee_changed_filter(
-            &self,
-        ) -> ethers::contract::builders::Event<M, PlatformFeeChangedFilter> {
             self.0.event()
         }
         #[doc = "Gets the contract's `PositionAdded` event"]
@@ -871,10 +869,10 @@ mod cellarv2_2_mod {
         ) -> ethers::contract::builders::Event<M, RebalanceDeviationChangedFilter> {
             self.0.event()
         }
-        #[doc = "Gets the contract's `ShareLockingPeriodChanged` event"]
-        pub fn share_locking_period_changed_filter(
+        #[doc = "Gets the contract's `SharePriceOracleUpdated` event"]
+        pub fn share_price_oracle_updated_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, ShareLockingPeriodChangedFilter> {
+        ) -> ethers::contract::builders::Event<M, SharePriceOracleUpdatedFilter> {
             self.0.event()
         }
         #[doc = "Gets the contract's `ShutdownChanged` event"]
@@ -904,7 +902,7 @@ mod cellarv2_2_mod {
             self.0.event()
         }
         #[doc = r" Returns an [`Event`](#ethers_contract::builders::Event) builder for all events of this contract"]
-        pub fn events(&self) -> ethers::contract::builders::Event<M, CellarV2_2Events> {
+        pub fn events(&self) -> ethers::contract::builders::Event<M, CellarV2_5Events> {
             self.0.event_with_filter(Default::default())
         }
     }
@@ -973,14 +971,12 @@ mod cellarv2_2_mod {
         serde :: Deserialize,
         serde :: Serialize,
     )]
-    #[ethevent(name = "Deposit", abi = "Deposit(address,address,uint256,uint256)")]
-    pub struct DepositFilter {
-        #[ethevent(indexed)]
-        pub caller: ethers::core::types::Address,
-        #[ethevent(indexed)]
-        pub owner: ethers::core::types::Address,
-        pub assets: ethers::core::types::U256,
-        pub shares: ethers::core::types::U256,
+    #[ethevent(
+        name = "Cellar__AutomationActionsUpdated",
+        abi = "Cellar__AutomationActionsUpdated(address)"
+    )]
+    pub struct CellarAutomationActionsUpdatedFilter {
+        pub new_automation_actions: ethers::core::types::Address,
     }
     #[derive(
         Clone,
@@ -993,9 +989,14 @@ mod cellarv2_2_mod {
         serde :: Deserialize,
         serde :: Serialize,
     )]
-    #[ethevent(name = "Initialized", abi = "Initialized(uint8)")]
-    pub struct InitializedFilter {
-        pub version: u8,
+    #[ethevent(name = "Deposit", abi = "Deposit(address,address,uint256,uint256)")]
+    pub struct DepositFilter {
+        #[ethevent(indexed)]
+        pub caller: ethers::core::types::Address,
+        #[ethevent(indexed)]
+        pub owner: ethers::core::types::Address,
+        pub assets: ethers::core::types::U256,
+        pub shares: ethers::core::types::U256,
     }
     #[derive(
         Clone,
@@ -1017,22 +1018,6 @@ mod cellarv2_2_mod {
         pub user: ethers::core::types::Address,
         #[ethevent(indexed)]
         pub new_owner: ethers::core::types::Address,
-    }
-    #[derive(
-        Clone,
-        Debug,
-        Default,
-        Eq,
-        PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
-    )]
-    #[ethevent(name = "PlatformFeeChanged", abi = "PlatformFeeChanged(uint64,uint64)")]
-    pub struct PlatformFeeChangedFilter {
-        pub old_platform_fee: u64,
-        pub new_platform_fee: u64,
     }
     #[derive(
         Clone,
@@ -1137,12 +1122,11 @@ mod cellarv2_2_mod {
         serde :: Serialize,
     )]
     #[ethevent(
-        name = "ShareLockingPeriodChanged",
-        abi = "ShareLockingPeriodChanged(uint256,uint256)"
+        name = "SharePriceOracleUpdated",
+        abi = "SharePriceOracleUpdated(address)"
     )]
-    pub struct ShareLockingPeriodChangedFilter {
-        pub old_period: ethers::core::types::U256,
-        pub new_period: ethers::core::types::U256,
+    pub struct SharePriceOracleUpdatedFilter {
+        pub new_oracle: ethers::core::types::Address,
     }
     #[derive(
         Clone,
@@ -1242,113 +1226,110 @@ mod cellarv2_2_mod {
         pub shares: ethers::core::types::U256,
     }
     #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
-    pub enum CellarV2_2Events {
+    pub enum CellarV2_5Events {
         AdaptorCalledFilter(AdaptorCalledFilter),
         AdaptorCatalogueAlteredFilter(AdaptorCatalogueAlteredFilter),
         ApprovalFilter(ApprovalFilter),
+        CellarAutomationActionsUpdatedFilter(CellarAutomationActionsUpdatedFilter),
         DepositFilter(DepositFilter),
-        InitializedFilter(InitializedFilter),
         OwnershipTransferredFilter(OwnershipTransferredFilter),
-        PlatformFeeChangedFilter(PlatformFeeChangedFilter),
         PositionAddedFilter(PositionAddedFilter),
         PositionCatalogueAlteredFilter(PositionCatalogueAlteredFilter),
         PositionRemovedFilter(PositionRemovedFilter),
         PositionSwappedFilter(PositionSwappedFilter),
         RebalanceDeviationChangedFilter(RebalanceDeviationChangedFilter),
-        ShareLockingPeriodChangedFilter(ShareLockingPeriodChangedFilter),
+        SharePriceOracleUpdatedFilter(SharePriceOracleUpdatedFilter),
         ShutdownChangedFilter(ShutdownChangedFilter),
         StrategistPayoutAddressChangedFilter(StrategistPayoutAddressChangedFilter),
         StrategistPlatformCutChangedFilter(StrategistPlatformCutChangedFilter),
         TransferFilter(TransferFilter),
         WithdrawFilter(WithdrawFilter),
     }
-    impl ethers::contract::EthLogDecode for CellarV2_2Events {
+    impl ethers::contract::EthLogDecode for CellarV2_5Events {
         fn decode_log(log: &ethers::core::abi::RawLog) -> Result<Self, ethers::core::abi::Error>
         where
             Self: Sized,
         {
             if let Ok(decoded) = AdaptorCalledFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::AdaptorCalledFilter(decoded));
+                return Ok(CellarV2_5Events::AdaptorCalledFilter(decoded));
             }
             if let Ok(decoded) = AdaptorCatalogueAlteredFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::AdaptorCatalogueAlteredFilter(decoded));
+                return Ok(CellarV2_5Events::AdaptorCatalogueAlteredFilter(decoded));
             }
             if let Ok(decoded) = ApprovalFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::ApprovalFilter(decoded));
+                return Ok(CellarV2_5Events::ApprovalFilter(decoded));
+            }
+            if let Ok(decoded) = CellarAutomationActionsUpdatedFilter::decode_log(log) {
+                return Ok(CellarV2_5Events::CellarAutomationActionsUpdatedFilter(
+                    decoded,
+                ));
             }
             if let Ok(decoded) = DepositFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::DepositFilter(decoded));
-            }
-            if let Ok(decoded) = InitializedFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::InitializedFilter(decoded));
+                return Ok(CellarV2_5Events::DepositFilter(decoded));
             }
             if let Ok(decoded) = OwnershipTransferredFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::OwnershipTransferredFilter(decoded));
-            }
-            if let Ok(decoded) = PlatformFeeChangedFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::PlatformFeeChangedFilter(decoded));
+                return Ok(CellarV2_5Events::OwnershipTransferredFilter(decoded));
             }
             if let Ok(decoded) = PositionAddedFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::PositionAddedFilter(decoded));
+                return Ok(CellarV2_5Events::PositionAddedFilter(decoded));
             }
             if let Ok(decoded) = PositionCatalogueAlteredFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::PositionCatalogueAlteredFilter(decoded));
+                return Ok(CellarV2_5Events::PositionCatalogueAlteredFilter(decoded));
             }
             if let Ok(decoded) = PositionRemovedFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::PositionRemovedFilter(decoded));
+                return Ok(CellarV2_5Events::PositionRemovedFilter(decoded));
             }
             if let Ok(decoded) = PositionSwappedFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::PositionSwappedFilter(decoded));
+                return Ok(CellarV2_5Events::PositionSwappedFilter(decoded));
             }
             if let Ok(decoded) = RebalanceDeviationChangedFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::RebalanceDeviationChangedFilter(decoded));
+                return Ok(CellarV2_5Events::RebalanceDeviationChangedFilter(decoded));
             }
-            if let Ok(decoded) = ShareLockingPeriodChangedFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::ShareLockingPeriodChangedFilter(decoded));
+            if let Ok(decoded) = SharePriceOracleUpdatedFilter::decode_log(log) {
+                return Ok(CellarV2_5Events::SharePriceOracleUpdatedFilter(decoded));
             }
             if let Ok(decoded) = ShutdownChangedFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::ShutdownChangedFilter(decoded));
+                return Ok(CellarV2_5Events::ShutdownChangedFilter(decoded));
             }
             if let Ok(decoded) = StrategistPayoutAddressChangedFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::StrategistPayoutAddressChangedFilter(
+                return Ok(CellarV2_5Events::StrategistPayoutAddressChangedFilter(
                     decoded,
                 ));
             }
             if let Ok(decoded) = StrategistPlatformCutChangedFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::StrategistPlatformCutChangedFilter(
+                return Ok(CellarV2_5Events::StrategistPlatformCutChangedFilter(
                     decoded,
                 ));
             }
             if let Ok(decoded) = TransferFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::TransferFilter(decoded));
+                return Ok(CellarV2_5Events::TransferFilter(decoded));
             }
             if let Ok(decoded) = WithdrawFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::WithdrawFilter(decoded));
+                return Ok(CellarV2_5Events::WithdrawFilter(decoded));
             }
             Err(ethers::core::abi::Error::InvalidData)
         }
     }
-    impl ::std::fmt::Display for CellarV2_2Events {
+    impl ::std::fmt::Display for CellarV2_5Events {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match self {
-                CellarV2_2Events::AdaptorCalledFilter(element) => element.fmt(f),
-                CellarV2_2Events::AdaptorCatalogueAlteredFilter(element) => element.fmt(f),
-                CellarV2_2Events::ApprovalFilter(element) => element.fmt(f),
-                CellarV2_2Events::DepositFilter(element) => element.fmt(f),
-                CellarV2_2Events::InitializedFilter(element) => element.fmt(f),
-                CellarV2_2Events::OwnershipTransferredFilter(element) => element.fmt(f),
-                CellarV2_2Events::PlatformFeeChangedFilter(element) => element.fmt(f),
-                CellarV2_2Events::PositionAddedFilter(element) => element.fmt(f),
-                CellarV2_2Events::PositionCatalogueAlteredFilter(element) => element.fmt(f),
-                CellarV2_2Events::PositionRemovedFilter(element) => element.fmt(f),
-                CellarV2_2Events::PositionSwappedFilter(element) => element.fmt(f),
-                CellarV2_2Events::RebalanceDeviationChangedFilter(element) => element.fmt(f),
-                CellarV2_2Events::ShareLockingPeriodChangedFilter(element) => element.fmt(f),
-                CellarV2_2Events::ShutdownChangedFilter(element) => element.fmt(f),
-                CellarV2_2Events::StrategistPayoutAddressChangedFilter(element) => element.fmt(f),
-                CellarV2_2Events::StrategistPlatformCutChangedFilter(element) => element.fmt(f),
-                CellarV2_2Events::TransferFilter(element) => element.fmt(f),
-                CellarV2_2Events::WithdrawFilter(element) => element.fmt(f),
+                CellarV2_5Events::AdaptorCalledFilter(element) => element.fmt(f),
+                CellarV2_5Events::AdaptorCatalogueAlteredFilter(element) => element.fmt(f),
+                CellarV2_5Events::ApprovalFilter(element) => element.fmt(f),
+                CellarV2_5Events::CellarAutomationActionsUpdatedFilter(element) => element.fmt(f),
+                CellarV2_5Events::DepositFilter(element) => element.fmt(f),
+                CellarV2_5Events::OwnershipTransferredFilter(element) => element.fmt(f),
+                CellarV2_5Events::PositionAddedFilter(element) => element.fmt(f),
+                CellarV2_5Events::PositionCatalogueAlteredFilter(element) => element.fmt(f),
+                CellarV2_5Events::PositionRemovedFilter(element) => element.fmt(f),
+                CellarV2_5Events::PositionSwappedFilter(element) => element.fmt(f),
+                CellarV2_5Events::RebalanceDeviationChangedFilter(element) => element.fmt(f),
+                CellarV2_5Events::SharePriceOracleUpdatedFilter(element) => element.fmt(f),
+                CellarV2_5Events::ShutdownChangedFilter(element) => element.fmt(f),
+                CellarV2_5Events::StrategistPayoutAddressChangedFilter(element) => element.fmt(f),
+                CellarV2_5Events::StrategistPlatformCutChangedFilter(element) => element.fmt(f),
+                CellarV2_5Events::TransferFilter(element) => element.fmt(f),
+                CellarV2_5Events::WithdrawFilter(element) => element.fmt(f),
             }
         }
     }
@@ -1383,23 +1364,6 @@ mod cellarv2_2_mod {
         abi = "GRAVITY_BRIDGE_REGISTRY_SLOT()"
     )]
     pub struct GravityBridgeRegistrySlotCall;
-    #[doc = "Container type for all input parameters for the `MAXIMUM_SHARE_LOCK_PERIOD`function with signature `MAXIMUM_SHARE_LOCK_PERIOD()` and selector `[4, 2, 171, 99]`"]
-    #[derive(
-        Clone,
-        Debug,
-        Default,
-        Eq,
-        PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
-    )]
-    #[ethcall(
-        name = "MAXIMUM_SHARE_LOCK_PERIOD",
-        abi = "MAXIMUM_SHARE_LOCK_PERIOD()"
-    )]
-    pub struct MaximumShareLockPeriodCall;
     #[doc = "Container type for all input parameters for the `MAX_FEE_CUT`function with signature `MAX_FEE_CUT()` and selector `[238, 243, 62, 202]`"]
     #[derive(
         Clone,
@@ -1456,7 +1420,7 @@ mod cellarv2_2_mod {
     )]
     #[ethcall(name = "MAX_REBALANCE_DEVIATION", abi = "MAX_REBALANCE_DEVIATION()")]
     pub struct MaxRebalanceDeviationCall;
-    #[doc = "Container type for all input parameters for the `MINIMUM_SHARE_LOCK_PERIOD`function with signature `MINIMUM_SHARE_LOCK_PERIOD()` and selector `[0, 81, 163, 183]`"]
+    #[doc = "Container type for all input parameters for the `ORACLE_DECIMALS`function with signature `ORACLE_DECIMALS()` and selector `[30, 161, 85, 2]`"]
     #[derive(
         Clone,
         Debug,
@@ -1468,11 +1432,8 @@ mod cellarv2_2_mod {
         serde :: Deserialize,
         serde :: Serialize,
     )]
-    #[ethcall(
-        name = "MINIMUM_SHARE_LOCK_PERIOD",
-        abi = "MINIMUM_SHARE_LOCK_PERIOD()"
-    )]
-    pub struct MinimumShareLockPeriodCall;
+    #[ethcall(name = "ORACLE_DECIMALS", abi = "ORACLE_DECIMALS()")]
+    pub struct OracleDecimalsCall;
     #[doc = "Container type for all input parameters for the `PRICE_ROUTER_REGISTRY_SLOT`function with signature `PRICE_ROUTER_REGISTRY_SLOT()` and selector `[90, 64, 13, 37]`"]
     #[derive(
         Clone,
@@ -1490,20 +1451,6 @@ mod cellarv2_2_mod {
         abi = "PRICE_ROUTER_REGISTRY_SLOT()"
     )]
     pub struct PriceRouterRegistrySlotCall;
-    #[doc = "Container type for all input parameters for the `aavePool`function with signature `aavePool()` and selector `[160, 62, 75, 195]`"]
-    #[derive(
-        Clone,
-        Debug,
-        Default,
-        Eq,
-        PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
-    )]
-    #[ethcall(name = "aavePool", abi = "aavePool()")]
-    pub struct AavePoolCall;
     #[doc = "Container type for all input parameters for the `adaptorCatalogue`function with signature `adaptorCatalogue(address)` and selector `[24, 212, 193, 67]`"]
     #[derive(
         Clone,
@@ -1637,6 +1584,20 @@ mod cellarv2_2_mod {
     )]
     #[ethcall(name = "asset", abi = "asset()")]
     pub struct AssetCall;
+    #[doc = "Container type for all input parameters for the `automationActions`function with signature `automationActions()` and selector `[136, 196, 202, 186]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Default,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthCall,
+        ethers :: contract :: EthDisplay,
+        serde :: Deserialize,
+        serde :: Serialize,
+    )]
+    #[ethcall(name = "automationActions", abi = "automationActions()")]
+    pub struct AutomationActionsCall;
     #[doc = "Container type for all input parameters for the `balanceOf`function with signature `balanceOf(address)` and selector `[112, 160, 130, 49]`"]
     #[derive(
         Clone,
@@ -1651,6 +1612,20 @@ mod cellarv2_2_mod {
     )]
     #[ethcall(name = "balanceOf", abi = "balanceOf(address)")]
     pub struct BalanceOfCall(pub ethers::core::types::Address);
+    #[doc = "Container type for all input parameters for the `balancerVault`function with signature `balancerVault()` and selector `[21, 130, 116, 165]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Default,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthCall,
+        ethers :: contract :: EthDisplay,
+        serde :: Deserialize,
+        serde :: Serialize,
+    )]
+    #[ethcall(name = "balancerVault", abi = "balancerVault()")]
+    pub struct BalancerVaultCall;
     #[doc = "Container type for all input parameters for the `blockExternalReceiver`function with signature `blockExternalReceiver()` and selector `[76, 70, 2, 218]`"]
     #[derive(
         Clone,
@@ -1665,7 +1640,7 @@ mod cellarv2_2_mod {
     )]
     #[ethcall(name = "blockExternalReceiver", abi = "blockExternalReceiver()")]
     pub struct BlockExternalReceiverCall;
-    #[doc = "Container type for all input parameters for the `cachePriceRouter`function with signature `cachePriceRouter(bool,uint16)` and selector `[88, 219, 98, 109]`"]
+    #[doc = "Container type for all input parameters for the `cachePriceRouter`function with signature `cachePriceRouter(bool,uint16,address)` and selector `[197, 136, 216, 214]`"]
     #[derive(
         Clone,
         Debug,
@@ -1677,10 +1652,14 @@ mod cellarv2_2_mod {
         serde :: Deserialize,
         serde :: Serialize,
     )]
-    #[ethcall(name = "cachePriceRouter", abi = "cachePriceRouter(bool,uint16)")]
+    #[ethcall(
+        name = "cachePriceRouter",
+        abi = "cachePriceRouter(bool,uint16,address)"
+    )]
     pub struct CachePriceRouterCall {
         pub check_total_assets: bool,
         pub allowable_range: u16,
+        pub expected_price_router: ethers::core::types::Address,
     }
     #[doc = "Container type for all input parameters for the `callOnAdaptor`function with signature `callOnAdaptor((address,bytes[])[])` and selector `[78, 132, 190, 254]`"]
     #[derive(
@@ -1772,6 +1751,25 @@ mod cellarv2_2_mod {
     )]
     #[ethcall(name = "decimals", abi = "decimals()")]
     pub struct DecimalsCall;
+    #[doc = "Container type for all input parameters for the `decreaseShareSupplyCap`function with signature `decreaseShareSupplyCap(uint192)` and selector `[87, 91, 188, 230]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Default,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthCall,
+        ethers :: contract :: EthDisplay,
+        serde :: Deserialize,
+        serde :: Serialize,
+    )]
+    #[ethcall(
+        name = "decreaseShareSupplyCap",
+        abi = "decreaseShareSupplyCap(uint192)"
+    )]
+    pub struct DecreaseShareSupplyCapCall {
+        pub new_share_supply_cap: ethers::core::types::U256,
+    }
     #[doc = "Container type for all input parameters for the `deposit`function with signature `deposit(uint256,address)` and selector `[110, 85, 63, 101]`"]
     #[derive(
         Clone,
@@ -1788,29 +1786,6 @@ mod cellarv2_2_mod {
     pub struct DepositCall {
         pub assets: ethers::core::types::U256,
         pub receiver: ethers::core::types::Address,
-    }
-    #[doc = "Container type for all input parameters for the `executeOperation`function with signature `executeOperation(address[],uint256[],uint256[],address,bytes)` and selector `[146, 15, 92, 132]`"]
-    #[derive(
-        Clone,
-        Debug,
-        Default,
-        Eq,
-        PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
-    )]
-    #[ethcall(
-        name = "executeOperation",
-        abi = "executeOperation(address[],uint256[],uint256[],address,bytes)"
-    )]
-    pub struct ExecuteOperationCall {
-        pub assets: ::std::vec::Vec<ethers::core::types::Address>,
-        pub amounts: ::std::vec::Vec<ethers::core::types::U256>,
-        pub premiums: ::std::vec::Vec<ethers::core::types::U256>,
-        pub initiator: ethers::core::types::Address,
-        pub params: ethers::core::types::Bytes,
     }
     #[doc = "Container type for all input parameters for the `feeData`function with signature `feeData()` and selector `[231, 83, 230, 0]`"]
     #[derive(
@@ -1875,20 +1850,6 @@ mod cellarv2_2_mod {
     )]
     #[ethcall(name = "getDebtPositions", abi = "getDebtPositions()")]
     pub struct GetDebtPositionsCall;
-    #[doc = "Container type for all input parameters for the `getPositionAssets`function with signature `getPositionAssets()` and selector `[8, 126, 216, 55]`"]
-    #[derive(
-        Clone,
-        Debug,
-        Default,
-        Eq,
-        PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
-    )]
-    #[ethcall(name = "getPositionAssets", abi = "getPositionAssets()")]
-    pub struct GetPositionAssetsCall;
     #[doc = "Container type for all input parameters for the `getPositionData`function with signature `getPositionData(uint32)` and selector `[115, 132, 80, 79]`"]
     #[derive(
         Clone,
@@ -1931,7 +1892,7 @@ mod cellarv2_2_mod {
     )]
     #[ethcall(name = "ignorePause", abi = "ignorePause()")]
     pub struct IgnorePauseCall;
-    #[doc = "Container type for all input parameters for the `initialize`function with signature `initialize(bytes)` and selector `[67, 159, 171, 145]`"]
+    #[doc = "Container type for all input parameters for the `increaseShareSupplyCap`function with signature `increaseShareSupplyCap(uint192)` and selector `[176, 100, 110, 39]`"]
     #[derive(
         Clone,
         Debug,
@@ -1943,9 +1904,12 @@ mod cellarv2_2_mod {
         serde :: Deserialize,
         serde :: Serialize,
     )]
-    #[ethcall(name = "initialize", abi = "initialize(bytes)")]
-    pub struct InitializeCall {
-        pub params: ethers::core::types::Bytes,
+    #[ethcall(
+        name = "increaseShareSupplyCap",
+        abi = "increaseShareSupplyCap(uint192)"
+    )]
+    pub struct IncreaseShareSupplyCapCall {
+        pub new_share_supply_cap: ethers::core::types::U256,
     }
     #[doc = "Container type for all input parameters for the `initiateShutdown`function with signature `initiateShutdown()` and selector `[10, 104, 14, 24]`"]
     #[derive(
@@ -2305,6 +2269,28 @@ mod cellarv2_2_mod {
     )]
     #[ethcall(name = "priceRouter", abi = "priceRouter()")]
     pub struct PriceRouterCall;
+    #[doc = "Container type for all input parameters for the `receiveFlashLoan`function with signature `receiveFlashLoan(address[],uint256[],uint256[],bytes)` and selector `[240, 79, 39, 7]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Default,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthCall,
+        ethers :: contract :: EthDisplay,
+        serde :: Deserialize,
+        serde :: Serialize,
+    )]
+    #[ethcall(
+        name = "receiveFlashLoan",
+        abi = "receiveFlashLoan(address[],uint256[],uint256[],bytes)"
+    )]
+    pub struct ReceiveFlashLoanCall {
+        pub tokens: ::std::vec::Vec<ethers::core::types::Address>,
+        pub amounts: ::std::vec::Vec<ethers::core::types::U256>,
+        pub fee_amounts: ::std::vec::Vec<ethers::core::types::U256>,
+        pub user_data: ethers::core::types::Bytes,
+    }
     #[doc = "Container type for all input parameters for the `redeem`function with signature `redeem(uint256,address,address)` and selector `[186, 8, 118, 82]`"]
     #[derive(
         Clone,
@@ -2392,6 +2378,26 @@ mod cellarv2_2_mod {
     pub struct RemovePositionFromCatalogueCall {
         pub position_id: u32,
     }
+    #[doc = "Container type for all input parameters for the `setAutomationActions`function with signature `setAutomationActions(uint256,address)` and selector `[200, 232, 25, 80]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Default,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthCall,
+        ethers :: contract :: EthDisplay,
+        serde :: Deserialize,
+        serde :: Serialize,
+    )]
+    #[ethcall(
+        name = "setAutomationActions",
+        abi = "setAutomationActions(uint256,address)"
+    )]
+    pub struct SetAutomationActionsCall {
+        pub registry_id: ethers::core::types::U256,
+        pub expected_automation_actions: ethers::core::types::Address,
+    }
     #[doc = "Container type for all input parameters for the `setHoldingPosition`function with signature `setHoldingPosition(uint32)` and selector `[7, 128, 253, 58]`"]
     #[derive(
         Clone,
@@ -2424,7 +2430,7 @@ mod cellarv2_2_mod {
     pub struct SetRebalanceDeviationCall {
         pub new_deviation: ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `setShareLockPeriod`function with signature `setShareLockPeriod(uint256)` and selector `[156, 85, 44, 168]`"]
+    #[doc = "Container type for all input parameters for the `setSharePriceOracle`function with signature `setSharePriceOracle(uint256,address)` and selector `[245, 116, 59, 201]`"]
     #[derive(
         Clone,
         Debug,
@@ -2436,9 +2442,13 @@ mod cellarv2_2_mod {
         serde :: Deserialize,
         serde :: Serialize,
     )]
-    #[ethcall(name = "setShareLockPeriod", abi = "setShareLockPeriod(uint256)")]
-    pub struct SetShareLockPeriodCall {
-        pub new_lock: ethers::core::types::U256,
+    #[ethcall(
+        name = "setSharePriceOracle",
+        abi = "setSharePriceOracle(uint256,address)"
+    )]
+    pub struct SetSharePriceOracleCall {
+        pub registry_id: ethers::core::types::U256,
+        pub share_price_oracle: ethers::core::types::Address,
     }
     #[doc = "Container type for all input parameters for the `setStrategistPayoutAddress`function with signature `setStrategistPayoutAddress(address)` and selector `[176, 167, 93, 54]`"]
     #[derive(
@@ -2478,7 +2488,7 @@ mod cellarv2_2_mod {
     pub struct SetStrategistPlatformCutCall {
         pub cut: u64,
     }
-    #[doc = "Container type for all input parameters for the `shareLockPeriod`function with signature `shareLockPeriod()` and selector `[159, 219, 17, 182]`"]
+    #[doc = "Container type for all input parameters for the `sharePriceOracle`function with signature `sharePriceOracle()` and selector `[25, 110, 130, 133]`"]
     #[derive(
         Clone,
         Debug,
@@ -2490,8 +2500,22 @@ mod cellarv2_2_mod {
         serde :: Deserialize,
         serde :: Serialize,
     )]
-    #[ethcall(name = "shareLockPeriod", abi = "shareLockPeriod()")]
-    pub struct ShareLockPeriodCall;
+    #[ethcall(name = "sharePriceOracle", abi = "sharePriceOracle()")]
+    pub struct SharePriceOracleCall;
+    #[doc = "Container type for all input parameters for the `shareSupplyCap`function with signature `shareSupplyCap()` and selector `[212, 70, 187, 204]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Default,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthCall,
+        ethers :: contract :: EthDisplay,
+        serde :: Deserialize,
+        serde :: Serialize,
+    )]
+    #[ethcall(name = "shareSupplyCap", abi = "shareSupplyCap()")]
+    pub struct ShareSupplyCapCall;
     #[doc = "Container type for all input parameters for the `swapPositions`function with signature `swapPositions(uint32,uint32,bool)` and selector `[55, 158, 11, 19]`"]
     #[derive(
         Clone,
@@ -2524,7 +2548,7 @@ mod cellarv2_2_mod {
     )]
     #[ethcall(name = "symbol", abi = "symbol()")]
     pub struct SymbolCall;
-    #[doc = "Container type for all input parameters for the `toggleIgnorePause`function with signature `toggleIgnorePause(bool)` and selector `[235, 227, 195, 40]`"]
+    #[doc = "Container type for all input parameters for the `toggleIgnorePause`function with signature `toggleIgnorePause()` and selector `[163, 115, 227, 255]`"]
     #[derive(
         Clone,
         Debug,
@@ -2536,10 +2560,8 @@ mod cellarv2_2_mod {
         serde :: Deserialize,
         serde :: Serialize,
     )]
-    #[ethcall(name = "toggleIgnorePause", abi = "toggleIgnorePause(bool)")]
-    pub struct ToggleIgnorePauseCall {
-        pub toggle: bool,
-    }
+    #[ethcall(name = "toggleIgnorePause", abi = "toggleIgnorePause()")]
+    pub struct ToggleIgnorePauseCall;
     #[doc = "Container type for all input parameters for the `totalAssets`function with signature `totalAssets()` and selector `[1, 225, 209, 20]`"]
     #[derive(
         Clone,
@@ -2633,23 +2655,6 @@ mod cellarv2_2_mod {
     pub struct TransferOwnershipCall {
         pub new_owner: ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `userShareLockStartTime`function with signature `userShareLockStartTime(address)` and selector `[104, 124, 43, 80]`"]
-    #[derive(
-        Clone,
-        Debug,
-        Default,
-        Eq,
-        PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
-    )]
-    #[ethcall(
-        name = "userShareLockStartTime",
-        abi = "userShareLockStartTime(address)"
-    )]
-    pub struct UserShareLockStartTimeCall(pub ethers::core::types::Address);
     #[doc = "Container type for all input parameters for the `viewPositionBalances`function with signature `viewPositionBalances()` and selector `[120, 224, 35, 62]`"]
     #[derive(
         Clone,
@@ -2683,17 +2688,15 @@ mod cellarv2_2_mod {
         pub owner: ethers::core::types::Address,
     }
     #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
-    pub enum CellarV2_2Calls {
+    pub enum CellarV2_5Calls {
         DomainSeparator(DomainSeparatorCall),
         GravityBridgeRegistrySlot(GravityBridgeRegistrySlotCall),
-        MaximumShareLockPeriod(MaximumShareLockPeriodCall),
         MaxFeeCut(MaxFeeCutCall),
         MaxPlatformFee(MaxPlatformFeeCall),
         MaxPositions(MaxPositionsCall),
         MaxRebalanceDeviation(MaxRebalanceDeviationCall),
-        MinimumShareLockPeriod(MinimumShareLockPeriodCall),
+        OracleDecimals(OracleDecimalsCall),
         PriceRouterRegistrySlot(PriceRouterRegistrySlotCall),
-        AavePool(AavePoolCall),
         AdaptorCatalogue(AdaptorCatalogueCall),
         AddAdaptorToCatalogue(AddAdaptorToCatalogueCall),
         AddPosition(AddPositionCall),
@@ -2702,7 +2705,9 @@ mod cellarv2_2_mod {
         AllowedRebalanceDeviation(AllowedRebalanceDeviationCall),
         Approve(ApproveCall),
         Asset(AssetCall),
+        AutomationActions(AutomationActionsCall),
         BalanceOf(BalanceOfCall),
+        BalancerVault(BalancerVaultCall),
         BlockExternalReceiver(BlockExternalReceiverCall),
         CachePriceRouter(CachePriceRouterCall),
         CallOnAdaptor(CallOnAdaptorCall),
@@ -2711,17 +2716,16 @@ mod cellarv2_2_mod {
         CreditPositions(CreditPositionsCall),
         DebtPositions(DebtPositionsCall),
         Decimals(DecimalsCall),
+        DecreaseShareSupplyCap(DecreaseShareSupplyCapCall),
         Deposit(DepositCall),
-        ExecuteOperation(ExecuteOperationCall),
         FeeData(FeeDataCall),
         ForcePositionOut(ForcePositionOutCall),
         GetCreditPositions(GetCreditPositionsCall),
         GetDebtPositions(GetDebtPositionsCall),
-        GetPositionAssets(GetPositionAssetsCall),
         GetPositionData(GetPositionDataCall),
         HoldingPosition(HoldingPositionCall),
         IgnorePause(IgnorePauseCall),
-        Initialize(InitializeCall),
+        IncreaseShareSupplyCap(IncreaseShareSupplyCapCall),
         InitiateShutdown(InitiateShutdownCall),
         IsPaused(IsPausedCall),
         IsPositionUsed(IsPositionUsedCall),
@@ -2745,17 +2749,20 @@ mod cellarv2_2_mod {
         PreviewRedeem(PreviewRedeemCall),
         PreviewWithdraw(PreviewWithdrawCall),
         PriceRouter(PriceRouterCall),
+        ReceiveFlashLoan(ReceiveFlashLoanCall),
         Redeem(RedeemCall),
         Registry(RegistryCall),
         RemoveAdaptorFromCatalogue(RemoveAdaptorFromCatalogueCall),
         RemovePosition(RemovePositionCall),
         RemovePositionFromCatalogue(RemovePositionFromCatalogueCall),
+        SetAutomationActions(SetAutomationActionsCall),
         SetHoldingPosition(SetHoldingPositionCall),
         SetRebalanceDeviation(SetRebalanceDeviationCall),
-        SetShareLockPeriod(SetShareLockPeriodCall),
+        SetSharePriceOracle(SetSharePriceOracleCall),
         SetStrategistPayoutAddress(SetStrategistPayoutAddressCall),
         SetStrategistPlatformCut(SetStrategistPlatformCutCall),
-        ShareLockPeriod(ShareLockPeriodCall),
+        SharePriceOracle(SharePriceOracleCall),
+        ShareSupplyCap(ShareSupplyCapCall),
         SwapPositions(SwapPositionsCall),
         Symbol(SymbolCall),
         ToggleIgnorePause(ToggleIgnorePauseCall),
@@ -2765,1034 +2772,1045 @@ mod cellarv2_2_mod {
         Transfer(TransferCall),
         TransferFrom(TransferFromCall),
         TransferOwnership(TransferOwnershipCall),
-        UserShareLockStartTime(UserShareLockStartTimeCall),
         ViewPositionBalances(ViewPositionBalancesCall),
         Withdraw(WithdrawCall),
     }
-    impl ethers::core::abi::AbiDecode for CellarV2_2Calls {
+    impl ethers::core::abi::AbiDecode for CellarV2_5Calls {
         fn decode(data: impl AsRef<[u8]>) -> Result<Self, ethers::core::abi::AbiError> {
             if let Ok(decoded) =
                 <DomainSeparatorCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::DomainSeparator(decoded));
+                return Ok(CellarV2_5Calls::DomainSeparator(decoded));
             }
             if let Ok(decoded) =
                 <GravityBridgeRegistrySlotCall as ethers::core::abi::AbiDecode>::decode(
                     data.as_ref(),
                 )
             {
-                return Ok(CellarV2_2Calls::GravityBridgeRegistrySlot(decoded));
-            }
-            if let Ok(decoded) =
-                <MaximumShareLockPeriodCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::MaximumShareLockPeriod(decoded));
+                return Ok(CellarV2_5Calls::GravityBridgeRegistrySlot(decoded));
             }
             if let Ok(decoded) =
                 <MaxFeeCutCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::MaxFeeCut(decoded));
+                return Ok(CellarV2_5Calls::MaxFeeCut(decoded));
             }
             if let Ok(decoded) =
                 <MaxPlatformFeeCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::MaxPlatformFee(decoded));
+                return Ok(CellarV2_5Calls::MaxPlatformFee(decoded));
             }
             if let Ok(decoded) =
                 <MaxPositionsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::MaxPositions(decoded));
+                return Ok(CellarV2_5Calls::MaxPositions(decoded));
             }
             if let Ok(decoded) =
                 <MaxRebalanceDeviationCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::MaxRebalanceDeviation(decoded));
+                return Ok(CellarV2_5Calls::MaxRebalanceDeviation(decoded));
             }
             if let Ok(decoded) =
-                <MinimumShareLockPeriodCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <OracleDecimalsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::MinimumShareLockPeriod(decoded));
+                return Ok(CellarV2_5Calls::OracleDecimals(decoded));
             }
             if let Ok(decoded) =
                 <PriceRouterRegistrySlotCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::PriceRouterRegistrySlot(decoded));
-            }
-            if let Ok(decoded) =
-                <AavePoolCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::AavePool(decoded));
+                return Ok(CellarV2_5Calls::PriceRouterRegistrySlot(decoded));
             }
             if let Ok(decoded) =
                 <AdaptorCatalogueCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::AdaptorCatalogue(decoded));
+                return Ok(CellarV2_5Calls::AdaptorCatalogue(decoded));
             }
             if let Ok(decoded) =
                 <AddAdaptorToCatalogueCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::AddAdaptorToCatalogue(decoded));
+                return Ok(CellarV2_5Calls::AddAdaptorToCatalogue(decoded));
             }
             if let Ok(decoded) =
                 <AddPositionCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::AddPosition(decoded));
+                return Ok(CellarV2_5Calls::AddPosition(decoded));
             }
             if let Ok(decoded) =
                 <AddPositionToCatalogueCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::AddPositionToCatalogue(decoded));
+                return Ok(CellarV2_5Calls::AddPositionToCatalogue(decoded));
             }
             if let Ok(decoded) =
                 <AllowanceCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::Allowance(decoded));
+                return Ok(CellarV2_5Calls::Allowance(decoded));
             }
             if let Ok(decoded) =
                 <AllowedRebalanceDeviationCall as ethers::core::abi::AbiDecode>::decode(
                     data.as_ref(),
                 )
             {
-                return Ok(CellarV2_2Calls::AllowedRebalanceDeviation(decoded));
+                return Ok(CellarV2_5Calls::AllowedRebalanceDeviation(decoded));
             }
             if let Ok(decoded) =
                 <ApproveCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::Approve(decoded));
+                return Ok(CellarV2_5Calls::Approve(decoded));
             }
             if let Ok(decoded) = <AssetCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::Asset(decoded));
+                return Ok(CellarV2_5Calls::Asset(decoded));
+            }
+            if let Ok(decoded) =
+                <AutomationActionsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            {
+                return Ok(CellarV2_5Calls::AutomationActions(decoded));
             }
             if let Ok(decoded) =
                 <BalanceOfCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::BalanceOf(decoded));
+                return Ok(CellarV2_5Calls::BalanceOf(decoded));
+            }
+            if let Ok(decoded) =
+                <BalancerVaultCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            {
+                return Ok(CellarV2_5Calls::BalancerVault(decoded));
             }
             if let Ok(decoded) =
                 <BlockExternalReceiverCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::BlockExternalReceiver(decoded));
+                return Ok(CellarV2_5Calls::BlockExternalReceiver(decoded));
             }
             if let Ok(decoded) =
                 <CachePriceRouterCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::CachePriceRouter(decoded));
+                return Ok(CellarV2_5Calls::CachePriceRouter(decoded));
             }
             if let Ok(decoded) =
                 <CallOnAdaptorCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::CallOnAdaptor(decoded));
+                return Ok(CellarV2_5Calls::CallOnAdaptor(decoded));
             }
             if let Ok(decoded) =
                 <ConvertToAssetsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::ConvertToAssets(decoded));
+                return Ok(CellarV2_5Calls::ConvertToAssets(decoded));
             }
             if let Ok(decoded) =
                 <ConvertToSharesCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::ConvertToShares(decoded));
+                return Ok(CellarV2_5Calls::ConvertToShares(decoded));
             }
             if let Ok(decoded) =
                 <CreditPositionsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::CreditPositions(decoded));
+                return Ok(CellarV2_5Calls::CreditPositions(decoded));
             }
             if let Ok(decoded) =
                 <DebtPositionsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::DebtPositions(decoded));
+                return Ok(CellarV2_5Calls::DebtPositions(decoded));
             }
             if let Ok(decoded) =
                 <DecimalsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::Decimals(decoded));
+                return Ok(CellarV2_5Calls::Decimals(decoded));
+            }
+            if let Ok(decoded) =
+                <DecreaseShareSupplyCapCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            {
+                return Ok(CellarV2_5Calls::DecreaseShareSupplyCap(decoded));
             }
             if let Ok(decoded) =
                 <DepositCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::Deposit(decoded));
-            }
-            if let Ok(decoded) =
-                <ExecuteOperationCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::ExecuteOperation(decoded));
+                return Ok(CellarV2_5Calls::Deposit(decoded));
             }
             if let Ok(decoded) =
                 <FeeDataCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::FeeData(decoded));
+                return Ok(CellarV2_5Calls::FeeData(decoded));
             }
             if let Ok(decoded) =
                 <ForcePositionOutCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::ForcePositionOut(decoded));
+                return Ok(CellarV2_5Calls::ForcePositionOut(decoded));
             }
             if let Ok(decoded) =
                 <GetCreditPositionsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::GetCreditPositions(decoded));
+                return Ok(CellarV2_5Calls::GetCreditPositions(decoded));
             }
             if let Ok(decoded) =
                 <GetDebtPositionsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::GetDebtPositions(decoded));
-            }
-            if let Ok(decoded) =
-                <GetPositionAssetsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::GetPositionAssets(decoded));
+                return Ok(CellarV2_5Calls::GetDebtPositions(decoded));
             }
             if let Ok(decoded) =
                 <GetPositionDataCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::GetPositionData(decoded));
+                return Ok(CellarV2_5Calls::GetPositionData(decoded));
             }
             if let Ok(decoded) =
                 <HoldingPositionCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::HoldingPosition(decoded));
+                return Ok(CellarV2_5Calls::HoldingPosition(decoded));
             }
             if let Ok(decoded) =
                 <IgnorePauseCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::IgnorePause(decoded));
+                return Ok(CellarV2_5Calls::IgnorePause(decoded));
             }
             if let Ok(decoded) =
-                <InitializeCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <IncreaseShareSupplyCapCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::Initialize(decoded));
+                return Ok(CellarV2_5Calls::IncreaseShareSupplyCap(decoded));
             }
             if let Ok(decoded) =
                 <InitiateShutdownCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::InitiateShutdown(decoded));
+                return Ok(CellarV2_5Calls::InitiateShutdown(decoded));
             }
             if let Ok(decoded) =
                 <IsPausedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::IsPaused(decoded));
+                return Ok(CellarV2_5Calls::IsPaused(decoded));
             }
             if let Ok(decoded) =
                 <IsPositionUsedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::IsPositionUsed(decoded));
+                return Ok(CellarV2_5Calls::IsPositionUsed(decoded));
             }
             if let Ok(decoded) =
                 <IsShutdownCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::IsShutdown(decoded));
+                return Ok(CellarV2_5Calls::IsShutdown(decoded));
             }
             if let Ok(decoded) =
                 <LiftShutdownCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::LiftShutdown(decoded));
+                return Ok(CellarV2_5Calls::LiftShutdown(decoded));
             }
             if let Ok(decoded) = <LockedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::Locked(decoded));
+                return Ok(CellarV2_5Calls::Locked(decoded));
             }
             if let Ok(decoded) =
                 <MaxDepositCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::MaxDeposit(decoded));
+                return Ok(CellarV2_5Calls::MaxDeposit(decoded));
             }
             if let Ok(decoded) =
                 <MaxMintCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::MaxMint(decoded));
+                return Ok(CellarV2_5Calls::MaxMint(decoded));
             }
             if let Ok(decoded) =
                 <MaxRedeemCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::MaxRedeem(decoded));
+                return Ok(CellarV2_5Calls::MaxRedeem(decoded));
             }
             if let Ok(decoded) =
                 <MaxWithdrawCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::MaxWithdraw(decoded));
+                return Ok(CellarV2_5Calls::MaxWithdraw(decoded));
             }
             if let Ok(decoded) = <MintCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(CellarV2_2Calls::Mint(decoded));
+                return Ok(CellarV2_5Calls::Mint(decoded));
             }
             if let Ok(decoded) =
                 <MulticallCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::Multicall(decoded));
+                return Ok(CellarV2_5Calls::Multicall(decoded));
             }
             if let Ok(decoded) = <NameCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(CellarV2_2Calls::Name(decoded));
+                return Ok(CellarV2_5Calls::Name(decoded));
             }
             if let Ok(decoded) = <NoncesCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::Nonces(decoded));
+                return Ok(CellarV2_5Calls::Nonces(decoded));
             }
             if let Ok(decoded) =
                 <OnERC721ReceivedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::OnERC721Received(decoded));
+                return Ok(CellarV2_5Calls::OnERC721Received(decoded));
             }
             if let Ok(decoded) = <OwnerCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::Owner(decoded));
+                return Ok(CellarV2_5Calls::Owner(decoded));
             }
             if let Ok(decoded) = <PermitCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::Permit(decoded));
+                return Ok(CellarV2_5Calls::Permit(decoded));
             }
             if let Ok(decoded) =
                 <PositionCatalogueCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::PositionCatalogue(decoded));
+                return Ok(CellarV2_5Calls::PositionCatalogue(decoded));
             }
             if let Ok(decoded) =
                 <PreviewDepositCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::PreviewDeposit(decoded));
+                return Ok(CellarV2_5Calls::PreviewDeposit(decoded));
             }
             if let Ok(decoded) =
                 <PreviewMintCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::PreviewMint(decoded));
+                return Ok(CellarV2_5Calls::PreviewMint(decoded));
             }
             if let Ok(decoded) =
                 <PreviewRedeemCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::PreviewRedeem(decoded));
+                return Ok(CellarV2_5Calls::PreviewRedeem(decoded));
             }
             if let Ok(decoded) =
                 <PreviewWithdrawCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::PreviewWithdraw(decoded));
+                return Ok(CellarV2_5Calls::PreviewWithdraw(decoded));
             }
             if let Ok(decoded) =
                 <PriceRouterCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::PriceRouter(decoded));
+                return Ok(CellarV2_5Calls::PriceRouter(decoded));
+            }
+            if let Ok(decoded) =
+                <ReceiveFlashLoanCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            {
+                return Ok(CellarV2_5Calls::ReceiveFlashLoan(decoded));
             }
             if let Ok(decoded) = <RedeemCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::Redeem(decoded));
+                return Ok(CellarV2_5Calls::Redeem(decoded));
             }
             if let Ok(decoded) =
                 <RegistryCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::Registry(decoded));
+                return Ok(CellarV2_5Calls::Registry(decoded));
             }
             if let Ok(decoded) =
                 <RemoveAdaptorFromCatalogueCall as ethers::core::abi::AbiDecode>::decode(
                     data.as_ref(),
                 )
             {
-                return Ok(CellarV2_2Calls::RemoveAdaptorFromCatalogue(decoded));
+                return Ok(CellarV2_5Calls::RemoveAdaptorFromCatalogue(decoded));
             }
             if let Ok(decoded) =
                 <RemovePositionCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::RemovePosition(decoded));
+                return Ok(CellarV2_5Calls::RemovePosition(decoded));
             }
             if let Ok(decoded) =
                 <RemovePositionFromCatalogueCall as ethers::core::abi::AbiDecode>::decode(
                     data.as_ref(),
                 )
             {
-                return Ok(CellarV2_2Calls::RemovePositionFromCatalogue(decoded));
+                return Ok(CellarV2_5Calls::RemovePositionFromCatalogue(decoded));
+            }
+            if let Ok(decoded) =
+                <SetAutomationActionsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            {
+                return Ok(CellarV2_5Calls::SetAutomationActions(decoded));
             }
             if let Ok(decoded) =
                 <SetHoldingPositionCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::SetHoldingPosition(decoded));
+                return Ok(CellarV2_5Calls::SetHoldingPosition(decoded));
             }
             if let Ok(decoded) =
                 <SetRebalanceDeviationCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::SetRebalanceDeviation(decoded));
+                return Ok(CellarV2_5Calls::SetRebalanceDeviation(decoded));
             }
             if let Ok(decoded) =
-                <SetShareLockPeriodCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <SetSharePriceOracleCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::SetShareLockPeriod(decoded));
+                return Ok(CellarV2_5Calls::SetSharePriceOracle(decoded));
             }
             if let Ok(decoded) =
                 <SetStrategistPayoutAddressCall as ethers::core::abi::AbiDecode>::decode(
                     data.as_ref(),
                 )
             {
-                return Ok(CellarV2_2Calls::SetStrategistPayoutAddress(decoded));
+                return Ok(CellarV2_5Calls::SetStrategistPayoutAddress(decoded));
             }
             if let Ok(decoded) =
                 <SetStrategistPlatformCutCall as ethers::core::abi::AbiDecode>::decode(
                     data.as_ref(),
                 )
             {
-                return Ok(CellarV2_2Calls::SetStrategistPlatformCut(decoded));
+                return Ok(CellarV2_5Calls::SetStrategistPlatformCut(decoded));
             }
             if let Ok(decoded) =
-                <ShareLockPeriodCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <SharePriceOracleCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::ShareLockPeriod(decoded));
+                return Ok(CellarV2_5Calls::SharePriceOracle(decoded));
+            }
+            if let Ok(decoded) =
+                <ShareSupplyCapCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            {
+                return Ok(CellarV2_5Calls::ShareSupplyCap(decoded));
             }
             if let Ok(decoded) =
                 <SwapPositionsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::SwapPositions(decoded));
+                return Ok(CellarV2_5Calls::SwapPositions(decoded));
             }
             if let Ok(decoded) = <SymbolCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::Symbol(decoded));
+                return Ok(CellarV2_5Calls::Symbol(decoded));
             }
             if let Ok(decoded) =
                 <ToggleIgnorePauseCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::ToggleIgnorePause(decoded));
+                return Ok(CellarV2_5Calls::ToggleIgnorePause(decoded));
             }
             if let Ok(decoded) =
                 <TotalAssetsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::TotalAssets(decoded));
+                return Ok(CellarV2_5Calls::TotalAssets(decoded));
             }
             if let Ok(decoded) =
                 <TotalAssetsWithdrawableCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::TotalAssetsWithdrawable(decoded));
+                return Ok(CellarV2_5Calls::TotalAssetsWithdrawable(decoded));
             }
             if let Ok(decoded) =
                 <TotalSupplyCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::TotalSupply(decoded));
+                return Ok(CellarV2_5Calls::TotalSupply(decoded));
             }
             if let Ok(decoded) =
                 <TransferCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::Transfer(decoded));
+                return Ok(CellarV2_5Calls::Transfer(decoded));
             }
             if let Ok(decoded) =
                 <TransferFromCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::TransferFrom(decoded));
+                return Ok(CellarV2_5Calls::TransferFrom(decoded));
             }
             if let Ok(decoded) =
                 <TransferOwnershipCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::TransferOwnership(decoded));
-            }
-            if let Ok(decoded) =
-                <UserShareLockStartTimeCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::UserShareLockStartTime(decoded));
+                return Ok(CellarV2_5Calls::TransferOwnership(decoded));
             }
             if let Ok(decoded) =
                 <ViewPositionBalancesCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::ViewPositionBalances(decoded));
+                return Ok(CellarV2_5Calls::ViewPositionBalances(decoded));
             }
             if let Ok(decoded) =
                 <WithdrawCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(CellarV2_2Calls::Withdraw(decoded));
+                return Ok(CellarV2_5Calls::Withdraw(decoded));
             }
             Err(ethers::core::abi::Error::InvalidData.into())
         }
     }
-    impl ethers::core::abi::AbiEncode for CellarV2_2Calls {
+    impl ethers::core::abi::AbiEncode for CellarV2_5Calls {
         fn encode(self) -> Vec<u8> {
             match self {
-                CellarV2_2Calls::DomainSeparator(element) => element.encode(),
-                CellarV2_2Calls::GravityBridgeRegistrySlot(element) => element.encode(),
-                CellarV2_2Calls::MaximumShareLockPeriod(element) => element.encode(),
-                CellarV2_2Calls::MaxFeeCut(element) => element.encode(),
-                CellarV2_2Calls::MaxPlatformFee(element) => element.encode(),
-                CellarV2_2Calls::MaxPositions(element) => element.encode(),
-                CellarV2_2Calls::MaxRebalanceDeviation(element) => element.encode(),
-                CellarV2_2Calls::MinimumShareLockPeriod(element) => element.encode(),
-                CellarV2_2Calls::PriceRouterRegistrySlot(element) => element.encode(),
-                CellarV2_2Calls::AavePool(element) => element.encode(),
-                CellarV2_2Calls::AdaptorCatalogue(element) => element.encode(),
-                CellarV2_2Calls::AddAdaptorToCatalogue(element) => element.encode(),
-                CellarV2_2Calls::AddPosition(element) => element.encode(),
-                CellarV2_2Calls::AddPositionToCatalogue(element) => element.encode(),
-                CellarV2_2Calls::Allowance(element) => element.encode(),
-                CellarV2_2Calls::AllowedRebalanceDeviation(element) => element.encode(),
-                CellarV2_2Calls::Approve(element) => element.encode(),
-                CellarV2_2Calls::Asset(element) => element.encode(),
-                CellarV2_2Calls::BalanceOf(element) => element.encode(),
-                CellarV2_2Calls::BlockExternalReceiver(element) => element.encode(),
-                CellarV2_2Calls::CachePriceRouter(element) => element.encode(),
-                CellarV2_2Calls::CallOnAdaptor(element) => element.encode(),
-                CellarV2_2Calls::ConvertToAssets(element) => element.encode(),
-                CellarV2_2Calls::ConvertToShares(element) => element.encode(),
-                CellarV2_2Calls::CreditPositions(element) => element.encode(),
-                CellarV2_2Calls::DebtPositions(element) => element.encode(),
-                CellarV2_2Calls::Decimals(element) => element.encode(),
-                CellarV2_2Calls::Deposit(element) => element.encode(),
-                CellarV2_2Calls::ExecuteOperation(element) => element.encode(),
-                CellarV2_2Calls::FeeData(element) => element.encode(),
-                CellarV2_2Calls::ForcePositionOut(element) => element.encode(),
-                CellarV2_2Calls::GetCreditPositions(element) => element.encode(),
-                CellarV2_2Calls::GetDebtPositions(element) => element.encode(),
-                CellarV2_2Calls::GetPositionAssets(element) => element.encode(),
-                CellarV2_2Calls::GetPositionData(element) => element.encode(),
-                CellarV2_2Calls::HoldingPosition(element) => element.encode(),
-                CellarV2_2Calls::IgnorePause(element) => element.encode(),
-                CellarV2_2Calls::Initialize(element) => element.encode(),
-                CellarV2_2Calls::InitiateShutdown(element) => element.encode(),
-                CellarV2_2Calls::IsPaused(element) => element.encode(),
-                CellarV2_2Calls::IsPositionUsed(element) => element.encode(),
-                CellarV2_2Calls::IsShutdown(element) => element.encode(),
-                CellarV2_2Calls::LiftShutdown(element) => element.encode(),
-                CellarV2_2Calls::Locked(element) => element.encode(),
-                CellarV2_2Calls::MaxDeposit(element) => element.encode(),
-                CellarV2_2Calls::MaxMint(element) => element.encode(),
-                CellarV2_2Calls::MaxRedeem(element) => element.encode(),
-                CellarV2_2Calls::MaxWithdraw(element) => element.encode(),
-                CellarV2_2Calls::Mint(element) => element.encode(),
-                CellarV2_2Calls::Multicall(element) => element.encode(),
-                CellarV2_2Calls::Name(element) => element.encode(),
-                CellarV2_2Calls::Nonces(element) => element.encode(),
-                CellarV2_2Calls::OnERC721Received(element) => element.encode(),
-                CellarV2_2Calls::Owner(element) => element.encode(),
-                CellarV2_2Calls::Permit(element) => element.encode(),
-                CellarV2_2Calls::PositionCatalogue(element) => element.encode(),
-                CellarV2_2Calls::PreviewDeposit(element) => element.encode(),
-                CellarV2_2Calls::PreviewMint(element) => element.encode(),
-                CellarV2_2Calls::PreviewRedeem(element) => element.encode(),
-                CellarV2_2Calls::PreviewWithdraw(element) => element.encode(),
-                CellarV2_2Calls::PriceRouter(element) => element.encode(),
-                CellarV2_2Calls::Redeem(element) => element.encode(),
-                CellarV2_2Calls::Registry(element) => element.encode(),
-                CellarV2_2Calls::RemoveAdaptorFromCatalogue(element) => element.encode(),
-                CellarV2_2Calls::RemovePosition(element) => element.encode(),
-                CellarV2_2Calls::RemovePositionFromCatalogue(element) => element.encode(),
-                CellarV2_2Calls::SetHoldingPosition(element) => element.encode(),
-                CellarV2_2Calls::SetRebalanceDeviation(element) => element.encode(),
-                CellarV2_2Calls::SetShareLockPeriod(element) => element.encode(),
-                CellarV2_2Calls::SetStrategistPayoutAddress(element) => element.encode(),
-                CellarV2_2Calls::SetStrategistPlatformCut(element) => element.encode(),
-                CellarV2_2Calls::ShareLockPeriod(element) => element.encode(),
-                CellarV2_2Calls::SwapPositions(element) => element.encode(),
-                CellarV2_2Calls::Symbol(element) => element.encode(),
-                CellarV2_2Calls::ToggleIgnorePause(element) => element.encode(),
-                CellarV2_2Calls::TotalAssets(element) => element.encode(),
-                CellarV2_2Calls::TotalAssetsWithdrawable(element) => element.encode(),
-                CellarV2_2Calls::TotalSupply(element) => element.encode(),
-                CellarV2_2Calls::Transfer(element) => element.encode(),
-                CellarV2_2Calls::TransferFrom(element) => element.encode(),
-                CellarV2_2Calls::TransferOwnership(element) => element.encode(),
-                CellarV2_2Calls::UserShareLockStartTime(element) => element.encode(),
-                CellarV2_2Calls::ViewPositionBalances(element) => element.encode(),
-                CellarV2_2Calls::Withdraw(element) => element.encode(),
+                CellarV2_5Calls::DomainSeparator(element) => element.encode(),
+                CellarV2_5Calls::GravityBridgeRegistrySlot(element) => element.encode(),
+                CellarV2_5Calls::MaxFeeCut(element) => element.encode(),
+                CellarV2_5Calls::MaxPlatformFee(element) => element.encode(),
+                CellarV2_5Calls::MaxPositions(element) => element.encode(),
+                CellarV2_5Calls::MaxRebalanceDeviation(element) => element.encode(),
+                CellarV2_5Calls::OracleDecimals(element) => element.encode(),
+                CellarV2_5Calls::PriceRouterRegistrySlot(element) => element.encode(),
+                CellarV2_5Calls::AdaptorCatalogue(element) => element.encode(),
+                CellarV2_5Calls::AddAdaptorToCatalogue(element) => element.encode(),
+                CellarV2_5Calls::AddPosition(element) => element.encode(),
+                CellarV2_5Calls::AddPositionToCatalogue(element) => element.encode(),
+                CellarV2_5Calls::Allowance(element) => element.encode(),
+                CellarV2_5Calls::AllowedRebalanceDeviation(element) => element.encode(),
+                CellarV2_5Calls::Approve(element) => element.encode(),
+                CellarV2_5Calls::Asset(element) => element.encode(),
+                CellarV2_5Calls::AutomationActions(element) => element.encode(),
+                CellarV2_5Calls::BalanceOf(element) => element.encode(),
+                CellarV2_5Calls::BalancerVault(element) => element.encode(),
+                CellarV2_5Calls::BlockExternalReceiver(element) => element.encode(),
+                CellarV2_5Calls::CachePriceRouter(element) => element.encode(),
+                CellarV2_5Calls::CallOnAdaptor(element) => element.encode(),
+                CellarV2_5Calls::ConvertToAssets(element) => element.encode(),
+                CellarV2_5Calls::ConvertToShares(element) => element.encode(),
+                CellarV2_5Calls::CreditPositions(element) => element.encode(),
+                CellarV2_5Calls::DebtPositions(element) => element.encode(),
+                CellarV2_5Calls::Decimals(element) => element.encode(),
+                CellarV2_5Calls::DecreaseShareSupplyCap(element) => element.encode(),
+                CellarV2_5Calls::Deposit(element) => element.encode(),
+                CellarV2_5Calls::FeeData(element) => element.encode(),
+                CellarV2_5Calls::ForcePositionOut(element) => element.encode(),
+                CellarV2_5Calls::GetCreditPositions(element) => element.encode(),
+                CellarV2_5Calls::GetDebtPositions(element) => element.encode(),
+                CellarV2_5Calls::GetPositionData(element) => element.encode(),
+                CellarV2_5Calls::HoldingPosition(element) => element.encode(),
+                CellarV2_5Calls::IgnorePause(element) => element.encode(),
+                CellarV2_5Calls::IncreaseShareSupplyCap(element) => element.encode(),
+                CellarV2_5Calls::InitiateShutdown(element) => element.encode(),
+                CellarV2_5Calls::IsPaused(element) => element.encode(),
+                CellarV2_5Calls::IsPositionUsed(element) => element.encode(),
+                CellarV2_5Calls::IsShutdown(element) => element.encode(),
+                CellarV2_5Calls::LiftShutdown(element) => element.encode(),
+                CellarV2_5Calls::Locked(element) => element.encode(),
+                CellarV2_5Calls::MaxDeposit(element) => element.encode(),
+                CellarV2_5Calls::MaxMint(element) => element.encode(),
+                CellarV2_5Calls::MaxRedeem(element) => element.encode(),
+                CellarV2_5Calls::MaxWithdraw(element) => element.encode(),
+                CellarV2_5Calls::Mint(element) => element.encode(),
+                CellarV2_5Calls::Multicall(element) => element.encode(),
+                CellarV2_5Calls::Name(element) => element.encode(),
+                CellarV2_5Calls::Nonces(element) => element.encode(),
+                CellarV2_5Calls::OnERC721Received(element) => element.encode(),
+                CellarV2_5Calls::Owner(element) => element.encode(),
+                CellarV2_5Calls::Permit(element) => element.encode(),
+                CellarV2_5Calls::PositionCatalogue(element) => element.encode(),
+                CellarV2_5Calls::PreviewDeposit(element) => element.encode(),
+                CellarV2_5Calls::PreviewMint(element) => element.encode(),
+                CellarV2_5Calls::PreviewRedeem(element) => element.encode(),
+                CellarV2_5Calls::PreviewWithdraw(element) => element.encode(),
+                CellarV2_5Calls::PriceRouter(element) => element.encode(),
+                CellarV2_5Calls::ReceiveFlashLoan(element) => element.encode(),
+                CellarV2_5Calls::Redeem(element) => element.encode(),
+                CellarV2_5Calls::Registry(element) => element.encode(),
+                CellarV2_5Calls::RemoveAdaptorFromCatalogue(element) => element.encode(),
+                CellarV2_5Calls::RemovePosition(element) => element.encode(),
+                CellarV2_5Calls::RemovePositionFromCatalogue(element) => element.encode(),
+                CellarV2_5Calls::SetAutomationActions(element) => element.encode(),
+                CellarV2_5Calls::SetHoldingPosition(element) => element.encode(),
+                CellarV2_5Calls::SetRebalanceDeviation(element) => element.encode(),
+                CellarV2_5Calls::SetSharePriceOracle(element) => element.encode(),
+                CellarV2_5Calls::SetStrategistPayoutAddress(element) => element.encode(),
+                CellarV2_5Calls::SetStrategistPlatformCut(element) => element.encode(),
+                CellarV2_5Calls::SharePriceOracle(element) => element.encode(),
+                CellarV2_5Calls::ShareSupplyCap(element) => element.encode(),
+                CellarV2_5Calls::SwapPositions(element) => element.encode(),
+                CellarV2_5Calls::Symbol(element) => element.encode(),
+                CellarV2_5Calls::ToggleIgnorePause(element) => element.encode(),
+                CellarV2_5Calls::TotalAssets(element) => element.encode(),
+                CellarV2_5Calls::TotalAssetsWithdrawable(element) => element.encode(),
+                CellarV2_5Calls::TotalSupply(element) => element.encode(),
+                CellarV2_5Calls::Transfer(element) => element.encode(),
+                CellarV2_5Calls::TransferFrom(element) => element.encode(),
+                CellarV2_5Calls::TransferOwnership(element) => element.encode(),
+                CellarV2_5Calls::ViewPositionBalances(element) => element.encode(),
+                CellarV2_5Calls::Withdraw(element) => element.encode(),
             }
         }
     }
-    impl ::std::fmt::Display for CellarV2_2Calls {
+    impl ::std::fmt::Display for CellarV2_5Calls {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match self {
-                CellarV2_2Calls::DomainSeparator(element) => element.fmt(f),
-                CellarV2_2Calls::GravityBridgeRegistrySlot(element) => element.fmt(f),
-                CellarV2_2Calls::MaximumShareLockPeriod(element) => element.fmt(f),
-                CellarV2_2Calls::MaxFeeCut(element) => element.fmt(f),
-                CellarV2_2Calls::MaxPlatformFee(element) => element.fmt(f),
-                CellarV2_2Calls::MaxPositions(element) => element.fmt(f),
-                CellarV2_2Calls::MaxRebalanceDeviation(element) => element.fmt(f),
-                CellarV2_2Calls::MinimumShareLockPeriod(element) => element.fmt(f),
-                CellarV2_2Calls::PriceRouterRegistrySlot(element) => element.fmt(f),
-                CellarV2_2Calls::AavePool(element) => element.fmt(f),
-                CellarV2_2Calls::AdaptorCatalogue(element) => element.fmt(f),
-                CellarV2_2Calls::AddAdaptorToCatalogue(element) => element.fmt(f),
-                CellarV2_2Calls::AddPosition(element) => element.fmt(f),
-                CellarV2_2Calls::AddPositionToCatalogue(element) => element.fmt(f),
-                CellarV2_2Calls::Allowance(element) => element.fmt(f),
-                CellarV2_2Calls::AllowedRebalanceDeviation(element) => element.fmt(f),
-                CellarV2_2Calls::Approve(element) => element.fmt(f),
-                CellarV2_2Calls::Asset(element) => element.fmt(f),
-                CellarV2_2Calls::BalanceOf(element) => element.fmt(f),
-                CellarV2_2Calls::BlockExternalReceiver(element) => element.fmt(f),
-                CellarV2_2Calls::CachePriceRouter(element) => element.fmt(f),
-                CellarV2_2Calls::CallOnAdaptor(element) => element.fmt(f),
-                CellarV2_2Calls::ConvertToAssets(element) => element.fmt(f),
-                CellarV2_2Calls::ConvertToShares(element) => element.fmt(f),
-                CellarV2_2Calls::CreditPositions(element) => element.fmt(f),
-                CellarV2_2Calls::DebtPositions(element) => element.fmt(f),
-                CellarV2_2Calls::Decimals(element) => element.fmt(f),
-                CellarV2_2Calls::Deposit(element) => element.fmt(f),
-                CellarV2_2Calls::ExecuteOperation(element) => element.fmt(f),
-                CellarV2_2Calls::FeeData(element) => element.fmt(f),
-                CellarV2_2Calls::ForcePositionOut(element) => element.fmt(f),
-                CellarV2_2Calls::GetCreditPositions(element) => element.fmt(f),
-                CellarV2_2Calls::GetDebtPositions(element) => element.fmt(f),
-                CellarV2_2Calls::GetPositionAssets(element) => element.fmt(f),
-                CellarV2_2Calls::GetPositionData(element) => element.fmt(f),
-                CellarV2_2Calls::HoldingPosition(element) => element.fmt(f),
-                CellarV2_2Calls::IgnorePause(element) => element.fmt(f),
-                CellarV2_2Calls::Initialize(element) => element.fmt(f),
-                CellarV2_2Calls::InitiateShutdown(element) => element.fmt(f),
-                CellarV2_2Calls::IsPaused(element) => element.fmt(f),
-                CellarV2_2Calls::IsPositionUsed(element) => element.fmt(f),
-                CellarV2_2Calls::IsShutdown(element) => element.fmt(f),
-                CellarV2_2Calls::LiftShutdown(element) => element.fmt(f),
-                CellarV2_2Calls::Locked(element) => element.fmt(f),
-                CellarV2_2Calls::MaxDeposit(element) => element.fmt(f),
-                CellarV2_2Calls::MaxMint(element) => element.fmt(f),
-                CellarV2_2Calls::MaxRedeem(element) => element.fmt(f),
-                CellarV2_2Calls::MaxWithdraw(element) => element.fmt(f),
-                CellarV2_2Calls::Mint(element) => element.fmt(f),
-                CellarV2_2Calls::Multicall(element) => element.fmt(f),
-                CellarV2_2Calls::Name(element) => element.fmt(f),
-                CellarV2_2Calls::Nonces(element) => element.fmt(f),
-                CellarV2_2Calls::OnERC721Received(element) => element.fmt(f),
-                CellarV2_2Calls::Owner(element) => element.fmt(f),
-                CellarV2_2Calls::Permit(element) => element.fmt(f),
-                CellarV2_2Calls::PositionCatalogue(element) => element.fmt(f),
-                CellarV2_2Calls::PreviewDeposit(element) => element.fmt(f),
-                CellarV2_2Calls::PreviewMint(element) => element.fmt(f),
-                CellarV2_2Calls::PreviewRedeem(element) => element.fmt(f),
-                CellarV2_2Calls::PreviewWithdraw(element) => element.fmt(f),
-                CellarV2_2Calls::PriceRouter(element) => element.fmt(f),
-                CellarV2_2Calls::Redeem(element) => element.fmt(f),
-                CellarV2_2Calls::Registry(element) => element.fmt(f),
-                CellarV2_2Calls::RemoveAdaptorFromCatalogue(element) => element.fmt(f),
-                CellarV2_2Calls::RemovePosition(element) => element.fmt(f),
-                CellarV2_2Calls::RemovePositionFromCatalogue(element) => element.fmt(f),
-                CellarV2_2Calls::SetHoldingPosition(element) => element.fmt(f),
-                CellarV2_2Calls::SetRebalanceDeviation(element) => element.fmt(f),
-                CellarV2_2Calls::SetShareLockPeriod(element) => element.fmt(f),
-                CellarV2_2Calls::SetStrategistPayoutAddress(element) => element.fmt(f),
-                CellarV2_2Calls::SetStrategistPlatformCut(element) => element.fmt(f),
-                CellarV2_2Calls::ShareLockPeriod(element) => element.fmt(f),
-                CellarV2_2Calls::SwapPositions(element) => element.fmt(f),
-                CellarV2_2Calls::Symbol(element) => element.fmt(f),
-                CellarV2_2Calls::ToggleIgnorePause(element) => element.fmt(f),
-                CellarV2_2Calls::TotalAssets(element) => element.fmt(f),
-                CellarV2_2Calls::TotalAssetsWithdrawable(element) => element.fmt(f),
-                CellarV2_2Calls::TotalSupply(element) => element.fmt(f),
-                CellarV2_2Calls::Transfer(element) => element.fmt(f),
-                CellarV2_2Calls::TransferFrom(element) => element.fmt(f),
-                CellarV2_2Calls::TransferOwnership(element) => element.fmt(f),
-                CellarV2_2Calls::UserShareLockStartTime(element) => element.fmt(f),
-                CellarV2_2Calls::ViewPositionBalances(element) => element.fmt(f),
-                CellarV2_2Calls::Withdraw(element) => element.fmt(f),
+                CellarV2_5Calls::DomainSeparator(element) => element.fmt(f),
+                CellarV2_5Calls::GravityBridgeRegistrySlot(element) => element.fmt(f),
+                CellarV2_5Calls::MaxFeeCut(element) => element.fmt(f),
+                CellarV2_5Calls::MaxPlatformFee(element) => element.fmt(f),
+                CellarV2_5Calls::MaxPositions(element) => element.fmt(f),
+                CellarV2_5Calls::MaxRebalanceDeviation(element) => element.fmt(f),
+                CellarV2_5Calls::OracleDecimals(element) => element.fmt(f),
+                CellarV2_5Calls::PriceRouterRegistrySlot(element) => element.fmt(f),
+                CellarV2_5Calls::AdaptorCatalogue(element) => element.fmt(f),
+                CellarV2_5Calls::AddAdaptorToCatalogue(element) => element.fmt(f),
+                CellarV2_5Calls::AddPosition(element) => element.fmt(f),
+                CellarV2_5Calls::AddPositionToCatalogue(element) => element.fmt(f),
+                CellarV2_5Calls::Allowance(element) => element.fmt(f),
+                CellarV2_5Calls::AllowedRebalanceDeviation(element) => element.fmt(f),
+                CellarV2_5Calls::Approve(element) => element.fmt(f),
+                CellarV2_5Calls::Asset(element) => element.fmt(f),
+                CellarV2_5Calls::AutomationActions(element) => element.fmt(f),
+                CellarV2_5Calls::BalanceOf(element) => element.fmt(f),
+                CellarV2_5Calls::BalancerVault(element) => element.fmt(f),
+                CellarV2_5Calls::BlockExternalReceiver(element) => element.fmt(f),
+                CellarV2_5Calls::CachePriceRouter(element) => element.fmt(f),
+                CellarV2_5Calls::CallOnAdaptor(element) => element.fmt(f),
+                CellarV2_5Calls::ConvertToAssets(element) => element.fmt(f),
+                CellarV2_5Calls::ConvertToShares(element) => element.fmt(f),
+                CellarV2_5Calls::CreditPositions(element) => element.fmt(f),
+                CellarV2_5Calls::DebtPositions(element) => element.fmt(f),
+                CellarV2_5Calls::Decimals(element) => element.fmt(f),
+                CellarV2_5Calls::DecreaseShareSupplyCap(element) => element.fmt(f),
+                CellarV2_5Calls::Deposit(element) => element.fmt(f),
+                CellarV2_5Calls::FeeData(element) => element.fmt(f),
+                CellarV2_5Calls::ForcePositionOut(element) => element.fmt(f),
+                CellarV2_5Calls::GetCreditPositions(element) => element.fmt(f),
+                CellarV2_5Calls::GetDebtPositions(element) => element.fmt(f),
+                CellarV2_5Calls::GetPositionData(element) => element.fmt(f),
+                CellarV2_5Calls::HoldingPosition(element) => element.fmt(f),
+                CellarV2_5Calls::IgnorePause(element) => element.fmt(f),
+                CellarV2_5Calls::IncreaseShareSupplyCap(element) => element.fmt(f),
+                CellarV2_5Calls::InitiateShutdown(element) => element.fmt(f),
+                CellarV2_5Calls::IsPaused(element) => element.fmt(f),
+                CellarV2_5Calls::IsPositionUsed(element) => element.fmt(f),
+                CellarV2_5Calls::IsShutdown(element) => element.fmt(f),
+                CellarV2_5Calls::LiftShutdown(element) => element.fmt(f),
+                CellarV2_5Calls::Locked(element) => element.fmt(f),
+                CellarV2_5Calls::MaxDeposit(element) => element.fmt(f),
+                CellarV2_5Calls::MaxMint(element) => element.fmt(f),
+                CellarV2_5Calls::MaxRedeem(element) => element.fmt(f),
+                CellarV2_5Calls::MaxWithdraw(element) => element.fmt(f),
+                CellarV2_5Calls::Mint(element) => element.fmt(f),
+                CellarV2_5Calls::Multicall(element) => element.fmt(f),
+                CellarV2_5Calls::Name(element) => element.fmt(f),
+                CellarV2_5Calls::Nonces(element) => element.fmt(f),
+                CellarV2_5Calls::OnERC721Received(element) => element.fmt(f),
+                CellarV2_5Calls::Owner(element) => element.fmt(f),
+                CellarV2_5Calls::Permit(element) => element.fmt(f),
+                CellarV2_5Calls::PositionCatalogue(element) => element.fmt(f),
+                CellarV2_5Calls::PreviewDeposit(element) => element.fmt(f),
+                CellarV2_5Calls::PreviewMint(element) => element.fmt(f),
+                CellarV2_5Calls::PreviewRedeem(element) => element.fmt(f),
+                CellarV2_5Calls::PreviewWithdraw(element) => element.fmt(f),
+                CellarV2_5Calls::PriceRouter(element) => element.fmt(f),
+                CellarV2_5Calls::ReceiveFlashLoan(element) => element.fmt(f),
+                CellarV2_5Calls::Redeem(element) => element.fmt(f),
+                CellarV2_5Calls::Registry(element) => element.fmt(f),
+                CellarV2_5Calls::RemoveAdaptorFromCatalogue(element) => element.fmt(f),
+                CellarV2_5Calls::RemovePosition(element) => element.fmt(f),
+                CellarV2_5Calls::RemovePositionFromCatalogue(element) => element.fmt(f),
+                CellarV2_5Calls::SetAutomationActions(element) => element.fmt(f),
+                CellarV2_5Calls::SetHoldingPosition(element) => element.fmt(f),
+                CellarV2_5Calls::SetRebalanceDeviation(element) => element.fmt(f),
+                CellarV2_5Calls::SetSharePriceOracle(element) => element.fmt(f),
+                CellarV2_5Calls::SetStrategistPayoutAddress(element) => element.fmt(f),
+                CellarV2_5Calls::SetStrategistPlatformCut(element) => element.fmt(f),
+                CellarV2_5Calls::SharePriceOracle(element) => element.fmt(f),
+                CellarV2_5Calls::ShareSupplyCap(element) => element.fmt(f),
+                CellarV2_5Calls::SwapPositions(element) => element.fmt(f),
+                CellarV2_5Calls::Symbol(element) => element.fmt(f),
+                CellarV2_5Calls::ToggleIgnorePause(element) => element.fmt(f),
+                CellarV2_5Calls::TotalAssets(element) => element.fmt(f),
+                CellarV2_5Calls::TotalAssetsWithdrawable(element) => element.fmt(f),
+                CellarV2_5Calls::TotalSupply(element) => element.fmt(f),
+                CellarV2_5Calls::Transfer(element) => element.fmt(f),
+                CellarV2_5Calls::TransferFrom(element) => element.fmt(f),
+                CellarV2_5Calls::TransferOwnership(element) => element.fmt(f),
+                CellarV2_5Calls::ViewPositionBalances(element) => element.fmt(f),
+                CellarV2_5Calls::Withdraw(element) => element.fmt(f),
             }
         }
     }
-    impl ::std::convert::From<DomainSeparatorCall> for CellarV2_2Calls {
+    impl ::std::convert::From<DomainSeparatorCall> for CellarV2_5Calls {
         fn from(var: DomainSeparatorCall) -> Self {
-            CellarV2_2Calls::DomainSeparator(var)
+            CellarV2_5Calls::DomainSeparator(var)
         }
     }
-    impl ::std::convert::From<GravityBridgeRegistrySlotCall> for CellarV2_2Calls {
+    impl ::std::convert::From<GravityBridgeRegistrySlotCall> for CellarV2_5Calls {
         fn from(var: GravityBridgeRegistrySlotCall) -> Self {
-            CellarV2_2Calls::GravityBridgeRegistrySlot(var)
+            CellarV2_5Calls::GravityBridgeRegistrySlot(var)
         }
     }
-    impl ::std::convert::From<MaximumShareLockPeriodCall> for CellarV2_2Calls {
-        fn from(var: MaximumShareLockPeriodCall) -> Self {
-            CellarV2_2Calls::MaximumShareLockPeriod(var)
-        }
-    }
-    impl ::std::convert::From<MaxFeeCutCall> for CellarV2_2Calls {
+    impl ::std::convert::From<MaxFeeCutCall> for CellarV2_5Calls {
         fn from(var: MaxFeeCutCall) -> Self {
-            CellarV2_2Calls::MaxFeeCut(var)
+            CellarV2_5Calls::MaxFeeCut(var)
         }
     }
-    impl ::std::convert::From<MaxPlatformFeeCall> for CellarV2_2Calls {
+    impl ::std::convert::From<MaxPlatformFeeCall> for CellarV2_5Calls {
         fn from(var: MaxPlatformFeeCall) -> Self {
-            CellarV2_2Calls::MaxPlatformFee(var)
+            CellarV2_5Calls::MaxPlatformFee(var)
         }
     }
-    impl ::std::convert::From<MaxPositionsCall> for CellarV2_2Calls {
+    impl ::std::convert::From<MaxPositionsCall> for CellarV2_5Calls {
         fn from(var: MaxPositionsCall) -> Self {
-            CellarV2_2Calls::MaxPositions(var)
+            CellarV2_5Calls::MaxPositions(var)
         }
     }
-    impl ::std::convert::From<MaxRebalanceDeviationCall> for CellarV2_2Calls {
+    impl ::std::convert::From<MaxRebalanceDeviationCall> for CellarV2_5Calls {
         fn from(var: MaxRebalanceDeviationCall) -> Self {
-            CellarV2_2Calls::MaxRebalanceDeviation(var)
+            CellarV2_5Calls::MaxRebalanceDeviation(var)
         }
     }
-    impl ::std::convert::From<MinimumShareLockPeriodCall> for CellarV2_2Calls {
-        fn from(var: MinimumShareLockPeriodCall) -> Self {
-            CellarV2_2Calls::MinimumShareLockPeriod(var)
+    impl ::std::convert::From<OracleDecimalsCall> for CellarV2_5Calls {
+        fn from(var: OracleDecimalsCall) -> Self {
+            CellarV2_5Calls::OracleDecimals(var)
         }
     }
-    impl ::std::convert::From<PriceRouterRegistrySlotCall> for CellarV2_2Calls {
+    impl ::std::convert::From<PriceRouterRegistrySlotCall> for CellarV2_5Calls {
         fn from(var: PriceRouterRegistrySlotCall) -> Self {
-            CellarV2_2Calls::PriceRouterRegistrySlot(var)
+            CellarV2_5Calls::PriceRouterRegistrySlot(var)
         }
     }
-    impl ::std::convert::From<AavePoolCall> for CellarV2_2Calls {
-        fn from(var: AavePoolCall) -> Self {
-            CellarV2_2Calls::AavePool(var)
-        }
-    }
-    impl ::std::convert::From<AdaptorCatalogueCall> for CellarV2_2Calls {
+    impl ::std::convert::From<AdaptorCatalogueCall> for CellarV2_5Calls {
         fn from(var: AdaptorCatalogueCall) -> Self {
-            CellarV2_2Calls::AdaptorCatalogue(var)
+            CellarV2_5Calls::AdaptorCatalogue(var)
         }
     }
-    impl ::std::convert::From<AddAdaptorToCatalogueCall> for CellarV2_2Calls {
+    impl ::std::convert::From<AddAdaptorToCatalogueCall> for CellarV2_5Calls {
         fn from(var: AddAdaptorToCatalogueCall) -> Self {
-            CellarV2_2Calls::AddAdaptorToCatalogue(var)
+            CellarV2_5Calls::AddAdaptorToCatalogue(var)
         }
     }
-    impl ::std::convert::From<AddPositionCall> for CellarV2_2Calls {
+    impl ::std::convert::From<AddPositionCall> for CellarV2_5Calls {
         fn from(var: AddPositionCall) -> Self {
-            CellarV2_2Calls::AddPosition(var)
+            CellarV2_5Calls::AddPosition(var)
         }
     }
-    impl ::std::convert::From<AddPositionToCatalogueCall> for CellarV2_2Calls {
+    impl ::std::convert::From<AddPositionToCatalogueCall> for CellarV2_5Calls {
         fn from(var: AddPositionToCatalogueCall) -> Self {
-            CellarV2_2Calls::AddPositionToCatalogue(var)
+            CellarV2_5Calls::AddPositionToCatalogue(var)
         }
     }
-    impl ::std::convert::From<AllowanceCall> for CellarV2_2Calls {
+    impl ::std::convert::From<AllowanceCall> for CellarV2_5Calls {
         fn from(var: AllowanceCall) -> Self {
-            CellarV2_2Calls::Allowance(var)
+            CellarV2_5Calls::Allowance(var)
         }
     }
-    impl ::std::convert::From<AllowedRebalanceDeviationCall> for CellarV2_2Calls {
+    impl ::std::convert::From<AllowedRebalanceDeviationCall> for CellarV2_5Calls {
         fn from(var: AllowedRebalanceDeviationCall) -> Self {
-            CellarV2_2Calls::AllowedRebalanceDeviation(var)
+            CellarV2_5Calls::AllowedRebalanceDeviation(var)
         }
     }
-    impl ::std::convert::From<ApproveCall> for CellarV2_2Calls {
+    impl ::std::convert::From<ApproveCall> for CellarV2_5Calls {
         fn from(var: ApproveCall) -> Self {
-            CellarV2_2Calls::Approve(var)
+            CellarV2_5Calls::Approve(var)
         }
     }
-    impl ::std::convert::From<AssetCall> for CellarV2_2Calls {
+    impl ::std::convert::From<AssetCall> for CellarV2_5Calls {
         fn from(var: AssetCall) -> Self {
-            CellarV2_2Calls::Asset(var)
+            CellarV2_5Calls::Asset(var)
         }
     }
-    impl ::std::convert::From<BalanceOfCall> for CellarV2_2Calls {
+    impl ::std::convert::From<AutomationActionsCall> for CellarV2_5Calls {
+        fn from(var: AutomationActionsCall) -> Self {
+            CellarV2_5Calls::AutomationActions(var)
+        }
+    }
+    impl ::std::convert::From<BalanceOfCall> for CellarV2_5Calls {
         fn from(var: BalanceOfCall) -> Self {
-            CellarV2_2Calls::BalanceOf(var)
+            CellarV2_5Calls::BalanceOf(var)
         }
     }
-    impl ::std::convert::From<BlockExternalReceiverCall> for CellarV2_2Calls {
+    impl ::std::convert::From<BalancerVaultCall> for CellarV2_5Calls {
+        fn from(var: BalancerVaultCall) -> Self {
+            CellarV2_5Calls::BalancerVault(var)
+        }
+    }
+    impl ::std::convert::From<BlockExternalReceiverCall> for CellarV2_5Calls {
         fn from(var: BlockExternalReceiverCall) -> Self {
-            CellarV2_2Calls::BlockExternalReceiver(var)
+            CellarV2_5Calls::BlockExternalReceiver(var)
         }
     }
-    impl ::std::convert::From<CachePriceRouterCall> for CellarV2_2Calls {
+    impl ::std::convert::From<CachePriceRouterCall> for CellarV2_5Calls {
         fn from(var: CachePriceRouterCall) -> Self {
-            CellarV2_2Calls::CachePriceRouter(var)
+            CellarV2_5Calls::CachePriceRouter(var)
         }
     }
-    impl ::std::convert::From<CallOnAdaptorCall> for CellarV2_2Calls {
+    impl ::std::convert::From<CallOnAdaptorCall> for CellarV2_5Calls {
         fn from(var: CallOnAdaptorCall) -> Self {
-            CellarV2_2Calls::CallOnAdaptor(var)
+            CellarV2_5Calls::CallOnAdaptor(var)
         }
     }
-    impl ::std::convert::From<ConvertToAssetsCall> for CellarV2_2Calls {
+    impl ::std::convert::From<ConvertToAssetsCall> for CellarV2_5Calls {
         fn from(var: ConvertToAssetsCall) -> Self {
-            CellarV2_2Calls::ConvertToAssets(var)
+            CellarV2_5Calls::ConvertToAssets(var)
         }
     }
-    impl ::std::convert::From<ConvertToSharesCall> for CellarV2_2Calls {
+    impl ::std::convert::From<ConvertToSharesCall> for CellarV2_5Calls {
         fn from(var: ConvertToSharesCall) -> Self {
-            CellarV2_2Calls::ConvertToShares(var)
+            CellarV2_5Calls::ConvertToShares(var)
         }
     }
-    impl ::std::convert::From<CreditPositionsCall> for CellarV2_2Calls {
+    impl ::std::convert::From<CreditPositionsCall> for CellarV2_5Calls {
         fn from(var: CreditPositionsCall) -> Self {
-            CellarV2_2Calls::CreditPositions(var)
+            CellarV2_5Calls::CreditPositions(var)
         }
     }
-    impl ::std::convert::From<DebtPositionsCall> for CellarV2_2Calls {
+    impl ::std::convert::From<DebtPositionsCall> for CellarV2_5Calls {
         fn from(var: DebtPositionsCall) -> Self {
-            CellarV2_2Calls::DebtPositions(var)
+            CellarV2_5Calls::DebtPositions(var)
         }
     }
-    impl ::std::convert::From<DecimalsCall> for CellarV2_2Calls {
+    impl ::std::convert::From<DecimalsCall> for CellarV2_5Calls {
         fn from(var: DecimalsCall) -> Self {
-            CellarV2_2Calls::Decimals(var)
+            CellarV2_5Calls::Decimals(var)
         }
     }
-    impl ::std::convert::From<DepositCall> for CellarV2_2Calls {
+    impl ::std::convert::From<DecreaseShareSupplyCapCall> for CellarV2_5Calls {
+        fn from(var: DecreaseShareSupplyCapCall) -> Self {
+            CellarV2_5Calls::DecreaseShareSupplyCap(var)
+        }
+    }
+    impl ::std::convert::From<DepositCall> for CellarV2_5Calls {
         fn from(var: DepositCall) -> Self {
-            CellarV2_2Calls::Deposit(var)
+            CellarV2_5Calls::Deposit(var)
         }
     }
-    impl ::std::convert::From<ExecuteOperationCall> for CellarV2_2Calls {
-        fn from(var: ExecuteOperationCall) -> Self {
-            CellarV2_2Calls::ExecuteOperation(var)
-        }
-    }
-    impl ::std::convert::From<FeeDataCall> for CellarV2_2Calls {
+    impl ::std::convert::From<FeeDataCall> for CellarV2_5Calls {
         fn from(var: FeeDataCall) -> Self {
-            CellarV2_2Calls::FeeData(var)
+            CellarV2_5Calls::FeeData(var)
         }
     }
-    impl ::std::convert::From<ForcePositionOutCall> for CellarV2_2Calls {
+    impl ::std::convert::From<ForcePositionOutCall> for CellarV2_5Calls {
         fn from(var: ForcePositionOutCall) -> Self {
-            CellarV2_2Calls::ForcePositionOut(var)
+            CellarV2_5Calls::ForcePositionOut(var)
         }
     }
-    impl ::std::convert::From<GetCreditPositionsCall> for CellarV2_2Calls {
+    impl ::std::convert::From<GetCreditPositionsCall> for CellarV2_5Calls {
         fn from(var: GetCreditPositionsCall) -> Self {
-            CellarV2_2Calls::GetCreditPositions(var)
+            CellarV2_5Calls::GetCreditPositions(var)
         }
     }
-    impl ::std::convert::From<GetDebtPositionsCall> for CellarV2_2Calls {
+    impl ::std::convert::From<GetDebtPositionsCall> for CellarV2_5Calls {
         fn from(var: GetDebtPositionsCall) -> Self {
-            CellarV2_2Calls::GetDebtPositions(var)
+            CellarV2_5Calls::GetDebtPositions(var)
         }
     }
-    impl ::std::convert::From<GetPositionAssetsCall> for CellarV2_2Calls {
-        fn from(var: GetPositionAssetsCall) -> Self {
-            CellarV2_2Calls::GetPositionAssets(var)
-        }
-    }
-    impl ::std::convert::From<GetPositionDataCall> for CellarV2_2Calls {
+    impl ::std::convert::From<GetPositionDataCall> for CellarV2_5Calls {
         fn from(var: GetPositionDataCall) -> Self {
-            CellarV2_2Calls::GetPositionData(var)
+            CellarV2_5Calls::GetPositionData(var)
         }
     }
-    impl ::std::convert::From<HoldingPositionCall> for CellarV2_2Calls {
+    impl ::std::convert::From<HoldingPositionCall> for CellarV2_5Calls {
         fn from(var: HoldingPositionCall) -> Self {
-            CellarV2_2Calls::HoldingPosition(var)
+            CellarV2_5Calls::HoldingPosition(var)
         }
     }
-    impl ::std::convert::From<IgnorePauseCall> for CellarV2_2Calls {
+    impl ::std::convert::From<IgnorePauseCall> for CellarV2_5Calls {
         fn from(var: IgnorePauseCall) -> Self {
-            CellarV2_2Calls::IgnorePause(var)
+            CellarV2_5Calls::IgnorePause(var)
         }
     }
-    impl ::std::convert::From<InitializeCall> for CellarV2_2Calls {
-        fn from(var: InitializeCall) -> Self {
-            CellarV2_2Calls::Initialize(var)
+    impl ::std::convert::From<IncreaseShareSupplyCapCall> for CellarV2_5Calls {
+        fn from(var: IncreaseShareSupplyCapCall) -> Self {
+            CellarV2_5Calls::IncreaseShareSupplyCap(var)
         }
     }
-    impl ::std::convert::From<InitiateShutdownCall> for CellarV2_2Calls {
+    impl ::std::convert::From<InitiateShutdownCall> for CellarV2_5Calls {
         fn from(var: InitiateShutdownCall) -> Self {
-            CellarV2_2Calls::InitiateShutdown(var)
+            CellarV2_5Calls::InitiateShutdown(var)
         }
     }
-    impl ::std::convert::From<IsPausedCall> for CellarV2_2Calls {
+    impl ::std::convert::From<IsPausedCall> for CellarV2_5Calls {
         fn from(var: IsPausedCall) -> Self {
-            CellarV2_2Calls::IsPaused(var)
+            CellarV2_5Calls::IsPaused(var)
         }
     }
-    impl ::std::convert::From<IsPositionUsedCall> for CellarV2_2Calls {
+    impl ::std::convert::From<IsPositionUsedCall> for CellarV2_5Calls {
         fn from(var: IsPositionUsedCall) -> Self {
-            CellarV2_2Calls::IsPositionUsed(var)
+            CellarV2_5Calls::IsPositionUsed(var)
         }
     }
-    impl ::std::convert::From<IsShutdownCall> for CellarV2_2Calls {
+    impl ::std::convert::From<IsShutdownCall> for CellarV2_5Calls {
         fn from(var: IsShutdownCall) -> Self {
-            CellarV2_2Calls::IsShutdown(var)
+            CellarV2_5Calls::IsShutdown(var)
         }
     }
-    impl ::std::convert::From<LiftShutdownCall> for CellarV2_2Calls {
+    impl ::std::convert::From<LiftShutdownCall> for CellarV2_5Calls {
         fn from(var: LiftShutdownCall) -> Self {
-            CellarV2_2Calls::LiftShutdown(var)
+            CellarV2_5Calls::LiftShutdown(var)
         }
     }
-    impl ::std::convert::From<LockedCall> for CellarV2_2Calls {
+    impl ::std::convert::From<LockedCall> for CellarV2_5Calls {
         fn from(var: LockedCall) -> Self {
-            CellarV2_2Calls::Locked(var)
+            CellarV2_5Calls::Locked(var)
         }
     }
-    impl ::std::convert::From<MaxDepositCall> for CellarV2_2Calls {
+    impl ::std::convert::From<MaxDepositCall> for CellarV2_5Calls {
         fn from(var: MaxDepositCall) -> Self {
-            CellarV2_2Calls::MaxDeposit(var)
+            CellarV2_5Calls::MaxDeposit(var)
         }
     }
-    impl ::std::convert::From<MaxMintCall> for CellarV2_2Calls {
+    impl ::std::convert::From<MaxMintCall> for CellarV2_5Calls {
         fn from(var: MaxMintCall) -> Self {
-            CellarV2_2Calls::MaxMint(var)
+            CellarV2_5Calls::MaxMint(var)
         }
     }
-    impl ::std::convert::From<MaxRedeemCall> for CellarV2_2Calls {
+    impl ::std::convert::From<MaxRedeemCall> for CellarV2_5Calls {
         fn from(var: MaxRedeemCall) -> Self {
-            CellarV2_2Calls::MaxRedeem(var)
+            CellarV2_5Calls::MaxRedeem(var)
         }
     }
-    impl ::std::convert::From<MaxWithdrawCall> for CellarV2_2Calls {
+    impl ::std::convert::From<MaxWithdrawCall> for CellarV2_5Calls {
         fn from(var: MaxWithdrawCall) -> Self {
-            CellarV2_2Calls::MaxWithdraw(var)
+            CellarV2_5Calls::MaxWithdraw(var)
         }
     }
-    impl ::std::convert::From<MintCall> for CellarV2_2Calls {
+    impl ::std::convert::From<MintCall> for CellarV2_5Calls {
         fn from(var: MintCall) -> Self {
-            CellarV2_2Calls::Mint(var)
+            CellarV2_5Calls::Mint(var)
         }
     }
-    impl ::std::convert::From<MulticallCall> for CellarV2_2Calls {
+    impl ::std::convert::From<MulticallCall> for CellarV2_5Calls {
         fn from(var: MulticallCall) -> Self {
-            CellarV2_2Calls::Multicall(var)
+            CellarV2_5Calls::Multicall(var)
         }
     }
-    impl ::std::convert::From<NameCall> for CellarV2_2Calls {
+    impl ::std::convert::From<NameCall> for CellarV2_5Calls {
         fn from(var: NameCall) -> Self {
-            CellarV2_2Calls::Name(var)
+            CellarV2_5Calls::Name(var)
         }
     }
-    impl ::std::convert::From<NoncesCall> for CellarV2_2Calls {
+    impl ::std::convert::From<NoncesCall> for CellarV2_5Calls {
         fn from(var: NoncesCall) -> Self {
-            CellarV2_2Calls::Nonces(var)
+            CellarV2_5Calls::Nonces(var)
         }
     }
-    impl ::std::convert::From<OnERC721ReceivedCall> for CellarV2_2Calls {
+    impl ::std::convert::From<OnERC721ReceivedCall> for CellarV2_5Calls {
         fn from(var: OnERC721ReceivedCall) -> Self {
-            CellarV2_2Calls::OnERC721Received(var)
+            CellarV2_5Calls::OnERC721Received(var)
         }
     }
-    impl ::std::convert::From<OwnerCall> for CellarV2_2Calls {
+    impl ::std::convert::From<OwnerCall> for CellarV2_5Calls {
         fn from(var: OwnerCall) -> Self {
-            CellarV2_2Calls::Owner(var)
+            CellarV2_5Calls::Owner(var)
         }
     }
-    impl ::std::convert::From<PermitCall> for CellarV2_2Calls {
+    impl ::std::convert::From<PermitCall> for CellarV2_5Calls {
         fn from(var: PermitCall) -> Self {
-            CellarV2_2Calls::Permit(var)
+            CellarV2_5Calls::Permit(var)
         }
     }
-    impl ::std::convert::From<PositionCatalogueCall> for CellarV2_2Calls {
+    impl ::std::convert::From<PositionCatalogueCall> for CellarV2_5Calls {
         fn from(var: PositionCatalogueCall) -> Self {
-            CellarV2_2Calls::PositionCatalogue(var)
+            CellarV2_5Calls::PositionCatalogue(var)
         }
     }
-    impl ::std::convert::From<PreviewDepositCall> for CellarV2_2Calls {
+    impl ::std::convert::From<PreviewDepositCall> for CellarV2_5Calls {
         fn from(var: PreviewDepositCall) -> Self {
-            CellarV2_2Calls::PreviewDeposit(var)
+            CellarV2_5Calls::PreviewDeposit(var)
         }
     }
-    impl ::std::convert::From<PreviewMintCall> for CellarV2_2Calls {
+    impl ::std::convert::From<PreviewMintCall> for CellarV2_5Calls {
         fn from(var: PreviewMintCall) -> Self {
-            CellarV2_2Calls::PreviewMint(var)
+            CellarV2_5Calls::PreviewMint(var)
         }
     }
-    impl ::std::convert::From<PreviewRedeemCall> for CellarV2_2Calls {
+    impl ::std::convert::From<PreviewRedeemCall> for CellarV2_5Calls {
         fn from(var: PreviewRedeemCall) -> Self {
-            CellarV2_2Calls::PreviewRedeem(var)
+            CellarV2_5Calls::PreviewRedeem(var)
         }
     }
-    impl ::std::convert::From<PreviewWithdrawCall> for CellarV2_2Calls {
+    impl ::std::convert::From<PreviewWithdrawCall> for CellarV2_5Calls {
         fn from(var: PreviewWithdrawCall) -> Self {
-            CellarV2_2Calls::PreviewWithdraw(var)
+            CellarV2_5Calls::PreviewWithdraw(var)
         }
     }
-    impl ::std::convert::From<PriceRouterCall> for CellarV2_2Calls {
+    impl ::std::convert::From<PriceRouterCall> for CellarV2_5Calls {
         fn from(var: PriceRouterCall) -> Self {
-            CellarV2_2Calls::PriceRouter(var)
+            CellarV2_5Calls::PriceRouter(var)
         }
     }
-    impl ::std::convert::From<RedeemCall> for CellarV2_2Calls {
+    impl ::std::convert::From<ReceiveFlashLoanCall> for CellarV2_5Calls {
+        fn from(var: ReceiveFlashLoanCall) -> Self {
+            CellarV2_5Calls::ReceiveFlashLoan(var)
+        }
+    }
+    impl ::std::convert::From<RedeemCall> for CellarV2_5Calls {
         fn from(var: RedeemCall) -> Self {
-            CellarV2_2Calls::Redeem(var)
+            CellarV2_5Calls::Redeem(var)
         }
     }
-    impl ::std::convert::From<RegistryCall> for CellarV2_2Calls {
+    impl ::std::convert::From<RegistryCall> for CellarV2_5Calls {
         fn from(var: RegistryCall) -> Self {
-            CellarV2_2Calls::Registry(var)
+            CellarV2_5Calls::Registry(var)
         }
     }
-    impl ::std::convert::From<RemoveAdaptorFromCatalogueCall> for CellarV2_2Calls {
+    impl ::std::convert::From<RemoveAdaptorFromCatalogueCall> for CellarV2_5Calls {
         fn from(var: RemoveAdaptorFromCatalogueCall) -> Self {
-            CellarV2_2Calls::RemoveAdaptorFromCatalogue(var)
+            CellarV2_5Calls::RemoveAdaptorFromCatalogue(var)
         }
     }
-    impl ::std::convert::From<RemovePositionCall> for CellarV2_2Calls {
+    impl ::std::convert::From<RemovePositionCall> for CellarV2_5Calls {
         fn from(var: RemovePositionCall) -> Self {
-            CellarV2_2Calls::RemovePosition(var)
+            CellarV2_5Calls::RemovePosition(var)
         }
     }
-    impl ::std::convert::From<RemovePositionFromCatalogueCall> for CellarV2_2Calls {
+    impl ::std::convert::From<RemovePositionFromCatalogueCall> for CellarV2_5Calls {
         fn from(var: RemovePositionFromCatalogueCall) -> Self {
-            CellarV2_2Calls::RemovePositionFromCatalogue(var)
+            CellarV2_5Calls::RemovePositionFromCatalogue(var)
         }
     }
-    impl ::std::convert::From<SetHoldingPositionCall> for CellarV2_2Calls {
+    impl ::std::convert::From<SetAutomationActionsCall> for CellarV2_5Calls {
+        fn from(var: SetAutomationActionsCall) -> Self {
+            CellarV2_5Calls::SetAutomationActions(var)
+        }
+    }
+    impl ::std::convert::From<SetHoldingPositionCall> for CellarV2_5Calls {
         fn from(var: SetHoldingPositionCall) -> Self {
-            CellarV2_2Calls::SetHoldingPosition(var)
+            CellarV2_5Calls::SetHoldingPosition(var)
         }
     }
-    impl ::std::convert::From<SetRebalanceDeviationCall> for CellarV2_2Calls {
+    impl ::std::convert::From<SetRebalanceDeviationCall> for CellarV2_5Calls {
         fn from(var: SetRebalanceDeviationCall) -> Self {
-            CellarV2_2Calls::SetRebalanceDeviation(var)
+            CellarV2_5Calls::SetRebalanceDeviation(var)
         }
     }
-    impl ::std::convert::From<SetShareLockPeriodCall> for CellarV2_2Calls {
-        fn from(var: SetShareLockPeriodCall) -> Self {
-            CellarV2_2Calls::SetShareLockPeriod(var)
+    impl ::std::convert::From<SetSharePriceOracleCall> for CellarV2_5Calls {
+        fn from(var: SetSharePriceOracleCall) -> Self {
+            CellarV2_5Calls::SetSharePriceOracle(var)
         }
     }
-    impl ::std::convert::From<SetStrategistPayoutAddressCall> for CellarV2_2Calls {
+    impl ::std::convert::From<SetStrategistPayoutAddressCall> for CellarV2_5Calls {
         fn from(var: SetStrategistPayoutAddressCall) -> Self {
-            CellarV2_2Calls::SetStrategistPayoutAddress(var)
+            CellarV2_5Calls::SetStrategistPayoutAddress(var)
         }
     }
-    impl ::std::convert::From<SetStrategistPlatformCutCall> for CellarV2_2Calls {
+    impl ::std::convert::From<SetStrategistPlatformCutCall> for CellarV2_5Calls {
         fn from(var: SetStrategistPlatformCutCall) -> Self {
-            CellarV2_2Calls::SetStrategistPlatformCut(var)
+            CellarV2_5Calls::SetStrategistPlatformCut(var)
         }
     }
-    impl ::std::convert::From<ShareLockPeriodCall> for CellarV2_2Calls {
-        fn from(var: ShareLockPeriodCall) -> Self {
-            CellarV2_2Calls::ShareLockPeriod(var)
+    impl ::std::convert::From<SharePriceOracleCall> for CellarV2_5Calls {
+        fn from(var: SharePriceOracleCall) -> Self {
+            CellarV2_5Calls::SharePriceOracle(var)
         }
     }
-    impl ::std::convert::From<SwapPositionsCall> for CellarV2_2Calls {
+    impl ::std::convert::From<ShareSupplyCapCall> for CellarV2_5Calls {
+        fn from(var: ShareSupplyCapCall) -> Self {
+            CellarV2_5Calls::ShareSupplyCap(var)
+        }
+    }
+    impl ::std::convert::From<SwapPositionsCall> for CellarV2_5Calls {
         fn from(var: SwapPositionsCall) -> Self {
-            CellarV2_2Calls::SwapPositions(var)
+            CellarV2_5Calls::SwapPositions(var)
         }
     }
-    impl ::std::convert::From<SymbolCall> for CellarV2_2Calls {
+    impl ::std::convert::From<SymbolCall> for CellarV2_5Calls {
         fn from(var: SymbolCall) -> Self {
-            CellarV2_2Calls::Symbol(var)
+            CellarV2_5Calls::Symbol(var)
         }
     }
-    impl ::std::convert::From<ToggleIgnorePauseCall> for CellarV2_2Calls {
+    impl ::std::convert::From<ToggleIgnorePauseCall> for CellarV2_5Calls {
         fn from(var: ToggleIgnorePauseCall) -> Self {
-            CellarV2_2Calls::ToggleIgnorePause(var)
+            CellarV2_5Calls::ToggleIgnorePause(var)
         }
     }
-    impl ::std::convert::From<TotalAssetsCall> for CellarV2_2Calls {
+    impl ::std::convert::From<TotalAssetsCall> for CellarV2_5Calls {
         fn from(var: TotalAssetsCall) -> Self {
-            CellarV2_2Calls::TotalAssets(var)
+            CellarV2_5Calls::TotalAssets(var)
         }
     }
-    impl ::std::convert::From<TotalAssetsWithdrawableCall> for CellarV2_2Calls {
+    impl ::std::convert::From<TotalAssetsWithdrawableCall> for CellarV2_5Calls {
         fn from(var: TotalAssetsWithdrawableCall) -> Self {
-            CellarV2_2Calls::TotalAssetsWithdrawable(var)
+            CellarV2_5Calls::TotalAssetsWithdrawable(var)
         }
     }
-    impl ::std::convert::From<TotalSupplyCall> for CellarV2_2Calls {
+    impl ::std::convert::From<TotalSupplyCall> for CellarV2_5Calls {
         fn from(var: TotalSupplyCall) -> Self {
-            CellarV2_2Calls::TotalSupply(var)
+            CellarV2_5Calls::TotalSupply(var)
         }
     }
-    impl ::std::convert::From<TransferCall> for CellarV2_2Calls {
+    impl ::std::convert::From<TransferCall> for CellarV2_5Calls {
         fn from(var: TransferCall) -> Self {
-            CellarV2_2Calls::Transfer(var)
+            CellarV2_5Calls::Transfer(var)
         }
     }
-    impl ::std::convert::From<TransferFromCall> for CellarV2_2Calls {
+    impl ::std::convert::From<TransferFromCall> for CellarV2_5Calls {
         fn from(var: TransferFromCall) -> Self {
-            CellarV2_2Calls::TransferFrom(var)
+            CellarV2_5Calls::TransferFrom(var)
         }
     }
-    impl ::std::convert::From<TransferOwnershipCall> for CellarV2_2Calls {
+    impl ::std::convert::From<TransferOwnershipCall> for CellarV2_5Calls {
         fn from(var: TransferOwnershipCall) -> Self {
-            CellarV2_2Calls::TransferOwnership(var)
+            CellarV2_5Calls::TransferOwnership(var)
         }
     }
-    impl ::std::convert::From<UserShareLockStartTimeCall> for CellarV2_2Calls {
-        fn from(var: UserShareLockStartTimeCall) -> Self {
-            CellarV2_2Calls::UserShareLockStartTime(var)
-        }
-    }
-    impl ::std::convert::From<ViewPositionBalancesCall> for CellarV2_2Calls {
+    impl ::std::convert::From<ViewPositionBalancesCall> for CellarV2_5Calls {
         fn from(var: ViewPositionBalancesCall) -> Self {
-            CellarV2_2Calls::ViewPositionBalances(var)
+            CellarV2_5Calls::ViewPositionBalances(var)
         }
     }
-    impl ::std::convert::From<WithdrawCall> for CellarV2_2Calls {
+    impl ::std::convert::From<WithdrawCall> for CellarV2_5Calls {
         fn from(var: WithdrawCall) -> Self {
-            CellarV2_2Calls::Withdraw(var)
+            CellarV2_5Calls::Withdraw(var)
         }
     }
     #[doc = "`AdaptorCall(address,bytes[])`"]

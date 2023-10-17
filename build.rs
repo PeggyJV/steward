@@ -26,13 +26,10 @@ fn generate_contract_abis() {
         ("CellarV1", "cellar_v1"),
         ("CellarV2", "cellar_v2"),
         ("CellarV2_2", "cellar_v2_2"),
+        ("UniswapV3AdaptorV1", "uniswap_v3_adaptor_v1"),
         ("UniswapV3AdaptorV2", "uniswap_v3_adaptor_v2"),
         ("AaveATokenAdaptorV1", "aave_a_token_adaptor_v1"),
         ("AaveDebtTokenAdaptorV1", "aave_debt_token_adaptor_v1"),
-        (
-            "AaveV2EnableAssetAsCollateralAdaptorV1",
-            "aave_v2_collateral_adaptor_v1",
-        ),
         ("AaveATokenAdaptorV2", "aave_a_token_adaptor_v2"),
         ("AaveDebtTokenAdaptorV2", "aave_debt_token_adaptor_v2"),
         ("AaveV3ATokenAdaptorV1", "aave_v3_a_token_adaptor_v1"),
@@ -70,6 +67,15 @@ fn generate_contract_abis() {
             "morpho_aave_v3_debt_token_adaptor_v1",
         ),
         ("MorphoRewardHandler", "morpho_reward_handler"),
+        ("BalancerPoolAdaptorV1", "balancer_pool_adaptor_v1"),
+        ("CellarV2_5", "cellar_v2_5"),
+        (
+            "CellarWithShareLockPeriodV1",
+            "cellar_with_share_lock_period_v1",
+        ),
+        ("DebtFTokenAdaptorV1", "debt_f_token_adaptor_v1"),
+        ("CollateralFTokenAdaptorV1", "collateral_f_token_adaptor_v1"),
+        ("LegacyCellarAdaptorV1", "legacy_cellar_adaptor_v1"),
     ];
 
     contracts.iter().for_each(|n| {
