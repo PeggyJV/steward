@@ -1,0 +1,164 @@
+/*
+* Protos for function calls to the Balancer Pool adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+// Represents call data for the Balancer Pool adaptor V1, for managing pool positions on Balancer.
+message BalancerPoolAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `relayerJoinPool(ERC20[] tokensIn, uint256[] amountsIn, ERC20 btpOut, bytes[] memory callData)`
+        JoinPool join_pool = 2;
+        // Represents function `relayerExitPool(ERC20 bptIn, uint256 amountIn, ERC20[] memory tokensOut, bytes[] memory callData)`
+        ExitPool exit_pool = 3;
+        // Represents function `stakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountIn)`
+        StakeBPT stake_bpt = 4;
+        // Represents function `unstakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountOut)`
+        UnstakeBPT unstake_bpt = 5;
+        // Represents function `claimRewards(address gauge)`
+        ClaimRewards claim_rewards = 6;
+    }
+
+    // Represents the SwapKind enum defined here:
+    // https://github.com/PeggyJV/cellar-contracts/blob/main/src/interfaces/external/Balancer/IVault.sol
+    enum SwapKind {
+        SWAP_KIND_UNSPECIFIED = 0;
+        SWAP_KIND_GIVEN_IN = 1;
+        SWAP_KIND_GIVEN_OUT = 2;
+    }
+
+    // Data for a single swap executed by `swap`. `amount` is either `amountIn` or `amountOut` depending on the `kind` value.
+    // Represents the SingleSwap struct defined here:
+    // https://github.com/PeggyJV/cellar-contracts/blob/main/src/interfaces/external/Balancer/IVault.sol
+    message SingleSwap {
+        // The pool ID (bytes32)
+        string pool_id = 1;
+
+        // The swap kind (enum)
+        SwapKind kind = 2;
+
+        // The asset in (address)
+        string asset_in = 3;
+
+        // The asset out (address)
+        string asset_out = 4;
+
+        // The amount (uint256)
+        string amount = 5;
+
+        // The user data (bytes)
+        bytes user_data = 6;
+    }
+
+    // Stores each swaps min amount, and deadline
+    message SwapData {
+        // The minimum amounts for swaps
+        repeated string min_amounts_for_swaps = 1;
+
+        // The swap deadlines
+        repeated string swap_deadlines = 2;
+    }
+
+    /*
+    * Allows strategists to join Balancer pools using EXACT_TOKENS_IN_FOR_BPT_OUT joins
+    *
+    * Represents function `joinPool(ERC20 targetBpt, IVault.SingleSwap[] memory swapsBeforeJoin, SwapData memory swapData, uint256 minimumBpt)`
+    */
+    message JoinPool {
+        // The target pool
+        string target_bpt = 1;
+
+        // Swap to execute before joining pool
+        repeated SingleSwap swaps_before_join = 2;
+
+        // Data for swaps
+        SwapData swap_data = 3;
+
+        // The minimum BPT to mint
+        string minimum_bpt = 4;
+    }
+
+
+    message ExitPoolRequest {
+        repeated string assets = 1;
+        repeated string min_amounts_out = 2;
+        bytes user_data = 3;
+        bool to_internal_balance = 4;
+    }
+
+    /*
+    * Call `BalancerRelayer` on mainnet to carry out exit txs
+    *
+    * Represents function `exitPool(ERC20 targetBpt, IVault.SingleSwap[] memory swapsBeforeJoin, SwapData memory swapData, IVault.ExitPoolRequest request)`
+    */
+    message ExitPool {
+        // The target pool
+        string target_bpt = 1;
+
+        // Swaps to execute after exiting pool
+        repeated SingleSwap swaps_after_exit = 2;
+
+        // Data for swaps
+        SwapData swap_data = 3;
+
+        ExitPoolRequest request = 4;
+    }
+
+    /*
+    * Stake (deposit) BPTs into respective pool gauge
+    *
+    * Represents `function stakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountIn)``
+    */
+    message StakeBPT {
+        // The BPT to stake
+        string bpt = 1;
+
+        // The liquidity gauge to stake into
+        string liquidity_gauge = 2;
+
+        // The amount to stake
+        string amount_in = 3;
+    }
+
+    /*
+    * Unstake (withdraw) BPT from respective pool gauge
+    *
+    * Represents `function unstakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountOut)``
+    */
+    message UnstakeBPT {
+        // The BPT to unstake
+        string bpt = 1;
+
+        // The liquidity gauge to unstake from
+        string liquidity_gauge = 2;
+
+        // The amount to unstake
+        string amount_out = 3;
+    }
+
+    /*
+    * Claim rewards ($BAL) from LP position
+    *
+    * Represents `function claimRewards(address gauge)`
+    */
+    message ClaimRewards {
+        // The gauge to claim rewards from
+        string gauge = 1;
+    }
+}
+
+message BalancerPoolAdaptorV1Calls {
+    repeated BalancerPoolAdaptorV1 calls = 1;
+}

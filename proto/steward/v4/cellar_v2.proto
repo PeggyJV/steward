@@ -13,6 +13,7 @@ import "a_token.proto";
 import "debt_token.proto";
 import "aave_v3_a_token.proto";
 import "aave_v3_debt_token.proto";
+import "balancer_pool.proto";
 import "c_token.proto";
 import "f_token.proto";
 import "morpho_aave_v2_a_token.proto";
@@ -28,6 +29,9 @@ import "oneinch.proto";
 import "vesting_simple.proto";
 import "cellar_adaptor.proto";
 import "aave_v2_enable_asset_as_collateral_adaptor.proto";
+import "legacy_cellar_adaptor.proto";
+import "debt_f_token.proto";
+import "collateral_f_token.proto";
 
 /*
 * Represents a function call to a cellar that implements Cellar.sol
@@ -476,5 +480,13 @@ message AdaptorCall {
         MorphoAaveV3ATokenP2PAdaptorV1Calls morpho_aave_v3_a_token_p2p_v1_calls = 21;
         // Represents function calls to the MorphoAaveV3DebtToken V1
         MorphoAaveV3DebtTokenAdaptorV1Calls morpho_aave_v3_debt_token_v1_calls = 22;
+        // Represents function calls to the BalancerPoolAdaptor V1
+        BalancerPoolAdaptorV1Calls balancer_pool_v1_calls = 23;
+        // Represents function calls to the LegacyCellarAdaptor V1
+        LegacyCellarAdaptorV1Calls legacy_cellar_v1_calls = 24;
+        // Represents function calls to the DebtFTokenAdaptor V1
+        DebtFTokenAdaptorV1Calls debt_f_token_v1_calls = 25;
+        // Represents function calls to the CollateralFTokenAdaptor V1
+        CollateralFTokenAdaptorV1Calls collateral_f_token_v1_calls = 26;
     }
 }

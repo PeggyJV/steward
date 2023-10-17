@@ -1,0 +1,50 @@
+// Protos for depositing/withdrawing from Legacy Cellars
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+message LegacyCellarAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `depositToCellar(Cellar cellar, uint256 assets, address oracle)`
+        DepositToCellar depositToCellar = 2;
+        // Represents function `withdrawFromCellar(Cellar cellar, uint256 assets, address oracle)`
+        WithdrawFromCellar withdrawFromCellar = 3;
+    }
+
+    /*
+    * Allows strategists to deposit into Cellar positions.
+    *
+    * Represents function `depositToCellar(Cellar cellar, uint256 assets, address oracle)`
+    */
+    message DepositToCellar {
+        string cellar = 1;
+        string assets = 2;
+        string oracle = 3;
+    }
+
+    /*
+    * Allows strategists to withdraw from Cellar positions.
+    *
+    * Represents function `withdrawFromCellar(Cellar cellar, uint256 assets, address oracle)`
+    */
+    message WithdrawFromCellar {
+        string cellar = 1;
+        string assets = 2;
+        string oracle = 3;
+    }
+}
+
+message LegacyCellarAdaptorV1Calls {
+    repeated LegacyCellarAdaptorV1 calls = 1;
+}

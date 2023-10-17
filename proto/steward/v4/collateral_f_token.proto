@@ -1,0 +1,55 @@
+/*
+* Protos for function calls to the Frax Collateral F Token adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+// Represents call data for the Frax Collateral F Token adaptor.
+message CollateralFTokenAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `addCollateral(IFToken _fraxlendPair, uint256 _collateralToDeposit)`
+        AddCollateral add_collateral = 2;
+        // Represents function `removeCollateral(uint256 _collateralAmount, IFToken _fraxlendPair)`
+        RemoveCollateral remove_collateral = 3;
+    }
+
+    /*
+    * Allows strategists to add collateral to the respective cellar position on FraxLend, enabling borrowing.
+    *
+    * Represents function `addCollateral(IFToken _fraxlendPair, uint256 _collateralToDeposit)`
+    */
+    message AddCollateral {
+        // The FraxLend pair to add collateral to.
+        string fraxlend_pair = 1;
+        // The amount of collateral to add to the cellar position.
+        string collateral_to_deposit = 2;
+    }
+
+    /*
+    * Allows strategists to remove collateral from the respective cellar position on FraxLend.
+    *
+    * Represents function `removeCollateral(uint256 _collateralAmount, IFToken _fraxlendPair)`
+    */
+    message RemoveCollateral {
+        // The amount of collateral to remove from the cellar position.
+        string collateral_amount = 1;
+        // The FraxLend pair to remove collateral from.
+        string fraxlend_pair = 2;
+    }
+}
+
+message CollateralFTokenAdaptorV1Calls {
+    repeated CollateralFTokenAdaptorV1 calls = 1;
+}
