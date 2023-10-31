@@ -240,7 +240,7 @@ pub fn validate_cache_price_router(
 ) -> Result<(), Error> {
     let cellar_id_normalized = normalize_address(cellar_id.to_string());
 
-    if ALLOWED_CACHE_PRICE_ROUTER.iter().any(|(cellar_id, args)| {
+    if !ALLOWED_CACHE_PRICE_ROUTER.iter().any(|(cellar_id, args)| {
         cellar_id_normalized.eq(cellar_id)
             && args.0 == check_total_assets_value
             && args.1 >= allowable_range_value
