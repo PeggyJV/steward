@@ -24,8 +24,8 @@ use crate::{
 };
 
 use super::{
-    check_blocked_adaptor, check_blocked_position, log_cellar_call, validate_new_adaptor,
-    validate_new_position, validate_oracle, V2_5_PERMISSIONS,
+    check_blocked_adaptor, check_blocked_position, log_cellar_call, validate_cache_price_router,
+    validate_new_adaptor, validate_new_position, validate_oracle, V2_5_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2.5";
@@ -273,6 +273,26 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             };
 
             Ok(CellarV2_5Calls::SetSharePriceOracle(call).encode())
+        }
+        Function::CachePriceRouter(params) => {
+            validate_cache_price_router(
+                &cellar_id,
+                params.check_total_assets,
+                params.allowable_range,
+                Some(&params.expected_price_router),
+            )?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &CachePriceRouterCall::function_name(),
+                &cellar_id,
+            );
+            let call = CachePriceRouterCall {
+                check_total_assets: params.check_total_assets,
+                allowable_range: params.allowable_range as u16,
+                expected_price_router: sp_call_parse_address(params.expected_price_router)?,
+            };
+
+            Ok(CellarV2_5Calls::CachePriceRouter(call).encode())
         }
     }
 }

@@ -9,6 +9,8 @@ use crate::{
     utils::{sp_call_error, string_to_u256},
 };
 
+pub type CachePriceRouterArgs = (bool, u32, Option<&'static str>);
+
 pub(crate) mod aave_v2_stablecoin;
 pub(crate) mod adaptors;
 pub(crate) mod cellar_v1;
@@ -34,16 +36,26 @@ pub const ORACLE3: (U256, &str) = (
     "26cde3f5db92ea91c84c838e664fe42dec1b6747",
 );
 
+// price routers
+
+pub const PRICEROUTER1: &str = "a1a0bc3d59e4ee5840c9530e49bdc2d1f88aaf92";
+pub const PRICEROUTER2: &str = "8e46f30b09fdfae6c97db27fecf3304f86dd88c2";
+
 pub const ALLOWED_PRICE_ORACLES: [(U256, &str); 3] = [ORACLE1, ORACLE2, ORACLE3];
-pub const ALLOWED_CACHE_PRICE_ROUTER: [&str; 1] = [CELLAR_RYETH];
+// mapping of cellar address to allowable arguments for a cachePriceRouter call.
+// args map to params as (checkTotalAssets, allowableRange, expectedPriceRouterAddress). The third
+// param is only present for 2.5 cellars so it's an Option<&str>.
+pub const ALLOWED_CACHE_PRICE_ROUTER: [(&str, CachePriceRouterArgs); 4] = [
+    (CELLAR_RYBTC, (true, 500, None)),
+    (CELLAR_RYETH, (true, 500, None)),
+    (CELLAR_TURBO_STETH, (false, 500, Some(PRICEROUTER1))),
+    (CELLAR_TURBO_STETH, (true, 500, Some(PRICEROUTER2))),
+];
 
 // permissions
 
-pub const ALLOWED_V2_0_SETUP_ADAPTORS: [(&str, &str); 1] = [(CELLAR_RYUSD, ADAPTOR_CELLAR_V2)];
-pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 1] = [
-    // According to Joe RYBTC already has this adaptor in its catalogue
-    (CELLAR_RYETH, ADAPTOR_CELLAR_V2),
-];
+pub const ALLOWED_V2_0_SETUP_ADAPTORS: [(&str, &str); 0] = [];
+pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
 pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
 
 // due to position size limits in v2.0, positions must be added and removed from the limited list
@@ -70,11 +82,7 @@ pub const ALLOWED_V2_0_POSITIONS: [(&str, u32); 20] = [
     (CELLAR_RYUSD, 28),
     (CELLAR_RYUSD, 29),
 ];
-pub const ALLOWED_V2_2_CATALOGUE_POSITIONS: [(&str, u32); 2] = [
-    // 199 is Turbo stETH position ID
-    (CELLAR_RYBTC, 199),
-    (CELLAR_RYETH, 199),
-];
+pub const ALLOWED_V2_2_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
 pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
 
 pub const BLOCKED_ADAPTORS: [&str; 3] = [
@@ -228,14 +236,15 @@ pub fn validate_cache_price_router(
     cellar_id: &str,
     check_total_assets_value: bool,
     allowable_range_value: u32,
+    expected_price_router: Option<&str>,
 ) -> Result<(), Error> {
-    if !check_total_assets_value || allowable_range_value != 500 {
-        return Err(sp_call_error(
-            "unauthorized arguments for cachePriceRouter call".to_string(),
-        ));
-    }
     let cellar_id_normalized = normalize_address(cellar_id.to_string());
-    if !ALLOWED_CACHE_PRICE_ROUTER.contains(&cellar_id_normalized.as_str()) {
+    let args = (
+        check_total_assets_value,
+        allowable_range_value,
+        expected_price_router,
+    );
+    if !ALLOWED_CACHE_PRICE_ROUTER.contains(&(cellar_id_normalized.as_str(), args)) {
         return Err(sp_call_error("call not authorized for cellar".to_string()));
     }
 
