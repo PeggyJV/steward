@@ -454,4 +454,15 @@ mod tests {
         assert!(validate_oracle(CELLAR_TURBO_SWETH, &ORACLE1.0.to_string(), ORACLE1.1).is_ok());
         assert!(validate_oracle(CELLAR_TURBO_SWETH, &ORACLE2.0.to_string(), ORACLE2.1).is_ok());
     }
+
+    #[test]
+    fn test_validate_cache_price_router() {
+        // valid
+        assert!(validate_cache_price_router(CELLAR_TURBO_STETH, true, 400, Some(PRICEROUTER2)).is_ok());
+
+        // invalid
+        assert!(validate_cache_price_router(CELLAR_TURBO_SWETH, true, 500, Some(PRICEROUTER2)).is_err());
+        assert!(validate_cache_price_router(CELLAR_RYETH, false, 500, None).is_err());
+        assert!(validate_cache_price_router(CELLAR_RYBTC, true, 600, None).is_err()); 
+    }
 }
