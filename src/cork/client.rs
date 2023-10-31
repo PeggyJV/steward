@@ -5,15 +5,13 @@ use abscissa_core::Application;
 use somm_proto::{
     axelar_cork::{
         query_client::QueryClient as AxelarQueryClient,
-        QueryCellarIDsRequest as AxelarQueryCellarIDsRequest,
-        QueryCellarIDsResponse as AxelarQueryCellarIDsResponse, QueryChainConfigurationsRequest,
-        QueryChainConfigurationsResponse,
+        QueryCellarIDsRequest as AxelarQueryCellarIDsRequest, 
         QueryScheduledCorksByIdRequest as AxelarQueryScheduledCorksByIdRequest,
         QueryScheduledCorksByIdResponse as AxelarQueryScheduledCorksByIdResponse,
     },
     cork::{
-        query_client::QueryClient, QueryCellarIDsRequest, QueryCellarIDsResponse,
-        QueryScheduledCorksByIdRequest, QueryScheduledCorksByIdResponse, ScheduledCork,
+        query_client::QueryClient, QueryCellarIDsRequest, 
+        QueryScheduledCorksByIdRequest, QueryScheduledCorksByIdResponse,
     },
 };
 use tonic::{transport::Channel, Response, Status};
@@ -52,13 +50,7 @@ impl CorkQueryClient {
         }
 
         for set in axelarcork_result.into_inner().cellar_ids {
-            result
-                .entry(set.chain.unwrap().id)
-                .and_modify(|v| {
-                    let ids_map = HashSet::from_iter(set.ids);
-                    v.union(&ids_map);
-                })
-                .or_insert(HashSet::new());
+            result.insert(set.chain.unwrap().id, HashSet::from_iter(set.ids));
         }
 
         Ok(result)
