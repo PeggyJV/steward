@@ -239,12 +239,13 @@ pub fn validate_cache_price_router(
     expected_price_router: Option<&str>,
 ) -> Result<(), Error> {
     let cellar_id_normalized = normalize_address(cellar_id.to_string());
-    let args = (
-        check_total_assets_value,
-        allowable_range_value,
-        expected_price_router,
-    );
-    if !ALLOWED_CACHE_PRICE_ROUTER.contains(&(cellar_id_normalized.as_str(), args)) {
+
+    if ALLOWED_CACHE_PRICE_ROUTER.iter().any(|(cellar_id, args)| {
+        cellar_id_normalized.eq(cellar_id)
+            && args.0 == check_total_assets_value
+            && args.1 >= allowable_range_value
+            && args.2 == expected_price_router
+    }) {
         return Err(sp_call_error("call not authorized for cellar".to_string()));
     }
 
