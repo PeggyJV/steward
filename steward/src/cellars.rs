@@ -240,11 +240,11 @@ pub fn validate_cache_price_router(
 ) -> Result<(), Error> {
     let cellar_id_normalized = normalize_address(cellar_id.to_string());
 
-    if !ALLOWED_CACHE_PRICE_ROUTER.iter().any(|(cellar_id, args)| {
+    if !ALLOWED_CACHE_PRICE_ROUTER.iter().any(|(cellar_id, permissions)| {
         cellar_id_normalized.eq(cellar_id)
-            && args.0 == check_total_assets_value
-            && args.1 >= allowable_range_value
-            && args.2 == expected_price_router
+            && permissions.0 == check_total_assets_value
+            && permissions.1 >= allowable_range_value
+            && permissions.2 == expected_price_router
     }) {
         return Err(sp_call_error("call not authorized for cellar".to_string()));
     }
@@ -458,11 +458,15 @@ mod tests {
     #[test]
     fn test_validate_cache_price_router() {
         // valid
-        assert!(validate_cache_price_router(CELLAR_TURBO_STETH, true, 400, Some(PRICEROUTER2)).is_ok());
+        assert!(
+            validate_cache_price_router(CELLAR_TURBO_STETH, true, 400, Some(PRICEROUTER2)).is_ok()
+        );
 
         // invalid
-        assert!(validate_cache_price_router(CELLAR_TURBO_SWETH, true, 500, Some(PRICEROUTER2)).is_err());
+        assert!(
+            validate_cache_price_router(CELLAR_TURBO_SWETH, true, 500, Some(PRICEROUTER2)).is_err()
+        );
         assert!(validate_cache_price_router(CELLAR_RYETH, false, 500, None).is_err());
-        assert!(validate_cache_price_router(CELLAR_RYBTC, true, 600, None).is_err()); 
+        assert!(validate_cache_price_router(CELLAR_RYBTC, true, 600, None).is_err());
     }
 }
