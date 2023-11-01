@@ -3197,7 +3197,7 @@ pub struct CellarV22governance {
     /// The function to call on the target cellar
     #[prost(
         oneof = "cellar_v2_2governance::Function",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
     )]
     pub function: ::core::option::Option<cellar_v2_2governance::Function>,
 }
@@ -3284,6 +3284,22 @@ pub mod cellar_v2_2governance {
         #[prost(bool, tag = "1")]
         pub ignore: bool,
     }
+    ///
+    /// Updates the cellar to use the latest price router in the registry.
+    ///
+    /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct CachePriceRouter {
+        /// Whether to check the total assets of the cellar
+        #[prost(bool, tag = "1")]
+        pub check_total_assets: bool,
+        /// The allowable range of the cellar's total assets to deviate between old and new routers
+        #[prost(uint32, tag = "2")]
+        pub allowable_range: u32,
+        /// The expected price router address
+        #[prost(string, tag = "3")]
+        pub expected_price_router: ::prost::alloc::string::String,
+    }
     /// The function to call on the target cellar
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum Function {
@@ -3314,6 +3330,391 @@ pub mod cellar_v2_2governance {
         /// Represents function `toggleIgnorePause(bool ignore)`
         #[prost(message, tag = "9")]
         ToggleIgnorePause(ToggleIgnorePause),
+        /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+        #[prost(message, tag = "10")]
+        CachePriceRouter(CachePriceRouter),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct CellarV25 {
+    #[prost(oneof = "cellar_v2_5::CallType", tags = "1, 2")]
+    pub call_type: ::core::option::Option<cellar_v2_5::CallType>,
+}
+/// Nested message and enum types in `CellarV2_5`.
+pub mod cellar_v2_5 {
+    /// The function you wish to execute on the target cellar
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct FunctionCall {
+        #[prost(
+            oneof = "function_call::Function",
+            tags = "1, 2, 3, 4, 5, 6, 8, 9, 11, 14, 15, 16, 17"
+        )]
+        pub function: ::core::option::Option<function_call::Function>,
+    }
+    /// Nested message and enum types in `FunctionCall`.
+    pub mod function_call {
+        #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+        pub enum Function {
+            /// Represents function `addPosition(uint256 index, address position)`
+            #[prost(message, tag = "1")]
+            AddPosition(super::AddPosition),
+            /// Represents function `callOnAdaptor(AdaptorCall[] memory data)`
+            #[prost(message, tag = "2")]
+            CallOnAdaptor(super::CallOnAdaptor),
+            /// Represents function `removePosition(uint256 index)`
+            #[prost(message, tag = "3")]
+            RemovePosition(super::RemovePosition),
+            /// Represents function `setHoldingPosition(uint32 position_id)`
+            #[prost(message, tag = "4")]
+            SetHoldingPosition(super::SetHoldingPosition),
+            /// Represents function `setStrategistPayoutAddress(address payout)`
+            #[prost(message, tag = "5")]
+            SetStrategistPayoutAddress(super::SetStrategistPayoutAddress),
+            /// Represents function `swapPositions(uint256 index1, uint256 index2)`
+            #[prost(message, tag = "6")]
+            SwapPositions(super::SwapPositions),
+            /// Represents function `setShareLockPeriod(uint256 newLock)`
+            #[prost(message, tag = "8")]
+            SetShareLockPeriod(super::SetShareLockPeriod),
+            /// Represents function `initiateShutdown()`
+            #[prost(message, tag = "9")]
+            InitiateShutdown(super::InitiateShutdown),
+            /// Represents function `liftShutdown()`
+            #[prost(message, tag = "11")]
+            LiftShutdown(super::LiftShutdown),
+            /// Represents function `removeAdaptorFromCatalogue(address adaptor)`
+            #[prost(message, tag = "14")]
+            RemoveAdaptorFromCatalogue(super::RemoveAdaptorFromCatalogue),
+            /// Represents function `removePositionFromCatalogue(uint32 positionId)`
+            #[prost(message, tag = "15")]
+            RemovePositionFromCatalogue(super::RemovePositionFromCatalogue),
+            /// Represents function `increaseShareSupplyCap(uint192)
+            #[prost(message, tag = "16")]
+            IncreaseShareSupplyCap(super::IncreaseShareSupplyCap),
+            /// Represents function `decreaseShareSupplyCap(uint192)
+            #[prost(message, tag = "17")]
+            DecreaseShareSupplyCap(super::DecreaseShareSupplyCap),
+        }
+    }
+    ///
+    /// Insert a trusted position to the list of positions used by the cellar at a given index.
+    ///
+    /// Represents function `addPosition(uint32 index, uint32 positionId, bytes configurationData, bool inDebtArray)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct AddPosition {
+        /// Index at which to add the position
+        #[prost(uint32, tag = "1")]
+        pub index: u32,
+        /// The position's ID in the cellar registry
+        #[prost(uint32, tag = "2")]
+        pub position_id: u32,
+        /// Data used to configure how the position behaves
+        #[prost(bytes = "vec", tag = "3")]
+        pub configuration_data: ::prost::alloc::vec::Vec<u8>,
+        /// Whether to add position in the debt array, or the credit array.
+        #[prost(bool, tag = "4")]
+        pub in_debt_array: bool,
+    }
+    ///
+    /// Allows strategists to manage their Cellar using arbitrary logic calls to adaptors.
+    ///
+    /// Represents function `callOnAdaptor(AdaptorCall[] memory data)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct CallOnAdaptor {
+        #[prost(message, repeated, tag = "1")]
+        pub data: ::prost::alloc::vec::Vec<super::AdaptorCall>,
+    }
+    ///
+    /// Remove the position at a given index from the list of positions used by the cellar.
+    ///
+    /// Represents function `removePosition(uint32 index, bool inDebtArray)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RemovePosition {
+        /// Index at which to remove the position
+        #[prost(uint32, tag = "1")]
+        pub index: u32,
+        /// Whether to remove position from the debt array, or the credit array.
+        #[prost(bool, tag = "2")]
+        pub in_debt_array: bool,
+    }
+    ///
+    /// Set the holding position used of the cellar.
+    ///
+    /// Represents function `setHoldingIndex(uint8 index)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SetHoldingPosition {
+        /// ID (index) of the new holding position to use
+        #[prost(uint32, tag = "1")]
+        pub position_id: u32,
+    }
+    ///
+    /// Sets the Strategists payout address.
+    ///
+    /// Represents function `setStrategistPayoutAddress(address payout)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SetStrategistPayoutAddress {
+        #[prost(string, tag = "1")]
+        pub payout: ::prost::alloc::string::String,
+    }
+    ///
+    /// Swap the positions at two given indeces.
+    ///
+    /// Represents function `swapPositions(uint32 index1, uint32 index2)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SwapPositions {
+        /// Index of the first position
+        #[prost(uint32, tag = "1")]
+        pub index_1: u32,
+        /// Index of the second position
+        #[prost(uint32, tag = "2")]
+        pub index_2: u32,
+        /// Whether to switch positions in the debt array, or the credit array.
+        #[prost(bool, tag = "3")]
+        pub in_debt_array: bool,
+    }
+    ///
+    /// Allows share lock period to be updated.
+    ///
+    /// Represents function `setShareLockPeriod()`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SetShareLockPeriod {
+        #[prost(string, tag = "1")]
+        pub new_lock: ::prost::alloc::string::String,
+    }
+    ///
+    /// Changes the cellar's allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
+    /// during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
+    ///
+    /// Represents function `setRebalanceDeviation(uint256)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SetRebalanceDeviation {
+        #[prost(string, tag = "1")]
+        pub new_deviation: ::prost::alloc::string::String,
+    }
+    ///
+    /// Shutdown the cellar. Used in an emergency or if the cellar has been deprecated.
+    ///
+    /// Represents function `initiateShutdown()`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct InitiateShutdown {}
+    ///
+    /// Allows the owner to restart a shut down Cellar
+    ///
+    /// Represents function `liftShutdown()`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct LiftShutdown {}
+    ///
+    /// Allows caller to call multiple functions in a single TX.
+    ///
+    /// Represents function `multicall(bytes[] data)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct Multicall {
+        #[prost(message, repeated, tag = "1")]
+        pub function_calls: ::prost::alloc::vec::Vec<FunctionCall>,
+    }
+    ///
+    /// Allows callers to remove adaptors from this cellar's catalogue
+    ///
+    /// Represents function `removeAdaptorFromCatalogue(address adaptor)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RemoveAdaptorFromCatalogue {
+        #[prost(string, tag = "1")]
+        pub adaptor: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows caller to remove positions from this cellar's catalogue
+    ///
+    /// Represents function `removePositionFromCatalogue(uint32 positionId)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RemovePositionFromCatalogue {
+        #[prost(uint32, tag = "1")]
+        pub position_id: u32,
+    }
+    ///
+    /// Allows strategist to increase the share supply cap
+    ///
+    /// Represents function `increaseShareSupplyCap(uint192)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct IncreaseShareSupplyCap {
+        #[prost(string, tag = "1")]
+        pub new_cap: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to decrease the share supply cap
+    ///
+    /// Represents function `decreaseShareSupplyCap(uint192)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct DecreaseShareSupplyCap {
+        #[prost(string, tag = "1")]
+        pub new_cap: ::prost::alloc::string::String,
+    }
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum CallType {
+        /// Represents a single function call
+        #[prost(message, tag = "1")]
+        FunctionCall(FunctionCall),
+        /// Represents multiple, ordered function calls
+        #[prost(message, tag = "2")]
+        Multicall(Multicall),
+    }
+}
+///
+/// Represent a function call initiated through a governance proposal
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct CellarV25governance {
+    /// The function to call on the target cellar
+    #[prost(
+        oneof = "cellar_v2_5governance::Function",
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
+    )]
+    pub function: ::core::option::Option<cellar_v2_5governance::Function>,
+}
+/// Nested message and enum types in `CellarV2_5Governance`.
+pub mod cellar_v2_5governance {
+    ///
+    /// Allows the owner to add an adaptor to the Cellar's adaptor catalogue
+    ///
+    /// Represents function `addAdaptorToCatalogue(address adaptor)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct AddAdaptorToCatalogue {
+        #[prost(string, tag = "1")]
+        pub adaptor: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows the owner to add a position to the Cellar's position catalogue
+    ///
+    /// Represents function `addPositionToCatalogue(uint32 positionId)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct AddPositionToCatalogue {
+        #[prost(uint32, tag = "1")]
+        pub position_id: u32,
+    }
+    ///
+    /// Changes the cellar's allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
+    /// during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
+    ///
+    /// Represents function `setRebalanceDeviation(uint256)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SetRebalanceDeviation {
+        #[prost(string, tag = "1")]
+        pub new_deviation: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to set the platform cut for the cellar.
+    ///
+    /// Represents function `setStrategistPlatformCut(uint64 cut)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SetStrategistPlatformCut {
+        /// The new strategist platform cut
+        #[prost(uint64, tag = "1")]
+        pub new_cut: u64,
+    }
+    ///
+    /// Allows caller to force a position out of the cellar
+    ///
+    /// Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct ForcePositionOut {
+        #[prost(uint32, tag = "1")]
+        pub index: u32,
+        #[prost(uint32, tag = "2")]
+        pub position_id: u32,
+        #[prost(bool, tag = "3")]
+        pub in_debt_array: bool,
+    }
+    ///
+    /// Allows caller to toggle the ignorePause flag on the cellar
+    ///
+    /// Represents function `toggleIgnorePause(bool ignore)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct ToggleIgnorePause {
+        #[prost(bool, tag = "1")]
+        pub ignore: bool,
+    }
+    ///
+    /// Allows caller to set automation actions
+    ///
+    /// Represents function `setAutomatiionActions(uint256 _registryId, address _expectedAutomationActions)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SetAutomationActions {
+        /// The oracle registry ID
+        #[prost(string, tag = "1")]
+        pub registry_id: ::prost::alloc::string::String,
+        /// The automation actions contract address
+        #[prost(string, tag = "2")]
+        pub expected_automation_actions: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows the caller to increase the share supply cap
+    ///
+    /// Represents function `increaseShareSupplyCap(uint192 _newShareSupplyCap)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct IncreaseShareSupplyCap {
+        #[prost(string, tag = "1")]
+        pub new_cap: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows the caller to set the share price oracle contract
+    ///
+    /// Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SetSharePriceOracle {
+        /// The oracle registry ID
+        #[prost(string, tag = "1")]
+        pub registry_id: ::prost::alloc::string::String,
+        /// The oracle contract address
+        #[prost(string, tag = "2")]
+        pub share_price_oracle: ::prost::alloc::string::String,
+    }
+    ///
+    /// Updates the cellar to use the latest price router in the registry.
+    ///
+    /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct CachePriceRouter {
+        /// Whether to check the total assets of the cellar
+        #[prost(bool, tag = "1")]
+        pub check_total_assets: bool,
+        /// The allowable range of the cellar's total assets to deviate between old and new routers
+        #[prost(uint32, tag = "2")]
+        pub allowable_range: u32,
+        /// The expected price router address
+        #[prost(string, tag = "3")]
+        pub expected_price_router: ::prost::alloc::string::String,
+    }
+    /// The function to call on the target cellar
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `addAdaptorToCatalogue(address adaptor)`
+        #[prost(message, tag = "1")]
+        AddAdaptorToCatalogue(AddAdaptorToCatalogue),
+        /// Represents function `addPositionToCatalogue(uint32 positionId)`
+        #[prost(message, tag = "2")]
+        AddPositionToCatalogue(AddPositionToCatalogue),
+        /// Represents function `setRebalanceDeviation(uint265)`
+        #[prost(message, tag = "3")]
+        SetRebalanceDeviation(SetRebalanceDeviation),
+        /// Represents function `setStrategistPlatformCut(uint64 cut)`
+        #[prost(message, tag = "4")]
+        SetStrategistPlatformCut(SetStrategistPlatformCut),
+        /// Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+        #[prost(message, tag = "5")]
+        ForcePositionOut(ForcePositionOut),
+        /// Represents function `toggleIgnorePause(bool ignore)`
+        #[prost(message, tag = "6")]
+        ToggleIgnorePause(ToggleIgnorePause),
+        /// Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
+        #[prost(message, tag = "7")]
+        SetSharePriceOracle(SetSharePriceOracle),
+        /// Represents function `increaseShareSupplyCap(uint192 _newShareSupplyCap)`
+        #[prost(message, tag = "8")]
+        IncreaseShareSupplyCap(IncreaseShareSupplyCap),
+        /// Represents function `setAutomatiionActions(uint256 _registryId, address _expectedAutomationActions)`
+        #[prost(message, tag = "9")]
+        SetAutomationActions(SetAutomationActions),
+        /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+        #[prost(message, tag = "10")]
+        CachePriceRouter(CachePriceRouter),
     }
 }
 /// Represents a call to adaptor an. The cellar must be authorized to call the target adaptor.
@@ -3422,7 +3823,7 @@ pub mod adaptor_call {
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct GovernanceCall {
     /// The type of Cellar to call
-    #[prost(oneof = "governance_call::Call", tags = "2, 3, 4, 5")]
+    #[prost(oneof = "governance_call::Call", tags = "2, 3, 4, 5, 6")]
     pub call: ::core::option::Option<governance_call::Call>,
 }
 /// Nested message and enum types in `GovernanceCall`.
@@ -3442,6 +3843,9 @@ pub mod governance_call {
         /// Governance function calls to the V2.2 cellars
         #[prost(message, tag = "5")]
         CellarV22(super::CellarV22governance),
+        /// Governance function calls to the V2.5 cellars
+        #[prost(message, tag = "6")]
+        CellarV25(super::CellarV25governance),
     }
 }
 ///
@@ -3455,7 +3859,7 @@ pub struct ScheduleRequest {
     #[prost(uint64, tag = "2")]
     pub block_height: u64,
     /// The data from which the desired contract function will be encoded
-    #[prost(oneof = "schedule_request::CallData", tags = "3, 4, 5, 6")]
+    #[prost(oneof = "schedule_request::CallData", tags = "3, 4, 5, 6, 7")]
     pub call_data: ::core::option::Option<schedule_request::CallData>,
 }
 /// Nested message and enum types in `ScheduleRequest`.
@@ -3471,6 +3875,8 @@ pub mod schedule_request {
         CellarV2(super::CellarV2),
         #[prost(message, tag = "6")]
         CellarV22(super::CellarV22),
+        #[prost(message, tag = "7")]
+        CellarV25(super::CellarV25),
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
