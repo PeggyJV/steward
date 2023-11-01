@@ -279,7 +279,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
                 &cellar_id,
                 params.check_total_assets,
                 params.allowable_range,
-                Some(&params.expected_price_router),
+                Some(params.expected_price_router.clone()),
             )?;
             log_cellar_call(
                 CELLAR_NAME,

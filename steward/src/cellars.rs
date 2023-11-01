@@ -3,13 +3,14 @@ use std::result::Result;
 
 use abscissa_core::tracing::log::info;
 use ethers::prelude::*;
+use lazy_static::lazy_static;
 
 use crate::{
     error::Error,
     utils::{sp_call_error, string_to_u256},
 };
 
-pub type CachePriceRouterArgs = (bool, u32, Option<&'static str>);
+pub type CachePriceRouterArgs = (bool, u32, Option<String>);
 
 pub(crate) mod aave_v2_stablecoin;
 pub(crate) mod adaptors;
@@ -36,21 +37,26 @@ pub const ORACLE3: (U256, &str) = (
     "26cde3f5db92ea91c84c838e664fe42dec1b6747",
 );
 
+pub const ALLOWED_PRICE_ORACLES: [(U256, &str); 3] = [ORACLE1, ORACLE2, ORACLE3];
+
 // price routers
 
-pub const PRICEROUTER1: &str = "a1a0bc3d59e4ee5840c9530e49bdc2d1f88aaf92";
-pub const PRICEROUTER2: &str = "8e46f30b09fdfae6c97db27fecf3304f86dd88c2";
+// since we're wrapping price router addresses in as Option<T>, it vastly simplifies comparisons for them to be
+// owned values (String) vs. a borrowed &str since we have to mutate the passed in values to normalize them.
+lazy_static! {
+    pub static ref PRICEROUTER1: String = String::from("a1a0bc3d59e4ee5840c9530e49bdc2d1f88aaf92");
+    pub static ref PRICEROUTER2: String = String::from("8e46f30b09fdfae6c97db27fecf3304f86dd88c2");
 
-pub const ALLOWED_PRICE_ORACLES: [(U256, &str); 3] = [ORACLE1, ORACLE2, ORACLE3];
-// mapping of cellar address to allowable arguments for a cachePriceRouter call.
-// args map to params as (checkTotalAssets, allowableRange, expectedPriceRouterAddress). The third
-// param is only present for 2.5 cellars so it's an Option<&str>.
-pub const ALLOWED_CACHE_PRICE_ROUTER: [(&str, CachePriceRouterArgs); 4] = [
-    (CELLAR_RYBTC, (true, 500, None)),
-    (CELLAR_RYETH, (true, 500, None)),
-    (CELLAR_TURBO_STETH, (false, 500, Some(PRICEROUTER1))),
-    (CELLAR_TURBO_STETH, (true, 500, Some(PRICEROUTER2))),
-];
+    // mapping of cellar address to allowable arguments for a cachePriceRouter call.
+    // args map to params as (checkTotalAssets, allowableRange, expectedPriceRouterAddress). The third
+    // param is only present for 2.5 cellars so it's an Option<&str>.
+    pub static ref ALLOWED_CACHE_PRICE_ROUTER: [(&'static str, CachePriceRouterArgs); 4] = [
+        (CELLAR_RYBTC, (true, 500, None)),
+        (CELLAR_RYETH, (true, 500, None)),
+        (CELLAR_TURBO_STETH, (false, 500, Some(PRICEROUTER1.clone()))),
+        (CELLAR_TURBO_STETH, (true, 500, Some(PRICEROUTER2.clone()))),
+    ];
+}
 
 // permissions
 
@@ -236,9 +242,10 @@ pub fn validate_cache_price_router(
     cellar_id: &str,
     check_total_assets_value: bool,
     allowable_range_value: u32,
-    expected_price_router: Option<&str>,
+    expected_price_router: Option<String>,
 ) -> Result<(), Error> {
     let cellar_id_normalized = normalize_address(cellar_id.to_string());
+    let expected_price_router = expected_price_router.map(normalize_address);
 
     if !ALLOWED_CACHE_PRICE_ROUTER
         .iter()
@@ -461,14 +468,22 @@ mod tests {
     #[test]
     fn test_validate_cache_price_router() {
         // valid
-        assert!(
-            validate_cache_price_router(CELLAR_TURBO_STETH, true, 400, Some(PRICEROUTER2)).is_ok()
-        );
+        assert!(validate_cache_price_router(
+            CELLAR_TURBO_STETH,
+            true,
+            400,
+            Some(PRICEROUTER2.clone())
+        )
+        .is_ok());
 
         // invalid
-        assert!(
-            validate_cache_price_router(CELLAR_TURBO_SWETH, true, 500, Some(PRICEROUTER2)).is_err()
-        );
+        assert!(validate_cache_price_router(
+            CELLAR_TURBO_SWETH,
+            true,
+            500,
+            Some(PRICEROUTER2.clone())
+        )
+        .is_err());
         assert!(validate_cache_price_router(CELLAR_RYETH, false, 500, None).is_err());
         assert!(validate_cache_price_router(CELLAR_RYBTC, true, 600, None).is_err());
     }
