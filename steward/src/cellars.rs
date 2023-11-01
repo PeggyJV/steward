@@ -475,8 +475,22 @@ mod tests {
             Some(PRICEROUTER2.clone())
         )
         .is_ok());
+        assert!(validate_cache_price_router(
+            CELLAR_TURBO_STETH,
+            true,
+            500,
+            Some(PRICEROUTER2.clone().to_uppercase())
+        )
+        .is_ok());
 
         // invalid
+        assert!(validate_cache_price_router(
+            CELLAR_TURBO_STETH,
+            true,
+            500,
+            Some("notreal".to_string())
+        )
+        .is_err());
         assert!(validate_cache_price_router(
             CELLAR_TURBO_SWETH,
             true,
