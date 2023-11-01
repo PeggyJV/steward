@@ -350,6 +350,8 @@ message CellarV2_2Governance {
         ForcePositionOut force_position_out = 8;
         // Represents function `toggleIgnorePause(bool ignore)`
         ToggleIgnorePause toggle_ignore_pause = 9;
+        // Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+        CachePriceRouter cache_price_router = 10;
     }
 
     /*
@@ -432,7 +434,347 @@ message CellarV2_2Governance {
     message ToggleIgnorePause {
         bool ignore = 1;
     }
+
+    /*
+    * Updates the cellar to use the latest price router in the registry.
+    *
+    * Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+    */
+    message CachePriceRouter {
+        // Whether to check the total assets of the cellar
+        bool check_total_assets = 1;
+        // The allowable range of the cellar's total assets to deviate between old and new routers
+        uint32 allowable_range = 2;
+        // The expected price router address
+        string expected_price_router = 3;
+    }
 }
+
+message CellarV2_5 {
+    oneof call_type {
+        // Represents a single function call
+        FunctionCall function_call = 1;
+        // Represents multiple, ordered function calls
+        Multicall multicall = 2;
+    }
+
+    // The function you wish to execute on the target cellar
+    message FunctionCall {
+        oneof function {
+            // Represents function `addPosition(uint256 index, address position)`
+            AddPosition add_position = 1;
+            // Represents function `callOnAdaptor(AdaptorCall[] memory data)`
+            CallOnAdaptor call_on_adaptor = 2;
+            // Represents function `removePosition(uint256 index)`
+            RemovePosition remove_position = 3;
+            // Represents function `setHoldingPosition(uint32 position_id)`
+            SetHoldingPosition set_holding_position = 4;
+            // Represents function `setStrategistPayoutAddress(address payout)`
+            SetStrategistPayoutAddress set_strategist_payout_address = 5;
+            // Represents function `swapPositions(uint256 index1, uint256 index2)`
+            SwapPositions swap_positions = 6;
+            // Represents function `setShareLockPeriod(uint256 newLock)`
+            SetShareLockPeriod set_share_lock_period = 8;
+            // Represents function `initiateShutdown()`
+            InitiateShutdown initiate_shutdown = 9;
+            // Represents function `liftShutdown()`
+            LiftShutdown lift_shutdown = 11;
+            // Represents function `removeAdaptorFromCatalogue(address adaptor)`
+            RemoveAdaptorFromCatalogue remove_adaptor_from_catalogue = 14;
+            // Represents function `removePositionFromCatalogue(uint32 positionId)`
+            RemovePositionFromCatalogue remove_position_from_catalogue = 15;
+            // Represents function `increaseShareSupplyCap(uint192)
+            IncreaseShareSupplyCap increase_share_supply_cap = 16;
+            // Represents function `decreaseShareSupplyCap(uint192)
+            DecreaseShareSupplyCap decrease_share_supply_cap = 17;
+
+        }
+    }
+
+    /*
+    * Insert a trusted position to the list of positions used by the cellar at a given index.
+    *
+    * Represents function `addPosition(uint32 index, uint32 positionId, bytes configurationData, bool inDebtArray)`
+    */
+    message AddPosition {
+        // Index at which to add the position
+        uint32 index = 1;
+        // The position's ID in the cellar registry
+        uint32 position_id = 2;
+        // Data used to configure how the position behaves
+        bytes configuration_data = 3;
+        // Whether to add position in the debt array, or the credit array.
+        bool in_debt_array = 4;
+    }
+
+    /*
+    * Allows strategists to manage their Cellar using arbitrary logic calls to adaptors.
+    *
+    * Represents function `callOnAdaptor(AdaptorCall[] memory data)`
+    */
+    message CallOnAdaptor {
+        repeated AdaptorCall data = 1;
+    }
+
+    /*
+    * Remove the position at a given index from the list of positions used by the cellar.
+    *
+    * Represents function `removePosition(uint32 index, bool inDebtArray)`
+    */
+    message RemovePosition {
+        // Index at which to remove the position
+        uint32 index = 1;
+        // Whether to remove position from the debt array, or the credit array.
+        bool in_debt_array = 2;
+    }
+
+    /*
+    * Set the holding position used of the cellar.
+    *
+    * Represents function `setHoldingIndex(uint8 index)`
+    */
+    message SetHoldingPosition {
+        // ID (index) of the new holding position to use
+        uint32 position_id = 1;
+    }
+
+    /*
+    * Sets the Strategists payout address.
+    *
+    * Represents function `setStrategistPayoutAddress(address payout)`
+    */
+    message SetStrategistPayoutAddress {
+        string payout = 1;
+    }
+
+    /*
+    * Swap the positions at two given indeces.
+    *
+    * Represents function `swapPositions(uint32 index1, uint32 index2)`
+    */
+    message SwapPositions {
+        // Index of the first position
+        uint32 index_1 = 1;
+        // Index of the second position
+        uint32 index_2 = 2;
+        // Whether to switch positions in the debt array, or the credit array.
+        bool in_debt_array = 3;
+    }
+
+    /*
+    * Allows share lock period to be updated.
+    *
+    * Represents function `setShareLockPeriod()`
+    */
+    message SetShareLockPeriod {
+        string new_lock = 1;
+    }
+
+    /*
+    * Changes the cellar's allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
+    * during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
+    *
+    * Represents function `setRebalanceDeviation(uint256)`
+    */
+    message SetRebalanceDeviation {
+        string new_deviation = 1;
+    }
+
+    /*
+    * Shutdown the cellar. Used in an emergency or if the cellar has been deprecated.
+    *
+    * Represents function `initiateShutdown()`
+    */
+    message InitiateShutdown {}
+
+    /*
+    * Allows the owner to restart a shut down Cellar
+    *
+    * Represents function `liftShutdown()`
+    */
+    message LiftShutdown {}
+
+    /*
+    * Allows caller to call multiple functions in a single TX.
+    *
+    * Represents function `multicall(bytes[] data)`
+    */
+    message Multicall {
+        repeated FunctionCall function_calls = 1;
+    }
+
+    /*
+    * Allows callers to remove adaptors from this cellar's catalogue
+    *
+    * Represents function `removeAdaptorFromCatalogue(address adaptor)`
+    */
+    message RemoveAdaptorFromCatalogue {
+        string adaptor = 1;
+    }
+
+    /*
+    * Allows caller to remove positions from this cellar's catalogue
+    *
+    * Represents function `removePositionFromCatalogue(uint32 positionId)`
+    */
+    message RemovePositionFromCatalogue {
+        uint32 position_id = 1;
+    }
+
+    /*
+    * Allows strategist to increase the share supply cap
+    *
+    * Represents function `increaseShareSupplyCap(uint192)`
+    */
+    message IncreaseShareSupplyCap {
+        string new_cap = 1;
+    }
+
+    /*
+    * Allows strategist to decrease the share supply cap
+    *
+    * Represents function `decreaseShareSupplyCap(uint192)`
+    */
+    message DecreaseShareSupplyCap {
+        string new_cap = 1;
+    } 
+}
+
+/*
+* Represent a function call initiated through a governance proposal
+*/
+message CellarV2_5Governance {
+    // The function to call on the target cellar
+    oneof function {
+        // Represents function `addAdaptorToCatalogue(address adaptor)`
+        AddAdaptorToCatalogue add_adaptor_to_catalogue = 1;
+        // Represents function `addPositionToCatalogue(uint32 positionId)`
+        AddPositionToCatalogue add_position_to_catalogue = 2;
+        // Represents function `setRebalanceDeviation(uint265)`
+        SetRebalanceDeviation set_rebalance_deviation = 3;
+        // Represents function `setStrategistPlatformCut(uint64 cut)`
+        SetStrategistPlatformCut set_strategist_platform_cut = 4;
+        // Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+        ForcePositionOut force_position_out = 5;
+        // Represents function `toggleIgnorePause(bool ignore)`
+        ToggleIgnorePause toggle_ignore_pause = 6;
+        // Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
+        SetSharePriceOracle set_share_price_oracle = 7;
+        // Represents function `increaseShareSupplyCap(uint192 _newShareSupplyCap)`
+        IncreaseShareSupplyCap increase_share_supply_cap = 8;
+        // Represents function `setAutomatiionActions(uint256 _registryId, address _expectedAutomationActions)`
+        SetAutomationActions set_automation_actions = 9;
+        // Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+        CachePriceRouter cache_price_router = 10;
+    }
+
+    /*
+    * Allows the owner to add an adaptor to the Cellar's adaptor catalogue
+    *
+    * Represents function `addAdaptorToCatalogue(address adaptor)`
+    */
+    message AddAdaptorToCatalogue {
+        string adaptor = 1;
+    }
+
+    /*
+    * Allows the owner to add a position to the Cellar's position catalogue
+    *
+    * Represents function `addPositionToCatalogue(uint32 positionId)`
+    */
+    message AddPositionToCatalogue {
+        uint32 position_id = 1;
+    }
+
+    /*
+    * Changes the cellar's allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
+    * during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
+    *
+    * Represents function `setRebalanceDeviation(uint256)`
+    */
+    message SetRebalanceDeviation {
+        string new_deviation = 1;
+    }
+
+    /*
+    * Allows strategist to set the platform cut for the cellar.
+    *
+    * Represents function `setStrategistPlatformCut(uint64 cut)`
+    */
+    message SetStrategistPlatformCut {
+        // The new strategist platform cut
+        uint64 new_cut = 1;
+    }
+
+    /*
+    * Allows caller to force a position out of the cellar
+    *
+    * Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+    */
+    message ForcePositionOut {
+        uint32 index = 1;
+        uint32 position_id = 2;
+        bool in_debt_array = 3;
+    }
+
+    /*
+    * Allows caller to toggle the ignorePause flag on the cellar
+    *
+    * Represents function `toggleIgnorePause(bool ignore)`
+    */
+    message ToggleIgnorePause {
+        bool ignore = 1;
+    }
+
+    /*
+    * Allows caller to set automation actions
+    *
+    * Represents function `setAutomatiionActions(uint256 _registryId, address _expectedAutomationActions)`
+    */
+    message SetAutomationActions {
+        // The oracle registry ID
+        string registry_id = 1;
+        // The automation actions contract address
+        string expected_automation_actions = 2;
+    }
+
+    /*
+    * Allows the caller to increase the share supply cap
+    *
+    * Represents function `increaseShareSupplyCap(uint192 _newShareSupplyCap)`
+    */
+    message IncreaseShareSupplyCap {
+        string new_cap = 1;
+    }
+
+    /*
+    * Allows the caller to set the share price oracle contract
+    *
+    * Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
+    */  
+    message SetSharePriceOracle {
+        // The oracle registry ID
+        string registry_id = 1;
+        // The oracle contract address
+        string share_price_oracle = 2;
+    }
+
+    /*
+    * Updates the cellar to use the latest price router in the registry.
+    *
+    * Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+    */
+    message CachePriceRouter {
+        // Whether to check the total assets of the cellar
+        bool check_total_assets = 1;
+        // The allowable range of the cellar's total assets to deviate between old and new routers
+        uint32 allowable_range = 2;
+        // The expected price router address
+        string expected_price_router = 3;
+    }
+}
+
+
 
 // Represents a call to adaptor an. The cellar must be authorized to call the target adaptor.
 message AdaptorCall {
