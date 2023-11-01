@@ -61,6 +61,8 @@ fn main() {
     fs::create_dir_all(tmp_dir)
         .unwrap_or_else(|_| panic!("Failed to create {:?}", tmp_dir.to_str()));
 
+    cleanup_files(tmp_dir);
+
     // Compile all proto files
     let mut config = prost_build::Config::default();
     config.out_dir(tmp_dir);
