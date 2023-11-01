@@ -73,6 +73,10 @@ pub mod abi {
             include!("gen/abi/aave_v3_debt_token_adaptor_v1.rs");
         }
 
+        pub mod balancer_pool_adaptor_v1 {
+            include!("gen/abi/balancer_pool_adaptor_v1.rs");
+        }
+
         pub mod cellar_adaptor_v1 {
             include!("gen/abi/cellar_adaptor_v1.rs");
         }
@@ -85,8 +89,20 @@ pub mod abi {
             include!("gen/abi/f_token_adaptor.rs");
         }
 
+        pub mod collateral_f_token_adaptor_v1 {
+            include!("gen/abi/collateral_f_token_adaptor_v1.rs");
+        }
+
+        pub mod debt_f_token_adaptor_v1 {
+            include!("gen/abi/debt_f_token_adaptor_v1.rs");
+        }
+
         pub mod fees_and_reserves_adaptor_v1 {
             include!("gen/abi/fees_and_reserves_adaptor_v1.rs");
+        }
+
+        pub mod legacy_cellar_adaptor_v1 {
+            include!("gen/abi/legacy_cellar_adaptor_v1.rs");
         }
 
         pub mod morpho_aave_v2_a_token_adaptor_v1 {

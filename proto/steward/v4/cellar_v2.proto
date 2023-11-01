@@ -13,7 +13,9 @@ import "a_token.proto";
 import "debt_token.proto";
 import "aave_v3_a_token.proto";
 import "aave_v3_debt_token.proto";
+import "aave_v3_debt_token_flash_loan.proto";
 import "balancer_pool.proto";
+import "balancer_pool_flash_loan.proto";
 import "c_token.proto";
 import "f_token.proto";
 import "morpho_aave_v2_a_token.proto";
@@ -488,5 +490,9 @@ message AdaptorCall {
         DebtFTokenAdaptorV1Calls debt_f_token_v1_calls = 25;
         // Represents function calls to the CollateralFTokenAdaptor V1
         CollateralFTokenAdaptorV1Calls collateral_f_token_v1_calls = 26;
+        // Represents flash loan function call for the AaveV3DebtTokenAdaptorV1
+        AaveV3DebtTokenAdaptorV1FlashLoanCalls aave_v3_debt_token_v1_flash_loan_calls = 27;
+        // Represents flash loan function call for the BalancerPoolAdaptorV1
+        BalancerPoolAdaptorV1FlashLoanCalls balancer_pool_v1_flash_loan_calls = 28;
     }
 }

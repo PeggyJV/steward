@@ -15,10 +15,12 @@ use crate::{
     cellars::adaptors,
     error::Error,
     proto::{
-        aave_v3_debt_token_adaptor_v1::{
-            self, adaptor_call_for_aave_v3_flashloan::CallData::*, AdaptorCallForAaveV3Flashloan,
+        aave_v3_debt_token_adaptor_v1,
+        aave_v3_debt_token_adaptor_v1_flash_loan::{
+            adaptor_call_for_aave_v3_flash_loan::CallData::*, AdaptorCallForAaveV3FlashLoan,
         },
-        aave_v3a_token_adaptor_v1, AaveV3DebtTokenAdaptorV1Calls, AaveV3aTokenAdaptorV1Calls,
+        aave_v3a_token_adaptor_v1, AaveV3DebtTokenAdaptorV1Calls,
+        AaveV3DebtTokenAdaptorV1FlashLoanCalls, AaveV3aTokenAdaptorV1Calls,
     },
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
 };
@@ -138,26 +140,6 @@ pub(crate) fn aave_v3_debt_token_adaptor_v1_calls(
                         .into(),
                 )
             }
-            aave_v3_debt_token_adaptor_v1::Function::FlashLoan(p) => {
-                let call = FlashLoanCall {
-                    loan_token: p
-                        .loan_tokens
-                        .iter()
-                        .map(|t| sp_call_parse_address(t.clone()))
-                        .collect::<Result<Vec<_>, _>>()?,
-                    loan_amount: p
-                        .loan_amounts
-                        .iter()
-                        .map(|a| string_to_u256(a.clone()))
-                        .collect::<Result<Vec<_>, _>>()?,
-                    params: get_encoded_adaptor_calls(p.params)?.encode().into(),
-                };
-                calls.push(
-                    AbiAaveV3DebtTokenAdaptorV1Calls::FlashLoan(call)
-                        .encode()
-                        .into(),
-                )
-            }
             aave_v3_debt_token_adaptor_v1::Function::RepayWithATokens(p) => {
                 let call = RepayWithATokensCall {
                     underlying: sp_call_parse_address(p.underlying_token)?,
@@ -175,9 +157,42 @@ pub(crate) fn aave_v3_debt_token_adaptor_v1_calls(
     Ok(calls)
 }
 
+pub(crate) fn aave_v3_debt_token_adaptor_v1_flash_loan_calls(
+    params: AaveV3DebtTokenAdaptorV1FlashLoanCalls,
+) -> Result<Vec<Bytes>, Error> {
+    let mut calls = Vec::new();
+    for c in params.calls {
+        let Some(p) = c.flash_loan else {
+            return Err(sp_call_error(
+                "make flash loan function call cannot be empty".to_string(),
+            ));
+        };
+        let call = FlashLoanCall {
+            loan_token: p
+                .loan_tokens
+                .iter()
+                .map(|t| sp_call_parse_address(t.clone()))
+                .collect::<Result<Vec<_>, _>>()?,
+            loan_amount: p
+                .loan_amounts
+                .iter()
+                .map(|a| string_to_u256(a.clone()))
+                .collect::<Result<Vec<_>, _>>()?,
+            params: get_encoded_adaptor_calls(p.params)?.encode().into(),
+        };
+        calls.push(
+            AbiAaveV3DebtTokenAdaptorV1Calls::FlashLoan(call)
+                .encode()
+                .into(),
+        )
+    }
+
+    Ok(calls)
+}
+
 /// Encodes calls to the Adaptor contracts
 fn get_encoded_adaptor_calls(
-    data: Vec<AdaptorCallForAaveV3Flashloan>,
+    data: Vec<AdaptorCallForAaveV3FlashLoan>,
 ) -> Result<Vec<AbiAdaptorCall>, Error> {
     let mut result: Vec<AbiAdaptorCall> = Vec::new();
     for d in data {
@@ -203,9 +218,6 @@ fn get_encoded_adaptor_calls(
             AaveV3ATokenV1Calls(params) => {
                 calls.extend(adaptors::aave_v3::aave_v3_a_token_adaptor_v1_calls(params)?)
             }
-            AaveV3DebtTokenV1Calls(params) => calls.extend(
-                adaptors::aave_v3::aave_v3_debt_token_adaptor_v1_calls(params)?,
-            ),
             OneInchV1Calls(params) => {
                 calls.extend(adaptors::oneinch::one_inch_adaptor_v1_calls(params)?)
             }
@@ -234,7 +246,7 @@ fn get_encoded_adaptor_calls(
                 )?,
             ),
             FTokenV1Calls(params) => {
-                calls.extend(adaptors::f_token::f_token_adaptor_v1_calls(params)?)
+                calls.extend(adaptors::frax::f_token_adaptor_v1_calls(params)?)
             }
             MorphoAaveV2ATokenV1Calls(params) => calls.extend(
                 adaptors::morpho::morpho_aave_v2_a_token_adaptor_v1_calls(params)?,
@@ -250,6 +262,18 @@ fn get_encoded_adaptor_calls(
             }
             MorphoAaveV3DebtTokenV1Calls(params) => {
                 calls.extend(adaptors::morpho::morpho_aave_v3_debt_token_adaptor_v1_calls(params)?)
+            }
+            BalancerPoolV1Calls(params) => calls.extend(
+                adaptors::balancer_pool::balancer_pool_adaptor_v1_calls(params)?,
+            ),
+            LegacyCellarV1Calls(params) => {
+                calls.extend(adaptors::sommelier::legacy_cellar_adaptor_v1_calls(params)?)
+            }
+            DebtFTokenV1Calls(params) => {
+                calls.extend(adaptors::frax::debt_f_token_adaptor_v1_calls(params)?)
+            }
+            CollateralFTokenV1Calls(params) => {
+                calls.extend(adaptors::frax::collateral_f_token_adaptor_v1_calls(params)?)
             }
         };
 

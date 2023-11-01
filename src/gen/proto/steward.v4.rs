@@ -1639,10 +1639,7 @@ pub struct AaveV2EnableAssetAsCollateralAdaptorV1Calls {
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct AaveV3DebtTokenAdaptorV1 {
     ///**** BASE ADAPTOR FUNCTIONS ****
-    #[prost(
-        oneof = "aave_v3_debt_token_adaptor_v1::Function",
-        tags = "1, 2, 3, 4, 5"
-    )]
+    #[prost(oneof = "aave_v3_debt_token_adaptor_v1::Function", tags = "1, 2, 3, 4")]
     pub function: ::core::option::Option<aave_v3_debt_token_adaptor_v1::Function>,
 }
 /// Nested message and enum types in `AaveV3DebtTokenAdaptorV1`.
@@ -1686,111 +1683,6 @@ pub mod aave_v3_debt_token_adaptor_v1 {
         #[prost(string, tag = "2")]
         pub amount: ::prost::alloc::string::String,
     }
-    ///
-    /// Allows strategists to have Cellars take out flash loans
-    ///
-    /// Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct FlashLoan {
-        /// The addresses of the ERC20 tokens to borrow
-        #[prost(string, repeated, tag = "1")]
-        pub loan_tokens: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-        /// The amounts to borrow
-        #[prost(string, repeated, tag = "2")]
-        pub loan_amounts: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-        /// The params to pass to the flash loan callback.
-        #[prost(message, repeated, tag = "3")]
-        pub params: ::prost::alloc::vec::Vec<AdaptorCallForAaveV3Flashloan>,
-    }
-    // NOTE: FlashLoan takes an array of AdaptorCall. cellar_v2.proto defines it, but also imports this file, therefore we can't import cellar_v2.proto in order to use the AdaptorCall message here. To avoid the recursive import, we duplicate the message definition.
-
-    /// Represents a call to adaptor an. The cellar must be authorized to call the target adaptor.
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct AdaptorCallForAaveV3Flashloan {
-        /// Address of the adaptor
-        #[prost(string, tag = "1")]
-        pub adaptor: ::prost::alloc::string::String,
-        /// The function call data for the adaptor
-        #[prost(
-            oneof = "adaptor_call_for_aave_v3_flashloan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22"
-        )]
-        pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flashloan::CallData>,
-    }
-    /// Nested message and enum types in `AdaptorCallForAaveV3Flashloan`.
-    pub mod adaptor_call_for_aave_v3_flashloan {
-        /// The function call data for the adaptor
-        #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-        pub enum CallData {
-            /// Represents function calls to the AaveATokenAdaptor V1
-            #[prost(message, tag = "2")]
-            AaveATokenV1Calls(super::super::AaveATokenAdaptorV1Calls),
-            /// Represents function calls to the AavaDebtTokenAdaptor V1
-            #[prost(message, tag = "3")]
-            AaveDebtTokenV1Calls(super::super::AaveDebtTokenAdaptorV1Calls),
-            /// Represents function calls to the CompoundCTokenAdaptor V2
-            #[prost(message, tag = "4")]
-            CompoundCTokenV2Calls(super::super::CompoundCTokenAdaptorV2Calls),
-            /// Represents function calls to the AaveATokenV2Adaptor
-            #[prost(message, tag = "5")]
-            AaveATokenV2Calls(super::super::AaveATokenAdaptorV2Calls),
-            /// Represents function calls to the AavaDebtTokenV2Adaptor
-            #[prost(message, tag = "6")]
-            AaveDebtTokenV2Calls(super::super::AaveDebtTokenAdaptorV2Calls),
-            /// Represents function calls to the AaveATokenV1Adaptor
-            #[prost(message, tag = "7")]
-            AaveV3ATokenV1Calls(super::super::AaveV3aTokenAdaptorV1Calls),
-            /// Represents function calls to the AavaDebtTokenV1Adaptor
-            #[prost(message, tag = "8")]
-            AaveV3DebtTokenV1Calls(super::super::AaveV3DebtTokenAdaptorV1Calls),
-            /// Represents function calls to the OneInchAdaptorV1
-            #[prost(message, tag = "9")]
-            OneInchV1Calls(super::super::OneInchAdaptorV1Calls),
-            /// Represents function calls to the FeesAndReservesAdaptorV1
-            #[prost(message, tag = "10")]
-            FeesAndReservesV1Calls(super::super::FeesAndReservesAdaptorV1Calls),
-            /// Represents functionc alls to the ZeroXAdaptorV1
-            #[prost(message, tag = "11")]
-            ZeroXV1Calls(super::super::ZeroXAdaptorV1Calls),
-            /// Represents function calls to the SwapWithUniswapAdaptorV1
-            #[prost(message, tag = "12")]
-            SwapWithUniswapV1Calls(super::super::SwapWithUniswapAdaptorV1Calls),
-            /// Represents function calls to VestingSimpleAdaptor
-            #[prost(message, tag = "13")]
-            VestingSimpleV2Calls(super::super::VestingSimpleAdaptorV2Calls),
-            /// Represents function calls to the CellarAdaptor
-            #[prost(message, tag = "14")]
-            CellarV1Calls(super::super::CellarAdaptorV1Calls),
-            /// Represents function calls to the UniswapV3Adaptor V2
-            #[prost(message, tag = "15")]
-            UniswapV3V2Calls(super::super::UniswapV3AdaptorV2Calls),
-            /// Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1
-            #[prost(message, tag = "16")]
-            AaveV2EnableAssetAsCollateralV1Calls(
-                super::super::AaveV2EnableAssetAsCollateralAdaptorV1Calls,
-            ),
-            /// Represents function calls to the FTokenAdaptor V1
-            #[prost(message, tag = "17")]
-            FTokenV1Calls(super::super::FTokenAdaptorV1Calls),
-            /// Represents function calls to the MorphoAaveV2AToken V1
-            #[prost(message, tag = "18")]
-            MorphoAaveV2ATokenV1Calls(super::super::MorphoAaveV2aTokenAdaptorV1Calls),
-            /// Represents function calls to the MorphoAaveV2DebtToken V1
-            #[prost(message, tag = "19")]
-            MorphoAaveV2DebtTokenV1Calls(super::super::MorphoAaveV2DebtTokenAdaptorV1Calls),
-            /// Represents function calls to the MorphoAaveV3ATokenCollateral V1
-            #[prost(message, tag = "20")]
-            MorphoAaveV3ATokenCollateralV1Calls(
-                super::super::MorphoAaveV3aTokenCollateralAdaptorV1Calls,
-            ),
-            /// Represents function calls to the MorphoAaveV3ATokenP2P V1
-            #[prost(message, tag = "21")]
-            MorphoAaveV3ATokenP2pV1Calls(super::super::MorphoAaveV3aTokenP2pAdaptorV1Calls),
-            /// Represents function calls to the MorphoAaveV3DebtToken V1
-            #[prost(message, tag = "22")]
-            MorphoAaveV3DebtTokenV1Calls(super::super::MorphoAaveV3DebtTokenAdaptorV1Calls),
-        }
-    }
     ///**** BASE ADAPTOR FUNCTIONS ****
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum Function {
@@ -1807,9 +1699,6 @@ pub mod aave_v3_debt_token_adaptor_v1 {
         /// Represents function `repayWithATokens(ERC20 underlying, uint256 amount)`
         #[prost(message, tag = "4")]
         RepayWithATokens(RepayWithATokens),
-        /// Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
-        #[prost(message, tag = "5")]
-        FlashLoan(FlashLoan),
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -2822,6 +2711,135 @@ pub struct BalancerPoolAdaptorV1Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<BalancerPoolAdaptorV1>,
 }
+/// Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct AaveV3DebtTokenAdaptorV1FlashLoan {
+    /// Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
+    #[prost(message, optional, tag = "1")]
+    pub flash_loan: ::core::option::Option<aave_v3_debt_token_adaptor_v1_flash_loan::FlashLoan>,
+}
+/// Nested message and enum types in `AaveV3DebtTokenAdaptorV1FlashLoan`.
+pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
+    ///
+    /// Allows strategists to have Cellars take out flash loans
+    ///
+    /// Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct FlashLoan {
+        /// The addresses of the ERC20 tokens to borrow
+        #[prost(string, repeated, tag = "1")]
+        pub loan_tokens: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+        /// The amounts to borrow
+        #[prost(string, repeated, tag = "2")]
+        pub loan_amounts: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+        /// The params to pass to the flash loan callback.
+        #[prost(message, repeated, tag = "3")]
+        pub params: ::prost::alloc::vec::Vec<AdaptorCallForAaveV3FlashLoan>,
+    }
+    // NOTE: FlashLoan takes an array of AdaptorCall. cellar_v2.proto defines it, but also imports this file, therefore we can't import cellar_v2.proto in order to use the AdaptorCall message here. To avoid the recursive import, we duplicate the message definition.
+
+    /// Represents a call to adaptor an. The cellar must be authorized to call the target adaptor.
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct AdaptorCallForAaveV3FlashLoan {
+        /// Address of the adaptor
+        #[prost(string, tag = "1")]
+        pub adaptor: ::prost::alloc::string::String,
+        /// The function call data for the adaptor
+        #[prost(
+            oneof = "adaptor_call_for_aave_v3_flash_loan::CallData",
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25"
+        )]
+        pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flash_loan::CallData>,
+    }
+    /// Nested message and enum types in `AdaptorCallForAaveV3FlashLoan`.
+    pub mod adaptor_call_for_aave_v3_flash_loan {
+        /// The function call data for the adaptor
+        #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+        pub enum CallData {
+            /// Represents function calls to the AaveATokenAdaptor V1
+            #[prost(message, tag = "2")]
+            AaveATokenV1Calls(super::super::AaveATokenAdaptorV1Calls),
+            /// Represents function calls to the AavaDebtTokenAdaptor V1
+            #[prost(message, tag = "3")]
+            AaveDebtTokenV1Calls(super::super::AaveDebtTokenAdaptorV1Calls),
+            /// Represents function calls to the CompoundCTokenAdaptor V2
+            #[prost(message, tag = "4")]
+            CompoundCTokenV2Calls(super::super::CompoundCTokenAdaptorV2Calls),
+            /// Represents function calls to the AaveATokenV2Adaptor
+            #[prost(message, tag = "5")]
+            AaveATokenV2Calls(super::super::AaveATokenAdaptorV2Calls),
+            /// Represents function calls to the AavaDebtTokenV2Adaptor
+            #[prost(message, tag = "6")]
+            AaveDebtTokenV2Calls(super::super::AaveDebtTokenAdaptorV2Calls),
+            /// Represents function calls to the AaveATokenV1Adaptor
+            #[prost(message, tag = "7")]
+            AaveV3ATokenV1Calls(super::super::AaveV3aTokenAdaptorV1Calls),
+            /// Represents function calls to the OneInchAdaptorV1
+            #[prost(message, tag = "8")]
+            OneInchV1Calls(super::super::OneInchAdaptorV1Calls),
+            /// Represents function calls to the FeesAndReservesAdaptorV1
+            #[prost(message, tag = "9")]
+            FeesAndReservesV1Calls(super::super::FeesAndReservesAdaptorV1Calls),
+            /// Represents functionc alls to the ZeroXAdaptorV1
+            #[prost(message, tag = "10")]
+            ZeroXV1Calls(super::super::ZeroXAdaptorV1Calls),
+            /// Represents function calls to the SwapWithUniswapAdaptorV1
+            #[prost(message, tag = "11")]
+            SwapWithUniswapV1Calls(super::super::SwapWithUniswapAdaptorV1Calls),
+            /// Represents function calls to VestingSimpleAdaptor
+            #[prost(message, tag = "12")]
+            VestingSimpleV2Calls(super::super::VestingSimpleAdaptorV2Calls),
+            /// Represents function calls to the CellarAdaptor
+            #[prost(message, tag = "13")]
+            CellarV1Calls(super::super::CellarAdaptorV1Calls),
+            /// Represents function calls to the UniswapV3Adaptor V2
+            #[prost(message, tag = "14")]
+            UniswapV3V2Calls(super::super::UniswapV3AdaptorV2Calls),
+            /// Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1
+            #[prost(message, tag = "15")]
+            AaveV2EnableAssetAsCollateralV1Calls(
+                super::super::AaveV2EnableAssetAsCollateralAdaptorV1Calls,
+            ),
+            /// Represents function calls to the FTokenAdaptor V1
+            #[prost(message, tag = "16")]
+            FTokenV1Calls(super::super::FTokenAdaptorV1Calls),
+            /// Represents function calls to the MorphoAaveV2AToken V1
+            #[prost(message, tag = "17")]
+            MorphoAaveV2ATokenV1Calls(super::super::MorphoAaveV2aTokenAdaptorV1Calls),
+            /// Represents function calls to the MorphoAaveV2DebtToken V1
+            #[prost(message, tag = "18")]
+            MorphoAaveV2DebtTokenV1Calls(super::super::MorphoAaveV2DebtTokenAdaptorV1Calls),
+            /// Represents function calls to the MorphoAaveV3ATokenCollateral V1
+            #[prost(message, tag = "19")]
+            MorphoAaveV3ATokenCollateralV1Calls(
+                super::super::MorphoAaveV3aTokenCollateralAdaptorV1Calls,
+            ),
+            /// Represents function calls to the MorphoAaveV3ATokenP2P V1
+            #[prost(message, tag = "20")]
+            MorphoAaveV3ATokenP2pV1Calls(super::super::MorphoAaveV3aTokenP2pAdaptorV1Calls),
+            /// Represents function calls to the MorphoAaveV3DebtToken V1
+            #[prost(message, tag = "21")]
+            MorphoAaveV3DebtTokenV1Calls(super::super::MorphoAaveV3DebtTokenAdaptorV1Calls),
+            /// Represents function calls to the BalancerPoolAdaptor V1
+            #[prost(message, tag = "22")]
+            BalancerPoolV1Calls(super::super::BalancerPoolAdaptorV1Calls),
+            /// Represents function calls to the LegacyCellarAdaptor V1
+            #[prost(message, tag = "23")]
+            LegacyCellarV1Calls(super::super::LegacyCellarAdaptorV1Calls),
+            /// Represents function calls to the DebtFTokenAdaptor V1
+            #[prost(message, tag = "24")]
+            DebtFTokenV1Calls(super::super::DebtFTokenAdaptorV1Calls),
+            /// Represents function calls to the CollateralFTokenAdaptor V1
+            #[prost(message, tag = "25")]
+            CollateralFTokenV1Calls(super::super::CollateralFTokenAdaptorV1Calls),
+        }
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct AaveV3DebtTokenAdaptorV1FlashLoanCalls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<AaveV3DebtTokenAdaptorV1FlashLoan>,
+}
 ///
 /// Represents a function call to a cellar that implements Cellar.sol
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -3307,7 +3325,7 @@ pub struct AdaptorCall {
     /// The function call data for the adaptor
     #[prost(
         oneof = "adaptor_call::CallData",
-        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26"
+        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28"
     )]
     pub call_data: ::core::option::Option<adaptor_call::CallData>,
 }
@@ -3391,6 +3409,12 @@ pub mod adaptor_call {
         /// Represents function calls to the CollateralFTokenAdaptor V1
         #[prost(message, tag = "26")]
         CollateralFTokenV1Calls(super::CollateralFTokenAdaptorV1Calls),
+        /// Represents flash loan function call for the AaveV3DebtTokenAdaptorV1
+        #[prost(message, tag = "27")]
+        AaveV3DebtTokenV1FlashLoanCalls(super::AaveV3DebtTokenAdaptorV1FlashLoanCalls),
+        /// Represents flash loan function call for the BalancerPoolAdaptorV1
+        #[prost(message, tag = "28")]
+        BalancerPoolV1FlashLoanCalls(super::BalancerPoolAdaptorV1FlashLoanCalls),
     }
 }
 ///
@@ -3419,135 +3443,6 @@ pub mod governance_call {
         #[prost(message, tag = "5")]
         CellarV22(super::CellarV22governance),
     }
-}
-/// Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct AaveV3DebtTokenAdaptorV1FlashLoan {
-    /// Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
-    #[prost(message, optional, tag = "1")]
-    pub flash_loan: ::core::option::Option<aave_v3_debt_token_adaptor_v1_flash_loan::FlashLoan>,
-}
-/// Nested message and enum types in `AaveV3DebtTokenAdaptorV1FlashLoan`.
-pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
-    ///
-    /// Allows strategists to have Cellars take out flash loans
-    ///
-    /// Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct FlashLoan {
-        /// The addresses of the ERC20 tokens to borrow
-        #[prost(string, repeated, tag = "1")]
-        pub loan_tokens: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-        /// The amounts to borrow
-        #[prost(string, repeated, tag = "2")]
-        pub loan_amounts: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-        /// The params to pass to the flash loan callback.
-        #[prost(message, repeated, tag = "3")]
-        pub params: ::prost::alloc::vec::Vec<AdaptorCallForAaveV3FlashLoan>,
-    }
-    // NOTE: FlashLoan takes an array of AdaptorCall. cellar_v2.proto defines it, but also imports this file, therefore we can't import cellar_v2.proto in order to use the AdaptorCall message here. To avoid the recursive import, we duplicate the message definition.
-
-    /// Represents a call to adaptor an. The cellar must be authorized to call the target adaptor.
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct AdaptorCallForAaveV3FlashLoan {
-        /// Address of the adaptor
-        #[prost(string, tag = "1")]
-        pub adaptor: ::prost::alloc::string::String,
-        /// The function call data for the adaptor
-        #[prost(
-            oneof = "adaptor_call_for_aave_v3_flash_loan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25"
-        )]
-        pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flash_loan::CallData>,
-    }
-    /// Nested message and enum types in `AdaptorCallForAaveV3FlashLoan`.
-    pub mod adaptor_call_for_aave_v3_flash_loan {
-        /// The function call data for the adaptor
-        #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-        pub enum CallData {
-            /// Represents function calls to the AaveATokenAdaptor V1
-            #[prost(message, tag = "2")]
-            AaveATokenV1Calls(super::super::AaveATokenAdaptorV1Calls),
-            /// Represents function calls to the AavaDebtTokenAdaptor V1
-            #[prost(message, tag = "3")]
-            AaveDebtTokenV1Calls(super::super::AaveDebtTokenAdaptorV1Calls),
-            /// Represents function calls to the CompoundCTokenAdaptor V2
-            #[prost(message, tag = "4")]
-            CompoundCTokenV2Calls(super::super::CompoundCTokenAdaptorV2Calls),
-            /// Represents function calls to the AaveATokenV2Adaptor
-            #[prost(message, tag = "5")]
-            AaveATokenV2Calls(super::super::AaveATokenAdaptorV2Calls),
-            /// Represents function calls to the AavaDebtTokenV2Adaptor
-            #[prost(message, tag = "6")]
-            AaveDebtTokenV2Calls(super::super::AaveDebtTokenAdaptorV2Calls),
-            /// Represents function calls to the AaveATokenV1Adaptor
-            #[prost(message, tag = "7")]
-            AaveV3ATokenV1Calls(super::super::AaveV3aTokenAdaptorV1Calls),
-            /// Represents function calls to the OneInchAdaptorV1
-            #[prost(message, tag = "8")]
-            OneInchV1Calls(super::super::OneInchAdaptorV1Calls),
-            /// Represents function calls to the FeesAndReservesAdaptorV1
-            #[prost(message, tag = "9")]
-            FeesAndReservesV1Calls(super::super::FeesAndReservesAdaptorV1Calls),
-            /// Represents functionc alls to the ZeroXAdaptorV1
-            #[prost(message, tag = "10")]
-            ZeroXV1Calls(super::super::ZeroXAdaptorV1Calls),
-            /// Represents function calls to the SwapWithUniswapAdaptorV1
-            #[prost(message, tag = "11")]
-            SwapWithUniswapV1Calls(super::super::SwapWithUniswapAdaptorV1Calls),
-            /// Represents function calls to VestingSimpleAdaptor
-            #[prost(message, tag = "12")]
-            VestingSimpleV2Calls(super::super::VestingSimpleAdaptorV2Calls),
-            /// Represents function calls to the CellarAdaptor
-            #[prost(message, tag = "13")]
-            CellarV1Calls(super::super::CellarAdaptorV1Calls),
-            /// Represents function calls to the UniswapV3Adaptor V2
-            #[prost(message, tag = "14")]
-            UniswapV3V2Calls(super::super::UniswapV3AdaptorV2Calls),
-            /// Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1
-            #[prost(message, tag = "15")]
-            AaveV2EnableAssetAsCollateralV1Calls(
-                super::super::AaveV2EnableAssetAsCollateralAdaptorV1Calls,
-            ),
-            /// Represents function calls to the FTokenAdaptor V1
-            #[prost(message, tag = "16")]
-            FTokenV1Calls(super::super::FTokenAdaptorV1Calls),
-            /// Represents function calls to the MorphoAaveV2AToken V1
-            #[prost(message, tag = "17")]
-            MorphoAaveV2ATokenV1Calls(super::super::MorphoAaveV2aTokenAdaptorV1Calls),
-            /// Represents function calls to the MorphoAaveV2DebtToken V1
-            #[prost(message, tag = "18")]
-            MorphoAaveV2DebtTokenV1Calls(super::super::MorphoAaveV2DebtTokenAdaptorV1Calls),
-            /// Represents function calls to the MorphoAaveV3ATokenCollateral V1
-            #[prost(message, tag = "19")]
-            MorphoAaveV3ATokenCollateralV1Calls(
-                super::super::MorphoAaveV3aTokenCollateralAdaptorV1Calls,
-            ),
-            /// Represents function calls to the MorphoAaveV3ATokenP2P V1
-            #[prost(message, tag = "20")]
-            MorphoAaveV3ATokenP2pV1Calls(super::super::MorphoAaveV3aTokenP2pAdaptorV1Calls),
-            /// Represents function calls to the MorphoAaveV3DebtToken V1
-            #[prost(message, tag = "21")]
-            MorphoAaveV3DebtTokenV1Calls(super::super::MorphoAaveV3DebtTokenAdaptorV1Calls),
-            /// Represents function calls to the BalancerPoolAdaptor V1
-            #[prost(message, tag = "22")]
-            BalancerPoolV1Calls(super::super::BalancerPoolAdaptorV1Calls),
-            /// Represents function calls to the LegacyCellarAdaptor V1
-            #[prost(message, tag = "23")]
-            LegacyCellarV1Calls(super::super::LegacyCellarAdaptorV1Calls),
-            /// Represents function calls to the DebtFTokenAdaptor V1
-            #[prost(message, tag = "24")]
-            DebtFTokenV1Calls(super::super::DebtFTokenAdaptorV1Calls),
-            /// Represents function calls to the CollateralFTokenAdaptor V1
-            #[prost(message, tag = "25")]
-            CollateralFTokenV1Calls(super::super::CollateralFTokenAdaptorV1Calls),
-        }
-    }
-}
-#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct AaveV3DebtTokenAdaptorV1FlashLoanCalls {
-    #[prost(message, repeated, tag = "1")]
-    pub calls: ::prost::alloc::vec::Vec<AaveV3DebtTokenAdaptorV1FlashLoan>,
 }
 ///
 /// Represents a scheduled function call to a particular Cellar
