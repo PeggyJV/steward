@@ -3,11 +3,14 @@ use std::result::Result;
 
 use abscissa_core::tracing::log::info;
 use ethers::prelude::*;
+use lazy_static::lazy_static;
 
 use crate::{
     error::Error,
     utils::{sp_call_error, string_to_u256},
 };
+
+pub type CachePriceRouterArgs = (bool, u32, Option<String>);
 
 pub(crate) mod aave_v2_stablecoin;
 pub(crate) mod adaptors;
@@ -35,15 +38,30 @@ pub const ORACLE3: (U256, &str) = (
 );
 
 pub const ALLOWED_PRICE_ORACLES: [(U256, &str); 3] = [ORACLE1, ORACLE2, ORACLE3];
-pub const ALLOWED_CACHE_PRICE_ROUTER: [&str; 1] = [CELLAR_RYETH];
+
+// price routers
+
+// since we're wrapping price router addresses in as Option<T>, it vastly simplifies comparisons for them to be
+// owned values (String) vs. a borrowed &str since we have to mutate the passed in values to normalize them.
+lazy_static! {
+    pub static ref PRICEROUTER1: String = String::from("a1a0bc3d59e4ee5840c9530e49bdc2d1f88aaf92");
+    pub static ref PRICEROUTER2: String = String::from("8e46f30b09fdfae6c97db27fecf3304f86dd88c2");
+
+    // mapping of cellar address to allowable arguments for a cachePriceRouter call.
+    // args map to params as (checkTotalAssets, allowableRange, expectedPriceRouterAddress). The third
+    // param is only present for 2.5 cellars so it's an Option<&str>.
+    pub static ref ALLOWED_CACHE_PRICE_ROUTER: [(&'static str, CachePriceRouterArgs); 4] = [
+        (CELLAR_RYBTC, (true, 500, None)),
+        (CELLAR_RYETH, (true, 500, None)),
+        (CELLAR_TURBO_STETH, (false, 500, Some(PRICEROUTER1.clone()))),
+        (CELLAR_TURBO_STETH, (true, 500, Some(PRICEROUTER2.clone()))),
+    ];
+}
 
 // permissions
 
-pub const ALLOWED_V2_0_SETUP_ADAPTORS: [(&str, &str); 1] = [(CELLAR_RYUSD, ADAPTOR_CELLAR_V2)];
-pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 1] = [
-    // According to Joe RYBTC already has this adaptor in its catalogue
-    (CELLAR_RYETH, ADAPTOR_CELLAR_V2),
-];
+pub const ALLOWED_V2_0_SETUP_ADAPTORS: [(&str, &str); 0] = [];
+pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
 pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
 
 // due to position size limits in v2.0, positions must be added and removed from the limited list
@@ -70,11 +88,7 @@ pub const ALLOWED_V2_0_POSITIONS: [(&str, u32); 20] = [
     (CELLAR_RYUSD, 28),
     (CELLAR_RYUSD, 29),
 ];
-pub const ALLOWED_V2_2_CATALOGUE_POSITIONS: [(&str, u32); 2] = [
-    // 199 is Turbo stETH position ID
-    (CELLAR_RYBTC, 199),
-    (CELLAR_RYETH, 199),
-];
+pub const ALLOWED_V2_2_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
 pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
 
 pub const BLOCKED_ADAPTORS: [&str; 3] = [
@@ -228,14 +242,20 @@ pub fn validate_cache_price_router(
     cellar_id: &str,
     check_total_assets_value: bool,
     allowable_range_value: u32,
+    expected_price_router: Option<String>,
 ) -> Result<(), Error> {
-    if !check_total_assets_value || allowable_range_value != 500 {
-        return Err(sp_call_error(
-            "unauthorized arguments for cachePriceRouter call".to_string(),
-        ));
-    }
     let cellar_id_normalized = normalize_address(cellar_id.to_string());
-    if !ALLOWED_CACHE_PRICE_ROUTER.contains(&cellar_id_normalized.as_str()) {
+    let expected_price_router = expected_price_router.map(normalize_address);
+
+    if !ALLOWED_CACHE_PRICE_ROUTER
+        .iter()
+        .any(|(cellar_id, permissions)| {
+            cellar_id_normalized.eq(cellar_id)
+                && permissions.0 == check_total_assets_value
+                && permissions.1 >= allowable_range_value
+                && permissions.2 == expected_price_router
+        })
+    {
         return Err(sp_call_error("call not authorized for cellar".to_string()));
     }
 
@@ -358,10 +378,10 @@ mod tests {
 
         // allows approved cellar/adaptor ID pairs
         let (v2_0_cellar_id, v2_0_approved_adaptor_id) = (CELLAR_RYUSD, ADAPTOR_CELLAR_V2);
-        assert!(
-            validate_new_adaptor(v2_0_cellar_id, v2_0_approved_adaptor_id, &V2_0_PERMISSIONS)
-                .is_ok()
-        );
+        // assert!(
+        //     validate_new_adaptor(v2_0_cellar_id, v2_0_approved_adaptor_id, &V2_0_PERMISSIONS)
+        //         .is_ok()
+        // );
 
         // rejects blocked adaptor ID
         let blocked_adaptor_id = ADAPTOR_UNIV3_V1;
@@ -443,5 +463,42 @@ mod tests {
         );
         assert!(validate_oracle(CELLAR_TURBO_SWETH, &ORACLE1.0.to_string(), ORACLE1.1).is_ok());
         assert!(validate_oracle(CELLAR_TURBO_SWETH, &ORACLE2.0.to_string(), ORACLE2.1).is_ok());
+    }
+
+    #[test]
+    fn test_validate_cache_price_router() {
+        // valid
+        assert!(validate_cache_price_router(
+            CELLAR_TURBO_STETH,
+            true,
+            400,
+            Some(PRICEROUTER2.clone())
+        )
+        .is_ok());
+        assert!(validate_cache_price_router(
+            CELLAR_TURBO_STETH,
+            true,
+            500,
+            Some(PRICEROUTER2.clone().to_uppercase())
+        )
+        .is_ok());
+
+        // invalid
+        assert!(validate_cache_price_router(
+            CELLAR_TURBO_STETH,
+            true,
+            500,
+            Some("notreal".to_string())
+        )
+        .is_err());
+        assert!(validate_cache_price_router(
+            CELLAR_TURBO_SWETH,
+            true,
+            500,
+            Some(PRICEROUTER2.clone())
+        )
+        .is_err());
+        assert!(validate_cache_price_router(CELLAR_RYETH, false, 500, None).is_err());
+        assert!(validate_cache_price_router(CELLAR_RYBTC, true, 600, None).is_err());
     }
 }

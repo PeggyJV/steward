@@ -3083,7 +3083,7 @@ pub mod cellar_v2_5 {
     pub struct FunctionCall {
         #[prost(
             oneof = "function_call::Function",
-            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18"
+            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19"
         )]
         pub function: ::core::option::Option<function_call::Function>,
     }
@@ -3145,6 +3145,9 @@ pub mod cellar_v2_5 {
             /// Represents function `setSharePriceOracle(uint256, address)
             #[prost(message, tag = "18")]
             SetSharePriceOracle(super::SetSharePriceOracle),
+            /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+            #[prost(message, tag = "19")]
+            CachePriceRouter(super::CachePriceRouter),
         }
     }
     ///
@@ -3339,6 +3342,22 @@ pub mod cellar_v2_5 {
         /// The oracle contract address
         #[prost(string, tag = "2")]
         pub oracle: ::prost::alloc::string::String,
+    }
+    ///
+    /// Updates the cellar to use the latest price router in the registry.
+    ///
+    /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct CachePriceRouter {
+        /// Whether to check the total assets of the cellar
+        #[prost(bool, tag = "1")]
+        pub check_total_assets: bool,
+        /// The allowable range of the cellar's total assets to deviate between old and new routers
+        #[prost(uint32, tag = "2")]
+        pub allowable_range: u32,
+        /// The expected price router address
+        #[prost(string, tag = "3")]
+        pub expected_price_router: ::prost::alloc::string::String,
     }
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum CallType {

@@ -238,6 +238,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
                 &cellar_id,
                 params.check_total_assets,
                 params.allowable_range,
+                None,
             )?;
             log_cellar_call(
                 CELLAR_NAME,
