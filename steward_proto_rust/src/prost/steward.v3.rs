@@ -3083,7 +3083,7 @@ pub mod cellar_v2_5 {
     pub struct FunctionCall {
         #[prost(
             oneof = "function_call::Function",
-            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19"
+            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20"
         )]
         pub function: ::core::option::Option<function_call::Function>,
     }
@@ -3148,6 +3148,9 @@ pub mod cellar_v2_5 {
             /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
             #[prost(message, tag = "19")]
             CachePriceRouter(super::CachePriceRouter),
+            /// Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+            #[prost(message, tag = "20")]
+            ForcePositionOut(super::ForcePositionOut),
         }
     }
     ///
@@ -3358,6 +3361,22 @@ pub mod cellar_v2_5 {
         /// The expected price router address
         #[prost(string, tag = "3")]
         pub expected_price_router: ::prost::alloc::string::String,
+    }
+    ///
+    /// Forceably remove a position from the cellar without checking its balance is zero.
+    ///
+    /// Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct ForcePositionOut {
+        /// Index of the position.
+        #[prost(uint32, tag = "1")]
+        pub index: u32,
+        /// Position ID to force out.
+        #[prost(uint32, tag = "2")]
+        pub position_id: u32,
+        /// Whether to switch positions in the debt array, or the credit array.
+        #[prost(bool, tag = "3")]
+        pub in_debt_array: bool,
     }
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum CallType {
