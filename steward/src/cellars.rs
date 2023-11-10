@@ -24,20 +24,33 @@ pub(crate) mod cellar_v2_5;
 
 // oracles
 
-pub const ORACLE1: (U256, &str) = (
+pub const TURBOSWETH_ORACLE1: (U256, &str) = (
     U256([3, 0, 0, 0]),
     "72249f0199eacf6230def33a31e80cf76de78f67",
 );
-pub const ORACLE2: (U256, &str) = (
+pub const TURBOSWETH_ORACLE2: (U256, &str) = (
     U256([5, 0, 0, 0]),
     "c47278b65443ce71cf47e8455bb343f2db11b70e",
 );
-pub const ORACLE3: (U256, &str) = (
+pub const TURBOSWETH_ORACLE3: (U256, &str) = (
     U256([5, 0, 0, 0]),
     "26cde3f5db92ea91c84c838e664fe42dec1b6747",
 );
 
-pub const ALLOWED_PRICE_ORACLES: [(U256, &str); 3] = [ORACLE1, ORACLE2, ORACLE3];
+pub const ALLOWED_TURBOSWETH_PRICE_ORACLES: [(U256, &str); 3] =
+    [TURBOSWETH_ORACLE1, TURBOSWETH_ORACLE2, TURBOSWETH_ORACLE3];
+
+pub const TURBOSOMM_ORACLE1: (U256, &str) = (
+    U256([8, 0, 0, 0]),
+    "30510876b377941f23d7322845de0ca734da59e0",
+);
+pub const TURBOSOMM_ORACLE2: (U256, &str) = (
+    U256([8, 0, 0, 0]),
+    "84785287f0c9c282462da7927aaed9773b32d9cb",
+);
+
+pub const ALLOWED_TURBOSOMM_PRICE_ORACLES: [(U256, &str); 2] =
+    [TURBOSOMM_ORACLE1, TURBOSOMM_ORACLE2];
 
 // price routers
 
@@ -62,7 +75,8 @@ lazy_static! {
 
 pub const ALLOWED_V2_0_SETUP_ADAPTORS: [(&str, &str); 0] = [];
 pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
-pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
+pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 1] =
+    [(CELLAR_TURBO_SOMM, ADAPTOR_VESTING_SIMPLE_V1_1_DEPLOYMENT2)];
 
 // due to position size limits in v2.0, positions must be added and removed from the limited list
 // and thus approved positions need to be allowed to be re-added, hence this large list
@@ -89,7 +103,7 @@ pub const ALLOWED_V2_0_POSITIONS: [(&str, u32); 20] = [
     (CELLAR_RYUSD, 29),
 ];
 pub const ALLOWED_V2_2_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
-pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
+pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 1] = [(CELLAR_TURBO_SOMM, 100000005)];
 
 pub const BLOCKED_ADAPTORS: [&str; 3] = [
     ADAPTOR_UNIV3_V1,
@@ -136,6 +150,7 @@ pub const CELLAR_RYBTC: &str = "0274a704a6d9129f90a62ddc6f6024b33ecdad36";
 pub const CELLAR_TURBO_SWETH: &str = "d33dad974b938744dac81fe00ac67cb5aa13958e";
 pub const CELLAR_TURBO_GHO: &str = "0c190ded9be5f512bd72827bdad4003e9cc7975c";
 pub const CELLAR_TURBO_STETH: &str = "fd6db5011b171b05e1ea3b92f9eacaeeb055e971";
+pub const CELLAR_TURBO_SOMM: &str = "5195222f69c5821f8095ec565e71e18ab6a2298f";
 
 // deprecated adaptors
 
@@ -157,7 +172,10 @@ pub const ADAPTOR_MORPHO_AAVE_V3_A_TOKEN_COLLATERAL_V1: &str =
 pub const ADAPTOR_MORPHO_AAVE_V3_DEBT_TOKEN_V1: &str = "25a61f771af9a38c10ddd93c2bbab39a88926fa9";
 pub const ADAPTOR_MORPHO_AAVE_V3_P2P_V1: &str = "4fe068caad05b82bf3f86e1f7d1a7b8bbf516111";
 pub const ADAPTOR_UNIV3_V3: &str = "92611574ec9bc13c6137917481dab7bb7b173c9b";
-pub const ADAPTOR_VESTING_SIMPLE_V2: &str = "3b98ba00f981342664969e609fb88280704ac479";
+pub const ADAPTOR_VESTING_SIMPLE_V1_1_DEPLOYMENT1: &str =
+    "3b98ba00f981342664969e609fb88280704ac479";
+pub const ADAPTOR_VESTING_SIMPLE_V1_1_DEPLOYMENT2: &str =
+    "8a95bbabb0039480f6dd90fe856c1e0c3d575aa1";
 
 // utils
 
@@ -229,13 +247,18 @@ pub fn validate_oracle(
     let cellar_id_normalized = normalize_address(cellar_id.to_string());
     let oracle_in = normalize_address(oracle_in.to_string());
     let registry_id_in = string_to_u256(registry_id_in.to_string())?;
-    if !cellar_id_normalized.eq(CELLAR_TURBO_SWETH)
-        || !ALLOWED_PRICE_ORACLES.contains(&(registry_id_in, oracle_in.as_str()))
+    if cellar_id_normalized.eq(CELLAR_TURBO_SWETH)
+        && ALLOWED_TURBOSWETH_PRICE_ORACLES.contains(&(registry_id_in, oracle_in.as_str()))
     {
-        return Err(sp_call_error("unauthorized oracle update".to_string()));
+        return Ok(());
+    }
+    if cellar_id_normalized.eq(CELLAR_TURBO_SOMM)
+        && ALLOWED_TURBOSOMM_PRICE_ORACLES.contains(&(registry_id_in, oracle_in.as_str()))
+    {
+        return Ok(());
     }
 
-    Ok(())
+    Err(sp_call_error("unauthorized oracle update".to_string()))
 }
 
 pub fn validate_cache_price_router(
@@ -260,6 +283,26 @@ pub fn validate_cache_price_router(
     }
 
     Ok(())
+}
+
+pub fn validate_force_position_out(
+    cellar_id: &str,
+    index: u32,
+    position_id: u32,
+    in_debt_array: bool,
+) -> Result<(), Error> {
+    let cellar_id_normalized = normalize_address(cellar_id.to_string());
+    if cellar_id_normalized.eq(CELLAR_TURBO_SOMM)
+        && index > 0 // we expect it to be present
+        && position_id == 100000004
+        && !in_debt_array
+    {
+        return Ok(());
+    }
+
+    Err(sp_call_error(
+        "force position out not authorized for cellar".to_string(),
+    ))
 }
 
 pub fn check_blocked_adaptor(adaptor_id: &str) -> Result<(), Error> {
@@ -457,12 +500,60 @@ mod tests {
 
     #[test]
     fn test_validate_oracle() {
-        assert!(validate_oracle(CELLAR_RYBTC, &ORACLE1.0.to_string(), ORACLE1.1).is_err());
-        assert!(
-            validate_oracle(CELLAR_TURBO_SWETH, &U256::from(6).to_string(), ORACLE2.1).is_err()
-        );
-        assert!(validate_oracle(CELLAR_TURBO_SWETH, &ORACLE1.0.to_string(), ORACLE1.1).is_ok());
-        assert!(validate_oracle(CELLAR_TURBO_SWETH, &ORACLE2.0.to_string(), ORACLE2.1).is_ok());
+        assert!(validate_oracle(
+            CELLAR_RYBTC,
+            &TURBOSWETH_ORACLE1.0.to_string(),
+            TURBOSWETH_ORACLE1.1
+        )
+        .is_err());
+        assert!(validate_oracle(
+            CELLAR_RYBTC,
+            &TURBOSOMM_ORACLE1.0.to_string(),
+            TURBOSOMM_ORACLE1.1
+        )
+        .is_err());
+        assert!(validate_oracle(
+            CELLAR_TURBO_SWETH,
+            &U256::from(6).to_string(),
+            TURBOSWETH_ORACLE2.1
+        )
+        .is_err());
+        assert!(validate_oracle(
+            CELLAR_TURBO_SOMM,
+            &U256::from(6).to_string(),
+            TURBOSOMM_ORACLE2.1
+        )
+        .is_err());
+        assert!(validate_oracle(
+            CELLAR_TURBO_SWETH,
+            &TURBOSWETH_ORACLE1.0.to_string(),
+            TURBOSWETH_ORACLE1.1
+        )
+        .is_ok());
+        assert!(validate_oracle(
+            CELLAR_TURBO_SWETH,
+            &TURBOSWETH_ORACLE2.0.to_string(),
+            TURBOSWETH_ORACLE2.1
+        )
+        .is_ok());
+        assert!(validate_oracle(
+            CELLAR_TURBO_SWETH,
+            &TURBOSWETH_ORACLE3.0.to_string(),
+            TURBOSWETH_ORACLE3.1
+        )
+        .is_ok());
+        assert!(validate_oracle(
+            CELLAR_TURBO_SOMM,
+            &TURBOSOMM_ORACLE1.0.to_string(),
+            TURBOSOMM_ORACLE1.1
+        )
+        .is_ok());
+        assert!(validate_oracle(
+            CELLAR_TURBO_SOMM,
+            &TURBOSOMM_ORACLE2.0.to_string(),
+            TURBOSOMM_ORACLE2.1
+        )
+        .is_ok());
     }
 
     #[test]
