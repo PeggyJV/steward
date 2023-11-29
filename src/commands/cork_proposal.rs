@@ -2,6 +2,7 @@ mod aave_v2_stablecoin;
 mod cellar_v1;
 mod cellar_v2;
 mod cellar_v2_2;
+mod cellar_v2_5;
 
 use crate::{
     commands::cork_proposal::aave_v2_stablecoin::AaveV2StablecoinCellarCmd, proto::GovernanceCall,
@@ -11,6 +12,8 @@ use somm_proto::cork::ScheduledCorkProposal;
 
 use self::cellar_v1::CellarV1Cmd;
 use self::cellar_v2::CellarV2Cmd;
+use self::cellar_v2_2::CellarV2_2Cmd;
+use self::cellar_v2_5::CellarV2_5Cmd;
 
 /// Generates and prints a Sommelier governance ScheduledCorkProposal JSON template for the specified cellar and contract function
 #[derive(Command, Debug, Parser, Runnable)]
@@ -24,6 +27,12 @@ pub enum CorkProposalCmd {
     /// Generates a proposal template for a V2 cellar
     #[clap(name = "cellar-v2", subcommand)]
     CellarV2(CellarV2Cmd),
+    /// Generates a proposal template for a V2.2 cellar
+    #[clap(name = "cellar-v2.2", subcommand)]
+    CellarV2_2(CellarV2_2Cmd),
+    /// Generates a proposal template for a V2.5 cellar
+    #[clap(name = "cellar-v2.5", subcommand)]
+    CellarV2_5(CellarV2_5Cmd),
 }
 
 /// Outputs the JSON formatted scheduled cork data for submitting a Scheduled Cork Proposal to Sommelier
