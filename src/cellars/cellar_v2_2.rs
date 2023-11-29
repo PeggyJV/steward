@@ -297,11 +297,11 @@ pub fn get_encoded_governance_call(
 
             Ok(CellarV2_2Calls::ToggleIgnorePause(call).encode())
         }
-        GovernanceFunction::CachePriceRouter(params) => { 
+        GovernanceFunction::CachePriceRouter(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &CachePriceRouterCall::function_name(),
-                &cellar_id,
+                cellar_id,
             );
             let call = CachePriceRouterCall {
                 check_total_assets: params.check_total_assets,
