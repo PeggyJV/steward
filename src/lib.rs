@@ -44,6 +44,10 @@ pub mod abi {
         include!("gen/abi/cellar_v2_2.rs");
     }
 
+    pub mod cellar_v2_5 {
+        include!("gen/abi/cellar_v2_5.rs");
+    }
+
     pub mod adaptors {
         pub mod aave_v2_a_token_adaptor_v1 {
             include!("gen/abi/aave_a_token_adaptor_v1.rs");
@@ -79,6 +83,10 @@ pub mod abi {
 
         pub mod cellar_adaptor_v1 {
             include!("gen/abi/cellar_adaptor_v1.rs");
+        }
+
+        pub mod cellar_with_share_lock_period_v1 {
+            include!("gen/abi/cellar_with_share_lock_period_v1.rs");
         }
 
         pub mod compound_c_token_adaptor_v2 {

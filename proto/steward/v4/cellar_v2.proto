@@ -483,10 +483,8 @@ message CellarV2_5 {
             RemoveAdaptorFromCatalogue remove_adaptor_from_catalogue = 14;
             // Represents function `removePositionFromCatalogue(uint32 positionId)`
             RemovePositionFromCatalogue remove_position_from_catalogue = 15;
-            // Represents function `increaseShareSupplyCap(uint192)
-            IncreaseShareSupplyCap increase_share_supply_cap = 16;
             // Represents function `decreaseShareSupplyCap(uint192)
-            DecreaseShareSupplyCap decrease_share_supply_cap = 17;
+            DecreaseShareSupplyCap decrease_share_supply_cap = 16;
 
         }
     }
@@ -622,15 +620,6 @@ message CellarV2_5 {
     }
 
     /*
-    * Allows strategist to increase the share supply cap
-    *
-    * Represents function `increaseShareSupplyCap(uint192)`
-    */
-    message IncreaseShareSupplyCap {
-        string new_cap = 1;
-    }
-
-    /*
     * Allows strategist to decrease the share supply cap
     *
     * Represents function `decreaseShareSupplyCap(uint192)`
@@ -656,7 +645,7 @@ message CellarV2_5Governance {
         SetStrategistPlatformCut set_strategist_platform_cut = 4;
         // Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
         ForcePositionOut force_position_out = 5;
-        // Represents function `toggleIgnorePause(bool ignore)`
+        // Represents function `toggleIgnorePause()`
         ToggleIgnorePause toggle_ignore_pause = 6;
         // Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
         SetSharePriceOracle set_share_price_oracle = 7;
@@ -720,11 +709,9 @@ message CellarV2_5Governance {
     /*
     * Allows caller to toggle the ignorePause flag on the cellar
     *
-    * Represents function `toggleIgnorePause(bool ignore)`
+    * Represents function `toggleIgnorePause()`
     */
-    message ToggleIgnorePause {
-        bool ignore = 1;
-    }
+    message ToggleIgnorePause { }
 
     /*
     * Allows caller to set automation actions

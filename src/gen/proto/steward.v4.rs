@@ -3347,7 +3347,7 @@ pub mod cellar_v2_5 {
     pub struct FunctionCall {
         #[prost(
             oneof = "function_call::Function",
-            tags = "1, 2, 3, 4, 5, 6, 8, 9, 11, 14, 15, 16, 17"
+            tags = "1, 2, 3, 4, 5, 6, 8, 9, 11, 14, 15, 16"
         )]
         pub function: ::core::option::Option<function_call::Function>,
     }
@@ -3388,11 +3388,8 @@ pub mod cellar_v2_5 {
             /// Represents function `removePositionFromCatalogue(uint32 positionId)`
             #[prost(message, tag = "15")]
             RemovePositionFromCatalogue(super::RemovePositionFromCatalogue),
-            /// Represents function `increaseShareSupplyCap(uint192)
-            #[prost(message, tag = "16")]
-            IncreaseShareSupplyCap(super::IncreaseShareSupplyCap),
             /// Represents function `decreaseShareSupplyCap(uint192)
-            #[prost(message, tag = "17")]
+            #[prost(message, tag = "16")]
             DecreaseShareSupplyCap(super::DecreaseShareSupplyCap),
         }
     }
@@ -3531,15 +3528,6 @@ pub mod cellar_v2_5 {
         pub position_id: u32,
     }
     ///
-    /// Allows strategist to increase the share supply cap
-    ///
-    /// Represents function `increaseShareSupplyCap(uint192)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct IncreaseShareSupplyCap {
-        #[prost(string, tag = "1")]
-        pub new_cap: ::prost::alloc::string::String,
-    }
-    ///
     /// Allows strategist to decrease the share supply cap
     ///
     /// Represents function `decreaseShareSupplyCap(uint192)`
@@ -3625,12 +3613,9 @@ pub mod cellar_v2_5governance {
     ///
     /// Allows caller to toggle the ignorePause flag on the cellar
     ///
-    /// Represents function `toggleIgnorePause(bool ignore)`
+    /// Represents function `toggleIgnorePause()`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct ToggleIgnorePause {
-        #[prost(bool, tag = "1")]
-        pub ignore: bool,
-    }
+    pub struct ToggleIgnorePause {}
     ///
     /// Allows caller to set automation actions
     ///
@@ -3700,7 +3685,7 @@ pub mod cellar_v2_5governance {
         /// Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
         #[prost(message, tag = "5")]
         ForcePositionOut(ForcePositionOut),
-        /// Represents function `toggleIgnorePause(bool ignore)`
+        /// Represents function `toggleIgnorePause()`
         #[prost(message, tag = "6")]
         ToggleIgnorePause(ToggleIgnorePause),
         /// Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
