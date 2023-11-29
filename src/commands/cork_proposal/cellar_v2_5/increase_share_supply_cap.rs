@@ -6,7 +6,7 @@ use crate::{
     commands::cork_proposal::print_proposal,
     prelude::*,
     proto::{
-        cellar_v2_5governance::{IncreaseShareSupplyCap, Function},
+        cellar_v2_5governance::{Function, IncreaseShareSupplyCap},
         governance_call::Call,
         CellarV25governance, GovernanceCall,
     },

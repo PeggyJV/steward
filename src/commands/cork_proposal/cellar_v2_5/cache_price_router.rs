@@ -6,7 +6,7 @@ use crate::{
     commands::cork_proposal::print_proposal,
     prelude::*,
     proto::{
-        cellar_v2_5governance::{Function, CachePriceRouter},
+        cellar_v2_5governance::{CachePriceRouter, Function},
         governance_call::Call,
         CellarV25governance, GovernanceCall,
     },
@@ -21,7 +21,7 @@ pub struct CachePriceRouterCmd {
     /// Whether to check total assets
     check_total_assets: bool,
 
-    /// Allowable range 
+    /// Allowable range
     #[clap(short, long)]
     allowable_range: u32,
 

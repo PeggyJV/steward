@@ -61,10 +61,10 @@ impl Runnable for SetSharePriceOracleCmd {
 
             let governance_call = GovernanceCall {
                 call: Some(Call::CellarV25(CellarV25governance {
-                    function: Some(Function::SetSharePriceOracle(SetSharePriceOracle { 
-                        registry_id: self.registry_id.clone(), 
-                        share_price_oracle: self.oracle_address.clone() 
-                    }))
+                    function: Some(Function::SetSharePriceOracle(SetSharePriceOracle {
+                        registry_id: self.registry_id.clone(),
+                        share_price_oracle: self.oracle_address.clone(),
+                    })),
                 })),
             };
 
