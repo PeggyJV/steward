@@ -14,10 +14,10 @@ import (
 	"testing"
 	"time"
 
-	gravitytypes "github.com/peggyjv/gravity-bridge/module/v2/x/gravity/types"
+	gravitytypes "github.com/peggyjv/gravity-bridge/module/v3/x/gravity/types"
 
-	corktypes "github.com/peggyjv/sommelier/v4/x/cork/types"
-	incentivestypes "github.com/peggyjv/sommelier/v4/x/incentives/types"
+	corktypes "github.com/peggyjv/sommelier/v7/x/cork/types"
+	incentivestypes "github.com/peggyjv/sommelier/v7/x/incentives/types"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -34,8 +34,8 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
-	auctiontypes "github.com/peggyjv/sommelier/v4/x/auction/types"
-	cellarfeestypes "github.com/peggyjv/sommelier/v4/x/cellarfees/types"
+	auctiontypes "github.com/peggyjv/sommelier/v7/x/auction/types"
+	cellarfeestypes "github.com/peggyjv/sommelier/v7/x/cellarfees/types"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 	tmconfig "github.com/tendermint/tendermint/config"
