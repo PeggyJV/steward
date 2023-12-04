@@ -49,14 +49,12 @@ pub async fn remove_subscriber() -> Result<TxResponse, CosmosGrpcError> {
 pub async fn subscribe(
     cellar_id: String,
     publisher_domain: String,
-    subscriber_url: String,
 ) -> Result<TxResponse, CosmosGrpcError> {
     let signer = get_delegate_address().to_string();
     let subscriber_intent = SubscriberIntent {
         subscription_id: cellar_id,
         subscriber_address: signer.clone(),
         publisher_domain,
-        push_url: subscriber_url,
     };
     let msg = MsgAddSubscriberIntentRequest {
         subscriber_intent: Some(subscriber_intent),

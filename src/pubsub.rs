@@ -159,10 +159,10 @@ pub(crate) async fn get_publisher(domain: String) -> Result<QueryPublisherRespon
         .into_inner())
 }
 
-pub(crate) async fn add_subscriber(domain: String, ca_cert: String) -> Result<TxResponse, Error> {
+pub(crate) async fn add_subscriber(push_url: String, ca_cert: String) -> Result<TxResponse, Error> {
     let subscriber = Subscriber {
         address: get_delegate_address().to_string(),
-        domain,
+        push_url,
         ca_cert,
     };
 
@@ -180,9 +180,8 @@ pub(crate) async fn remove_subscriber() -> Result<TxResponse, Error> {
 pub(crate) async fn subscribe(
     cellar_id: String,
     publisher_domain: String,
-    subscriber_url: String,
 ) -> Result<TxResponse, Error> {
-    somm_send::subscribe(cellar_id, publisher_domain, subscriber_url)
+    somm_send::subscribe(cellar_id, publisher_domain)
         .await
         .map_err(|e| ErrorKind::GrpcError.context(e).into())
 }
@@ -191,17 +190,6 @@ pub(crate) async fn unsubscribe(cellar_id: String) -> Result<TxResponse, Error> 
     somm_send::unsubscribe(cellar_id)
         .await
         .map_err(|e| ErrorKind::GrpcError.context(e).into())
-}
-
-/// Validates that a given domain is a valid FQDN
-pub(crate) fn validate_domain_name(dn: &str) -> Result<(), Error> {
-    addr::parse_domain_name(dn).map_err(|_| {
-        Into::<Error>::into(
-            ErrorKind::InvalidDomainName.context(format!("failed to parse domain name {dn}")),
-        )
-    })?;
-
-    Ok(())
 }
 
 /// Validates a URL is parsable as such
@@ -225,3 +213,4 @@ pub(crate) fn validate_ca_cert(data: &[u8]) -> Result<(), Error> {
 
     Ok(())
 }
+

@@ -1,4 +1,4 @@
-use crate::pubsub::{subscribe, validate_domain_name, validate_url};
+use crate::pubsub::{subscribe, validate_url};
 use crate::{application::APP, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 
@@ -15,21 +15,14 @@ pub struct SubscribeCmd {
     /// The publisher's domain as defined in the pubsub module
     #[clap(long, short)]
     publisher_domain: String,
-
-    /// The URL publishers will send requests to. Use your Steward server endpoint.
-    subscriber_endpoint: String,
 }
 
 impl Runnable for SubscribeCmd {
     fn run(&self) {
         openssl_probe::init_ssl_cert_env_vars();
 
-        validate_domain_name(&self.publisher_domain).unwrap_or_else(|e| {
+        validate_url(&self.publisher_domain).unwrap_or_else(|e| {
             status_err!("invalid publisher domain: {}", e);
-            std::process::exit(1);
-        });
-        validate_url(&self.subscriber_endpoint).unwrap_or_else(|e| {
-            status_err!("invalid subscriber url: {}", e);
             std::process::exit(1);
         });
 
@@ -37,7 +30,6 @@ impl Runnable for SubscribeCmd {
             subscribe(
                 self.cellar_id.clone(),
                 self.publisher_domain.clone(),
-                self.subscriber_endpoint.clone(),
             )
             .await
             .unwrap();

@@ -1,4 +1,4 @@
-use crate::pubsub::{add_subscriber, validate_ca_cert, validate_domain_name};
+use crate::pubsub::{add_subscriber, validate_ca_cert, validate_url};
 use crate::{application::APP, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
 
@@ -12,9 +12,9 @@ pub struct AddSubscriberCmd {
     #[clap(long, short)]
     ca_path: String,
 
-    /// The subscriber's domain. Use the FQDN for your steward server.
+    /// The subscriber's push URL. Use the FQDN for your steward server.
     #[clap(long, short)]
-    domain: String,
+    push_url: String,
 }
 
 impl Runnable for AddSubscriberCmd {
@@ -29,13 +29,13 @@ impl Runnable for AddSubscriberCmd {
             status_err!("invalid CA cert: {}", e);
             std::process::exit(1);
         });
-        validate_domain_name(&self.domain).unwrap_or_else(|e| {
+        validate_url(&self.push_url).unwrap_or_else(|e| {
             status_err!("invalid domain name: {}", e);
             std::process::exit(1);
         });
 
         abscissa_tokio::run_with_actix(&APP, async {
-            add_subscriber(self.domain.clone(), data).await.unwrap();
+            add_subscriber(self.push_url.clone(), data).await.unwrap();
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
