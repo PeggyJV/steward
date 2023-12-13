@@ -153,7 +153,6 @@ func (x *OneInchAdaptorV1Calls) GetCalls() []*OneInchAdaptorV1 {
 	return nil
 }
 
-//
 // Allows strategists to make ERC20 swaps using 1Inch.
 //
 // Represents function `swapWithOneInch(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes swapCallData)`

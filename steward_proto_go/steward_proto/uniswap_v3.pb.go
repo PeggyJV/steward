@@ -255,7 +255,6 @@ func (x *UniswapV3AdaptorV2Calls) GetCalls() []*UniswapV3AdaptorV2 {
 	return nil
 }
 
-//
 // Allows strategist to open up arbritray Uniswap V3 positions.
 //
 // Represents function openPosition(ERC20 token0, ERC20 token1, uint24 poolFee, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1, int24 tickLower, int24 tickUpper)
@@ -370,7 +369,6 @@ func (x *UniswapV3AdaptorV2_OpenPosition) GetTickUpper() int32 {
 	return 0
 }
 
-//
 // Allows strategist to close Uniswap V3 positions.
 //
 // Represents function `closePosition(uint256 tokenId, uint256 min0, uint256 min1)`
@@ -437,7 +435,6 @@ func (x *UniswapV3AdaptorV2_ClosePosition) GetMin_1() string {
 	return ""
 }
 
-//
 // Allows strategist to add to existing Uniswap V3 positions.
 //
 // Represents function `addToPosition(uint256 tokenId, uint256 amount0, uint256 amount1, uint256 min0, uint256 min1)`
@@ -520,7 +517,6 @@ func (x *UniswapV3AdaptorV2_AddToPosition) GetMin_1() string {
 	return ""
 }
 
-//
 // Allows strategist to take from existing Uniswap V3 positions.
 //
 // Represents function `takeFromPosition(uint256 tokenId, uint128 liquidity, uint256 min0, uint256 min1, bool takeFees)`
@@ -603,7 +599,6 @@ func (x *UniswapV3AdaptorV2_TakeFromPosition) GetTakeFees() bool {
 	return false
 }
 
-//
 // Allows strategist to collect fees from existing Uniswap V3 positions.
 //
 // Represents function `collectFees(uint256 tokenId, uint128 amount0, uint128 amount1)`
@@ -670,7 +665,6 @@ func (x *UniswapV3AdaptorV2_CollectFees) GetAmount_1() string {
 	return ""
 }
 
-//
 // Allows strategist to purge zero liquidity LP positions from tracker.
 //
 // Represents function `purgeAllZeroLiquidityPositions(ERC20 token0, ERC20 token1)`
@@ -729,7 +723,6 @@ func (x *UniswapV3AdaptorV2_PurgeAllZeroLiquidityPositions) GetToken_1() string 
 	return ""
 }
 
-//
 // Allows strategist to purge a single zero liquidity LP position from tracker.
 //
 // Represents function `purgeSinglePosition(uint256 tokenId)`
@@ -780,7 +773,6 @@ func (x *UniswapV3AdaptorV2_PurgeSinglePosition) GetTokenId() string {
 	return ""
 }
 
-//
 // Allows strategist to remove tracked positions that are not owned by the cellar.
 //
 // Represents function `removeUnOwnedPositionFromTracker(uint256 tokenId, ERC20 token0, ERC20 token1)`

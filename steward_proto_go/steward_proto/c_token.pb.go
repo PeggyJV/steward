@@ -183,7 +183,6 @@ func (x *CompoundCTokenAdaptorV2Calls) GetCalls() []*CompoundCTokenAdaptorV2 {
 	return nil
 }
 
-//
 // Allows strategists to lend assets on Compound.
 //
 // Represents function `depositToCompound(CErc20 market, uint256 amountToDeposit)`
@@ -242,7 +241,6 @@ func (x *CompoundCTokenAdaptorV2_DepositToCompound) GetAmountToDeposit() string 
 	return ""
 }
 
-//
 // Allows strategists to withdraw assets from Compound.
 //
 // Represents function `withdrawFromCompound(CErc20 market, uint256 amountToWithdraw)`
@@ -301,7 +299,6 @@ func (x *CompoundCTokenAdaptorV2_WithdrawFromCompound) GetAmountToWithdraw() str
 	return ""
 }
 
-//
 // Allows strategists to claim COMP rewards.
 //
 // Represents function `claimComp()`
