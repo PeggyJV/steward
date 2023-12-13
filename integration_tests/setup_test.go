@@ -77,7 +77,7 @@ var (
 
 type IntegrationTestSuite struct {
 	suite.Suite
-	
+
 	chain         *chain
 	dockerPool    *dockertest.Pool
 	dockerNetwork *dockertest.Network
@@ -381,13 +381,12 @@ func (s *IntegrationTestSuite) initGenesis() {
 	bz, err = cdc.MarshalJSON(&corkGenState)
 	s.Require().NoError(err)
 	appGenState[corktypes.ModuleName] = bz
-    
+
 	axelarcorkGenState := axelarcorktypes.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[axelarcorktypes.ModuleName], &axelarcorkGenState))
 	bz, err = cdc.MarshalJSON(&axelarcorkGenState)
 	s.Require().NoError(err)
 	appGenState[axelarcorktypes.ModuleName] = bz
-
 
 	auctionGenState := auctiontypes.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[auctiontypes.ModuleName], &auctionGenState))
@@ -423,20 +422,20 @@ func (s *IntegrationTestSuite) initGenesis() {
 			AllowedSubscribers: 0,
 			AllowedAddresses:   []string{},
 		},
-        {
-            SubscriptionId:     vaultCellar.Hex(),
-            PublisherDomain:    "localhost",
-            Method:             1,
-            AllowedSubscribers: 0,
-            AllowedAddresses:   []string{},
-        },
-        {
-            SubscriptionId:     v2_2Cellar.Hex(),
-            PublisherDomain:    "localhost",
-            Method:             1,
-            AllowedSubscribers: 0,
-            AllowedAddresses:   []string{},
-        },
+		{
+			SubscriptionId:     vaultCellar.Hex(),
+			PublisherDomain:    "localhost",
+			Method:             1,
+			AllowedSubscribers: 0,
+			AllowedAddresses:   []string{},
+		},
+		{
+			SubscriptionId:     v2_2Cellar.Hex(),
+			PublisherDomain:    "localhost",
+			Method:             1,
+			AllowedSubscribers: 0,
+			AllowedAddresses:   []string{},
+		},
 	}
 	pubsubGenState.DefaultSubscriptions = []*pubsubtypes.DefaultSubscription{
 		{
@@ -447,10 +446,10 @@ func (s *IntegrationTestSuite) initGenesis() {
 			SubscriptionId:  vaultCellar.Hex(),
 			PublisherDomain: "localhost",
 		},
-        {
-            SubscriptionId:  v2_2Cellar.Hex(),
-            PublisherDomain: "localhost",
-        },
+		{
+			SubscriptionId:  v2_2Cellar.Hex(),
+			PublisherDomain: "localhost",
+		},
 	}
 	bz, err = cdc.MarshalJSON(&pubsubGenState)
 	s.Require().NoError(err)

@@ -8,10 +8,10 @@ import (
 )
 
 type orchestrator struct {
-	index    int
-	mnemonic string
-	keyRecord  keyring.Record
-	keyring  *keyring.Keyring
+	index     int
+	mnemonic  string
+	keyRecord keyring.Record
+	keyring   *keyring.Keyring
 }
 
 func (o *orchestrator) instanceName() string {

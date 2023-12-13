@@ -38,7 +38,7 @@ type validator struct {
 	index            int
 	moniker          string
 	mnemonic         string
-	keyRecord          keyring.Record
+	keyRecord        keyring.Record
 	privateKey       cryptotypes.PrivKey
 	consensusKey     privval.FilePVKey
 	consensusPrivKey cryptotypes.PrivKey

@@ -257,7 +257,8 @@ func (c *chain) sendMsgs(clientCtx client.Context, msgs ...sdk.Msg) (*sdk.TxResp
 		WithGasAdjustment(1.2).
 		WithKeybase(clientCtx.Keyring).
 		WithGas(12345678).
-		WithSignMode(signing.SignMode_SIGN_MODE_DIRECT)
+		WithSignMode(signing.SignMode_SIGN_MODE_DIRECT).
+        WithFees("24691356usomm")
 
 	fromAddr := clientCtx.GetFromAddress()
 
@@ -281,9 +282,7 @@ func (c *chain) sendMsgs(clientCtx client.Context, msgs ...sdk.Msg) (*sdk.TxResp
 		}
 	}
 
-	txf.WithFees("246913560usomm")
-
-    err := tx.GenerateOrBroadcastTxWithFactory(clientCtx, txf, msgs...)
+	err := tx.GenerateOrBroadcastTxWithFactory(clientCtx, txf, msgs...)
 	if err != nil {
 		return nil, err
 	}
@@ -298,7 +297,7 @@ func (c *chain) sendMsgs(clientCtx client.Context, msgs ...sdk.Msg) (*sdk.TxResp
 	err = cdc.Unmarshal(resBytes, &res)
 	if err != nil {
 		return nil, err
-	}	
+	}
 
 	return &res, nil
 }

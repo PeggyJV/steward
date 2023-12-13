@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypesv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	ethereum "github.com/ethereum/go-ethereum"
@@ -54,7 +55,7 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 		sdk.Coins{
 			{
 				Denom:  testDenom,
-				Amount: sdk.NewInt(1000000),
+				Amount: math.NewInt(1000000),
 			},
 		},
 		orch.address(),
@@ -76,7 +77,10 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 			return false
 		}
 
-		s.Require().NotEmpty(proposalsQueryResponse.Proposals)
+		if len(proposalsQueryResponse.Proposals) == 0 {
+			return false
+		}
+
 		for _, p := range proposalsQueryResponse.Proposals {
 			if p.Content.TypeUrl == "/cork.v2.ScheduledCorkProposal" {
 				s.Require().Equal(govtypesv1beta1.StatusVotingPeriod, p.Status, "proposal not in voting period")
