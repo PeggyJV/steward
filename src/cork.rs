@@ -1,5 +1,4 @@
-use abscissa_core::tracing::log::debug;
-use deep_space::{Coin, Contact};
+use abscissa_core::tracing::log::{debug, error, info, warn};
 use ethers::types::H160;
 use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
 use lazy_static::lazy_static;
@@ -10,12 +9,10 @@ use tonic::{self, async_trait, Code, Request, Response, Status};
 use crate::server::handle_authorization;
 use crate::{
     cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2},
-    config,
     error::{
         Error,
         ErrorKind::{self, *},
     },
-    prelude::{APP, Application, error, info, warn},
     proto::{self, schedule_request::CallData::*, ScheduleRequest, ScheduleResponse},
     somm_send,
 };
