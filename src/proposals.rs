@@ -30,7 +30,7 @@ const ADD_PUBLISHER_PROPOSAL: &str = "/pubsub.v1.AddPublisherProposal";
 const REMOVE_PUBLISHER_PROPOSAL: &str = "/pubsub.v1.RemovePublisherProposal";
 // const ADD_DEFAULT_SUBSCRIPTION_PROPOSAL: &str = "/pubsub.v1.AddDefaultSubscriptionProposal";
 // const REMOVE_DEFAULT_SUBSCRIPTION_PROPOSAL: &str = "/pubsub.v1.RemoveDefaultSubscriptionProposal";
-const SCHEDULED_CORK_PROPOSAL: &str = "cork.v2.ScheduledCorkProposal";
+const SCHEDULED_CORK_PROPOSAL: &str = "/cork.v2.ScheduledCorkProposal";
 
 pub async fn start_approved_proposal_polling_thread(
     publisher_cache_tx: Sender<()>,
