@@ -33,11 +33,11 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govtypesv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-    axelarcorktypes "github.com/peggyjv/sommelier/v7/x/axelarcork/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
 	auctiontypes "github.com/peggyjv/sommelier/v7/x/auction/types"
+	axelarcorktypes "github.com/peggyjv/sommelier/v7/x/axelarcork/types"
 	cellarfeestypes "github.com/peggyjv/sommelier/v7/x/cellarfees/types"
 	pubsubtypes "github.com/peggyjv/sommelier/v7/x/pubsub/types"
 	"github.com/spf13/viper"
@@ -423,6 +423,20 @@ func (s *IntegrationTestSuite) initGenesis() {
 			AllowedSubscribers: 0,
 			AllowedAddresses:   []string{},
 		},
+        {
+            SubscriptionId:     vaultCellar.Hex(),
+            PublisherDomain:    "localhost",
+            Method:             1,
+            AllowedSubscribers: 0,
+            AllowedAddresses:   []string{},
+        },
+        {
+            SubscriptionId:     v2_2Cellar.Hex(),
+            PublisherDomain:    "localhost",
+            Method:             1,
+            AllowedSubscribers: 0,
+            AllowedAddresses:   []string{},
+        },
 	}
 	pubsubGenState.DefaultSubscriptions = []*pubsubtypes.DefaultSubscription{
 		{
@@ -433,6 +447,10 @@ func (s *IntegrationTestSuite) initGenesis() {
 			SubscriptionId:  vaultCellar.Hex(),
 			PublisherDomain: "localhost",
 		},
+        {
+            SubscriptionId:  v2_2Cellar.Hex(),
+            PublisherDomain: "localhost",
+        },
 	}
 	bz, err = cdc.MarshalJSON(&pubsubGenState)
 	s.Require().NoError(err)
