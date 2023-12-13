@@ -21,9 +21,9 @@ import (
 	sdkTx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	gravitytypes "github.com/peggyjv/gravity-bridge/module/v2/x/gravity/types"
-	"github.com/peggyjv/sommelier/v4/app"
-	"github.com/peggyjv/sommelier/v4/app/params"
+	gravitytypes "github.com/peggyjv/gravity-bridge/module/v4/x/gravity/types"
+	"github.com/peggyjv/sommelier/v7/app"
+	"github.com/peggyjv/sommelier/v7/app/params"
 	tmrand "github.com/tendermint/tendermint/libs/rand"
 	rpchttp "github.com/tendermint/tendermint/rpc/client/http"
 )
@@ -163,12 +163,12 @@ func (c *chain) createAndInitOrchestratorsWithMnemonics(mnemonics []string) erro
 		orchestrator := c.createOrchestrator(i)
 
 		// create keys
-		info, kb, err := createMemoryKeyFromMnemonic("orch", mnemonics[i], "", hdPath)
+		record, kb, err := createMemoryKeyFromMnemonic("orch", mnemonics[i], "", hdPath)
 		if err != nil {
 			return err
 		}
 
-		orchestrator.keyInfo = *info
+		orchestrator.keyRecord = *record
 		orchestrator.mnemonic = mnemonics[i]
 		orchestrator.keyring = kb
 
@@ -260,7 +260,6 @@ func (c *chain) sendMsgs(clientCtx client.Context, msgs ...sdk.Msg) (*sdk.TxResp
 		WithSignMode(signing.SignMode_SIGN_MODE_DIRECT)
 
 	fromAddr := clientCtx.GetFromAddress()
-	fromName := clientCtx.GetFromName()
 
 	if err := txf.AccountRetriever().EnsureExists(clientCtx, fromAddr); err != nil {
 		return nil, err
@@ -284,27 +283,22 @@ func (c *chain) sendMsgs(clientCtx client.Context, msgs ...sdk.Msg) (*sdk.TxResp
 
 	txf.WithFees("246913560usomm")
 
-	txb, err := tx.BuildUnsignedTx(txf, msgs...)
+    err := tx.GenerateOrBroadcastTxWithFactory(clientCtx, txf, msgs...)
 	if err != nil {
 		return nil, err
 	}
 
-	txb.SetFeeAmount(sdk.Coins{{Denom: "usomm", Amount: sdk.NewInt(246913560)}})
-
-	err = tx.Sign(txf, fromName, txb, false)
+	resBytes := []byte{}
+	_, err = clientCtx.Input.Read(resBytes)
 	if err != nil {
 		return nil, err
 	}
 
-	txBytes, err := clientCtx.TxConfig.TxEncoder()(txb.GetTx())
+	var res sdk.TxResponse
+	err = cdc.Unmarshal(resBytes, &res)
 	if err != nil {
 		return nil, err
-	}
+	}	
 
-	res, err := clientCtx.BroadcastTx(txBytes)
-	if err != nil {
-		return nil, err
-	}
-
-	return res, nil
+	return &res, nil
 }

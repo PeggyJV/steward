@@ -18,8 +18,8 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
-	gravityTypes "github.com/peggyjv/gravity-bridge/module/v2/x/gravity/types"
-	corkTypes "github.com/peggyjv/sommelier/v4/x/cork/types"
+	gravityTypes "github.com/peggyjv/gravity-bridge/module/v4/x/gravity/types"
+	corkTypes "github.com/peggyjv/sommelier/v7/x/cork/types"
 	"github.com/peggyjv/steward/steward_proto_go/steward_proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -55,7 +55,7 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 		val := s.chain.validators[0]
 		kb, err := val.keyring()
 		s.Require().NoError(err)
-		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.address())
 		s.Require().NoError(err)
 		currentHeight, err := s.GetLatestBlockHeight(clientCtx)
 		s.Require().NoError(err)
@@ -173,7 +173,7 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 		val := s.chain.validators[0]
 		kb, err := val.keyring()
 		s.Require().NoError(err)
-		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.address())
 		s.Require().NoError(err)
 
 		// Create the cork requests to send to Steward
@@ -390,7 +390,7 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 		val := s.chain.validators[0]
 		kb, err := val.keyring()
 		s.Require().NoError(err)
-		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.address())
 		s.Require().NoError(err)
 
 		// Create the cork requests to send to Steward
@@ -638,7 +638,7 @@ func (s *IntegrationTestSuite) TestCellarV2_2() {
 		val := s.chain.validators[0]
 		kb, err := val.keyring()
 		s.Require().NoError(err)
-		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.address())
 		s.Require().NoError(err)
 
 		// Create the cork requests to send to Steward
@@ -856,7 +856,7 @@ func (s *IntegrationTestSuite) executeStewardCalls(request *steward_proto.Schedu
 			defer cancel()
 
 			c := steward_proto.NewContractCallServiceClient(conn)
-			s.T().Logf("sending request to %s", s.chain.validators[i].keyInfo.GetAddress())
+			s.T().Logf("sending request to %s", s.chain.validators[i].address())
 			_, err = c.Schedule(ctx, request)
 			s.Require().NoError(err)
 		}

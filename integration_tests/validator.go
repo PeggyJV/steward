@@ -24,9 +24,9 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
-	gravitytypes "github.com/peggyjv/gravity-bridge/module/v2/x/gravity/types"
-	"github.com/peggyjv/sommelier/v4/app"
-	"github.com/peggyjv/sommelier/v4/x/cork/types"
+	gravitytypes "github.com/peggyjv/gravity-bridge/module/v4/x/gravity/types"
+	"github.com/peggyjv/sommelier/v7/app"
+	"github.com/peggyjv/sommelier/v7/x/cork/types"
 	tmcfg "github.com/tendermint/tendermint/config"
 	tmos "github.com/tendermint/tendermint/libs/os"
 	"github.com/tendermint/tendermint/p2p"
@@ -38,7 +38,7 @@ type validator struct {
 	index            int
 	moniker          string
 	mnemonic         string
-	keyInfo          keyring.Info
+	keyRecord          keyring.Record
 	privateKey       cryptotypes.PrivKey
 	consensusKey     privval.FilePVKey
 	consensusPrivKey cryptotypes.PrivKey
@@ -147,7 +147,7 @@ func (v *validator) createConsensusKey() error {
 }
 
 func (v *validator) createKeyFromMnemonic(name, mnemonic string, passphrase string) error {
-	kb, err := keyring.New(keyringAppName, keyring.BackendTest, v.configDir(), nil)
+	kb, err := v.keyring()
 	if err != nil {
 		return err
 	}
@@ -158,7 +158,7 @@ func (v *validator) createKeyFromMnemonic(name, mnemonic string, passphrase stri
 		return err
 	}
 
-	info, err := kb.NewAccount(name, mnemonic, passphrase, sdk.FullFundraiserPath, algo)
+	record, err := kb.NewAccount(name, mnemonic, passphrase, sdk.FullFundraiserPath, algo)
 	if err != nil {
 		return err
 	}
@@ -173,7 +173,7 @@ func (v *validator) createKeyFromMnemonic(name, mnemonic string, passphrase stri
 		return err
 	}
 
-	v.keyInfo = info
+	v.keyRecord = *record
 	v.mnemonic = mnemonic
 	v.privateKey = privKey
 
@@ -239,7 +239,7 @@ func (v *validator) buildCreateValidatorMsg(amount sdk.Coin) (sdk.Msg, error) {
 	}
 
 	return stakingtypes.NewMsgCreateValidator(
-		sdk.ValAddress(v.keyInfo.GetAddress()),
+		sdk.ValAddress(v.address()),
 		valPubKey,
 		amount,
 		description,
@@ -260,7 +260,7 @@ func (v *validator) buildDelegateKeysMsg() sdk.Msg {
 	}
 
 	signMsg := gravitytypes.DelegateKeysSignMsg{
-		ValidatorAddress: sdk.ValAddress(v.keyInfo.GetAddress()).String(),
+		ValidatorAddress: sdk.ValAddress(v.address()).String(),
 		Nonce:            0,
 	}
 
@@ -272,8 +272,8 @@ func (v *validator) buildDelegateKeysMsg() sdk.Msg {
 	}
 
 	return gravitytypes.NewMsgDelegateKeys(
-		sdk.ValAddress(v.keyInfo.GetAddress()),
-		v.chain.orchestrators[v.index].keyInfo.GetAddress(),
+		sdk.ValAddress(v.address()),
+		v.chain.orchestrators[v.index].address(),
 		v.ethereumKey.address,
 		ethSig,
 	)
@@ -305,7 +305,7 @@ func (v *validator) signMsg(msgs ...sdk.Msg) (*sdktx.Tx, error) {
 	// also doesn't affect its generated sign bytes, so for code's simplicity
 	// sake, we put it here.
 	sig := txsigning.SignatureV2{
-		PubKey: v.keyInfo.GetPubKey(),
+		PubKey: v.pubKey(),
 		Data: &txsigning.SingleSignatureData{
 			SignMode:  txsigning.SignMode_SIGN_MODE_DIRECT,
 			Signature: nil,
@@ -332,7 +332,7 @@ func (v *validator) signMsg(msgs ...sdk.Msg) (*sdktx.Tx, error) {
 	}
 
 	sig = txsigning.SignatureV2{
-		PubKey: v.keyInfo.GetPubKey(),
+		PubKey: v.pubKey(),
 		Data: &txsigning.SingleSignatureData{
 			SignMode:  txsigning.SignMode_SIGN_MODE_DIRECT,
 			Signature: sigBytes,
@@ -353,7 +353,7 @@ func (v *validator) signMsg(msgs ...sdk.Msg) (*sdktx.Tx, error) {
 }
 
 func (v *validator) keyring() (keyring.Keyring, error) {
-	return keyring.New(keyringAppName, keyring.BackendTest, v.configDir(), nil)
+	return keyring.New(keyringAppName, keyring.BackendTest, v.configDir(), nil, cdc)
 }
 
 func (v *validator) clientContext(nodeURI string) (*client.Context, error) {
@@ -361,5 +361,23 @@ func (v *validator) clientContext(nodeURI string) (*client.Context, error) {
 	if err != nil {
 		return nil, err
 	}
-	return v.chain.clientContext(nodeURI, &kb, "val", v.keyInfo.GetAddress())
+	return v.chain.clientContext(nodeURI, &kb, "val", v.address())
+}
+
+func (v *validator) address() sdk.AccAddress {
+	addr, err := v.keyRecord.GetAddress()
+	if err != nil {
+		panic(err)
+	}
+
+	return addr
+}
+
+func (v *validator) pubKey() cryptotypes.PubKey {
+	pubKey, err := v.keyRecord.GetPubKey()
+	if err != nil {
+		panic(err)
+	}
+
+	return pubKey
 }
