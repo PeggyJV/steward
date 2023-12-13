@@ -1,0 +1,60 @@
+/*
+* Protos for function calls to the Morpho Aave V3 AToken Collateral adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+import "morpho_reward_handler.proto";
+
+// Represents call data for the Morpho Aave V3 AToken Collateral adaptor.
+message MorphoAaveV3ATokenCollateralAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `depositToAaveV3Morpho(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+        DepositToAaveV3Morpho deposit_to_aave_v3_morpho = 2;
+        // Represents function `withdrawFromAaveV3Morpho(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
+        WithdrawFromAaveV3Morpho withdraw_from_aave_v3_morpho = 3;
+        // Represents function `claim(uint256 claimable, bytes32[] memory proof)`
+        Claim claim = 4;
+    }
+
+    /*
+    * Allows strategists to lend assets on Morpho
+    *
+    * Represents function `depositToAaveV3Morpho(ERC20 tokenToDeposit, uint256 amountToDeposit)`
+    */
+    message DepositToAaveV3Morpho {
+        // The address of the token to deposit
+        string token_to_deposit = 1;
+
+        // The amount of tokens to deposit
+        string amount_to_deposit = 2;
+    }
+
+    /*
+    * Allows strategists to withdraw assets from Morpho
+    *
+    * Represents function `withdrawFromAaveV3Morpho(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
+    */
+    message WithdrawFromAaveV3Morpho {
+        // The address of the token to withdraw
+        string token_to_withdraw = 1;
+
+        // The amount of tokens to withdraw
+        string amount_to_withdraw = 2;
+    }
+}
+
+message MorphoAaveV3ATokenCollateralAdaptorV1Calls {
+    repeated MorphoAaveV3ATokenCollateralAdaptorV1 calls = 1;
+}

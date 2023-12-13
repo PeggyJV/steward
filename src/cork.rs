@@ -8,14 +8,13 @@ use tonic::{self, async_trait, Code, Request, Response, Status};
 
 use crate::server::handle_authorization;
 use crate::{
-    cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2},
+    cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2},
     error::{
         Error,
         ErrorKind::{self, *},
     },
     proto::{
-        self, schedule_request::CallData::*, ScheduleRequest, ScheduleResponse, StatusRequest,
-        StatusResponse,
+        self, schedule_request::CallData::*, ScheduleRequest, ScheduleResponse,
     },
     somm_send,
 };
@@ -62,7 +61,8 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
                 return Err(Status::new(Code::InvalidArgument, err.to_string()));
             }
         };
-        debug!("cork: {:?}", encoded_call);
+
+        debug!("hex encoded call: {:?}", hex::encode(&encoded_call));
 
         match schedule_cork(&cellar_id, encoded_call.clone(), height).await {
             Ok(res) => {
@@ -95,12 +95,6 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
 
         Ok(Response::new(ScheduleResponse { id }))
     }
-
-    async fn status(&self, _: Request<StatusRequest>) -> Result<Response<StatusResponse>, Status> {
-        Ok(Response::new(StatusResponse {
-            version: STEWARD_VERSION.to_string(),
-        }))
-    }
 }
 
 pub fn get_encoded_call(request: ScheduleRequest) -> Result<Vec<u8>, Error> {
@@ -130,6 +124,13 @@ pub fn get_encoded_call(request: ScheduleRequest) -> Result<Vec<u8>, Error> {
 
             cellar_v2::get_encoded_call(call.function.unwrap(), request.cellar_id)
         }
+        CellarV22(call) => {
+            if call.call_type.is_none() {
+                return Err(ErrorKind::Http.context("empty function data").into());
+            }
+
+            cellar_v2_2::get_encoded_call(call.call_type.unwrap(), request.cellar_id)
+        }
     }
 }
 
@@ -143,6 +144,7 @@ pub async fn schedule_cork(
         encoded_contract_call: encoded_call,
         target_contract_address: contract.to_string(),
     };
+
     somm_send::schedule_cork(cork, height)
         .await
         .map_err(|e| e.into())

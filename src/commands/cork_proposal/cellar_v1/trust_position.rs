@@ -23,7 +23,7 @@ pub struct TrustPositionCmd {
     position: EthereumAddress,
 
     /// The position type, where 0 = ERC20, 1 = ER4626, 2 = Cellar
-    #[clap(short = 't', long)]
+    #[clap(short, long)]
     position_type: u8,
 
     /// Target contract for scheduled cork.

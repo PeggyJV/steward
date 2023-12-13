@@ -1,0 +1,41 @@
+/*
+* Protos for function calls to AaveV2EnableAssetAsCollateralAdaptor.sol
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+// Represents call data for the Aave AToken adaptor, used to manage lending positions on Aave
+message AaveV2EnableAssetAsCollateralAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `setUserUseReserveAsCollateral(address asset, bool useAsCollateral)`
+        SetUserUseReserveAsCollateral set_user_use_reserve_as_collateral = 2;
+    }
+
+    /*
+    * Allows a strategist to choose to use an asset as collateral or not.
+    *
+    * Represents function `setUserUseReserveAsCollateral(address asset, bool useAsCollateral)`
+    */
+    message SetUserUseReserveAsCollateral {
+        // The address of the asset to set as collateral
+        string asset = 1;
+        // Whether to use the asset as collateral
+        bool use_as_collateral = 2;
+    }
+}
+
+message AaveV2EnableAssetAsCollateralAdaptorV1Calls {
+    repeated AaveV2EnableAssetAsCollateralAdaptorV1 calls = 1;
+}

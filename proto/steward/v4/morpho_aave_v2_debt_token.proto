@@ -1,0 +1,58 @@
+/*
+* Protos for function calls to the Morpho Aave V2 Debt Token adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+// Represents call data for the Morpho Aave V2 Debt Token adaptor.
+message MorphoAaveV2DebtTokenAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `borrowFromAaveV2Morpho(address aToken, uint256 amountToBorrow)`
+        BorrowFromAaveV2Morpho borrow_from_aave_v2_morpho = 2;
+        // Represents function `repayAaveV2MorphoDebt(IAaveToken aToken, uint256 amountToRepay)`
+        RepayAaveV2MorphoDebt repay_aave_v2_morpho_debt = 3;
+    }
+
+    /*
+    * Allows strategists to borrow assets from Aave.
+    *
+    * Represents function `borrowFromAaveV2Morpho(address aToken, uint256 amountToBorrow)`
+    */
+    message BorrowFromAaveV2Morpho {
+        // The address of the Aave V2 aToken to borrow.
+        string a_token = 1;
+
+        // The amount of the asset to borrow.
+        string amount_to_borrow = 2;
+    }
+
+    /*
+    * Allows strategists to repay loan debt on Aave.
+    *
+    * Represents function `repayAaveV2MorphoDebt(IAaveToken aToken, uint256 amountToRepay)`
+    */
+    message RepayAaveV2MorphoDebt {
+        // The address of the Aave V2 aToken to repay.
+        string a_token = 1;
+
+        // The amount of the asset to repay.
+        string amount_to_repay = 2;
+    }
+
+}
+
+message MorphoAaveV2DebtTokenAdaptorV1Calls {
+    repeated MorphoAaveV2DebtTokenAdaptorV1 calls = 1;
+}

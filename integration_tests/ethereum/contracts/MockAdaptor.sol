@@ -5,9 +5,10 @@ import {ERC20, Owned} from "./interfaces.sol";
 import {Cellar} from "./MockCellar.sol";
 
 contract Adaptor is Owned {
-    event ClaimCompAndSwap(ERC20 assetOut, Cellar.Exchange exchange, bytes params, uint64 slippage);
     event SwapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, Cellar.Exchange exchange, bytes params);
     event BorrowFromAave(address debtTokenToBorrow, uint256 amountToBorrow);
+    event SwapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin);
+    event SwapWithZeroX(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes swapCallData);
 
     constructor() Owned(msg.sender) {}
 
@@ -16,19 +17,23 @@ contract Adaptor is Owned {
     }
 
     // Mocks the function parameters of the same name from CompoundCTokenAdaptor.sol
-    function claimCompAndSwap(
-        ERC20 assetOut,
-        Cellar.Exchange exchange,
-        bytes memory params,
-        uint64 slippage
+    function swapWith0x(
+        ERC20 tokenIn,
+        ERC20 tokenOut,
+        uint256 amount,
+        bytes memory swapCallData
     ) external onlyOwner {
-        if (exchange == Cellar.Exchange.UNIV2) {
-            address[] memory path = abi.decode(params, (address[]));
-        }
-        if (exchange == Cellar.Exchange.UNIV3) {
-            (address[] memory path, uint24[] memory poolFees) = abi.decode(params, (address[], uint24[]));
-        }
-        emit ClaimCompAndSwap(assetOut, exchange, params, slippage);
+        emit SwapWithZeroX(tokenIn, tokenOut, amount, swapCallData);
+    }
+
+    // Mocks the SwapWithUniswapAdaptor swap function
+    function swapWithUniV3(
+        address[] memory path,
+        uint24[] memory poolFees,
+        uint256 amount,
+        uint256 amountOutMin
+    ) public {
+        emit SwapWithUniV3(path, poolFees, amount, amountOutMin);
     }
 
     // Mocks the function parameters of the same name from AaveDebtTokenAdaptor.sol

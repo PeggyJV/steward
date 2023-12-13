@@ -24,6 +24,7 @@ const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
 const CHAIN_PREFIX: &str = "somm";
 pub const TIMEOUT: Duration = Duration::from_secs(60);
 pub const MEMO: &str = "Sent using Somm Orchestrator";
+pub const MAX_GAS_PER_BLOCK: u64 = 60_000_000;
 
 pub async fn add_subscriber(subscriber: Subscriber) -> Result<TxResponse, CosmosGrpcError> {
     let msg = MsgAddSubscriberRequest {

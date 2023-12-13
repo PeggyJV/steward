@@ -1,0 +1,116 @@
+/*
+* Protos for function calls to the FeesAndReserves and FeesAndReservesAdaptor contracts.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+// Represents call data for the FeesAndReserves and FeesAndReservesAdaptor contracts.
+message FeesAndReservesAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `updatePerformanceFee(uint32 performanceFee)`
+        UpdatePerformanceFees update_performance_fees = 2;
+        // Represents function `updateManagementFee(uint32 managementFee)`
+        UpdateManagementFees update_management_fees = 3;
+        // Represents function `changeUpkeepFrequency(uint64 newFrequency)`
+        ChangeUpkeepFrequency change_upkeep_frequency = 4;
+        // Represents function `changeUpkeepMaxGas(uint64 newMaxGas)`
+        ChangeUpkeepMaxGas change_upkeep_max_gas = 5;
+        // Represents function `setupMetaData(uint32 managementFee, uint32 performanceFee)`
+        SetupMetaData setup_meta_data = 6;
+        // Represents function `addAssetsToReserves(uint256 amount)`
+        AddAssetsToReserves add_assets_to_reserves = 7;
+        // Represents function `withdrawAssetsFromReserves(uint256 amount)`
+        WithdrawAssetsFromReserves withdraw_assets_from_reserves = 8;
+        // Represents function `prepareFees(uint256 amount)`
+        PrepareFees prepare_fees = 9;
+    }
+
+    /*
+    * Allows the owner to update a Cellar's performance fee.
+    *
+    * Represents function `updatePerformanceFee(uint32 performanceFee)`
+    */
+    message UpdatePerformanceFees {
+        uint32 performance_fee = 1;
+    }
+
+    /*
+    * Allows the owner to update a Cellar's management fee.
+    *
+    * Represents function `updateManagementFee(uint32 managementFee)`
+    */
+    message UpdateManagementFees {
+        uint32 management_fee = 1;
+    }
+
+    /*
+    * Allows the owner to update a Cellar's upkeep frequency.
+    *
+    * Represents function `changeUpkeepFrequency(uint64 newFrequency)`
+    */
+    message ChangeUpkeepFrequency {
+        uint64 new_frequency = 1;
+    }
+
+    /*
+    * Allows the owner to update a Cellar's upkeep max gas.
+    *
+    * Represents function `changeUpkeepMaxGas(uint64 newMaxGas)`
+    */
+    message ChangeUpkeepMaxGas {
+        uint64 new_max_gas = 1;
+    }
+
+    /*
+    * Allows the owner to set the Cellar's fee metadata
+    *
+    * Represents function `setupMetaData(uint32 managementFee, uint32 performanceFee)`
+    */
+    message SetupMetaData {
+        uint32 management_fee = 1;
+        uint32 performance_fee = 2;
+    }
+
+    /*
+    * Allows the owner to add assets to the Cellar's reserves
+    *
+    * Represents function `addAssetsToReserves(uint256 amount)`
+    */
+    message AddAssetsToReserves {
+        string amount = 1;
+    }
+
+    /*
+    * Allows the owner to withdraw assets from the Cellar's reserves
+    *
+    * Represents function `withdrawAssetsFromReserves(uint256 amount)`
+    */
+    message WithdrawAssetsFromReserves {
+        string amount = 1;
+    }
+
+    /*
+    * Allows the owner to prepare fees to be split between the platform, strategist, and protocol
+    *
+    * Represents function `prepareFees(uint256 amount)`
+    */
+    message PrepareFees {
+        string amount = 1;
+    }
+}
+
+message FeesAndReservesAdaptorV1Calls {
+    repeated FeesAndReservesAdaptorV1 calls = 1;
+}

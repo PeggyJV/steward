@@ -11,8 +11,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: steward-steward
-  PR_NUMBER: ${{ github.event.number }}
-  HARDHAT_IMAGE: ghcr.io/peggyjv/steward-hardhat
   HARDHAT_IMAGE_NAME: steward-hardhat
   ORCHESTRATOR_IMAGE_NAME: ghcr.io/peggyjv/gravity-bridge-orchestrator:main
   SOMMELIER_IMAGE: ghcr.io/peggyjv/sommelier-sommelier:main
@@ -41,20 +39,14 @@ jobs:
           key: ${{ runner.os }}-multi-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-multi-buildx
-      - name: container-login
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       - name: labels
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.HARDHAT_IMAGE }}
+          images: ${{ env.HARDHAT_IMAGE_NAME }}
       - name: Make upload dir
         run: mkdir -p ${{ env.UPLOAD_DIR }}
-      - name: build-and-push
+      - name: build
         uses: docker/build-push-action@v2
         with:
           context: integration_tests/ethereum
@@ -95,14 +87,19 @@ jobs:
           key: ${{ runner.os }}-multi-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-multi-buildx
+      - name: labels
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.IMAGE_NAME }}
       - name: Make upload dir
         run: mkdir -p ${{ env.UPLOAD_DIR }}
-      - name: build-and-push
+      - name: build
         uses: docker/build-push-action@v2
         with:
           file: Dockerfile
           push: false
-          tags: steward:prebuilt
+          tags: ${{ steps.meta.outputs.tags }}
           builder: ${{ steps.buildx.outputs.name }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
@@ -128,7 +125,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test_type: [ "AaveV2Stablecoin", "CellarV1", "CellarV2", "ScheduledCorkProposal" ]
+        test_type: [ "AaveV2Stablecoin", "CellarV1", "CellarV2", "CellarV2_2", "ScheduledCorkProposal" ]
     steps:
       - name: Set up Go 1.15
         uses: actions/setup-go@v2
@@ -145,17 +142,21 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-      - name: container-login
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       - name: docker sommelier metadata
         id: meta-sommelier
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.SOMMELIER_IMAGE }}
+      - name: docker hardhat metadata
+        id: meta-hardhat
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.HARDHAT_IMAGE_NAME }}
+      - name: docker steward metadata
+        id: meta-steward
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.IMAGE_NAME }}
       - name: pull sommelier image
         run: docker pull ${{ env.SOMMELIER_IMAGE }}
       - name: rename sommelier image
@@ -171,19 +172,19 @@ jobs:
         with:
           name: ${{ env.HARDHAT_IMAGE_NAME }}
           path: ${{ env.DOWNLOAD_DIR }}/
-      # The image is already tagged at this point by the hardhat-build job
       - name: Load hardhat image
         run: docker load --input ${{ env.DOWNLOAD_DIR }}/${{ env.HARDHAT_ARTIFACT }}
       - name: Rename hardhat image
-        run: docker tag ${{ env.HARDHAT_IMAGE }}:pr-${{ env.PR_NUMBER }} ethereum:prebuilt
+        run: docker tag ${{ steps.meta-hardhat.outputs.tags }} ethereum:prebuilt
       - name: Get steward artifact
         uses: actions/download-artifact@v3
         with:
           name: ${{ env.IMAGE_NAME }}
           path: ${{ env.DOWNLOAD_DIR }}/
-      # The image is already tagged at this point by the steward-build job
       - name: Load steward image
         run: docker load --input ${{ env.DOWNLOAD_DIR }}/${{ env.STEWARD_ARTIFACT }}
+      - name: Rename steward image
+        run: docker tag ${{ steps.meta-steward.outputs.tags }} steward:prebuilt
       - name: clean the slate
         run: make e2e_clean_slate
       - name: build go test binary

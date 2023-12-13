@@ -1,6 +1,6 @@
-pub use aavedebttokenadaptor_mod::*;
+pub use aavedebttokenadaptorv1_mod::*;
 #[allow(clippy::too_many_arguments)]
-mod aavedebttokenadaptor_mod {
+mod aavedebttokenadaptorv1_mod {
     #![allow(clippy::enum_variant_names)]
     #![allow(dead_code)]
     #![allow(clippy::type_complexity)]
@@ -14,28 +14,28 @@ mod aavedebttokenadaptor_mod {
         types::*,
     };
     use ethers::providers::Middleware;
-    #[doc = "AaveDebtTokenAdaptor was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
+    #[doc = "AaveDebtTokenAdaptorV1 was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
     use std::sync::Arc;
-    pub static AAVEDEBTTOKENADAPTOR_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
+    pub static AAVEDEBTTOKENADAPTORV1_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
         ethers::contract::Lazy::new(|| {
             serde_json :: from_str ("[\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"untrackedDebtPosition\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"AaveDebtTokenAdaptor__DebtPositionsMustBeTracked\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"AaveDebtTokenAdaptor__HealthFactorTooLow\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__BadSlippage\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__ExchangeNotSupported\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__ExternalReceiverBlocked\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserDepositsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"BaseAdaptor__UserWithdrawsNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"assetsUsed\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20[]\",\n                \"name\": \"assets\",\n                \"type\": \"address[]\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"balanceOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"debtTokenToBorrow\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountToBorrow\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"borrowFromAave\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"deposit\",\n        \"outputs\": [],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address[]\",\n                \"name\": \"loanToken\",\n                \"type\": \"address[]\"\n            },\n            {\n                \"internalType\": \"uint256[]\",\n                \"name\": \"loanAmount\",\n                \"type\": \"uint256[]\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"flashLoan\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"identifier\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"\",\n                \"type\": \"bytes32\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"isDebt\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetOut\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"slippage\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"name\": \"oracleSwap\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountOut\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"tokenToRepay\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountToRepay\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"repayAaveDebt\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"asset\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"revokeApproval\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"assetOut\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"swap\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountOut\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"tokenIn\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"tokenToRepay\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amountIn\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"enum SwapRouter.Exchange\",\n                \"name\": \"exchange\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"swapAndRepay\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdraw\",\n        \"outputs\": [],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"withdrawableFrom\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"pure\",\n        \"type\": \"function\"\n    }\n]\n") . expect ("invalid abi")
         });
     #[derive(Clone)]
-    pub struct AaveDebtTokenAdaptor<M>(ethers::contract::Contract<M>);
-    impl<M> std::ops::Deref for AaveDebtTokenAdaptor<M> {
+    pub struct AaveDebtTokenAdaptorV1<M>(ethers::contract::Contract<M>);
+    impl<M> std::ops::Deref for AaveDebtTokenAdaptorV1<M> {
         type Target = ethers::contract::Contract<M>;
         fn deref(&self) -> &Self::Target {
             &self.0
         }
     }
-    impl<M: ethers::providers::Middleware> std::fmt::Debug for AaveDebtTokenAdaptor<M> {
+    impl<M: ethers::providers::Middleware> std::fmt::Debug for AaveDebtTokenAdaptorV1<M> {
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-            f.debug_tuple(stringify!(AaveDebtTokenAdaptor))
+            f.debug_tuple(stringify!(AaveDebtTokenAdaptorV1))
                 .field(&self.address())
                 .finish()
         }
     }
-    impl<'a, M: ethers::providers::Middleware> AaveDebtTokenAdaptor<M> {
+    impl<'a, M: ethers::providers::Middleware> AaveDebtTokenAdaptorV1<M> {
         #[doc = r" Creates a new contract instance with the specified `ethers`"]
         #[doc = r" client at the given `Address`. The contract derefs to a `ethers::Contract`"]
         #[doc = r" object"]
@@ -45,7 +45,7 @@ mod aavedebttokenadaptor_mod {
         ) -> Self {
             let contract = ethers::contract::Contract::new(
                 address.into(),
-                AAVEDEBTTOKENADAPTOR_ABI.clone(),
+                AAVEDEBTTOKENADAPTORV1_ABI.clone(),
                 client,
             );
             Self(contract)
@@ -486,7 +486,7 @@ mod aavedebttokenadaptor_mod {
         pub ethers::core::types::Bytes,
     );
     #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
-    pub enum AaveDebtTokenAdaptorCalls {
+    pub enum AaveDebtTokenAdaptorV1Calls {
         AssetOf(AssetOfCall),
         AssetsUsed(AssetsUsedCall),
         BalanceOf(BalanceOfCall),
@@ -503,198 +503,198 @@ mod aavedebttokenadaptor_mod {
         Withdraw(WithdrawCall),
         WithdrawableFrom(WithdrawableFromCall),
     }
-    impl ethers::core::abi::AbiDecode for AaveDebtTokenAdaptorCalls {
+    impl ethers::core::abi::AbiDecode for AaveDebtTokenAdaptorV1Calls {
         fn decode(data: impl AsRef<[u8]>) -> Result<Self, ethers::core::abi::AbiError> {
             if let Ok(decoded) =
                 <AssetOfCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(AaveDebtTokenAdaptorCalls::AssetOf(decoded));
+                return Ok(AaveDebtTokenAdaptorV1Calls::AssetOf(decoded));
             }
             if let Ok(decoded) =
                 <AssetsUsedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(AaveDebtTokenAdaptorCalls::AssetsUsed(decoded));
+                return Ok(AaveDebtTokenAdaptorV1Calls::AssetsUsed(decoded));
             }
             if let Ok(decoded) =
                 <BalanceOfCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(AaveDebtTokenAdaptorCalls::BalanceOf(decoded));
+                return Ok(AaveDebtTokenAdaptorV1Calls::BalanceOf(decoded));
             }
             if let Ok(decoded) =
                 <BorrowFromAaveCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(AaveDebtTokenAdaptorCalls::BorrowFromAave(decoded));
+                return Ok(AaveDebtTokenAdaptorV1Calls::BorrowFromAave(decoded));
             }
             if let Ok(decoded) =
                 <DepositCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(AaveDebtTokenAdaptorCalls::Deposit(decoded));
+                return Ok(AaveDebtTokenAdaptorV1Calls::Deposit(decoded));
             }
             if let Ok(decoded) =
                 <FlashLoanCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(AaveDebtTokenAdaptorCalls::FlashLoan(decoded));
+                return Ok(AaveDebtTokenAdaptorV1Calls::FlashLoan(decoded));
             }
             if let Ok(decoded) =
                 <IdentifierCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(AaveDebtTokenAdaptorCalls::Identifier(decoded));
+                return Ok(AaveDebtTokenAdaptorV1Calls::Identifier(decoded));
             }
             if let Ok(decoded) = <IsDebtCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(AaveDebtTokenAdaptorCalls::IsDebt(decoded));
+                return Ok(AaveDebtTokenAdaptorV1Calls::IsDebt(decoded));
             }
             if let Ok(decoded) =
                 <OracleSwapCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(AaveDebtTokenAdaptorCalls::OracleSwap(decoded));
+                return Ok(AaveDebtTokenAdaptorV1Calls::OracleSwap(decoded));
             }
             if let Ok(decoded) =
                 <RepayAaveDebtCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(AaveDebtTokenAdaptorCalls::RepayAaveDebt(decoded));
+                return Ok(AaveDebtTokenAdaptorV1Calls::RepayAaveDebt(decoded));
             }
             if let Ok(decoded) =
                 <RevokeApprovalCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(AaveDebtTokenAdaptorCalls::RevokeApproval(decoded));
+                return Ok(AaveDebtTokenAdaptorV1Calls::RevokeApproval(decoded));
             }
             if let Ok(decoded) = <SwapCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(AaveDebtTokenAdaptorCalls::Swap(decoded));
+                return Ok(AaveDebtTokenAdaptorV1Calls::Swap(decoded));
             }
             if let Ok(decoded) =
                 <SwapAndRepayCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(AaveDebtTokenAdaptorCalls::SwapAndRepay(decoded));
+                return Ok(AaveDebtTokenAdaptorV1Calls::SwapAndRepay(decoded));
             }
             if let Ok(decoded) =
                 <WithdrawCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(AaveDebtTokenAdaptorCalls::Withdraw(decoded));
+                return Ok(AaveDebtTokenAdaptorV1Calls::Withdraw(decoded));
             }
             if let Ok(decoded) =
                 <WithdrawableFromCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(AaveDebtTokenAdaptorCalls::WithdrawableFrom(decoded));
+                return Ok(AaveDebtTokenAdaptorV1Calls::WithdrawableFrom(decoded));
             }
             Err(ethers::core::abi::Error::InvalidData.into())
         }
     }
-    impl ethers::core::abi::AbiEncode for AaveDebtTokenAdaptorCalls {
+    impl ethers::core::abi::AbiEncode for AaveDebtTokenAdaptorV1Calls {
         fn encode(self) -> Vec<u8> {
             match self {
-                AaveDebtTokenAdaptorCalls::AssetOf(element) => element.encode(),
-                AaveDebtTokenAdaptorCalls::AssetsUsed(element) => element.encode(),
-                AaveDebtTokenAdaptorCalls::BalanceOf(element) => element.encode(),
-                AaveDebtTokenAdaptorCalls::BorrowFromAave(element) => element.encode(),
-                AaveDebtTokenAdaptorCalls::Deposit(element) => element.encode(),
-                AaveDebtTokenAdaptorCalls::FlashLoan(element) => element.encode(),
-                AaveDebtTokenAdaptorCalls::Identifier(element) => element.encode(),
-                AaveDebtTokenAdaptorCalls::IsDebt(element) => element.encode(),
-                AaveDebtTokenAdaptorCalls::OracleSwap(element) => element.encode(),
-                AaveDebtTokenAdaptorCalls::RepayAaveDebt(element) => element.encode(),
-                AaveDebtTokenAdaptorCalls::RevokeApproval(element) => element.encode(),
-                AaveDebtTokenAdaptorCalls::Swap(element) => element.encode(),
-                AaveDebtTokenAdaptorCalls::SwapAndRepay(element) => element.encode(),
-                AaveDebtTokenAdaptorCalls::Withdraw(element) => element.encode(),
-                AaveDebtTokenAdaptorCalls::WithdrawableFrom(element) => element.encode(),
+                AaveDebtTokenAdaptorV1Calls::AssetOf(element) => element.encode(),
+                AaveDebtTokenAdaptorV1Calls::AssetsUsed(element) => element.encode(),
+                AaveDebtTokenAdaptorV1Calls::BalanceOf(element) => element.encode(),
+                AaveDebtTokenAdaptorV1Calls::BorrowFromAave(element) => element.encode(),
+                AaveDebtTokenAdaptorV1Calls::Deposit(element) => element.encode(),
+                AaveDebtTokenAdaptorV1Calls::FlashLoan(element) => element.encode(),
+                AaveDebtTokenAdaptorV1Calls::Identifier(element) => element.encode(),
+                AaveDebtTokenAdaptorV1Calls::IsDebt(element) => element.encode(),
+                AaveDebtTokenAdaptorV1Calls::OracleSwap(element) => element.encode(),
+                AaveDebtTokenAdaptorV1Calls::RepayAaveDebt(element) => element.encode(),
+                AaveDebtTokenAdaptorV1Calls::RevokeApproval(element) => element.encode(),
+                AaveDebtTokenAdaptorV1Calls::Swap(element) => element.encode(),
+                AaveDebtTokenAdaptorV1Calls::SwapAndRepay(element) => element.encode(),
+                AaveDebtTokenAdaptorV1Calls::Withdraw(element) => element.encode(),
+                AaveDebtTokenAdaptorV1Calls::WithdrawableFrom(element) => element.encode(),
             }
         }
     }
-    impl ::std::fmt::Display for AaveDebtTokenAdaptorCalls {
+    impl ::std::fmt::Display for AaveDebtTokenAdaptorV1Calls {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match self {
-                AaveDebtTokenAdaptorCalls::AssetOf(element) => element.fmt(f),
-                AaveDebtTokenAdaptorCalls::AssetsUsed(element) => element.fmt(f),
-                AaveDebtTokenAdaptorCalls::BalanceOf(element) => element.fmt(f),
-                AaveDebtTokenAdaptorCalls::BorrowFromAave(element) => element.fmt(f),
-                AaveDebtTokenAdaptorCalls::Deposit(element) => element.fmt(f),
-                AaveDebtTokenAdaptorCalls::FlashLoan(element) => element.fmt(f),
-                AaveDebtTokenAdaptorCalls::Identifier(element) => element.fmt(f),
-                AaveDebtTokenAdaptorCalls::IsDebt(element) => element.fmt(f),
-                AaveDebtTokenAdaptorCalls::OracleSwap(element) => element.fmt(f),
-                AaveDebtTokenAdaptorCalls::RepayAaveDebt(element) => element.fmt(f),
-                AaveDebtTokenAdaptorCalls::RevokeApproval(element) => element.fmt(f),
-                AaveDebtTokenAdaptorCalls::Swap(element) => element.fmt(f),
-                AaveDebtTokenAdaptorCalls::SwapAndRepay(element) => element.fmt(f),
-                AaveDebtTokenAdaptorCalls::Withdraw(element) => element.fmt(f),
-                AaveDebtTokenAdaptorCalls::WithdrawableFrom(element) => element.fmt(f),
+                AaveDebtTokenAdaptorV1Calls::AssetOf(element) => element.fmt(f),
+                AaveDebtTokenAdaptorV1Calls::AssetsUsed(element) => element.fmt(f),
+                AaveDebtTokenAdaptorV1Calls::BalanceOf(element) => element.fmt(f),
+                AaveDebtTokenAdaptorV1Calls::BorrowFromAave(element) => element.fmt(f),
+                AaveDebtTokenAdaptorV1Calls::Deposit(element) => element.fmt(f),
+                AaveDebtTokenAdaptorV1Calls::FlashLoan(element) => element.fmt(f),
+                AaveDebtTokenAdaptorV1Calls::Identifier(element) => element.fmt(f),
+                AaveDebtTokenAdaptorV1Calls::IsDebt(element) => element.fmt(f),
+                AaveDebtTokenAdaptorV1Calls::OracleSwap(element) => element.fmt(f),
+                AaveDebtTokenAdaptorV1Calls::RepayAaveDebt(element) => element.fmt(f),
+                AaveDebtTokenAdaptorV1Calls::RevokeApproval(element) => element.fmt(f),
+                AaveDebtTokenAdaptorV1Calls::Swap(element) => element.fmt(f),
+                AaveDebtTokenAdaptorV1Calls::SwapAndRepay(element) => element.fmt(f),
+                AaveDebtTokenAdaptorV1Calls::Withdraw(element) => element.fmt(f),
+                AaveDebtTokenAdaptorV1Calls::WithdrawableFrom(element) => element.fmt(f),
             }
         }
     }
-    impl ::std::convert::From<AssetOfCall> for AaveDebtTokenAdaptorCalls {
+    impl ::std::convert::From<AssetOfCall> for AaveDebtTokenAdaptorV1Calls {
         fn from(var: AssetOfCall) -> Self {
-            AaveDebtTokenAdaptorCalls::AssetOf(var)
+            AaveDebtTokenAdaptorV1Calls::AssetOf(var)
         }
     }
-    impl ::std::convert::From<AssetsUsedCall> for AaveDebtTokenAdaptorCalls {
+    impl ::std::convert::From<AssetsUsedCall> for AaveDebtTokenAdaptorV1Calls {
         fn from(var: AssetsUsedCall) -> Self {
-            AaveDebtTokenAdaptorCalls::AssetsUsed(var)
+            AaveDebtTokenAdaptorV1Calls::AssetsUsed(var)
         }
     }
-    impl ::std::convert::From<BalanceOfCall> for AaveDebtTokenAdaptorCalls {
+    impl ::std::convert::From<BalanceOfCall> for AaveDebtTokenAdaptorV1Calls {
         fn from(var: BalanceOfCall) -> Self {
-            AaveDebtTokenAdaptorCalls::BalanceOf(var)
+            AaveDebtTokenAdaptorV1Calls::BalanceOf(var)
         }
     }
-    impl ::std::convert::From<BorrowFromAaveCall> for AaveDebtTokenAdaptorCalls {
+    impl ::std::convert::From<BorrowFromAaveCall> for AaveDebtTokenAdaptorV1Calls {
         fn from(var: BorrowFromAaveCall) -> Self {
-            AaveDebtTokenAdaptorCalls::BorrowFromAave(var)
+            AaveDebtTokenAdaptorV1Calls::BorrowFromAave(var)
         }
     }
-    impl ::std::convert::From<DepositCall> for AaveDebtTokenAdaptorCalls {
+    impl ::std::convert::From<DepositCall> for AaveDebtTokenAdaptorV1Calls {
         fn from(var: DepositCall) -> Self {
-            AaveDebtTokenAdaptorCalls::Deposit(var)
+            AaveDebtTokenAdaptorV1Calls::Deposit(var)
         }
     }
-    impl ::std::convert::From<FlashLoanCall> for AaveDebtTokenAdaptorCalls {
+    impl ::std::convert::From<FlashLoanCall> for AaveDebtTokenAdaptorV1Calls {
         fn from(var: FlashLoanCall) -> Self {
-            AaveDebtTokenAdaptorCalls::FlashLoan(var)
+            AaveDebtTokenAdaptorV1Calls::FlashLoan(var)
         }
     }
-    impl ::std::convert::From<IdentifierCall> for AaveDebtTokenAdaptorCalls {
+    impl ::std::convert::From<IdentifierCall> for AaveDebtTokenAdaptorV1Calls {
         fn from(var: IdentifierCall) -> Self {
-            AaveDebtTokenAdaptorCalls::Identifier(var)
+            AaveDebtTokenAdaptorV1Calls::Identifier(var)
         }
     }
-    impl ::std::convert::From<IsDebtCall> for AaveDebtTokenAdaptorCalls {
+    impl ::std::convert::From<IsDebtCall> for AaveDebtTokenAdaptorV1Calls {
         fn from(var: IsDebtCall) -> Self {
-            AaveDebtTokenAdaptorCalls::IsDebt(var)
+            AaveDebtTokenAdaptorV1Calls::IsDebt(var)
         }
     }
-    impl ::std::convert::From<OracleSwapCall> for AaveDebtTokenAdaptorCalls {
+    impl ::std::convert::From<OracleSwapCall> for AaveDebtTokenAdaptorV1Calls {
         fn from(var: OracleSwapCall) -> Self {
-            AaveDebtTokenAdaptorCalls::OracleSwap(var)
+            AaveDebtTokenAdaptorV1Calls::OracleSwap(var)
         }
     }
-    impl ::std::convert::From<RepayAaveDebtCall> for AaveDebtTokenAdaptorCalls {
+    impl ::std::convert::From<RepayAaveDebtCall> for AaveDebtTokenAdaptorV1Calls {
         fn from(var: RepayAaveDebtCall) -> Self {
-            AaveDebtTokenAdaptorCalls::RepayAaveDebt(var)
+            AaveDebtTokenAdaptorV1Calls::RepayAaveDebt(var)
         }
     }
-    impl ::std::convert::From<RevokeApprovalCall> for AaveDebtTokenAdaptorCalls {
+    impl ::std::convert::From<RevokeApprovalCall> for AaveDebtTokenAdaptorV1Calls {
         fn from(var: RevokeApprovalCall) -> Self {
-            AaveDebtTokenAdaptorCalls::RevokeApproval(var)
+            AaveDebtTokenAdaptorV1Calls::RevokeApproval(var)
         }
     }
-    impl ::std::convert::From<SwapCall> for AaveDebtTokenAdaptorCalls {
+    impl ::std::convert::From<SwapCall> for AaveDebtTokenAdaptorV1Calls {
         fn from(var: SwapCall) -> Self {
-            AaveDebtTokenAdaptorCalls::Swap(var)
+            AaveDebtTokenAdaptorV1Calls::Swap(var)
         }
     }
-    impl ::std::convert::From<SwapAndRepayCall> for AaveDebtTokenAdaptorCalls {
+    impl ::std::convert::From<SwapAndRepayCall> for AaveDebtTokenAdaptorV1Calls {
         fn from(var: SwapAndRepayCall) -> Self {
-            AaveDebtTokenAdaptorCalls::SwapAndRepay(var)
+            AaveDebtTokenAdaptorV1Calls::SwapAndRepay(var)
         }
     }
-    impl ::std::convert::From<WithdrawCall> for AaveDebtTokenAdaptorCalls {
+    impl ::std::convert::From<WithdrawCall> for AaveDebtTokenAdaptorV1Calls {
         fn from(var: WithdrawCall) -> Self {
-            AaveDebtTokenAdaptorCalls::Withdraw(var)
+            AaveDebtTokenAdaptorV1Calls::Withdraw(var)
         }
     }
-    impl ::std::convert::From<WithdrawableFromCall> for AaveDebtTokenAdaptorCalls {
+    impl ::std::convert::From<WithdrawableFromCall> for AaveDebtTokenAdaptorV1Calls {
         fn from(var: WithdrawableFromCall) -> Self {
-            AaveDebtTokenAdaptorCalls::WithdrawableFrom(var)
+            AaveDebtTokenAdaptorV1Calls::WithdrawableFrom(var)
         }
     }
 }

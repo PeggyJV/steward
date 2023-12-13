@@ -17,7 +17,7 @@ use abscissa_core::{clap::Parser, Command, Runnable};
     long_about = "DESCRIPTION\n\nCalls setStrategistPlatformCut() on the target cellar contract at the specified block height.\nFor more information see https://github.com/PeggyJV/cellar-v1_5/blob/release/src/base/Cellar.sol"
 )]
 pub struct SetStrategistPlatformCutCmd {
-    #[clap(short = 'n', long)]
+    #[clap(short, long)]
     /// New platform cut proportion for the Strategy Provider between 0 and 1e18 representing 0% and 100% respectively.
     new_platform_cut: u64,
 

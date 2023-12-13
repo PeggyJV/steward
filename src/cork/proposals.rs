@@ -6,11 +6,12 @@ use somm_proto::cork::ScheduledCorkProposal;
 use prost_types::Any;
 use somm_proto::cosmos_sdk_proto::cosmos::gov::v1beta1::Proposal;
 
-use crate::cellars::{cellar_v2, aave_v2_stablecoin, cellar_v1};
+use crate::cellars::{aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2};
 use crate::cork::schedule_cork;
 use crate::prelude::APP;
 use crate::proposals::{ProposalThreadState, confirm_sheduling, log_schedule_failure};
 use crate::proto::{governance_call::Call, GovernanceCall};
+
 
 const RETRY_SLEEP: u64 = 5;
 
@@ -27,6 +28,7 @@ pub async fn handle_scheduled_cork_proposal(state: &mut ProposalThreadState, pro
                 return;
             }
         };
+
     if cork_proposal.block_height <= state.last_observed_height {
         info!(
             "proposal {} block height {} has already passed.",
@@ -112,6 +114,30 @@ pub async fn handle_scheduled_cork_proposal(state: &mut ProposalThreadState, pro
             }
             let function = data.function.unwrap();
             match cellar_v2::get_encoded_governance_call(
+                function,
+                &cellar_id,
+                proposal.proposal_id,
+            ) {
+                Ok(d) => d,
+                // this is likely a bug in steward
+                Err(err) => {
+                    error!(
+                        "failed to get encoded governance call data for proposal {}: {}",
+                        proposal.proposal_id, err
+                    );
+                    return;
+                }
+            }
+        }
+        Call::CellarV22(data) => {
+            if data.function.is_none() {
+                warn!(
+                    "scheduled cork proposal {} call data contains no function data and will be ignored: {:?}",
+                    proposal.proposal_id, data,
+                );
+            }
+            let function = data.function.unwrap();
+            match cellar_v2_2::get_encoded_governance_call(
                 function,
                 &cellar_id,
                 proposal.proposal_id,
