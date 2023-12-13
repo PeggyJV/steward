@@ -39,28 +39,25 @@ impl Runnable for SimulateCmd {
             });
         info!("Starting application");
         abscissa_tokio::run(&APP, async move {
+            let server_config: ServerConfig =
+                simulate::load_simulate_server_config(&config, self.use_tls)
+                    .await
+                    .unwrap_or_else(|err| {
+                        status_err!("failed to load server config: {}", err);
+                        std::process::exit(1)
+                    });
 
-             let server_config: ServerConfig =
-                 simulate::load_simulate_server_config(&config, self.use_tls)
-                     .await
-                     .unwrap_or_else(|err| {
-                         status_err!("failed to load server config: {}", err);
-                         std::process::exit(1)
-                     });
- 
-             let mut builder = tonic::transport::Server::builder();
-             if self.use_tls {
-                 let tls_config = &server_config
-                     .tls_config
-                     .expect("tls config was not initialized");
-                 builder = builder
-                     .tls_config(tls_config.to_owned())
-                     .unwrap_or_else(|err| {
-                         panic!("{:?}", err);
-                     })
-             }
-
-
+            let mut builder = tonic::transport::Server::builder();
+            if self.use_tls {
+                let tls_config = &server_config
+                    .tls_config
+                    .expect("tls config was not initialized");
+                builder = builder
+                    .tls_config(tls_config.to_owned())
+                    .unwrap_or_else(|err| {
+                        panic!("{:?}", err);
+                    })
+            }
 
             info!("simulate server listening on {}", server_config.address);
             if let Err(err) = builder

@@ -213,4 +213,3 @@ pub(crate) fn validate_ca_cert(data: &[u8]) -> Result<(), Error> {
 
     Ok(())
 }
-

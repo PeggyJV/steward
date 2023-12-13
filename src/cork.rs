@@ -13,9 +13,7 @@ use crate::{
         Error,
         ErrorKind::{self, *},
     },
-    proto::{
-        self, schedule_request::CallData::*, ScheduleRequest, ScheduleResponse,
-    },
+    proto::{self, schedule_request::CallData::*, ScheduleRequest, ScheduleResponse},
     somm_send,
 };
 

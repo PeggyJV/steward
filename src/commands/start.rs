@@ -3,13 +3,8 @@
 /// App-local prelude includes `app_reader()`/`app_writer()`/`app_config()`
 /// accessors along with logging macros. Customize as you see fit.
 use crate::{
-    application::APP,
-    config::StewardConfig,
-    cork::{
-        cache::start_approved_cellar_cache_thread,
-    },
-    prelude::*,
-    proposals::start_approved_proposal_polling_thread,
+    application::APP, config::StewardConfig, cork::cache::start_approved_cellar_cache_thread,
+    prelude::*, proposals::start_approved_proposal_polling_thread,
     pubsub::cache::start_publisher_trust_state_cache_thread,
     server::start_server_management_thread,
 };

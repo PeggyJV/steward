@@ -16,7 +16,8 @@ use crate::{
     config::get_delegate_address,
     cork::{client::CorkQueryClient, id_hash, proposals::handle_scheduled_cork_proposal},
     error::{Error, ErrorKind},
-    prelude::APP, pubsub::cache::refresh_publisher_trust_state_cache,
+    prelude::APP,
+    pubsub::cache::refresh_publisher_trust_state_cache,
 };
 
 type GovQueryClient = gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::gov::v1beta1::query_client::QueryClient<Channel>;
@@ -27,11 +28,13 @@ type TendermintQueryClient = gravity_bridge::gravity_proto::cosmos_sdk_proto::co
 // Proposal types
 const ADD_PUBLISHER_PROPOSAL: &str = "/pubsub.v1.AddPublisherProposal";
 const REMOVE_PUBLISHER_PROPOSAL: &str = "/pubsub.v1.RemovePublisherProposal";
-// const ADD_DEFAULT_SUBSCRIPTION_PROPOSAL: &str = "/pubsub.v1.AddDefaultSubscriptionProposal"; 
+// const ADD_DEFAULT_SUBSCRIPTION_PROPOSAL: &str = "/pubsub.v1.AddDefaultSubscriptionProposal";
 // const REMOVE_DEFAULT_SUBSCRIPTION_PROPOSAL: &str = "/pubsub.v1.RemoveDefaultSubscriptionProposal";
 const SCHEDULED_CORK_PROPOSAL: &str = "cork.v2.ScheduledCorkProposal";
 
-pub async fn start_approved_proposal_polling_thread(publisher_cache_tx: Sender<()>) -> JoinHandle<()> {
+pub async fn start_approved_proposal_polling_thread(
+    publisher_cache_tx: Sender<()>,
+) -> JoinHandle<()> {
     debug!("starting cork proposal polling thread");
     let config = APP.config();
     let mut state = ProposalThreadState::default();
@@ -57,7 +60,8 @@ pub async fn start_approved_proposal_polling_thread(publisher_cache_tx: Sender<(
             state
                 .update_last_observed_height(config.cosmos.grpc.clone())
                 .await;
-            if let Err(err) = poll_approved_proposals(&mut state, publisher_cache_tx.clone()).await {
+            if let Err(err) = poll_approved_proposals(&mut state, publisher_cache_tx.clone()).await
+            {
                 error!(
                     "failed to process proposal {}: {}",
                     state.last_processed_proposal_id + 1,
@@ -103,7 +107,10 @@ impl ProposalThreadState {
     }
 }
 
-async fn poll_approved_proposals(state: &mut ProposalThreadState, publisher_cache_tx: Sender<()>) -> Result<(), Error> {
+async fn poll_approved_proposals(
+    state: &mut ProposalThreadState,
+    publisher_cache_tx: Sender<()>,
+) -> Result<(), Error> {
     let config = APP.config();
     let mut gov_client = GovQueryClient::connect(config.cosmos.grpc.clone()).await?;
 
@@ -185,7 +192,7 @@ async fn poll_approved_proposals(state: &mut ProposalThreadState, publisher_cach
                 continue;
             }
         };
-        match content.type_url.as_str() { 
+        match content.type_url.as_str() {
             SCHEDULED_CORK_PROPOSAL => {
                 handle_scheduled_cork_proposal(state, proposal, proposal_id, content).await;
             },
@@ -212,9 +219,9 @@ async fn poll_approved_proposals(state: &mut ProposalThreadState, publisher_cach
             // no-op
             _ => info!("observed {} proposal approval with ID {proposal_id}", content.type_url),
         };
-        
+
         state.increment_proposal_id();
-        continue;            
+        continue;
     }
 
     Ok(())

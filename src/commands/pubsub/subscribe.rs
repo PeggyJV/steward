@@ -27,12 +27,9 @@ impl Runnable for SubscribeCmd {
         });
 
         abscissa_tokio::run_with_actix(&APP, async {
-            subscribe(
-                self.cellar_id.clone(),
-                self.publisher_domain.clone(),
-            )
-            .await
-            .unwrap();
+            subscribe(self.cellar_id.clone(), self.publisher_domain.clone())
+                .await
+                .unwrap();
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

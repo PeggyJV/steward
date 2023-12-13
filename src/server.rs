@@ -103,8 +103,10 @@ pub(crate) async fn auth_config(
         .expect("cannot parse private key .pem file")
     {
         Some(rustls_pemfile::Item::RSAKey(_)) => {
-            return Err(ErrorKind::InvalidKey.context("must use an elliptic-curve-derived key").into())
-        },
+            return Err(ErrorKind::InvalidKey
+                .context("must use an elliptic-curve-derived key")
+                .into())
+        }
         Some(rustls_pemfile::Item::PKCS8Key(key)) => rustls::PrivateKey(key),
         Some(rustls_pemfile::Item::ECKey(key)) => rustls::PrivateKey(key),
         _ => panic!("cannot parse private key .pem file"),

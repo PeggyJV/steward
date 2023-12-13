@@ -1,21 +1,25 @@
 use std::time::Duration;
 
+use abscissa_core::tracing::{debug, error, info, warn};
 use abscissa_core::Application;
-use abscissa_core::tracing::{info, debug, warn, error};
-use somm_proto::cork::ScheduledCorkProposal;
 use prost_types::Any;
+use somm_proto::cork::ScheduledCorkProposal;
 use somm_proto::cosmos_sdk_proto::cosmos::gov::v1beta1::Proposal;
 
 use crate::cellars::{aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2};
 use crate::cork::schedule_cork;
 use crate::prelude::APP;
-use crate::proposals::{ProposalThreadState, confirm_sheduling, log_schedule_failure};
+use crate::proposals::{confirm_sheduling, log_schedule_failure, ProposalThreadState};
 use crate::proto::{governance_call::Call, GovernanceCall};
-
 
 const RETRY_SLEEP: u64 = 5;
 
-pub async fn handle_scheduled_cork_proposal(state: &mut ProposalThreadState, proposal: Proposal, proposal_id: u64, content: Any) {
+pub async fn handle_scheduled_cork_proposal(
+    state: &mut ProposalThreadState,
+    proposal: Proposal,
+    proposal_id: u64,
+    content: Any,
+) {
     info!("processing scheduled cork proposal of ID {}", proposal_id);
     let cork_proposal: ScheduledCorkProposal =
         match prost::Message::decode(content.value.as_slice()) {
@@ -89,11 +93,8 @@ pub async fn handle_scheduled_cork_proposal(state: &mut ProposalThreadState, pro
                 );
             }
             let function = data.function.unwrap();
-            match cellar_v1::get_encoded_governance_call(
-                function,
-                &cellar_id,
-                proposal.proposal_id,
-            ) {
+            match cellar_v1::get_encoded_governance_call(function, &cellar_id, proposal.proposal_id)
+            {
                 Ok(d) => d,
                 // this is likely a bug in steward
                 Err(err) => {
@@ -113,11 +114,8 @@ pub async fn handle_scheduled_cork_proposal(state: &mut ProposalThreadState, pro
                 );
             }
             let function = data.function.unwrap();
-            match cellar_v2::get_encoded_governance_call(
-                function,
-                &cellar_id,
-                proposal.proposal_id,
-            ) {
+            match cellar_v2::get_encoded_governance_call(function, &cellar_id, proposal.proposal_id)
+            {
                 Ok(d) => d,
                 // this is likely a bug in steward
                 Err(err) => {
@@ -167,8 +165,7 @@ pub async fn handle_scheduled_cork_proposal(state: &mut ProposalThreadState, pro
         if let Err(schedule_err) =
             schedule_cork(&cellar_id, encoded_call.clone(), block_height).await
         {
-            match confirm_sheduling(state, &cellar_id, encoded_call.clone(), block_height).await
-            {
+            match confirm_sheduling(state, &cellar_id, encoded_call.clone(), block_height).await {
                 Ok(confirmed) => {
                     if confirmed {
                         info!(
