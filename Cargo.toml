@@ -33,11 +33,7 @@ serde_json = "1.0.64"
 sha2 = "0.9"
 sha3 = "0.10.6"
 signatory = "0.23.0-pre"
-<<<<<<< Updated upstream
-somm_proto = { git = "https://github.com/peggyjv/sommelier.git", rev = "d98c3c992a1e66f0ab838da544dc4941a339d8b9" }
-=======
 somm_proto = { git = "https://github.com/PeggyJV/sommelier", rev = "55929891728ac0c21625bd23970b9c59c1f10843" }
->>>>>>> Stashed changes
 thiserror = "1"
 tokio ={ version = "1", features = ["macros", "fs"] }
 toml = { version = "0.5" }
