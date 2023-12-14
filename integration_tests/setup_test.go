@@ -430,7 +430,7 @@ func (s *IntegrationTestSuite) initGenesis() {
 			AllowedAddresses:   []string{},
 		},
 		{
-			SubscriptionId:     fmt.Sprintf("1:%s", 2_2Cellar.Hex()),
+			SubscriptionId:     fmt.Sprintf("1:%s", v2_2Cellar.Hex()),
 			PublisherDomain:    "localhost",
 			Method:             1,
 			AllowedSubscribers: 0,
