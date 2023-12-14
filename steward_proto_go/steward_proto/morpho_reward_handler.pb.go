@@ -23,6 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+//
 // Allows Morpho A Token cellars to claim Morpho Rewards
 //
 // Represents function `claim(uint256 claimable, bytes32[] memory proof)`

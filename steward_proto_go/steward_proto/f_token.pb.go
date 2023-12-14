@@ -198,6 +198,7 @@ func (x *FTokenAdaptorV1Calls) GetCalls() []*FTokenAdaptorV1 {
 	return nil
 }
 
+//
 // Allows strategists to lend FRAX on FraxLend
 //
 // Represents `function lendFrax(IFToken fToken, uint256 amountToDeposit)`
@@ -258,6 +259,7 @@ func (x *FTokenAdaptorV1_LendFrax) GetAmountToDeposit() string {
 	return ""
 }
 
+//
 // Allows strategists to redeem FRAX shares on FraxLend
 //
 // Represents `function redeemFraxShare(IFToken fToken, uint256 amountToRedeem)`
@@ -318,6 +320,7 @@ func (x *FTokenAdaptorV1_RedeemFraxShare) GetAmountToRedeem() string {
 	return ""
 }
 
+//
 // Allows strategists to withdraw FRAX from FraxLend
 //
 // Represents `function withdrawFrax(IFToken fToken, uint256 amountToWithdraw)`
@@ -378,6 +381,7 @@ func (x *FTokenAdaptorV1_WithdrawFrax) GetAmountToWithdraw() string {
 	return ""
 }
 
+//
 // Allows a strategist to call `addInterest` on a Frax Pair they are using
 //
 // Represents `function callAddInterest(IFToken fToken)`

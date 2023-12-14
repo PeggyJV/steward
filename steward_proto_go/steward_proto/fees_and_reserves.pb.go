@@ -258,6 +258,7 @@ func (x *FeesAndReservesAdaptorV1Calls) GetCalls() []*FeesAndReservesAdaptorV1 {
 	return nil
 }
 
+//
 // Allows the owner to update a Cellar's performance fee.
 //
 // Represents function `updatePerformanceFee(uint32 performanceFee)`
@@ -308,6 +309,7 @@ func (x *FeesAndReservesAdaptorV1_UpdatePerformanceFees) GetPerformanceFee() uin
 	return 0
 }
 
+//
 // Allows the owner to update a Cellar's management fee.
 //
 // Represents function `updateManagementFee(uint32 managementFee)`
@@ -358,6 +360,7 @@ func (x *FeesAndReservesAdaptorV1_UpdateManagementFees) GetManagementFee() uint3
 	return 0
 }
 
+//
 // Allows the owner to update a Cellar's upkeep frequency.
 //
 // Represents function `changeUpkeepFrequency(uint64 newFrequency)`
@@ -408,6 +411,7 @@ func (x *FeesAndReservesAdaptorV1_ChangeUpkeepFrequency) GetNewFrequency() uint6
 	return 0
 }
 
+//
 // Allows the owner to update a Cellar's upkeep max gas.
 //
 // Represents function `changeUpkeepMaxGas(uint64 newMaxGas)`
@@ -458,6 +462,7 @@ func (x *FeesAndReservesAdaptorV1_ChangeUpkeepMaxGas) GetNewMaxGas() uint64 {
 	return 0
 }
 
+//
 // Allows the owner to set the Cellar's fee metadata
 //
 // Represents function `setupMetaData(uint32 managementFee, uint32 performanceFee)`
@@ -516,6 +521,7 @@ func (x *FeesAndReservesAdaptorV1_SetupMetaData) GetPerformanceFee() uint32 {
 	return 0
 }
 
+//
 // Allows the owner to add assets to the Cellar's reserves
 //
 // Represents function `addAssetsToReserves(uint256 amount)`
@@ -566,6 +572,7 @@ func (x *FeesAndReservesAdaptorV1_AddAssetsToReserves) GetAmount() string {
 	return ""
 }
 
+//
 // Allows the owner to withdraw assets from the Cellar's reserves
 //
 // Represents function `withdrawAssetsFromReserves(uint256 amount)`
@@ -616,6 +623,7 @@ func (x *FeesAndReservesAdaptorV1_WithdrawAssetsFromReserves) GetAmount() string
 	return ""
 }
 
+//
 // Allows the owner to prepare fees to be split between the platform, strategist, and protocol
 //
 // Represents function `prepareFees(uint256 amount)`

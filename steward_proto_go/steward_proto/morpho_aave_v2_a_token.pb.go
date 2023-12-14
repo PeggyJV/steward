@@ -184,6 +184,7 @@ func (x *MorphoAaveV2ATokenAdaptorV1Calls) GetCalls() []*MorphoAaveV2ATokenAdapt
 	return nil
 }
 
+//
 // Allows strategists to lend assets on Morpho.
 //
 // Represents function `depositToAaveV2Morpho(IAaveToken aToken, uint256 amountToDeposit)`
@@ -244,6 +245,7 @@ func (x *MorphoAaveV2ATokenAdaptorV1_DepositToAaveV2Morpho) GetAmountToDeposit()
 	return ""
 }
 
+//
 // Allows strategists to withdraw assets from Morpho.
 //
 // Represents function `withdrawFromAaveV2Morpho(IAaveToken aToken, uint256 amountToWithdraw)`

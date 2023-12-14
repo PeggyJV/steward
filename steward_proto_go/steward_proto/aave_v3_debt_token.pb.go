@@ -198,6 +198,7 @@ func (x *AaveV3DebtTokenAdaptorV1Calls) GetCalls() []*AaveV3DebtTokenAdaptorV1 {
 	return nil
 }
 
+//
 // Allows strategists to borrow assets from Aave.
 //
 // Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
@@ -258,6 +259,7 @@ func (x *AaveV3DebtTokenAdaptorV1_BorrowFromAave) GetAmount() string {
 	return ""
 }
 
+//
 // Allows strategists to repay loan debt on Aave.
 //
 // Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
@@ -318,6 +320,7 @@ func (x *AaveV3DebtTokenAdaptorV1_RepayAaveDebt) GetAmount() string {
 	return ""
 }
 
+//
 // Allows strategist to use aTokens to repay debt tokens with the same underlying.
 //
 // Represents function `repayWithATokens(ERC20 underlying, uint256 amount)`
@@ -378,6 +381,7 @@ func (x *AaveV3DebtTokenAdaptorV1_RepayWithATokens) GetAmount() string {
 	return ""
 }
 
+//
 // Allows strategists to have Cellars take out flash loans
 //
 // Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`

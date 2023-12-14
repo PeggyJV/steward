@@ -23,6 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+//
 // Helper function that allows swaps using the Swap Router
 //
 // Represents function `swap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
@@ -110,6 +111,7 @@ func (x *Swap) GetParams() *SwapParams {
 	return nil
 }
 
+//
 // Helper function to make safe "blind" Uniswap Swaps by comparing value in vs value out of the swap.
 //
 // Represents function `oracleSwap(ERC20 assetIn, ERC20 assetOut, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params, uint64 slippage)`
@@ -206,6 +208,7 @@ func (x *OracleSwap) GetSlippage() uint64 {
 	return 0
 }
 
+//
 // Allows strategists to zero out an approval for a given `asset`.
 //
 // Represents function `revokeApproval(ERC20 asset, address spender)`

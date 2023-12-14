@@ -199,6 +199,7 @@ func (x *AaveV3ATokenAdaptorV1Calls) GetCalls() []*AaveV3ATokenAdaptorV1 {
 	return nil
 }
 
+//
 // Allows strategists to lend assets on Aave.
 //
 // Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
@@ -259,6 +260,7 @@ func (x *AaveV3ATokenAdaptorV1_DepositToAave) GetAmount() string {
 	return ""
 }
 
+//
 // Allows strategists to withdraw assets from Aave.
 //
 // Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
@@ -319,6 +321,7 @@ func (x *AaveV3ATokenAdaptorV1_WithdrawFromAave) GetAmount() string {
 	return ""
 }
 
+//
 // Allows strategists to adjust an asset's isolation mode.
 //
 // Represents function `adjustIsolationModeAssetAsCollateral(ERC20 asset, bool useAsCollateral)`
@@ -379,6 +382,7 @@ func (x *AaveV3ATokenAdaptorV1_AdjustIsolationModeAssetAsCollateral) GetUseAsCol
 	return false
 }
 
+//
 // Allows strategists to enter different EModes.
 //
 // Represents function `changeEMode(uint8 categoryId)`

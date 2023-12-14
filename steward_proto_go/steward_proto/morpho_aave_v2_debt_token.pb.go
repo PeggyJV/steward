@@ -170,6 +170,7 @@ func (x *MorphoAaveV2DebtTokenAdaptorV1Calls) GetCalls() []*MorphoAaveV2DebtToke
 	return nil
 }
 
+//
 // Allows strategists to borrow assets from Aave.
 //
 // Represents function `borrowFromAaveV2Morpho(address aToken, uint256 amountToBorrow)`
@@ -230,6 +231,7 @@ func (x *MorphoAaveV2DebtTokenAdaptorV1_BorrowFromAaveV2Morpho) GetAmountToBorro
 	return ""
 }
 
+//
 // Allows strategists to repay loan debt on Aave.
 //
 // Represents function `repayAaveV2MorphoDebt(IAaveToken aToken, uint256 amountToRepay)`

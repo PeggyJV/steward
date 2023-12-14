@@ -25,6 +25,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+//
 // Represents a function call to the Aave V2 Stablecoin cellar
 type AaveV2Stablecoin struct {
 	state         protoimpl.MessageState
@@ -260,6 +261,7 @@ func (*AaveV2Stablecoin_SetLiquidityLimit_) isAaveV2Stablecoin_Function() {}
 
 func (*AaveV2Stablecoin_SendFees_) isAaveV2Stablecoin_Function() {}
 
+//
 // Represents a function call initiated by governance
 type AaveV2StablecoinGovernance struct {
 	state         protoimpl.MessageState
@@ -390,6 +392,7 @@ func (*AaveV2StablecoinGovernance_SetTrust_) isAaveV2StablecoinGovernance_Functi
 
 func (*AaveV2StablecoinGovernance_Sweep_) isAaveV2StablecoinGovernance_Function() {}
 
+//
 // Accrue yield, platform fees, and performance fees..
 //
 // Represents function `accrue()`
@@ -431,6 +434,7 @@ func (*AaveV2Stablecoin_Accrue) Descriptor() ([]byte, []int) {
 	return file_aave_v2_stablecoin_proto_rawDescGZIP(), []int{0, 0}
 }
 
+//
 // Claim rewards from Aave and begin cooldown period to unstake them.
 //
 // Represents function `claimAndUnstake()`
@@ -472,6 +476,7 @@ func (*AaveV2Stablecoin_ClaimAndUnstake) Descriptor() ([]byte, []int) {
 	return file_aave_v2_stablecoin_proto_rawDescGZIP(), []int{0, 1}
 }
 
+//
 // Pushes total assets into the current Aave lending position.
 //
 // Represents function `enterPosition()`
@@ -513,6 +518,7 @@ func (*AaveV2Stablecoin_EnterPosition) Descriptor() ([]byte, []int) {
 	return file_aave_v2_stablecoin_proto_rawDescGZIP(), []int{0, 2}
 }
 
+//
 // Pushes assets into the current Aave lending position.
 //
 // Represents function `enterPosition(uint256 assets)`
@@ -564,6 +570,7 @@ func (x *AaveV2Stablecoin_EnterPositionWithAssets) GetAssets() string {
 	return ""
 }
 
+//
 // Pulls total assets from the current Aave lending position.
 //
 // Represents function `enterPosition()`
@@ -605,6 +612,7 @@ func (*AaveV2Stablecoin_ExitPosition) Descriptor() ([]byte, []int) {
 	return file_aave_v2_stablecoin_proto_rawDescGZIP(), []int{0, 4}
 }
 
+//
 // Pulls assets from the current Aave lending position.
 //
 // Represents function `exitPosition(uint256 assets)`
@@ -656,6 +664,7 @@ func (x *AaveV2Stablecoin_ExitPositionWithAssets) GetAssets() string {
 	return ""
 }
 
+//
 // Rebalances current assets into a new asset position.
 //
 // Represents function `rebalance(address newLendingToken, uint256 minNewLendingTokenAmount)`
@@ -728,6 +737,7 @@ func (x *AaveV2Stablecoin_Rebalance) GetMinAssetsOut() string {
 	return ""
 }
 
+//
 // Reinvest rewards back into cellar's current position. Must be called within 2 day unstake period 10 days after `claimAndUnstake` was run.
 //
 // Represents function `reinvest(uint256 minAssetsOut)`
@@ -779,6 +789,7 @@ func (x *AaveV2Stablecoin_Reinvest) GetMinAssetsOut() string {
 	return ""
 }
 
+//
 // Set the accrual period over which yield is distributed.
 //
 // Represents function `setAccrualPeriod(uint32 newAccrualPeriod)`
@@ -829,6 +840,7 @@ func (x *AaveV2Stablecoin_SetAccrualPeriod) GetNewAccrualPeriod() uint32 {
 	return 0
 }
 
+//
 // Set the per-wallet deposit limit. Uses the same decimals as the current asset.
 //
 // Represents function `setDepositLimit(uint256 limit)`
@@ -880,6 +892,7 @@ func (x *AaveV2Stablecoin_SetDepositLimit) GetLimit() string {
 	return ""
 }
 
+//
 // Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.
 //
 // Represents function `setLiquidityLimit(uint256 limit)`
@@ -931,6 +944,7 @@ func (x *AaveV2Stablecoin_SetLiquidityLimit) GetLimit() string {
 	return ""
 }
 
+//
 // Transfer accrued fees to the Sommelier Chain to distribute.
 //
 // Represents function `sendFees()`
@@ -972,6 +986,7 @@ func (*AaveV2Stablecoin_SendFees) Descriptor() ([]byte, []int) {
 	return file_aave_v2_stablecoin_proto_rawDescGZIP(), []int{0, 11}
 }
 
+//
 // Represents parameters for a single swap. Each swap needs the indeces in Rebalance.route of the in/out token addresses and the swap type. See the Curve contract linked above for more detail.
 type AaveV2Stablecoin_Rebalance_SwapParams struct {
 	state         protoimpl.MessageState

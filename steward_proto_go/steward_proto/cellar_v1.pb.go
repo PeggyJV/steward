@@ -25,6 +25,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+//
 // Represents the withdraw type to use for the cellar
 type CellarV1_WithdrawType int32
 
@@ -75,6 +76,7 @@ func (CellarV1_WithdrawType) EnumDescriptor() ([]byte, []int) {
 	return file_cellar_v1_proto_rawDescGZIP(), []int{0, 0}
 }
 
+//
 // Represents a function call to a cellar that implements Cellar.sol
 type CellarV1 struct {
 	state         protoimpl.MessageState
@@ -312,6 +314,7 @@ func (*CellarV1_SetShareLockPeriod_) isCellarV1_Function() {}
 
 func (*CellarV1_SetRebalanceDeviation_) isCellarV1_Function() {}
 
+//
 // Represent a function call initiated through a governance proposal
 type CellarV1Governance struct {
 	state         protoimpl.MessageState
@@ -502,6 +505,7 @@ func (*CellarV1Governance_SetStrategistPlatformCut_) isCellarV1Governance_Functi
 
 func (*CellarV1Governance_TrustPosition_) isCellarV1Governance_Function() {}
 
+//
 // Insert a trusted position to the list of positions used by the cellar at a given index.
 //
 // Represents function `addPosition(uint256 index, address position)`
@@ -562,9 +566,10 @@ func (x *CellarV1_AddPosition) GetPosition() string {
 	return ""
 }
 
+//
 // Push a trusted position to the end of the list of positions used by the cellar. If you
-// know you are going to add a position to the end of the array, this is more efficient then
-// `addPosition`.
+//know you are going to add a position to the end of the array, this is more efficient then
+//`addPosition`.
 //
 // Represents function `pushPosition(address position)`
 type CellarV1_PushPosition struct {
@@ -615,6 +620,7 @@ func (x *CellarV1_PushPosition) GetPosition() string {
 	return ""
 }
 
+//
 // Remove the position at a given index from the list of positions used by the cellar.
 //
 // Represents function `removePosition(uint256 index)`
@@ -666,6 +672,7 @@ func (x *CellarV1_RemovePosition) GetIndex() string {
 	return ""
 }
 
+//
 // Set the holding position used by the cellar.
 //
 // Represents function `setHoldingPosition(address newHoldingPosition)`
@@ -717,12 +724,12 @@ func (x *CellarV1_SetHoldingPosition) GetNewHoldingPosition() string {
 	return ""
 }
 
+//
 // Move assets between positions. To move assets from/to this cellar's holdings, specify
-// the address of this cellar as the `fromPosition`/`toPosition`.
+//the address of this cellar as the `fromPosition`/`toPosition`.
 //
 // Represents function `rebalance(address fromPosition, address toPosition,
-//
-//	uint256 assetsFrom, SwapRouter.Exchange exchange, bytes calldata params)
+//  uint256 assetsFrom, SwapRouter.Exchange exchange, bytes calldata params)
 type CellarV1_Rebalance struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -802,6 +809,7 @@ func (x *CellarV1_Rebalance) GetParams() *SwapParams {
 	return nil
 }
 
+//
 // Sets the Strategists payout address.
 //
 // Represents function `setStrategistPayoutAddress(address payout)`
@@ -852,6 +860,7 @@ func (x *CellarV1_SetStrategistPayoutAddress) GetPayout() string {
 	return ""
 }
 
+//
 // Set the withdraw type used by the cellar.
 //
 // Represents function `setWithdrawType(WithdrawType newWithdrawType)`
@@ -903,6 +912,7 @@ func (x *CellarV1_SetWithdrawType) GetNewWithdrawType() CellarV1_WithdrawType {
 	return CellarV1_WITHDRAW_TYPE_UNSPECIFIED
 }
 
+//
 // Swap the positions at two given indeces.
 //
 // Represents function `swapPositions(uint256 index1, uint256 index2)`
@@ -963,6 +973,7 @@ func (x *CellarV1_SwapPositions) GetIndex_2() string {
 	return ""
 }
 
+//
 // Set the per-wallet deposit limit. Uses the same decimals as the current asset.
 //
 // Represents function `setDepositLimit()`
@@ -1013,6 +1024,7 @@ func (x *CellarV1_SetDepositLimit) GetNewLimit() string {
 	return ""
 }
 
+//
 // Set the maximum liquidity that cellar can manage. Uses the same decimals as the current asset.
 //
 // Represents function `setLiquidityLimit()`
@@ -1063,6 +1075,7 @@ func (x *CellarV1_SetLiquidityLimit) GetNewLimit() string {
 	return ""
 }
 
+//
 // Allows share lock period to be updated.
 //
 // Represents function `setShareLockPeriod()`
@@ -1113,6 +1126,9 @@ func (x *CellarV1_SetShareLockPeriod) GetNewLock() string {
 	return ""
 }
 
+//
+//
+//
 // Represents function `setRebalanceDeviation(uint256)`
 type CellarV1_SetRebalanceDeviation struct {
 	state         protoimpl.MessageState

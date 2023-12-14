@@ -187,6 +187,7 @@ func (x *MorphoAaveV3ATokenCollateralAdaptorV1Calls) GetCalls() []*MorphoAaveV3A
 	return nil
 }
 
+//
 // Allows strategists to lend assets on Morpho
 //
 // Represents function `depositToAaveV3Morpho(ERC20 tokenToDeposit, uint256 amountToDeposit)`
@@ -247,6 +248,7 @@ func (x *MorphoAaveV3ATokenCollateralAdaptorV1_DepositToAaveV3Morpho) GetAmountT
 	return ""
 }
 
+//
 // Allows strategists to withdraw assets from Morpho
 //
 // Represents function `withdrawFromAaveV3Morpho(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`

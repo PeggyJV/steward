@@ -23,6 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+//
 // Exchange selector
 type Exchange int32
 
@@ -75,6 +76,7 @@ func (Exchange) EnumDescriptor() ([]byte, []int) {
 	return file_common_proto_rawDescGZIP(), []int{0}
 }
 
+//
 // Represents swap parameters for UniswapV2
 type UniV2SwapParams struct {
 	state         protoimpl.MessageState
@@ -142,6 +144,7 @@ func (x *UniV2SwapParams) GetAmountOutMin() string {
 	return ""
 }
 
+//
 // Represents swap parameters for UniswapV3
 type UniV3SwapParams struct {
 	state         protoimpl.MessageState
@@ -218,6 +221,7 @@ func (x *UniV3SwapParams) GetAmountOutMin() string {
 	return ""
 }
 
+//
 // Represents swap parameters for an exchange
 type SwapParams struct {
 	state         protoimpl.MessageState
@@ -301,6 +305,7 @@ func (*SwapParams_Univ2Params) isSwapParams_Params() {}
 
 func (*SwapParams_Univ3Params) isSwapParams_Params() {}
 
+//
 // Represents oracle swap parameters for UniswapV2
 type UniV2OracleSwapParams struct {
 	state         protoimpl.MessageState
@@ -350,6 +355,7 @@ func (x *UniV2OracleSwapParams) GetPath() []string {
 	return nil
 }
 
+//
 // Represents oracle swap parameters for UniswapV3
 type UniV3OracleSwapParams struct {
 	state         protoimpl.MessageState
@@ -408,6 +414,7 @@ func (x *UniV3OracleSwapParams) GetPoolFees() []uint32 {
 	return nil
 }
 
+//
 // Represents swap params for BaseAdaptor.oracleSwap()
 type OracleSwapParams struct {
 	state         protoimpl.MessageState

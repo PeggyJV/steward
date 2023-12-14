@@ -155,6 +155,7 @@ func (x *AaveV2EnableAssetAsCollateralAdaptorV1Calls) GetCalls() []*AaveV2Enable
 	return nil
 }
 
+//
 // Allows a strategist to choose to use an asset as collateral or not.
 //
 // Represents function `setUserUseReserveAsCollateral(address asset, bool useAsCollateral)`
