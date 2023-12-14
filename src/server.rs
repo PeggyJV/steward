@@ -147,9 +147,11 @@ pub(crate) async fn handle_authorization(
     subscription_id: &String,
     certs: Arc<Vec<Certificate>>,
 ) -> Result<(), Status> {
+    let mut client_cert: Option<X509Certificate> = None;
+
     // In case the request contains multiple certificates, we iterate until the first valid one.
     for cert in certs.iter() {
-        let (_, client_cert) = match X509Certificate::from_der(cert.get_ref()) {
+        let (_, cert_candidate) = match X509Certificate::from_der(cert.get_ref()) {
             Ok(cert) => cert,
             Err(e) => {
                 error!("failed to parse certificate for authorization check: {e}");
@@ -158,54 +160,66 @@ pub(crate) async fn handle_authorization(
         };
 
         // if the cert is a CA, it's not he client cert, so we skip
-        if let Ok(Some(extension)) = client_cert.basic_constraints() {
+        if let Ok(Some(extension)) = cert_candidate.basic_constraints() {
             if extension.value.ca {
                 continue;
             }
         }
 
-        let client_cert_aki = match extract_authority_key_identifier(&client_cert) {
-            Ok(aki) => aki,
-            Err(e) => {
-                error!("failed to extract authority key identifier for authorization check: {e}");
-                continue;
-            }
-        }
-        .0
-        .to_vec();
+        client_cert = Some(cert_candidate);
 
-        let publisher_trust_data = match lookup_trust_data_by_subject_key_identifier(
-            &client_cert_aki,
-        )
-        .await
-        {
-            Some(p) => p,
-            None => {
-                error!("no publisher trust data found for authority key identifier: {client_cert_aki:?}");
-                continue;
-            }
-        };
-
-        let ca_pub = publisher_trust_data.publisher_ca_cert.public_key();
-        if let Err(e) = client_cert.verify_signature(Some(ca_pub)) {
-            info!("failed to verify signature for certificate: {e}");
-            continue;
-        }
-
-        if !publisher_trust_data
-            .subscription_ids
-            .contains(subscription_id)
-        {
-            info!("not subscribed to this publisher for subscription {subscription_id}");
-            continue;
-        }
-
-        return Ok(());
+        break;
     }
 
-    Err(Status::permission_denied(
-        "Not authorized to manage this cellar",
-    ))
+    let client_cert = match client_cert {
+        Some(cert) => cert,
+        None => {
+            error!("no valid client certificate found for authorization check");
+            return Err(Status::unauthenticated("no valid client certificate found"));
+        }
+    };
+
+    let client_cert_aki = match extract_authority_key_identifier(&client_cert) {
+        Ok(aki) => aki,
+        Err(e) => {
+            error!("failed to extract authority key identifier for authorization check: {e}");
+            return Err(Status::unauthenticated(
+                "failed to extract authority key identifier",
+            ));
+        }
+    }
+    .0
+    .to_vec();
+
+    let publisher_trust_data = match lookup_trust_data_by_subject_key_identifier(&client_cert_aki)
+        .await
+    {
+        Some(p) => p,
+        None => {
+            error!(
+                "no publisher trust data found for authority key identifier: {client_cert_aki:?}"
+            );
+            return Err(Status::permission_denied("no publisher trust data found"));
+        }
+    };
+
+    let ca_pub = publisher_trust_data.publisher_ca_cert.public_key();
+    if let Err(e) = client_cert.verify_signature(Some(ca_pub)) {
+        info!("failed to verify signature for certificate: {e}");
+        return Err(Status::permission_denied("signature verification failed"));
+    }
+
+    if !publisher_trust_data
+        .subscription_ids
+        .contains(subscription_id)
+    {
+        info!("not subscribed to this publisher for subscription {subscription_id}");
+        return Err(Status::permission_denied(
+            "not subscribed to this publisher",
+        ));
+    }
+
+    return Ok(());
 }
 
 pub(crate) fn extract_authority_key_identifier<'a>(
