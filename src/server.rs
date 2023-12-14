@@ -218,7 +218,7 @@ pub(crate) async fn handle_authorization(
         ));
     }
 
-    return Ok(());
+    Ok(())
 }
 
 pub(crate) fn extract_authority_key_identifier<'a>(
