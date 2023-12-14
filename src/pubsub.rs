@@ -38,22 +38,11 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
         .await?
         .default_subscriptions
         .iter()
-        .for_each(|s| {
-            if config
-                .pubsub
-                .publisher_domain_block_list
-                .contains(&s.publisher_domain)
-            {
-                debug!(
-                    "publisher domain {} is in the block list. skipping.",
-                    s.publisher_domain
-                );
-
-                return;
-            }
-
-            subscription_mappings
-                .insert(s.subscription_id.to_owned(), s.publisher_domain.to_owned());
+        .for_each(|ds| {
+            subscription_mappings.insert(
+                ds.subscription_id.to_owned(),
+                ds.publisher_domain.to_owned(),
+            );
         });
 
     let delegate_address = get_delegate_address().to_string();
@@ -62,19 +51,6 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
         .subscriber_intents
         .iter()
         .for_each(|si| {
-            if config
-                .pubsub
-                .publisher_domain_block_list
-                .contains(&si.publisher_domain)
-            {
-                debug!(
-                    "publisher domain {} is in the block list. skipping.",
-                    si.publisher_domain
-                );
-
-                return;
-            }
-
             subscription_mappings.insert(
                 si.subscription_id.to_owned(),
                 si.publisher_domain.to_owned(),
@@ -86,6 +62,22 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
             .context("did not find any subscriptions. clients will be unable to authenticate.")
             .into());
     }
+
+    // filter out blocked publishers
+    let subscription_mappings: HashMap<String, String> = subscription_mappings
+        .into_iter()
+        .filter_map(|(domain, sid)| {
+            if config.pubsub.publisher_domain_block_list.contains(&domain) {
+                debug!(
+                    "publisher domain {} is in the block list. skipping.",
+                    domain
+                );
+
+                return None;
+            }
+            Some((domain, sid))
+        })
+        .collect();
 
     // build trust state
     let mut states: HashMap<String, PublisherTrustData<'static>> = HashMap::new();
