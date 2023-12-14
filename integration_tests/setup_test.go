@@ -416,21 +416,21 @@ func (s *IntegrationTestSuite) initGenesis() {
 	}
 	pubsubGenState.PublisherIntents = []*pubsubtypes.PublisherIntent{
 		{
-			SubscriptionId:     aaveCellar.Hex(),
+            SubscriptionId:     fmt.Sprintf("1:%s", aaveCellar.Hex()),
 			PublisherDomain:    "localhost",
 			Method:             1,
 			AllowedSubscribers: 0,
 			AllowedAddresses:   []string{},
 		},
 		{
-			SubscriptionId:     vaultCellar.Hex(),
+			SubscriptionId:     fmt.Sprintf("1:%s", vaultCellar.Hex()),
 			PublisherDomain:    "localhost",
 			Method:             1,
 			AllowedSubscribers: 0,
 			AllowedAddresses:   []string{},
 		},
 		{
-			SubscriptionId:     v2_2Cellar.Hex(),
+			SubscriptionId:     fmt.Sprintf("1:%s", 2_2Cellar.Hex()),
 			PublisherDomain:    "localhost",
 			Method:             1,
 			AllowedSubscribers: 0,
