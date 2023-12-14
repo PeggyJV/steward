@@ -68,14 +68,8 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
         if chain_id == ETHEREUM_CHAIN_ID {
             handle_cork(&cellar_id, encoded_call.clone(), height).await?;
         } else {
-            handle_axelar_cork(
-                chain_id,
-                &cellar_id,
-                encoded_call.clone(),
-                height,
-                deadline,
-            )
-            .await?;
+            handle_axelar_cork(chain_id, &cellar_id, encoded_call.clone(), height, deadline)
+                .await?;
         }
 
         let id = id_hash(height, &cellar_id, &encoded_call);
@@ -84,10 +78,7 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
             id, cellar_id, chain_id, height
         );
 
-        Ok(Response::new(ScheduleResponse {
-            id,
-            chain_id,
-        }))
+        Ok(Response::new(ScheduleResponse { id, chain_id }))
     }
 }
 
