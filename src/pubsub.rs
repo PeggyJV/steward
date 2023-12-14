@@ -30,6 +30,7 @@ pub(crate) mod cache;
 /// Retrieves the PEM encoded CA certs for all default subscription publishers.
 pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>, Error> {
     debug!("collecting trust roots from default subscriptions and subscriber intents.");
+    let config = APP.config();
 
     // load subscription mappings
     let mut subscription_mappings: HashMap<String, HashSet<String>> = HashMap::default();
@@ -38,6 +39,19 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
         .default_subscriptions
         .iter()
         .for_each(|s| {
+            if config
+                .pubsub
+                .publisher_domain_block_list
+                .contains(&s.publisher_domain)
+            {
+                debug!(
+                    "publisher domain {} is in the block list. skipping.",
+                    s.publisher_domain
+                );
+
+                return;
+            }
+
             subscription_mappings
                 // if there is an entry for the key, push to the vec and dedup,
                 // otherwise create a new vec with the subscription id
@@ -54,6 +68,19 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
         .subscriber_intents
         .iter()
         .for_each(|si| {
+            if config
+                .pubsub
+                .publisher_domain_block_list
+                .contains(&si.publisher_domain)
+            {
+                debug!(
+                    "publisher domain {} is in the block list. skipping.",
+                    si.publisher_domain
+                );
+
+                return;
+            }
+
             // if there is already a default entry for this subscription ID under
             // a different publisher, we remove it from that set of IDs.
             if let Some(p) = subscription_mappings.keys().find(|k| {
