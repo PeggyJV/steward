@@ -63,7 +63,7 @@ pub enum ErrorKind {
     UnapprovedCellar,
     /// Invalid ethereum address
     #[error("invalid ethereum address")]
-    InvalidEthereumAddress,
+    InvalidEVMAddress,
     /// Proposal processing error
     #[error("proposal processing error")]
     ProposalProcessingError,

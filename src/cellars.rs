@@ -106,12 +106,12 @@ pub fn is_evm_address(address: &str) -> bool {
     address.parse::<Address>().is_ok()
 }
 
-/// Checks that a cellar ID is a valid Ethereum address and that it is approved by governance. If it is not found in the
+/// Checks that a cellar ID is a valid EVM address and that it is approved by governance. If it is not found in the
 /// approved cellar cache initially, we force a cache refresh and check again in case the cellar was approved on-chain
 /// since the last automatic refresh.
 pub async fn validate_cellar_id(chain_id: u64, cellar_id: &str) -> Result<(), Error> {
     if !is_evm_address(cellar_id) {
-        return Err(ErrorKind::InvalidEthereumAddress
+        return Err(ErrorKind::InvalidEVMAddress
             .context(format!(
                 "invalid cellar ID format {}: must be valid EVM address",
                 cellar_id

@@ -25,6 +25,8 @@ lazy_static! {
     static ref STEWARD_VERSION: &'static str = env!("CARGO_PKG_VERSION");
 }
 
+const ETHEREUM_CHAIN_ID: u64 = 1;
+
 pub struct CorkHandler;
 
 #[async_trait]
@@ -53,6 +55,7 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
 
         // Build and send cork
         let height = request.block_height;
+        let deadline = request.deadline;
         let encoded_call = match get_encoded_call(request) {
             Ok(c) => c,
             Err(err) => {
@@ -62,34 +65,23 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
         };
 
         debug!("hex encoded call: {:?}", hex::encode(&encoded_call));
-
-        match schedule_cork(&cellar_id, encoded_call.clone(), height).await {
-            Ok(res) => {
-                if res.code != 0 {
-                    error!(
-                        "failed to schedule cork for cellar {}. code {}, raw log: {}",
-                        cellar_id, res.code, res.raw_log
-                    );
-                    return Err(Status::new(
-                        Code::Internal,
-                        "cork submission failed. this may be a steward configuration problem."
-                            .to_string(),
-                    ));
-                }
-                info!("cork response: {:?}", res)
-            }
-            Err(err) => {
-                error!("failed to schedule cork for cellar {}: {}", cellar_id, err);
-                return Err(Status::new(
-                    Code::Internal,
-                    format!("failed to send cork to sommelier: {}", err),
-                ));
-            }
+        if chain_id == ETHEREUM_CHAIN_ID {
+            handle_cork(&cellar_id, encoded_call.clone(), height).await?;
+        } else {
+            handle_axelar_cork(
+                chain_id,
+                &cellar_id,
+                encoded_call.clone(),
+                height,
+                deadline,
+            )
+            .await?;
         }
+
         let id = id_hash(height, &cellar_id, encoded_call.clone());
         info!(
-            "scheduled cork {} for cellar {} at height {}",
-            id, cellar_id, height
+            "scheduled cork {} for cellar {} on chain {} at height {}",
+            id, cellar_id, chain_id, height
         );
 
         Ok(Response::new(ScheduleResponse {
@@ -132,6 +124,70 @@ pub fn get_encoded_call(request: ScheduleRequest) -> Result<Vec<u8>, Error> {
             }
 
             cellar_v2_2::get_encoded_call(call.call_type.unwrap(), request.cellar_id)
+        }
+    }
+}
+
+async fn handle_cork(cellar_id: &str, encoded_call: Vec<u8>, height: u64) -> Result<(), Status> {
+    match schedule_cork(&cellar_id, encoded_call.clone(), height).await {
+        Ok(res) => {
+            if res.code != 0 {
+                error!(
+                    "failed to schedule cork for cellar {}. code {}, raw log: {}",
+                    cellar_id, res.code, res.raw_log
+                );
+                return Err(Status::new(
+                    Code::Internal,
+                    "cork submission failed. this may be a steward configuration problem."
+                        .to_string(),
+                ));
+            }
+
+            info!("cork response: {:?}", res);
+
+            Ok(())
+        }
+        Err(err) => {
+            error!("failed to schedule cork for cellar {}: {}", cellar_id, err);
+            return Err(Status::new(
+                Code::Internal,
+                format!("failed to send cork to sommelier: {}", err),
+            ));
+        }
+    }
+}
+
+async fn handle_axelar_cork(
+    chain_id: u64,
+    cellar_id: &str,
+    encoded_call: Vec<u8>,
+    height: u64,
+    deadline: u64,
+) -> Result<(), Status> {
+    match schedule_axelar_cork(chain_id, &cellar_id, encoded_call.clone(), height, deadline).await {
+        Ok(res) => {
+            if res.code != 0 {
+                error!(
+                    "failed to schedule axelar cork for cellar {}, chain id {}. code {}, raw log: {}",
+                    cellar_id, chain_id, res.code, res.raw_log
+                );
+                return Err(Status::new(
+                    Code::Internal,
+                    "axelar cork submission failed. this may be a steward configuration problem."
+                        .to_string(),
+                ));
+            }
+
+            debug!("axelar cork response: {:?}", res);
+
+            Ok(())
+        }
+        Err(err) => {
+            error!("failed to schedule cork for cellar {}: {}", cellar_id, err);
+            return Err(Status::new(
+                Code::Internal,
+                format!("failed to send cork to sommelier: {}", err),
+            ));
         }
     }
 }
