@@ -416,7 +416,7 @@ func (s *IntegrationTestSuite) initGenesis() {
 	}
 	pubsubGenState.PublisherIntents = []*pubsubtypes.PublisherIntent{
 		{
-            SubscriptionId:     fmt.Sprintf("1:%s", aaveCellar.Hex()),
+			SubscriptionId:     fmt.Sprintf("1:%s", aaveCellar.Hex()),
 			PublisherDomain:    "localhost",
 			Method:             1,
 			AllowedSubscribers: 0,

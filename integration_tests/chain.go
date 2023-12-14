@@ -258,7 +258,7 @@ func (c *chain) sendMsgs(clientCtx client.Context, msgs ...sdk.Msg) (*sdk.TxResp
 		WithKeybase(clientCtx.Keyring).
 		WithGas(12345678).
 		WithSignMode(signing.SignMode_SIGN_MODE_DIRECT).
-        WithFees("24691356usomm")
+		WithFees("24691356usomm")
 
 	fromAddr := clientCtx.GetFromAddress()
 

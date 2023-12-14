@@ -70,7 +70,7 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 			{InIndex: 0, OutIndex: 0, SwapType: 0},
 		}
 		request := &steward_proto.ScheduleRequest{
-            ChainId: 1,
+			ChainId:  1,
 			CellarId: cellarId,
 			CallData: &steward_proto.ScheduleRequest_AaveV2Stablecoin{
 				AaveV2Stablecoin: &steward_proto.AaveV2Stablecoin{
@@ -192,7 +192,7 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 			},
 		}
 		requestUniV2 := &steward_proto.ScheduleRequest{
-            ChainId: 1,
+			ChainId:  1,
 			CellarId: cellarId,
 			CallData: &steward_proto.ScheduleRequest_CellarV1{
 				CellarV1: &steward_proto.CellarV1{
@@ -219,7 +219,7 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 			},
 		}
 		requestUniV3 := &steward_proto.ScheduleRequest{
-            ChainId: 1,
+			ChainId:  1,
 			CellarId: cellarId,
 			CallData: &steward_proto.ScheduleRequest_CellarV1{
 				CellarV1: &steward_proto.CellarV1{
@@ -410,7 +410,7 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 
 		// Contains two adaptor calls, the first of which has two function calls inside of it, for a total of three function calls.
 		request := &steward_proto.ScheduleRequest{
-            ChainId: 1,
+			ChainId:  1,
 			CellarId: cellarId,
 			CallData: &steward_proto.ScheduleRequest_CellarV2{
 				CellarV2: &steward_proto.CellarV2{
@@ -650,7 +650,7 @@ func (s *IntegrationTestSuite) TestCellarV2_2() {
 
 		// Contains two adaptor calls, the first of which has two function calls inside of it, for a total of three function calls.
 		request := &steward_proto.ScheduleRequest{
-            ChainId: 1,
+			ChainId:  1,
 			CellarId: cellarId,
 			CallData: &steward_proto.ScheduleRequest_CellarV2_2{
 				CellarV2_2: &steward_proto.CellarV2_2{
