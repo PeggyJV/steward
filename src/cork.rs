@@ -57,8 +57,8 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
             }
         }
 
-        debug!("checking publisher authorization for {cellar_id}");
         let subscription_id = format!("{}:{}", chain_id, cellar_id.trim().to_lowercase());
+        debug!("checking publisher authorization for {subscription_id}");
         handle_authorization(&subscription_id, certs).await?;
 
         // Build and send cork

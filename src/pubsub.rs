@@ -75,7 +75,9 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
 
                 return None;
             }
-            Some((sid, domain))
+
+            // also normalize
+            Some((sid.trim().to_lowercase(), domain))
         })
         .collect();
 
@@ -114,6 +116,11 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
             }
         };
         let publisher_ca_cert = Box::leak(pem).parse_x509().unwrap();
+
+        debug!(
+            "trust subscription {} for publisher {}",
+            subscription_id, publisher.domain
+        );
 
         states.insert(
             publisher_domain_name,
