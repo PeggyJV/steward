@@ -46,11 +46,19 @@ impl CorkQueryClient {
 
         let mut result: HashMap<u64, HashSet<String>> = HashMap::new();
         for id in cork_result.into_inner().cellar_ids {
-            result.entry(1).or_default().insert(id);
+            let normalized_id = id.trim().to_lowercase();
+
+            result.entry(1).or_default().insert(normalized_id);
         }
 
         for set in axelarcork_result.into_inner().cellar_ids {
-            result.insert(set.chain.unwrap().id, HashSet::from_iter(set.ids));
+            let normalized_ids: Vec<String> = set
+                .ids
+                .into_iter()
+                .map(|id| id.trim().to_lowercase())
+                .collect();
+
+            result.insert(set.chain.unwrap().id, HashSet::from_iter(normalized_ids));
         }
 
         Ok(result)

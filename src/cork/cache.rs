@@ -22,11 +22,17 @@ lazy_static! {
 /// Indicates whether an address is in the approved cellars cache
 pub fn is_approved(chain_id: u64, cellar_id: &str) -> bool {
     let cellar_id = cellar_id.trim().to_lowercase();
+
+    debug!(
+        "checking if cellar ID {} is approved for chain {}",
+        cellar_id, chain_id
+    );   
+
     let approved = APPROVED_CELLARS.read().unwrap();
     let Some(approved_for_chain) = approved.get(&chain_id) else {
         return false;
     };
-
+ 
     approved_for_chain.contains(&cellar_id)
 }
 
@@ -37,6 +43,9 @@ pub async fn refresh_approved_cellars() -> Result<(), Error> {
     match client.get_approved_cellar_ids().await {
         Ok(res) => {
             let mut cache = APPROVED_CELLARS.write().unwrap();
+
+            debug!("refreshed approved cellars cache: {:?}", res);
+
             *cache = res
         }
         Err(err) => return Err(err.into()),
