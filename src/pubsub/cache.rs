@@ -1,4 +1,8 @@
-use std::{collections::HashMap, iter::FromIterator, time::Duration};
+use std::{
+    collections::{HashMap, HashSet},
+    iter::FromIterator,
+    time::Duration,
+};
 
 use abscissa_core::{
     tracing::log::{debug, error},
@@ -27,7 +31,7 @@ lazy_static! {
 pub(crate) struct PublisherTrustData<'a> {
     pub publisher: Publisher,
     pub publisher_ca_cert: X509Certificate<'a>,
-    pub subscription_ids: Vec<String>,
+    pub subscription_ids: HashSet<String>,
 }
 
 pub(crate) async fn lookup_trust_data_by_subject_key_identifier(

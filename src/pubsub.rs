@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use abscissa_core::{
     tracing::log::{debug, error},
@@ -27,14 +27,12 @@ use self::cache::PublisherTrustData;
 
 pub(crate) mod cache;
 
-// TODO (Collin): Break this into smaller functions and write tests
-
 /// Retrieves the PEM encoded CA certs for all default subscription publishers.
 pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>, Error> {
     debug!("collecting trust roots from default subscriptions and subscriber intents.");
 
     // load subscription mappings
-    let mut subscription_mappings: HashMap<String, Vec<String>> = HashMap::default();
+    let mut subscription_mappings: HashMap<String, HashSet<String>> = HashMap::default();
     get_default_subscriptions()
         .await?
         .default_subscriptions
@@ -45,10 +43,9 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
                 // otherwise create a new vec with the subscription id
                 .entry(s.publisher_domain.to_owned())
                 .and_modify(|e| {
-                    e.push(s.subscription_id.to_owned());
-                    e.dedup();
+                    e.insert(s.subscription_id.to_owned());
                 })
-                .or_insert(vec![s.subscription_id.to_owned()]);
+                .or_insert(HashSet::from([s.subscription_id.to_owned()]));
         });
 
     let delegate_address = get_delegate_address().to_string();
@@ -65,18 +62,17 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
                     .unwrap()
                     .contains(&si.subscription_id)
             }) {
-                subscription_mappings
-                    .entry(p)
-                    .and_modify(|e| e.remove(&si.subscription_id));
+                subscription_mappings.entry(p.to_owned()).and_modify(|e| {
+                    e.remove(&si.subscription_id);
+                });
             }
 
             subscription_mappings
                 .entry(si.publisher_domain.to_owned())
                 .and_modify(|e| {
-                    e.push(si.subscription_id.to_owned());
-                    e.dedup();
+                    e.insert(si.subscription_id.to_owned());
                 })
-                .or_insert(vec![si.subscription_id.to_owned()]);
+                .or_insert(HashSet::from([si.subscription_id.to_owned()]));
         });
 
     if subscription_mappings.is_empty() {
