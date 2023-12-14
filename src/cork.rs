@@ -128,7 +128,7 @@ pub fn get_encoded_call(request: ScheduleRequest) -> Result<Vec<u8>, Error> {
 }
 
 async fn handle_cork(cellar_id: &str, encoded_call: Vec<u8>, height: u64) -> Result<(), Status> {
-    match schedule_cork(&cellar_id, encoded_call.clone(), height).await {
+    match schedule_cork(cellar_id, encoded_call.clone(), height).await {
         Ok(res) => {
             if res.code != 0 {
                 error!(
@@ -148,10 +148,10 @@ async fn handle_cork(cellar_id: &str, encoded_call: Vec<u8>, height: u64) -> Res
         }
         Err(err) => {
             error!("failed to schedule cork for cellar {}: {}", cellar_id, err);
-            return Err(Status::new(
+            Err(Status::new(
                 Code::Internal,
                 format!("failed to send cork to sommelier: {}", err),
-            ));
+            ))
         }
     }
 }
@@ -163,7 +163,7 @@ async fn handle_axelar_cork(
     height: u64,
     deadline: u64,
 ) -> Result<(), Status> {
-    match schedule_axelar_cork(chain_id, &cellar_id, encoded_call.clone(), height, deadline).await {
+    match schedule_axelar_cork(chain_id, cellar_id, encoded_call.clone(), height, deadline).await {
         Ok(res) => {
             if res.code != 0 {
                 error!(
@@ -183,10 +183,10 @@ async fn handle_axelar_cork(
         }
         Err(err) => {
             error!("failed to schedule cork for cellar {}: {}", cellar_id, err);
-            return Err(Status::new(
+            Err(Status::new(
                 Code::Internal,
                 format!("failed to send cork to sommelier: {}", err),
-            ));
+            ))
         }
     }
 }

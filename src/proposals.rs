@@ -239,7 +239,7 @@ pub async fn confirm_scheduling(
     encoded_call: &[u8],
     block_height: u64,
 ) -> Result<bool, Error> {
-    let id = id_hash(block_height, cellar_id, &encoded_call);
+    let id = id_hash(block_height, cellar_id, encoded_call);
     let mut client = CorkQueryClient::new().await?;
 
     Ok(client
