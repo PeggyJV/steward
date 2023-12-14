@@ -39,6 +39,13 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
         let request = request.get_ref().to_owned();
 
         let chain_id = request.chain_id;
+        if chain_id == 0 {
+            return Err(Status::new(
+                Code::InvalidArgument,
+                "chain ID cannot be 0".to_string(),
+            ));
+        }
+
         let cellar_id = request.cellar_id.clone();
         if let Err(err) = cellars::validate_cellar_id(chain_id, &cellar_id).await {
             let message = format!("cellar ID validation failed: {}", err);
