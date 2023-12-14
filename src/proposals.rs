@@ -28,8 +28,8 @@ type TendermintQueryClient = gravity_bridge::gravity_proto::cosmos_sdk_proto::co
 // Proposal types
 const ADD_PUBLISHER_PROPOSAL: &str = "/pubsub.v1.AddPublisherProposal";
 const REMOVE_PUBLISHER_PROPOSAL: &str = "/pubsub.v1.RemovePublisherProposal";
-// const ADD_DEFAULT_SUBSCRIPTION_PROPOSAL: &str = "/pubsub.v1.AddDefaultSubscriptionProposal";
-// const REMOVE_DEFAULT_SUBSCRIPTION_PROPOSAL: &str = "/pubsub.v1.RemoveDefaultSubscriptionProposal";
+const ADD_DEFAULT_SUBSCRIPTION_PROPOSAL: &str = "/pubsub.v1.AddDefaultSubscriptionProposal";
+const REMOVE_DEFAULT_SUBSCRIPTION_PROPOSAL: &str = "/pubsub.v1.RemoveDefaultSubscriptionProposal";
 const SCHEDULED_CORK_PROPOSAL: &str = "/cork.v2.ScheduledCorkProposal";
 
 pub async fn start_approved_proposal_polling_thread(
@@ -192,14 +192,15 @@ async fn poll_approved_proposals(
                 continue;
             }
         };
+
         match content.type_url.as_str() {
             SCHEDULED_CORK_PROPOSAL => {
                 handle_scheduled_cork_proposal(state, proposal, proposal_id, content).await;
-            },
-            ADD_PUBLISHER_PROPOSAL |
-            REMOVE_PUBLISHER_PROPOSAL /*|
-            ADD_DEFAULT_SUBSCRIPTION_PROPOSAL |
-            REMOVE_DEFAULT_SUBSCRIPTION_PROPOSAL*/ => {
+            }
+            ADD_PUBLISHER_PROPOSAL
+            | REMOVE_PUBLISHER_PROPOSAL
+            | ADD_DEFAULT_SUBSCRIPTION_PROPOSAL
+            | REMOVE_DEFAULT_SUBSCRIPTION_PROPOSAL => {
                 debug!("proposal {} not a ScheduledCorkProposal", proposal_id);
                 match refresh_publisher_trust_state_cache().await {
                     Ok(cache_changed) => {
@@ -210,14 +211,19 @@ async fn poll_approved_proposals(
                             );
                             publisher_cache_tx.send(()).await.unwrap();
                         } else {
-                            error!("a proposal passed but it is not reflected in the refreshed cache");
+                            error!(
+                                "a proposal passed but it is not reflected in the refreshed cache"
+                            );
                         }
                     }
                     Err(err) => error!("failed to refresh cache after proposal approval: {err}"),
                 }
             }
             // no-op
-            _ => info!("observed {} proposal approval with ID {proposal_id}", content.type_url),
+            _ => info!(
+                "observed {} proposal approval with ID {proposal_id}",
+                content.type_url
+            ),
         };
 
         state.increment_proposal_id();
