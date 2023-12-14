@@ -35,10 +35,6 @@ pub struct CosmosToEthCmd {
     /// The number of times transactions should repeat itself, default is 1.
     #[clap(short, long, default_value = "1")]
     times: String,
-
-    /// Boolean, True if you want to wait until someone requests a batch for this token type and False if you want to request a batch to push transaction along immediately.
-    #[clap(short = 'f', long)]
-    pub wait_for_batch: bool,
 }
 
 pub fn one_eth() -> f64 {

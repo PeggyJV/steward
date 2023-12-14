@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use abscissa_core::{
     tracing::log::{debug, error},
@@ -30,37 +30,76 @@ pub(crate) mod cache;
 /// Retrieves the PEM encoded CA certs for all default subscription publishers.
 pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>, Error> {
     debug!("collecting trust roots from default subscriptions and subscriber intents.");
+    let config = APP.config();
 
     // load subscription mappings
-    let mut subscription_mappings: HashMap<String, Vec<String>> = HashMap::default();
+    let mut subscription_mappings: HashMap<String, HashSet<String>> = HashMap::default();
     get_default_subscriptions()
         .await?
         .default_subscriptions
         .iter()
         .for_each(|s| {
+            if config
+                .pubsub
+                .publisher_domain_block_list
+                .contains(&s.publisher_domain)
+            {
+                debug!(
+                    "publisher domain {} is in the block list. skipping.",
+                    s.publisher_domain
+                );
+
+                return;
+            }
+
             subscription_mappings
                 // if there is an entry for the key, push to the vec and dedup,
                 // otherwise create a new vec with the subscription id
                 .entry(s.publisher_domain.to_owned())
                 .and_modify(|e| {
-                    e.push(s.subscription_id.to_owned());
-                    e.dedup();
+                    e.insert(s.subscription_id.to_owned());
                 })
-                .or_insert(vec![s.subscription_id.to_owned()]);
+                .or_insert(HashSet::from([s.subscription_id.to_owned()]));
         });
+
     let delegate_address = get_delegate_address().to_string();
     get_subscriber_intents_by_subscriber_address(delegate_address)
         .await?
         .subscriber_intents
         .iter()
         .for_each(|si| {
+            if config
+                .pubsub
+                .publisher_domain_block_list
+                .contains(&si.publisher_domain)
+            {
+                debug!(
+                    "publisher domain {} is in the block list. skipping.",
+                    si.publisher_domain
+                );
+
+                return;
+            }
+
+            // if there is already a default entry for this subscription ID under
+            // a different publisher, we remove it from that set of IDs.
+            if let Some(p) = subscription_mappings.keys().find(|k| {
+                subscription_mappings
+                    .get(&k.to_string())
+                    .unwrap()
+                    .contains(&si.subscription_id)
+            }) {
+                subscription_mappings.entry(p.to_owned()).and_modify(|e| {
+                    e.remove(&si.subscription_id);
+                });
+            }
+
             subscription_mappings
                 .entry(si.publisher_domain.to_owned())
                 .and_modify(|e| {
-                    e.push(si.subscription_id.to_owned());
-                    e.dedup();
+                    e.insert(si.subscription_id.to_owned());
                 })
-                .or_insert(vec![si.subscription_id.to_owned()]);
+                .or_insert(HashSet::from([si.subscription_id.to_owned()]));
         });
 
     if subscription_mappings.is_empty() {

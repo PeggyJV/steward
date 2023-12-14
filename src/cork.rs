@@ -72,12 +72,12 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
         };
 
         debug!("hex encoded call: {:?}", hex::encode(&encoded_call));
+
         if chain_id == ETHEREUM_CHAIN_ID {
             handle_cork(&cellar_id, encoded_call.clone(), height).await?;
         } else {
             handle_axelar_cork(chain_id, &cellar_id, encoded_call.clone(), height, deadline)
                 .await?;
-        }
 
         let id = id_hash(height, &cellar_id, &encoded_call);
         info!(

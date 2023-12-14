@@ -165,12 +165,15 @@ impl Default for CorkConfig {
 pub struct PubsubConfig {
     /// Cache refresh period in seconds
     pub cache_refresh_period: u64,
+    /// List of publisher domains to reject
+    pub publisher_domain_block_list: Vec<String>,
 }
 
 impl Default for PubsubConfig {
     fn default() -> Self {
         Self {
             cache_refresh_period: 3600,
+            publisher_domain_block_list: Vec::default(),
         }
     }
 }

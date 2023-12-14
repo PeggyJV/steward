@@ -198,7 +198,5 @@ replace github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alp
 
 replace github.com/peggyjv/steward/steward_proto_go/steward_proto => ./steward_proto_go/steward_proto
 
-replace github.com/confio/ics23/go => github.com/cosmos/cosmos-sdk/ics23/go v0.8.0
-
 // use cometbft
 replace github.com/tendermint/tendermint => github.com/cometbft/cometbft v0.34.28

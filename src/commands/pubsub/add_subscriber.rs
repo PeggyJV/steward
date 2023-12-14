@@ -5,7 +5,7 @@ use abscissa_core::{clap::Parser, Command, Runnable};
 /// Add a new subscriber to the pubsub module
 #[derive(Command, Debug, Parser)]
 #[clap(
-    long_about = "DESCRIPTION\n\nRegisters a new subscriber on chain for a steward instance.\nRequired for publishers to retreive a steward instance's domain and CA info for trust establishment."
+    long_about = "DESCRIPTION\n\nRegisters a new subscriber on chain for a steward instance.\nRequired for publishers to retreive a steward instance's URL and CA info for trust establishment."
 )]
 pub struct AddSubscriberCmd {
     /// Path to the subscriber's CA certificate PEM file
@@ -30,7 +30,7 @@ impl Runnable for AddSubscriberCmd {
             std::process::exit(1);
         });
         validate_url(&self.push_url).unwrap_or_else(|e| {
-            status_err!("invalid domain name: {}", e);
+            status_err!("invalid push URL: {}", e);
             std::process::exit(1);
         });
 
