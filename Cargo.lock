@@ -897,7 +897,7 @@ dependencies = [
 [[package]]
 name = "cosmos_gravity"
 version = "2.0.4"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#1f81db9ee897746797783efe587f499351e40863"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#0d4b6b1eaa6b4ddc3370109a4dfa777acc2f7b53"
 dependencies = [
  "bytes",
  "clarity",
@@ -1304,7 +1304,7 @@ dependencies = [
 [[package]]
 name = "ethereum_gravity"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#1f81db9ee897746797783efe587f499351e40863"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#0d4b6b1eaa6b4ddc3370109a4dfa777acc2f7b53"
 dependencies = [
  "deep_space",
  "ethers",
@@ -1768,7 +1768,7 @@ checksum = "d2fabcfbdc87f4758337ca535fb41a6d701b65693ce38287d856d1674551ec9b"
 [[package]]
 name = "gorc"
 version = "2.0.4"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#1f81db9ee897746797783efe587f499351e40863"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#0d4b6b1eaa6b4ddc3370109a4dfa777acc2f7b53"
 dependencies = [
  "abscissa_core",
  "abscissa_tokio",
@@ -1802,7 +1802,7 @@ dependencies = [
 [[package]]
 name = "gravity_abi"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#1f81db9ee897746797783efe587f499351e40863"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#0d4b6b1eaa6b4ddc3370109a4dfa777acc2f7b53"
 dependencies = [
  "ethers",
  "serde",
@@ -1813,7 +1813,7 @@ dependencies = [
 [[package]]
 name = "gravity_bridge"
 version = "2.0.4"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#1f81db9ee897746797783efe587f499351e40863"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#0d4b6b1eaa6b4ddc3370109a4dfa777acc2f7b53"
 dependencies = [
  "cosmos_gravity",
  "ethereum_gravity",
@@ -1828,7 +1828,7 @@ dependencies = [
 [[package]]
 name = "gravity_proto"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#1f81db9ee897746797783efe587f499351e40863"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#0d4b6b1eaa6b4ddc3370109a4dfa777acc2f7b53"
 dependencies = [
  "bytes",
  "cosmos-sdk-proto",
@@ -1840,7 +1840,7 @@ dependencies = [
 [[package]]
 name = "gravity_utils"
 version = "0.1.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#1f81db9ee897746797783efe587f499351e40863"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#0d4b6b1eaa6b4ddc3370109a4dfa777acc2f7b53"
 dependencies = [
  "clarity",
  "cosmos-sdk-proto",
@@ -2650,7 +2650,7 @@ dependencies = [
 [[package]]
 name = "orchestrator"
 version = "2.0.4"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#1f81db9ee897746797783efe587f499351e40863"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#0d4b6b1eaa6b4ddc3370109a4dfa777acc2f7b53"
 dependencies = [
  "axum",
  "clarity",
@@ -3260,7 +3260,7 @@ checksum = "c08c74e62047bb2de4ff487b251e4a92e24f48745648451635cec7d591162d9f"
 [[package]]
 name = "relayer"
 version = "2.0.0"
-source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#1f81db9ee897746797783efe587f499351e40863"
+source = "git+https://github.com/PeggyJV/gravity-bridge?branch=main#0d4b6b1eaa6b4ddc3370109a4dfa777acc2f7b53"
 dependencies = [
  "clarity",
  "cosmos_gravity",

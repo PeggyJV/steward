@@ -9,7 +9,7 @@ require (
 	github.com/ethereum/go-ethereum v1.10.22
 	github.com/miguelmota/go-ethereum-hdwallet v0.1.1
 	github.com/ory/dockertest/v3 v3.10.0
-	github.com/peggyjv/gravity-bridge/module/v4 v4.0.0-20231211214131-bf2a31eb986f
+	github.com/peggyjv/gravity-bridge/module/v4 v4.0.0
 	github.com/peggyjv/sommelier/v7 v7.0.0-20231213034030-55929891728a
 	github.com/spf13/viper v1.14.0
 	github.com/stretchr/testify v1.8.2

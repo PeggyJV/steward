@@ -33,33 +33,16 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
     let config = APP.config();
 
     // load subscription mappings
-    let mut subscription_mappings: HashMap<String, HashSet<String>> = HashMap::default();
+    let mut subscription_mappings: HashMap<String, String> = HashMap::default();
     get_default_subscriptions()
         .await?
         .default_subscriptions
         .iter()
-        .for_each(|s| {
-            if config
-                .pubsub
-                .publisher_domain_block_list
-                .contains(&s.publisher_domain)
-            {
-                debug!(
-                    "publisher domain {} is in the block list. skipping.",
-                    s.publisher_domain
-                );
-
-                return;
-            }
-
-            subscription_mappings
-                // if there is an entry for the key, push to the vec and dedup,
-                // otherwise create a new vec with the subscription id
-                .entry(s.publisher_domain.to_owned())
-                .and_modify(|e| {
-                    e.insert(s.subscription_id.to_owned());
-                })
-                .or_insert(HashSet::from([s.subscription_id.to_owned()]));
+        .for_each(|ds| {
+            subscription_mappings.insert(
+                ds.subscription_id.to_owned(),
+                ds.publisher_domain.to_owned(),
+            );
         });
 
     let delegate_address = get_delegate_address().to_string();
@@ -68,38 +51,10 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
         .subscriber_intents
         .iter()
         .for_each(|si| {
-            if config
-                .pubsub
-                .publisher_domain_block_list
-                .contains(&si.publisher_domain)
-            {
-                debug!(
-                    "publisher domain {} is in the block list. skipping.",
-                    si.publisher_domain
-                );
-
-                return;
-            }
-
-            // if there is already a default entry for this subscription ID under
-            // a different publisher, we remove it from that set of IDs.
-            if let Some(p) = subscription_mappings.keys().find(|k| {
-                subscription_mappings
-                    .get(&k.to_string())
-                    .unwrap()
-                    .contains(&si.subscription_id)
-            }) {
-                subscription_mappings.entry(p.to_owned()).and_modify(|e| {
-                    e.remove(&si.subscription_id);
-                });
-            }
-
-            subscription_mappings
-                .entry(si.publisher_domain.to_owned())
-                .and_modify(|e| {
-                    e.insert(si.subscription_id.to_owned());
-                })
-                .or_insert(HashSet::from([si.subscription_id.to_owned()]));
+            subscription_mappings.insert(
+                si.subscription_id.to_owned(),
+                si.publisher_domain.to_owned(),
+            );
         });
 
     if subscription_mappings.is_empty() {
@@ -108,10 +63,35 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
             .into());
     }
 
+    // filter out blocked publishers
+    let subscription_mappings: HashMap<String, String> = subscription_mappings
+        .into_iter()
+        .filter_map(|(sid, domain)| {
+            if config.pubsub.publisher_domain_block_list.contains(&domain) {
+                debug!(
+                    "publisher domain {} is in the block list. skipping.",
+                    domain
+                );
+
+                return None;
+            }
+            Some((sid, domain))
+        })
+        .collect();
+
     // build trust state
-    let mut states: Vec<PublisherTrustData<'static>> = Vec::new();
+    let mut states: HashMap<String, PublisherTrustData<'static>> = HashMap::new();
     for m in subscription_mappings {
-        let (publisher_domain_name, subscription_ids) = m;
+        let (subscription_id, publisher_domain_name) = m;
+
+        if states.contains_key(&publisher_domain_name) {
+            states.entry(publisher_domain_name).and_modify(|v| {
+                v.subscription_ids.insert(subscription_id);
+            });
+
+            continue;
+        }
+
         let publisher = match get_publisher(publisher_domain_name.clone()).await {
             Ok(p) => p.publisher.unwrap(),
             Err(e) => {
@@ -135,14 +115,17 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
         };
         let publisher_ca_cert = Box::leak(pem).parse_x509().unwrap();
 
-        states.push(PublisherTrustData {
-            publisher,
-            subscription_ids,
-            publisher_ca_cert,
-        });
+        states.insert(
+            publisher_domain_name,
+            PublisherTrustData {
+                publisher,
+                subscription_ids: HashSet::from([subscription_id]),
+                publisher_ca_cert,
+            },
+        );
     }
 
-    Ok(states)
+    Ok(states.values().cloned().collect())
 }
 
 async fn get_subscriber_intents_by_subscriber_address(
