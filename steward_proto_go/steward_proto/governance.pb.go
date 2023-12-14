@@ -23,7 +23,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-//
 // Represents a governance-executed cellar function call. Used for Scheduled Cork Proposals in Sommelier.
 type GovernanceCall struct {
 	state         protoimpl.MessageState

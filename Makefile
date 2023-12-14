@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := e2e_cork_test
 
 VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:main"
-ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:latest"
+ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:main"
 
 go_protos:
 	@scripts/build_go_protos.sh

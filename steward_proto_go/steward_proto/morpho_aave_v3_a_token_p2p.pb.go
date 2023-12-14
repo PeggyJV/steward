@@ -185,7 +185,6 @@ func (x *MorphoAaveV3ATokenP2PAdaptorV1Calls) GetCalls() []*MorphoAaveV3ATokenP2
 	return nil
 }
 
-//
 // Allows strategists to lend assets on Morpho
 //
 // Represents function `depositToAaveV3Morpho(ERC20 tokenToDeposit, uint256 amountToDeposit, uint256 maxIterations)`
@@ -255,7 +254,6 @@ func (x *MorphoAaveV3ATokenP2PAdaptorV1_DepositToAaveV3Morpho) GetMaxIterations(
 	return ""
 }
 
-//
 // Allows strategists to withdraw assets from Morpho
 //
 // Represents function `withdrawFromAaveV3Morpho(ERC20 tokenToWithdraw, uint256 amountToWithdraw, uint256 maxIterations)`

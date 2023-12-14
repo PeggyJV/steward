@@ -1,32 +1,29 @@
+use abscissa_core::tracing::log::{debug, error, info, warn};
+use ethers::types::H160;
+use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
+use lazy_static::lazy_static;
+use sha3::{Digest, Keccak256};
+use somm_proto::cork::Cork;
+use tonic::{self, async_trait, Code, Request, Response, Status};
+
+use crate::server::handle_authorization;
 use crate::{
     cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2},
-    config,
     error::{
         Error,
         ErrorKind::{self, *},
     },
-    prelude::APP,
     proto::{self, schedule_request::CallData::*, ScheduleRequest, ScheduleResponse},
     somm_send,
 };
-use abscissa_core::{
-    tracing::log::{debug, error, info, warn},
-    Application,
-};
-use deep_space::{Coin, Contact};
-use ethers::types::H160;
-use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
-use sha3::{Digest, Keccak256};
-use somm_proto::cork::Cork;
-use std::time::Duration;
-use tonic::{self, async_trait, Code, Request, Response, Status};
 
 pub mod cache;
 pub mod client;
 pub mod proposals;
 
-const MESSAGE_TIMEOUT: Duration = Duration::from_secs(10);
-const CHAIN_PREFIX: &str = "somm";
+lazy_static! {
+    static ref STEWARD_VERSION: &'static str = env!("CARGO_PKG_VERSION");
+}
 
 pub struct CorkHandler;
 
@@ -36,7 +33,9 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
         &self,
         request: Request<ScheduleRequest>,
     ) -> Result<Response<ScheduleResponse>, Status> {
+        let certs = request.peer_certs().unwrap();
         let request = request.get_ref().to_owned();
+
         let cellar_id = request.cellar_id.clone();
         if let Err(err) = cellars::validate_cellar_id(&cellar_id).await {
             let message = format!("cellar ID validation failed: {}", err);
@@ -48,8 +47,10 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
             }
         }
 
+        debug!("checking publisher authorization for {cellar_id}");
+        handle_authorization(&cellar_id, certs).await?;
+
         // Build and send cork
-        let cellar_id = request.cellar_id.clone();
         let height = request.block_height;
         let encoded_call = match get_encoded_call(request) {
             Ok(c) => c,
@@ -61,21 +62,36 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
 
         debug!("hex encoded call: {:?}", hex::encode(&encoded_call));
 
-        if let Err(err) = schedule_cork(&cellar_id, encoded_call.clone(), height).await {
-            error!("failed to schedule cork for cellar {}: {}", cellar_id, err);
-            return Err(Status::new(
-                Code::Internal,
-                format!("failed to send cork to sommelier: {}", err),
-            ));
+        match schedule_cork(&cellar_id, encoded_call.clone(), height).await {
+            Ok(res) => {
+                if res.code != 0 {
+                    error!(
+                        "failed to schedule cork for cellar {}. code {}, raw log: {}",
+                        cellar_id, res.code, res.raw_log
+                    );
+                    return Err(Status::new(
+                        Code::Internal,
+                        "cork submission failed. this may be a steward configuration problem."
+                            .to_string(),
+                    ));
+                }
+                debug!("cork response: {:?}", res)
+            }
+            Err(err) => {
+                error!("failed to schedule cork for cellar {}: {}", cellar_id, err);
+                return Err(Status::new(
+                    Code::Internal,
+                    format!("failed to send cork to sommelier: {}", err),
+                ));
+            }
         }
+        let id = id_hash(height, &cellar_id, encoded_call);
         info!(
-            "scheduled cork for cellar {} at height {}",
-            cellar_id, height
+            "scheduled cork {} for cellar {} at height {}",
+            id, cellar_id, height
         );
 
-        Ok(Response::new(ScheduleResponse {
-            id: id_hash(height, &cellar_id, encoded_call),
-        }))
+        Ok(Response::new(ScheduleResponse { id }))
     }
 }
 
@@ -122,30 +138,14 @@ pub async fn schedule_cork(
     height: u64,
 ) -> Result<TxResponse, Error> {
     debug!("establishing grpc connection");
-    let config = APP.config();
-    let contact = Contact::new(&config.cosmos.grpc, MESSAGE_TIMEOUT, CHAIN_PREFIX).unwrap();
-
-    debug!("getting cosmos fee");
-    let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
-    let fee = Coin {
-        amount: (cosmos_gas_price.0 as u64).into(),
-        denom: cosmos_gas_price.1,
-    };
     let cork = Cork {
         encoded_contract_call: encoded_call,
         target_contract_address: contract.to_string(),
     };
-    somm_send::schedule_cork(
-        &contact,
-        cork,
-        config::DELEGATE_ADDRESS.to_string(),
-        &config::DELEGATE_KEY,
-        fee,
-        config.cosmos.gas_limit_per_msg,
-        height,
-    )
-    .await
-    .map_err(|e| e.into())
+
+    somm_send::schedule_cork(cork, height)
+        .await
+        .map_err(|e| e.into())
 }
 
 pub fn id_hash(block_height: u64, contract_address: &str, encoded_call: Vec<u8>) -> String {

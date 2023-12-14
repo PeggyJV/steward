@@ -33,11 +33,11 @@ serde_json = "1.0.64"
 sha2 = "0.9"
 sha3 = "0.10.6"
 signatory = "0.23.0-pre"
-somm_proto = { git = "https://github.com/PeggyJV/sommelier" }
+somm_proto = { git = "https://github.com/PeggyJV/sommelier", rev = "55929891728ac0c21625bd23970b9c59c1f10843" }
 thiserror = "1"
 tokio ={ version = "1", features = ["macros", "fs"] }
 toml = { version = "0.5" }
-tonic = { version = "0.4.3", features = ["codegen", "tls", "transport"] }
+tonic = { version = "0.4.3", features = ["codegen", "tls", "tower", "transport"] }
 tonic-reflection = "0.1.0"
 tower = { version = "0.4", features = ["buffer", "util"] }
 url = "2.2.2"
@@ -54,6 +54,11 @@ openssl-sys = "=0.9.61"
 openssl-probe = "0.1.4"
 once_cell = "1.10.0"
 reqwest = "0.11.14"
+rustls = "0.19"
+x509-parser = { version = "0.14.0", features = ["verify"] }
+rustls-pemfile = "1.0.2"
+tokio-util = "0.7.7"
+addr = "0.15.6"
 
 
 [dependencies.abscissa_core]

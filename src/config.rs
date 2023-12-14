@@ -5,7 +5,7 @@
 //! for specifying it.
 use crate::{prelude::APP, somm_send::MAX_GAS_PER_BLOCK};
 use abscissa_core::Application;
-use deep_space::{Address as CosmosAddress, PrivateKey};
+use deep_space::{Address as CosmosAddress, PrivateKey as CosmosPrivateKey};
 use ethers::signers::LocalWallet as EthWallet;
 use gravity_bridge::cosmos_gravity;
 use lazy_static::lazy_static;
@@ -14,12 +14,12 @@ use signatory::FsKeyStore;
 use std::{net::SocketAddr, path::Path};
 
 lazy_static! {
-    pub static ref DELEGATE_KEY: PrivateKey = {
+    static ref DELEGATE_KEY: CosmosPrivateKey = {
         let config = APP.config();
         let name = &config.keys.delegate_key;
         config.load_deep_space_key(name.clone())
     };
-    pub static ref DELEGATE_ADDRESS: CosmosAddress = {
+    static ref DELEGATE_ADDRESS: CosmosAddress = {
         let config = APP.config();
         DELEGATE_KEY
             .to_address(&config.cosmos.prefix)
@@ -28,6 +28,14 @@ lazy_static! {
 }
 
 const GRAVITY_ADDRESS: &str = "0x69592e6f9d21989a043646fe8225da2600e5a0f7";
+
+pub(crate) fn get_delegate_address() -> &'static CosmosAddress {
+    &DELEGATE_ADDRESS
+}
+
+pub(crate) fn get_delegate_key() -> &'static CosmosPrivateKey {
+    &DELEGATE_KEY
+}
 
 /// Steward Configuration
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -42,6 +50,7 @@ pub struct StewardConfig {
     pub metrics: MetricsSection,
     pub server: ServerSection,
     pub simulate: SimulateSection,
+    pub pubsub: PubsubConfig,
 }
 
 impl StewardConfig {
@@ -55,18 +64,18 @@ impl StewardConfig {
 
     pub fn load_clarity_key(&self, name: String) -> clarity::PrivateKey {
         let key = self.load_secret_key(name).to_bytes();
-        clarity::PrivateKey::from_slice(&key).expect("Could not convert key")
+        clarity::PrivateKey::from_slice(key.as_slice()).expect("Could not convert key")
     }
 
-    pub fn load_deep_space_key(&self, name: String) -> PrivateKey {
+    pub fn load_deep_space_key(&self, name: String) -> CosmosPrivateKey {
         let key = self.load_secret_key(name).to_bytes();
-        let key = deep_space::utils::bytes_to_hex_str(&key);
+        let key = deep_space::utils::bytes_to_hex_str(key.as_slice());
         key.parse().expect("Could not parse private key")
     }
 
     pub fn load_gravity_deep_space_key(&self, name: String) -> cosmos_gravity::crypto::PrivateKey {
         let key = self.load_secret_key(name).to_bytes();
-        let key = deep_space::utils::bytes_to_hex_str(&key);
+        let key = deep_space::utils::bytes_to_hex_str(key.as_slice());
         key.parse().expect("Could not parse private key")
     }
 
@@ -91,6 +100,7 @@ impl Default for StewardConfig {
             metrics: MetricsSection::default(),
             server: ServerSection::default(),
             simulate: SimulateSection::default(),
+            pubsub: PubsubConfig::default(),
         }
     }
 }
@@ -99,7 +109,6 @@ impl Default for StewardConfig {
 #[serde(default)]
 pub struct ServerSection {
     pub address: String,
-    pub client_ca_cert_path: Option<String>,
     pub port: u16,
     pub server_cert_path: String,
     pub server_key_path: String,
@@ -109,7 +118,6 @@ impl Default for ServerSection {
     fn default() -> Self {
         Self {
             address: "0.0.0.0".to_string(),
-            client_ca_cert_path: None,
             port: 5734,
             server_cert_path: "".to_owned(),
             server_key_path: "".to_owned(),
@@ -148,6 +156,24 @@ impl Default for CorkConfig {
             cache_refresh_period: 60,
             proposal_poll_period: 300,
             max_scheduling_retries: 3,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(default)]
+pub struct PubsubConfig {
+    /// Cache refresh period in seconds
+    pub cache_refresh_period: u64,
+    /// List of publisher domains to reject
+    pub publisher_domain_block_list: Vec<String>,
+}
+
+impl Default for PubsubConfig {
+    fn default() -> Self {
+        Self {
+            cache_refresh_period: 3600,
+            publisher_domain_block_list: Vec::default(),
         }
     }
 }
@@ -262,6 +288,9 @@ pub struct SimulateSection {
     pub tenderly_project_name: String,
     pub tenderly_username: String,
     pub gravity_address: String,
+    pub server_cert_path: String,
+    pub server_key_path: String,
+    pub client_ca_cert_path: String,
 }
 
 impl Default for SimulateSection {
@@ -273,6 +302,9 @@ impl Default for SimulateSection {
             tenderly_project_name: "".to_string(),
             tenderly_username: "".to_string(),
             gravity_address: GRAVITY_ADDRESS.to_string(),
+            server_cert_path: "".to_string(),
+            server_key_path: "".to_string(),
+            client_ca_cert_path: "".to_string(),
         }
     }
 }

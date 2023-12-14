@@ -198,7 +198,6 @@ func (x *VestingSimpleAdaptorV2Calls) GetCalls() []*VestingSimpleAdaptorV2 {
 	return nil
 }
 
-//
 // Allows strategists to deposit tokens to the vesting contract. By passing a max uint256 for amountToDeposit, the cellar will
 // deposit its entire balance (appropriate in most cases).
 //
@@ -258,7 +257,6 @@ func (x *VestingSimpleAdaptorV2_DepositToVesting) GetAmount() string {
 	return ""
 }
 
-//
 // Allows strategists to deposit tokens to the vesting contract. By passing a max uint256 for amountToDeposit, the cellar will
 // deposit its entire balance (appropriate in most cases).
 //
@@ -326,7 +324,6 @@ func (x *VestingSimpleAdaptorV2_WithdrawFromVesting) GetAmount() string {
 	return ""
 }
 
-//
 // Withdraw a single deposit from vesting. This will not affect the cellar's TVL because any deposit must already have vested, and
 // will be reported in balanceOf. Will revert if not enough tokens are available based on amountToWithdraw.
 //
@@ -386,7 +383,6 @@ func (x *VestingSimpleAdaptorV2_WithdrawAnyFromVesting) GetAmount() string {
 	return ""
 }
 
-//
 // Withdraw a certain amount of tokens from vesting, from any deposit. This will not affect the cellar's TVL because any deposit must
 // already have vested, and will be reported in balanceOf. Will revert if not enough tokens are available based on amountToWithdraw.
 //

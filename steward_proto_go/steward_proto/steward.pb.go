@@ -25,7 +25,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-//
 // Represents a scheduled function call to a particular Cellar
 type ScheduleRequest struct {
 	state         protoimpl.MessageState
@@ -203,7 +202,6 @@ func (x *ScheduleResponse) GetId() string {
 	return ""
 }
 
-//
 // Represents a request for Steward's current status
 type StatusRequest struct {
 	state         protoimpl.MessageState
@@ -290,7 +288,6 @@ func (x *StatusResponse) GetVersion() string {
 	return ""
 }
 
-//
 // Represents a simulated function call to a particular Cellar
 type SimulateRequest struct {
 	state         protoimpl.MessageState

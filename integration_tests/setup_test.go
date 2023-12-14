@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"math/big"
 	"os"
 	"path"
@@ -14,10 +15,10 @@ import (
 	"testing"
 	"time"
 
-	gravitytypes "github.com/peggyjv/gravity-bridge/module/v2/x/gravity/types"
+	gravitytypes "github.com/peggyjv/gravity-bridge/module/v4/x/gravity/types"
 
-	corktypes "github.com/peggyjv/sommelier/v4/x/cork/types"
-	incentivestypes "github.com/peggyjv/sommelier/v4/x/incentives/types"
+	corktypes "github.com/peggyjv/sommelier/v7/x/cork/types"
+	incentivestypes "github.com/peggyjv/sommelier/v7/x/incentives/types"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -30,12 +31,15 @@ import (
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	govtypesv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
-	auctiontypes "github.com/peggyjv/sommelier/v4/x/auction/types"
-	cellarfeestypes "github.com/peggyjv/sommelier/v4/x/cellarfees/types"
+	auctiontypes "github.com/peggyjv/sommelier/v7/x/auction/types"
+	axelarcorktypes "github.com/peggyjv/sommelier/v7/x/axelarcork/types"
+	cellarfeestypes "github.com/peggyjv/sommelier/v7/x/cellarfees/types"
+	pubsubtypes "github.com/peggyjv/sommelier/v7/x/pubsub/types"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 	tmconfig "github.com/tendermint/tendermint/config"
@@ -157,14 +161,14 @@ func (s *IntegrationTestSuite) initNodes(nodeCount int) {
 	val0ConfigDir := s.chain.validators[0].configDir()
 	for _, val := range s.chain.validators {
 		s.Require().NoError(
-			addGenesisAccount(val0ConfigDir, "", initBalanceStr, val.keyInfo.GetAddress()),
+			addGenesisAccount(val0ConfigDir, "", initBalanceStr, val.address()),
 		)
 	}
 
 	// add orchestrator accounts to genesis file
 	for _, orch := range s.chain.orchestrators {
 		s.Require().NoError(
-			addGenesisAccount(val0ConfigDir, "", initBalanceStr, orch.keyInfo.GetAddress()),
+			addGenesisAccount(val0ConfigDir, "", initBalanceStr, orch.address()),
 		)
 	}
 
@@ -187,14 +191,14 @@ func (s *IntegrationTestSuite) initNodesWithMnemonics(mnemonics ...string) {
 	val0ConfigDir := s.chain.validators[0].configDir()
 	for _, val := range s.chain.validators {
 		s.Require().NoError(
-			addGenesisAccount(val0ConfigDir, "", initBalanceStr, val.keyInfo.GetAddress()),
+			addGenesisAccount(val0ConfigDir, "", initBalanceStr, val.address()),
 		)
 	}
 
 	// add orchestrator accounts to genesis file
 	for _, orch := range s.chain.orchestrators {
 		s.Require().NoError(
-			addGenesisAccount(val0ConfigDir, "", initBalanceStr, orch.keyInfo.GetAddress()),
+			addGenesisAccount(val0ConfigDir, "", initBalanceStr, orch.address()),
 		)
 	}
 
@@ -332,7 +336,7 @@ func (s *IntegrationTestSuite) initGenesis() {
 	s.Require().NoError(err)
 	appGenState[minttypes.ModuleName] = bz
 
-	var govGenState govtypes.GenesisState
+	var govGenState govtypesv1beta1.GenesisState
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[govtypes.ModuleName], &govGenState))
 
 	// set short voting period to allow gov proposals in tests
@@ -378,6 +382,12 @@ func (s *IntegrationTestSuite) initGenesis() {
 	s.Require().NoError(err)
 	appGenState[corktypes.ModuleName] = bz
 
+	axelarcorkGenState := axelarcorktypes.DefaultGenesisState()
+	s.Require().NoError(cdc.UnmarshalJSON(appGenState[axelarcorktypes.ModuleName], &axelarcorkGenState))
+	bz, err = cdc.MarshalJSON(&axelarcorkGenState)
+	s.Require().NoError(err)
+	appGenState[axelarcorktypes.ModuleName] = bz
+
 	auctionGenState := auctiontypes.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[auctiontypes.ModuleName], &auctionGenState))
 	bz, err = cdc.MarshalJSON(&auctionGenState)
@@ -386,13 +396,64 @@ func (s *IntegrationTestSuite) initGenesis() {
 
 	cellarfeesGenState := cellarfeestypes.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[cellarfeestypes.ModuleName], &cellarfeesGenState))
+	bz, err = cdc.MarshalJSON(&cellarfeesGenState)
+	s.Require().NoError(err)
+	appGenState[cellarfeestypes.ModuleName] = bz
 
 	incentivesGenState := incentivestypes.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[incentivestypes.ModuleName], &incentivesGenState))
 
-	bz, err = cdc.MarshalJSON(&cellarfeesGenState)
+	pubsubGenState := pubsubtypes.DefaultGenesisState()
+	s.Require().NoError(cdc.UnmarshalJSON(appGenState[pubsubtypes.ModuleName], &pubsubGenState))
+	caCert, err := ioutil.ReadFile("integration_tests/tls/client/test_client_ca.crt")
 	s.Require().NoError(err)
-	appGenState[cellarfeestypes.ModuleName] = bz
+	pubsubGenState.Publishers = []*pubsubtypes.Publisher{
+		{
+			Address: s.chain.orchestrators[0].address().String(),
+			Domain:  "localhost",
+			CaCert:  string(caCert),
+		},
+	}
+	pubsubGenState.PublisherIntents = []*pubsubtypes.PublisherIntent{
+		{
+            SubscriptionId:     fmt.Sprintf("1:%s", aaveCellar.Hex()),
+			PublisherDomain:    "localhost",
+			Method:             1,
+			AllowedSubscribers: 0,
+			AllowedAddresses:   []string{},
+		},
+		{
+			SubscriptionId:     fmt.Sprintf("1:%s", vaultCellar.Hex()),
+			PublisherDomain:    "localhost",
+			Method:             1,
+			AllowedSubscribers: 0,
+			AllowedAddresses:   []string{},
+		},
+		{
+			SubscriptionId:     fmt.Sprintf("1:%s", v2_2Cellar.Hex()),
+			PublisherDomain:    "localhost",
+			Method:             1,
+			AllowedSubscribers: 0,
+			AllowedAddresses:   []string{},
+		},
+	}
+	pubsubGenState.DefaultSubscriptions = []*pubsubtypes.DefaultSubscription{
+		{
+			SubscriptionId:  aaveCellar.Hex(),
+			PublisherDomain: "localhost",
+		},
+		{
+			SubscriptionId:  vaultCellar.Hex(),
+			PublisherDomain: "localhost",
+		},
+		{
+			SubscriptionId:  v2_2Cellar.Hex(),
+			PublisherDomain: "localhost",
+		},
+	}
+	bz, err = cdc.MarshalJSON(&pubsubGenState)
+	s.Require().NoError(err)
+	appGenState[pubsubtypes.ModuleName] = bz
 
 	// set contract addr
 	var gravityGenState gravitytypes.GenesisState
@@ -592,7 +653,7 @@ func (s *IntegrationTestSuite) runEthContainer() {
 
 	s.T().Logf("gravity contract deployed at %s", gravityContract.String())
 	s.T().Logf("aave contract deployed at %s", aaveCellar.String())
-	s.T().Logf("vault cellar contract deployed at %s", aaveCellar.String())
+	s.T().Logf("vault cellar contract deployed at %s", vaultCellar.String())
 	s.T().Logf("adaptor contract deployed at %s", adaptorContract.String())
 
 	s.T().Logf("started Ethereum container: %s", s.ethResource.Container.ID)
@@ -796,6 +857,7 @@ proposal_poll_period = 10
 
 [cosmos]
 grpc = "http://%s:9090"
+key_derivation_path = "m/44'/118'/1'/0/0"
 
 [cosmos.gas_price]
 amount = 1000000000
@@ -808,6 +870,9 @@ delegate_key = "steward-key"
 client_ca_cert_path = "/root/steward/test_client_ca.crt"
 server_cert_path = "/root/steward/test_server.crt"
 server_key_path = "/root/steward/test_server_key_pkcs8.pem"
+
+[pubsub]
+cache_refresh_period = 3
 `,
 			s.valResources[i].Container.Name[1:],
 			testDenom,
