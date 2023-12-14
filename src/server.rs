@@ -191,17 +191,16 @@ pub(crate) async fn handle_authorization(
     .0
     .to_vec();
 
-    let publisher_trust_data = match lookup_trust_data_by_subject_key_identifier(&client_cert_aki)
-        .await
-    {
-        Some(p) => p,
-        None => {
-            error!(
+    let publisher_trust_data =
+        match lookup_trust_data_by_subject_key_identifier(&client_cert_aki).await {
+            Some(p) => p,
+            None => {
+                error!(
                 "no publisher trust data found for authority key identifier: {client_cert_aki:?}"
             );
-            return Err(Status::permission_denied("no publisher trust data found"));
-        }
-    };
+                return Err(Status::permission_denied("no publisher trust data found"));
+            }
+        };
 
     let ca_pub = publisher_trust_data.publisher_ca_cert.public_key();
     if let Err(e) = client_cert.verify_signature(Some(ca_pub)) {
