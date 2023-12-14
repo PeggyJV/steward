@@ -157,6 +157,13 @@ pub(crate) async fn handle_authorization(
             }
         };
 
+        // if the cert is a CA, it's not he client cert, so we skip
+        if let Ok(Some(extension)) = client_cert.basic_constraints() {
+            if extension.value.ca {
+                continue;
+            }
+        }
+
         let client_cert_aki = match extract_authority_key_identifier(&client_cert) {
             Ok(aki) => aki,
             Err(e) => {
