@@ -35,9 +35,11 @@ pub async fn handle_scheduled_cork_proposal(
 
     if cork_proposal.block_height <= state.last_observed_height {
         info!(
-            "proposal {} block height {} has already passed.",
+            "proposal {} block height {} is in the past. skipping!",
             proposal_id, cork_proposal.block_height
         );
+
+        return;
     }
 
     let json = cork_proposal.contract_call_proto_json;
