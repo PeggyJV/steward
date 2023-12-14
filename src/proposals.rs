@@ -227,13 +227,13 @@ async fn poll_approved_proposals(
     Ok(())
 }
 
-pub async fn confirm_sheduling(
+pub async fn confirm_scheduling(
     state: &ProposalThreadState,
     cellar_id: &str,
-    encoded_call: Vec<u8>,
+    encoded_call: &[u8],
     block_height: u64,
 ) -> Result<bool, Error> {
-    let id = id_hash(block_height, cellar_id, encoded_call);
+    let id = id_hash(block_height, cellar_id, &encoded_call);
     let mut client = CorkQueryClient::new().await?;
 
     Ok(client

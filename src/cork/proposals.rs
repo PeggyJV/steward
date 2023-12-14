@@ -9,7 +9,7 @@ use somm_proto::cosmos_sdk_proto::cosmos::gov::v1beta1::Proposal;
 use crate::cellars::{aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2};
 use crate::cork::schedule_cork;
 use crate::prelude::APP;
-use crate::proposals::{confirm_sheduling, log_schedule_failure, ProposalThreadState};
+use crate::proposals::{confirm_scheduling, log_schedule_failure, ProposalThreadState};
 use crate::proto::{governance_call::Call, GovernanceCall};
 
 const RETRY_SLEEP: u64 = 5;
@@ -165,7 +165,7 @@ pub async fn handle_scheduled_cork_proposal(
         if let Err(schedule_err) =
             schedule_cork(&cellar_id, encoded_call.clone(), block_height).await
         {
-            match confirm_sheduling(state, &cellar_id, encoded_call.clone(), block_height).await {
+            match confirm_scheduling(state, &cellar_id, &encoded_call, block_height).await {
                 Ok(confirmed) => {
                     if confirmed {
                         info!(
