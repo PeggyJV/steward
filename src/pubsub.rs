@@ -66,7 +66,7 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
     // filter out blocked publishers
     let subscription_mappings: HashMap<String, String> = subscription_mappings
         .into_iter()
-        .filter_map(|(domain, sid)| {
+        .filter_map(|(sid, domain)| {
             if config.pubsub.publisher_domain_block_list.contains(&domain) {
                 debug!(
                     "publisher domain {} is in the block list. skipping.",
@@ -75,7 +75,7 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
 
                 return None;
             }
-            Some((domain, sid))
+            Some((sid, domain))
         })
         .collect();
 
