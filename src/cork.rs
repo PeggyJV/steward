@@ -75,7 +75,7 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
                             .to_string(),
                     ));
                 }
-                info!("cork response: {:?}", res)
+                debug!("cork response: {:?}", res)
             }
             Err(err) => {
                 error!("failed to schedule cork for cellar {}: {}", cellar_id, err);
