@@ -27,6 +27,8 @@ use self::cache::PublisherTrustData;
 
 pub(crate) mod cache;
 
+// TODO (Collin): Break this into smaller functions and write tests
+
 /// Retrieves the PEM encoded CA certs for all default subscription publishers.
 pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>, Error> {
     debug!("collecting trust roots from default subscriptions and subscriber intents.");
@@ -48,12 +50,26 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
                 })
                 .or_insert(vec![s.subscription_id.to_owned()]);
         });
+
     let delegate_address = get_delegate_address().to_string();
     get_subscriber_intents_by_subscriber_address(delegate_address)
         .await?
         .subscriber_intents
         .iter()
         .for_each(|si| {
+            // if there is already a default entry for this subscription ID under
+            // a different publisher, we remove it from that set of IDs.
+            if let Some(p) = subscription_mappings.keys().find(|k| {
+                subscription_mappings
+                    .get(&k.to_string())
+                    .unwrap()
+                    .contains(&si.subscription_id)
+            }) {
+                subscription_mappings
+                    .entry(p)
+                    .and_modify(|e| e.remove(&si.subscription_id));
+            }
+
             subscription_mappings
                 .entry(si.publisher_domain.to_owned())
                 .and_modify(|e| {
