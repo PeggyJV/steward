@@ -26,13 +26,13 @@ pub fn is_approved(chain_id: u64, cellar_id: &str) -> bool {
     debug!(
         "checking if cellar ID {} is approved for chain {}",
         cellar_id, chain_id
-    );   
+    );
 
     let approved = APPROVED_CELLARS.read().unwrap();
     let Some(approved_for_chain) = approved.get(&chain_id) else {
         return false;
     };
- 
+
     approved_for_chain.contains(&cellar_id)
 }
 

@@ -78,6 +78,7 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
         } else {
             handle_axelar_cork(chain_id, &cellar_id, encoded_call.clone(), height, deadline)
                 .await?;
+        }
 
         let id = id_hash(height, &cellar_id, &encoded_call);
         info!(
