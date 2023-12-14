@@ -35,10 +35,6 @@ pub struct CosmosToEthCmd {
     /// The number of times transactions should repeat itself, default is 1.
     #[clap(short, long, default_value = "1")]
     times: String,
-
-    /// Boolean, True if you want to wait until someone requests a batch for this token type and False if you want to request a batch to push transaction along immediately.
-    #[clap(short = 'f', long)]
-    pub wait_for_batch: bool,
 }
 
 pub fn one_eth() -> f64 {
@@ -170,15 +166,7 @@ impl Runnable for CosmosToEthCmd {
                 Err(e) => println!("Failed to send tokens! {:?}", e),
             }
         }
-
-        if !self.wait_for_batch {
-            println!("Requesting a batch to push transaction along immediately");
-            // send_request_batch_tx(cosmos_key, denom,config.cosmos.gas_price.as_tuple(), &contact,config.cosmos.gas_adjustment)
-            //     .await
-            //     .expect("Failed to request batch");
-        } else {
-            println!("--no-batch specified, your transfer will wait until someone requests a batch for this token type")
-        }
+ 
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
