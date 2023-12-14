@@ -22,10 +22,10 @@ lazy_static! {
 /// Indicates whether an address is in the approved cellars cache
 pub fn is_approved(chain_id: u64, cellar_id: &str) -> bool {
     let cellar_id = cellar_id.trim().to_lowercase();
-    let approved = APPROVED_CELLARS
-        .read()
-        .unwrap();
-    let Some(approved_for_chain) = approved.get(&chain_id) else { return false };
+    let approved = APPROVED_CELLARS.read().unwrap();
+    let Some(approved_for_chain) = approved.get(&chain_id) else {
+        return false;
+    };
 
     approved_for_chain.contains(&cellar_id)
 }

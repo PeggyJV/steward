@@ -170,7 +170,7 @@ impl Runnable for CosmosToEthCmd {
                 Err(e) => println!("Failed to send tokens! {:?}", e),
             }
         }
- 
+
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

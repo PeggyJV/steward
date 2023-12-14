@@ -5,13 +5,13 @@ use abscissa_core::Application;
 use somm_proto::{
     axelar_cork::{
         query_client::QueryClient as AxelarQueryClient,
-        QueryCellarIDsRequest as AxelarQueryCellarIDsRequest, 
+        QueryCellarIDsRequest as AxelarQueryCellarIDsRequest,
         QueryScheduledCorksByIdRequest as AxelarQueryScheduledCorksByIdRequest,
         QueryScheduledCorksByIdResponse as AxelarQueryScheduledCorksByIdResponse,
     },
     cork::{
-        query_client::QueryClient, QueryCellarIDsRequest, 
-        QueryScheduledCorksByIdRequest, QueryScheduledCorksByIdResponse,
+        query_client::QueryClient, QueryCellarIDsRequest, QueryScheduledCorksByIdRequest,
+        QueryScheduledCorksByIdResponse,
     },
 };
 use tonic::{transport::Channel, Response, Status};
@@ -46,7 +46,7 @@ impl CorkQueryClient {
 
         let mut result: HashMap<u64, HashSet<String>> = HashMap::new();
         for id in cork_result.into_inner().cellar_ids {
-            result.entry(1).or_insert(HashSet::new()).insert(id);
+            result.entry(1).or_default().insert(id);
         }
 
         for set in axelarcork_result.into_inner().cellar_ids {
