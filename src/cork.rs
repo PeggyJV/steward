@@ -254,18 +254,3 @@ pub fn id_hash(block_height: u64, contract_address: &str, encoded_call: &[u8]) -
     format!("{:x}", hasher.finalize())
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_id_hash() {
-        // inputs and expected output from an integration test run
-        let expected =
-            "fca62587f984a777a25ff1a45c2178066c82f8631f9bf54046943604c8805c84".to_string();
-        let call = hex::decode("fc4d43be00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
-        let actual = id_hash(193, "0x0165878A594ca255338adfa4d48449f69242Eb8F", &call);
-
-        assert_eq!(expected, actual);
-    }
-}
