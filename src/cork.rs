@@ -259,3 +259,23 @@ pub fn id_hash(
 
     format!("{:x}", hasher.finalize())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_id_hash() {
+        let expected =
+            "4f954c2a399b67bfc523f08b40c7f94854f6270b0c67fce8f04811d085dc0691".to_string();
+
+        let encoded = "9955a9d400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+        let call = hex::decode(encoded).unwrap();
+        let chain_id = 1;
+        let height = 35;
+        let cellar_id = "0x0165878A594ca255338adfa4d48449f69242Eb8F".to_string();
+        let actual = id_hash(height, chain_id, &cellar_id, &call);
+
+        assert_eq!(expected, actual);
+    }
+}
