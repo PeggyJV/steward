@@ -91,7 +91,7 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
                 .await?;
         }
 
-        let id = id_hash(height, &cellar_id, &encoded_call);
+        let id = id_hash(height, chain_id, &cellar_id, &encoded_call);
         info!(
             "scheduled cork {} for cellar {} on chain {} at height {}",
             id, cellar_id, chain_id, height
@@ -238,13 +238,19 @@ pub async fn schedule_axelar_cork(
         .map_err(|e| e.into())
 }
 
-pub fn id_hash(block_height: u64, contract_address: &str, encoded_call: &[u8]) -> String {
+pub fn id_hash(
+    block_height: u64,
+    chain_id: u64,
+    contract_address: &str,
+    encoded_call: &[u8],
+) -> String {
     let mut hasher = Keccak256::new();
     let address = contract_address
         .parse::<H160>()
         .expect("failed to parse cellar ID. it should have been validated before now.");
     let input = [
         (block_height).to_be_bytes().as_slice(),
+        (chain_id).to_be_bytes().as_slice(),
         address.as_bytes(),
         &encoded_call,
     ]
@@ -253,4 +259,3 @@ pub fn id_hash(block_height: u64, contract_address: &str, encoded_call: &[u8]) -
 
     format!("{:x}", hasher.finalize())
 }
-
