@@ -10,7 +10,11 @@ use crate::{
 };
 use abscissa_core::{
     status_err,
+<<<<<<< HEAD
     tracing::log::{debug, error, info},
+=======
+    tracing::log::{error, info},
+>>>>>>> main
     Application,
 };
 use tokio::sync::mpsc::Receiver;
@@ -212,10 +216,6 @@ pub(crate) async fn handle_authorization(
         .subscription_ids
         .contains(subscription_id)
     {
-        debug!(
-            "id: {}, publisher subscription IDs: {:?}",
-            subscription_id, publisher_trust_data.subscription_ids
-        );
         info!("not subscribed to this publisher for subscription {subscription_id}");
         return Err(Status::permission_denied(
             "not subscribed to this publisher",

@@ -396,13 +396,6 @@ func (s *IntegrationTestSuite) initGenesis() {
 
 	cellarfeesGenState := cellarfeestypes.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[cellarfeestypes.ModuleName], &cellarfeesGenState))
-	cellarfeesGenState.Params = cellarfeestypes.Params{
-		FeeAccrualAuctionThreshold: 2,
-		RewardEmissionPeriod:       100,
-		InitialPriceDecreaseRate:   sdk.MustNewDecFromStr("0.05"),
-		PriceDecreaseBlockInterval: uint64(1000),
-		AuctionInterval:            3,
-	}
 	bz, err = cdc.MarshalJSON(&cellarfeesGenState)
 	s.Require().NoError(err)
 	appGenState[cellarfeestypes.ModuleName] = bz
