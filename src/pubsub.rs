@@ -17,6 +17,7 @@ use url::Url;
 use x509_parser::prelude::parse_x509_pem;
 
 use crate::{
+    cellars::to_checksum_address,
     config::get_delegate_address,
     error::{Error, ErrorKind},
     prelude::APP,
@@ -76,8 +77,25 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
                 return None;
             }
 
-            // also normalize
-            Some((sid.trim().to_lowercase(), domain))
+            // normalizing here means even if the casing is different on chain, we'll still be 
+            // able to match it, and if we can't normalize it then it's invalid and we ignore it.
+            let (chain_id, cellar_id) = match subscription_id_parts(&sid) {
+                Ok((chain_id, cellar_id)) => (chain_id, cellar_id),
+                Err(err) => {
+                    error!(
+                        "failed to parse subscription ID {}. it will not be included in trust store: {}",
+                        sid, err
+                    );
+                    return None;
+                }
+            };
+            let Ok(cellar_id) = to_checksum_address(&cellar_id) else {
+                error!("failed to convert cellarID part of subscription ID to checksum: {sid}, it will not be included in trust store");
+                return None;
+            };
+            let sid = format!("{}:{}", chain_id, cellar_id);
+
+            Some((sid, domain))
         })
         .collect();
 
@@ -241,4 +259,13 @@ pub(crate) fn validate_ca_cert(data: &[u8]) -> Result<(), Error> {
         .map_err(|e| Into::<Error>::into(ErrorKind::InvalidCertificate.context(e)))?;
 
     Ok(())
+}
+
+pub(crate) fn subscription_id_parts(sid: &str) -> Result<(String, String), Error> {
+    let parts: Vec<&str> = sid.split(':').collect();
+    if parts.len() != 2 {
+        return Err(ErrorKind::InvalidSubscriptionId.into());
+    }
+
+    Ok((parts[0].to_string(), parts[1].to_string()))
 }

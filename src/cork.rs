@@ -6,6 +6,7 @@ use sha3::{Digest, Keccak256};
 use somm_proto::{axelar_cork::AxelarCork, cork::Cork};
 use tonic::{self, async_trait, Code, Request, Response, Status};
 
+use crate::cellars::to_checksum_address;
 use crate::server::handle_authorization;
 use crate::{
     cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2},
@@ -46,7 +47,16 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
             ));
         }
 
-        let cellar_id = request.cellar_id.clone();
+        let cellar_id = match to_checksum_address(&request.cellar_id.clone()) {
+            Ok(id) => id,
+            Err(err) => {
+                debug!(
+                    "requested cellar ID checksum parse failed: {}",
+                    request.cellar_id
+                );
+                return Err(Status::new(Code::InvalidArgument, err.to_string()));
+            }
+        };
         if let Err(err) = cellars::validate_cellar_id(chain_id, &cellar_id).await {
             let message = format!("cellar ID validation failed: {}", err);
             match err.kind() {
@@ -57,7 +67,7 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
             }
         }
 
-        let subscription_id = format!("{}:{}", chain_id, cellar_id.trim().to_lowercase());
+        let subscription_id = format!("{}:{}", chain_id, cellar_id);
         debug!("checking publisher authorization for {subscription_id}");
         handle_authorization(&subscription_id, certs).await?;
 

@@ -119,14 +119,16 @@ pub async fn validate_cellar_id(chain_id: u64, cellar_id: &str) -> Result<(), Er
             .into());
     }
 
-    if !is_approved(chain_id, cellar_id) {
+    let cellar_id = to_checksum_address(cellar_id)?;
+
+    if !is_approved(chain_id, &cellar_id) {
         if let Err(err) = cache::refresh_approved_cellars().await {
             return Err(ErrorKind::CacheError
                 .context(format!("failed to refresh approved cellar cache: {}", err))
                 .into());
         }
 
-        if !is_approved(chain_id, cellar_id) {
+        if !is_approved(chain_id, &cellar_id) {
             return Err(ErrorKind::UnapprovedCellar
                 .context(format!(
                     "cellar ID {} is not approved by governance",
@@ -137,6 +139,20 @@ pub async fn validate_cellar_id(chain_id: u64, cellar_id: &str) -> Result<(), Er
     }
 
     Ok(())
+}
+
+pub(crate) fn to_checksum_address(address: &str) -> Result<String, Error> {
+    let address = match address.parse::<Address>() {
+        Ok(a) => a,
+        Err(e) => {
+            return Err(ErrorKind::InvalidEVMAddress
+                .context(format!("invalid EVM address format ({}): {:?}", address, e))
+                .into())
+        }
+    };
+    let address = ethers::utils::to_checksum(&address, None);
+
+    Ok(address)
 }
 
 #[cfg(test)]

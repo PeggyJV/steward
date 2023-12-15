@@ -1,7 +1,7 @@
 use std::collections::{HashMap, HashSet};
 
-use crate::{error::Error, prelude::APP};
-use abscissa_core::Application;
+use crate::{cellars::to_checksum_address, error::Error, prelude::APP};
+use abscissa_core::{tracing::log::error, Application};
 use somm_proto::{
     axelar_cork::{
         query_client::QueryClient as AxelarQueryClient,
@@ -46,19 +46,31 @@ impl CorkQueryClient {
 
         let mut result: HashMap<u64, HashSet<String>> = HashMap::new();
         for id in cork_result.into_inner().cellar_ids {
-            let normalized_id = id.trim().to_lowercase();
+            let normalized_id = match to_checksum_address(&id) {
+                Ok(addr) => addr,
+                Err(err) => {
+                    error!("failed to get checksum of cellar ID {}, it will not be cached as approved: {}", id, err);
+                    continue;
+                }
+            };
 
             result.entry(1).or_default().insert(normalized_id);
         }
 
         for set in axelarcork_result.into_inner().cellar_ids {
-            let normalized_ids: Vec<String> = set
-                .ids
-                .into_iter()
-                .map(|id| id.trim().to_lowercase())
-                .collect();
+            let chain_id = set.chain.unwrap().id;
+            let cellar_ids = set.ids.clone();
+            for id in cellar_ids.into_iter() {
+                let normalized_id = match to_checksum_address(&id) {
+                    Ok(addr) => addr,
+                    Err(err) => {
+                        error!("failed to get checksum of axelar cellar ID {}, it will not be cached as approved: {}", id, err);
+                        continue;
+                    }
+                };
 
-            result.insert(set.chain.unwrap().id, HashSet::from_iter(normalized_ids));
+                result.entry(chain_id).or_default().insert(normalized_id);
+            }
         }
 
         Ok(result)

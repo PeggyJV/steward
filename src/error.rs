@@ -83,6 +83,8 @@ pub enum ErrorKind {
     InvalidDomainName,
     #[error("invalid key")]
     InvalidKey,
+    #[error("invalid subscription id")]
+    InvalidSubscriptionId,
 }
 
 impl ErrorKind {
