@@ -143,7 +143,7 @@ async fn handle_cork(cellar_id: &str, encoded_call: Vec<u8>, height: u64) -> Res
                 ));
             }
 
-            info!("cork response: {:?}", res);
+            debug!("cork response: {:?}", res);
 
             Ok(())
         }
