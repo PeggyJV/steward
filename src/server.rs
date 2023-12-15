@@ -10,11 +10,7 @@ use crate::{
 };
 use abscissa_core::{
     status_err,
-<<<<<<< HEAD
-    tracing::log::{debug, error, info},
-=======
     tracing::log::{error, info},
->>>>>>> main
     Application,
 };
 use tokio::sync::mpsc::Receiver;

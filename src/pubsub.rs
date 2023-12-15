@@ -269,4 +269,3 @@ pub(crate) fn subscription_id_parts(sid: &str) -> Result<(String, String), Error
 
     Ok((parts[0].to_string(), parts[1].to_string()))
 }
-
