@@ -165,7 +165,6 @@ func (x *SwapWithUniswapAdaptorV1Calls) GetCalls() []*SwapWithUniswapAdaptorV1 {
 	return nil
 }
 
-//
 // Perform a swap using Uniswap V2.
 //
 // Represents function `swapWithUniV2(address[] path, uint256 amount, uint256 amountOutMin)`
@@ -232,10 +231,9 @@ func (x *SwapWithUniswapAdaptorV1_SwapWithUniV2) GetAmountOutMin() string {
 	return ""
 }
 
-//
 // Perform a swap using Uniswap V3.
 //
-// Represents function `Represents function `swapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin)``
+// Represents function `Represents function `swapWithUniV3(address[] path, uint24[] poolFees, uint256 amount, uint256 amountOutMin)“
 type SwapWithUniswapAdaptorV1_SwapWithUniV3 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

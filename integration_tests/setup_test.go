@@ -446,7 +446,7 @@ func (s *IntegrationTestSuite) initGenesis() {
 	}
 	pubsubGenState.DefaultSubscriptions = []*pubsubtypes.DefaultSubscription{
 		{
-            SubscriptionId:  fmt.Sprintf("1:%s", aaveCellar.Hex()),
+			SubscriptionId:  fmt.Sprintf("1:%s", aaveCellar.Hex()),
 			PublisherDomain: "localhost",
 		},
 		{
@@ -454,7 +454,7 @@ func (s *IntegrationTestSuite) initGenesis() {
 			PublisherDomain: "localhost",
 		},
 		{
-            SubscriptionId:  fmt.Sprintf("1:%s", v2_2Cellar.Hex()),
+			SubscriptionId:  fmt.Sprintf("1:%s", v2_2Cellar.Hex()),
 			PublisherDomain: "localhost",
 		},
 	}

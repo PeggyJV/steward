@@ -166,7 +166,6 @@ func (x *CellarAdaptorV1Calls) GetCalls() []*CellarAdaptorV1 {
 	return nil
 }
 
-//
 // Allows strategists to deposit into Cellar positions.
 //
 // Represents function `depositToCellar(Cellar cellar, uint256 assets)`
@@ -225,7 +224,6 @@ func (x *CellarAdaptorV1_DepositToCellar) GetAssets() string {
 	return ""
 }
 
-//
 // Allows strategists to withdraw from Cellar positions.
 //
 // Represents function `withdrawFromCellar(Cellar cellar, uint256 assets)`
