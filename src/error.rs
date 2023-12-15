@@ -63,7 +63,7 @@ pub enum ErrorKind {
     UnapprovedCellar,
     /// Invalid ethereum address
     #[error("invalid ethereum address")]
-    InvalidEthereumAddress,
+    InvalidEVMAddress,
     /// Proposal processing error
     #[error("proposal processing error")]
     ProposalProcessingError,
@@ -83,6 +83,8 @@ pub enum ErrorKind {
     InvalidDomainName,
     #[error("invalid key")]
     InvalidKey,
+    #[error("invalid subscription id")]
+    InvalidSubscriptionId,
 }
 
 impl ErrorKind {

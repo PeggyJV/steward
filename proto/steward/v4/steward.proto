@@ -48,11 +48,17 @@ message ScheduleRequest {
         CellarV2 cellar_v2 = 5;
         CellarV2_2 cellar_v2_2 = 6;
     }
+    // The ID of the chain on which the target Cellar resides
+    uint64 chain_id = 7;
+    // The unix timestamp deadline for the contract call to be executed
+    uint64 deadline = 8;
 }
 
 message ScheduleResponse {
     // The hex encoded ID of the scheduled cork
     string id = 1;
+    // The ID of the chain on which the target Cellar resides
+    uint64 chain_id = 2;
 }
 
 /*

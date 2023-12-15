@@ -396,6 +396,13 @@ func (s *IntegrationTestSuite) initGenesis() {
 
 	cellarfeesGenState := cellarfeestypes.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[cellarfeestypes.ModuleName], &cellarfeesGenState))
+	cellarfeesGenState.Params = cellarfeestypes.Params{
+		FeeAccrualAuctionThreshold: 2,
+		RewardEmissionPeriod:       100,
+		InitialPriceDecreaseRate:   sdk.MustNewDecFromStr("0.05"),
+		PriceDecreaseBlockInterval: uint64(1000),
+		AuctionInterval:            3,
+	}
 	bz, err = cdc.MarshalJSON(&cellarfeesGenState)
 	s.Require().NoError(err)
 	appGenState[cellarfeestypes.ModuleName] = bz
@@ -416,7 +423,7 @@ func (s *IntegrationTestSuite) initGenesis() {
 	}
 	pubsubGenState.PublisherIntents = []*pubsubtypes.PublisherIntent{
 		{
-            SubscriptionId:     fmt.Sprintf("1:%s", aaveCellar.Hex()),
+			SubscriptionId:     fmt.Sprintf("1:%s", aaveCellar.Hex()),
 			PublisherDomain:    "localhost",
 			Method:             1,
 			AllowedSubscribers: 0,
@@ -439,15 +446,15 @@ func (s *IntegrationTestSuite) initGenesis() {
 	}
 	pubsubGenState.DefaultSubscriptions = []*pubsubtypes.DefaultSubscription{
 		{
-			SubscriptionId:  aaveCellar.Hex(),
+			SubscriptionId:  fmt.Sprintf("1:%s", aaveCellar.Hex()),
 			PublisherDomain: "localhost",
 		},
 		{
-			SubscriptionId:  vaultCellar.Hex(),
+			SubscriptionId:  fmt.Sprintf("1:%s", vaultCellar.Hex()),
 			PublisherDomain: "localhost",
 		},
 		{
-			SubscriptionId:  v2_2Cellar.Hex(),
+			SubscriptionId:  fmt.Sprintf("1:%s", v2_2Cellar.Hex()),
 			PublisherDomain: "localhost",
 		},
 	}

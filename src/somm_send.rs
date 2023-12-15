@@ -7,6 +7,8 @@ use deep_space::Msg;
 use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::{
     base::abci::v1beta1::TxResponse, tx::v1beta1::BroadcastMode,
 };
+use somm_proto::axelar_cork::AxelarCork;
+use somm_proto::axelar_cork::MsgScheduleAxelarCorkRequest;
 use somm_proto::cork::Cork;
 use somm_proto::cork::MsgScheduleCorkRequest;
 use somm_proto::pubsub::Subscriber;
@@ -85,6 +87,21 @@ pub async fn schedule_cork(cork: Cork, block_height: u64) -> Result<TxResponse, 
         block_height,
     };
     let msg = Msg::new("/cork.v2.MsgScheduleCorkRequest", msg);
+
+    send_messages(vec![msg]).await
+}
+
+pub async fn schedule_axelar_cork(
+    cork: AxelarCork,
+    block_height: u64,
+) -> Result<TxResponse, CosmosGrpcError> {
+    let msg = MsgScheduleAxelarCorkRequest {
+        chain_id: cork.chain_id,
+        cork: Some(cork),
+        signer: get_delegate_address().to_string(),
+        block_height,
+    };
+    let msg = Msg::new("/axelarcork.v1.MsgScheduleAxelarCorkRequest", msg);
 
     send_messages(vec![msg]).await
 }
