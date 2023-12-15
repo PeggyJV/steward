@@ -222,7 +222,6 @@ func (x *ScheduleResponse) GetId() string {
 	return ""
 }
 
-<<<<<<< HEAD
 func (x *ScheduleResponse) GetChainId() uint64 {
 	if x != nil {
 		return x.ChainId
@@ -230,8 +229,6 @@ func (x *ScheduleResponse) GetChainId() uint64 {
 	return 0
 }
 
-=======
->>>>>>> main
 // Represents a request for Steward's current status
 type StatusRequest struct {
 	state         protoimpl.MessageState
