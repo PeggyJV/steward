@@ -8,19 +8,11 @@ use somm_proto::cosmos_sdk_proto::cosmos::gov::v1beta1::Proposal;
 
 use crate::{
     cellars::{aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2, cellar_v2_5},
-    config::DELEGATE_ADDRESS,
     cork::schedule_cork,
-    error::{Error, ErrorKind},
     prelude::APP,
     proto::{governance_call::Call, GovernanceCall},
+    proposals::{confirm_scheduling, log_schedule_failure, ProposalThreadState}
 };
-
-use super::{client::CorkQueryClient, id_hash};
-
-type GovQueryClient = gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::gov::v1beta1::query_client::QueryClient<Channel>;
-type GravityQueryClient =
-    gravity_bridge::gravity_proto::gravity::query_client::QueryClient<Channel>;
-type TendermintQueryClient = gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::tendermint::v1beta1::service_client::ServiceClient<Channel>;
 
 const RETRY_SLEEP: u64 = 5;
 
@@ -40,34 +32,7 @@ pub async fn handle_scheduled_cork_proposal(
                     proposal_id, err
                 );
                 return;
-            }
-            Call::CellarV25(data) => {
-                if data.function.is_none() {
-                    warn!(
-                        "scheduled cork proposal {} call data contains no function data and will be ignored: {:?}",
-                        proposal.proposal_id, data,
-                    );
-                    state.increment_proposal_id();
-                    continue;
-                }
-                let function = data.function.unwrap();
-                match cellar_v2_5::get_encoded_governance_call(
-                    function,
-                    &cellar_id,
-                    proposal.proposal_id,
-                ) {
-                    Ok(d) => d,
-                    // this is likely a bug in steward
-                    Err(err) => {
-                        error!(
-                            "failed to get encoded governance call data for proposal {}: {}",
-                            proposal.proposal_id, err
-                        );
-                        state.increment_proposal_id();
-                        continue;
-                    }
-                }
-            }
+            } 
         };
 
     if cork_proposal.block_height <= state.last_observed_height {
@@ -175,6 +140,30 @@ pub async fn handle_scheduled_cork_proposal(
             }
             let function = data.function.unwrap();
             match cellar_v2_2::get_encoded_governance_call(
+                function,
+                &cellar_id,
+                proposal.proposal_id,
+            ) {
+                Ok(d) => d,
+                // this is likely a bug in steward
+                Err(err) => {
+                    error!(
+                        "failed to get encoded governance call data for proposal {}: {}",
+                        proposal.proposal_id, err
+                    );
+                    return;
+                }
+            }
+        }
+        Call::CellarV25(data) => {
+            if data.function.is_none() {
+                warn!(
+                    "scheduled cork proposal {} call data contains no function data and will be ignored: {:?}",
+                    proposal.proposal_id, data,
+                );
+            }
+            let function = data.function.unwrap();
+            match cellar_v2_5::get_encoded_governance_call(
                 function,
                 &cellar_id,
                 proposal.proposal_id,

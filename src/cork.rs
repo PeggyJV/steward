@@ -10,7 +10,6 @@ use crate::cellars::to_checksum_address;
 use crate::server::handle_authorization;
 use crate::{
     cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2, cellar_v2_5},
-    config,
     error::{
         Error,
         ErrorKind::{self, *},

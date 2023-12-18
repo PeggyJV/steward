@@ -102,7 +102,7 @@ impl ProposalThreadState {
         };
     }
 
-    fn increment_proposal_id(&mut self) {
+    pub(crate) fn increment_proposal_id(&mut self) {
         self.last_processed_proposal_id += 1;
     }
 }
@@ -113,10 +113,9 @@ async fn poll_approved_proposals(
 ) -> Result<(), Error> {
     let config = APP.config();
     let mut gov_client = GovQueryClient::connect(config.cosmos.grpc.clone()).await?;
-
     loop {
         // Proposal IDs start at 1, so this should be ok even for the first query after startup.
-        let proposal_id = state.last_processed_proposal_id + 1;
+        let proposal_id = &state.last_processed_proposal_id + 1;
         debug!("querying proposal {}", proposal_id);
         let proposal = match gov_client
             .proposal(tonic::Request::new(QueryProposalRequest { proposal_id }))
