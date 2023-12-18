@@ -10,8 +10,8 @@ use crate::{
     cellars::{aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2, cellar_v2_5},
     cork::schedule_cork,
     prelude::APP,
+    proposals::{confirm_scheduling, log_schedule_failure, ProposalThreadState},
     proto::{governance_call::Call, GovernanceCall},
-    proposals::{confirm_scheduling, log_schedule_failure, ProposalThreadState}
 };
 
 const RETRY_SLEEP: u64 = 5;
@@ -32,7 +32,7 @@ pub async fn handle_scheduled_cork_proposal(
                     proposal_id, err
                 );
                 return;
-            } 
+            }
         };
 
     if cork_proposal.block_height <= state.last_observed_height {
