@@ -151,7 +151,6 @@ func (x *ZeroXAdaptorV1Calls) GetCalls() []*ZeroXAdaptorV1 {
 	return nil
 }
 
-//
 // Allows strategists to make ERC20 swaps using 0x.
 //
 // Represents function `swapWith0x(ERC20 tokenIn, ERC20 tokenOut, uint256 amount, bytes memory swapCallData)`

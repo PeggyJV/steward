@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	govtypesv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	ethereum "github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -20,7 +21,7 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 	s.checkCellarExists(vaultCellar)
 
 	orch := s.chain.orchestrators[0]
-	orchClientCtx, err := s.chain.clientContext("tcp://localhost:26657", orch.keyring, "orch", orch.keyInfo.GetAddress())
+	orchClientCtx, err := s.chain.clientContext("tcp://localhost:26657", orch.keyring, "orch", orch.address())
 	s.Require().NoError(err)
 	currentHeight, err := s.GetLatestBlockHeight(orchClientCtx)
 	s.Require().NoError(err)
@@ -49,15 +50,15 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 		protoJson,
 	)
 
-	proposalMsg, err := govtypes.NewMsgSubmitProposal(
+	proposalMsg, err := govtypesv1beta1.NewMsgSubmitProposal(
 		proposal,
 		sdk.Coins{
 			{
 				Denom:  testDenom,
-				Amount: sdk.NewInt(1000000),
+				Amount: math.NewInt(1000000),
 			},
 		},
-		orch.keyInfo.GetAddress(),
+		orch.address(),
 	)
 	s.Require().NoError(err, "Unable to create governance proposal")
 
@@ -67,19 +68,22 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 	s.Require().Zero(submitProposalResponse.Code, "raw log: %s", submitProposalResponse.RawLog)
 
 	s.T().Log("Check proposal was submitted correctly")
-	govQueryClient := govtypes.NewQueryClient(orchClientCtx)
+	govQueryClient := govtypesv1beta1.NewQueryClient(orchClientCtx)
 	var proposalID uint64
 	s.Require().Eventually(func() bool {
-		proposalsQueryResponse, err := govQueryClient.Proposals(context.Background(), &govtypes.QueryProposalsRequest{})
+		proposalsQueryResponse, err := govQueryClient.Proposals(context.Background(), &govtypesv1beta1.QueryProposalsRequest{})
 		if err != nil {
 			s.T().Logf("error querying proposals: %e", err)
 			return false
 		}
 
-		s.Require().NotEmpty(proposalsQueryResponse.Proposals)
+		if len(proposalsQueryResponse.Proposals) == 0 {
+			return false
+		}
+
 		for _, p := range proposalsQueryResponse.Proposals {
 			if p.Content.TypeUrl == "/cork.v2.ScheduledCorkProposal" {
-				s.Require().Equal(govtypes.StatusVotingPeriod, p.Status, "proposal not in voting period")
+				s.Require().Equal(govtypesv1beta1.StatusVotingPeriod, p.Status, "proposal not in voting period")
 				proposalID = p.ProposalId
 				return true
 			}
@@ -94,10 +98,10 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 	for _, val := range s.chain.validators {
 		kr, err := val.keyring()
 		s.Require().NoError(err)
-		localClientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kr, "val", val.keyInfo.GetAddress())
+		localClientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kr, "val", val.address())
 		s.Require().NoError(err)
 
-		voteMsg := govtypes.NewMsgVote(val.keyInfo.GetAddress(), proposalID, govtypes.OptionYes)
+		voteMsg := govtypesv1beta1.NewMsgVote(val.address(), proposalID, govtypesv1beta1.OptionYes)
 		voteResponse, err := s.chain.sendMsgs(*localClientCtx, voteMsg)
 		s.Require().NoError(err)
 		s.Require().Zero(voteResponse.Code, "Vote error: %s", voteResponse.RawLog)
@@ -105,8 +109,8 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 
 	s.T().Log("Waiting for proposal to be approved..")
 	s.Require().Eventually(func() bool {
-		proposalQueryResponse, _ := govQueryClient.Proposal(context.Background(), &govtypes.QueryProposalRequest{ProposalId: proposalID})
-		return govtypes.StatusPassed == proposalQueryResponse.Proposal.Status
+		proposalQueryResponse, _ := govQueryClient.Proposal(context.Background(), &govtypesv1beta1.QueryProposalRequest{ProposalId: proposalID})
+		return govtypesv1beta1.StatusPassed == proposalQueryResponse.Proposal.Status
 	}, time.Second*30, time.Second*5, "proposal was never accepted")
 	s.T().Log("Proposal approved!")
 

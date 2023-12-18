@@ -358,7 +358,6 @@ func (x *AaveDebtTokenAdaptorV2Calls) GetCalls() []*AaveDebtTokenAdaptorV2 {
 	return nil
 }
 
-//
 // Allows strategists to borrow assets from Aave.
 //
 // Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
@@ -419,7 +418,6 @@ func (x *AaveDebtTokenAdaptorV1_BorrowFromAave) GetAmount() string {
 	return ""
 }
 
-//
 // Allows strategists to repay loan debt on Aave.
 //
 // Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
@@ -480,7 +478,6 @@ func (x *AaveDebtTokenAdaptorV1_RepayAaveDebt) GetAmount() string {
 	return ""
 }
 
-//
 // Allows strategists to swap assets and repay loans in one call.
 //
 // Represents function `swapAndRepay(ERC20 tokenIn, ERC20 tokenToRepay, uint256 amountIn, SwapRouter.Exchange exchange, bytes memory params)`
@@ -568,7 +565,6 @@ func (x *AaveDebtTokenAdaptorV1_SwapAndRepay) GetParams() *SwapParams {
 	return nil
 }
 
-//
 // Allows strategists to borrow assets from Aave.
 //
 // Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
@@ -629,7 +625,6 @@ func (x *AaveDebtTokenAdaptorV2_BorrowFromAave) GetAmount() string {
 	return ""
 }
 
-//
 // Allows strategists to repay loan debt on Aave.
 //
 // Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`

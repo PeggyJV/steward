@@ -18,7 +18,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
-	gravityTypes "github.com/peggyjv/gravity-bridge/module/v3/x/gravity/types"
+	gravityTypes "github.com/peggyjv/gravity-bridge/module/v4/x/gravity/types"
 	corkTypes "github.com/peggyjv/sommelier/v7/x/cork/types"
 	"github.com/peggyjv/steward/steward_proto_go/steward_proto"
 	"google.golang.org/grpc"
@@ -55,7 +55,7 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 		val := s.chain.validators[0]
 		kb, err := val.keyring()
 		s.Require().NoError(err)
-		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.address())
 		s.Require().NoError(err)
 		currentHeight, err := s.GetLatestBlockHeight(clientCtx)
 		s.Require().NoError(err)
@@ -70,6 +70,7 @@ func (s *IntegrationTestSuite) TestAaveV2Stablecoin() {
 			{InIndex: 0, OutIndex: 0, SwapType: 0},
 		}
 		request := &steward_proto.ScheduleRequest{
+			ChainId:  1,
 			CellarId: cellarId,
 			CallData: &steward_proto.ScheduleRequest_AaveV2Stablecoin{
 				AaveV2Stablecoin: &steward_proto.AaveV2Stablecoin{
@@ -173,7 +174,7 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 		val := s.chain.validators[0]
 		kb, err := val.keyring()
 		s.Require().NoError(err)
-		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.address())
 		s.Require().NoError(err)
 
 		// Create the cork requests to send to Steward
@@ -191,6 +192,7 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 			},
 		}
 		requestUniV2 := &steward_proto.ScheduleRequest{
+			ChainId:  1,
 			CellarId: cellarId,
 			CallData: &steward_proto.ScheduleRequest_CellarV1{
 				CellarV1: &steward_proto.CellarV1{
@@ -217,6 +219,7 @@ func (s *IntegrationTestSuite) TestCellarV1() {
 			},
 		}
 		requestUniV3 := &steward_proto.ScheduleRequest{
+			ChainId:  1,
 			CellarId: cellarId,
 			CallData: &steward_proto.ScheduleRequest_CellarV1{
 				CellarV1: &steward_proto.CellarV1{
@@ -390,7 +393,7 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 		val := s.chain.validators[0]
 		kb, err := val.keyring()
 		s.Require().NoError(err)
-		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.address())
 		s.Require().NoError(err)
 
 		// Create the cork requests to send to Steward
@@ -407,6 +410,7 @@ func (s *IntegrationTestSuite) TestCellarV2() {
 
 		// Contains two adaptor calls, the first of which has two function calls inside of it, for a total of three function calls.
 		request := &steward_proto.ScheduleRequest{
+			ChainId:  1,
 			CellarId: cellarId,
 			CallData: &steward_proto.ScheduleRequest_CellarV2{
 				CellarV2: &steward_proto.CellarV2{
@@ -638,7 +642,7 @@ func (s *IntegrationTestSuite) TestCellarV2_2() {
 		val := s.chain.validators[0]
 		kb, err := val.keyring()
 		s.Require().NoError(err)
-		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.keyInfo.GetAddress())
+		clientCtx, err := s.chain.clientContext("tcp://localhost:26657", &kb, "val", val.address())
 		s.Require().NoError(err)
 
 		// Create the cork requests to send to Steward
@@ -646,6 +650,7 @@ func (s *IntegrationTestSuite) TestCellarV2_2() {
 
 		// Contains two adaptor calls, the first of which has two function calls inside of it, for a total of three function calls.
 		request := &steward_proto.ScheduleRequest{
+			ChainId:  1,
 			CellarId: cellarId,
 			CallData: &steward_proto.ScheduleRequest_CellarV2_2{
 				CellarV2_2: &steward_proto.CellarV2_2{
@@ -856,7 +861,7 @@ func (s *IntegrationTestSuite) executeStewardCalls(request *steward_proto.Schedu
 			defer cancel()
 
 			c := steward_proto.NewContractCallServiceClient(conn)
-			s.T().Logf("sending request to %s", s.chain.validators[i].keyInfo.GetAddress())
+			s.T().Logf("sending request to %s", s.chain.validators[i].address())
 			_, err = c.Schedule(ctx, request)
 			s.Require().NoError(err)
 		}

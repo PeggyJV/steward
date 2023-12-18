@@ -3843,6 +3843,12 @@ pub struct ScheduleRequest {
     /// The block height at which to schedule the contract call
     #[prost(uint64, tag = "2")]
     pub block_height: u64,
+    /// The ID of the chain on which the target Cellar resides
+    #[prost(uint64, tag = "8")]
+    pub chain_id: u64,
+    /// The unix timestamp deadline for the contract call to be executed
+    #[prost(uint64, tag = "9")]
+    pub deadline: u64,
     /// The data from which the desired contract function will be encoded
     #[prost(oneof = "schedule_request::CallData", tags = "3, 4, 5, 6, 7")]
     pub call_data: ::core::option::Option<schedule_request::CallData>,
@@ -3869,6 +3875,9 @@ pub struct ScheduleResponse {
     /// The hex encoded ID of the scheduled cork
     #[prost(string, tag = "1")]
     pub id: ::prost::alloc::string::String,
+    /// The ID of the chain on which the target Cellar resides
+    #[prost(uint64, tag = "2")]
+    pub chain_id: u64,
 }
 ///
 /// Represents a request for Steward's current status

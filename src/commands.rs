@@ -17,6 +17,7 @@ mod deploy;
 mod eth_to_cosmos;
 mod keys;
 mod orchestrator;
+mod pubsub;
 mod sign_delegate_keys;
 mod simulate;
 mod start;
@@ -45,6 +46,8 @@ pub enum StewardCmd {
     EthToCosmos(eth_to_cosmos::EthToCosmosCmd),
     #[clap(subcommand)]
     Orchestrator(orchestrator::OrchestratorCmd),
+    #[clap(subcommand)]
+    Pubsub(pubsub::PubsubCmd),
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
     Simulate(simulate::SimulateCmd),
     Start(StartCmd),

@@ -25,7 +25,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-//
 // Represents a function call to a cellar that implements Cellar.sol
 type CellarV2 struct {
 	state         protoimpl.MessageState
@@ -186,7 +185,6 @@ func (*CellarV2_SwapPositions_) isCellarV2_Function() {}
 
 func (*CellarV2_SetShareLockPeriod_) isCellarV2_Function() {}
 
-//
 // Represent a function call initiated through a governance proposal
 type CellarV2Governance struct {
 	state         protoimpl.MessageState
@@ -414,7 +412,6 @@ func (*CellarV2_2_FunctionCall_) isCellarV2_2_CallType() {}
 
 func (*CellarV2_2_Multicall_) isCellarV2_2_CallType() {}
 
-//
 // Represent a function call initiated through a governance proposal
 type CellarV2_2Governance struct {
 	state         protoimpl.MessageState
@@ -984,7 +981,6 @@ func (*AdaptorCall_MorphoAaveV3ATokenP2PV1Calls) isAdaptorCall_CallData() {}
 
 func (*AdaptorCall_MorphoAaveV3DebtTokenV1Calls) isAdaptorCall_CallData() {}
 
-//
 // Insert a trusted position to the list of positions used by the cellar at a given index.
 //
 // Represents function `addPosition(uint32 index, uint32 positionId, bytes configurationData, bool inDebtArray)`
@@ -1063,7 +1059,6 @@ func (x *CellarV2_AddPosition) GetInDebtArray() bool {
 	return false
 }
 
-//
 // Allows strategists to manage their Cellar using arbitrary logic calls to adaptors.
 //
 // Represents function `callOnAdaptor(AdaptorCall[] memory data)`
@@ -1114,7 +1109,6 @@ func (x *CellarV2_CallOnAdaptor) GetData() []*AdaptorCall {
 	return nil
 }
 
-//
 // Remove the position at a given index from the list of positions used by the cellar.
 //
 // Represents function `removePosition(uint32 index, bool inDebtArray)`
@@ -1175,7 +1169,6 @@ func (x *CellarV2_RemovePosition) GetInDebtArray() bool {
 	return false
 }
 
-//
 // Set the holding position used of the cellar.
 //
 // Represents function `setHoldingIndex(uint8 index)`
@@ -1227,7 +1220,6 @@ func (x *CellarV2_SetHoldingPosition) GetPositionId() uint32 {
 	return 0
 }
 
-//
 // Sets the Strategists payout address.
 //
 // Represents function `setStrategistPayoutAddress(address payout)`
@@ -1278,7 +1270,6 @@ func (x *CellarV2_SetStrategistPayoutAddress) GetPayout() string {
 	return ""
 }
 
-//
 // Swap the positions at two given indeces.
 //
 // Represents function `swapPositions(uint32 index1, uint32 index2)`
@@ -1348,7 +1339,6 @@ func (x *CellarV2_SwapPositions) GetInDebtArray() bool {
 	return false
 }
 
-//
 // Allows share lock period to be updated.
 //
 // Represents function `setShareLockPeriod()`
@@ -1575,7 +1565,6 @@ func (x *CellarV2Governance_SetStrategistPlatformCut) GetAmount() uint64 {
 	return 0
 }
 
-//
 // Allows owner to add new adaptors for the cellar to use.
 //
 // Represents function `setupAdaptor(address adaptor)`
@@ -1627,7 +1616,6 @@ func (x *CellarV2Governance_SetupAdaptor) GetAdaptor() string {
 	return ""
 }
 
-//
 // Changes the cellar's allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
 // during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
 //
@@ -1852,7 +1840,6 @@ func (*CellarV2_2_FunctionCall_SetStrategistPayoutAddress) isCellarV2_2_Function
 
 func (*CellarV2_2_FunctionCall_SwapPositions) isCellarV2_2_FunctionCall_Function() {}
 
-//
 // Insert a trusted position to the list of positions used by the cellar at a given index.
 //
 // Represents function `addPosition(uint32 index, uint32 positionId, bytes configurationData, bool inDebtArray)`
@@ -1931,7 +1918,6 @@ func (x *CellarV2_2_AddPosition) GetInDebtArray() bool {
 	return false
 }
 
-//
 // Allows strategists to manage their Cellar using arbitrary logic calls to adaptors.
 //
 // Represents function `callOnAdaptor(AdaptorCall[] memory data)`
@@ -1982,7 +1968,6 @@ func (x *CellarV2_2_CallOnAdaptor) GetData() []*AdaptorCall {
 	return nil
 }
 
-//
 // Remove the position at a given index from the list of positions used by the cellar.
 //
 // Represents function `removePosition(uint32 index, bool inDebtArray)`
@@ -2043,7 +2028,6 @@ func (x *CellarV2_2_RemovePosition) GetInDebtArray() bool {
 	return false
 }
 
-//
 // Allows callers to remove adaptors from this cellar's catalogue
 //
 // Represents function `removeAdaptorFromCatalogue(address adaptor)`
@@ -2094,7 +2078,6 @@ func (x *CellarV2_2_RemoveAdaptorFromCatalogue) GetAdaptor() string {
 	return ""
 }
 
-//
 // Allows caller to remove positions from this cellar's catalogue
 //
 // Represents function `removePositionFromCatalogue(uint32 positionId)`
@@ -2145,7 +2128,6 @@ func (x *CellarV2_2_RemovePositionFromCatalogue) GetPositionId() uint32 {
 	return 0
 }
 
-//
 // Set the holding position used of the cellar.
 //
 // Represents function `setHoldingIndex(uint8 index)`
@@ -2197,7 +2179,6 @@ func (x *CellarV2_2_SetHoldingPosition) GetPositionId() uint32 {
 	return 0
 }
 
-//
 // Sets the Strategists payout address.
 //
 // Represents function `setStrategistPayoutAddress(address payout)`
@@ -2248,7 +2229,6 @@ func (x *CellarV2_2_SetStrategistPayoutAddress) GetPayout() string {
 	return ""
 }
 
-//
 // Swap the positions at two given indeces.
 //
 // Represents function `swapPositions(uint32 index1, uint32 index2)`
@@ -2318,7 +2298,6 @@ func (x *CellarV2_2_SwapPositions) GetInDebtArray() bool {
 	return false
 }
 
-//
 // Allows caller to call multiple functions in a single TX.
 //
 // Represents function `multicall(bytes[] data)`
@@ -2369,7 +2348,6 @@ func (x *CellarV2_2_Multicall) GetFunctionCalls() []*CellarV2_2_FunctionCall {
 	return nil
 }
 
-//
 // Allows the owner to add an adaptor to the Cellar's adaptor catalogue
 //
 // Represents function `addAdaptorToCatalogue(address adaptor)`
@@ -2420,7 +2398,6 @@ func (x *CellarV2_2Governance_AddAdaptorToCatalogue) GetAdaptor() string {
 	return ""
 }
 
-//
 // Allows the owner to add a position to the Cellar's position catalogue
 //
 // Represents function `addPositionToCatalogue(uint32 positionId)`
@@ -2471,7 +2448,6 @@ func (x *CellarV2_2Governance_AddPositionToCatalogue) GetPositionId() uint32 {
 	return 0
 }
 
-//
 // Allows share lock period to be updated.
 //
 // Represents function `setShareLockPeriod()`
@@ -2522,7 +2498,6 @@ func (x *CellarV2_2Governance_SetShareLockPeriod) GetNewLock() string {
 	return ""
 }
 
-//
 // Changes the cellar's allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
 // during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
 //
@@ -2574,7 +2549,6 @@ func (x *CellarV2_2Governance_SetRebalanceDeviation) GetNewDeviation() string {
 	return ""
 }
 
-//
 // Shutdown the cellar. Used in an emergency or if the cellar has been deprecated.
 //
 // Represents function `initiateShutdown()`
@@ -2616,7 +2590,6 @@ func (*CellarV2_2Governance_InitiateShutdown) Descriptor() ([]byte, []int) {
 	return file_cellar_v2_proto_rawDescGZIP(), []int{3, 4}
 }
 
-//
 // Allows strategist to set the platform cut for the cellar.
 //
 // Represents function `setStrategistPlatformCut(uint64 cut)`
@@ -2668,7 +2641,6 @@ func (x *CellarV2_2Governance_SetStrategistPlatformCut) GetNewCut() uint64 {
 	return 0
 }
 
-//
 // Allows the owner to restart a shut down Cellar
 //
 // Represents function `liftShutdown()`
@@ -2710,7 +2682,6 @@ func (*CellarV2_2Governance_LiftShutdown) Descriptor() ([]byte, []int) {
 	return file_cellar_v2_proto_rawDescGZIP(), []int{3, 6}
 }
 
-//
 // Allows caller to force a position out of the cellar
 //
 // Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
@@ -2777,7 +2748,6 @@ func (x *CellarV2_2Governance_ForcePositionOut) GetInDebtArray() bool {
 	return false
 }
 
-//
 // Allows caller to toggle the ignorePause flag on the cellar
 //
 // Represents function `toggleIgnorePause(bool ignore)`

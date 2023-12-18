@@ -170,7 +170,6 @@ func (x *MorphoAaveV3DebtTokenAdaptorV1Calls) GetCalls() []*MorphoAaveV3DebtToke
 	return nil
 }
 
-//
 // Allows strategists to borrow assets from Morpho
 //
 // Represents function `borrowFromAaveV3Morpho(address underlying, uint256 amountToBorrow, uint256 maxIterations)`
@@ -240,7 +239,6 @@ func (x *MorphoAaveV3DebtTokenAdaptorV1_BorrowFromAaveV3Morpho) GetMaxIterations
 	return ""
 }
 
-//
 // Allows strategists to repay loan debt on Morpho
 //
 // Represents function `repayAaveV3MorphoDebt(ERC20 tokenToRepay, uint256 amountToRepay)`

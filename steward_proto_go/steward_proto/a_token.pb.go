@@ -343,7 +343,6 @@ func (x *AaveATokenAdaptorV2Calls) GetCalls() []*AaveATokenAdaptorV2 {
 	return nil
 }
 
-//
 // Allows strategists to lend assets on Aave.
 //
 // Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
@@ -404,7 +403,6 @@ func (x *AaveATokenAdaptorV1_DepositToAave) GetAmount() string {
 	return ""
 }
 
-//
 // Allows strategists to withdraw assets from Aave.
 //
 // Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
@@ -465,7 +463,6 @@ func (x *AaveATokenAdaptorV1_WithdrawFromAave) GetAmount() string {
 	return ""
 }
 
-//
 // Allows strategists to lend assets on Aave.
 //
 // Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit)`
@@ -526,7 +523,6 @@ func (x *AaveATokenAdaptorV2_DepositToAave) GetAmount() string {
 	return ""
 }
 
-//
 // Allows strategists to withdraw assets from Aave.
 //
 // Represents function `withdrawFromAave(ERC20 tokenToWithdraw, uint256 amountToWithdraw)`
