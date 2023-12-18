@@ -14,7 +14,11 @@ use tonic::{transport::Channel, Code};
 
 use crate::{
     config::get_delegate_address,
-    cork::{client::CorkQueryClient, id_hash, proposals::handle_scheduled_cork_proposal},
+    cork::{
+        client::CorkQueryClient,
+        id_hash,
+        proposals::{handle_axelar_scheduled_cork_proposal, handle_scheduled_cork_proposal},
+    },
     error::{Error, ErrorKind},
     prelude::APP,
     pubsub::cache::refresh_publisher_trust_state_cache,
@@ -31,6 +35,7 @@ const REMOVE_PUBLISHER_PROPOSAL: &str = "/pubsub.v1.RemovePublisherProposal";
 const ADD_DEFAULT_SUBSCRIPTION_PROPOSAL: &str = "/pubsub.v1.AddDefaultSubscriptionProposal";
 const REMOVE_DEFAULT_SUBSCRIPTION_PROPOSAL: &str = "/pubsub.v1.RemoveDefaultSubscriptionProposal";
 const SCHEDULED_CORK_PROPOSAL: &str = "/cork.v2.ScheduledCorkProposal";
+const AXELAR_SCHEDULED_CORK_PROPOSAL: &str = "/axelarcork.v1.AxelarScheduledCorkProposal";
 
 pub async fn start_approved_proposal_polling_thread(
     publisher_cache_tx: Sender<()>,
@@ -196,6 +201,9 @@ async fn poll_approved_proposals(
             SCHEDULED_CORK_PROPOSAL => {
                 handle_scheduled_cork_proposal(state, proposal, proposal_id, content).await;
             }
+            AXELAR_SCHEDULED_CORK_PROPOSAL => {
+                handle_axelar_scheduled_cork_proposal(state, proposal, proposal_id, content).await;
+            }
             ADD_PUBLISHER_PROPOSAL
             | REMOVE_PUBLISHER_PROPOSAL
             | ADD_DEFAULT_SUBSCRIPTION_PROPOSAL
@@ -234,11 +242,12 @@ async fn poll_approved_proposals(
 
 pub async fn confirm_scheduling(
     state: &ProposalThreadState,
+    chain_id: u64,
     cellar_id: &str,
     encoded_call: &[u8],
     block_height: u64,
 ) -> Result<bool, Error> {
-    let id = id_hash(block_height, 1, cellar_id, encoded_call);
+    let id = id_hash(block_height, chain_id, cellar_id, encoded_call);
     let mut client = CorkQueryClient::new().await?;
 
     Ok(client
