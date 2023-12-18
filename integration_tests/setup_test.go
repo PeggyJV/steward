@@ -383,6 +383,15 @@ func (s *IntegrationTestSuite) initGenesis() {
 	appGenState[corktypes.ModuleName] = bz
 
 	axelarcorkGenState := axelarcorktypes.DefaultGenesisState()
+	axelarcorkGenState.ChainConfigurations = axelarcorktypes.ChainConfigurations{
+		Configurations: []*axelarcorktypes.ChainConfiguration{
+			{
+				Name:         "test",
+				Id:           10,
+				ProxyAddress: "0x0000000000000000000000000000000000000000",
+			},
+		},
+	}
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[axelarcorktypes.ModuleName], &axelarcorkGenState))
 	bz, err = cdc.MarshalJSON(&axelarcorkGenState)
 	s.Require().NoError(err)
