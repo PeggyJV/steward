@@ -299,7 +299,7 @@ func (s *IntegrationTestSuite) TestScheduledAxelarCorkProposal() {
 	s.T().Log("Waiting for scheduled cork to be created by steward")
 	axelarcorkQueryClient := axelarcorktypes.NewQueryClient(orchClientCtx)
 	s.Require().Eventually(func() bool {
-		proposalQueryResponse, _ := axelarcorkQueryClient.QueryScheduledCorks(context.Background(), &axelarcorktypes.QueryScheduledCorksRequest{})
+		proposalQueryResponse, _ := axelarcorkQueryClient.QueryScheduledCorks(context.Background(), &axelarcorktypes.QueryScheduledCorksRequest{ChainId: chainID})
 		return len(proposalQueryResponse.Corks) > 0
 	}, time.Second*120, time.Second*2, "corks never scheduled")
 

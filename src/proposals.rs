@@ -8,7 +8,7 @@ use gravity_bridge::gravity_proto::{
     cosmos_sdk_proto::cosmos::base::tendermint::v1beta1::GetLatestBlockRequest,
     gravity::DelegateKeysByOrchestratorRequest,
 };
-use somm_proto::cosmos_sdk_proto::cosmos::gov::v1beta1::QueryProposalRequest;
+use somm_proto::cosmos_sdk_proto::cosmos::gov::v1beta1::{ProposalStatus, QueryProposalRequest};
 use tokio::{sync::mpsc::Sender, task::JoinHandle};
 use tonic::{transport::Channel, Code};
 
@@ -181,10 +181,32 @@ async fn poll_approved_proposals(
                 proposal_id
             );
             state.increment_proposal_id();
-            continue;
         }
 
         let proposal = proposal.unwrap();
+        match proposal.status() {
+            ProposalStatus::DepositPeriod | ProposalStatus::VotingPeriod => {
+                info!("proposal {} is in deposit or voting period", proposal_id);
+
+                // return without incrementing so this ID will be checked again after a period
+                break;
+            }
+            ProposalStatus::Rejected | ProposalStatus::Failed => {
+                info!("ignoring rejected/failed proposal of ID {}", proposal_id);
+                state.increment_proposal_id();
+                continue;
+            }
+            ProposalStatus::Passed => {
+                info!("processing passed proposal {}", proposal_id);
+            }
+            ProposalStatus::Unspecified => {
+                // this shouldn't be possible
+                return Err(proposal_processing_error(format!(
+                    "proposal {} has unspecified status",
+                    proposal_id
+                )));
+            }
+        }
         let content = match proposal.clone().content {
             Some(c) => c,
             None => {
