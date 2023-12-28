@@ -26,7 +26,7 @@ lazy_static! {
     static ref STEWARD_VERSION: &'static str = env!("CARGO_PKG_VERSION");
 }
 
-const ETHEREUM_CHAIN_ID: u64 = 1;
+pub(crate) const ETHEREUM_CHAIN_ID: u64 = 1;
 
 pub struct CorkHandler;
 
@@ -214,7 +214,7 @@ pub async fn schedule_cork(
     encoded_call: Vec<u8>,
     height: u64,
 ) -> Result<TxResponse, Error> {
-    debug!("establishing grpc connection");
+    debug!("establishing grpc connection to cork");
     let cork = Cork {
         encoded_contract_call: encoded_call,
         target_contract_address: contract.to_string(),
@@ -232,7 +232,7 @@ pub async fn schedule_axelar_cork(
     height: u64,
     deadline: u64,
 ) -> Result<TxResponse, Error> {
-    debug!("establishing grpc connection");
+    debug!("establishing grpc connection to axelarcork");
     let cork = AxelarCork {
         encoded_contract_call: encoded_call,
         target_contract_address: contract.to_string(),

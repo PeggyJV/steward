@@ -18,6 +18,7 @@ use crate::{
         client::CorkQueryClient,
         id_hash,
         proposals::{handle_axelar_scheduled_cork_proposal, handle_scheduled_cork_proposal},
+        ETHEREUM_CHAIN_ID,
     },
     error::{Error, ErrorKind},
     prelude::APP,
@@ -58,6 +59,10 @@ pub async fn start_approved_proposal_polling_thread(
         .expect("failed to get validator address at startup.")
         .into_inner()
         .validator_address;
+
+    if state.validator_address.is_empty() {
+        panic!("failed to get validator address at startup.");
+    }
 
     tokio::spawn(async move {
         loop {

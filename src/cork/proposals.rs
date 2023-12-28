@@ -254,13 +254,16 @@ pub(crate) async fn handle_axelar_scheduled_cork_proposal(
     proposal_id: u64,
     content: Any,
 ) {
-    info!("processing scheduled cork proposal of ID {}", proposal_id);
+    info!(
+        "processing scheduled axelar cork proposal of ID {}",
+        proposal_id
+    );
     let cork_proposal: AxelarScheduledCorkProposal =
         match prost::Message::decode(content.value.as_slice()) {
             Ok(c) => c,
             Err(err) => {
                 error!(
-                    "failed to decode ScheduledCorkProposal {}: {}",
+                    "failed to decode AxelarScheduledCorkProposal {}: {}",
                     proposal_id, err
                 );
                 return;
@@ -424,7 +427,7 @@ pub(crate) async fn handle_axelar_scheduled_cork_proposal(
     let config = APP.config();
     let mut attempts = 0;
     loop {
-        if let Err(schedule_err) = schedule_axelar_cork(
+        match schedule_axelar_cork(
             chain_id,
             &cellar_id,
             encoded_call.clone(),
@@ -433,22 +436,54 @@ pub(crate) async fn handle_axelar_scheduled_cork_proposal(
         )
         .await
         {
-            match confirm_scheduling(state, chain_id, &cellar_id, &encoded_call, block_height).await
-            {
-                Ok(confirmed) => {
-                    if confirmed {
-                        info!(
-                            "call for cellar {} scheduled for block {} by proposal {}",
-                            cellar_id, block_height, proposal.proposal_id
+            Ok(res) => {
+                debug!("scheduling response: {:?}", res);
+                info!(
+                    "axelar call for chain {} cellar {} scheduled for block {} by proposal {}",
+                    chain_id, cellar_id, block_height, proposal.proposal_id
+                );
+                break;
+            }
+            Err(schedule_err) => {
+                info!(
+                    "scheduling returned error, checking for false negative: {}",
+                    schedule_err
+                );
+                match confirm_scheduling(state, chain_id, &cellar_id, &encoded_call, block_height)
+                    .await
+                {
+                    Ok(confirmed) => {
+                        if confirmed {
+                            info!(
+                            "axelarcork call for chain {} cellar {} scheduled for block {} by proposal {}",
+                            chain_id, cellar_id, block_height, proposal.proposal_id
                         );
-                        break;
-                    } else {
+                            break;
+                        } else {
+                            log_schedule_failure(
+                                proposal.proposal_id,
+                                attempts,
+                                config.cork.max_scheduling_retries,
+                                schedule_err,
+                                None,
+                            )
+                            .await;
+
+                            attempts += 1;
+                            if attempts > config.cork.max_scheduling_retries {
+                                break;
+                            }
+
+                            tokio::time::sleep(Duration::from_secs(RETRY_SLEEP)).await;
+                        }
+                    }
+                    Err(confirm_err) => {
                         log_schedule_failure(
                             proposal.proposal_id,
                             attempts,
                             config.cork.max_scheduling_retries,
                             schedule_err,
-                            None,
+                            Some(confirm_err),
                         )
                         .await;
 
@@ -460,30 +495,7 @@ pub(crate) async fn handle_axelar_scheduled_cork_proposal(
                         tokio::time::sleep(Duration::from_secs(RETRY_SLEEP)).await;
                     }
                 }
-                Err(confirm_err) => {
-                    log_schedule_failure(
-                        proposal.proposal_id,
-                        attempts,
-                        config.cork.max_scheduling_retries,
-                        schedule_err,
-                        Some(confirm_err),
-                    )
-                    .await;
-
-                    attempts += 1;
-                    if attempts > config.cork.max_scheduling_retries {
-                        break;
-                    }
-
-                    tokio::time::sleep(Duration::from_secs(RETRY_SLEEP)).await;
-                }
-            };
-        } else {
-            info!(
-                "call for cellar {} scheduled for block {} by proposal {}",
-                cellar_id, block_height, proposal.proposal_id
-            );
-            break;
-        }
+            } 
+        };
     }
 }
