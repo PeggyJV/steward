@@ -495,7 +495,7 @@ pub(crate) async fn handle_axelar_scheduled_cork_proposal(
                         tokio::time::sleep(Duration::from_secs(RETRY_SLEEP)).await;
                     }
                 }
-            } 
+            }
         };
     }
 }
