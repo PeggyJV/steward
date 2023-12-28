@@ -277,13 +277,25 @@ pub async fn confirm_scheduling(
     let id = id_hash(block_height, chain_id, cellar_id, encoded_call);
     let mut client = CorkQueryClient::new().await?;
 
-    Ok(client
-        .get_scheduled_corks_by_id(&id)
-        .await?
-        .into_inner()
-        .corks
-        .iter()
-        .any(|c| c.validator == state.validator_address))
+    if chain_id == ETHEREUM_CHAIN_ID {
+        debug!("confirming gravity scheduling");
+        return Ok(client
+            .get_scheduled_corks_by_id(&id)
+            .await?
+            .into_inner()
+            .corks
+            .iter()
+            .any(|c| c.validator == state.validator_address));
+    } else {
+        debug!("confirming axelar scheduling");
+        return Ok(client
+            .get_axelar_scheduled_corks_by_id(chain_id, &id)
+            .await?
+            .into_inner()
+            .corks
+            .iter()
+            .any(|c| c.validator == state.validator_address));
+    }
 }
 
 fn proposal_processing_error(message: String) -> Error {
