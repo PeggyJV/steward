@@ -396,10 +396,11 @@ func (s *IntegrationTestSuite) initGenesis() {
 	}
     axelarcorkGenState.CellarIds = []*axelarcorktypes.CellarIDSet{
         {
-        Chain: configuration,
-        Ids: []string{aaveCellar.Hex(), vaultCellar.Hex(), v2_2Cellar.Hex()},
-    },
+            Chain: configuration,
+            Ids: []string{aaveCellar.Hex(), vaultCellar.Hex(), v2_2Cellar.Hex()},
+        },
     }
+    axelarcorkGenState.Params.Enabled = true
 	bz, err = cdc.MarshalJSON(&axelarcorkGenState)
 	s.Require().NoError(err)
 	appGenState[axelarcorktypes.ModuleName] = bz

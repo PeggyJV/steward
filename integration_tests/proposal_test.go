@@ -315,7 +315,6 @@ func (s *IntegrationTestSuite) TestScheduledAxelarCorkProposal() {
 		} else {
 			res, err := axelarcorkQueryClient.QueryScheduledCorks(context.Background(), &axelarcorktypes.QueryScheduledCorksRequest{})
 			if err != nil {
-				s.T().Logf("error: %s", err)
 				return false
 			}
 
@@ -327,53 +326,17 @@ func (s *IntegrationTestSuite) TestScheduledAxelarCorkProposal() {
 		return false
 	}, 3*time.Minute, 10*time.Second, "never reached scheduled height")
 
-	s.T().Logf("checking for cellar event")
-	s.Require().Eventuallyf(func() bool {
-		s.T().Log("querying cellar events...")
-		ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
-		if err != nil {
-			return false
-		}
+    s.T().Log("waiting to see approved cork result")
+    s.Require().Eventually(func() bool {
+        axelarcorkResultQueryResponse, _ := axelarcorkQueryClient.QueryCorkResults(context.Background(), &axelarcorktypes.QueryCorkResultsRequest{ChainId: chainID})
+        if len(axelarcorkResultQueryResponse.CorkResults) > 0 {
+            if !axelarcorkResultQueryResponse.CorkResults[0].Approved {
+                s.Fail("cork result not approved") 
+            }
 
-		// For non-anonymous events, the first log topic is a keccak256 hash of the
-		// event signature.
-		eventSignature := []byte("TrustChanged(address,bool)")
-		mockEventSignatureTopic := crypto.Keccak256Hash(eventSignature)
-		query := ethereum.FilterQuery{
-			FromBlock: nil,
-			ToBlock:   nil,
-			Addresses: []common.Address{
-				vaultCellar,
-			},
-			Topics: [][]common.Hash{
-				{
-					mockEventSignatureTopic,
-				},
-			},
-		}
+            return true
+        }
 
-		logs, err := ethClient.FilterLogs(context.Background(), query)
-		if err != nil {
-			ethClient.Close()
-			return false
-		}
-
-		vault_abi, err := CellarMetaData.GetAbi()
-		s.Require().NoError(err)
-
-		s.T().Logf("got %v logs: %v", len(logs), logs)
-		if len(logs) > 0 {
-			for _, log := range logs {
-				if len(log.Data) > 0 {
-					var event CellarTrustChanged
-					err := vault_abi.UnpackIntoInterface(&event, "TrustChanged", log.Data)
-					s.Require().NoError(err, "failed to unpack TrustChanged event from log data")
-
-					return true
-				}
-			}
-		}
-
-		return false
-	}, 3*time.Minute, 10*time.Second, "cellar event never seen")
+        return false
+    }, time.Second*30, time.Second*5, "cork result not approved")
 }
