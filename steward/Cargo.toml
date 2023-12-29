@@ -3,7 +3,7 @@ name = "steward"
 authors = []
 version = "3.7.0"
 edition = "2018"
- 
+
 [dependencies]
 tempdir = "0.3.7"
 abscissa_tokio = "0.6.0"
