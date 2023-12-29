@@ -278,6 +278,9 @@ fn get_encoded_adaptor_calls(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCal
                 calls.extend(adaptors::convex::convex_curve_adaptor_v1_calls(params)?)
             }
             CurveV1Calls(params) => calls.extend(adaptors::curve::curve_adaptor_v1_calls(params)?),
+            AuraErc4626V1Calls(params) => {
+                calls.extend(adaptors::aura::aura_erc4626_adaptor_v1_calls(params)?)
+            }
         };
 
         result.push(AbiAdaptorCall {
