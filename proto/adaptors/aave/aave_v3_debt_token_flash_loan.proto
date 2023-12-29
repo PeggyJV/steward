@@ -111,7 +111,7 @@ message AaveV3DebtTokenAdaptorV1FlashLoan {
             // Represents function calls for the CurveAdaptorV1
             CurveAdaptorV1Calls curve_v1_calls = 31;
             // Represents function calls for the AuraERC4626AdaptorV1
-            AuraERC4626AdaptorV1Calls aura_v1_calls = 32;
+            AuraERC4626AdaptorV1Calls aura_erc4626_v1_calls = 32;
         }
     }
 }

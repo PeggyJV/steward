@@ -2820,7 +2820,7 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
             CurveV1Calls(super::super::CurveAdaptorV1Calls),
             /// Represents function calls for the AuraERC4626AdaptorV1
             #[prost(message, tag = "32")]
-            AuraV1Calls(super::super::AuraErc4626AdaptorV1Calls),
+            AuraErc4626V1Calls(super::super::AuraErc4626AdaptorV1Calls),
         }
     }
 }
@@ -3820,7 +3820,7 @@ pub mod adaptor_call {
         CurveV1Calls(super::CurveAdaptorV1Calls),
         /// Represents function calls for the AuraERC4626AdaptorV1
         #[prost(message, tag = "32")]
-        AuraV1Calls(super::AuraErc4626AdaptorV1Calls),
+        AuraErc4626V1Calls(super::AuraErc4626AdaptorV1Calls),
     }
 }
 ///
