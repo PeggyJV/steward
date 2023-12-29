@@ -274,6 +274,9 @@ fn get_encoded_adaptor_calls(
             CollateralFTokenV1Calls(params) => {
                 calls.extend(adaptors::frax::collateral_f_token_adaptor_v1_calls(params)?)
             }
+            ConvexCurveV1Calls(params) => {
+                calls.extend(adaptors::convex::convex_curve_adaptor_v1_calls(params)?)
+            }
         };
 
         result.push(AbiAdaptorCall {

@@ -236,3 +236,14 @@ pub fn encode_oracle_swap_params(params: OracleSwapParams) -> Result<Vec<u8>, Er
         }
     }
 }
+
+pub fn parse_selector(selector: String) -> Result<[u8; 4], Error> {
+    let bytes = hex::decode(selector)?;
+    if bytes.len() != 4 {
+        return Err(sp_call_error("selector must be 4 bytes".to_string()));
+    }
+    let mut array = [0u8; 4];
+    array.copy_from_slice(&bytes);
+
+    Ok(array)
+}
