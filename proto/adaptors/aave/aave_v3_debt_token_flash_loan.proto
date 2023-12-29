@@ -6,7 +6,7 @@ option go_package = "/steward_proto";
 import "adaptors/aave/a_token.proto";
 import "adaptors/aave/debt_token.proto";
 import "adaptors/aave/aave_v3_a_token.proto";
-import "adaptors/aura/aura.proto";
+import "adaptors/aura/aura_erc4626.proto";
 import "adaptors/balancer/balancer_pool.proto";
 import "adaptors/compound/c_token.proto";
 import "adaptors/convex/convex_curve.proto";
@@ -110,8 +110,8 @@ message AaveV3DebtTokenAdaptorV1FlashLoan {
             ConvexCurveAdaptorV1Calls convex_curve_v1_calls = 30;
             // Represents function calls for the CurveAdaptorV1
             CurveAdaptorV1Calls curve_v1_calls = 31;
-            // Represents function calls for the AuraAdaptorV1
-            AuraAdaptorV1Calls aura_v1_calls = 32;
+            // Represents function calls for the AuraERC4626AdaptorV1
+            AuraERC4626AdaptorV1Calls aura_v1_calls = 32;
         }
     }
 }

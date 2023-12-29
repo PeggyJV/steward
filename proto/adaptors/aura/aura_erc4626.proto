@@ -1,5 +1,5 @@
 /*
-* Protos for function calls to the Aura adaptor.
+* Protos for function calls to the Aura ERC4626 adaptor.
 */
 
 syntax = "proto3";
@@ -9,8 +9,8 @@ option go_package = "/steward_proto";
 
 import "adaptors/base.proto";
 
-// Represents call data for the Aura adaptor V1
-message AuraAdaptorV1 {
+// Represents call data for the Aura ERC4626 adaptor V1
+message AuraERC4626AdaptorV1 {
     oneof function {
         /***** BASE ADAPTOR FUNCTIONS *****/
 
@@ -35,6 +35,6 @@ message AuraAdaptorV1 {
      }
 }
 
-message AuraAdaptorV1Calls {
-    repeated AuraAdaptorV1 calls = 1;
+message AuraERC4626AdaptorV1Calls {
+    repeated AuraERC4626AdaptorV1 calls = 1;
 }

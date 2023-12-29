@@ -7,7 +7,7 @@ pub mod aave_v2_enable_asset_as_collateral_adaptor_v1;
 pub mod aave_v2_stablecoin;
 pub mod aave_v3_a_token_adaptor_v1;
 pub mod aave_v3_debt_token_adaptor_v1;
-pub mod aura_adaptor_v1;
+pub mod aura_erc4626_adaptor_v1;
 pub mod balancer_pool_adaptor_v1;
 pub mod cellar_adaptor_v1;
 pub mod cellar_v1;

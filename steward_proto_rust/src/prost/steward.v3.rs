@@ -2195,15 +2195,15 @@ pub struct AaveV3aTokenAdaptorV1Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<AaveV3aTokenAdaptorV1>,
 }
-/// Represents call data for the Aura adaptor V1
+/// Represents call data for the Aura ERC4626 adaptor V1
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct AuraAdaptorV1 {
+pub struct AuraErc4626AdaptorV1 {
     ///**** BASE ADAPTOR FUNCTIONS ****
-    #[prost(oneof = "aura_adaptor_v1::Function", tags = "1, 2")]
-    pub function: ::core::option::Option<aura_adaptor_v1::Function>,
+    #[prost(oneof = "aura_erc4626_adaptor_v1::Function", tags = "1, 2")]
+    pub function: ::core::option::Option<aura_erc4626_adaptor_v1::Function>,
 }
-/// Nested message and enum types in `AuraAdaptorV1`.
-pub mod aura_adaptor_v1 {
+/// Nested message and enum types in `AuraERC4626AdaptorV1`.
+pub mod aura_erc4626_adaptor_v1 {
     ///
     /// Allows strategist to get rewards for an Aura pool.
     ///
@@ -2230,9 +2230,9 @@ pub mod aura_adaptor_v1 {
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-pub struct AuraAdaptorV1Calls {
+pub struct AuraErc4626AdaptorV1Calls {
     #[prost(message, repeated, tag = "1")]
-    pub calls: ::prost::alloc::vec::Vec<AuraAdaptorV1>,
+    pub calls: ::prost::alloc::vec::Vec<AuraErc4626AdaptorV1>,
 }
 /// Represents call data for the Balancer Pool adaptor V1, for managing pool positions on Balancer.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -2818,9 +2818,9 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
             /// Represents function calls for the CurveAdaptorV1
             #[prost(message, tag = "31")]
             CurveV1Calls(super::super::CurveAdaptorV1Calls),
-            /// Represents function calls for the AuraAdaptorV1
+            /// Represents function calls for the AuraERC4626AdaptorV1
             #[prost(message, tag = "32")]
-            AuraV1Calls(super::super::AuraAdaptorV1Calls),
+            AuraV1Calls(super::super::AuraErc4626AdaptorV1Calls),
         }
     }
 }
@@ -3818,9 +3818,9 @@ pub mod adaptor_call {
         /// Represents function calls for the CurveAdaptorV1
         #[prost(message, tag = "31")]
         CurveV1Calls(super::CurveAdaptorV1Calls),
-        /// Represents function calls for the AuraAdaptorV1
+        /// Represents function calls for the AuraERC4626AdaptorV1
         #[prost(message, tag = "32")]
-        AuraV1Calls(super::AuraAdaptorV1Calls),
+        AuraV1Calls(super::AuraErc4626AdaptorV1Calls),
     }
 }
 ///
