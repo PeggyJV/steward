@@ -1317,27 +1317,30 @@ pub mod curve_adaptor_v1 {
     ///
     /// Allows strategist to add liquidity to Curve pairs that use the native asset.
     ///
-    /// Represents function `addLiquidityETH(address pool, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
+    /// Represents function `addLiquidityETH(address pool, ERC20 lpToken, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct AddLiquidityEth {
         /// Address of the Curve pool
         #[prost(string, tag = "1")]
         pub pool: ::prost::alloc::string::String,
+        /// Address of the LP token
+        #[prost(string, tag = "2")]
+        pub lp_token: ::prost::alloc::string::String,
         /// Minimum amount of each underlying token to receive
-        #[prost(string, repeated, tag = "2")]
+        #[prost(string, repeated, tag = "3")]
         pub ordered_underlying_token_amounts:
             ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
         /// Minimum amount of LP tokens to receive
-        #[prost(string, tag = "3")]
+        #[prost(string, tag = "4")]
         pub min_lp_amount: ::prost::alloc::string::String,
         /// Whether to use the underlying asset or the wrapped asset
-        #[prost(bool, tag = "4")]
+        #[prost(bool, tag = "5")]
         pub use_underlying: bool,
         /// Address of the Curve gauge
-        #[prost(string, tag = "5")]
+        #[prost(string, tag = "6")]
         pub gauge: ::prost::alloc::string::String,
         /// Selector of the function to call
-        #[prost(string, tag = "6")]
+        #[prost(string, tag = "7")]
         pub selector: ::prost::alloc::string::String,
     }
     ///

@@ -58,21 +58,23 @@ message CurveAdaptorV1 {
     /*
     * Allows strategist to add liquidity to Curve pairs that use the native asset.
     *
-    * Represents function `addLiquidityETH(address pool, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
+    * Represents function `addLiquidityETH(address pool, ERC20 lpToken, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
     */
     message AddLiquidityETH {
         // Address of the Curve pool
         string pool = 1;
+        // Address of the LP token
+        string lp_token = 2;
         // Minimum amount of each underlying token to receive
-        repeated string ordered_underlying_token_amounts = 2;
+        repeated string ordered_underlying_token_amounts = 3;
         // Minimum amount of LP tokens to receive
-        string min_lp_amount = 3;
+        string min_lp_amount = 4;
         // Whether to use the underlying asset or the wrapped asset
-        bool use_underlying = 4;
+        bool use_underlying = 5;
         // Address of the Curve gauge
-        string gauge = 5;
+        string gauge = 6;
         // Selector of the function to call
-        string selector = 6;
+        string selector = 7;
     }
 
     /*
