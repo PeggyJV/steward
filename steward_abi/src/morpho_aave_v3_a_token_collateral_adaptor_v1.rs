@@ -529,9 +529,7 @@ mod morphoaavev3atokencollateraladaptorv1_mod {
             if let Ok(decoded) =
                 <MinimumHealthFactorCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(
-                    MorphoAaveV3ATokenCollateralAdaptorV1Calls::MinimumHealthFactor(decoded),
-                );
+                return Ok(MorphoAaveV3ATokenCollateralAdaptorV1Calls::MinimumHealthFactor(decoded));
             }
             if let Ok(decoded) = <MorphoCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {

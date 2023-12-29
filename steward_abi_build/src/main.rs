@@ -59,6 +59,9 @@ fn main() {
         ("DebtFTokenAdaptorV1", "debt_f_token_adaptor_v1"),
         ("CollateralFTokenAdaptorV1", "collateral_f_token_adaptor_v1"),
         ("LegacyCellarAdaptorV1", "legacy_cellar_adaptor_v1"),
+        ("CurveAdaptorV1", "curve_adaptor_v1"),
+        ("ConvexCurveAdaptorV1", "convex_curve_adaptor_v1"),
+        ("AuraAdaptorV1", "aura_adaptor_v1"),
     ];
 
     contracts
