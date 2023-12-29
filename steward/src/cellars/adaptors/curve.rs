@@ -30,7 +30,7 @@ pub fn curve_adaptor_v1_calls(params: CurveAdaptorV1Calls) -> Result<Vec<Bytes>,
                     ordered_underlying_token_amounts: p
                         .ordered_underlying_token_amounts
                         .into_iter()
-                        .map(|a| string_to_u256(a))
+                        .map(string_to_u256)
                         .collect::<Result<_, Error>>()?,
                     min_lp_amount: string_to_u256(p.min_lp_amount)?,
                     gauge: sp_call_parse_address(p.gauge)?,
@@ -45,7 +45,7 @@ pub fn curve_adaptor_v1_calls(params: CurveAdaptorV1Calls) -> Result<Vec<Bytes>,
                     ordered_underlying_token_amounts: p
                         .ordered_underlying_token_amounts
                         .into_iter()
-                        .map(|a| string_to_u256(a))
+                        .map(string_to_u256)
                         .collect::<Result<_, Error>>()?,
                     min_lp_amount: string_to_u256(p.min_lp_amount)?,
                     use_underlying: p.use_underlying,
@@ -66,7 +66,7 @@ pub fn curve_adaptor_v1_calls(params: CurveAdaptorV1Calls) -> Result<Vec<Bytes>,
                     ordered_minimum_underlying_token_amounts_out: p
                         .ordered_minimum_underlying_token_amounts_out
                         .into_iter()
-                        .map(|a| string_to_u256(a))
+                        .map(string_to_u256)
                         .collect::<Result<_, Error>>()?,
                     gauge: sp_call_parse_address(p.gauge)?,
                     selector: parse_selector(p.selector)?,
@@ -85,7 +85,7 @@ pub fn curve_adaptor_v1_calls(params: CurveAdaptorV1Calls) -> Result<Vec<Bytes>,
                     ordered_minimum_underlying_token_amounts_out: p
                         .ordered_minimum_underlying_token_amounts_out
                         .into_iter()
-                        .map(|a| string_to_u256(a))
+                        .map(string_to_u256)
                         .collect::<Result<_, Error>>()?,
                     use_underlying: p.use_underlying,
                     gauge: sp_call_parse_address(p.gauge)?,
