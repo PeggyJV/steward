@@ -277,6 +277,7 @@ fn get_encoded_adaptor_calls(
             ConvexCurveV1Calls(params) => {
                 calls.extend(adaptors::convex::convex_curve_adaptor_v1_calls(params)?)
             }
+            CurveV1Calls(params) => calls.extend(adaptors::curve::curve_adaptor_v1_calls(params)?),
         };
 
         result.push(AbiAdaptorCall {
