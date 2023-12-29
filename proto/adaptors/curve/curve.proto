@@ -19,7 +19,7 @@ message CurveAdaptorV1 {
 
         /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
 
-        // Represents function `addLiquidity(address pool, ERC20 lpToken, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, CurveGauge gauge, bytes4 selector)`
+        // Represents function `addLiquidity(address pool, ERC20 lpToken, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, CurveGauge gauge, bytes4 selector)`
         AddLiquidity add_liquidity = 2;
         // Represents function `addLiquidityETH(address pool, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
         AddLiquidityETH add_liquidity_eth = 3;
@@ -38,7 +38,7 @@ message CurveAdaptorV1 {
     /*
     * Allows strategist to add liquidity to Curve pairs that do NOT use the native asset.
     *
-    * Represents function `addLiquidity(address pool, ERC20 lpToken, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, CurveGauge gauge, bytes4 selector)`
+    * Represents function `addLiquidity(address pool, ERC20 lpToken, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, CurveGauge gauge, bytes4 selector)`
     */
     message AddLiquidity {
         // Address of the Curve pool
@@ -46,7 +46,7 @@ message CurveAdaptorV1 {
         // Address of the LP token
         string lp_token = 2;
         // Minimum amount of each underlying token to receive
-        repeated string ordered_minimum_underlying_token_amounts_out = 3;
+        repeated string ordered_underlying_token_amounts = 3;
         // Minimum amount of LP tokens to receive
         string min_lp_amount = 4;
         // Address of the Curve gauge
@@ -58,13 +58,13 @@ message CurveAdaptorV1 {
     /*
     * Allows strategist to add liquidity to Curve pairs that use the native asset.
     *
-    * Represents function `addLiquidityETH(address pool, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
+    * Represents function `addLiquidityETH(address pool, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
     */
     message AddLiquidityETH {
         // Address of the Curve pool
         string pool = 1;
         // Minimum amount of each underlying token to receive
-        repeated string ordered_minimum_underlying_token_amounts_out = 2;
+        repeated string ordered_underlying_token_amounts = 2;
         // Minimum amount of LP tokens to receive
         string min_lp_amount = 3;
         // Whether to use the underlying asset or the wrapped asset

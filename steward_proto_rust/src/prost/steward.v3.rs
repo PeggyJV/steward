@@ -1291,7 +1291,7 @@ pub mod curve_adaptor_v1 {
     ///
     /// Allows strategist to add liquidity to Curve pairs that do NOT use the native asset.
     ///
-    /// Represents function `addLiquidity(address pool, ERC20 lpToken, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, CurveGauge gauge, bytes4 selector)`
+    /// Represents function `addLiquidity(address pool, ERC20 lpToken, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, CurveGauge gauge, bytes4 selector)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct AddLiquidity {
         /// Address of the Curve pool
@@ -1302,7 +1302,7 @@ pub mod curve_adaptor_v1 {
         pub lp_token: ::prost::alloc::string::String,
         /// Minimum amount of each underlying token to receive
         #[prost(string, repeated, tag = "3")]
-        pub ordered_minimum_underlying_token_amounts_out:
+        pub ordered_underlying_token_amounts:
             ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
         /// Minimum amount of LP tokens to receive
         #[prost(string, tag = "4")]
@@ -1317,7 +1317,7 @@ pub mod curve_adaptor_v1 {
     ///
     /// Allows strategist to add liquidity to Curve pairs that use the native asset.
     ///
-    /// Represents function `addLiquidityETH(address pool, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
+    /// Represents function `addLiquidityETH(address pool, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct AddLiquidityEth {
         /// Address of the Curve pool
@@ -1325,7 +1325,7 @@ pub mod curve_adaptor_v1 {
         pub pool: ::prost::alloc::string::String,
         /// Minimum amount of each underlying token to receive
         #[prost(string, repeated, tag = "2")]
-        pub ordered_minimum_underlying_token_amounts_out:
+        pub ordered_underlying_token_amounts:
             ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
         /// Minimum amount of LP tokens to receive
         #[prost(string, tag = "3")]
@@ -1447,7 +1447,7 @@ pub mod curve_adaptor_v1 {
         #[prost(message, tag = "1")]
         RevokeApproval(super::RevokeApproval),
         //**** ADAPTOR-SPECIFIC FUNCTIONS ****
-        /// Represents function `addLiquidity(address pool, ERC20 lpToken, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, CurveGauge gauge, bytes4 selector)`
+        /// Represents function `addLiquidity(address pool, ERC20 lpToken, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, CurveGauge gauge, bytes4 selector)`
         #[prost(message, tag = "2")]
         AddLiquidity(AddLiquidity),
         /// Represents function `addLiquidityETH(address pool, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
