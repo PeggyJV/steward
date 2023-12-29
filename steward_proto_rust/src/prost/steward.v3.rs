@@ -1279,6 +1279,202 @@ pub struct FTokenAdaptorV1Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<FTokenAdaptorV1>,
 }
+/// Represents call data for the Curve adaptor V1
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct CurveAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(oneof = "curve_adaptor_v1::Function", tags = "1, 2, 3, 4, 5, 6, 7, 8")]
+    pub function: ::core::option::Option<curve_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `CurveAdaptorV1`.
+pub mod curve_adaptor_v1 {
+    ///
+    /// Allows strategist to add liquidity to Curve pairs that do NOT use the native asset.
+    ///
+    /// Represents function `addLiquidity(address pool, ERC20 lpToken, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, CurveGauge gauge, bytes4 selector)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct AddLiquidity {
+        /// Address of the Curve pool
+        #[prost(string, tag = "1")]
+        pub pool: ::prost::alloc::string::String,
+        /// Address of the LP token
+        #[prost(string, tag = "2")]
+        pub lp_token: ::prost::alloc::string::String,
+        /// Minimum amount of each underlying token to receive
+        #[prost(string, repeated, tag = "3")]
+        pub ordered_minimum_underlying_token_amounts_out:
+            ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+        /// Minimum amount of LP tokens to receive
+        #[prost(string, tag = "4")]
+        pub min_lp_amount: ::prost::alloc::string::String,
+        /// Address of the Curve gauge
+        #[prost(string, tag = "5")]
+        pub gauge: ::prost::alloc::string::String,
+        /// Selector of the function to call
+        #[prost(string, tag = "6")]
+        pub selector: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to add liquidity to Curve pairs that use the native asset.
+    ///
+    /// Represents function `addLiquidityETH(address pool, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct AddLiquidityEth {
+        /// Address of the Curve pool
+        #[prost(string, tag = "1")]
+        pub pool: ::prost::alloc::string::String,
+        /// Minimum amount of each underlying token to receive
+        #[prost(string, repeated, tag = "2")]
+        pub ordered_minimum_underlying_token_amounts_out:
+            ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+        /// Minimum amount of LP tokens to receive
+        #[prost(string, tag = "3")]
+        pub min_lp_amount: ::prost::alloc::string::String,
+        /// Whether to use the underlying asset or the wrapped asset
+        #[prost(bool, tag = "4")]
+        pub use_underlying: bool,
+        /// Address of the Curve gauge
+        #[prost(string, tag = "5")]
+        pub gauge: ::prost::alloc::string::String,
+        /// Selector of the function to call
+        #[prost(string, tag = "6")]
+        pub selector: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to remove liquidity from Curve pairs that do NOT use the native asset.
+    ///
+    /// Represents function `removeLiquidity(address pool, ERC20 lpToken, uint256 lpTokenAmount, uint256[] orderedMinimumUnderlyingTokenAmountsOut, CurveGauge gauge, bytes4 selector)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RemoveLiquidity {
+        /// Address of the Curve pool
+        #[prost(string, tag = "1")]
+        pub pool: ::prost::alloc::string::String,
+        /// Address of the LP token
+        #[prost(string, tag = "2")]
+        pub lp_token: ::prost::alloc::string::String,
+        /// Amount of LP tokens to remove
+        #[prost(string, tag = "3")]
+        pub lp_token_amount: ::prost::alloc::string::String,
+        /// Minimum amount of each underlying token to receive
+        #[prost(string, repeated, tag = "4")]
+        pub ordered_minimum_underlying_token_amounts_out:
+            ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+        /// Address of the Curve gauge
+        #[prost(string, tag = "5")]
+        pub gauge: ::prost::alloc::string::String,
+        /// Selector of the function to call
+        #[prost(string, tag = "6")]
+        pub selector: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to remove liquidity from Curve pairs that use the native asset.
+    ///
+    /// Represents function `removeLiquidityETH(address pool, ERC20 lpToken, uint256 lpTokenAmount, uint256[] orderedMinimumUnderlyingTokenAmountsOut, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RemoveLiquidityEth {
+        /// Address of the Curve pool
+        #[prost(string, tag = "1")]
+        pub pool: ::prost::alloc::string::String,
+        /// Address of the LP token
+        #[prost(string, tag = "2")]
+        pub lp_token: ::prost::alloc::string::String,
+        /// Amount of LP tokens to remove
+        #[prost(string, tag = "3")]
+        pub lp_token_amount: ::prost::alloc::string::String,
+        /// Minimum amount of each underlying token to receive
+        #[prost(string, repeated, tag = "4")]
+        pub ordered_minimum_underlying_token_amounts_out:
+            ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+        /// Whether to use the underlying asset or the wrapped asset
+        #[prost(bool, tag = "5")]
+        pub use_underlying: bool,
+        /// Address of the Curve gauge
+        #[prost(string, tag = "6")]
+        pub gauge: ::prost::alloc::string::String,
+        /// Selector of the function to call
+        #[prost(string, tag = "7")]
+        pub selector: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to stake Curve LP tokens in their gauge.
+    ///
+    /// Represents function `stakeInGauge(ERC20 lpToken, CurveGauge gauge, uint256 amount, CurvePool pool, bytes4 selector)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct StakeInGauge {
+        /// Address of the LP token
+        #[prost(string, tag = "1")]
+        pub lp_token: ::prost::alloc::string::String,
+        /// Address of the Curve gauge
+        #[prost(string, tag = "2")]
+        pub gauge: ::prost::alloc::string::String,
+        /// Amount of LP tokens to stake
+        #[prost(string, tag = "3")]
+        pub amount: ::prost::alloc::string::String,
+        /// Address of the Curve pool
+        #[prost(string, tag = "4")]
+        pub pool: ::prost::alloc::string::String,
+        /// Selector of the function to call
+        #[prost(string, tag = "5")]
+        pub selector: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to unstake Curve LP tokens from their gauge.
+    ///
+    /// Represents function `unstakeFromGauge(CurveGauge gauge, uint256 amount)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct UnstakeFromGauge {
+        /// Address of the Curve gauge
+        #[prost(string, tag = "1")]
+        pub gauge: ::prost::alloc::string::String,
+        /// Amount of LP tokens to unstake
+        #[prost(string, tag = "2")]
+        pub amount: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to claim rewards from a gauge.
+    ///
+    /// Represents function `claimRewards(CurveGauge gauge)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct ClaimRewards {
+        /// Address of the Curve gauge
+        #[prost(string, tag = "1")]
+        pub gauge: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `addLiquidity(address pool, ERC20 lpToken, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, CurveGauge gauge, bytes4 selector)`
+        #[prost(message, tag = "2")]
+        AddLiquidity(AddLiquidity),
+        /// Represents function `addLiquidityETH(address pool, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
+        #[prost(message, tag = "3")]
+        AddLiquidityEth(AddLiquidityEth),
+        /// Represents function `removeLiquidity(address pool, ERC20 lpToken, uint256 lpTokenAmount, uint256[] orderedMinimumUnderlyingTokenAmountsOut, CurveGauge gauge, bytes4 selector)`
+        #[prost(message, tag = "4")]
+        RemoveLiquidity(RemoveLiquidity),
+        /// Represents function `removeLiquidityETH(address pool, ERC20 lpToken, uint256 lpTokenAmount, uint256[] orderedMinimumUnderlyingTokenAmountsOut, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
+        #[prost(message, tag = "5")]
+        RemoveLiquidityEth(RemoveLiquidityEth),
+        /// Represents function `stakeInGauge(ERC20 lpToken, CurveGauge gauge, uint256 amount, CurvePool pool, bytes4 selector)`
+        #[prost(message, tag = "6")]
+        StakeInGauge(StakeInGauge),
+        /// Represents function `unstakeFromGauge(CurveGauge gauge, uint256 amount)`
+        #[prost(message, tag = "7")]
+        UnstakeFromGauge(UnstakeFromGauge),
+        /// Represents function `claimRewards(CurveGauge gauge)`
+        #[prost(message, tag = "8")]
+        ClaimRewards(ClaimRewards),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct CurveAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<CurveAdaptorV1>,
+}
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct CellarAdaptorV1 {
     ///**** BASE ADAPTOR FUNCTIONS ****
@@ -1422,6 +1618,81 @@ pub mod zero_x_adaptor_v1 {
 pub struct ZeroXAdaptorV1Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<ZeroXAdaptorV1>,
+}
+/// Represents call data for the Convex Curve adaptor V1
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct ConvexCurveAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(oneof = "convex_curve_adaptor_v1::Function", tags = "1, 2, 3, 4")]
+    pub function: ::core::option::Option<convex_curve_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `ConvexCurveAdaptorV1`.
+pub mod convex_curve_adaptor_v1 {
+    ///
+    /// Allows strategists to deposit and stake LPTs into Convex markets via the respective Convex market Booster contract
+    ///
+    /// Represents function `depositLPTInConvexAndStake(uint256 _pid, address baseRewardPool, ERC20 _lpt, CurvePool _pool, bytes4 _selector, uint256 _amount)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct DepositLptInConvexAndStake {
+        #[prost(string, tag = "1")]
+        pub pid: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub base_reward_pool: ::prost::alloc::string::String,
+        #[prost(string, tag = "3")]
+        pub lpt: ::prost::alloc::string::String,
+        #[prost(string, tag = "4")]
+        pub pool: ::prost::alloc::string::String,
+        #[prost(string, tag = "5")]
+        pub selector: ::prost::alloc::string::String,
+        #[prost(string, tag = "6")]
+        pub amount_to_deposit: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to withdraw from Convex markets via Booster contract w/ or w/o claiming rewards
+    ///
+    /// Represents function `withdrawFromBaseRewardPoolAsLPTaddress(_baseRewardPool, uint256 _amount, bool _claim)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct WithdrawFromBaseRewardPoolAsLpt {
+        #[prost(string, tag = "1")]
+        pub base_reward_pool: ::prost::alloc::string::String,
+        #[prost(string, tag = "2")]
+        pub amount_to_withdraw: ::prost::alloc::string::String,
+        #[prost(bool, tag = "3")]
+        pub claim: bool,
+    }
+    ///
+    /// Allows strategists to get rewards for an Convex Booster without withdrawing/unwrapping from Convex market
+    ///
+    /// Represents function `getRewards(address _baseRewardPool, bool _claimExtras)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct GetRewards {
+        #[prost(string, tag = "1")]
+        pub base_reward_pool: ::prost::alloc::string::String,
+        #[prost(bool, tag = "2")]
+        pub claim_extras: bool,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `depositLPTInConvexAndStake(uint256 _pid, address baseRewardPool, ERC20 _lpt, CurvePool _pool, bytes4 _selector, uint256 _amount)`
+        #[prost(message, tag = "2")]
+        DepositLptInConvexAndStake(DepositLptInConvexAndStake),
+        /// Represents function `withdrawFromBaseRewardPoolAsLPTaddress(_baseRewardPool, uint256 _amount, bool _claim)`
+        #[prost(message, tag = "3")]
+        WithdrawFromBaseRewardPoolAsLpt(WithdrawFromBaseRewardPoolAsLpt),
+        /// Represents function `getRewards(address _baseRewardPool, bool _claimExtras)`
+        #[prost(message, tag = "4")]
+        GetRewards(GetRewards),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct ConvexCurveAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<ConvexCurveAdaptorV1>,
 }
 /// Represents call data for the Vesting Simple adaptor
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -1921,6 +2192,45 @@ pub struct AaveV3aTokenAdaptorV1Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<AaveV3aTokenAdaptorV1>,
 }
+/// Represents call data for the Aura adaptor V1
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct AuraAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(oneof = "aura_adaptor_v1::Function", tags = "1, 2")]
+    pub function: ::core::option::Option<aura_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `AuraAdaptorV1`.
+pub mod aura_adaptor_v1 {
+    ///
+    /// Allows strategist to get rewards for an Aura pool.
+    ///
+    /// Represents function `getRewards(IBaseRewardPool _auraPool, bool _claimExtras)`    
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct GetRewards {
+        /// The address of the Aura pool to get rewards for
+        #[prost(string, tag = "1")]
+        pub aura_pool: ::prost::alloc::string::String,
+        /// Whether to claim extra rewards associated with the pool
+        #[prost(bool, tag = "2")]
+        pub claim_extras: bool,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `getRewards(IBaseRewardPool _auraPool, bool _claimExtras)`
+        #[prost(message, tag = "2")]
+        GetRewards(GetRewards),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct AuraAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<AuraAdaptorV1>,
+}
 /// Represents call data for the Balancer Pool adaptor V1, for managing pool positions on Balancer.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct BalancerPoolAdaptorV1 {
@@ -2411,7 +2721,7 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_aave_v3_flash_loan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 30, 31, 32"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flash_loan::CallData>,
     }
@@ -2499,6 +2809,15 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
             /// Represents function calls to the CollateralFTokenAdaptor V1
             #[prost(message, tag = "26")]
             CollateralFTokenV1Calls(super::super::CollateralFTokenAdaptorV1Calls),
+            /// Represents function calls for the ConvexCurveAdaptorV1
+            #[prost(message, tag = "30")]
+            ConvexCurveV1Calls(super::super::ConvexCurveAdaptorV1Calls),
+            /// Represents function calls for the CurveAdaptorV1
+            #[prost(message, tag = "31")]
+            CurveV1Calls(super::super::CurveAdaptorV1Calls),
+            /// Represents function calls for the AuraAdaptorV1
+            #[prost(message, tag = "32")]
+            AuraV1Calls(super::super::AuraAdaptorV1Calls),
         }
     }
 }
@@ -3397,7 +3716,7 @@ pub struct AdaptorCall {
     /// The function call data for the adaptor
     #[prost(
         oneof = "adaptor_call::CallData",
-        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29"
+        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32"
     )]
     pub call_data: ::core::option::Option<adaptor_call::CallData>,
 }
@@ -3490,6 +3809,15 @@ pub mod adaptor_call {
         /// Represents flash loan function call for the BalancerPoolAdaptorV1
         #[prost(message, tag = "29")]
         BalancerPoolV1FlashLoanCalls(super::BalancerPoolAdaptorV1FlashLoanCalls),
+        /// Represents function calls for the ConvexCurveAdaptorV1
+        #[prost(message, tag = "30")]
+        ConvexCurveV1Calls(super::ConvexCurveAdaptorV1Calls),
+        /// Represents function calls for the CurveAdaptorV1
+        #[prost(message, tag = "31")]
+        CurveV1Calls(super::CurveAdaptorV1Calls),
+        /// Represents function calls for the AuraAdaptorV1
+        #[prost(message, tag = "32")]
+        AuraV1Calls(super::AuraAdaptorV1Calls),
     }
 }
 ///
