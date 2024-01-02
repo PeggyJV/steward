@@ -1,0 +1,40 @@
+/*
+* Protos for function calls to the Aura ERC4626 adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+// Represents call data for the Aura ERC4626 adaptor V1
+message AuraERC4626AdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `getRewards(IBaseRewardPool _auraPool, bool _claimExtras)`
+        GetRewards get_rewards = 2;
+    }
+
+    /*
+    * Allows strategist to get rewards for an Aura pool.
+    *
+    * Represents function `getRewards(IBaseRewardPool _auraPool, bool _claimExtras)`    */
+    message GetRewards {
+        // The address of the Aura pool to get rewards for
+        string aura_pool = 1;
+        // Whether to claim extra rewards associated with the pool
+        bool claim_extras = 2;        
+     }
+}
+
+message AuraERC4626AdaptorV1Calls {
+    repeated AuraERC4626AdaptorV1 calls = 1;
+}
