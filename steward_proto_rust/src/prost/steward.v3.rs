@@ -2724,7 +2724,7 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_aave_v3_flash_loan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 30, 31, 32"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flash_loan::CallData>,
     }
@@ -2813,13 +2813,13 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
             #[prost(message, tag = "26")]
             CollateralFTokenV1Calls(super::super::CollateralFTokenAdaptorV1Calls),
             /// Represents function calls for the ConvexCurveAdaptorV1
-            #[prost(message, tag = "30")]
+            #[prost(message, tag = "27")]
             ConvexCurveV1Calls(super::super::ConvexCurveAdaptorV1Calls),
             /// Represents function calls for the CurveAdaptorV1
-            #[prost(message, tag = "31")]
+            #[prost(message, tag = "28")]
             CurveV1Calls(super::super::CurveAdaptorV1Calls),
             /// Represents function calls for the AuraERC4626AdaptorV1
-            #[prost(message, tag = "32")]
+            #[prost(message, tag = "29")]
             AuraErc4626V1Calls(super::super::AuraErc4626AdaptorV1Calls),
         }
     }
