@@ -1,8 +1,11 @@
 pub mod aave_v2;
 pub mod aave_v2_collateral;
 pub mod aave_v3;
+pub mod aura;
 pub mod balancer_pool;
 pub mod compound;
+pub mod convex;
+pub mod curve;
 pub mod fees_and_reserves;
 pub mod frax;
 pub mod morpho;

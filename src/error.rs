@@ -85,6 +85,9 @@ pub enum ErrorKind {
     InvalidKey,
     #[error("invalid subscription id")]
     InvalidSubscriptionId,
+    /// Hex Decode error
+    #[error("hex decode error")]
+    HexDecodeError,
 }
 
 impl ErrorKind {
@@ -237,5 +240,12 @@ impl From<x509_parser::nom::Err<PEMError>> for Error {
     fn from(err: x509_parser::nom::Err<PEMError>) -> Self {
         let err: BoxError = err.into();
         ErrorKind::ParsingError.context(err).into()
+    }
+}
+
+impl From<hex::FromHexError> for Error {
+    fn from(err: hex::FromHexError) -> Self {
+        let err: BoxError = err.into();
+        ErrorKind::HexDecodeError.context(err).into()
     }
 }

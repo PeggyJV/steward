@@ -79,6 +79,10 @@ pub mod abi {
             include!("gen/abi/aave_v3_debt_token_adaptor_v1.rs");
         }
 
+        pub mod aura_erc4626_adaptor_v1 {
+            include!("gen/abi/aura_erc4626_adaptor_v1.rs");
+        }
+
         pub mod balancer_pool_adaptor_v1 {
             include!("gen/abi/balancer_pool_adaptor_v1.rs");
         }
@@ -93,6 +97,14 @@ pub mod abi {
 
         pub mod compound_c_token_adaptor_v2 {
             include!("gen/abi/compound_c_token_adaptor_v2.rs");
+        }
+
+        pub mod convex_curve_adaptor_v1 {
+            include!("gen/abi/convex_curve_adaptor_v1.rs");
+        }
+
+        pub mod curve_adaptor_v1 {
+            include!("gen/abi/curve_adaptor_v1.rs");
         }
 
         pub mod f_token_adaptor {
