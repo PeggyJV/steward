@@ -1453,7 +1453,7 @@ pub mod curve_adaptor_v1 {
         /// Represents function `addLiquidity(address pool, ERC20 lpToken, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, CurveGauge gauge, bytes4 selector)`
         #[prost(message, tag = "2")]
         AddLiquidity(AddLiquidity),
-        /// Represents function `addLiquidityETH(address pool, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
+        /// Represents function `addLiquidityETH(address pool, ERC20 lpToken, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
         #[prost(message, tag = "3")]
         AddLiquidityEth(AddLiquidityEth),
         /// Represents function `removeLiquidity(address pool, ERC20 lpToken, uint256 lpTokenAmount, uint256[] orderedMinimumUnderlyingTokenAmountsOut, CurveGauge gauge, bytes4 selector)`
@@ -2862,7 +2862,7 @@ pub mod balancer_pool_adaptor_v1_flash_loan {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_balancer_pool_flash_loan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 26, 27"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_balancer_pool_flash_loan::CallData>,
     }
@@ -2950,6 +2950,15 @@ pub mod balancer_pool_adaptor_v1_flash_loan {
             /// Represents function calls to the CollateralFTokenAdaptor V1
             #[prost(message, tag = "27")]
             CollateralFTokenV1Calls(super::super::CollateralFTokenAdaptorV1Calls),
+            /// Represents function calls for the ConvexCurveAdaptorV1
+            #[prost(message, tag = "28")]
+            ConvexCurveV1Calls(super::super::ConvexCurveAdaptorV1Calls),
+            /// Represents function calls for the CurveAdaptorV1
+            #[prost(message, tag = "29")]
+            CurveV1Calls(super::super::CurveAdaptorV1Calls),
+            /// Represents function calls for the AuraERC4626AdaptorV1
+            #[prost(message, tag = "30")]
+            AuraErc4626V1Calls(super::super::AuraErc4626AdaptorV1Calls),
         }
     }
 }

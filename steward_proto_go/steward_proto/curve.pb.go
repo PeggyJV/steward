@@ -151,7 +151,7 @@ type CurveAdaptorV1_AddLiquidity_ struct {
 }
 
 type CurveAdaptorV1_AddLiquidityEth struct {
-	// Represents function `addLiquidityETH(address pool, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
+	// Represents function `addLiquidityETH(address pool, ERC20 lpToken, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
 	AddLiquidityEth *CurveAdaptorV1_AddLiquidityETH `protobuf:"bytes,3,opt,name=add_liquidity_eth,json=addLiquidityEth,proto3,oneof"`
 }
 
