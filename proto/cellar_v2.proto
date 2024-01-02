@@ -14,9 +14,12 @@ import "adaptors/aave/debt_token.proto";
 import "adaptors/aave/aave_v3_a_token.proto";
 import "adaptors/aave/aave_v3_debt_token.proto";
 import "adaptors/aave/aave_v3_debt_token_flash_loan.proto";
+import "adaptors/aura/aura_erc4626.proto";
 import "adaptors/balancer/balancer_pool.proto";
 import "adaptors/balancer/balancer_pool_flash_loan.proto";
 import "adaptors/compound/c_token.proto";
+import "adaptors/convex/convex_curve.proto";
+import "adaptors/curve/curve.proto";
 import "adaptors/frax/f_token.proto";
 import "adaptors/morpho/morpho_aave_v2_a_token.proto";
 import "adaptors/morpho/morpho_aave_v2_debt_token.proto";
@@ -741,5 +744,11 @@ message AdaptorCall {
         AaveV3DebtTokenAdaptorV1FlashLoanCalls aave_v3_debt_token_v1_flash_loan_calls = 28;
         // Represents flash loan function call for the BalancerPoolAdaptorV1
         BalancerPoolAdaptorV1FlashLoanCalls balancer_pool_v1_flash_loan_calls = 29;
+        // Represents function calls for the ConvexCurveAdaptorV1
+        ConvexCurveAdaptorV1Calls convex_curve_v1_calls = 30;
+        // Represents function calls for the CurveAdaptorV1
+        CurveAdaptorV1Calls curve_v1_calls = 31;
+        // Represents function calls for the AuraERC4626AdaptorV1
+        AuraERC4626AdaptorV1Calls aura_erc4626_v1_calls = 32;
     }
 }

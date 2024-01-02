@@ -4688,7 +4688,7 @@ dependencies = [
 
 [[package]]
 name = "sommelier_steward"
-version = "3.6.1"
+version = "3.7.0"
 dependencies = [
  "lazy_static",
  "steward",
@@ -4779,7 +4779,7 @@ checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
 
 [[package]]
 name = "steward"
-version = "3.6.1"
+version = "3.7.0"
 dependencies = [
  "abscissa_core",
  "abscissa_tokio",
@@ -4832,7 +4832,7 @@ dependencies = [
 
 [[package]]
 name = "steward_abi"
-version = "3.6.1"
+version = "3.7.0"
 dependencies = [
  "ethers",
  "serde",
@@ -4852,7 +4852,7 @@ dependencies = [
 
 [[package]]
 name = "steward_proto"
-version = "3.6.1"
+version = "3.7.0"
 dependencies = [
  "prost 0.7.0",
  "prost-types 0.7.0",

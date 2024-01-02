@@ -75,8 +75,13 @@ lazy_static! {
 
 pub const ALLOWED_V2_0_SETUP_ADAPTORS: [(&str, &str); 0] = [];
 pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
-pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 1] =
-    [(CELLAR_TURBO_SOMM, ADAPTOR_VESTING_SIMPLE_V1_1_DEPLOYMENT2)];
+pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 5] = [
+    (CELLAR_TURBO_EETH, ADAPTOR_UNIV3_V3_DEPLOYMENT_2),
+    (CELLAR_TURBO_EETH, ADAPTOR_VESTING_SIMPLE_V1_1_DEPLOYMENT2),
+    (CELLAR_TURBO_EETH, ADAPTOR_CURVE_ADAPTOR_V1),
+    (CELLAR_TURBO_EETH, ADAPTOR_BALANCER_POOL_V1),
+    (CELLAR_TURBO_EETH, ADAPTOR_AURA_ERC4626_ADAPTOR_V1),
+];
 
 // due to position size limits in v2.0, positions must be added and removed from the limited list
 // and thus approved positions need to be allowed to be re-added, hence this large list
@@ -103,7 +108,14 @@ pub const ALLOWED_V2_0_POSITIONS: [(&str, u32); 20] = [
     (CELLAR_RYUSD, 29),
 ];
 pub const ALLOWED_V2_2_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
-pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 1] = [(CELLAR_TURBO_SOMM, 100000005)];
+pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 6] = [
+    (CELLAR_TURBO_EETH, 12),
+    (CELLAR_TURBO_EETH, 1000009),
+    (CELLAR_TURBO_EETH, 100000006),
+    (CELLAR_TURBO_EETH, 6000002),
+    (CELLAR_TURBO_EETH, 7000001),
+    (CELLAR_TURBO_EETH, 7500001),
+];
 
 pub const BLOCKED_ADAPTORS: [&str; 3] = [
     ADAPTOR_UNIV3_V1,
@@ -151,6 +163,7 @@ pub const CELLAR_TURBO_SWETH: &str = "d33dad974b938744dac81fe00ac67cb5aa13958e";
 pub const CELLAR_TURBO_GHO: &str = "0c190ded9be5f512bd72827bdad4003e9cc7975c";
 pub const CELLAR_TURBO_STETH: &str = "fd6db5011b171b05e1ea3b92f9eacaeeb055e971";
 pub const CELLAR_TURBO_SOMM: &str = "5195222f69c5821f8095ec565e71e18ab6a2298f";
+pub const CELLAR_TURBO_EETH: &str = "9a7b4980c6f0fcaa50cd5f288ad7038f434c692e";
 
 // deprecated adaptors
 
@@ -161,8 +174,12 @@ pub const ADAPTOR_COMPOUND_C_TOKEN_V1: &str = "26dba82495f6189dde7648ae88bead46c
 // adaptors
 
 pub const ADAPTOR_AAVE_V3_A_TOKEN_V1: &str = "76cef5606c8b6ba38fe2e3c639e1659afa530b47";
+pub const ADAPTOR_AURA_ERC4626_ADAPTOR_V1: &str = "298d97494c5374e796368bcf15f0290771f6ae99";
+pub const ADAPTOR_BALANCER_POOL_V1: &str = "2750348a897059c45683d33a1742a3989454f7d6";
 pub const ADAPTOR_CELLAR_V2: &str = "3b5ca5de4d808cd793d3a7b3a731d3e67e707b27";
 pub const ADAPTOR_COLLATERAL_F_TOKEN_V1: &str = "0055cf6a99eba1405d100c7dfaa88a35521a0037";
+pub const ADAPTOR_CONVEX_CURVE_ADAPTOR_V1: &str = "98c44ff447c62364e3750c5e2ef8acc38391a8b0";
+pub const ADAPTOR_CURVE_ADAPTOR_V1: &str = "94e28529f73dad189cd0bf9d83a06572d4bfb26a";
 pub const ADAPTOR_DEBT_F_TOKEN_V1: &str = "50d8f70a5da95021dab86579db4751a863c1b87c";
 pub const ADAPTOR_LEGACY_CELLAR_V1: &str = "1e22adf9e63ef8f2a3626841ddddd19683e31068";
 pub const ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1: &str = "1a4cb53edb8c65c3df6aa9d88c1ab4cf35312b73";
@@ -171,7 +188,10 @@ pub const ADAPTOR_MORPHO_AAVE_V3_A_TOKEN_COLLATERAL_V1: &str =
     "b46e8a03b1aafffb50f281397c57b5b87080363e";
 pub const ADAPTOR_MORPHO_AAVE_V3_DEBT_TOKEN_V1: &str = "25a61f771af9a38c10ddd93c2bbab39a88926fa9";
 pub const ADAPTOR_MORPHO_AAVE_V3_P2P_V1: &str = "4fe068caad05b82bf3f86e1f7d1a7b8bbf516111";
-pub const ADAPTOR_UNIV3_V3: &str = "92611574ec9bc13c6137917481dab7bb7b173c9b";
+// used by RYETH, RYBTC
+pub const ADAPTOR_UNIV3_V3_DEPLOYMENT_1: &str = "92611574ec9bc13c6137917481dab7bb7b173c9b";
+// used by Turbo stETH and eETH
+pub const ADAPTOR_UNIV3_V3_DEPLOYMENT_2: &str = "c74ffa211a8148949a77ec1070df7013c8d5ce92";
 pub const ADAPTOR_VESTING_SIMPLE_V1_1_DEPLOYMENT1: &str =
     "3b98ba00f981342664969e609fb88280704ac479";
 pub const ADAPTOR_VESTING_SIMPLE_V1_1_DEPLOYMENT2: &str =
@@ -435,7 +455,7 @@ mod tests {
         assert_eq!(expected_err, res.unwrap_err().to_string());
 
         // rejects unapproved cellar/adaptor ID pair
-        let unapproved_adaptor_id = ADAPTOR_UNIV3_V3;
+        let unapproved_adaptor_id = ADAPTOR_UNIV3_V3_DEPLOYMENT_1;
         let res = validate_new_adaptor(v2_0_cellar_id, unapproved_adaptor_id, &V2_0_PERMISSIONS);
         let expected_err = error_prefix.clone()
             + &format!(

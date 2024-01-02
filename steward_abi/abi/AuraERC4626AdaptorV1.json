@@ -1,0 +1,303 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "auraPool",
+                "type": "address"
+            }
+        ],
+        "name": "AuraExtrasAdaptor__AuraPoolPositionsMustBeTracked",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "BaseAdaptor__ConstructorHealthFactorTooLow",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "BaseAdaptor__ExternalReceiverBlocked",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "asset",
+                "type": "address"
+            }
+        ],
+        "name": "BaseAdaptor__PricingNotSupported",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "BaseAdaptor__Slippage",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "BaseAdaptor__UserDepositsNotAllowed",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "BaseAdaptor__UserWithdrawsNotAllowed",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "erc4626Vault",
+                "type": "address"
+            }
+        ],
+        "name": "ERC4626Adaptor__ERC4626PositionNotUsed",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes",
+                "name": "adaptorData",
+                "type": "bytes"
+            }
+        ],
+        "name": "assetOf",
+        "outputs": [
+            {
+                "internalType": "contract ERC20",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes",
+                "name": "adaptorData",
+                "type": "bytes"
+            }
+        ],
+        "name": "assetsUsed",
+        "outputs": [
+            {
+                "internalType": "contract ERC20[]",
+                "name": "assets",
+                "type": "address[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes",
+                "name": "adaptorData",
+                "type": "bytes"
+            }
+        ],
+        "name": "balanceOf",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "assets",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bytes",
+                "name": "adaptorData",
+                "type": "bytes"
+            },
+            {
+                "internalType": "bytes",
+                "name": "",
+                "type": "bytes"
+            }
+        ],
+        "name": "deposit",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract ERC4626",
+                "name": "erc4626Vault",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "assets",
+                "type": "uint256"
+            }
+        ],
+        "name": "depositToVault",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract IBaseRewardPool",
+                "name": "_auraPool",
+                "type": "address"
+            },
+            {
+                "internalType": "bool",
+                "name": "_claimExtras",
+                "type": "bool"
+            }
+        ],
+        "name": "getRewards",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "identifier",
+        "outputs": [
+            {
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
+            }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "isDebt",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract ERC20",
+                "name": "asset",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+            }
+        ],
+        "name": "revokeApproval",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "slippage",
+        "outputs": [
+            {
+                "internalType": "uint32",
+                "name": "",
+                "type": "uint32"
+            }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "assets",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "receiver",
+                "type": "address"
+            },
+            {
+                "internalType": "bytes",
+                "name": "adaptorData",
+                "type": "bytes"
+            },
+            {
+                "internalType": "bytes",
+                "name": "configurationData",
+                "type": "bytes"
+            }
+        ],
+        "name": "withdraw",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract ERC4626",
+                "name": "erc4626Vault",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "assets",
+                "type": "uint256"
+            }
+        ],
+        "name": "withdrawFromVault",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes",
+                "name": "adaptorData",
+                "type": "bytes"
+            },
+            {
+                "internalType": "bytes",
+                "name": "configurationData",
+                "type": "bytes"
+            }
+        ],
+        "name": "withdrawableFrom",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]

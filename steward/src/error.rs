@@ -51,6 +51,9 @@ pub enum ErrorKind {
     /// Client error
     #[error("client error")]
     ClientError,
+    /// Hex Decode error
+    #[error("hex decode error")]
+    HexDecodeError,
 }
 
 impl ErrorKind {
@@ -168,5 +171,12 @@ impl From<TonicError> for Error {
     fn from(err: TonicError) -> Self {
         let err: BoxError = err.into();
         ErrorKind::GrpcError.context(err).into()
+    }
+}
+
+impl From<hex::FromHexError> for Error {
+    fn from(err: hex::FromHexError) -> Self {
+        let err: BoxError = err.into();
+        ErrorKind::HexDecodeError.context(err).into()
     }
 }
