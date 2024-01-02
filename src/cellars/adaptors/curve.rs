@@ -3,7 +3,7 @@ use ethers::{abi::AbiEncode, types::Bytes};
 use crate::{
     abi::adaptors::curve_adaptor_v1::{self, CurveAdaptorV1Calls as AbiCurveAdaptorV1Calls},
     error::Error,
-    proto::{CurveAdaptorV1Calls, curve_adaptor_v1::Function},
+    proto::{curve_adaptor_v1::Function, CurveAdaptorV1Calls},
     utils::{parse_selector, sp_call_error, sp_call_parse_address, string_to_u256},
 };
 

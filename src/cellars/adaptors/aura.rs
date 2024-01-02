@@ -1,9 +1,11 @@
 use ethers::{abi::AbiEncode, types::Bytes};
 
 use crate::{
-    abi::adaptors::aura_erc4626_adaptor_v1::{self, AuraERC4626AdaptorV1Calls as AbiAuraERC4626AdaptorV1Calls},
+    abi::adaptors::aura_erc4626_adaptor_v1::{
+        self, AuraERC4626AdaptorV1Calls as AbiAuraERC4626AdaptorV1Calls,
+    },
     error::Error,
-    proto::{AuraErc4626AdaptorV1Calls, aura_erc4626_adaptor_v1::Function},
+    proto::{aura_erc4626_adaptor_v1::Function, AuraErc4626AdaptorV1Calls},
     utils::{sp_call_error, sp_call_parse_address},
 };
 

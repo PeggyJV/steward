@@ -1,9 +1,11 @@
 use ethers::{abi::AbiEncode, types::Bytes};
 
 use crate::{
-    abi::adaptors::convex_curve_adaptor_v1::{self, ConvexCurveAdaptorV1Calls as AbiConvexCurveAdaptorV1Calls},
+    abi::adaptors::convex_curve_adaptor_v1::{
+        self, ConvexCurveAdaptorV1Calls as AbiConvexCurveAdaptorV1Calls,
+    },
     error::Error,
-    proto::{ConvexCurveAdaptorV1Calls, convex_curve_adaptor_v1::Function},
+    proto::{convex_curve_adaptor_v1::Function, ConvexCurveAdaptorV1Calls},
     utils::{parse_selector, sp_call_error, sp_call_parse_address, string_to_u256},
 };
 
@@ -45,12 +47,11 @@ pub fn convex_curve_adaptor_v1_calls(
                 )
             }
             Function::WithdrawFromBaseRewardPoolAsLpt(p) => {
-                let call =
-                    convex_curve_adaptor_v1::WithdrawFromBaseRewardPoolAsLPTCall {
-                        base_reward_pool: sp_call_parse_address(p.base_reward_pool)?,
-                        amount: string_to_u256(p.amount_to_withdraw)?,
-                        claim: p.claim,
-                    };
+                let call = convex_curve_adaptor_v1::WithdrawFromBaseRewardPoolAsLPTCall {
+                    base_reward_pool: sp_call_parse_address(p.base_reward_pool)?,
+                    amount: string_to_u256(p.amount_to_withdraw)?,
+                    claim: p.claim,
+                };
                 calls.push(
                     AbiConvexCurveAdaptorV1Calls::WithdrawFromBaseRewardPoolAsLPT(call)
                         .encode()
