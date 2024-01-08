@@ -8,6 +8,7 @@ use tonic::{self, async_trait, Code, Request, Response, Status};
 
 use crate::cellars::to_checksum_address;
 use crate::server::handle_authorization;
+use crate::utils::sp_call_parse_address;
 use crate::{
     cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2},
     error::{
@@ -47,7 +48,7 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
             ));
         }
 
-        let cellar_id = match to_checksum_address(&request.cellar_id.clone()) {
+        let (cellar_id, cellar_id_bytes) = match to_checksum_address(&request.cellar_id.clone()) {
             Ok(id) => id,
             Err(err) => {
                 debug!(
@@ -92,12 +93,13 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
         }
 
         let id = id_hash(height, chain_id, &cellar_id, &encoded_call);
+        let invalidation_scope = invalidation_scope(cellar_id_bytes, &encoded_call);
         info!(
             "scheduled cork {} for cellar {} on chain {} at height {}",
             id, cellar_id, chain_id, height
         );
 
-        Ok(Response::new(ScheduleResponse { id, chain_id }))
+        Ok(Response::new(ScheduleResponse { id, chain_id, invalidation_scope }))
     }
 }
 
@@ -260,6 +262,17 @@ pub fn id_hash(
     format!("{:x}", hasher.finalize())
 }
 
+// returns the hex encoded invalidation scope of the contract call. this calculation mirrors
+// what is done by the cork module when submitting the contract call to gravity.
+pub fn invalidation_scope(target_contract_address_bytes: Vec<u8>, encoded_call: &[u8]) -> String {
+    let mut hasher = Keccak256::new();
+    let input = [&target_contract_address_bytes, encoded_call].concat();
+
+    hasher.update(input);
+
+    format!("{:x}", hasher.finalize())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -275,6 +288,14 @@ mod tests {
         let height = 35;
         let cellar_id = "0x0165878A594ca255338adfa4d48449f69242Eb8F".to_string();
         let actual = id_hash(height, chain_id, &cellar_id, &call);
+
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_invalidation_scope() {
+        let expected = "47c8800f7dd3fa4b8c7a08a30bdcf2c206574760663d30f1fbc78b5f632e2209";
+        let actual = invalidation_scope("bleep".as_bytes().to_vec(), "bloop".as_bytes());
 
         assert_eq!(expected, actual);
     }

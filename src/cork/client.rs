@@ -46,7 +46,7 @@ impl CorkQueryClient {
 
         let mut result: HashMap<u64, HashSet<String>> = HashMap::new();
         for id in cork_result.into_inner().cellar_ids {
-            let normalized_id = match to_checksum_address(&id) {
+            let (normalized_id, _) = match to_checksum_address(&id) {
                 Ok(addr) => addr,
                 Err(err) => {
                     error!("failed to get checksum of cellar ID {}, it will not be cached as approved: {}", id, err);
@@ -61,7 +61,7 @@ impl CorkQueryClient {
             let chain_id = set.chain.unwrap().id;
             let cellar_ids = set.ids.clone();
             for id in cellar_ids.into_iter() {
-                let normalized_id = match to_checksum_address(&id) {
+                let (normalized_id, _) = match to_checksum_address(&id) {
                     Ok(addr) => addr,
                     Err(err) => {
                         error!("failed to get checksum of axelar cellar ID {}, it will not be cached as approved: {}", id, err);

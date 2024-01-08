@@ -2961,6 +2961,9 @@ pub struct ScheduleResponse {
     /// The ID of the chain on which the target Cellar resides
     #[prost(uint64, tag = "2")]
     pub chain_id: u64,
+    /// Invalidation scope for the gravity tx, keccak256 of the target contract address and encoded contract call
+    #[prost(string, tag = "3")]
+    pub invalidation_scope: ::prost::alloc::string::String,
 }
 ///
 /// Represents a request for Steward's current status
