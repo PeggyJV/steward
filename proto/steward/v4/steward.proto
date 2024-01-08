@@ -59,6 +59,8 @@ message ScheduleResponse {
     string id = 1;
     // The ID of the chain on which the target Cellar resides
     uint64 chain_id = 2;
+    // Invalidation scope for the gravity tx, keccak256 of the target contract address and encoded contract call
+    string invalidation_scope = 3;
 }
 
 /*

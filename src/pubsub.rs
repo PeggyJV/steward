@@ -89,7 +89,7 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
                     return None;
                 }
             };
-            let Ok(cellar_id) = to_checksum_address(&cellar_id) else {
+            let Ok((cellar_id, _)) = to_checksum_address(&cellar_id) else {
                 error!("failed to convert cellarID part of subscription ID to checksum: {sid}, it will not be included in trust store");
                 return None;
             };
