@@ -8,7 +8,6 @@ use tonic::{self, async_trait, Code, Request, Response, Status};
 
 use crate::cellars::to_checksum_address;
 use crate::server::handle_authorization;
-use crate::utils::sp_call_parse_address;
 use crate::{
     cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2},
     error::{
@@ -99,7 +98,11 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
             id, cellar_id, chain_id, height
         );
 
-        Ok(Response::new(ScheduleResponse { id, chain_id, invalidation_scope }))
+        Ok(Response::new(ScheduleResponse {
+            id,
+            chain_id,
+            invalidation_scope,
+        }))
     }
 }
 
