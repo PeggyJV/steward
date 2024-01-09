@@ -300,7 +300,7 @@ func (s *IntegrationTestSuite) TestScheduledAxelarCorkProposal() {
 	axelarcorkQueryClient := axelarcorktypes.NewQueryClient(orchClientCtx)
 	s.Require().Eventually(func() bool {
 		proposalQueryResponse, _ := axelarcorkQueryClient.QueryScheduledCorks(context.Background(), &axelarcorktypes.QueryScheduledCorksRequest{ChainId: chainID})
-		return len(proposalQueryResponse.Corks) > 0
+		return len(proposalQueryResponse.Corks) == 4
 	}, time.Second*120, time.Second*2, "corks never scheduled")
 
 	s.T().Log("wait for scheduled height")
