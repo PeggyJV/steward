@@ -488,7 +488,6 @@ message CellarV2_5 {
             RemovePositionFromCatalogue remove_position_from_catalogue = 15;
             // Represents function `decreaseShareSupplyCap(uint192)
             DecreaseShareSupplyCap decrease_share_supply_cap = 16;
-
         }
     }
 
