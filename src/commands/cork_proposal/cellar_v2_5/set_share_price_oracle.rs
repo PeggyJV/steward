@@ -24,7 +24,7 @@ pub struct SetSharePriceOracleCmd {
 
     #[clap(short, long)]
     /// Address of the oracle
-    oracle_address: String,
+    share_price_oracle: String,
 
     /// Target contract for scheduled cork.
     #[clap(short, long)]
@@ -57,8 +57,8 @@ impl Runnable for SetSharePriceOracleCmd {
                 std::process::exit(1);
             }
 
-            if !is_evm_address(&self.oracle_address) {
-                status_err!("invalid oracle address: {}", self.oracle_address);
+            if !is_evm_address(&self.share_price_oracle) {
+                status_err!("invalid oracle address: {}", self.share_price_oracle);
                 std::process::exit(1);
             }
 
@@ -66,7 +66,7 @@ impl Runnable for SetSharePriceOracleCmd {
                 call: Some(Call::CellarV25(CellarV25governance {
                     function: Some(Function::SetSharePriceOracle(SetSharePriceOracle {
                         registry_id: self.registry_id.clone(),
-                        share_price_oracle: self.oracle_address.clone(),
+                        share_price_oracle: self.share_price_oracle.clone(),
                     })),
                 })),
             };
@@ -78,10 +78,7 @@ impl Runnable for SetSharePriceOracleCmd {
                 self.chain_id,
             );
 
-            print_proposal(
-                proposal_json,
-                self.quiet,
-            )
+            print_proposal(proposal_json, self.quiet)
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

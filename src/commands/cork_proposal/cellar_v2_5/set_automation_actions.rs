@@ -24,7 +24,7 @@ pub struct SetAutomationActionsCmd {
 
     /// Actions address
     #[clap(short, long)]
-    actions_address: String,
+    expected_automation_actions: String,
 
     /// Target contract for scheduled cork.
     #[clap(short, long)]
@@ -52,8 +52,11 @@ impl Runnable for SetAutomationActionsCmd {
                     std::process::exit(1);
                 });
 
-            if !is_evm_address(&self.actions_address) {
-                status_err!("invalid actions address: {}", self.actions_address);
+            if !is_evm_address(&self.expected_automation_actions) {
+                status_err!(
+                    "invalid actions address: {}",
+                    self.expected_automation_actions
+                );
                 std::process::exit(1);
             }
 
@@ -66,7 +69,7 @@ impl Runnable for SetAutomationActionsCmd {
                 call: Some(Call::CellarV25(CellarV25governance {
                     function: Some(Function::SetAutomationActions(SetAutomationActions {
                         registry_id: self.registry_id.clone(),
-                        expected_automation_actions: self.actions_address.clone(),
+                        expected_automation_actions: self.expected_automation_actions.clone(),
                     })),
                 })),
             };
@@ -78,10 +81,7 @@ impl Runnable for SetAutomationActionsCmd {
                 self.chain_id,
             );
 
-            print_proposal(
-                proposal_json,
-                self.quiet,
-            )
+            print_proposal(proposal_json, self.quiet)
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

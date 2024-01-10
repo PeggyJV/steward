@@ -19,7 +19,7 @@ use abscissa_core::{clap::Parser, Command, Runnable};
 pub struct SetStrategistPlatformCutCmd {
     #[clap(short, long)]
     /// New platform cut proportion for the Strategy Provider between 0 and 1e18 representing 0% and 100% respectively.
-    new_platform_cut: u64,
+    cut: u64,
 
     /// Target contract for scheduled cork.
     #[clap(short, long)]
@@ -50,9 +50,7 @@ impl Runnable for SetStrategistPlatformCutCmd {
             let governance_call = GovernanceCall {
                 call: Some(Call::CellarV25(CellarV25governance {
                     function: Some(Function::SetStrategistPlatformCut(
-                        SetStrategistPlatformCut {
-                            new_cut: self.new_platform_cut,
-                        },
+                        SetStrategistPlatformCut { new_cut: self.cut },
                     )),
                 })),
             };
@@ -64,10 +62,7 @@ impl Runnable for SetStrategistPlatformCutCmd {
                 self.chain_id,
             );
 
-            print_proposal(
-                proposal_json,
-                self.quiet,
-            )
+            print_proposal(proposal_json, self.quiet)
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

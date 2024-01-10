@@ -62,10 +62,7 @@ impl Runnable for SetRebalanceDeviationCmd {
                 self.chain_id,
             );
 
-            print_proposal(
-                proposal_json,
-                self.quiet,
-            )
+            print_proposal(proposal_json, self.quiet)
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

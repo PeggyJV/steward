@@ -27,7 +27,7 @@ pub struct ForcePositionOutCmd {
 
     /// Whether the position is a debt position
     #[clap(short, long)]
-    debt: bool,
+    in_debt_array: bool,
 
     /// Target contract for scheduled cork.
     #[clap(short, long)]
@@ -60,7 +60,7 @@ impl Runnable for ForcePositionOutCmd {
                     function: Some(Function::ForcePositionOut(ForcePositionOut {
                         position_id: self.position_id,
                         index: self.index,
-                        in_debt_array: self.debt,
+                        in_debt_array: self.in_debt_array,
                     })),
                 })),
             };
@@ -72,10 +72,7 @@ impl Runnable for ForcePositionOutCmd {
                 self.chain_id,
             );
 
-            print_proposal(
-                proposal_json,
-                self.quiet,
-            )
+            print_proposal(proposal_json, self.quiet)
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

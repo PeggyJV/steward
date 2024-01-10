@@ -35,7 +35,11 @@ pub enum CorkProposalCmd {
     CellarV2_5(CellarV2_5Cmd),
 }
 
-fn get_cork_proposal_json(height: u64, contract: String, governance_call: GovernanceCall) -> String {
+fn get_cork_proposal_json(
+    height: u64,
+    contract: String,
+    governance_call: GovernanceCall,
+) -> String {
     let json =
         serde_json::to_string(&governance_call).expect("failed to serialize governance call");
     let proposal = ScheduledCorkProposal {
@@ -44,11 +48,15 @@ fn get_cork_proposal_json(height: u64, contract: String, governance_call: Govern
         contract_call_proto_json: json,
         ..Default::default()
     };
-    
+
     serde_json::to_string(&proposal).expect("failed to serialize proposal")
 }
 
-fn get_axelarcork_proposal_json(height: u64, contract: String, governance_call: GovernanceCall) -> String {
+fn get_axelarcork_proposal_json(
+    height: u64,
+    contract: String,
+    governance_call: GovernanceCall,
+) -> String {
     let json =
         serde_json::to_string(&governance_call).expect("failed to serialize governance call");
     let proposal = AxelarScheduledCorkProposal {
@@ -57,11 +65,16 @@ fn get_axelarcork_proposal_json(height: u64, contract: String, governance_call: 
         contract_call_proto_json: json,
         ..Default::default()
     };
-    
+
     serde_json::to_string(&proposal).expect("failed to serialize proposal")
 }
 
-fn get_proposal_json(height: u64, contract: String, governance_call: GovernanceCall, chain_id: u64) -> String {
+fn get_proposal_json(
+    height: u64,
+    contract: String,
+    governance_call: GovernanceCall,
+    chain_id: u64,
+) -> String {
     if chain_id == 1 {
         get_cork_proposal_json(height, contract, governance_call)
     } else {

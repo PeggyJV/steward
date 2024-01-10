@@ -27,7 +27,7 @@ pub struct CachePriceRouterCmd {
 
     /// Expected price router address
     #[clap(short, long)]
-    router_address: String,
+    expected_price_router: String,
 
     /// Target contract for scheduled cork.
     #[clap(short, long)]
@@ -55,8 +55,8 @@ impl Runnable for CachePriceRouterCmd {
                     std::process::exit(1);
                 });
 
-            if !is_evm_address(&self.router_address) {
-                status_err!("invalid router address: {}", self.router_address);
+            if !is_evm_address(&self.expected_price_router) {
+                status_err!("invalid router address: {}", self.expected_price_router);
                 std::process::exit(1);
             }
 
@@ -65,7 +65,7 @@ impl Runnable for CachePriceRouterCmd {
                     function: Some(Function::CachePriceRouter(CachePriceRouter {
                         check_total_assets: self.check_total_assets,
                         allowable_range: self.allowable_range,
-                        expected_price_router: self.router_address.clone(),
+                        expected_price_router: self.expected_price_router.clone(),
                     })),
                 })),
             };
@@ -77,10 +77,7 @@ impl Runnable for CachePriceRouterCmd {
                 self.chain_id,
             );
 
-            print_proposal(
-                proposal_json,
-                self.quiet,
-            )
+            print_proposal(proposal_json, self.quiet)
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
