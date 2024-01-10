@@ -304,14 +304,12 @@ fn proposal_processing_error(message: String) -> Error {
 
 pub async fn log_schedule_failure(
     proposal_id: u64,
-    attempts: u64,
-    max_retries: u64,
     schedule_err: Error,
     confirm_err: Option<Error>,
 ) {
     error!(
-        "failed to schedule cork for proposal {}. attempt {}/{}. reason: {}",
-        proposal_id, attempts, max_retries, schedule_err
+        "failed to schedule cork for proposal {}. reason: {}",
+        proposal_id, schedule_err
     );
     if confirm_err.is_some() {
         warn!(
