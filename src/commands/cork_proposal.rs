@@ -8,7 +8,7 @@ use crate::{
     commands::cork_proposal::aave_v2_stablecoin::AaveV2StablecoinCellarCmd, proto::GovernanceCall,
 };
 use abscissa_core::{clap::Parser, Command, Runnable};
-use somm_proto::cork::ScheduledCorkProposal;
+use somm_proto::{axelar_cork::AxelarScheduledCorkProposal, cork::ScheduledCorkProposal};
 
 use self::cellar_v1::CellarV1Cmd;
 use self::cellar_v2::CellarV2Cmd;
@@ -35,8 +35,7 @@ pub enum CorkProposalCmd {
     CellarV2_5(CellarV2_5Cmd),
 }
 
-/// Outputs the JSON formatted scheduled cork data for submitting a Scheduled Cork Proposal to Sommelier
-fn print_proposal(height: u64, contract: String, governance_call: GovernanceCall, quiet: bool) {
+fn get_cork_proposal_json(height: u64, contract: String, governance_call: GovernanceCall) -> String {
     let json =
         serde_json::to_string(&governance_call).expect("failed to serialize governance call");
     let proposal = ScheduledCorkProposal {
@@ -45,10 +44,36 @@ fn print_proposal(height: u64, contract: String, governance_call: GovernanceCall
         contract_call_proto_json: json,
         ..Default::default()
     };
-    let proposal = serde_json::to_string(&proposal).expect("failed to serialize proposal");
+    
+    serde_json::to_string(&proposal).expect("failed to serialize proposal")
+}
 
+fn get_axelarcork_proposal_json(height: u64, contract: String, governance_call: GovernanceCall) -> String {
+    let json =
+        serde_json::to_string(&governance_call).expect("failed to serialize governance call");
+    let proposal = AxelarScheduledCorkProposal {
+        block_height: height,
+        target_contract_address: contract,
+        contract_call_proto_json: json,
+        ..Default::default()
+    };
+    
+    serde_json::to_string(&proposal).expect("failed to serialize proposal")
+}
+
+fn get_proposal_json(height: u64, contract: String, governance_call: GovernanceCall, chain_id: u64) -> String {
+    if chain_id == 1 {
+        get_cork_proposal_json(height, contract, governance_call)
+    } else {
+        get_axelarcork_proposal_json(height, contract, governance_call)
+    }
+}
+
+/// Outputs the JSON formatted scheduled cork data for submitting a Scheduled Cork Proposal to Sommelier
+fn print_proposal(proposal_json: String, quiet: bool) {
     if !quiet {
         println!("\nThe following JSON can be used to submit a scheduled cork governance proposal using the Sommelier CLI.\nYou must fill in the 'title' and 'description' fields before submitting.\n");
     }
-    println!("{}", proposal);
+
+    println!("{}", proposal_json);
 }

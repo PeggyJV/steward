@@ -3,7 +3,7 @@ use abscissa_core::{clap::Parser, Command, Runnable};
 use crate::{
     application::APP,
     cellars::{self, is_evm_address},
-    commands::cork_proposal::print_proposal,
+    commands::cork_proposal::{get_proposal_json, print_proposal},
     prelude::*,
     proto::{
         cellar_v2_5governance::{CachePriceRouter, Function},
@@ -70,10 +70,15 @@ impl Runnable for CachePriceRouterCmd {
                 })),
             };
 
-            print_proposal(
+            let proposal_json = get_proposal_json(
                 self.block_height,
                 self.cellar_id.clone(),
                 governance_call,
+                self.chain_id,
+            );
+
+            print_proposal(
+                proposal_json,
                 self.quiet,
             )
         })

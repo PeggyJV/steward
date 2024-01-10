@@ -1,7 +1,7 @@
 use crate::{
     application::APP,
     cellars,
-    commands::cork_proposal::print_proposal,
+    commands::cork_proposal::{get_proposal_json, print_proposal},
     prelude::*,
     proto::{
         cellar_v2_governance::{Function, SetPlatformFee},
@@ -55,10 +55,15 @@ impl Runnable for SetPlatformFeeCmd {
                 })),
             };
 
-            print_proposal(
+            let proposal_json = get_proposal_json(
                 self.block_height,
                 self.cellar_id.clone(),
                 governance_call,
+                self.chain_id,
+            );
+
+            print_proposal(
+                proposal_json,
                 self.quiet,
             )
         })
