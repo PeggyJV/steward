@@ -88,6 +88,9 @@ pub enum ErrorKind {
     /// Hex Decode error
     #[error("hex decode error")]
     HexDecodeError,
+    /// CallDecodeError
+    #[error("call decode error")]
+    CallDecodeError,
 }
 
 impl ErrorKind {

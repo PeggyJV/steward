@@ -7,6 +7,7 @@ use somm_proto::axelar_cork::AxelarScheduledCorkProposal;
 use somm_proto::cork::ScheduledCorkProposal;
 use somm_proto::cosmos_sdk_proto::cosmos::gov::v1beta1::Proposal;
 
+use crate::error::{Error, ErrorKind};
 use crate::{
     cellars::{aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2, cellar_v2_5},
     cork::{schedule_axelar_cork, schedule_cork},
@@ -52,133 +53,15 @@ pub async fn handle_scheduled_cork_proposal(
         "proposal {} contract call proto JSON: {}",
         proposal_id, json
     );
-    let governance_call = match serde_json::from_str::<GovernanceCall>(&json) {
-        Ok(c) => c,
+
+    let encoded_call: Vec<u8> = match get_encoded_governance_call(json, &cellar_id, proposal_id) {
+        Ok(d) => d,
         Err(err) => {
-            error!("failed to decode GovernanceCall JSON {}: {}", json, err);
+            error!(
+                "failed to get encoded governance call data for proposal {}: {}",
+                proposal_id, err
+            );
             return;
-        }
-    };
-    if governance_call.call.is_none() {
-        warn!(
-            "governance call for proposal {} is empty and will be ignored: {:?}",
-            proposal_id, governance_call
-        );
-    }
-    let encoded_call: Vec<u8> = match governance_call.call.unwrap() {
-        Call::AaveV2Stablecoin(data) => {
-            if data.function.is_none() {
-                warn!(
-                    "scheduled cork proposal {} call data contains no function data and will be ignored: {:?}",
-                    proposal.proposal_id, data,
-                );
-            }
-            let function = data.function.unwrap();
-            match aave_v2_stablecoin::get_encoded_governance_call(
-                function,
-                &cellar_id,
-                proposal.proposal_id,
-            ) {
-                Ok(d) => d,
-                // this is likely a bug in steward
-                Err(err) => {
-                    error!(
-                        "failed to get encoded governance call data for proposal {}: {}",
-                        proposal.proposal_id, err
-                    );
-                    return;
-                }
-            }
-        }
-        Call::CellarV1(data) => {
-            if data.function.is_none() {
-                warn!(
-                    "scheduled cork proposal {} call data contains no function data and will be ignored: {:?}",
-                    proposal.proposal_id, data,
-                );
-            }
-            let function = data.function.unwrap();
-            match cellar_v1::get_encoded_governance_call(function, &cellar_id, proposal.proposal_id)
-            {
-                Ok(d) => d,
-                // this is likely a bug in steward
-                Err(err) => {
-                    error!(
-                        "failed to get encoded governance call data for proposal {}: {}",
-                        proposal.proposal_id, err
-                    );
-                    return;
-                }
-            }
-        }
-        Call::CellarV2(data) => {
-            if data.function.is_none() {
-                warn!(
-                    "scheduled cork proposal {} call data contains no function data and will be ignored: {:?}",
-                    proposal.proposal_id, data,
-                );
-            }
-            let function = data.function.unwrap();
-            match cellar_v2::get_encoded_governance_call(function, &cellar_id, proposal.proposal_id)
-            {
-                Ok(d) => d,
-                // this is likely a bug in steward
-                Err(err) => {
-                    error!(
-                        "failed to get encoded governance call data for proposal {}: {}",
-                        proposal.proposal_id, err
-                    );
-                    return;
-                }
-            }
-        }
-        Call::CellarV22(data) => {
-            if data.function.is_none() {
-                warn!(
-                    "scheduled cork proposal {} call data contains no function data and will be ignored: {:?}",
-                    proposal.proposal_id, data,
-                );
-            }
-            let function = data.function.unwrap();
-            match cellar_v2_2::get_encoded_governance_call(
-                function,
-                &cellar_id,
-                proposal.proposal_id,
-            ) {
-                Ok(d) => d,
-                // this is likely a bug in steward
-                Err(err) => {
-                    error!(
-                        "failed to get encoded governance call data for proposal {}: {}",
-                        proposal.proposal_id, err
-                    );
-                    return;
-                }
-            }
-        }
-        Call::CellarV25(data) => {
-            if data.function.is_none() {
-                warn!(
-                    "scheduled cork proposal {} call data contains no function data and will be ignored: {:?}",
-                    proposal.proposal_id, data,
-                );
-            }
-            let function = data.function.unwrap();
-            match cellar_v2_5::get_encoded_governance_call(
-                function,
-                &cellar_id,
-                proposal.proposal_id,
-            ) {
-                Ok(d) => d,
-                // this is likely a bug in steward
-                Err(err) => {
-                    error!(
-                        "failed to get encoded governance call data for proposal {}: {}",
-                        proposal.proposal_id, err
-                    );
-                    return;
-                }
-            }
         }
     };
 
@@ -288,133 +171,15 @@ pub(crate) async fn handle_axelar_scheduled_cork_proposal(
         "proposal {} contract call proto JSON: {}",
         proposal_id, json
     );
-    let governance_call = match serde_json::from_str::<GovernanceCall>(&json) {
-        Ok(c) => c,
+
+    let encoded_call: Vec<u8> = match get_encoded_governance_call(json, &cellar_id, proposal_id) {
+        Ok(d) => d,
         Err(err) => {
-            error!("failed to decode GovernanceCall JSON {}: {}", json, err);
+            error!(
+                "failed to get encoded governance call data for proposal {}: {}",
+                proposal_id, err
+            );
             return;
-        }
-    };
-    if governance_call.call.is_none() {
-        warn!(
-            "governance call for proposal {} is empty and will be ignored: {:?}",
-            proposal_id, governance_call
-        );
-    }
-    let encoded_call: Vec<u8> = match governance_call.call.unwrap() {
-        Call::AaveV2Stablecoin(data) => {
-            if data.function.is_none() {
-                warn!(
-                    "scheduled axelarcork proposal {} call data contains no function data and will be ignored: {:?}",
-                    proposal.proposal_id, data,
-                );
-            }
-            let function = data.function.unwrap();
-            match aave_v2_stablecoin::get_encoded_governance_call(
-                function,
-                &cellar_id,
-                proposal.proposal_id,
-            ) {
-                Ok(d) => d,
-                // this is likely a bug in steward
-                Err(err) => {
-                    error!(
-                        "failed to get encoded governance call data for proposal {}: {}",
-                        proposal.proposal_id, err
-                    );
-                    return;
-                }
-            }
-        }
-        Call::CellarV1(data) => {
-            if data.function.is_none() {
-                warn!(
-                    "scheduled axelarcork proposal {} call data contains no function data and will be ignored: {:?}",
-                    proposal.proposal_id, data,
-                );
-            }
-            let function = data.function.unwrap();
-            match cellar_v1::get_encoded_governance_call(function, &cellar_id, proposal.proposal_id)
-            {
-                Ok(d) => d,
-                // this is likely a bug in steward
-                Err(err) => {
-                    error!(
-                        "failed to get encoded governance call data for proposal {}: {}",
-                        proposal.proposal_id, err
-                    );
-                    return;
-                }
-            }
-        }
-        Call::CellarV2(data) => {
-            if data.function.is_none() {
-                warn!(
-                    "scheduled axelarcork proposal {} call data contains no function data and will be ignored: {:?}",
-                    proposal.proposal_id, data,
-                );
-            }
-            let function = data.function.unwrap();
-            match cellar_v2::get_encoded_governance_call(function, &cellar_id, proposal.proposal_id)
-            {
-                Ok(d) => d,
-                // this is likely a bug in steward
-                Err(err) => {
-                    error!(
-                        "failed to get encoded governance call data for proposal {}: {}",
-                        proposal.proposal_id, err
-                    );
-                    return;
-                }
-            }
-        }
-        Call::CellarV22(data) => {
-            if data.function.is_none() {
-                warn!(
-                    "scheduled axelarcork proposal {} call data contains no function data and will be ignored: {:?}",
-                    proposal.proposal_id, data,
-                );
-            }
-            let function = data.function.unwrap();
-            match cellar_v2_2::get_encoded_governance_call(
-                function,
-                &cellar_id,
-                proposal.proposal_id,
-            ) {
-                Ok(d) => d,
-                // this is likely a bug in steward
-                Err(err) => {
-                    error!(
-                        "failed to get encoded governance call data for proposal {}: {}",
-                        proposal.proposal_id, err
-                    );
-                    return;
-                }
-            }
-        }
-        Call::CellarV25(data) => {
-            if data.function.is_none() {
-                warn!(
-                    "scheduled axelarcork proposal {} call data contains no function data and will be ignored: {:?}",
-                    proposal.proposal_id, data,
-                );
-            }
-            let function = data.function.unwrap();
-            match cellar_v2_5::get_encoded_governance_call(
-                function,
-                &cellar_id,
-                proposal.proposal_id,
-            ) {
-                Ok(d) => d,
-                // this is likely a bug in steward
-                Err(err) => {
-                    error!(
-                        "failed to get encoded governance call data for proposal {}: {}",
-                        proposal.proposal_id, err
-                    );
-                    return;
-                }
-            }
         }
     };
 
@@ -497,5 +262,81 @@ pub(crate) async fn handle_axelar_scheduled_cork_proposal(
                 }
             }
         };
+    }
+}
+
+fn get_encoded_governance_call(
+    json: String,
+    cellar_id: &str,
+    proposal_id: u64,
+) -> Result<Vec<u8>, Error> {
+    let governance_call = match serde_json::from_str::<GovernanceCall>(&json) {
+        Ok(c) => c,
+        Err(err) => {
+            return Err(ErrorKind::CallDecodeError
+                .context(format!(
+                    "failed to decode GovernanceCall JSON {}: {}",
+                    json, err
+                ))
+                .into());
+        }
+    };
+    if governance_call.call.is_none() {
+        warn!(
+            "governance call for proposal {} is empty and will be ignored: {:?}",
+            proposal_id, governance_call
+        );
+    }
+    match governance_call.call.unwrap() {
+        Call::AaveV2Stablecoin(data) => {
+            if data.function.is_none() {
+                warn!(
+                    "proposal {} call data contains no function data and will be ignored: {:?}",
+                    proposal_id, data,
+                );
+            }
+            let function = data.function.unwrap();
+            aave_v2_stablecoin::get_encoded_governance_call(function, cellar_id, proposal_id)
+        }
+        Call::CellarV1(data) => {
+            if data.function.is_none() {
+                warn!(
+                    "proposal {} call data contains no function data and will be ignored: {:?}",
+                    proposal_id, data,
+                );
+            }
+            let function = data.function.unwrap();
+            cellar_v1::get_encoded_governance_call(function, cellar_id, proposal_id)
+        }
+        Call::CellarV2(data) => {
+            if data.function.is_none() {
+                warn!(
+                    "proposal {} call data contains no function data and will be ignored: {:?}",
+                    proposal_id, data,
+                );
+            }
+            let function = data.function.unwrap();
+            cellar_v2::get_encoded_governance_call(function, cellar_id, proposal_id)
+        }
+        Call::CellarV22(data) => {
+            if data.function.is_none() {
+                warn!(
+                    "proposal {} call data contains no function data and will be ignored: {:?}",
+                    proposal_id, data,
+                );
+            }
+            let function = data.function.unwrap();
+            cellar_v2_2::get_encoded_governance_call(function, cellar_id, proposal_id)
+        }
+        Call::CellarV25(data) => {
+            if data.function.is_none() {
+                warn!(
+                    "proposal {} call data contains no function data and will be ignored: {:?}",
+                    proposal_id, data,
+                );
+            }
+            let function = data.function.unwrap();
+            cellar_v2_5::get_encoded_governance_call(function, cellar_id, proposal_id)
+        }
     }
 }
