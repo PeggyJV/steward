@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::{collections::HashSet, time::Duration};
 
 use abscissa_core::{
     tracing::{debug, error, info, log::warn},
@@ -123,9 +123,33 @@ async fn poll_approved_proposals(
 ) -> Result<(), Error> {
     let config = APP.config();
     let mut gov_client = GovQueryClient::connect(config.cosmos.grpc.clone()).await?;
+
+    // Tracks which pending proposals have been submitted already for skipping
+    let mut pending_already_processed = HashSet::<u64>::default();
+
+    // Used to track what ID to process when there are pending proposals
+    let mut last_checked_pending_id = 0;
+
+    // Whether there are pending proposals to check
+    let mut pending_proposals = false;
     loop {
         // Proposal IDs start at 1, so this should be ok even for the first query after startup.
-        let proposal_id = &state.last_processed_proposal_id + 1;
+        let proposal_id = if pending_proposals {
+            // remove any stale already-processed pending proposal ids from the set in case
+            // they stuck around from a previous pending-processing phase.
+            pending_already_processed.retain(|&x| x > state.last_processed_proposal_id);
+
+            let pid = last_checked_pending_id + 1;
+            if pending_already_processed.contains(&pid) {
+                last_checked_pending_id = pid;
+                continue;
+            }
+
+            pid
+        } else {
+            &state.last_processed_proposal_id + 1
+        };
+
         debug!("querying proposal {}", proposal_id);
         let proposal = match gov_client
             .proposal(tonic::Request::new(QueryProposalRequest { proposal_id }))
@@ -161,15 +185,21 @@ async fn poll_approved_proposals(
                     }
 
                     if found_proposal {
-                        state.last_processed_proposal_id += missing_proposals;
+                        if pending_proposals {
+                            last_checked_pending_id += missing_proposals;
+                        } else {
+                            state.last_processed_proposal_id += missing_proposals;
+                        }
+
+                        continue;
                     } else {
                         info!(
                             "no new proposals. last processed proposal ID: {}",
                             state.last_processed_proposal_id
                         );
-                    }
 
-                    break;
+                        break;
+                    }
                 } else {
                     return Err(proposal_processing_error(format!(
                         "error querying proposal {}: {}",
@@ -193,12 +223,20 @@ async fn poll_approved_proposals(
             ProposalStatus::DepositPeriod | ProposalStatus::VotingPeriod => {
                 info!("proposal {} is in deposit or voting period", proposal_id);
 
-                // return without incrementing so this ID will be checked again after a period
-                break;
+                last_checked_pending_id = proposal_id;
+                pending_proposals = true;
+
+                continue;
             }
             ProposalStatus::Rejected | ProposalStatus::Failed => {
                 info!("ignoring rejected/failed proposal of ID {}", proposal_id);
-                state.increment_proposal_id();
+                if pending_proposals {
+                    last_checked_pending_id = proposal_id;
+                    pending_already_processed.insert(proposal_id);
+                } else {
+                    state.increment_proposal_id();
+                }
+
                 continue;
             }
             ProposalStatus::Passed => {
@@ -212,6 +250,7 @@ async fn poll_approved_proposals(
                 )));
             }
         }
+
         let content = match proposal.clone().content {
             Some(c) => c,
             None => {
@@ -219,7 +258,14 @@ async fn poll_approved_proposals(
                     "ignoring proposal of ID {} because of empty content",
                     proposal.proposal_id
                 );
-                state.increment_proposal_id();
+
+                if pending_proposals {
+                    last_checked_pending_id = proposal_id;
+                    pending_already_processed.insert(proposal_id);
+                } else {
+                    state.increment_proposal_id();
+                }
+
                 continue;
             }
         };
@@ -260,7 +306,13 @@ async fn poll_approved_proposals(
             ),
         };
 
-        state.increment_proposal_id();
+        if pending_proposals {
+            last_checked_pending_id = proposal_id;
+            pending_already_processed.insert(proposal_id);
+        } else {
+            state.increment_proposal_id();
+        }
+
         continue;
     }
 
