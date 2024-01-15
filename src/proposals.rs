@@ -135,10 +135,6 @@ async fn poll_approved_proposals(
     loop {
         // Proposal IDs start at 1, so this should be ok even for the first query after startup.
         let proposal_id = if pending_proposals {
-            // remove any stale already-processed pending proposal ids from the set in case
-            // they stuck around from a previous pending-processing phase.
-            pending_already_processed.retain(|&x| x > state.last_processed_proposal_id);
-
             let pid = last_checked_pending_id + 1;
             if pending_already_processed.contains(&pid) {
                 last_checked_pending_id = pid;
