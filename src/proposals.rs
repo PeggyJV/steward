@@ -127,24 +127,19 @@ async fn poll_approved_proposals(
     // Tracks which pending proposals have been submitted already for skipping
     let mut pending_already_processed = HashSet::<u64>::default();
 
-    // Used to track what ID to process when there are pending proposals
-    let mut last_checked_pending_id = 0;
-
     // Whether there are pending proposals to check
     let mut pending_proposals = false;
+
+    // To advance the ID checked while pending proposals exist
+    let mut pending_skip_count = 0;
     loop {
         // Proposal IDs start at 1, so this should be ok even for the first query after startup.
-        let proposal_id = if pending_proposals {
-            let pid = last_checked_pending_id + 1;
-            if pending_already_processed.contains(&pid) {
-                last_checked_pending_id = pid;
-                continue;
-            }
+        let proposal_id = &state.last_processed_proposal_id + 1 + pending_skip_count;
 
-            pid
-        } else {
-            &state.last_processed_proposal_id + 1
-        };
+        if pending_proposals && pending_already_processed.contains(&proposal_id) {
+            pending_skip_count += 1;
+            continue;
+        }
 
         debug!("querying proposal {}", proposal_id);
         let proposal = match gov_client
@@ -182,7 +177,7 @@ async fn poll_approved_proposals(
 
                     if found_proposal {
                         if pending_proposals {
-                            last_checked_pending_id += missing_proposals;
+                            pending_skip_count += missing_proposals;
                         } else {
                             state.last_processed_proposal_id += missing_proposals;
                         }
@@ -211,7 +206,15 @@ async fn poll_approved_proposals(
                 "proposal {} was None even though the query status code indicates it was found.",
                 proposal_id
             );
-            state.increment_proposal_id();
+
+            if pending_proposals {
+                pending_skip_count += 1;
+                pending_already_processed.insert(proposal_id);
+            } else {
+                state.increment_proposal_id();
+            }
+
+            continue;
         }
 
         let proposal = proposal.unwrap();
@@ -219,15 +222,15 @@ async fn poll_approved_proposals(
             ProposalStatus::DepositPeriod | ProposalStatus::VotingPeriod => {
                 info!("proposal {} is in deposit or voting period", proposal_id);
 
-                last_checked_pending_id = proposal_id;
                 pending_proposals = true;
+                pending_skip_count += 1;
 
                 continue;
             }
             ProposalStatus::Rejected | ProposalStatus::Failed => {
                 info!("ignoring rejected/failed proposal of ID {}", proposal_id);
                 if pending_proposals {
-                    last_checked_pending_id = proposal_id;
+                    pending_skip_count += 1;
                     pending_already_processed.insert(proposal_id);
                 } else {
                     state.increment_proposal_id();
@@ -256,7 +259,7 @@ async fn poll_approved_proposals(
                 );
 
                 if pending_proposals {
-                    last_checked_pending_id = proposal_id;
+                    pending_skip_count += 1;
                     pending_already_processed.insert(proposal_id);
                 } else {
                     state.increment_proposal_id();
@@ -303,7 +306,7 @@ async fn poll_approved_proposals(
         };
 
         if pending_proposals {
-            last_checked_pending_id = proposal_id;
+            pending_skip_count = 1;
             pending_already_processed.insert(proposal_id);
         } else {
             state.increment_proposal_id();
