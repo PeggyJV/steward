@@ -74,7 +74,7 @@ pub async fn start_approved_proposal_polling_thread(
             {
                 error!(
                     "failed to process proposal {}: {}",
-                    state.last_processed_proposal_id + 1,
+                    state.last_finalized_proposal_id + 1,
                     err
                 );
             }
@@ -87,7 +87,7 @@ pub async fn start_approved_proposal_polling_thread(
 #[derive(Debug, Default)]
 pub struct ProposalThreadState {
     pub last_observed_height: u64,
-    pub last_processed_proposal_id: u64,
+    pub last_finalized_proposal_id: u64,
     pub validator_address: String,
 }
 
@@ -113,7 +113,7 @@ impl ProposalThreadState {
     }
 
     pub(crate) fn increment_proposal_id(&mut self) {
-        self.last_processed_proposal_id += 1;
+        self.last_finalized_proposal_id += 1;
     }
 }
 
@@ -125,7 +125,7 @@ async fn poll_approved_proposals(
     let mut gov_client = GovQueryClient::connect(config.cosmos.grpc.clone()).await?;
 
     // Tracks which pending proposals have been submitted already for skipping
-    let mut pending_already_processed = HashSet::<u64>::default();
+    let mut pending_finalized = HashSet::<u64>::default();
 
     // Whether there are pending proposals to check
     let mut pending_proposals = false;
@@ -134,9 +134,9 @@ async fn poll_approved_proposals(
     let mut pending_skip_count = 0;
     loop {
         // Proposal IDs start at 1, so this should be ok even for the first query after startup.
-        let proposal_id = &state.last_processed_proposal_id + 1 + pending_skip_count;
+        let proposal_id = &state.last_finalized_proposal_id + 1 + pending_skip_count;
 
-        if pending_proposals && pending_already_processed.contains(&proposal_id) {
+        if pending_proposals && pending_finalized.contains(&proposal_id) {
             pending_skip_count += 1;
             continue;
         }
@@ -179,14 +179,14 @@ async fn poll_approved_proposals(
                         if pending_proposals {
                             pending_skip_count += missing_proposals;
                         } else {
-                            state.last_processed_proposal_id += missing_proposals;
+                            state.last_finalized_proposal_id += missing_proposals;
                         }
 
                         continue;
                     } else {
                         info!(
                             "no new proposals. last processed proposal ID: {}",
-                            state.last_processed_proposal_id
+                            state.last_finalized_proposal_id
                         );
 
                         break;
@@ -209,7 +209,7 @@ async fn poll_approved_proposals(
 
             if pending_proposals {
                 pending_skip_count += 1;
-                pending_already_processed.insert(proposal_id);
+                pending_finalized.insert(proposal_id);
             } else {
                 state.increment_proposal_id();
             }
@@ -231,7 +231,7 @@ async fn poll_approved_proposals(
                 info!("ignoring rejected/failed proposal of ID {}", proposal_id);
                 if pending_proposals {
                     pending_skip_count += 1;
-                    pending_already_processed.insert(proposal_id);
+                    pending_finalized.insert(proposal_id);
                 } else {
                     state.increment_proposal_id();
                 }
@@ -260,7 +260,7 @@ async fn poll_approved_proposals(
 
                 if pending_proposals {
                     pending_skip_count += 1;
-                    pending_already_processed.insert(proposal_id);
+                    pending_finalized.insert(proposal_id);
                 } else {
                     state.increment_proposal_id();
                 }
@@ -307,7 +307,7 @@ async fn poll_approved_proposals(
 
         if pending_proposals {
             pending_skip_count = 1;
-            pending_already_processed.insert(proposal_id);
+            pending_finalized.insert(proposal_id);
         } else {
             state.increment_proposal_id();
         }
