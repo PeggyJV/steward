@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use abscissa_core::tracing::{debug, error, info, warn};
+use abscissa_core::tracing::{debug, error, info};
 use abscissa_core::Application;
 use prost_types::Any;
 use somm_proto::axelar_cork::AxelarScheduledCorkProposal;
@@ -235,59 +235,76 @@ fn get_encoded_governance_call(
         }
     };
     if governance_call.call.is_none() {
-        warn!(
-            "governance call for proposal {} is empty and will be ignored: {:?}",
-            proposal_id, governance_call
-        );
+        return Err(ErrorKind::GovernanceCall
+            .context(format!(
+                "governance call for proposal {} is empty and will be ignored: {:?}",
+                proposal_id, governance_call
+            ))
+            .into());
     }
     match governance_call.call.unwrap() {
         Call::AaveV2Stablecoin(data) => {
             if data.function.is_none() {
-                warn!(
-                    "proposal {} call data contains no function data and will be ignored: {:?}",
-                    proposal_id, data,
-                );
+                return Err(ErrorKind::GovernanceCall
+                    .context(format!(
+                        "proposal {} call data contains no function data and will be ignored: {:?}",
+                        proposal_id, data,
+                    ))
+                    .into());
             }
+
             let function = data.function.unwrap();
             aave_v2_stablecoin::get_encoded_governance_call(function, cellar_id, proposal_id)
         }
         Call::CellarV1(data) => {
             if data.function.is_none() {
-                warn!(
-                    "proposal {} call data contains no function data and will be ignored: {:?}",
-                    proposal_id, data,
-                );
+                return Err(ErrorKind::GovernanceCall
+                    .context(format!(
+                        "proposal {} call data contains no function data and will be ignored: {:?}",
+                        proposal_id, data,
+                    ))
+                    .into());
             }
+
             let function = data.function.unwrap();
             cellar_v1::get_encoded_governance_call(function, cellar_id, proposal_id)
         }
         Call::CellarV2(data) => {
             if data.function.is_none() {
-                warn!(
-                    "proposal {} call data contains no function data and will be ignored: {:?}",
-                    proposal_id, data,
-                );
+                return Err(ErrorKind::GovernanceCall
+                    .context(format!(
+                        "proposal {} call data contains no function data and will be ignored: {:?}",
+                        proposal_id, data,
+                    ))
+                    .into());
             }
+
             let function = data.function.unwrap();
             cellar_v2::get_encoded_governance_call(function, cellar_id, proposal_id)
         }
         Call::CellarV22(data) => {
             if data.function.is_none() {
-                warn!(
-                    "proposal {} call data contains no function data and will be ignored: {:?}",
-                    proposal_id, data,
-                );
+                return Err(ErrorKind::GovernanceCall
+                    .context(format!(
+                        "proposal {} call data contains no function data and will be ignored: {:?}",
+                        proposal_id, data,
+                    ))
+                    .into());
             }
+
             let function = data.function.unwrap();
             cellar_v2_2::get_encoded_governance_call(function, cellar_id, proposal_id)
         }
         Call::CellarV25(data) => {
             if data.function.is_none() {
-                warn!(
-                    "proposal {} call data contains no function data and will be ignored: {:?}",
-                    proposal_id, data,
-                );
+                return Err(ErrorKind::GovernanceCall
+                    .context(format!(
+                        "proposal {} call data contains no function data and will be ignored: {:?}",
+                        proposal_id, data,
+                    ))
+                    .into());
             }
+
             let function = data.function.unwrap();
             cellar_v2_5::get_encoded_governance_call(function, cellar_id, proposal_id)
         }
