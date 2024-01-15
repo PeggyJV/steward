@@ -53,6 +53,7 @@ fn get_cork_proposal_json(
 }
 
 fn get_axelarcork_proposal_json(
+    chain_id: u64,
     height: u64,
     contract: String,
     governance_call: GovernanceCall,
@@ -63,6 +64,7 @@ fn get_axelarcork_proposal_json(
         block_height: height,
         target_contract_address: contract,
         contract_call_proto_json: json,
+        chain_id,
         ..Default::default()
     };
 
@@ -78,7 +80,7 @@ fn get_proposal_json(
     if chain_id == 1 {
         get_cork_proposal_json(height, contract, governance_call)
     } else {
-        get_axelarcork_proposal_json(height, contract, governance_call)
+        get_axelarcork_proposal_json(chain_id, height, contract, governance_call)
     }
 }
 
