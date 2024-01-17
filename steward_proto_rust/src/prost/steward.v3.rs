@@ -3414,7 +3414,7 @@ pub mod cellar_v2_5 {
     pub struct FunctionCall {
         #[prost(
             oneof = "function_call::Function",
-            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20"
+            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22"
         )]
         pub function: ::core::option::Option<function_call::Function>,
     }
@@ -3482,6 +3482,12 @@ pub mod cellar_v2_5 {
             /// Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
             #[prost(message, tag = "20")]
             ForcePositionOut(super::ForcePositionOut),
+            /// Represents function `setAlternativeAssetData(ERC20 _alternativeAsset, uint32 _alternativeHoldingPosition, uint32 _alternativeAssetFee)`
+            #[prost(message, tag = "21")]
+            SetAlternativeAssetData(super::SetAlternativeAssetData),
+            /// Represents function `setDropAlternativeAssetData(ERC20 _alternativeAsset)`
+            #[prost(message, tag = "22")]
+            DropAlternativeAssetData(super::DropAlternativeAssetData),
         }
     }
     ///
@@ -3709,6 +3715,32 @@ pub mod cellar_v2_5 {
         #[prost(bool, tag = "3")]
         pub in_debt_array: bool,
     }
+    ///
+    /// Allows the strategist to add, or update an existing alternative asset deposit.
+    ///
+    /// Represents function `setAlternativeAssetData(uint32 positionId, address asset, address adaptor, bool isDeposit)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SetAlternativeAssetData {
+        /// The address of the alternative asset
+        #[prost(string, tag = "1")]
+        pub alternative_asset: ::prost::alloc::string::String,
+        /// The holding position to direct alternative asset deposits to
+        #[prost(uint32, tag = "2")]
+        pub alternative_holding_position: u32,
+        /// The fee to charge for depositing this alternative asset
+        #[prost(uint32, tag = "3")]
+        pub alternative_asset_fee: u32,
+    }
+    ///
+    /// Allows the strategist to stop an alternative asset from being deposited.
+    ///
+    /// Represents function `dropAlternativeAssetData(ERC20 _alternativeAsset)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct DropAlternativeAssetData {
+        /// The address of the alternative asset
+        #[prost(string, tag = "1")]
+        pub alternative_asset: ::prost::alloc::string::String,
+    }
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum CallType {
         /// Represents a single function call
@@ -3815,10 +3847,10 @@ pub mod adaptor_call {
         /// Represents function calls to the CollateralFTokenAdaptor V1
         #[prost(message, tag = "27")]
         CollateralFTokenV1Calls(super::CollateralFTokenAdaptorV1Calls),
-        /// Represents flash loan function call for the AaveV3DebtTokenAdaptorV1
+        /// Represents function call for the AaveV3DebtTokenAdaptorV1
         #[prost(message, tag = "28")]
         AaveV3DebtTokenV1FlashLoanCalls(super::AaveV3DebtTokenAdaptorV1FlashLoanCalls),
-        /// Represents flash loan function call for the BalancerPoolAdaptorV1
+        /// Represents function call for the BalancerPoolAdaptorV1
         #[prost(message, tag = "29")]
         BalancerPoolV1FlashLoanCalls(super::BalancerPoolAdaptorV1FlashLoanCalls),
         /// Represents function calls for the ConvexCurveAdaptorV1
