@@ -1192,7 +1192,9 @@ mod cellarwithmultiassetdepositv1_mod {
                 return Ok(CellarWithMultiAssetDepositV1Events::MultiAssetDepositFilter(decoded));
             }
             if let Ok(decoded) = OwnershipTransferredFilter::decode_log(log) {
-                return Ok(CellarWithMultiAssetDepositV1Events::OwnershipTransferredFilter(decoded));
+                return Ok(
+                    CellarWithMultiAssetDepositV1Events::OwnershipTransferredFilter(decoded),
+                );
             }
             if let Ok(decoded) = PositionAddedFilter::decode_log(log) {
                 return Ok(CellarWithMultiAssetDepositV1Events::PositionAddedFilter(
@@ -2802,7 +2804,9 @@ mod cellarwithmultiassetdepositv1_mod {
                     data.as_ref(),
                 )
             {
-                return Ok(CellarWithMultiAssetDepositV1Calls::RemovePositionFromCatalogue(decoded));
+                return Ok(
+                    CellarWithMultiAssetDepositV1Calls::RemovePositionFromCatalogue(decoded),
+                );
             }
             if let Ok(decoded) =
                 <SetAlternativeAssetDataCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
