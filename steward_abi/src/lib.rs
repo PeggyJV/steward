@@ -14,6 +14,7 @@ pub mod cellar_v1;
 pub mod cellar_v2;
 pub mod cellar_v2_2;
 pub mod cellar_v2_5;
+pub mod cellar_with_multi_asset_deposit_v1;
 pub mod cellar_with_share_lock_period_v1;
 pub mod collateral_f_token_adaptor_v1;
 pub mod compound_c_token_adaptor_v2;
