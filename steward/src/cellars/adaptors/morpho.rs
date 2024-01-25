@@ -7,12 +7,15 @@ use steward_abi::{
     morpho_aave_v3_a_token_collateral_adaptor_v1::MorphoAaveV3ATokenCollateralAdaptorV1Calls,
     morpho_aave_v3_a_token_p2p_adaptor_v1::MorphoAaveV3ATokenP2PAdaptorV1Calls,
     morpho_aave_v3_debt_token_adaptor_v1::MorphoAaveV3DebtTokenAdaptorV1Calls,
-    morpho_blue_collateral_adaptor_v1::MorphoBlueCollateralAdaptorV1Calls, morpho_blue_debt_adaptor_v1::MorphoBlueDebtAdaptorV1Calls, morpho_blue_supply_adaptor_v1::MorphoBlueSupplyAdaptorV1Calls,
+    morpho_blue_collateral_adaptor_v1::MorphoBlueCollateralAdaptorV1Calls,
+    morpho_blue_debt_adaptor_v1::MorphoBlueDebtAdaptorV1Calls,
+    morpho_blue_supply_adaptor_v1::MorphoBlueSupplyAdaptorV1Calls,
 };
 use steward_proto::steward::{
     morpho_aave_v2_debt_token_adaptor_v1, morpho_aave_v2a_token_adaptor_v1,
     morpho_aave_v3_debt_token_adaptor_v1, morpho_aave_v3a_token_collateral_adaptor_v1,
-    morpho_aave_v3a_token_p2p_adaptor_v1, morpho_blue_collateral_adaptor_v1, morpho_blue_debt_adaptor_v1, morpho_blue_supply_adaptor_v1,
+    morpho_aave_v3a_token_p2p_adaptor_v1, morpho_blue_collateral_adaptor_v1,
+    morpho_blue_debt_adaptor_v1, morpho_blue_supply_adaptor_v1,
 };
 
 use crate::{
@@ -340,7 +343,7 @@ pub(crate) fn morpho_blue_collateral_adaptor_v1_calls(
                     lltv: string_to_u256(market.lltv)?,
                 };
                 let call = steward_abi::morpho_blue_collateral_adaptor_v1::AddCollateralCall {
-                    market, 
+                    market,
                     collateral_to_deposit: string_to_u256(p.collateral_to_deposit)?,
                 };
                 calls.push(
@@ -358,11 +361,10 @@ pub(crate) fn morpho_blue_collateral_adaptor_v1_calls(
                     irm: sp_call_parse_address(market.irm)?,
                     lltv: string_to_u256(market.lltv)?,
                 };
-                let call =
-                    steward_abi::morpho_blue_collateral_adaptor_v1::RemoveCollateralCall {
-                        market,
-                        collateral_amount: string_to_u256(p.collateral_amount)?, 
-                    };
+                let call = steward_abi::morpho_blue_collateral_adaptor_v1::RemoveCollateralCall {
+                    market,
+                    collateral_amount: string_to_u256(p.collateral_amount)?,
+                };
                 calls.push(
                     MorphoBlueCollateralAdaptorV1Calls::RemoveCollateral(call)
                         .encode()
@@ -404,9 +406,9 @@ pub(crate) fn morpho_blue_debt_adaptor_v1_calls(
                     oracle: sp_call_parse_address(market.oracle)?,
                     irm: sp_call_parse_address(market.irm)?,
                     lltv: string_to_u256(market.lltv)?,
-                };  
+                };
                 let call = steward_abi::morpho_blue_debt_adaptor_v1::BorrowFromMorphoBlueCall {
-                    market, 
+                    market,
                     amount_to_borrow: string_to_u256(p.amount_to_borrow)?,
                 };
                 calls.push(
@@ -425,11 +427,10 @@ pub(crate) fn morpho_blue_debt_adaptor_v1_calls(
                     lltv: string_to_u256(market.lltv)?,
                 };
 
-                let call =
-                    steward_abi::morpho_blue_debt_adaptor_v1::RepayMorphoBlueDebtCall {
-                        market,
-                        debt_token_repay_amount: string_to_u256(p.debt_token_repay_amount)?, 
-                    };
+                let call = steward_abi::morpho_blue_debt_adaptor_v1::RepayMorphoBlueDebtCall {
+                    market,
+                    debt_token_repay_amount: string_to_u256(p.debt_token_repay_amount)?,
+                };
                 calls.push(
                     MorphoBlueDebtAdaptorV1Calls::RepayMorphoBlueDebt(call)
                         .encode()
@@ -473,11 +474,10 @@ pub(crate) fn morpho_blue_supply_adaptor_v1_calls(
                     lltv: string_to_u256(market.lltv)?,
                 };
 
-                let call =
-                    steward_abi::morpho_blue_supply_adaptor_v1::LendToMorphoBlueCall {
-                        market,
-                        assets: string_to_u256(p.assets)?, 
-                    };
+                let call = steward_abi::morpho_blue_supply_adaptor_v1::LendToMorphoBlueCall {
+                    market,
+                    assets: string_to_u256(p.assets)?,
+                };
                 calls.push(
                     MorphoBlueSupplyAdaptorV1Calls::LendToMorphoBlue(call)
                         .encode()
@@ -492,9 +492,9 @@ pub(crate) fn morpho_blue_supply_adaptor_v1_calls(
                     oracle: sp_call_parse_address(market.oracle)?,
                     irm: sp_call_parse_address(market.irm)?,
                     lltv: string_to_u256(market.lltv)?,
-                };  
+                };
                 let call = steward_abi::morpho_blue_supply_adaptor_v1::WithdrawFromMorphoBlueCall {
-                    market, 
+                    market,
                     assets: string_to_u256(p.assets)?,
                 };
                 calls.push(
@@ -502,7 +502,7 @@ pub(crate) fn morpho_blue_supply_adaptor_v1_calls(
                         .encode()
                         .into(),
                 )
-            } 
+            }
         }
     }
 
