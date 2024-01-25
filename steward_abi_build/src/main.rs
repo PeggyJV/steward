@@ -66,6 +66,12 @@ fn main() {
             "CellarWithMultiAssetDepositV1",
             "cellar_with_multi_asset_deposit_v1",
         ),
+        ("MorphoBlueSupplyAdaptorV1", "morpho_blue_supply_adaptor_v1"),
+        (
+            "MorphoBlueCollateralAdaptorV1",
+            "morpho_blue_collateral_adaptor_v1",
+        ),
+        ("MorphoBlueDebtAdaptorV1", "morpho_blue_debt_adaptor_v1"),
     ];
 
     contracts
