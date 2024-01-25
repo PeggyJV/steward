@@ -8,6 +8,7 @@ package steward.v3;
 option go_package = "/steward_proto";
 
 import "adaptors/base.proto";
+import "common.proto";
 
 // Represents call data for the Morpho Blue Collateral adaptor.
 message MorphoBlueCollateralAdaptorV1 {
@@ -32,7 +33,7 @@ message MorphoBlueCollateralAdaptorV1 {
     */
     message AddCollateral {
         // Identifier of a Morpho Blue Market 
-        string market = 1;
+        MarketParams market = 1;
 
         // The amount of collateral to add
         string collateral_to_deposit = 2;
@@ -45,7 +46,7 @@ message MorphoBlueCollateralAdaptorV1 {
     */
     message RemoveCollateral {
        // Identifier of a Morpho Blue Market 
-        string market = 1;
+        MarketParams market = 1;
 
         // The amount of collateral to remove
         string collateral_amount = 2;

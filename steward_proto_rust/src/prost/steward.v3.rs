@@ -269,6 +269,26 @@ pub mod oracle_swap_params {
     }
 }
 ///
+/// Represents parameters for a Morpho Blue market
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MarketParams {
+    /// The address of the loan token
+    #[prost(string, tag = "1")]
+    pub loan_token: ::prost::alloc::string::String,
+    /// The address of the collateral token
+    #[prost(string, tag = "2")]
+    pub collateral_token: ::prost::alloc::string::String,
+    /// The address of the oracle
+    #[prost(string, tag = "3")]
+    pub oracle: ::prost::alloc::string::String,
+    /// The address of the interest rate model
+    #[prost(string, tag = "4")]
+    pub irm: ::prost::alloc::string::String,
+    /// The loan-to-value ratio
+    #[prost(string, tag = "5")]
+    pub lltv: ::prost::alloc::string::String,
+}
+///
 /// Exchange selector
 #[derive(
     serde::Deserialize,
@@ -779,8 +799,8 @@ pub mod morpho_blue_debt_adaptor_v1 {
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct BorrowFromMorphoBlue {
         /// Identifier of a Morpho Blue Market
-        #[prost(string, tag = "1")]
-        pub market: ::prost::alloc::string::String,
+        #[prost(message, optional, tag = "1")]
+        pub market: ::core::option::Option<super::MarketParams>,
         /// The amount of the debt token to borrow
         #[prost(string, tag = "2")]
         pub amount_to_borrow: ::prost::alloc::string::String,
@@ -792,8 +812,8 @@ pub mod morpho_blue_debt_adaptor_v1 {
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct RepayMorphoBlueDebt {
         /// Identifier of a Morpho Blue Market
-        #[prost(string, tag = "1")]
-        pub market: ::prost::alloc::string::String,
+        #[prost(message, optional, tag = "1")]
+        pub market: ::core::option::Option<super::MarketParams>,
         /// The amount of the debt token to repay
         #[prost(string, tag = "2")]
         pub debt_token_repay_amount: ::prost::alloc::string::String,
@@ -1087,8 +1107,8 @@ pub mod morpho_blue_collateral_adaptor_v1 {
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct AddCollateral {
         /// Identifier of a Morpho Blue Market
-        #[prost(string, tag = "1")]
-        pub market: ::prost::alloc::string::String,
+        #[prost(message, optional, tag = "1")]
+        pub market: ::core::option::Option<super::MarketParams>,
         /// The amount of collateral to add
         #[prost(string, tag = "2")]
         pub collateral_to_deposit: ::prost::alloc::string::String,
@@ -1100,8 +1120,8 @@ pub mod morpho_blue_collateral_adaptor_v1 {
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct RemoveCollateral {
         /// Identifier of a Morpho Blue Market
-        #[prost(string, tag = "1")]
-        pub market: ::prost::alloc::string::String,
+        #[prost(message, optional, tag = "1")]
+        pub market: ::core::option::Option<super::MarketParams>,
         /// The amount of collateral to remove
         #[prost(string, tag = "2")]
         pub collateral_amount: ::prost::alloc::string::String,
@@ -1142,8 +1162,8 @@ pub mod morpho_blue_supply_adaptor_v1 {
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct LendToMorphoBlue {
         /// Identifier of a Morpho Blue Market
-        #[prost(string, tag = "1")]
-        pub market: ::prost::alloc::string::String,
+        #[prost(message, optional, tag = "1")]
+        pub market: ::core::option::Option<super::MarketParams>,
         /// The amount of the loan token to lend
         #[prost(string, tag = "2")]
         pub assets: ::prost::alloc::string::String,
@@ -1155,8 +1175,8 @@ pub mod morpho_blue_supply_adaptor_v1 {
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct WithdrawFromMorphoBlue {
         /// Identifier of a Morpho Blue Market
-        #[prost(string, tag = "1")]
-        pub market: ::prost::alloc::string::String,
+        #[prost(message, optional, tag = "1")]
+        pub market: ::core::option::Option<super::MarketParams>,
         /// The amount of the loan token to lend
         #[prost(string, tag = "2")]
         pub assets: ::prost::alloc::string::String,

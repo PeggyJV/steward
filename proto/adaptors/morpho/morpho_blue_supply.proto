@@ -8,6 +8,7 @@ package steward.v3;
 option go_package = "/steward_proto";
 
 import "adaptors/base.proto";
+import "common.proto";
 
 // Represents call data for the Morpho Blue Supply adaptor.
 message MorphoBlueSupplyAdaptorV1 {
@@ -32,7 +33,7 @@ message MorphoBlueSupplyAdaptorV1 {
     */
     message LendToMorphoBlue {
         // Identifier of a Morpho Blue Market 
-        string market = 1;
+        MarketParams market = 1;
 
         // The amount of the loan token to lend
         string assets = 2;
@@ -45,7 +46,7 @@ message MorphoBlueSupplyAdaptorV1 {
     */
     message WithdrawFromMorphoBlue {
        // Identifier of a Morpho Blue Market 
-        string market = 1;
+        MarketParams market = 1;
 
         // The amount of the loan token to lend
         string assets = 2;

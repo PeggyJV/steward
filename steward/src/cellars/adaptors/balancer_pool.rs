@@ -307,6 +307,15 @@ fn get_encoded_adaptor_calls(
             AuraErc4626V1Calls(params) => {
                 calls.extend(adaptors::aura::aura_erc4626_adaptor_v1_calls(params)?)
             }
+            MorphoBlueCollateralV1Calls(params) => calls.extend(
+                adaptors::morpho::morpho_blue_collateral_adaptor_v1_calls(params)?,
+            ),
+            MorphoBlueDebtV1Calls(params) => {
+                calls.extend(adaptors::morpho::morpho_blue_debt_adaptor_v1_calls(params)?)
+            }
+            MorphoBlueSupplyV1Calls(params) => calls.extend(
+                adaptors::morpho::morpho_blue_supply_adaptor_v1_calls(params)?,
+            ),
         };
 
         result.push(AbiAdaptorCall {

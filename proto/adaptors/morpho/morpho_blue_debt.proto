@@ -8,6 +8,7 @@ package steward.v3;
 option go_package = "/steward_proto";
 
 import "adaptors/base.proto";
+import "common.proto";
 
 // Represents call data for the Morpho Blue Debt adaptor.
 message MorphoBlueDebtAdaptorV1 {
@@ -32,7 +33,7 @@ message MorphoBlueDebtAdaptorV1 {
     */
     message BorrowFromMorphoBlue {
         // Identifier of a Morpho Blue Market 
-        string market = 1;
+        MarketParams market = 1;
 
         // The amount of the debt token to borrow
         string amount_to_borrow = 2;
@@ -45,7 +46,7 @@ message MorphoBlueDebtAdaptorV1 {
     */
     message RepayMorphoBlueDebt {
        // Identifier of a Morpho Blue Market 
-        string market = 1;
+        MarketParams market = 1;
 
         // The amount of the debt token to repay
         string debt_token_repay_amount = 2;
