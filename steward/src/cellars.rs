@@ -75,13 +75,7 @@ lazy_static! {
 
 pub const ALLOWED_V2_0_SETUP_ADAPTORS: [(&str, &str); 0] = [];
 pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
-pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 5] = [
-    (CELLAR_TURBO_EETH, ADAPTOR_UNIV3_V3_DEPLOYMENT_2),
-    (CELLAR_TURBO_EETH, ADAPTOR_VESTING_SIMPLE_V1_1_DEPLOYMENT2),
-    (CELLAR_TURBO_EETH, ADAPTOR_CURVE_ADAPTOR_V1),
-    (CELLAR_TURBO_EETH, ADAPTOR_BALANCER_POOL_V1),
-    (CELLAR_TURBO_EETH, ADAPTOR_AURA_ERC4626_ADAPTOR_V1),
-];
+pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
 
 // due to position size limits in v2.0, positions must be added and removed from the limited list
 // and thus approved positions need to be allowed to be re-added, hence this large list
@@ -108,14 +102,8 @@ pub const ALLOWED_V2_0_POSITIONS: [(&str, u32); 20] = [
     (CELLAR_RYUSD, 29),
 ];
 pub const ALLOWED_V2_2_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
-pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 6] = [
-    (CELLAR_TURBO_EETH, 12),
-    (CELLAR_TURBO_EETH, 1000009),
-    (CELLAR_TURBO_EETH, 100000006),
-    (CELLAR_TURBO_EETH, 6000002),
-    (CELLAR_TURBO_EETH, 7000001),
-    (CELLAR_TURBO_EETH, 7500001),
-];
+pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 2] =
+    [(CELLAR_TURBO_EETH, 7000002), (CELLAR_TURBO_EETH, 7500002)];
 
 pub const BLOCKED_ADAPTORS: [&str; 3] = [
     ADAPTOR_UNIV3_V1,
