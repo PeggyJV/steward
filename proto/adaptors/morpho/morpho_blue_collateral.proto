@@ -20,9 +20,9 @@ message MorphoBlueCollateralAdaptorV1 {
         /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
 
         // Represents function `addCollateral(MarketParams memory _market, uint256 _collateralToDeposit)`
-        AddCollateral borrow_from_morpho_blue = 2;
-        // Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
-        RemoveCollateral withdraw_from_morpho_blue = 3;
+        AddCollateral add_collateral = 2;
+        // Represents function `removeCollateral(MarketParams memory _market, uint256 _collateralAmount)`
+        RemoveCollateral remove_collateral = 3;
     }
 
     /*
@@ -41,7 +41,7 @@ message MorphoBlueCollateralAdaptorV1 {
     /*
     * Allows strategists to remove collateral from the respective cellar position on specified MB Market.
     *
-    * Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
+    * Represents function `removeCollateral(MarketParams memory _market, uint256 _collateralAmount)`
     */
     message RemoveCollateral {
        // Identifier of a Morpho Blue Market 

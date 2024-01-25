@@ -788,9 +788,9 @@ pub mod morpho_blue_debt_adaptor_v1 {
     ///
     /// Allows strategists to repay loan debt on Morph Blue Lending Market. Make sure to call addInterest() beforehand to ensure we are repaying what is required.
     ///
-    /// Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
+    /// Represents function `repayMorphoBlueDebt(MarketParams memory _market, uint256 _debtTokenRepayAmount)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct WithdrawFromMorphoBlue {
+    pub struct RepayMorphoBlueDebt {
         /// Identifier of a Morpho Blue Market
         #[prost(string, tag = "1")]
         pub market: ::prost::alloc::string::String,
@@ -808,9 +808,9 @@ pub mod morpho_blue_debt_adaptor_v1 {
         /// Represents function `borrowFromMorphoBlue(MarketParams memory _market, uint256 _amountToBorrow)`
         #[prost(message, tag = "2")]
         BorrowFromMorphoBlue(BorrowFromMorphoBlue),
-        /// Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
+        /// Represents function `repayMorphoBlueDebt(MarketParams memory _market, uint256 _debtTokenRepayAmount)`
         #[prost(message, tag = "3")]
-        WithdrawFromMorphoBlue(WithdrawFromMorphoBlue),
+        RepayMorphoBlueDebt(RepayMorphoBlueDebt),
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -1096,7 +1096,7 @@ pub mod morpho_blue_collateral_adaptor_v1 {
     ///
     /// Allows strategists to remove collateral from the respective cellar position on specified MB Market.
     ///
-    /// Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
+    /// Represents function `removeCollateral(MarketParams memory _market, uint256 _collateralAmount)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct RemoveCollateral {
         /// Identifier of a Morpho Blue Market
@@ -1115,10 +1115,10 @@ pub mod morpho_blue_collateral_adaptor_v1 {
         //**** ADAPTOR-SPECIFIC FUNCTIONS ****
         /// Represents function `addCollateral(MarketParams memory _market, uint256 _collateralToDeposit)`
         #[prost(message, tag = "2")]
-        BorrowFromMorphoBlue(AddCollateral),
-        /// Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
+        AddCollateral(AddCollateral),
+        /// Represents function `removeCollateral(MarketParams memory _market, uint256 _collateralAmount)`
         #[prost(message, tag = "3")]
-        WithdrawFromMorphoBlue(RemoveCollateral),
+        RemoveCollateral(RemoveCollateral),
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]

@@ -21,8 +21,8 @@ message MorphoBlueDebtAdaptorV1 {
 
         // Represents function `borrowFromMorphoBlue(MarketParams memory _market, uint256 _amountToBorrow)`
         BorrowFromMorphoBlue borrow_from_morpho_blue = 2;
-        // Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
-        WithdrawFromMorphoBlue withdraw_from_morpho_blue = 3;
+        // Represents function `repayMorphoBlueDebt(MarketParams memory _market, uint256 _debtTokenRepayAmount)`
+        RepayMorphoBlueDebt repay_morpho_blue_debt = 3;
     }
 
     /*
@@ -41,9 +41,9 @@ message MorphoBlueDebtAdaptorV1 {
     /*
     * Allows strategists to repay loan debt on Morph Blue Lending Market. Make sure to call addInterest() beforehand to ensure we are repaying what is required.
     *
-    * Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
+    * Represents function `repayMorphoBlueDebt(MarketParams memory _market, uint256 _debtTokenRepayAmount)`
     */
-    message WithdrawFromMorphoBlue {
+    message RepayMorphoBlueDebt {
        // Identifier of a Morpho Blue Market 
         string market = 1;
 
