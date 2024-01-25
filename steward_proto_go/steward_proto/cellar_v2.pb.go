@@ -467,6 +467,9 @@ type AdaptorCall struct {
 	//	*AdaptorCall_ConvexCurveV1Calls
 	//	*AdaptorCall_CurveV1Calls
 	//	*AdaptorCall_AuraErc4626V1Calls
+	//	*AdaptorCall_MorphoBlueCollateralV1Calls
+	//	*AdaptorCall_MorphoBlueDebtV1Calls
+	//	*AdaptorCall_MorphoBlueSupplyV1Calls
 	CallData isAdaptorCall_CallData `protobuf_oneof:"call_data"`
 }
 
@@ -733,6 +736,27 @@ func (x *AdaptorCall) GetAuraErc4626V1Calls() *AuraERC4626AdaptorV1Calls {
 	return nil
 }
 
+func (x *AdaptorCall) GetMorphoBlueCollateralV1Calls() *MorphoBlueCollateralAdaptorV1Calls {
+	if x, ok := x.GetCallData().(*AdaptorCall_MorphoBlueCollateralV1Calls); ok {
+		return x.MorphoBlueCollateralV1Calls
+	}
+	return nil
+}
+
+func (x *AdaptorCall) GetMorphoBlueDebtV1Calls() *MorphoBlueDebtAdaptorV1Calls {
+	if x, ok := x.GetCallData().(*AdaptorCall_MorphoBlueDebtV1Calls); ok {
+		return x.MorphoBlueDebtV1Calls
+	}
+	return nil
+}
+
+func (x *AdaptorCall) GetMorphoBlueSupplyV1Calls() *MorphoBlueSupplyAdaptorV1Calls {
+	if x, ok := x.GetCallData().(*AdaptorCall_MorphoBlueSupplyV1Calls); ok {
+		return x.MorphoBlueSupplyV1Calls
+	}
+	return nil
+}
+
 type isAdaptorCall_CallData interface {
 	isAdaptorCall_CallData()
 }
@@ -892,6 +916,21 @@ type AdaptorCall_AuraErc4626V1Calls struct {
 	AuraErc4626V1Calls *AuraERC4626AdaptorV1Calls `protobuf:"bytes,32,opt,name=aura_erc4626_v1_calls,json=auraErc4626V1Calls,proto3,oneof"`
 }
 
+type AdaptorCall_MorphoBlueCollateralV1Calls struct {
+	// Represents function calls for the MorphoBlueCollateralAdaptorV1
+	MorphoBlueCollateralV1Calls *MorphoBlueCollateralAdaptorV1Calls `protobuf:"bytes,33,opt,name=morpho_blue_collateral_v1_calls,json=morphoBlueCollateralV1Calls,proto3,oneof"`
+}
+
+type AdaptorCall_MorphoBlueDebtV1Calls struct {
+	// Represents function calls for the MorphoBlueDebtAdaptorV1
+	MorphoBlueDebtV1Calls *MorphoBlueDebtAdaptorV1Calls `protobuf:"bytes,34,opt,name=morpho_blue_debt_v1_calls,json=morphoBlueDebtV1Calls,proto3,oneof"`
+}
+
+type AdaptorCall_MorphoBlueSupplyV1Calls struct {
+	// Represents function calls for the MorphoBlueSupplyAdaptorV1
+	MorphoBlueSupplyV1Calls *MorphoBlueSupplyAdaptorV1Calls `protobuf:"bytes,35,opt,name=morpho_blue_supply_v1_calls,json=morphoBlueSupplyV1Calls,proto3,oneof"`
+}
+
 func (*AdaptorCall_UniswapV3V1Calls) isAdaptorCall_CallData() {}
 
 func (*AdaptorCall_AaveATokenV1Calls) isAdaptorCall_CallData() {}
@@ -953,6 +992,12 @@ func (*AdaptorCall_ConvexCurveV1Calls) isAdaptorCall_CallData() {}
 func (*AdaptorCall_CurveV1Calls) isAdaptorCall_CallData() {}
 
 func (*AdaptorCall_AuraErc4626V1Calls) isAdaptorCall_CallData() {}
+
+func (*AdaptorCall_MorphoBlueCollateralV1Calls) isAdaptorCall_CallData() {}
+
+func (*AdaptorCall_MorphoBlueDebtV1Calls) isAdaptorCall_CallData() {}
+
+func (*AdaptorCall_MorphoBlueSupplyV1Calls) isAdaptorCall_CallData() {}
 
 //
 // Insert a trusted position to the list of positions used by the cellar at a given index.
@@ -4533,7 +4578,15 @@ var file_cellar_v2_proto_rawDesc = []byte{
 	0x6b, 0x65, 0x6e, 0x5f, 0x70, 0x32, 0x70, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x2f, 0x61,
 	0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x73, 0x2f, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x2f, 0x6d,
 	0x6f, 0x72, 0x70, 0x68, 0x6f, 0x5f, 0x61, 0x61, 0x76, 0x65, 0x5f, 0x76, 0x33, 0x5f, 0x64, 0x65,
-	0x62, 0x74, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x21,
+	0x62, 0x74, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x2c,
+	0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x73, 0x2f, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x2f,
+	0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x5f, 0x62, 0x6c, 0x75, 0x65, 0x5f, 0x63, 0x6f, 0x6c, 0x6c,
+	0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x26, 0x61, 0x64,
+	0x61, 0x70, 0x74, 0x6f, 0x72, 0x73, 0x2f, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x2f, 0x6d, 0x6f,
+	0x72, 0x70, 0x68, 0x6f, 0x5f, 0x62, 0x6c, 0x75, 0x65, 0x5f, 0x64, 0x65, 0x62, 0x74, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x28, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x73, 0x2f, 0x6d,
+	0x6f, 0x72, 0x70, 0x68, 0x6f, 0x2f, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x5f, 0x62, 0x6c, 0x75,
+	0x65, 0x5f, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x21,
 	0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x73, 0x2f, 0x75, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70,
 	0x2f, 0x75, 0x6e, 0x69, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x76, 0x33, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x1a, 0x28, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x73, 0x2f, 0x75, 0x6e, 0x69, 0x73,
@@ -5110,7 +5163,7 @@ var file_cellar_v2_proto_rawDesc = []byte{
 	0x61, 0x74, 0x61, 0x12, 0x2b, 0x0a, 0x11, 0x61, 0x6c, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x74, 0x69,
 	0x76, 0x65, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x10,
 	0x61, 0x6c, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x74, 0x69, 0x76, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74,
-	0x42, 0x0b, 0x0a, 0x09, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x22, 0x92, 0x19,
+	0x42, 0x0b, 0x0a, 0x09, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x22, 0xdc, 0x1b,
 	0x0a, 0x0b, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x43, 0x61, 0x6c, 0x6c, 0x12, 0x18, 0x0a,
 	0x07, 0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
 	0x61, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x12, 0x54, 0x0a, 0x13, 0x75, 0x6e, 0x69, 0x73, 0x77,
@@ -5311,9 +5364,30 @@ var file_cellar_v2_proto_rawDesc = []byte{
 	0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x41, 0x75, 0x72, 0x61, 0x45, 0x52, 0x43, 0x34, 0x36, 0x32,
 	0x36, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48,
 	0x00, 0x52, 0x12, 0x61, 0x75, 0x72, 0x61, 0x45, 0x72, 0x63, 0x34, 0x36, 0x32, 0x36, 0x56, 0x31,
-	0x43, 0x61, 0x6c, 0x6c, 0x73, 0x42, 0x0b, 0x0a, 0x09, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 0x64, 0x61,
-	0x74, 0x61, 0x42, 0x10, 0x5a, 0x0e, 0x2f, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x76, 0x0a, 0x1f, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x5f,
+	0x62, 0x6c, 0x75, 0x65, 0x5f, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x5f,
+	0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x21, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2e,
+	0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x4d, 0x6f, 0x72, 0x70,
+	0x68, 0x6f, 0x42, 0x6c, 0x75, 0x65, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c,
+	0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00,
+	0x52, 0x1b, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x42, 0x6c, 0x75, 0x65, 0x43, 0x6f, 0x6c, 0x6c,
+	0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x12, 0x64, 0x0a,
+	0x19, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x5f, 0x62, 0x6c, 0x75, 0x65, 0x5f, 0x64, 0x65, 0x62,
+	0x74, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x18, 0x22, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x28, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x4d, 0x6f,
+	0x72, 0x70, 0x68, 0x6f, 0x42, 0x6c, 0x75, 0x65, 0x44, 0x65, 0x62, 0x74, 0x41, 0x64, 0x61, 0x70,
+	0x74, 0x6f, 0x72, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x15, 0x6d, 0x6f,
+	0x72, 0x70, 0x68, 0x6f, 0x42, 0x6c, 0x75, 0x65, 0x44, 0x65, 0x62, 0x74, 0x56, 0x31, 0x43, 0x61,
+	0x6c, 0x6c, 0x73, 0x12, 0x6a, 0x0a, 0x1b, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x5f, 0x62, 0x6c,
+	0x75, 0x65, 0x5f, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x5f, 0x76, 0x31, 0x5f, 0x63, 0x61, 0x6c,
+	0x6c, 0x73, 0x18, 0x23, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2a, 0x2e, 0x73, 0x74, 0x65, 0x77, 0x61,
+	0x72, 0x64, 0x2e, 0x76, 0x33, 0x2e, 0x4d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x42, 0x6c, 0x75, 0x65,
+	0x53, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x41, 0x64, 0x61, 0x70, 0x74, 0x6f, 0x72, 0x56, 0x31, 0x43,
+	0x61, 0x6c, 0x6c, 0x73, 0x48, 0x00, 0x52, 0x17, 0x6d, 0x6f, 0x72, 0x70, 0x68, 0x6f, 0x42, 0x6c,
+	0x75, 0x65, 0x53, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x56, 0x31, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x42,
+	0x0b, 0x0a, 0x09, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 0x64, 0x61, 0x74, 0x61, 0x42, 0x10, 0x5a, 0x0e,
+	0x2f, 0x73, 0x74, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -5419,6 +5493,9 @@ var file_cellar_v2_proto_goTypes = []interface{}{
 	(*ConvexCurveAdaptorV1Calls)(nil),                   // 86: steward.v3.ConvexCurveAdaptorV1Calls
 	(*CurveAdaptorV1Calls)(nil),                         // 87: steward.v3.CurveAdaptorV1Calls
 	(*AuraERC4626AdaptorV1Calls)(nil),                   // 88: steward.v3.AuraERC4626AdaptorV1Calls
+	(*MorphoBlueCollateralAdaptorV1Calls)(nil),          // 89: steward.v3.MorphoBlueCollateralAdaptorV1Calls
+	(*MorphoBlueDebtAdaptorV1Calls)(nil),                // 90: steward.v3.MorphoBlueDebtAdaptorV1Calls
+	(*MorphoBlueSupplyAdaptorV1Calls)(nil),              // 91: steward.v3.MorphoBlueSupplyAdaptorV1Calls
 }
 var file_cellar_v2_proto_depIdxs = []int32{
 	4,  // 0: steward.v3.CellarV2.add_position:type_name -> steward.v3.CellarV2.AddPosition
@@ -5468,54 +5545,57 @@ var file_cellar_v2_proto_depIdxs = []int32{
 	86, // 44: steward.v3.AdaptorCall.convex_curve_v1_calls:type_name -> steward.v3.ConvexCurveAdaptorV1Calls
 	87, // 45: steward.v3.AdaptorCall.curve_v1_calls:type_name -> steward.v3.CurveAdaptorV1Calls
 	88, // 46: steward.v3.AdaptorCall.aura_erc4626_v1_calls:type_name -> steward.v3.AuraERC4626AdaptorV1Calls
-	3,  // 47: steward.v3.CellarV2.CallOnAdaptor.data:type_name -> steward.v3.AdaptorCall
-	17, // 48: steward.v3.CellarV2_2.FunctionCall.add_position:type_name -> steward.v3.CellarV2_2.AddPosition
-	18, // 49: steward.v3.CellarV2_2.FunctionCall.call_on_adaptor:type_name -> steward.v3.CellarV2_2.CallOnAdaptor
-	19, // 50: steward.v3.CellarV2_2.FunctionCall.remove_position:type_name -> steward.v3.CellarV2_2.RemovePosition
-	20, // 51: steward.v3.CellarV2_2.FunctionCall.set_holding_position:type_name -> steward.v3.CellarV2_2.SetHoldingPosition
-	21, // 52: steward.v3.CellarV2_2.FunctionCall.set_strategist_payout_address:type_name -> steward.v3.CellarV2_2.SetStrategistPayoutAddress
-	22, // 53: steward.v3.CellarV2_2.FunctionCall.swap_positions:type_name -> steward.v3.CellarV2_2.SwapPositions
-	24, // 54: steward.v3.CellarV2_2.FunctionCall.set_rebalance_deviation:type_name -> steward.v3.CellarV2_2.SetRebalanceDeviation
-	23, // 55: steward.v3.CellarV2_2.FunctionCall.set_share_lock_period:type_name -> steward.v3.CellarV2_2.SetShareLockPeriod
-	25, // 56: steward.v3.CellarV2_2.FunctionCall.initiate_shutdown:type_name -> steward.v3.CellarV2_2.InitiateShutdown
-	26, // 57: steward.v3.CellarV2_2.FunctionCall.set_strategist_platform_cut:type_name -> steward.v3.CellarV2_2.SetStrategistPlatformCut
-	27, // 58: steward.v3.CellarV2_2.FunctionCall.lift_shutdown:type_name -> steward.v3.CellarV2_2.LiftShutdown
-	28, // 59: steward.v3.CellarV2_2.FunctionCall.add_adaptor_to_catalogue:type_name -> steward.v3.CellarV2_2.AddAdaptorToCatalogue
-	30, // 60: steward.v3.CellarV2_2.FunctionCall.add_position_to_catalogue:type_name -> steward.v3.CellarV2_2.AddPositionToCatalogue
-	31, // 61: steward.v3.CellarV2_2.FunctionCall.remove_adaptor_from_catalogue:type_name -> steward.v3.CellarV2_2.RemoveAdaptorFromCatalogue
-	32, // 62: steward.v3.CellarV2_2.FunctionCall.remove_position_from_catalogue:type_name -> steward.v3.CellarV2_2.RemovePositionFromCatalogue
-	33, // 63: steward.v3.CellarV2_2.FunctionCall.cache_price_router:type_name -> steward.v3.CellarV2_2.CachePriceRouter
-	3,  // 64: steward.v3.CellarV2_2.CallOnAdaptor.data:type_name -> steward.v3.AdaptorCall
-	16, // 65: steward.v3.CellarV2_2.Multicall.function_calls:type_name -> steward.v3.CellarV2_2.FunctionCall
-	35, // 66: steward.v3.CellarV2_5.FunctionCall.add_position:type_name -> steward.v3.CellarV2_5.AddPosition
-	36, // 67: steward.v3.CellarV2_5.FunctionCall.call_on_adaptor:type_name -> steward.v3.CellarV2_5.CallOnAdaptor
-	37, // 68: steward.v3.CellarV2_5.FunctionCall.remove_position:type_name -> steward.v3.CellarV2_5.RemovePosition
-	38, // 69: steward.v3.CellarV2_5.FunctionCall.set_holding_position:type_name -> steward.v3.CellarV2_5.SetHoldingPosition
-	39, // 70: steward.v3.CellarV2_5.FunctionCall.set_strategist_payout_address:type_name -> steward.v3.CellarV2_5.SetStrategistPayoutAddress
-	40, // 71: steward.v3.CellarV2_5.FunctionCall.swap_positions:type_name -> steward.v3.CellarV2_5.SwapPositions
-	42, // 72: steward.v3.CellarV2_5.FunctionCall.set_rebalance_deviation:type_name -> steward.v3.CellarV2_5.SetRebalanceDeviation
-	41, // 73: steward.v3.CellarV2_5.FunctionCall.set_share_lock_period:type_name -> steward.v3.CellarV2_5.SetShareLockPeriod
-	43, // 74: steward.v3.CellarV2_5.FunctionCall.initiate_shutdown:type_name -> steward.v3.CellarV2_5.InitiateShutdown
-	44, // 75: steward.v3.CellarV2_5.FunctionCall.set_strategist_platform_cut:type_name -> steward.v3.CellarV2_5.SetStrategistPlatformCut
-	45, // 76: steward.v3.CellarV2_5.FunctionCall.lift_shutdown:type_name -> steward.v3.CellarV2_5.LiftShutdown
-	46, // 77: steward.v3.CellarV2_5.FunctionCall.add_adaptor_to_catalogue:type_name -> steward.v3.CellarV2_5.AddAdaptorToCatalogue
-	48, // 78: steward.v3.CellarV2_5.FunctionCall.add_position_to_catalogue:type_name -> steward.v3.CellarV2_5.AddPositionToCatalogue
-	49, // 79: steward.v3.CellarV2_5.FunctionCall.remove_adaptor_from_catalogue:type_name -> steward.v3.CellarV2_5.RemoveAdaptorFromCatalogue
-	50, // 80: steward.v3.CellarV2_5.FunctionCall.remove_position_from_catalogue:type_name -> steward.v3.CellarV2_5.RemovePositionFromCatalogue
-	51, // 81: steward.v3.CellarV2_5.FunctionCall.increase_share_supply_cap:type_name -> steward.v3.CellarV2_5.IncreaseShareSupplyCap
-	52, // 82: steward.v3.CellarV2_5.FunctionCall.decrease_share_supply_cap:type_name -> steward.v3.CellarV2_5.DecreaseShareSupplyCap
-	53, // 83: steward.v3.CellarV2_5.FunctionCall.set_share_price_oracle:type_name -> steward.v3.CellarV2_5.SetSharePriceOracle
-	54, // 84: steward.v3.CellarV2_5.FunctionCall.cache_price_router:type_name -> steward.v3.CellarV2_5.CachePriceRouter
-	55, // 85: steward.v3.CellarV2_5.FunctionCall.force_position_out:type_name -> steward.v3.CellarV2_5.ForcePositionOut
-	56, // 86: steward.v3.CellarV2_5.FunctionCall.set_alternative_asset_data:type_name -> steward.v3.CellarV2_5.SetAlternativeAssetData
-	57, // 87: steward.v3.CellarV2_5.FunctionCall.drop_alternative_asset_data:type_name -> steward.v3.CellarV2_5.DropAlternativeAssetData
-	3,  // 88: steward.v3.CellarV2_5.CallOnAdaptor.data:type_name -> steward.v3.AdaptorCall
-	34, // 89: steward.v3.CellarV2_5.Multicall.function_calls:type_name -> steward.v3.CellarV2_5.FunctionCall
-	90, // [90:90] is the sub-list for method output_type
-	90, // [90:90] is the sub-list for method input_type
-	90, // [90:90] is the sub-list for extension type_name
-	90, // [90:90] is the sub-list for extension extendee
-	0,  // [0:90] is the sub-list for field type_name
+	89, // 47: steward.v3.AdaptorCall.morpho_blue_collateral_v1_calls:type_name -> steward.v3.MorphoBlueCollateralAdaptorV1Calls
+	90, // 48: steward.v3.AdaptorCall.morpho_blue_debt_v1_calls:type_name -> steward.v3.MorphoBlueDebtAdaptorV1Calls
+	91, // 49: steward.v3.AdaptorCall.morpho_blue_supply_v1_calls:type_name -> steward.v3.MorphoBlueSupplyAdaptorV1Calls
+	3,  // 50: steward.v3.CellarV2.CallOnAdaptor.data:type_name -> steward.v3.AdaptorCall
+	17, // 51: steward.v3.CellarV2_2.FunctionCall.add_position:type_name -> steward.v3.CellarV2_2.AddPosition
+	18, // 52: steward.v3.CellarV2_2.FunctionCall.call_on_adaptor:type_name -> steward.v3.CellarV2_2.CallOnAdaptor
+	19, // 53: steward.v3.CellarV2_2.FunctionCall.remove_position:type_name -> steward.v3.CellarV2_2.RemovePosition
+	20, // 54: steward.v3.CellarV2_2.FunctionCall.set_holding_position:type_name -> steward.v3.CellarV2_2.SetHoldingPosition
+	21, // 55: steward.v3.CellarV2_2.FunctionCall.set_strategist_payout_address:type_name -> steward.v3.CellarV2_2.SetStrategistPayoutAddress
+	22, // 56: steward.v3.CellarV2_2.FunctionCall.swap_positions:type_name -> steward.v3.CellarV2_2.SwapPositions
+	24, // 57: steward.v3.CellarV2_2.FunctionCall.set_rebalance_deviation:type_name -> steward.v3.CellarV2_2.SetRebalanceDeviation
+	23, // 58: steward.v3.CellarV2_2.FunctionCall.set_share_lock_period:type_name -> steward.v3.CellarV2_2.SetShareLockPeriod
+	25, // 59: steward.v3.CellarV2_2.FunctionCall.initiate_shutdown:type_name -> steward.v3.CellarV2_2.InitiateShutdown
+	26, // 60: steward.v3.CellarV2_2.FunctionCall.set_strategist_platform_cut:type_name -> steward.v3.CellarV2_2.SetStrategistPlatformCut
+	27, // 61: steward.v3.CellarV2_2.FunctionCall.lift_shutdown:type_name -> steward.v3.CellarV2_2.LiftShutdown
+	28, // 62: steward.v3.CellarV2_2.FunctionCall.add_adaptor_to_catalogue:type_name -> steward.v3.CellarV2_2.AddAdaptorToCatalogue
+	30, // 63: steward.v3.CellarV2_2.FunctionCall.add_position_to_catalogue:type_name -> steward.v3.CellarV2_2.AddPositionToCatalogue
+	31, // 64: steward.v3.CellarV2_2.FunctionCall.remove_adaptor_from_catalogue:type_name -> steward.v3.CellarV2_2.RemoveAdaptorFromCatalogue
+	32, // 65: steward.v3.CellarV2_2.FunctionCall.remove_position_from_catalogue:type_name -> steward.v3.CellarV2_2.RemovePositionFromCatalogue
+	33, // 66: steward.v3.CellarV2_2.FunctionCall.cache_price_router:type_name -> steward.v3.CellarV2_2.CachePriceRouter
+	3,  // 67: steward.v3.CellarV2_2.CallOnAdaptor.data:type_name -> steward.v3.AdaptorCall
+	16, // 68: steward.v3.CellarV2_2.Multicall.function_calls:type_name -> steward.v3.CellarV2_2.FunctionCall
+	35, // 69: steward.v3.CellarV2_5.FunctionCall.add_position:type_name -> steward.v3.CellarV2_5.AddPosition
+	36, // 70: steward.v3.CellarV2_5.FunctionCall.call_on_adaptor:type_name -> steward.v3.CellarV2_5.CallOnAdaptor
+	37, // 71: steward.v3.CellarV2_5.FunctionCall.remove_position:type_name -> steward.v3.CellarV2_5.RemovePosition
+	38, // 72: steward.v3.CellarV2_5.FunctionCall.set_holding_position:type_name -> steward.v3.CellarV2_5.SetHoldingPosition
+	39, // 73: steward.v3.CellarV2_5.FunctionCall.set_strategist_payout_address:type_name -> steward.v3.CellarV2_5.SetStrategistPayoutAddress
+	40, // 74: steward.v3.CellarV2_5.FunctionCall.swap_positions:type_name -> steward.v3.CellarV2_5.SwapPositions
+	42, // 75: steward.v3.CellarV2_5.FunctionCall.set_rebalance_deviation:type_name -> steward.v3.CellarV2_5.SetRebalanceDeviation
+	41, // 76: steward.v3.CellarV2_5.FunctionCall.set_share_lock_period:type_name -> steward.v3.CellarV2_5.SetShareLockPeriod
+	43, // 77: steward.v3.CellarV2_5.FunctionCall.initiate_shutdown:type_name -> steward.v3.CellarV2_5.InitiateShutdown
+	44, // 78: steward.v3.CellarV2_5.FunctionCall.set_strategist_platform_cut:type_name -> steward.v3.CellarV2_5.SetStrategistPlatformCut
+	45, // 79: steward.v3.CellarV2_5.FunctionCall.lift_shutdown:type_name -> steward.v3.CellarV2_5.LiftShutdown
+	46, // 80: steward.v3.CellarV2_5.FunctionCall.add_adaptor_to_catalogue:type_name -> steward.v3.CellarV2_5.AddAdaptorToCatalogue
+	48, // 81: steward.v3.CellarV2_5.FunctionCall.add_position_to_catalogue:type_name -> steward.v3.CellarV2_5.AddPositionToCatalogue
+	49, // 82: steward.v3.CellarV2_5.FunctionCall.remove_adaptor_from_catalogue:type_name -> steward.v3.CellarV2_5.RemoveAdaptorFromCatalogue
+	50, // 83: steward.v3.CellarV2_5.FunctionCall.remove_position_from_catalogue:type_name -> steward.v3.CellarV2_5.RemovePositionFromCatalogue
+	51, // 84: steward.v3.CellarV2_5.FunctionCall.increase_share_supply_cap:type_name -> steward.v3.CellarV2_5.IncreaseShareSupplyCap
+	52, // 85: steward.v3.CellarV2_5.FunctionCall.decrease_share_supply_cap:type_name -> steward.v3.CellarV2_5.DecreaseShareSupplyCap
+	53, // 86: steward.v3.CellarV2_5.FunctionCall.set_share_price_oracle:type_name -> steward.v3.CellarV2_5.SetSharePriceOracle
+	54, // 87: steward.v3.CellarV2_5.FunctionCall.cache_price_router:type_name -> steward.v3.CellarV2_5.CachePriceRouter
+	55, // 88: steward.v3.CellarV2_5.FunctionCall.force_position_out:type_name -> steward.v3.CellarV2_5.ForcePositionOut
+	56, // 89: steward.v3.CellarV2_5.FunctionCall.set_alternative_asset_data:type_name -> steward.v3.CellarV2_5.SetAlternativeAssetData
+	57, // 90: steward.v3.CellarV2_5.FunctionCall.drop_alternative_asset_data:type_name -> steward.v3.CellarV2_5.DropAlternativeAssetData
+	3,  // 91: steward.v3.CellarV2_5.CallOnAdaptor.data:type_name -> steward.v3.AdaptorCall
+	34, // 92: steward.v3.CellarV2_5.Multicall.function_calls:type_name -> steward.v3.CellarV2_5.FunctionCall
+	93, // [93:93] is the sub-list for method output_type
+	93, // [93:93] is the sub-list for method input_type
+	93, // [93:93] is the sub-list for extension type_name
+	93, // [93:93] is the sub-list for extension extendee
+	0,  // [0:93] is the sub-list for field type_name
 }
 
 func init() { file_cellar_v2_proto_init() }
@@ -5540,6 +5620,9 @@ func file_cellar_v2_proto_init() {
 	file_adaptors_morpho_morpho_aave_v3_a_token_collateral_proto_init()
 	file_adaptors_morpho_morpho_aave_v3_a_token_p2p_proto_init()
 	file_adaptors_morpho_morpho_aave_v3_debt_token_proto_init()
+	file_adaptors_morpho_morpho_blue_collateral_proto_init()
+	file_adaptors_morpho_morpho_blue_debt_proto_init()
+	file_adaptors_morpho_morpho_blue_supply_proto_init()
 	file_adaptors_uniswap_uniswap_v3_proto_init()
 	file_adaptors_uniswap_swap_with_uniswap_proto_init()
 	file_adaptors_fees_and_reserves_proto_init()
@@ -6303,6 +6386,9 @@ func file_cellar_v2_proto_init() {
 		(*AdaptorCall_ConvexCurveV1Calls)(nil),
 		(*AdaptorCall_CurveV1Calls)(nil),
 		(*AdaptorCall_AuraErc4626V1Calls)(nil),
+		(*AdaptorCall_MorphoBlueCollateralV1Calls)(nil),
+		(*AdaptorCall_MorphoBlueDebtV1Calls)(nil),
+		(*AdaptorCall_MorphoBlueSupplyV1Calls)(nil),
 	}
 	file_cellar_v2_proto_msgTypes[16].OneofWrappers = []interface{}{
 		(*CellarV2_2_FunctionCall_AddPosition)(nil),

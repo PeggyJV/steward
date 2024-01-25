@@ -763,6 +763,61 @@ pub struct Claim {
     #[prost(bytes = "vec", repeated, tag = "2")]
     pub proof: ::prost::alloc::vec::Vec<::prost::alloc::vec::Vec<u8>>,
 }
+/// Represents call data for the Morpho Blue Debt adaptor.
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MorphoBlueDebtAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(oneof = "morpho_blue_debt_adaptor_v1::Function", tags = "1, 2, 3")]
+    pub function: ::core::option::Option<morpho_blue_debt_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `MorphoBlueDebtAdaptorV1`.
+pub mod morpho_blue_debt_adaptor_v1 {
+    ///
+    /// Allows strategists borrow a specific amount of an asset on Morpho Blue
+    ///
+    /// Represents function `borrowFromMorphoBlue(MarketParams memory _market, uint256 _amountToBorrow)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct BorrowFromMorphoBlue {
+        /// Identifier of a Morpho Blue Market
+        #[prost(string, tag = "1")]
+        pub market: ::prost::alloc::string::String,
+        /// The amount of the debt token to borrow
+        #[prost(string, tag = "2")]
+        pub amount_to_borrow: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to repay loan debt on Morph Blue Lending Market. Make sure to call addInterest() beforehand to ensure we are repaying what is required.
+    ///
+    /// Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct WithdrawFromMorphoBlue {
+        /// Identifier of a Morpho Blue Market
+        #[prost(string, tag = "1")]
+        pub market: ::prost::alloc::string::String,
+        /// The amount of the debt token to repay
+        #[prost(string, tag = "2")]
+        pub debt_token_repay_amount: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `borrowFromMorphoBlue(MarketParams memory _market, uint256 _amountToBorrow)`
+        #[prost(message, tag = "2")]
+        BorrowFromMorphoBlue(BorrowFromMorphoBlue),
+        /// Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
+        #[prost(message, tag = "3")]
+        WithdrawFromMorphoBlue(WithdrawFromMorphoBlue),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MorphoBlueDebtAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<MorphoBlueDebtAdaptorV1>,
+}
 /// Represents call data for the Morpho Aave V2 AToken adaptor.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct MorphoAaveV2aTokenAdaptorV1 {
@@ -1012,6 +1067,119 @@ pub mod morpho_aave_v3_debt_token_adaptor_v1 {
 pub struct MorphoAaveV3DebtTokenAdaptorV1Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<MorphoAaveV3DebtTokenAdaptorV1>,
+}
+/// Represents call data for the Morpho Blue Collateral adaptor.
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MorphoBlueCollateralAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(
+        oneof = "morpho_blue_collateral_adaptor_v1::Function",
+        tags = "1, 2, 3"
+    )]
+    pub function: ::core::option::Option<morpho_blue_collateral_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `MorphoBlueCollateralAdaptorV1`.
+pub mod morpho_blue_collateral_adaptor_v1 {
+    ///
+    /// Allows strategists to add collateral to the respective cellar position on specified MB Market, enabling borrowing.
+    ///
+    /// Represents function `addCollateral(MarketParams memory _market, uint256 _collateralToDeposit)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct AddCollateral {
+        /// Identifier of a Morpho Blue Market
+        #[prost(string, tag = "1")]
+        pub market: ::prost::alloc::string::String,
+        /// The amount of collateral to add
+        #[prost(string, tag = "2")]
+        pub collateral_to_deposit: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to remove collateral from the respective cellar position on specified MB Market.
+    ///
+    /// Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RemoveCollateral {
+        /// Identifier of a Morpho Blue Market
+        #[prost(string, tag = "1")]
+        pub market: ::prost::alloc::string::String,
+        /// The amount of collateral to remove
+        #[prost(string, tag = "2")]
+        pub collateral_amount: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `addCollateral(MarketParams memory _market, uint256 _collateralToDeposit)`
+        #[prost(message, tag = "2")]
+        BorrowFromMorphoBlue(AddCollateral),
+        /// Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
+        #[prost(message, tag = "3")]
+        WithdrawFromMorphoBlue(RemoveCollateral),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MorphoBlueCollateralAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<MorphoBlueCollateralAdaptorV1>,
+}
+/// Represents call data for the Morpho Blue Supply adaptor.
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MorphoBlueSupplyAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(oneof = "morpho_blue_supply_adaptor_v1::Function", tags = "1, 2, 3")]
+    pub function: ::core::option::Option<morpho_blue_supply_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `MorphoBlueSupplyAdaptorV1`.
+pub mod morpho_blue_supply_adaptor_v1 {
+    ///
+    /// Allows strategists to lend a specific amount for an asset on Morpho Blue
+    ///
+    /// Represents function `lendToMorphoBlue(MarketParams memory _market, uint256 _assets)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct LendToMorphoBlue {
+        /// Identifier of a Morpho Blue Market
+        #[prost(string, tag = "1")]
+        pub market: ::prost::alloc::string::String,
+        /// The amount of the loan token to lend
+        #[prost(string, tag = "2")]
+        pub assets: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to withdraw the underlying asset plus interest
+    ///
+    /// Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct WithdrawFromMorphoBlue {
+        /// Identifier of a Morpho Blue Market
+        #[prost(string, tag = "1")]
+        pub market: ::prost::alloc::string::String,
+        /// The amount of the loan token to lend
+        #[prost(string, tag = "2")]
+        pub assets: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `lendToMorphoBlue(MarketParams memory _market, uint256 _assets)`
+        #[prost(message, tag = "2")]
+        LendToMorphoBlue(LendToMorphoBlue),
+        /// Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
+        #[prost(message, tag = "3")]
+        WithdrawFromMorphoBlue(WithdrawFromMorphoBlue),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct MorphoBlueSupplyAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<MorphoBlueSupplyAdaptorV1>,
 }
 /// Represents call data for the Morpho Aave V2 Debt Token adaptor.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -2724,7 +2892,7 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_aave_v3_flash_loan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flash_loan::CallData>,
     }
@@ -2821,6 +2989,15 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
             /// Represents function calls for the AuraERC4626AdaptorV1
             #[prost(message, tag = "29")]
             AuraErc4626V1Calls(super::super::AuraErc4626AdaptorV1Calls),
+            /// Represents function calls for the MorphoBlueCollateralAdaptorV1
+            #[prost(message, tag = "30")]
+            MorphoBlueCollateralV1Calls(super::super::MorphoBlueCollateralAdaptorV1Calls),
+            /// Represents function calls for the MorphoBlueDebtAdaptorV1
+            #[prost(message, tag = "31")]
+            MorphoBlueDebtV1Calls(super::super::MorphoBlueDebtAdaptorV1Calls),
+            /// Represents function calls for the MorphoBlueSupplyAdaptorV1
+            #[prost(message, tag = "32")]
+            MorphoBlueSupplyV1Calls(super::super::MorphoBlueSupplyAdaptorV1Calls),
         }
     }
 }
@@ -2862,7 +3039,7 @@ pub mod balancer_pool_adaptor_v1_flash_loan {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_balancer_pool_flash_loan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32, 33"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_balancer_pool_flash_loan::CallData>,
     }
@@ -2959,6 +3136,15 @@ pub mod balancer_pool_adaptor_v1_flash_loan {
             /// Represents function calls for the AuraERC4626AdaptorV1
             #[prost(message, tag = "30")]
             AuraErc4626V1Calls(super::super::AuraErc4626AdaptorV1Calls),
+            /// Represents function calls for the MorphoBlueCollateralAdaptorV1
+            #[prost(message, tag = "31")]
+            MorphoBlueCollateralV1Calls(super::super::MorphoBlueCollateralAdaptorV1Calls),
+            /// Represents function calls for the MorphoBlueDebtAdaptorV1
+            #[prost(message, tag = "32")]
+            MorphoBlueDebtV1Calls(super::super::MorphoBlueDebtAdaptorV1Calls),
+            /// Represents function calls for the MorphoBlueSupplyAdaptorV1
+            #[prost(message, tag = "33")]
+            MorphoBlueSupplyV1Calls(super::super::MorphoBlueSupplyAdaptorV1Calls),
         }
     }
 }
@@ -3760,7 +3946,7 @@ pub struct AdaptorCall {
     /// The function call data for the adaptor
     #[prost(
         oneof = "adaptor_call::CallData",
-        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32"
+        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35"
     )]
     pub call_data: ::core::option::Option<adaptor_call::CallData>,
 }
@@ -3862,6 +4048,15 @@ pub mod adaptor_call {
         /// Represents function calls for the AuraERC4626AdaptorV1
         #[prost(message, tag = "32")]
         AuraErc4626V1Calls(super::AuraErc4626AdaptorV1Calls),
+        /// Represents function calls for the MorphoBlueCollateralAdaptorV1
+        #[prost(message, tag = "33")]
+        MorphoBlueCollateralV1Calls(super::MorphoBlueCollateralAdaptorV1Calls),
+        /// Represents function calls for the MorphoBlueDebtAdaptorV1
+        #[prost(message, tag = "34")]
+        MorphoBlueDebtV1Calls(super::MorphoBlueDebtAdaptorV1Calls),
+        /// Represents function calls for the MorphoBlueSupplyAdaptorV1
+        #[prost(message, tag = "35")]
+        MorphoBlueSupplyV1Calls(super::MorphoBlueSupplyAdaptorV1Calls),
     }
 }
 ///
