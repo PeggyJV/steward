@@ -315,7 +315,7 @@ fn get_encoded_adaptor_calls(
             }
             MorphoBlueSupplyV1Calls(params) => calls.extend(
                 adaptors::morpho::morpho_blue_supply_adaptor_v1_calls(params)?,
-            ), 
+            ),
         };
 
         result.push(AbiAdaptorCall {
