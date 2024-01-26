@@ -334,7 +334,9 @@ pub(crate) fn morpho_blue_collateral_adaptor_v1_calls(
                 )
             }
             morpho_blue_collateral_adaptor_v1::Function::AddCollateral(p) => {
-                let market = p.market.unwrap();
+                let market = p
+                    .market
+                    .ok_or(sp_call_error("market cannot be empty".to_string()))?;
                 let market = steward_abi::morpho_blue_collateral_adaptor_v1::MarketParams {
                     loan_token: sp_call_parse_address(market.loan_token)?,
                     collateral_token: sp_call_parse_address(market.collateral_token)?,
@@ -353,7 +355,9 @@ pub(crate) fn morpho_blue_collateral_adaptor_v1_calls(
                 )
             }
             morpho_blue_collateral_adaptor_v1::Function::RemoveCollateral(p) => {
-                let market = p.market.unwrap();
+                let market = p
+                    .market
+                    .ok_or(sp_call_error("market cannot be empty".to_string()))?;
                 let market = steward_abi::morpho_blue_collateral_adaptor_v1::MarketParams {
                     loan_token: sp_call_parse_address(market.loan_token)?,
                     collateral_token: sp_call_parse_address(market.collateral_token)?,
@@ -399,7 +403,9 @@ pub(crate) fn morpho_blue_debt_adaptor_v1_calls(
                 )
             }
             morpho_blue_debt_adaptor_v1::Function::BorrowFromMorphoBlue(p) => {
-                let market = p.market.unwrap();
+                let market = p
+                    .market
+                    .ok_or(sp_call_error("market cannot be empty".to_string()))?;
                 let market = steward_abi::morpho_blue_debt_adaptor_v1::MarketParams {
                     loan_token: sp_call_parse_address(market.loan_token)?,
                     collateral_token: sp_call_parse_address(market.collateral_token)?,
@@ -418,7 +424,9 @@ pub(crate) fn morpho_blue_debt_adaptor_v1_calls(
                 )
             }
             morpho_blue_debt_adaptor_v1::Function::RepayMorphoBlueDebt(p) => {
-                let market = p.market.unwrap();
+                let market = p
+                    .market
+                    .ok_or(sp_call_error("market cannot be empty".to_string()))?;
                 let market = steward_abi::morpho_blue_debt_adaptor_v1::MarketParams {
                     loan_token: sp_call_parse_address(market.loan_token)?,
                     collateral_token: sp_call_parse_address(market.collateral_token)?,
@@ -465,7 +473,9 @@ pub(crate) fn morpho_blue_supply_adaptor_v1_calls(
                 )
             }
             morpho_blue_supply_adaptor_v1::Function::LendToMorphoBlue(p) => {
-                let market = p.market.unwrap();
+                let market = p
+                    .market
+                    .ok_or(sp_call_error("market cannot be empty".to_string()))?;
                 let market = steward_abi::morpho_blue_supply_adaptor_v1::MarketParams {
                     loan_token: sp_call_parse_address(market.loan_token)?,
                     collateral_token: sp_call_parse_address(market.collateral_token)?,
@@ -485,7 +495,9 @@ pub(crate) fn morpho_blue_supply_adaptor_v1_calls(
                 )
             }
             morpho_blue_supply_adaptor_v1::Function::WithdrawFromMorphoBlue(p) => {
-                let market = p.market.unwrap();
+                let market = p
+                    .market
+                    .ok_or(sp_call_error("market cannot be empty".to_string()))?;
                 let market = steward_abi::morpho_blue_supply_adaptor_v1::MarketParams {
                     loan_token: sp_call_parse_address(market.loan_token)?,
                     collateral_token: sp_call_parse_address(market.collateral_token)?,
