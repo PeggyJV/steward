@@ -4412,7 +4412,7 @@ func (x *CellarV2_5_ForcePositionOut) GetInDebtArray() bool {
 //
 // Allows the strategist to add, or update an existing alternative asset deposit.
 //
-// Represents function `setAlternativeAssetData(uint32 positionId, address asset, address adaptor, bool isDeposit)`
+// Represents function `setAlternativeAssetData(ERC20 _alternativeAsset, uint32 _alternativeHoldingPosition, uint32 _alternativeAssetFee)`
 type CellarV2_5_SetAlternativeAssetData struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
