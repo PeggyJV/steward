@@ -3718,7 +3718,7 @@ pub mod cellar_v2_5 {
     ///
     /// Allows the strategist to add, or update an existing alternative asset deposit.
     ///
-    /// Represents function `setAlternativeAssetData(uint32 positionId, address asset, address adaptor, bool isDeposit)`
+    /// Represents function `setAlternativeAssetData(ERC20 _alternativeAsset, uint32 _alternativeHoldingPosition, uint32 _alternativeAssetFee)`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct SetAlternativeAssetData {
         /// The address of the alternative asset
