@@ -462,6 +462,10 @@ message CellarV2_5 {
             CachePriceRouter cache_price_router = 19;
             // Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
             ForcePositionOut force_position_out = 20;
+            // Represents function `setAlternativeAssetData(ERC20 _alternativeAsset, uint32 _alternativeHoldingPosition, uint32 _alternativeAssetFee)`
+            SetAlternativeAssetData set_alternative_asset_data = 21;
+            // Represents function `setDropAlternativeAssetData(ERC20 _alternativeAsset)`
+            DropAlternativeAssetData drop_alternative_asset_data = 22;
         }
     }
 
@@ -679,6 +683,30 @@ message CellarV2_5 {
         uint32 position_id = 2;
         // Whether to switch positions in the debt array, or the credit array.
         bool in_debt_array = 3;
+    }
+
+    /*
+    * Allows the strategist to add, or update an existing alternative asset deposit.
+    *
+    * Represents function `setAlternativeAssetData(ERC20 _alternativeAsset, uint32 _alternativeHoldingPosition, uint32 _alternativeAssetFee)`
+    */
+    message SetAlternativeAssetData {
+        // The address of the alternative asset
+        string alternative_asset = 1;
+        // The holding position to direct alternative asset deposits to
+        uint32 alternative_holding_position = 2;
+        // The fee to charge for depositing this alternative asset
+        uint32 alternative_asset_fee = 3;
+    }
+
+    /*
+    * Allows the strategist to stop an alternative asset from being deposited.
+    *
+    * Represents function `dropAlternativeAssetData(ERC20 _alternativeAsset)`
+    */
+    message DropAlternativeAssetData {
+        // The address of the alternative asset
+        string alternative_asset = 1;
     }
 }
 
