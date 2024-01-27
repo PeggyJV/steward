@@ -207,12 +207,13 @@ async fn poll_approved_proposals(
                 proposal_id
             );
 
-            if pending_proposals {
-                pending_skip_count += 1;
-                pending_finalized.insert(proposal_id);
-            } else {
-                state.increment_proposal_id();
-            }
+            handle_increment_state(
+                state,
+                pending_proposals,
+                proposal_id,
+                &mut pending_skip_count,
+                &mut pending_finalized,
+            );
 
             continue;
         }
@@ -229,12 +230,14 @@ async fn poll_approved_proposals(
             }
             ProposalStatus::Rejected | ProposalStatus::Failed => {
                 info!("ignoring rejected/failed proposal of ID {}", proposal_id);
-                if pending_proposals {
-                    pending_skip_count += 1;
-                    pending_finalized.insert(proposal_id);
-                } else {
-                    state.increment_proposal_id();
-                }
+
+                handle_increment_state(
+                    state,
+                    pending_proposals,
+                    proposal_id,
+                    &mut pending_skip_count,
+                    &mut pending_finalized,
+                );
 
                 continue;
             }
@@ -258,12 +261,13 @@ async fn poll_approved_proposals(
                     proposal.proposal_id
                 );
 
-                if pending_proposals {
-                    pending_skip_count += 1;
-                    pending_finalized.insert(proposal_id);
-                } else {
-                    state.increment_proposal_id();
-                }
+                handle_increment_state(
+                    state,
+                    pending_proposals,
+                    proposal_id,
+                    &mut pending_skip_count,
+                    &mut pending_finalized,
+                );
 
                 continue;
             }
@@ -305,17 +309,33 @@ async fn poll_approved_proposals(
             ),
         };
 
-        if pending_proposals {
-            pending_skip_count = 1;
-            pending_finalized.insert(proposal_id);
-        } else {
-            state.increment_proposal_id();
-        }
+        handle_increment_state(
+            state,
+            pending_proposals,
+            proposal_id,
+            &mut pending_skip_count,
+            &mut pending_finalized,
+        );
 
         continue;
     }
 
     Ok(())
+}
+
+pub fn handle_increment_state(
+    state: &mut ProposalThreadState,
+    pending_proposals: bool,
+    proposal_id: u64,
+    pending_skip_count: &mut u64,
+    pending_finalized: &mut HashSet<u64>,
+) {
+    if pending_proposals {
+        *pending_skip_count += 1;
+        pending_finalized.insert(proposal_id);
+    } else {
+        state.increment_proposal_id();
+    }
 }
 
 pub async fn confirm_scheduling(
