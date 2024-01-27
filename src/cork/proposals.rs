@@ -7,6 +7,7 @@ use somm_proto::axelar_cork::AxelarScheduledCorkProposal;
 use somm_proto::cork::ScheduledCorkProposal;
 use somm_proto::cosmos_sdk_proto::cosmos::gov::v1beta1::Proposal;
 
+use crate::cork::ETHEREUM_CHAIN_ID;
 use crate::error::{Error, ErrorKind};
 use crate::{
     cellars::{aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2, cellar_v2_5},
@@ -74,28 +75,44 @@ pub async fn handle_scheduled_cork_proposal(
     let config = APP.config();
     let mut attempts = 0;
     loop {
-        match schedule_cork(&cellar_id, encoded_call.clone(), block_height).await {
-            Ok(res) => {
-                debug!("schedule response: {:?}", res);
-                info!(
-                    "governance call for cellar {} scheduled for block {} by proposal {}",
-                    cellar_id, block_height, proposal.proposal_id
-                );
-                break;
-            }
-            Err(schedule_err) => {
-                log_scheduling_status(
-                    state,
-                    &proposal,
-                    1,
-                    &cellar_id,
-                    &encoded_call,
-                    block_height,
-                    schedule_err,
-                )
-                .await;
-            }
+        let schedule_result = schedule_cork(&cellar_id, encoded_call.clone(), block_height).await;
+
+        if schedule_result.is_ok() {
+            debug!("schedule response: {:?}", schedule_result);
+            info!(
+                "governance call for cellar {} scheduled for block {} by proposal {}",
+                cellar_id, block_height, proposal.proposal_id
+            );
+
+            return;
         };
+
+        let schedule_err = schedule_result.unwrap_err();
+        let confirm_err = match confirm_scheduling(
+            state,
+            ETHEREUM_CHAIN_ID,
+            &cellar_id,
+            &encoded_call,
+            block_height,
+        )
+        .await
+        {
+            Ok(confirmed) => {
+                if confirmed {
+                    info!(
+                        "governance call for chain {} cellar {} scheduled for block {} by proposal {}",
+                        ETHEREUM_CHAIN_ID, cellar_id, block_height, proposal.proposal_id
+                    );
+
+                    return;
+                }
+
+                None
+            }
+            Err(confirm_err) => Some(confirm_err),
+        };
+
+        log_schedule_failure(proposal.proposal_id, schedule_err, confirm_err).await;
 
         info!(
             "scheduling attempts {}/{}",
@@ -106,6 +123,8 @@ pub async fn handle_scheduled_cork_proposal(
         if attempts > config.cork.max_scheduling_retries {
             return;
         }
+
+        tokio::time::sleep(Duration::from_secs(RETRY_SLEEP)).await;
     }
 }
 
@@ -170,41 +189,51 @@ pub(crate) async fn handle_axelar_scheduled_cork_proposal(
     let config = APP.config();
     let mut attempts = 0;
     loop {
-        match schedule_axelar_cork(
+        let schedule_result = schedule_axelar_cork(
             chain_id,
             &cellar_id,
             encoded_call.clone(),
             block_height,
             deadline,
         )
+        .await;
+
+        if schedule_result.is_ok() {
+            debug!("schedule response: {:?}", schedule_result);
+            info!(
+                "governance call for chain ID {} cellar {} scheduled for block {} by proposal {}",
+                chain_id, cellar_id, block_height, proposal.proposal_id
+            );
+
+            return;
+        };
+
+        let schedule_err = schedule_result.unwrap_err();
+        let confirm_err = match confirm_scheduling(
+            state,
+            chain_id,
+            &cellar_id,
+            &encoded_call,
+            block_height,
+        )
         .await
         {
-            Ok(res) => {
-                debug!("scheduling response: {:?}", res);
-                info!(
-                    "axelar call for chain {} cellar {} scheduled for block {} by proposal {}",
-                    chain_id, cellar_id, block_height, proposal.proposal_id
-                );
-                break;
-            }
-            Err(schedule_err) => {
-                info!(
-                    "scheduling returned error, checking for false negative: {}",
-                    schedule_err
-                );
+            Ok(confirmed) => {
+                if confirmed {
+                    info!(
+                        "governance call for chain {} cellar {} scheduled for block {} by proposal {}",
+                        chain_id, cellar_id, block_height, proposal.proposal_id
+                    );
 
-                log_scheduling_status(
-                    state,
-                    &proposal,
-                    chain_id,
-                    &cellar_id,
-                    &encoded_call,
-                    block_height,
-                    schedule_err,
-                )
-                .await;
+                    return;
+                }
+
+                None
             }
+            Err(confirm_err) => Some(confirm_err),
         };
+
+        log_schedule_failure(proposal.proposal_id, schedule_err, confirm_err).await;
 
         info!(
             "scheduling attempts {}/{}",
@@ -215,6 +244,8 @@ pub(crate) async fn handle_axelar_scheduled_cork_proposal(
         if attempts > config.cork.max_scheduling_retries {
             return;
         }
+
+        tokio::time::sleep(Duration::from_secs(RETRY_SLEEP)).await;
     }
 }
 
@@ -307,36 +338,6 @@ fn get_encoded_governance_call(
 
             let function = data.function.unwrap();
             cellar_v2_5::get_encoded_governance_call(function, cellar_id, proposal_id)
-        }
-    }
-}
-
-async fn log_scheduling_status(
-    state: &ProposalThreadState,
-    proposal: &Proposal,
-    chain_id: u64,
-    cellar_id: &str,
-    encoded_call: &[u8],
-    block_height: u64,
-    schedule_err: Error,
-) {
-    match confirm_scheduling(state, chain_id, cellar_id, encoded_call, block_height).await {
-        Ok(confirmed) => {
-            if confirmed {
-                info!(
-                    "governance call for chain {} cellar {} scheduled for block {} by proposal {}",
-                    chain_id, cellar_id, block_height, proposal.proposal_id
-                );
-            } else {
-                log_schedule_failure(proposal.proposal_id, schedule_err, None).await;
-
-                tokio::time::sleep(Duration::from_secs(RETRY_SLEEP)).await;
-            }
-        }
-        Err(confirm_err) => {
-            log_schedule_failure(proposal.proposal_id, schedule_err, Some(confirm_err)).await;
-
-            tokio::time::sleep(Duration::from_secs(RETRY_SLEEP)).await;
         }
     }
 }
