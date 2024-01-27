@@ -244,12 +244,19 @@ async fn poll_approved_proposals(
             ProposalStatus::Passed => {
                 info!("processing passed proposal {}", proposal_id);
             }
+            // this shouldn't be possible
             ProposalStatus::Unspecified => {
-                // this shouldn't be possible
-                return Err(proposal_processing_error(format!(
-                    "proposal {} has unspecified status",
-                    proposal_id
-                )));
+                handle_increment_state(
+                    state,
+                    pending_proposals,
+                    proposal_id,
+                    &mut pending_skip_count,
+                    &mut pending_finalized,
+                );
+
+                warn!("proposal {} has unspecified status, which should not be possible. this may be a bug in steward. skipping.", proposal_id);
+
+                continue;
             }
         }
 
