@@ -396,7 +396,6 @@ func (s *IntegrationTestSuite) initGenesis() {
 	}
     axelarcorkGenState.CellarIds = []*axelarcorktypes.CellarIDSet{
         {
-            Chain: configuration,
             Ids: []string{aaveCellar.Hex(), vaultCellar.Hex(), v2_2Cellar.Hex()},
         },
     }

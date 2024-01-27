@@ -223,13 +223,15 @@ func (s *IntegrationTestSuite) TestScheduledAxelarCorkProposal() {
 
 	targetBlockHeight := currentHeight + 90
 	chainID := uint64(10)
-	proposal := axelarcorktypes.NewAxelarScheduledCorkProposal(
+    deadline := uint64(time.Now().Add(10 * time.Minute).Unix())
+    proposal := axelarcorktypes.NewAxelarScheduledCorkProposal(
 		"axelarscheduled cork proposal test",
 		"description",
 		uint64(targetBlockHeight),
 		chainID,
 		vaultCellar.String(),
 		protoJson,
+        deadline,
 	)
 
 	proposalMsg, err := govtypesv1beta1.NewMsgSubmitProposal(

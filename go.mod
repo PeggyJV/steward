@@ -10,7 +10,7 @@ require (
 	github.com/miguelmota/go-ethereum-hdwallet v0.1.1
 	github.com/ory/dockertest/v3 v3.10.0
 	github.com/peggyjv/gravity-bridge/module/v4 v4.0.0
-	github.com/peggyjv/sommelier/v7 v7.0.0-20231215003149-1498c8e52f3a
+	github.com/peggyjv/sommelier/v7 v7.0.0-20240126190239-1cae4877cbad
 	github.com/spf13/viper v1.14.0
 	github.com/stretchr/testify v1.8.2
 	github.com/tendermint/tendermint v0.34.29
@@ -56,7 +56,7 @@ require (
 	github.com/cosmos/gorocksdb v1.2.0 // indirect
 	github.com/cosmos/iavl v0.19.6 // indirect
 	github.com/cosmos/ibc-go/v6 v6.2.0 // indirect
-	github.com/cosmos/ledger-cosmos-go v0.12.2 // indirect
+	github.com/cosmos/ledger-cosmos-go v0.12.4 // indirect
 	github.com/creachadair/taskgroup v0.3.2 // indirect
 	github.com/danieljoos/wincred v1.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -170,8 +170,8 @@ require (
 	github.com/xeipuuv/gojsonpointer v0.0.0-20180127040702-4e3ac2762d5f // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/xeipuuv/gojsonschema v1.2.0 // indirect
-	github.com/zondax/hid v0.9.1 // indirect
-	github.com/zondax/ledger-go v0.14.1 // indirect
+	github.com/zondax/hid v0.9.2 // indirect
+	github.com/zondax/ledger-go v0.14.3 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/crypto v0.7.0 // indirect
