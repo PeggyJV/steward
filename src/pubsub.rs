@@ -1,7 +1,7 @@
 use std::collections::{HashMap, HashSet};
 
 use abscissa_core::{
-    tracing::log::{debug, error},
+    tracing::log::{debug, error, info},
     Application,
 };
 use somm_proto::{
@@ -77,7 +77,7 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
                 return None;
             }
 
-            // normalizing here means even if the casing is different on chain, we'll still be 
+            // normalizing here means even if the casing is different on chain, we'll still be
             // able to match it, and if we can't normalize it then it's invalid and we ignore it.
             let (chain_id, cellar_id) = match subscription_id_parts(&sid) {
                 Ok((chain_id, cellar_id)) => (chain_id, cellar_id),
@@ -135,7 +135,7 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
         };
         let publisher_ca_cert = Box::leak(pem).parse_x509().unwrap();
 
-        debug!(
+        info!(
             "trust subscription {} for publisher {}",
             subscription_id, publisher.domain
         );

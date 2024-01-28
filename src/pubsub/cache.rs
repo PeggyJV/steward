@@ -5,7 +5,7 @@ use std::{
 };
 
 use abscissa_core::{
-    tracing::log::{debug, error},
+    tracing::log::{debug, error, info},
     Application,
 };
 use lazy_static::lazy_static;
@@ -43,7 +43,7 @@ pub(crate) async fn lookup_trust_data_by_subject_key_identifier(
 
 /// Overwrites the cache with the latest queried publisher subject key identifier/trust data pairs
 pub async fn refresh_publisher_trust_state_cache() -> Result<bool, Error> {
-    debug!("refreshing publisher trust state cache");
+    info!("refreshing publisher trust state cache");
     let mut cache = PUBLISHER_TRUST_STATE_CACHE.write().await;
     let entries = get_trust_state().await?.into_iter().map(|td| {
         let subject_key_identifier = extract_subject_key_identifier(&td.publisher_ca_cert).unwrap();
@@ -51,7 +51,7 @@ pub async fn refresh_publisher_trust_state_cache() -> Result<bool, Error> {
         (subject_key_identifier.0.to_vec(), td)
     });
     let map = HashMap::from_iter(entries);
-    debug!("cache map: {map:?}");
+    info!("cache map: {map:?}");
 
     let changed = *cache != map;
 
@@ -64,7 +64,7 @@ pub async fn refresh_publisher_trust_state_cache() -> Result<bool, Error> {
 /// period can be configured via the `pubub.cache_refresh_period` field (in seconds) in the steward
 /// config file. The default period is 60 seconds.
 pub async fn start_publisher_trust_state_cache_thread(tx: Sender<()>) -> JoinHandle<()> {
-    debug!("starting approved publisher cache thread");
+    info!("starting approved publisher cache thread");
     let config = APP.config();
     let query_period = Duration::from_secs(config.pubsub.cache_refresh_period);
 
@@ -77,7 +77,7 @@ pub async fn start_publisher_trust_state_cache_thread(tx: Sender<()>) -> JoinHan
 
                     if cache_changed {
                         // signal that the server should be restarted
-                        debug!(
+                        info!(
                             "the publisher trust state cache has changed. signaling server restart"
                         );
                         tx.send(()).await.unwrap();
@@ -92,7 +92,7 @@ pub async fn start_publisher_trust_state_cache_thread(tx: Sender<()>) -> JoinHan
 
                     // this is a bit of a hack to give the integration test time to run proposals to populate
                     // the cache
-                    debug!("retrying quickly in case this is transient or an integration test.");
+                    info!("retrying quickly in case this is transient or an integration test.");
                     tokio::time::sleep(Duration::from_secs(5)).await;
                     continue;
                 }
