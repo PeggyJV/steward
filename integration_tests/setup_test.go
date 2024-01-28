@@ -388,6 +388,12 @@ func (s *IntegrationTestSuite) initGenesis() {
         Name: "test",
         Id: 10,
         ProxyAddress: "0x0000000000000000000000000000000000000000",
+        BridgeFees: sdk.Coins{
+            {
+                Denom: "usomm",
+                Amount: sdk.NewInt(10000),
+            },
+        },
     }
 	axelarcorkGenState.ChainConfigurations = axelarcorktypes.ChainConfigurations{
 		Configurations: []*axelarcorktypes.ChainConfiguration{
