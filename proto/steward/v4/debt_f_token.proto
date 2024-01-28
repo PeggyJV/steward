@@ -1,0 +1,68 @@
+/*
+* Protos for function calls to the Frax Debt F Token adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+// Represents call data for the Frax adaptor.
+message DebtFTokenAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+        
+        // Represents function `borrowFromFraxlend(IFToken fraxlendPair, uint256 amountToBorrow)`
+        BorrowFromFraxlend borrow_from_fraxlend = 2;
+        // Represents function `repayFraxlendDebt(IFToken _fraxlendPair, uint256 _debtTokenRepayAmount)`
+        RepayFraxlendDebt repay_fraxlend_debt = 3;
+        // Represents function `callAddInterest(IFToken _fraxlendPair)`
+        CallAddInterest call_add_interest = 4;
+    }
+
+    /*
+    * Allows a strategist to borrow assets from Fraxlend 
+    *
+    * Represents `function borrowFromFraxlend(IFToken fraxlendPair, uint256 amountToBorrow)`
+    */
+    message BorrowFromFraxlend {
+        // The address of the Frax Pair to borrow from.
+        string fraxlend_pair = 1;
+        // The amount of the asset to borrow.
+        string amount_to_borrow = 2;
+    }
+
+    /*
+    * Allows strategists to repay loan debt on Fraxlend Pair. 
+    * Make sure to call addInterest() beforehand to ensure we are repaying what is required.    
+    *
+    * Represents `function repayFraxlendDebt(IFToken _fraxlendPair, uint256 _debtTokenRepayAmount)`
+    */
+    message RepayFraxlendDebt {
+        // The address of the Frax Pair to repay debt on.
+        string fraxlend_pair = 1;
+        // The amount of the debt token to repay.
+        string debt_token_repay_amount = 2;
+    }
+
+    /*
+    * Allows a strategist to call `addInterest` on a Frax Pair they are using
+    *
+    * Represents `function callAddInterest(IFToken _fraxlendPair)`
+    */
+    message CallAddInterest {
+        // The address of the pair to call addInterest on.
+        string fraxlend_pair = 1;
+    }
+}
+
+message DebtFTokenAdaptorV1Calls {
+    repeated DebtFTokenAdaptorV1 calls = 1;
+}

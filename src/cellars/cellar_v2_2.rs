@@ -297,6 +297,19 @@ pub fn get_encoded_governance_call(
 
             Ok(CellarV2_2Calls::ToggleIgnorePause(call).encode())
         }
+        GovernanceFunction::CachePriceRouter(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &CachePriceRouterCall::function_name(),
+                cellar_id,
+            );
+            let call = CachePriceRouterCall {
+                check_total_assets: params.check_total_assets,
+                allowable_range: params.allowable_range as u16,
+            };
+
+            Ok(CellarV2_2Calls::CachePriceRouter(call).encode())
+        }
     }
 }
 
@@ -329,6 +342,8 @@ fn get_encoded_adaptor_calls(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCal
             AaveV3DebtTokenV1Calls(params) => calls.extend(
                 adaptors::aave_v3::aave_v3_debt_token_adaptor_v1_calls(params)?,
             ),
+            AaveV3DebtTokenV1FlashLoanCalls(params) => calls
+                .extend(adaptors::aave_v3::aave_v3_debt_token_adaptor_v1_flash_loan_calls(params)?),
             OneInchV1Calls(params) => {
                 calls.extend(adaptors::oneinch::one_inch_adaptor_v1_calls(params)?)
             }
@@ -357,7 +372,7 @@ fn get_encoded_adaptor_calls(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCal
                 )?,
             ),
             FTokenV1Calls(params) => {
-                calls.extend(adaptors::f_token::f_token_adaptor_v1_calls(params)?)
+                calls.extend(adaptors::frax::f_token_adaptor_v1_calls(params)?)
             }
             MorphoAaveV2ATokenV1Calls(params) => calls.extend(
                 adaptors::morpho::morpho_aave_v2_a_token_adaptor_v1_calls(params)?,
@@ -373,6 +388,28 @@ fn get_encoded_adaptor_calls(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCal
             }
             MorphoAaveV3DebtTokenV1Calls(params) => {
                 calls.extend(adaptors::morpho::morpho_aave_v3_debt_token_adaptor_v1_calls(params)?)
+            }
+            BalancerPoolV1Calls(params) => calls.extend(
+                adaptors::balancer_pool::balancer_pool_adaptor_v1_calls(params)?,
+            ),
+            BalancerPoolV1FlashLoanCalls(params) => calls.extend(
+                adaptors::balancer_pool::balancer_pool_adaptor_v1_flash_loan_calls(params)?,
+            ),
+            LegacyCellarV1Calls(params) => {
+                calls.extend(adaptors::sommelier::legacy_cellar_adaptor_v1_calls(params)?)
+            }
+            DebtFTokenV1Calls(params) => {
+                calls.extend(adaptors::frax::debt_f_token_adaptor_v1_calls(params)?)
+            }
+            CollateralFTokenV1Calls(params) => {
+                calls.extend(adaptors::frax::collateral_f_token_adaptor_v1_calls(params)?)
+            }
+            ConvexCurveV1Calls(params) => {
+                calls.extend(adaptors::convex::convex_curve_adaptor_v1_calls(params)?)
+            }
+            CurveV1Calls(params) => calls.extend(adaptors::curve::curve_adaptor_v1_calls(params)?),
+            AuraErc4626V1Calls(params) => {
+                calls.extend(adaptors::aura::aura_erc4626_adaptor_v1_calls(params)?)
             }
         };
 

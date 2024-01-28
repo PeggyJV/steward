@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::{collections::HashSet, time::Duration};
 
 use abscissa_core::{
     tracing::{debug, error, info, log::warn},
@@ -8,13 +8,18 @@ use gravity_bridge::gravity_proto::{
     cosmos_sdk_proto::cosmos::base::tendermint::v1beta1::GetLatestBlockRequest,
     gravity::DelegateKeysByOrchestratorRequest,
 };
-use somm_proto::cosmos_sdk_proto::cosmos::gov::v1beta1::QueryProposalRequest;
+use somm_proto::cosmos_sdk_proto::cosmos::gov::v1beta1::{ProposalStatus, QueryProposalRequest};
 use tokio::{sync::mpsc::Sender, task::JoinHandle};
 use tonic::{transport::Channel, Code};
 
 use crate::{
     config::get_delegate_address,
-    cork::{client::CorkQueryClient, id_hash, proposals::handle_scheduled_cork_proposal},
+    cork::{
+        client::CorkQueryClient,
+        id_hash,
+        proposals::{handle_axelar_scheduled_cork_proposal, handle_scheduled_cork_proposal},
+        ETHEREUM_CHAIN_ID,
+    },
     error::{Error, ErrorKind},
     prelude::APP,
     pubsub::cache::refresh_publisher_trust_state_cache,
@@ -31,6 +36,7 @@ const REMOVE_PUBLISHER_PROPOSAL: &str = "/pubsub.v1.RemovePublisherProposal";
 const ADD_DEFAULT_SUBSCRIPTION_PROPOSAL: &str = "/pubsub.v1.AddDefaultSubscriptionProposal";
 const REMOVE_DEFAULT_SUBSCRIPTION_PROPOSAL: &str = "/pubsub.v1.RemoveDefaultSubscriptionProposal";
 const SCHEDULED_CORK_PROPOSAL: &str = "/cork.v2.ScheduledCorkProposal";
+const AXELAR_SCHEDULED_CORK_PROPOSAL: &str = "/axelarcork.v1.AxelarScheduledCorkProposal";
 
 pub async fn start_approved_proposal_polling_thread(
     publisher_cache_tx: Sender<()>,
@@ -54,6 +60,10 @@ pub async fn start_approved_proposal_polling_thread(
         .into_inner()
         .validator_address;
 
+    if state.validator_address.is_empty() {
+        panic!("failed to get validator address at startup.");
+    }
+
     tokio::spawn(async move {
         loop {
             debug!("polling for new approved scheduled cork proposals");
@@ -64,7 +74,7 @@ pub async fn start_approved_proposal_polling_thread(
             {
                 error!(
                     "failed to process proposal {}: {}",
-                    state.last_processed_proposal_id + 1,
+                    state.last_finalized_proposal_id + 1,
                     err
                 );
             }
@@ -77,7 +87,7 @@ pub async fn start_approved_proposal_polling_thread(
 #[derive(Debug, Default)]
 pub struct ProposalThreadState {
     pub last_observed_height: u64,
-    pub last_processed_proposal_id: u64,
+    pub last_finalized_proposal_id: u64,
     pub validator_address: String,
 }
 
@@ -102,8 +112,8 @@ impl ProposalThreadState {
         };
     }
 
-    fn increment_proposal_id(&mut self) {
-        self.last_processed_proposal_id += 1;
+    pub(crate) fn increment_proposal_id(&mut self) {
+        self.last_finalized_proposal_id += 1;
     }
 }
 
@@ -114,9 +124,23 @@ async fn poll_approved_proposals(
     let config = APP.config();
     let mut gov_client = GovQueryClient::connect(config.cosmos.grpc.clone()).await?;
 
+    // Tracks which pending proposals have been submitted already for skipping
+    let mut pending_finalized = HashSet::<u64>::default();
+
+    // Whether there are pending proposals to check
+    let mut pending_proposals = false;
+
+    // To advance the ID checked while pending proposals exist
+    let mut pending_skip_count = 0;
     loop {
         // Proposal IDs start at 1, so this should be ok even for the first query after startup.
-        let proposal_id = state.last_processed_proposal_id + 1;
+        let proposal_id = &state.last_finalized_proposal_id + 1 + pending_skip_count;
+
+        if pending_proposals && pending_finalized.contains(&proposal_id) {
+            pending_skip_count += 1;
+            continue;
+        }
+
         debug!("querying proposal {}", proposal_id);
         let proposal = match gov_client
             .proposal(tonic::Request::new(QueryProposalRequest { proposal_id }))
@@ -152,15 +176,21 @@ async fn poll_approved_proposals(
                     }
 
                     if found_proposal {
-                        state.last_processed_proposal_id += missing_proposals;
+                        if pending_proposals {
+                            pending_skip_count += missing_proposals;
+                        } else {
+                            state.last_finalized_proposal_id += missing_proposals;
+                        }
+
+                        continue;
                     } else {
                         info!(
                             "no new proposals. last processed proposal ID: {}",
-                            state.last_processed_proposal_id
+                            state.last_finalized_proposal_id
                         );
-                    }
 
-                    break;
+                        break;
+                    }
                 } else {
                     return Err(proposal_processing_error(format!(
                         "error querying proposal {}: {}",
@@ -176,11 +206,60 @@ async fn poll_approved_proposals(
                 "proposal {} was None even though the query status code indicates it was found.",
                 proposal_id
             );
-            state.increment_proposal_id();
+
+            handle_increment_state(
+                state,
+                pending_proposals,
+                proposal_id,
+                &mut pending_skip_count,
+                &mut pending_finalized,
+            );
+
             continue;
         }
 
         let proposal = proposal.unwrap();
+        match proposal.status() {
+            ProposalStatus::DepositPeriod | ProposalStatus::VotingPeriod => {
+                info!("proposal {} is in deposit or voting period", proposal_id);
+
+                pending_proposals = true;
+                pending_skip_count += 1;
+
+                continue;
+            }
+            ProposalStatus::Rejected | ProposalStatus::Failed => {
+                info!("ignoring rejected/failed proposal of ID {}", proposal_id);
+
+                handle_increment_state(
+                    state,
+                    pending_proposals,
+                    proposal_id,
+                    &mut pending_skip_count,
+                    &mut pending_finalized,
+                );
+
+                continue;
+            }
+            ProposalStatus::Passed => {
+                info!("processing passed proposal {}", proposal_id);
+            }
+            // this shouldn't be possible
+            ProposalStatus::Unspecified => {
+                handle_increment_state(
+                    state,
+                    pending_proposals,
+                    proposal_id,
+                    &mut pending_skip_count,
+                    &mut pending_finalized,
+                );
+
+                warn!("proposal {} has unspecified status, which should not be possible. this may be a bug in steward. skipping.", proposal_id);
+
+                continue;
+            }
+        }
+
         let content = match proposal.clone().content {
             Some(c) => c,
             None => {
@@ -188,7 +267,15 @@ async fn poll_approved_proposals(
                     "ignoring proposal of ID {} because of empty content",
                     proposal.proposal_id
                 );
-                state.increment_proposal_id();
+
+                handle_increment_state(
+                    state,
+                    pending_proposals,
+                    proposal_id,
+                    &mut pending_skip_count,
+                    &mut pending_finalized,
+                );
+
                 continue;
             }
         };
@@ -196,6 +283,9 @@ async fn poll_approved_proposals(
         match content.type_url.as_str() {
             SCHEDULED_CORK_PROPOSAL => {
                 handle_scheduled_cork_proposal(state, proposal, proposal_id, content).await;
+            }
+            AXELAR_SCHEDULED_CORK_PROPOSAL => {
+                handle_axelar_scheduled_cork_proposal(state, proposal, proposal_id, content).await;
             }
             ADD_PUBLISHER_PROPOSAL
             | REMOVE_PUBLISHER_PROPOSAL
@@ -226,29 +316,64 @@ async fn poll_approved_proposals(
             ),
         };
 
-        state.increment_proposal_id();
+        handle_increment_state(
+            state,
+            pending_proposals,
+            proposal_id,
+            &mut pending_skip_count,
+            &mut pending_finalized,
+        );
+
         continue;
     }
 
     Ok(())
 }
 
+pub fn handle_increment_state(
+    state: &mut ProposalThreadState,
+    pending_proposals: bool,
+    proposal_id: u64,
+    pending_skip_count: &mut u64,
+    pending_finalized: &mut HashSet<u64>,
+) {
+    if pending_proposals {
+        *pending_skip_count += 1;
+        pending_finalized.insert(proposal_id);
+    } else {
+        state.increment_proposal_id();
+    }
+}
+
 pub async fn confirm_scheduling(
     state: &ProposalThreadState,
+    chain_id: u64,
     cellar_id: &str,
     encoded_call: &[u8],
     block_height: u64,
 ) -> Result<bool, Error> {
-    let id = id_hash(block_height, 1, cellar_id, encoded_call);
+    let id = id_hash(block_height, chain_id, cellar_id, encoded_call);
     let mut client = CorkQueryClient::new().await?;
 
-    Ok(client
-        .get_scheduled_corks_by_id(&id)
-        .await?
-        .into_inner()
-        .corks
-        .iter()
-        .any(|c| c.validator == state.validator_address))
+    if chain_id == ETHEREUM_CHAIN_ID {
+        debug!("confirming gravity scheduling");
+        return Ok(client
+            .get_scheduled_corks_by_id(&id)
+            .await?
+            .into_inner()
+            .corks
+            .iter()
+            .any(|c| c.validator == state.validator_address));
+    } else {
+        debug!("confirming axelar scheduling");
+        return Ok(client
+            .get_axelar_scheduled_corks_by_id(chain_id, &id)
+            .await?
+            .into_inner()
+            .corks
+            .iter()
+            .any(|c| c.validator == state.validator_address));
+    }
 }
 
 fn proposal_processing_error(message: String) -> Error {
@@ -257,14 +382,12 @@ fn proposal_processing_error(message: String) -> Error {
 
 pub async fn log_schedule_failure(
     proposal_id: u64,
-    attempts: u64,
-    max_retries: u64,
     schedule_err: Error,
     confirm_err: Option<Error>,
 ) {
     error!(
-        "failed to schedule cork for proposal {}. attempt {}/{}. reason: {}",
-        proposal_id, attempts, max_retries, schedule_err
+        "failed to schedule cork for proposal {}. reason: {}",
+        proposal_id, schedule_err
     );
     if confirm_err.is_some() {
         warn!(

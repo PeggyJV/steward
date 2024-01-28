@@ -9,7 +9,7 @@ use tonic::{self, async_trait, Code, Request, Response, Status};
 use crate::cellars::to_checksum_address;
 use crate::server::handle_authorization;
 use crate::{
-    cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2},
+    cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2, cellar_v2_5},
     error::{
         Error,
         ErrorKind::{self, *},
@@ -26,7 +26,7 @@ lazy_static! {
     static ref STEWARD_VERSION: &'static str = env!("CARGO_PKG_VERSION");
 }
 
-const ETHEREUM_CHAIN_ID: u64 = 1;
+pub(crate) const ETHEREUM_CHAIN_ID: u64 = 1;
 
 pub struct CorkHandler;
 
@@ -135,6 +135,13 @@ pub fn get_encoded_call(request: ScheduleRequest) -> Result<Vec<u8>, Error> {
 
             cellar_v2_2::get_encoded_call(call.call_type.unwrap(), request.cellar_id)
         }
+        CellarV25(call) => {
+            if call.call_type.is_none() {
+                return Err(ErrorKind::Http.context("empty function data").into());
+            }
+
+            cellar_v2_5::get_encoded_call(call.call_type.unwrap(), request.cellar_id)
+        }
     }
 }
 
@@ -207,7 +214,7 @@ pub async fn schedule_cork(
     encoded_call: Vec<u8>,
     height: u64,
 ) -> Result<TxResponse, Error> {
-    debug!("establishing grpc connection");
+    debug!("establishing grpc connection to cork");
     let cork = Cork {
         encoded_contract_call: encoded_call,
         target_contract_address: contract.to_string(),
@@ -225,7 +232,7 @@ pub async fn schedule_axelar_cork(
     height: u64,
     deadline: u64,
 ) -> Result<TxResponse, Error> {
-    debug!("establishing grpc connection");
+    debug!("establishing grpc connection to axelarcork");
     let cork = AxelarCork {
         encoded_contract_call: encoded_call,
         target_contract_address: contract.to_string(),

@@ -1,0 +1,119 @@
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+
+import "a_token.proto";
+import "debt_token.proto";
+import "aave_v3_a_token.proto";
+import "aave_v3_debt_token.proto";
+import "c_token.proto";
+import "f_token.proto";
+import "morpho_aave_v2_a_token.proto";
+import "morpho_aave_v2_debt_token.proto";
+import "morpho_aave_v3_a_token_collateral.proto";
+import "morpho_aave_v3_a_token_p2p.proto";
+import "morpho_aave_v3_debt_token.proto";
+import "uniswap_v3.proto";
+import "swap_with_uniswap.proto";
+import "fees_and_reserves.proto";
+import "zero_x.proto";
+import "oneinch.proto";
+import "vesting_simple.proto";
+import "cellar_adaptor.proto";
+import "aave_v2_enable_asset_as_collateral_adaptor.proto";
+import "legacy_cellar_adaptor.proto";
+import "debt_f_token.proto";
+import "collateral_f_token.proto";
+import "aura_erc4626.proto";
+import "convex_curve.proto";
+import "curve.proto";
+
+// Represents flash loan call data for the Balancer Pool adaptor V1, for managing pool positions on Balancer.
+message BalancerPoolAdaptorV1FlashLoan {
+    MakeFlashLoan make_flash_loan = 1;
+
+    /*
+    * Make a flash loan
+    *
+    * Represents `function makeFlashLoan(IERC20[] tokens, uint256[] amounts, bytes memory data)`
+    */
+    message MakeFlashLoan {
+        // The tokens to flash loan
+        repeated string tokens = 1;
+
+        // The amounts to flash loan
+        repeated string amounts = 2;
+
+        // The data to flash loan
+        repeated AdaptorCallForBalancerPoolFlashLoan data = 3;
+    }
+
+    // NOTE: Make FlashLoan takes an array of AdaptorCall. cellar_v2.proto defines it, but also imports this file, therefore we can't import cellar_v2.proto in order to use the AdaptorCall message here. To avoid the recursive import, we duplicate the message definition.
+    message AdaptorCallForBalancerPoolFlashLoan {
+        // Address of the adaptor
+        string adaptor = 1;
+        // The function call data for the adaptor
+        oneof call_data {
+            // Represents function calls to the AaveATokenAdaptor V1
+            AaveATokenAdaptorV1Calls aave_a_token_v1_calls = 2;
+            // Represents function calls to the AavaDebtTokenAdaptor V1
+            AaveDebtTokenAdaptorV1Calls aave_debt_token_v1_calls = 3;
+            // Represents function calls to the CompoundCTokenAdaptor V2
+            CompoundCTokenAdaptorV2Calls compound_c_token_v2_calls = 4;
+            // Represents function calls to the AaveATokenV2Adaptor
+            AaveATokenAdaptorV2Calls aave_a_token_v2_calls = 5;
+            // Represents function calls to the AavaDebtTokenV2Adaptor
+            AaveDebtTokenAdaptorV2Calls aave_debt_token_v2_calls = 6;
+            // Represents function calls to the AaveATokenV1Adaptor
+            AaveV3ATokenAdaptorV1Calls aave_v3_a_token_v1_calls = 7;
+            // Represents function calls to the AavaDebtTokenV1Adaptor
+            AaveV3DebtTokenAdaptorV1Calls aave_v3_debt_token_v1_calls = 8;
+            // Represents function calls to the OneInchAdaptorV1
+            OneInchAdaptorV1Calls one_inch_v1_calls = 9;
+            // Represents function calls to the FeesAndReservesAdaptorV1
+            FeesAndReservesAdaptorV1Calls fees_and_reserves_v1_calls = 10;
+            // Represents functionc alls to the ZeroXAdaptorV1
+            ZeroXAdaptorV1Calls zero_x_v1_calls = 11;
+            // Represents function calls to the SwapWithUniswapAdaptorV1
+            SwapWithUniswapAdaptorV1Calls swap_with_uniswap_v1_calls = 12;
+            // Represents function calls to VestingSimpleAdaptor
+            VestingSimpleAdaptorV2Calls vesting_simple_v2_calls = 13;
+            // Represents function calls to the CellarAdaptor
+            CellarAdaptorV1Calls cellar_v1_calls = 14;
+            // Represents function calls to the UniswapV3Adaptor V2
+            UniswapV3AdaptorV2Calls uniswap_v3_v2_calls = 15;
+            // Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1
+            AaveV2EnableAssetAsCollateralAdaptorV1Calls aave_v2_enable_asset_as_collateral_v1_calls = 16;
+            // Represents function calls to the FTokenAdaptor V1
+            FTokenAdaptorV1Calls f_token_v1_calls = 17;
+            // Represents function calls to the MorphoAaveV2AToken V1
+            MorphoAaveV2ATokenAdaptorV1Calls morpho_aave_v2_a_token_v1_calls = 18;
+            // Represents function calls to the MorphoAaveV2DebtToken V1
+            MorphoAaveV2DebtTokenAdaptorV1Calls morpho_aave_v2_debt_token_v1_calls = 19;
+            // Represents function calls to the MorphoAaveV3ATokenCollateral V1
+            MorphoAaveV3ATokenCollateralAdaptorV1Calls morpho_aave_v3_a_token_collateral_v1_calls = 20;
+            // Represents function calls to the MorphoAaveV3ATokenP2P V1
+            MorphoAaveV3ATokenP2PAdaptorV1Calls morpho_aave_v3_a_token_p2p_v1_calls = 21;
+            // Represents function calls to the MorphoAaveV3DebtToken V1
+            MorphoAaveV3DebtTokenAdaptorV1Calls morpho_aave_v3_debt_token_v1_calls = 22;
+            // Represents function calls to the LegacyCellarAdaptor V1
+            LegacyCellarAdaptorV1Calls legacy_cellar_v1_calls = 23;
+            // Represents function calls to the DebtFTokenAdaptor V1
+            DebtFTokenAdaptorV1Calls debt_f_token_v1_calls = 24;
+            // Represents function calls to the CollateralFTokenAdaptor V1
+            CollateralFTokenAdaptorV1Calls collateral_f_token_v1_calls = 25;        
+            // Represents function calls for the ConvexCurveAdaptorV1
+            ConvexCurveAdaptorV1Calls convex_curve_v1_calls = 26;
+            // Represents function calls for the CurveAdaptorV1
+            CurveAdaptorV1Calls curve_v1_calls = 27;
+            // Represents function calls for the AuraERC4626AdaptorV1
+            AuraERC4626AdaptorV1Calls aura_erc4626_v1_calls = 28;
+        }
+    }
+}
+
+message BalancerPoolAdaptorV1FlashLoanCalls {
+    repeated BalancerPoolAdaptorV1FlashLoan calls = 1;
+}

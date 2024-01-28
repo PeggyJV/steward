@@ -1,0 +1,165 @@
+/*
+* Protos for function calls to the Curve adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+// Represents call data for the Curve adaptor V1
+message CurveAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `addLiquidity(address pool, ERC20 lpToken, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, CurveGauge gauge, bytes4 selector)`
+        AddLiquidity add_liquidity = 2;
+        // Represents function `addLiquidityETH(address pool, ERC20 lpToken, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
+        AddLiquidityETH add_liquidity_eth = 3;
+        // Represents function `removeLiquidity(address pool, ERC20 lpToken, uint256 lpTokenAmount, uint256[] orderedMinimumUnderlyingTokenAmountsOut, CurveGauge gauge, bytes4 selector)`
+        RemoveLiquidity remove_liquidity = 4;
+        // Represents function `removeLiquidityETH(address pool, ERC20 lpToken, uint256 lpTokenAmount, uint256[] orderedMinimumUnderlyingTokenAmountsOut, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
+        RemoveLiquidityETH remove_liquidity_eth = 5;
+        // Represents function `stakeInGauge(ERC20 lpToken, CurveGauge gauge, uint256 amount, CurvePool pool, bytes4 selector)`
+        StakeInGauge stake_in_gauge = 6;
+        // Represents function `unstakeFromGauge(CurveGauge gauge, uint256 amount)`
+        UnstakeFromGauge unstake_from_gauge = 7;
+        // Represents function `claimRewards(CurveGauge gauge)`
+        ClaimRewards claim_rewards = 8;
+    }
+
+    /*
+    * Allows strategist to add liquidity to Curve pairs that do NOT use the native asset.
+    *
+    * Represents function `addLiquidity(address pool, ERC20 lpToken, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, CurveGauge gauge, bytes4 selector)`
+    */
+    message AddLiquidity {
+        // Address of the Curve pool
+        string pool = 1;
+        // Address of the LP token
+        string lp_token = 2;
+        // Minimum amount of each underlying token to receive
+        repeated string ordered_underlying_token_amounts = 3;
+        // Minimum amount of LP tokens to receive
+        string min_lp_amount = 4;
+        // Address of the Curve gauge
+        string gauge = 5;
+        // Selector of the function to call
+        string selector = 6;
+    }
+
+    /*
+    * Allows strategist to add liquidity to Curve pairs that use the native asset.
+    *
+    * Represents function `addLiquidityETH(address pool, ERC20 lpToken, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
+    */
+    message AddLiquidityETH {
+        // Address of the Curve pool
+        string pool = 1;
+        // Address of the LP token
+        string lp_token = 2;
+        // Minimum amount of each underlying token to receive
+        repeated string ordered_underlying_token_amounts = 3;
+        // Minimum amount of LP tokens to receive
+        string min_lp_amount = 4;
+        // Whether to use the underlying asset or the wrapped asset
+        bool use_underlying = 5;
+        // Address of the Curve gauge
+        string gauge = 6;
+        // Selector of the function to call
+        string selector = 7;
+    }
+
+    /*
+    * Allows strategist to remove liquidity from Curve pairs that do NOT use the native asset.
+    *
+    * Represents function `removeLiquidity(address pool, ERC20 lpToken, uint256 lpTokenAmount, uint256[] orderedMinimumUnderlyingTokenAmountsOut, CurveGauge gauge, bytes4 selector)`
+    */
+    message RemoveLiquidity {
+        // Address of the Curve pool
+        string pool = 1;
+        // Address of the LP token
+        string lp_token = 2;
+        // Amount of LP tokens to remove
+        string lp_token_amount = 3;
+        // Minimum amount of each underlying token to receive
+        repeated string ordered_minimum_underlying_token_amounts_out = 4;
+        // Address of the Curve gauge
+        string gauge = 5;
+        // Selector of the function to call
+        string selector = 6;
+    }
+
+    /*
+    * Allows strategist to remove liquidity from Curve pairs that use the native asset.
+    *
+    * Represents function `removeLiquidityETH(address pool, ERC20 lpToken, uint256 lpTokenAmount, uint256[] orderedMinimumUnderlyingTokenAmountsOut, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
+    */
+    message RemoveLiquidityETH {
+        // Address of the Curve pool
+        string pool = 1;
+        // Address of the LP token
+        string lp_token = 2;
+        // Amount of LP tokens to remove
+        string lp_token_amount = 3;
+        // Minimum amount of each underlying token to receive
+        repeated string ordered_minimum_underlying_token_amounts_out = 4;
+        // Whether to use the underlying asset or the wrapped asset
+        bool use_underlying = 5;
+        // Address of the Curve gauge
+        string gauge = 6;
+        // Selector of the function to call
+        string selector = 7;
+    }
+
+    /*
+    * Allows strategist to stake Curve LP tokens in their gauge.
+    *
+    * Represents function `stakeInGauge(ERC20 lpToken, CurveGauge gauge, uint256 amount, CurvePool pool, bytes4 selector)`
+    */
+    message StakeInGauge {
+        // Address of the LP token
+        string lp_token = 1;
+        // Address of the Curve gauge
+        string gauge = 2;
+        // Amount of LP tokens to stake
+        string amount = 3;
+        // Address of the Curve pool
+        string pool = 4;
+        // Selector of the function to call
+        string selector = 5;
+    }
+
+    /*
+    * Allows strategist to unstake Curve LP tokens from their gauge.
+    *
+    * Represents function `unstakeFromGauge(CurveGauge gauge, uint256 amount)`
+    */
+    message UnstakeFromGauge {
+        // Address of the Curve gauge
+        string gauge = 1;
+        // Amount of LP tokens to unstake
+        string amount = 2;
+    }
+
+    /*
+    * Allows strategist to claim rewards from a gauge.
+    *
+    * Represents function `claimRewards(CurveGauge gauge)`
+    */
+    message ClaimRewards {
+        // Address of the Curve gauge
+        string gauge = 1;
+    }
+}
+
+message CurveAdaptorV1Calls {
+    repeated CurveAdaptorV1 calls = 1;
+}
