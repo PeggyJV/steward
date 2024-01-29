@@ -5,8 +5,8 @@ use crate::{
     cork::CorkHandler,
     error::{Error, ErrorKind},
     prelude::APP,
-    proto::contract_call_service_server::ContractCallServiceServer,
-    pubsub::cache::{lookup_trust_data_by_subject_key_identifier, PUBLISHER_TRUST_STATE_CACHE},
+    proto::{contract_call_service_server::ContractCallServiceServer, status_service_server::StatusServiceServer},
+    pubsub::cache::{lookup_trust_data_by_subject_key_identifier, PUBLISHER_TRUST_STATE_CACHE}, status::StatusHandler,
 };
 use abscissa_core::{
     status_err,
@@ -70,6 +70,7 @@ pub(crate) async fn start_server(cancellation_token: CancellationToken) {
             std::process::exit(1)
         })
         .add_service(ContractCallServiceServer::new(CorkHandler))
+        .add_service(StatusServiceServer::new(StatusHandler))
         .add_service(proto_descriptor_service)
         .serve_with_shutdown(server_config.address, cancellation_token.cancelled())
         .await
