@@ -488,6 +488,10 @@ message CellarV2_5 {
             RemovePositionFromCatalogue remove_position_from_catalogue = 15;
             // Represents function `decreaseShareSupplyCap(uint192)
             DecreaseShareSupplyCap decrease_share_supply_cap = 16;
+            // Represents function `setAlternativeAssetData(ERC20 _alternativeAsset, uint32 _alternativeHoldingPosition, uint32 _alternativeAssetFee)`
+            SetAlternativeAssetData set_alternative_asset_data = 17;
+            // Represents function `setDropAlternativeAssetData(ERC20 _alternativeAsset)`
+            DropAlternativeAssetData drop_alternative_asset_data = 18; 
         }
     }
 
@@ -629,6 +633,30 @@ message CellarV2_5 {
     message DecreaseShareSupplyCap {
         string new_cap = 1;
     } 
+
+    /*
+    * Allows the strategist to add, or update an existing alternative asset deposit.
+    *
+    * Represents function `setAlternativeAssetData(ERC20 _alternativeAsset, uint32 _alternativeHoldingPosition, uint32 _alternativeAssetFee)`
+    */
+    message SetAlternativeAssetData {
+        // The address of the alternative asset
+        string alternative_asset = 1;
+        // The holding position to direct alternative asset deposits to
+        uint32 alternative_holding_position = 2;
+        // The fee to charge for depositing this alternative asset
+        uint32 alternative_asset_fee = 3;
+    }
+
+    /*
+    * Allows the strategist to stop an alternative asset from being deposited.
+    *
+    * Represents function `dropAlternativeAssetData(ERC20 _alternativeAsset)`
+    */
+    message DropAlternativeAssetData {
+        // The address of the alternative asset
+        string alternative_asset = 1;
+    }
 }
 
 /*

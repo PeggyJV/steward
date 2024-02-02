@@ -79,6 +79,10 @@ fn generate_contract_abis() {
         ("CurveAdaptorV1", "curve_adaptor_v1"),
         ("ConvexCurveAdaptorV1", "convex_curve_adaptor_v1"),
         ("AuraERC4626AdaptorV1", "aura_erc4626_adaptor_v1"),
+        (
+            "CellarWithMultiAssetDepositV1",
+            "cellar_with_multi_asset_deposit_v1",
+        ),
     ];
 
     contracts.iter().for_each(|n| {

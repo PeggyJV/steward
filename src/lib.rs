@@ -91,6 +91,10 @@ pub mod abi {
             include!("gen/abi/cellar_adaptor_v1.rs");
         }
 
+        pub mod cellar_with_multi_asset_deposit_v1 {
+            include!("gen/abi/cellar_with_multi_asset_deposit_v1.rs");
+        }
+
         pub mod cellar_with_share_lock_period_v1 {
             include!("gen/abi/cellar_with_share_lock_period_v1.rs");
         }
