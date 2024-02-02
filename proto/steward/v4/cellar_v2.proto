@@ -23,6 +23,9 @@ import "morpho_aave_v2_debt_token.proto";
 import "morpho_aave_v3_a_token_collateral.proto";
 import "morpho_aave_v3_a_token_p2p.proto";
 import "morpho_aave_v3_debt_token.proto";
+import "morpho_blue_collateral.proto";
+import "morpho_blue_debt.proto";
+import "morpho_blue_supply.proto";
 import "uniswap_v3.proto";
 import "swap_with_uniswap.proto";
 import "fees_and_reserves.proto";
@@ -488,6 +491,10 @@ message CellarV2_5 {
             RemovePositionFromCatalogue remove_position_from_catalogue = 15;
             // Represents function `decreaseShareSupplyCap(uint192)
             DecreaseShareSupplyCap decrease_share_supply_cap = 16;
+            // Represents function `setAlternativeAssetData(ERC20 _alternativeAsset, uint32 _alternativeHoldingPosition, uint32 _alternativeAssetFee)`
+            SetAlternativeAssetData set_alternative_asset_data = 17;
+            // Represents function `setDropAlternativeAssetData(ERC20 _alternativeAsset)`
+            DropAlternativeAssetData drop_alternative_asset_data = 18; 
         }
     }
 
@@ -629,6 +636,30 @@ message CellarV2_5 {
     message DecreaseShareSupplyCap {
         string new_cap = 1;
     } 
+
+    /*
+    * Allows the strategist to add, or update an existing alternative asset deposit.
+    *
+    * Represents function `setAlternativeAssetData(ERC20 _alternativeAsset, uint32 _alternativeHoldingPosition, uint32 _alternativeAssetFee)`
+    */
+    message SetAlternativeAssetData {
+        // The address of the alternative asset
+        string alternative_asset = 1;
+        // The holding position to direct alternative asset deposits to
+        uint32 alternative_holding_position = 2;
+        // The fee to charge for depositing this alternative asset
+        uint32 alternative_asset_fee = 3;
+    }
+
+    /*
+    * Allows the strategist to stop an alternative asset from being deposited.
+    *
+    * Represents function `dropAlternativeAssetData(ERC20 _alternativeAsset)`
+    */
+    message DropAlternativeAssetData {
+        // The address of the alternative asset
+        string alternative_asset = 1;
+    }
 }
 
 /*
@@ -831,5 +862,11 @@ message AdaptorCall {
         CurveAdaptorV1Calls curve_v1_calls = 30;
         // Represents function calls for the AuraERC4626AdaptorV1
         AuraERC4626AdaptorV1Calls aura_erc4626_v1_calls = 31;
+        // Represents function calls for the MorphoBlueCollateralAdaptorV1
+        MorphoBlueCollateralAdaptorV1Calls morpho_blue_collateral_v1_calls = 32;
+        // Represents function calls for the MorphoBlueDebtAdaptorV1
+        MorphoBlueDebtAdaptorV1Calls morpho_blue_debt_v1_calls = 33;
+        // Represents function calls for the MorphoBlueSupplyAdaptorV1
+        MorphoBlueSupplyAdaptorV1Calls morpho_blue_supply_v1_calls = 34;
     }
 }

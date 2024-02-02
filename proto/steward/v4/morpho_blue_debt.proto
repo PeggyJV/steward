@@ -1,0 +1,58 @@
+/*
+* Protos for function calls to the Morpho Blue Debt adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+import "common.proto";
+
+// Represents call data for the Morpho Blue Debt adaptor.
+message MorphoBlueDebtAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `borrowFromMorphoBlue(MarketParams memory _market, uint256 _amountToBorrow)`
+        BorrowFromMorphoBlue borrow_from_morpho_blue = 2;
+        // Represents function `repayMorphoBlueDebt(MarketParams memory _market, uint256 _debtTokenRepayAmount)`
+        RepayMorphoBlueDebt repay_morpho_blue_debt = 3;
+    }
+
+    /*
+    * Allows strategists borrow a specific amount of an asset on Morpho Blue
+    *
+    * Represents function `borrowFromMorphoBlue(MarketParams memory _market, uint256 _amountToBorrow)`
+    */
+    message BorrowFromMorphoBlue {
+        // Identifier of a Morpho Blue Market 
+        MarketParams market = 1;
+
+        // The amount of the debt token to borrow
+        string amount_to_borrow = 2;
+    }
+
+    /*
+    * Allows strategists to repay loan debt on Morph Blue Lending Market. Make sure to call addInterest() beforehand to ensure we are repaying what is required.
+    *
+    * Represents function `repayMorphoBlueDebt(MarketParams memory _market, uint256 _debtTokenRepayAmount)`
+    */
+    message RepayMorphoBlueDebt {
+       // Identifier of a Morpho Blue Market 
+        MarketParams market = 1;
+
+        // The amount of the debt token to repay
+        string debt_token_repay_amount = 2;
+    }
+}
+
+message MorphoBlueDebtAdaptorV1Calls {
+    repeated MorphoBlueDebtAdaptorV1 calls = 1;
+}

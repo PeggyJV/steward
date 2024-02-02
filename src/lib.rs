@@ -91,6 +91,10 @@ pub mod abi {
             include!("gen/abi/cellar_adaptor_v1.rs");
         }
 
+        pub mod cellar_with_multi_asset_deposit_v1 {
+            include!("gen/abi/cellar_with_multi_asset_deposit_v1.rs");
+        }
+
         pub mod cellar_with_share_lock_period_v1 {
             include!("gen/abi/cellar_with_share_lock_period_v1.rs");
         }
@@ -145,6 +149,18 @@ pub mod abi {
 
         pub mod morpho_aave_v3_debt_token_adaptor_v1 {
             include!("gen/abi/morpho_aave_v3_debt_token_adaptor_v1.rs");
+        }
+
+        pub mod morpho_blue_collateral_adaptor_v1 {
+            include!("gen/abi/morpho_blue_collateral_adaptor_v1.rs");
+        }
+
+        pub mod morpho_blue_debt_adaptor_v1 {
+            include!("gen/abi/morpho_blue_debt_adaptor_v1.rs");
+        }
+
+        pub mod morpho_blue_supply_adaptor_v1 {
+            include!("gen/abi/morpho_blue_supply_adaptor_v1.rs");
         }
 
         pub mod oneinch_adaptor_v1 {

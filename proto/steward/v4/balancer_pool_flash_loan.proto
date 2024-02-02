@@ -15,6 +15,9 @@ import "morpho_aave_v2_debt_token.proto";
 import "morpho_aave_v3_a_token_collateral.proto";
 import "morpho_aave_v3_a_token_p2p.proto";
 import "morpho_aave_v3_debt_token.proto";
+import "morpho_blue_collateral.proto";
+import "morpho_blue_debt.proto";
+import "morpho_blue_supply.proto";
 import "uniswap_v3.proto";
 import "swap_with_uniswap.proto";
 import "fees_and_reserves.proto";
@@ -110,6 +113,12 @@ message BalancerPoolAdaptorV1FlashLoan {
             CurveAdaptorV1Calls curve_v1_calls = 27;
             // Represents function calls for the AuraERC4626AdaptorV1
             AuraERC4626AdaptorV1Calls aura_erc4626_v1_calls = 28;
+            // Represents function calls for the MorphoBlueCollateralAdaptorV1
+            MorphoBlueCollateralAdaptorV1Calls morpho_blue_collateral_v1_calls = 29;
+            // Represents function calls for the MorphoBlueDebtAdaptorV1
+            MorphoBlueDebtAdaptorV1Calls morpho_blue_debt_v1_calls = 30;
+            // Represents function calls for the MorphoBlueSupplyAdaptorV1
+            MorphoBlueSupplyAdaptorV1Calls morpho_blue_supply_v1_calls = 31;
         }
     }
 }

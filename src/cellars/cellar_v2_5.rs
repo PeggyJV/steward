@@ -2,8 +2,14 @@
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
 use crate::abi::{
-    adaptors::cellar_with_share_lock_period_v1::{
-        CellarWithShareLockPeriodV1Calls, SetShareLockPeriodCall,
+    adaptors::{
+        cellar_with_multi_asset_deposit_v1::{
+            CellarWithMultiAssetDepositV1Calls, DropAlternativeAssetDataCall,
+            SetAlternativeAssetDataCall,
+        },
+        cellar_with_share_lock_period_v1::{
+            CellarWithShareLockPeriodV1Calls, SetShareLockPeriodCall,
+        },
     },
     cellar_v2_5::{AdaptorCall as AbiAdaptorCall, *},
 };
@@ -190,6 +196,32 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_5Calls::DecreaseShareSupplyCap(call).encode())
         }
+        Function::SetAlternativeAssetData(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetAlternativeAssetDataCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetAlternativeAssetDataCall {
+                alternative_asset: sp_call_parse_address(params.alternative_asset)?,
+                alternative_holding_position: params.alternative_holding_position,
+                alternative_asset_fee: params.alternative_asset_fee,
+            };
+
+            Ok(CellarWithMultiAssetDepositV1Calls::SetAlternativeAssetData(call).encode())
+        }
+        Function::DropAlternativeAssetData(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &DropAlternativeAssetDataCall::function_name(),
+                &cellar_id,
+            );
+            let call = DropAlternativeAssetDataCall {
+                alternative_asset: sp_call_parse_address(params.alternative_asset)?,
+            };
+
+            Ok(CellarWithMultiAssetDepositV1Calls::DropAlternativeAssetData(call).encode())
+        }
     }
 }
 
@@ -291,6 +323,15 @@ fn get_encoded_adaptor_calls(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCal
             AuraErc4626V1Calls(params) => {
                 calls.extend(adaptors::aura::aura_erc4626_adaptor_v1_calls(params)?)
             }
+            MorphoBlueCollateralV1Calls(params) => calls.extend(
+                adaptors::morpho::morpho_blue_collateral_adaptor_v1_calls(params)?,
+            ),
+            MorphoBlueDebtV1Calls(params) => {
+                calls.extend(adaptors::morpho::morpho_blue_debt_adaptor_v1_calls(params)?)
+            }
+            MorphoBlueSupplyV1Calls(params) => calls.extend(
+                adaptors::morpho::morpho_blue_supply_adaptor_v1_calls(params)?,
+            ),
         };
 
         result.push(AbiAdaptorCall {
