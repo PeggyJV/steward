@@ -7,25 +7,7 @@ package steward.v4;
 
 option go_package = "/steward_proto";
 
-import "a_token.proto";
-import "debt_token.proto";
-import "aave_v3_a_token.proto";
-import "c_token.proto";
-import "f_token.proto";
-import "morpho_aave_v2_a_token.proto";
-import "morpho_aave_v2_debt_token.proto";
-import "morpho_aave_v3_a_token_collateral.proto";
-import "morpho_aave_v3_a_token_p2p.proto";
-import "morpho_aave_v3_debt_token.proto";
-import "uniswap_v3.proto";
-import "swap_with_uniswap.proto";
-import "fees_and_reserves.proto";
-import "zero_x.proto";
-import "oneinch.proto";
-import "vesting_simple.proto";
 import "base.proto";
-import "cellar_adaptor.proto";
-import "aave_v2_enable_asset_as_collateral_adaptor.proto";
 
 // Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
 message AaveV3DebtTokenAdaptorV1 {
