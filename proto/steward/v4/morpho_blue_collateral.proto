@@ -1,0 +1,58 @@
+/*
+* Protos for function calls to the Morpho Blue Collateral adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+import "common.proto";
+
+// Represents call data for the Morpho Blue Collateral adaptor.
+message MorphoBlueCollateralAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `addCollateral(MarketParams memory _market, uint256 _collateralToDeposit)`
+        AddCollateral add_collateral = 2;
+        // Represents function `removeCollateral(MarketParams memory _market, uint256 _collateralAmount)`
+        RemoveCollateral remove_collateral = 3;
+    }
+
+    /*
+    * Allows strategists to add collateral to the respective cellar position on specified MB Market, enabling borrowing.
+    *
+    * Represents function `addCollateral(MarketParams memory _market, uint256 _collateralToDeposit)`
+    */
+    message AddCollateral {
+        // Identifier of a Morpho Blue Market 
+        MarketParams market = 1;
+
+        // The amount of collateral to add
+        string collateral_to_deposit = 2;
+    }
+
+    /*
+    * Allows strategists to remove collateral from the respective cellar position on specified MB Market.
+    *
+    * Represents function `removeCollateral(MarketParams memory _market, uint256 _collateralAmount)`
+    */
+    message RemoveCollateral {
+       // Identifier of a Morpho Blue Market 
+        MarketParams market = 1;
+
+        // The amount of collateral to remove
+        string collateral_amount = 2;
+    }
+}
+
+message MorphoBlueCollateralAdaptorV1Calls {
+    repeated MorphoBlueCollateralAdaptorV1 calls = 1;
+}

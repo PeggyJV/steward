@@ -151,6 +151,18 @@ pub mod abi {
             include!("gen/abi/morpho_aave_v3_debt_token_adaptor_v1.rs");
         }
 
+        pub mod morpho_blue_collateral_adaptor_v1 {
+            include!("gen/abi/morpho_blue_collateral_adaptor_v1.rs");
+        }
+
+        pub mod morpho_blue_debt_adaptor_v1 {
+            include!("gen/abi/morpho_blue_debt_adaptor_v1.rs");
+        }
+
+        pub mod morpho_blue_supply_adaptor_v1 {
+            include!("gen/abi/morpho_blue_supply_adaptor_v1.rs");
+        }
+
         pub mod oneinch_adaptor_v1 {
             include!("gen/abi/oneinch_adaptor_v1.rs");
         }
