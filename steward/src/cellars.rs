@@ -38,7 +38,7 @@ pub const TURBOSWETH_ORACLE3: (U256, &str) = (
 );
 pub const TURBOSWETH_ORACLE4: (U256, &str) = (
     U256([5, 0, 0, 0]),
-    "0xcB265CAC371970E51BeC685930E1340fD919FaE3",
+    "cb265cac371970e51bec685930e1340fd919fae3",
 );
 
 pub const ALLOWED_TURBOSWETH_PRICE_ORACLES: [(U256, &str); 4] = [
