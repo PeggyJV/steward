@@ -3,15 +3,13 @@
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
 use abscissa_core::tracing::{debug, info};
 use ethers::{abi::AbiEncode, contract::EthCall, types::Bytes};
-use GovernanceFunction::*;
-use StrategyFunction::*;
 
 use crate::{
     abi::cellar_v2::{AdaptorCall as AbiAdaptorCall, *},
     cellars::adaptors,
     error::Error,
     proto::{
-        adaptor_call::CallData::*, cellar_v2::Function as StrategyFunction,
+        adaptor_call::CallData::*, cellar_v2::Function,
         cellar_v2_governance::Function as GovernanceFunction, AdaptorCall,
     },
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
@@ -19,18 +17,19 @@ use crate::{
 
 use super::{
     check_blocked_adaptor, check_blocked_position, log_cellar_call, log_governance_cellar_call,
+    validate_new_adaptor, validate_new_position, V2_0_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2";
 
-pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {
+pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>, Error> {
     get_call(function, cellar_id).map(|call| call.encode())
 }
 
-pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV2Calls, Error> {
+pub fn get_call(function: Function, cellar_id: String) -> Result<CellarV2Calls, Error> {
     match function {
-        AddPosition(params) => {
-            check_blocked_position(&params.position_id)?;
+        Function::AddPosition(params) => {
+            validate_new_position(&cellar_id, params.position_id, &V2_0_PERMISSIONS)?;
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
 
             let call = AddPositionCall {
@@ -42,7 +41,7 @@ pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV
 
             Ok(CellarV2Calls::AddPosition(call))
         }
-        CallOnAdaptor(params) => {
+        Function::CallOnAdaptor(params) => {
             for adaptor_call in params.data.clone() {
                 check_blocked_adaptor(&adaptor_call.adaptor)?;
             }
@@ -54,7 +53,7 @@ pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV
 
             Ok(CellarV2Calls::CallOnAdaptor(call))
         }
-        RemovePosition(params) => {
+        Function::RemovePosition(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &RemovePositionCall::function_name(),
@@ -67,7 +66,7 @@ pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV
 
             Ok(CellarV2Calls::RemovePosition(call))
         }
-        SetHoldingPosition(params) => {
+        Function::SetHoldingPosition(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetHoldingPositionCall::function_name(),
@@ -79,7 +78,7 @@ pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV
 
             Ok(CellarV2Calls::SetHoldingPosition(call))
         }
-        SetStrategistPayoutAddress(params) => {
+        Function::SetStrategistPayoutAddress(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetStrategistPayoutAddressCall::function_name(),
@@ -91,7 +90,7 @@ pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV
 
             Ok(CellarV2Calls::SetStrategistPayoutAddress(call))
         }
-        SwapPositions(params) => {
+        Function::SwapPositions(params) => {
             log_cellar_call(CELLAR_NAME, &SwapPositionsCall::function_name(), &cellar_id);
             let call = SwapPositionsCall {
                 index_1: params.index_1,
@@ -101,7 +100,7 @@ pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV
 
             Ok(CellarV2Calls::SwapPositions(call))
         }
-        SetShareLockPeriod(params) => {
+        Function::SetShareLockPeriod(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetShareLockPeriodCall::function_name(),
@@ -113,6 +112,16 @@ pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV
 
             Ok(CellarV2Calls::SetShareLockPeriod(call))
         }
+        Function::SetupAdaptor(params) => {
+            validate_new_adaptor(&cellar_id, &params.adaptor, &V2_0_PERMISSIONS)?;
+            log_cellar_call(CELLAR_NAME, &SetupAdaptorCall::function_name(), &cellar_id);
+
+            let call = SetupAdaptorCall {
+                adaptor: sp_call_parse_address(params.adaptor)?,
+            };
+
+            Ok(CellarV2Calls::SetupAdaptor(call))
+        }
     }
 }
 
@@ -122,7 +131,7 @@ pub fn get_encoded_governance_call(
     proposal_id: u64,
 ) -> Result<Vec<u8>, Error> {
     match function {
-        InitiateShutdown(_) => {
+        GovernanceFunction::InitiateShutdown(_) => {
             log_governance_cellar_call(
                 proposal_id,
                 CELLAR_NAME,
@@ -132,7 +141,7 @@ pub fn get_encoded_governance_call(
             let call = InitiateShutdownCall {};
             Ok(CellarV2Calls::InitiateShutdown(call).encode())
         }
-        LiftShutdown(_) => {
+        GovernanceFunction::LiftShutdown(_) => {
             log_governance_cellar_call(
                 proposal_id,
                 CELLAR_NAME,
@@ -142,7 +151,7 @@ pub fn get_encoded_governance_call(
             let call = LiftShutdownCall {};
             Ok(CellarV2Calls::LiftShutdown(call).encode())
         }
-        SetPlatformFee(params) => {
+        GovernanceFunction::SetPlatformFee(params) => {
             log_governance_cellar_call(
                 proposal_id,
                 CELLAR_NAME,
@@ -154,7 +163,7 @@ pub fn get_encoded_governance_call(
             };
             Ok(CellarV2Calls::SetPlatformFee(call).encode())
         }
-        SetStrategistPlatformCut(params) => {
+        GovernanceFunction::SetStrategistPlatformCut(params) => {
             log_governance_cellar_call(
                 proposal_id,
                 CELLAR_NAME,
@@ -164,7 +173,7 @@ pub fn get_encoded_governance_call(
             let call = SetStrategistPlatformCutCall { cut: params.amount };
             Ok(CellarV2Calls::SetStrategistPlatformCut(call).encode())
         }
-        SetupAdaptor(params) => {
+        GovernanceFunction::SetupAdaptor(params) => {
             log_governance_cellar_call(
                 proposal_id,
                 CELLAR_NAME,
@@ -186,7 +195,7 @@ pub fn get_encoded_governance_call(
 
             Ok(CellarV2Calls::SetupAdaptor(call).encode())
         }
-        SetRebalanceDeviation(params) => {
+        GovernanceFunction::SetRebalanceDeviation(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetRebalanceDeviationCall::function_name(),
@@ -197,6 +206,31 @@ pub fn get_encoded_governance_call(
             };
 
             Ok(CellarV2Calls::SetRebalanceDeviation(call).encode())
+        }
+        GovernanceFunction::AddPosition(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &AddPositionCall::function_name(),
+                cellar_id,
+            );
+
+            if let Err(err) = check_blocked_position(&params.position_id, &V2_0_PERMISSIONS) {
+                info!(
+                    "did not process governance call due to blocked position {}",
+                    params.position_id
+                );
+                return Err(err);
+            }
+
+            let call = AddPositionCall {
+                index: params.index,
+                position_id: params.position_id,
+                configuration_data: params.configuration_data.into(),
+                in_debt_array: params.in_debt_array,
+            };
+
+            Ok(CellarV2Calls::AddPosition(call).encode())
         }
     }
 }

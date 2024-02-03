@@ -46,37 +46,28 @@ import "curve.proto";
 */
 message CellarV2 {
     // The function you wish to execute on the target cellar
-    oneof function {
-        // Represents function `addPosition(uint256 index, address position)`
-        AddPosition add_position = 1;
+    oneof function { 
         // Represents function `callOnAdaptor(AdaptorCall[] memory data)`
-        CallOnAdaptor call_on_adaptor = 2;
+        CallOnAdaptor call_on_adaptor = 1;
         // Represents function `removePosition(uint256 index)`
-        RemovePosition remove_position = 3;
+        RemovePosition remove_position = 2;
         // Represents function `setHoldingPosition(uint32 position_id)`
-        SetHoldingPosition set_holding_position = 4;
+        SetHoldingPosition set_holding_position = 3;
         // Represents function `setStrategistPayoutAddress(address payout)`
-        SetStrategistPayoutAddress set_strategist_payout_address = 5;
+        SetStrategistPayoutAddress set_strategist_payout_address = 4;
         // Represents function `swapPositions(uint256 index1, uint256 index2)`
-        SwapPositions swap_positions = 6;
+        SwapPositions swap_positions = 5;
         // Represents function `setShareLockPeriod(uint256 newLock)`
-        SetShareLockPeriod set_share_lock_period = 7;
-    }
+        SetShareLockPeriod set_share_lock_period = 6;
 
-    /*
-    * Insert a trusted position to the list of positions used by the cellar at a given index.
-    *
-    * Represents function `addPosition(uint32 index, uint32 positionId, bytes configurationData, bool inDebtArray)`
-    */
-    message AddPosition {
-        // Index at which to add the position
-        uint32 index = 1;
-        // The position's ID in the cellar registry
-        uint32 position_id = 2;
-        // Data used to configure how the position behaves
-        bytes configuration_data = 3;
-        // Whether to add position in the debt array, or the credit array.
-        bool in_debt_array = 4;
+        // TEMPORARY
+        // This is a governance function, but will be allowed in a limited capacity for SPs while
+        // the new governance model is still in early adoption for emergencies.
+
+        // Represents function `addPosition(uint256 index, address position)`
+        AddPosition add_position = 7;
+        // Represents function `setupAdaptor(address adaptor)`
+        SetupAdaptor setup_adaptor = 8;
     }
 
     /*
@@ -141,6 +132,32 @@ message CellarV2 {
     message SetShareLockPeriod {
         string new_lock = 1;
     }
+
+    /*
+    * Insert a trusted position to the list of positions used by the cellar at a given index.
+    *
+    * Represents function `addPosition(uint32 index, uint32 positionId, bytes configurationData, bool inDebtArray)`
+    */
+    message AddPosition {
+        // Index at which to add the position
+        uint32 index = 1;
+        // The position's ID in the cellar registry
+        uint32 position_id = 2;
+        // Data used to configure how the position behaves
+        bytes configuration_data = 3;
+        // Whether to add position in the debt array, or the credit array.
+        bool in_debt_array = 4;
+    }
+
+    /*
+    * Allows owner to add new adaptors for the cellar to use.
+    *
+    * Represents function `setupAdaptor(address adaptor)`
+    */
+    message SetupAdaptor {
+        // Address of the adaptor
+        string adaptor = 1;
+    }
 }
 
 /*
@@ -161,6 +178,8 @@ message CellarV2Governance {
         SetupAdaptor setup_adaptor = 5;
         // Represents function `setRebalanceDeviation(uint256)`
         SetRebalanceDeviation set_rebalance_deviation = 6;
+        // Represents function `addPosition(uint256 index, address position)`
+        AddPosition add_position = 7;
     }
 
     // Represents function `initiateShutdown()`
@@ -202,6 +221,22 @@ message CellarV2Governance {
     message SetRebalanceDeviation {
         string new_deviation = 1;
     }
+
+    /*
+    * Insert a trusted position to the list of positions used by the cellar at a given index.
+    *
+    * Represents function `addPosition(uint32 index, uint32 positionId, bytes configurationData, bool inDebtArray)`
+    */
+    message AddPosition {
+        // Index at which to add the position
+        uint32 index = 1;
+        // The position's ID in the cellar registry
+        uint32 position_id = 2;
+        // Data used to configure how the position behaves
+        bytes configuration_data = 3;
+        // Whether to add position in the debt array, or the credit array.
+        bool in_debt_array = 4;
+    }
 }
 
 message CellarV2_2 {
@@ -231,6 +266,19 @@ message CellarV2_2 {
             SetStrategistPayoutAddress set_strategist_payout_address = 7;
             // Represents function `swapPositions(uint256 index1, uint256 index2)`
             SwapPositions swap_positions = 8;
+
+            // TEMPORARY
+            // These are governance functions, but will be allowed in a limited capacity for SPs while
+            // the new governance model is still in early adoption for emergencies.
+
+            // Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+            CachePriceRouter cache_price_router = 9;
+            // Represents function `addAdaptorToCatalogue(address adaptor)`
+            AddAdaptorToCatalogue add_adaptor_to_catalogue = 10;
+            // Represents function `addPositionToCatalogue(uint32 positionId)`
+            AddPositionToCatalogue add_position_to_catalogue = 11;
+            // Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+            ForcePositionOut force_position_out = 12;
         }
     }
 
@@ -329,6 +377,49 @@ message CellarV2_2 {
     */
     message Multicall {
         repeated FunctionCall function_calls = 1;
+    }
+
+    /*
+    * Updates the cellar to use the latest price router in the registry.
+    *
+    * Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+    */
+    message CachePriceRouter {
+        // Whether to check the total assets of the cellar
+        bool check_total_assets = 1;
+        // The allowable range of the cellar's total assets to deviate between old and new routers
+        uint32 allowable_range = 2;
+        // The expected price router address
+        string expected_price_router = 3;
+    }
+
+    /*
+    * Allows the owner to add an adaptor to the Cellar's adaptor catalogue
+    *
+    * Represents function `addAdaptorToCatalogue(address adaptor)`
+    */
+    message AddAdaptorToCatalogue {
+        string adaptor = 1;
+    }
+
+    /*
+    * Allows the owner to add a position to the Cellar's position catalogue
+    *
+    * Represents function `addPositionToCatalogue(uint32 positionId)`
+    */
+    message AddPositionToCatalogue {
+        uint32 position_id = 1;
+    }
+
+    /*
+    * Allows caller to force a position out of the cellar
+    *
+    * Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+    */
+    message ForcePositionOut {
+        uint32 index = 1;
+        uint32 position_id = 2;
+        bool in_debt_array = 3;
     }
 }
 
@@ -495,6 +586,21 @@ message CellarV2_5 {
             SetAlternativeAssetData set_alternative_asset_data = 17;
             // Represents function `setDropAlternativeAssetData(ERC20 _alternativeAsset)`
             DropAlternativeAssetData drop_alternative_asset_data = 18; 
+
+            // TEMPORARY
+            // These are governance functions, but will be allowed in a limited capacity for SPs while
+            // the new governance model is still in early adoption for emergencies.
+
+            // Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
+            SetSharePriceOracle set_share_price_oracle = 19;
+            // Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+            CachePriceRouter cache_price_router = 20;
+            // Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+            ForcePositionOut force_position_out = 21;
+            // Represents function `addAdaptorToCatalogue(address adaptor)`
+            AddAdaptorToCatalogue add_adaptor_to_catalogue = 22;
+            // Represents function `addPositionToCatalogue(uint32 positionId)`
+            AddPositionToCatalogue add_position_to_catalogue = 23;
         }
     }
 
@@ -659,6 +765,61 @@ message CellarV2_5 {
     message DropAlternativeAssetData {
         // The address of the alternative asset
         string alternative_asset = 1;
+    }
+
+    /*
+    * Allows the caller to set the share price oracle contract
+    *
+    * Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
+    */  
+    message SetSharePriceOracle {
+        // The oracle registry ID
+        string registry_id = 1;
+        // The oracle contract address
+        string share_price_oracle = 2;
+    }
+
+    /*
+    * Updates the cellar to use the latest price router in the registry.
+    *
+    * Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+    */
+    message CachePriceRouter {
+        // Whether to check the total assets of the cellar
+        bool check_total_assets = 1;
+        // The allowable range of the cellar's total assets to deviate between old and new routers
+        uint32 allowable_range = 2;
+        // The expected price router address
+        string expected_price_router = 3;
+    }
+
+    /*
+    * Allows caller to force a position out of the cellar
+    *
+    * Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+    */
+    message ForcePositionOut {
+        uint32 index = 1;
+        uint32 position_id = 2;
+        bool in_debt_array = 3;
+    }
+
+    /*
+    * Allows the owner to add an adaptor to the Cellar's adaptor catalogue
+    *
+    * Represents function `addAdaptorToCatalogue(address adaptor)`
+    */
+    message AddAdaptorToCatalogue {
+        string adaptor = 1;
+    }
+
+    /*
+    * Allows the owner to add a position to the Cellar's position catalogue
+    *
+    * Represents function `addPositionToCatalogue(uint32 positionId)`
+    */
+    message AddPositionToCatalogue {
+        uint32 position_id = 1;
     }
 }
 

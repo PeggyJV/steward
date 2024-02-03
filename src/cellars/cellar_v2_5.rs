@@ -34,6 +34,8 @@ use crate::{
 
 use super::{
     check_blocked_adaptor, check_blocked_position, log_cellar_call, log_governance_cellar_call,
+    validate_cache_price_router, validate_force_position_out, validate_new_adaptor,
+    validate_new_position, validate_oracle, V2_5_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2.5";
@@ -222,6 +224,104 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarWithMultiAssetDepositV1Calls::DropAlternativeAssetData(call).encode())
         }
+        Function::SetSharePriceOracle(params) => {
+            validate_oracle(&cellar_id, &params.registry_id, &params.share_price_oracle)?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetSharePriceOracleCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetSharePriceOracleCall {
+                registry_id: string_to_u256(params.registry_id)?,
+                share_price_oracle: sp_call_parse_address(params.share_price_oracle)?,
+            };
+
+            Ok(CellarV2_5Calls::SetSharePriceOracle(call).encode())
+        }
+        Function::CachePriceRouter(params) => {
+            validate_cache_price_router(
+                &cellar_id,
+                params.check_total_assets,
+                params.allowable_range,
+                Some(params.expected_price_router.clone()),
+            )?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &CachePriceRouterCall::function_name(),
+                &cellar_id,
+            );
+            let call = CachePriceRouterCall {
+                check_total_assets: params.check_total_assets,
+                allowable_range: params.allowable_range as u16,
+                expected_price_router: sp_call_parse_address(params.expected_price_router)?,
+            };
+
+            Ok(CellarV2_5Calls::CachePriceRouter(call).encode())
+        }
+        Function::AddAdaptorToCatalogue(params) => {
+            validate_new_adaptor(&cellar_id, &params.adaptor, &V2_5_PERMISSIONS)?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &AddAdaptorToCatalogueCall::function_name(),
+                &cellar_id,
+            );
+
+            if let Err(err) = check_blocked_adaptor(&params.adaptor) {
+                info!(
+                    "did not process governance call due to blocked adaptor {}",
+                    params.adaptor
+                );
+                return Err(err);
+            }
+
+            let call = AddAdaptorToCatalogueCall {
+                adaptor: sp_call_parse_address(params.adaptor)?,
+            };
+
+            Ok(CellarV2_5Calls::AddAdaptorToCatalogue(call).encode())
+        }
+        Function::AddPositionToCatalogue(params) => {
+            validate_new_position(&cellar_id, params.position_id, &V2_5_PERMISSIONS)?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &AddPositionToCatalogueCall::function_name(),
+                &cellar_id,
+            );
+
+            if let Err(err) = check_blocked_position(&params.position_id, &V2_5_PERMISSIONS) {
+                info!(
+                    "did not process governance call due to blocked position id {}",
+                    params.position_id
+                );
+                return Err(err);
+            }
+
+            let call = AddPositionToCatalogueCall {
+                position_id: params.position_id,
+            };
+
+            Ok(CellarV2_5Calls::AddPositionToCatalogue(call).encode())
+        }
+        Function::ForcePositionOut(params) => {
+            validate_force_position_out(
+                &cellar_id,
+                params.index,
+                params.position_id,
+                params.in_debt_array,
+            )?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &ForcePositionOutCall::function_name(),
+                &cellar_id,
+            );
+            let call = ForcePositionOutCall {
+                position_id: params.position_id,
+                index: params.index,
+                in_debt_array: params.in_debt_array,
+            };
+
+            Ok(CellarV2_5Calls::ForcePositionOut(call).encode())
+        }
     }
 }
 
@@ -379,7 +479,7 @@ pub fn get_encoded_governance_call(
                 cellar_id,
             );
 
-            if let Err(err) = check_blocked_position(&params.position_id) {
+            if let Err(err) = check_blocked_position(&params.position_id, &V2_5_PERMISSIONS) {
                 info!(
                     "did not process governance call due to blocked position id {}",
                     params.position_id

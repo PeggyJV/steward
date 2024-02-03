@@ -23,6 +23,8 @@ use crate::{
 
 use super::{
     check_blocked_adaptor, check_blocked_position, log_cellar_call, log_governance_cellar_call,
+    validate_cache_price_router, validate_force_position_out, validate_new_adaptor,
+    validate_new_position, V2_2_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2.2";
@@ -51,7 +53,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
         .ok_or_else(|| sp_call_error("call data is empty".to_string()))?;
     match function {
         Function::AddPosition(params) => {
-            check_blocked_position(&params.position_id)?;
+            check_blocked_position(&params.position_id, &V2_2_PERMISSIONS)?;
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
 
             let call = AddPositionCall {
@@ -146,6 +148,71 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_2Calls::SwapPositions(call).encode())
         }
+        Function::CachePriceRouter(params) => {
+            validate_cache_price_router(
+                &cellar_id,
+                params.check_total_assets,
+                params.allowable_range,
+                None,
+            )?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &CachePriceRouterCall::function_name(),
+                &cellar_id,
+            );
+            let call = CachePriceRouterCall {
+                check_total_assets: params.check_total_assets,
+                allowable_range: params.allowable_range as u16,
+            };
+
+            Ok(CellarV2_2Calls::CachePriceRouter(call).encode())
+        }
+        Function::AddAdaptorToCatalogue(params) => {
+            validate_new_adaptor(&cellar_id, &params.adaptor, &V2_2_PERMISSIONS)?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &AddAdaptorToCatalogueCall::function_name(),
+                &cellar_id,
+            );
+            let call = AddAdaptorToCatalogueCall {
+                adaptor: sp_call_parse_address(params.adaptor)?,
+            };
+
+            Ok(CellarV2_2Calls::AddAdaptorToCatalogue(call).encode())
+        }
+        Function::AddPositionToCatalogue(params) => {
+            validate_new_position(&cellar_id, params.position_id, &V2_2_PERMISSIONS)?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &AddPositionToCatalogueCall::function_name(),
+                &cellar_id,
+            );
+            let call = AddPositionToCatalogueCall {
+                position_id: params.position_id,
+            };
+
+            Ok(CellarV2_2Calls::AddPositionToCatalogue(call).encode())
+        }
+        Function::ForcePositionOut(params) => {
+            validate_force_position_out(
+                &cellar_id,
+                params.index,
+                params.position_id,
+                params.in_debt_array,
+            )?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &ForcePositionOutCall::function_name(),
+                &cellar_id,
+            );
+            let call = ForcePositionOutCall {
+                position_id: params.position_id,
+                index: params.index,
+                in_debt_array: params.in_debt_array,
+            };
+
+            Ok(CellarV2_2Calls::ForcePositionOut(call).encode())
+        }
     }
 }
 
@@ -185,7 +252,7 @@ pub fn get_encoded_governance_call(
                 cellar_id,
             );
 
-            if let Err(err) = check_blocked_position(&params.position_id) {
+            if let Err(err) = check_blocked_position(&params.position_id, &V2_2_PERMISSIONS) {
                 info!(
                     "did not process governance call due to blocked position id {}",
                     params.position_id
