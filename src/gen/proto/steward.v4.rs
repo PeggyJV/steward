@@ -3519,7 +3519,7 @@ pub mod cellar_v2 {
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct CellarV2Governance {
     /// The function to call on the target cellar
-    #[prost(oneof = "cellar_v2_governance::Function", tags = "1, 2, 3, 4, 5, 6, 7")]
+    #[prost(oneof = "cellar_v2_governance::Function", tags = "1, 2, 3, 4, 5, 6")]
     pub function: ::core::option::Option<cellar_v2_governance::Function>,
 }
 /// Nested message and enum types in `CellarV2Governance`.
@@ -3564,25 +3564,6 @@ pub mod cellar_v2_governance {
         #[prost(string, tag = "1")]
         pub new_deviation: ::prost::alloc::string::String,
     }
-    ///
-    /// Insert a trusted position to the list of positions used by the cellar at a given index.
-    ///
-    /// Represents function `addPosition(uint32 index, uint32 positionId, bytes configurationData, bool inDebtArray)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct AddPosition {
-        /// Index at which to add the position
-        #[prost(uint32, tag = "1")]
-        pub index: u32,
-        /// The position's ID in the cellar registry
-        #[prost(uint32, tag = "2")]
-        pub position_id: u32,
-        /// Data used to configure how the position behaves
-        #[prost(bytes = "vec", tag = "3")]
-        pub configuration_data: ::prost::alloc::vec::Vec<u8>,
-        /// Whether to add position in the debt array, or the credit array.
-        #[prost(bool, tag = "4")]
-        pub in_debt_array: bool,
-    }
     /// The function to call on the target cellar
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
     pub enum Function {
@@ -3604,9 +3585,6 @@ pub mod cellar_v2_governance {
         /// Represents function `setRebalanceDeviation(uint256)`
         #[prost(message, tag = "6")]
         SetRebalanceDeviation(SetRebalanceDeviation),
-        /// Represents function `addPosition(uint256 index, address position)`
-        #[prost(message, tag = "7")]
-        AddPosition(AddPosition),
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]

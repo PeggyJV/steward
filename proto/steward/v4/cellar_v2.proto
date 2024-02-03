@@ -178,8 +178,6 @@ message CellarV2Governance {
         SetupAdaptor setup_adaptor = 5;
         // Represents function `setRebalanceDeviation(uint256)`
         SetRebalanceDeviation set_rebalance_deviation = 6;
-        // Represents function `addPosition(uint256 index, address position)`
-        AddPosition add_position = 7;
     }
 
     // Represents function `initiateShutdown()`
@@ -220,22 +218,6 @@ message CellarV2Governance {
     */
     message SetRebalanceDeviation {
         string new_deviation = 1;
-    }
-
-    /*
-    * Insert a trusted position to the list of positions used by the cellar at a given index.
-    *
-    * Represents function `addPosition(uint32 index, uint32 positionId, bytes configurationData, bool inDebtArray)`
-    */
-    message AddPosition {
-        // Index at which to add the position
-        uint32 index = 1;
-        // The position's ID in the cellar registry
-        uint32 position_id = 2;
-        // Data used to configure how the position behaves
-        bytes configuration_data = 3;
-        // Whether to add position in the debt array, or the credit array.
-        bool in_debt_array = 4;
     }
 }
 

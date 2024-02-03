@@ -16,8 +16,8 @@ use crate::{
 };
 
 use super::{
-    check_blocked_adaptor, check_blocked_position, log_cellar_call, log_governance_cellar_call,
-    validate_new_adaptor, validate_new_position, V2_0_PERMISSIONS,
+    check_blocked_adaptor, log_cellar_call, log_governance_cellar_call, validate_new_adaptor,
+    V2_0_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2";
@@ -29,7 +29,6 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
 pub fn get_call(function: Function, cellar_id: String) -> Result<CellarV2Calls, Error> {
     match function {
         Function::AddPosition(params) => {
-            validate_new_position(&cellar_id, params.position_id, &V2_0_PERMISSIONS)?;
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
 
             let call = AddPositionCall {
@@ -206,31 +205,6 @@ pub fn get_encoded_governance_call(
             };
 
             Ok(CellarV2Calls::SetRebalanceDeviation(call).encode())
-        }
-        GovernanceFunction::AddPosition(params) => {
-            log_governance_cellar_call(
-                proposal_id,
-                CELLAR_NAME,
-                &AddPositionCall::function_name(),
-                cellar_id,
-            );
-
-            if let Err(err) = check_blocked_position(&params.position_id, &V2_0_PERMISSIONS) {
-                info!(
-                    "did not process governance call due to blocked position {}",
-                    params.position_id
-                );
-                return Err(err);
-            }
-
-            let call = AddPositionCall {
-                index: params.index,
-                position_id: params.position_id,
-                configuration_data: params.configuration_data.into(),
-                in_debt_array: params.in_debt_array,
-            };
-
-            Ok(CellarV2Calls::AddPosition(call).encode())
         }
     }
 }
