@@ -34,8 +34,8 @@ use crate::{
 
 use super::{
     check_blocked_adaptor, check_blocked_position, log_cellar_call, log_governance_cellar_call,
-    validate_cache_price_router, validate_force_position_out, validate_new_adaptor,
-    validate_new_position, validate_oracle, V2_5_PERMISSIONS,
+    validate_cache_price_router, validate_new_adaptor, validate_new_position, validate_oracle,
+    V2_5_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2.5";
@@ -302,26 +302,6 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_5Calls::AddPositionToCatalogue(call).encode())
         }
-        Function::ForcePositionOut(params) => {
-            validate_force_position_out(
-                &cellar_id,
-                params.index,
-                params.position_id,
-                params.in_debt_array,
-            )?;
-            log_cellar_call(
-                CELLAR_NAME,
-                &ForcePositionOutCall::function_name(),
-                &cellar_id,
-            );
-            let call = ForcePositionOutCall {
-                position_id: params.position_id,
-                index: params.index,
-                in_debt_array: params.in_debt_array,
-            };
-
-            Ok(CellarV2_5Calls::ForcePositionOut(call).encode())
-        }
         Function::SetRebalanceDeviation(params) => {
             log_cellar_call(
                 CELLAR_NAME,
@@ -353,16 +333,6 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_5Calls::SetStrategistPlatformCut(call).encode())
         }
-        Function::ToggleIgnorePause(_) => {
-            log_cellar_call(
-                CELLAR_NAME,
-                &ToggleIgnorePauseCall::function_name(),
-                &cellar_id,
-            );
-            let call = ToggleIgnorePauseCall {};
-
-            Ok(CellarV2_5Calls::ToggleIgnorePause(call).encode())
-        }
         Function::IncreaseShareSupplyCap(params) => {
             log_cellar_call(
                 CELLAR_NAME,
@@ -374,21 +344,6 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
             };
 
             Ok(CellarV2_5Calls::IncreaseShareSupplyCap(call).encode())
-        }
-        Function::SetAutomationActions(params) => {
-            log_cellar_call(
-                CELLAR_NAME,
-                &SetAutomationActionsCall::function_name(),
-                &cellar_id,
-            );
-            let call = SetAutomationActionsCall {
-                registry_id: string_to_u256(params.registry_id)?,
-                expected_automation_actions: sp_call_parse_address(
-                    params.expected_automation_actions,
-                )?,
-            };
-
-            Ok(CellarV2_5Calls::SetAutomationActions(call).encode())
         }
     }
 }

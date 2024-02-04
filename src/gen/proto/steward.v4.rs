@@ -3647,7 +3647,7 @@ pub mod cellar_v2_2 {
     pub struct FunctionCall {
         #[prost(
             oneof = "function_call::Function",
-            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18"
+            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16"
         )]
         pub function: ::core::option::Option<function_call::Function>,
     }
@@ -3703,14 +3703,8 @@ pub mod cellar_v2_2 {
             /// Represents function `liftShutdown()`
             #[prost(message, tag = "15")]
             LiftShutdown(super::LiftShutdown),
-            /// Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
-            #[prost(message, tag = "16")]
-            ForcePositionOut(super::ForcePositionOut),
-            /// Represents function `toggleIgnorePause(bool ignore)`
-            #[prost(message, tag = "17")]
-            ToggleIgnorePause(super::ToggleIgnorePause),
             /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
-            #[prost(message, tag = "18")]
+            #[prost(message, tag = "16")]
             CachePriceRouter(super::CachePriceRouter),
         }
     }
@@ -3876,28 +3870,6 @@ pub mod cellar_v2_2 {
     /// Represents function `liftShutdown()`
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct LiftShutdown {}
-    ///
-    /// Allows caller to force a position out of the cellar
-    ///
-    /// Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct ForcePositionOut {
-        #[prost(uint32, tag = "1")]
-        pub index: u32,
-        #[prost(uint32, tag = "2")]
-        pub position_id: u32,
-        #[prost(bool, tag = "3")]
-        pub in_debt_array: bool,
-    }
-    ///
-    /// Allows caller to toggle the ignorePause flag on the cellar
-    ///
-    /// Represents function `toggleIgnorePause(bool ignore)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct ToggleIgnorePause {
-        #[prost(bool, tag = "1")]
-        pub ignore: bool,
-    }
     ///
     /// Updates the cellar to use the latest price router in the registry.
     ///
@@ -4081,7 +4053,7 @@ pub mod cellar_v2_5 {
     pub struct FunctionCall {
         #[prost(
             oneof = "function_call::Function",
-            tags = "1, 2, 3, 4, 5, 6, 8, 9, 11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28"
+            tags = "1, 2, 3, 4, 5, 6, 8, 9, 11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25"
         )]
         pub function: ::core::option::Option<function_call::Function>,
     }
@@ -4146,23 +4118,14 @@ pub mod cellar_v2_5 {
             /// Represents function `setStrategistPlatformCut(uint64 cut)`
             #[prost(message, tag = "22")]
             SetStrategistPlatformCut(super::SetStrategistPlatformCut),
-            /// Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
-            #[prost(message, tag = "23")]
-            ForcePositionOut(super::ForcePositionOut),
-            /// Represents function `toggleIgnorePause()`
-            #[prost(message, tag = "24")]
-            ToggleIgnorePause(super::ToggleIgnorePause),
             /// Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
-            #[prost(message, tag = "25")]
+            #[prost(message, tag = "23")]
             SetSharePriceOracle(super::SetSharePriceOracle),
             /// Represents function `increaseShareSupplyCap(uint192 _newShareSupplyCap)`
-            #[prost(message, tag = "26")]
+            #[prost(message, tag = "24")]
             IncreaseShareSupplyCap(super::IncreaseShareSupplyCap),
-            /// Represents function `setAutomatiionActions(uint256 _registryId, address _expectedAutomationActions)`
-            #[prost(message, tag = "27")]
-            SetAutomationActions(super::SetAutomationActions),
             /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
-            #[prost(message, tag = "28")]
+            #[prost(message, tag = "25")]
             CachePriceRouter(super::CachePriceRouter),
         }
     }
@@ -4362,38 +4325,6 @@ pub mod cellar_v2_5 {
         /// The new strategist platform cut
         #[prost(uint64, tag = "1")]
         pub new_cut: u64,
-    }
-    ///
-    /// Allows caller to force a position out of the cellar
-    ///
-    /// Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct ForcePositionOut {
-        #[prost(uint32, tag = "1")]
-        pub index: u32,
-        #[prost(uint32, tag = "2")]
-        pub position_id: u32,
-        #[prost(bool, tag = "3")]
-        pub in_debt_array: bool,
-    }
-    ///
-    /// Allows caller to toggle the ignorePause flag on the cellar
-    ///
-    /// Represents function `toggleIgnorePause()`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct ToggleIgnorePause {}
-    ///
-    /// Allows caller to set automation actions
-    ///
-    /// Represents function `setAutomatiionActions(uint256 _registryId, address _expectedAutomationActions)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct SetAutomationActions {
-        /// The oracle registry ID
-        #[prost(string, tag = "1")]
-        pub registry_id: ::prost::alloc::string::String,
-        /// The automation actions contract address
-        #[prost(string, tag = "2")]
-        pub expected_automation_actions: ::prost::alloc::string::String,
     }
     ///
     /// Allows the caller to increase the share supply cap

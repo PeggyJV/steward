@@ -311,26 +311,6 @@ pub fn validate_cache_price_router(
     Ok(())
 }
 
-pub fn validate_force_position_out(
-    cellar_id: &str,
-    index: u32,
-    position_id: u32,
-    in_debt_array: bool,
-) -> Result<(), Error> {
-    let cellar_id_normalized = normalize_address(cellar_id.to_string());
-    if cellar_id_normalized.eq(CELLAR_TURBO_SOMM)
-        && index > 0 // we expect it to be present
-        && position_id == 100000004
-        && !in_debt_array
-    {
-        return Ok(());
-    }
-
-    Err(sp_call_error(
-        "force position out not authorized for cellar".to_string(),
-    ))
-}
-
 pub fn check_blocked_adaptor(adaptor_id: &str) -> Result<(), Error> {
     let adaptor_id = normalize_address(adaptor_id.to_string());
     if BLOCKED_ADAPTORS.contains(&adaptor_id.as_str()) {

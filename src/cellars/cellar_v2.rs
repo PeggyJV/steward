@@ -17,7 +17,7 @@ use crate::{
 
 use super::{
     check_blocked_adaptor, log_cellar_call, log_governance_cellar_call, validate_new_adaptor,
-    V2_0_PERMISSIONS,
+    validate_new_position, V2_0_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2";
@@ -29,6 +29,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
 pub fn get_call(function: Function, cellar_id: String) -> Result<CellarV2Calls, Error> {
     match function {
         Function::AddPosition(params) => {
+            validate_new_position(&cellar_id, params.position_id, &V2_0_PERMISSIONS)?;
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
 
             let call = AddPositionCall {
