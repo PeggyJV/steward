@@ -213,6 +213,77 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_2Calls::ForcePositionOut(call).encode())
         }
+        Function::SetRebalanceDeviation(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetRebalanceDeviationCall::function_name(),
+                &cellar_id,
+            );
+
+            let new_deviation = string_to_u256(params.new_deviation)?;
+            if new_deviation > U256::from(5000000000000000u64) {
+                return Err(ErrorKind::SPCallError
+                    .context("deviation must be 0.5% or less".to_string())
+                    .into());
+            }
+
+            let call = SetRebalanceDeviationCall { new_deviation };
+
+            Ok(CellarV2_2Calls::SetRebalanceDeviation(call).encode())
+        }
+        Function::InitiateShutdown(_) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &InitiateShutdownCall::function_name(),
+                &cellar_id,
+            );
+            let call = InitiateShutdownCall {};
+
+            Ok(CellarV2_2Calls::InitiateShutdown(call).encode())
+        }
+        Function::SetStrategistPlatformCut(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetStrategistPlatformCutCall::function_name(),
+                &cellar_id,
+            );
+
+            let call = SetStrategistPlatformCutCall {
+                cut: params.new_cut,
+            };
+
+            Ok(CellarV2_2Calls::SetStrategistPlatformCut(call).encode())
+        }
+        Function::LiftShutdown(_) => {
+            log_cellar_call(CELLAR_NAME, &LiftShutdownCall::function_name(), &cellar_id);
+            let call = LiftShutdownCall {};
+
+            Ok(CellarV2_2Calls::LiftShutdown(call).encode())
+        }
+        Function::ToggleIgnorePause(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &ToggleIgnorePauseCall::function_name(),
+                &cellar_id,
+            );
+            let call = ToggleIgnorePauseCall {
+                toggle: params.ignore,
+            };
+
+            Ok(CellarV2_2Calls::ToggleIgnorePause(call).encode())
+        }
+        Function::SetShareLockPeriod(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetShareLockPeriodCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetShareLockPeriodCall {
+                new_lock: string_to_u256(params.new_lock)?,
+            };
+
+            Ok(CellarV2_2Calls::SetShareLockPeriod(call).encode())
+        }
     }
 }
 

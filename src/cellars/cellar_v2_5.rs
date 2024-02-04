@@ -322,6 +322,74 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_5Calls::ForcePositionOut(call).encode())
         }
+        Function::SetRebalanceDeviation(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetRebalanceDeviationCall::function_name(),
+                &cellar_id,
+            );
+
+            let new_deviation = string_to_u256(params.new_deviation)?;
+            if new_deviation > U256::from(5000000000000000u64) {
+                return Err(ErrorKind::SPCallError
+                    .context("deviation must be 0.5% or less".to_string())
+                    .into());
+            }
+
+            let call = SetRebalanceDeviationCall { new_deviation };
+
+            Ok(CellarV2_5Calls::SetRebalanceDeviation(call).encode())
+        }
+        Function::SetStrategistPlatformCut(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetStrategistPlatformCutCall::function_name(),
+                &cellar_id,
+            );
+
+            let call = SetStrategistPlatformCutCall {
+                cut: params.new_cut,
+            };
+
+            Ok(CellarV2_5Calls::SetStrategistPlatformCut(call).encode())
+        }
+        Function::ToggleIgnorePause(_) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &ToggleIgnorePauseCall::function_name(),
+                &cellar_id,
+            );
+            let call = ToggleIgnorePauseCall {};
+
+            Ok(CellarV2_5Calls::ToggleIgnorePause(call).encode())
+        }
+        Function::IncreaseShareSupplyCap(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &IncreaseShareSupplyCapCall::function_name(),
+                &cellar_id,
+            );
+            let call = IncreaseShareSupplyCapCall {
+                new_share_supply_cap: string_to_u256(params.new_cap)?,
+            };
+
+            Ok(CellarV2_5Calls::IncreaseShareSupplyCap(call).encode())
+        }
+        Function::SetAutomationActions(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetAutomationActionsCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetAutomationActionsCall {
+                registry_id: string_to_u256(params.registry_id)?,
+                expected_automation_actions: sp_call_parse_address(
+                    params.expected_automation_actions,
+                )?,
+            };
+
+            Ok(CellarV2_5Calls::SetAutomationActions(call).encode())
+        }
     }
 }
 
@@ -555,7 +623,8 @@ pub fn get_encoded_governance_call(
             Ok(CellarV2_5Calls::ToggleIgnorePause(call).encode())
         }
         GovernanceFunction::SetSharePriceOracle(params) => {
-            log_cellar_call(
+            log_governance_cellar_call(
+                proposal_id,
                 CELLAR_NAME,
                 &SetSharePriceOracleCall::function_name(),
                 cellar_id,
@@ -568,7 +637,8 @@ pub fn get_encoded_governance_call(
             Ok(CellarV2_5Calls::SetSharePriceOracle(call).encode())
         }
         GovernanceFunction::IncreaseShareSupplyCap(params) => {
-            log_cellar_call(
+            log_governance_cellar_call(
+                proposal_id,
                 CELLAR_NAME,
                 &IncreaseShareSupplyCapCall::function_name(),
                 cellar_id,
@@ -580,7 +650,8 @@ pub fn get_encoded_governance_call(
             Ok(CellarV2_5Calls::IncreaseShareSupplyCap(call).encode())
         }
         GovernanceFunction::SetAutomationActions(params) => {
-            log_cellar_call(
+            log_governance_cellar_call(
+                proposal_id,
                 CELLAR_NAME,
                 &SetAutomationActionsCall::function_name(),
                 cellar_id,
@@ -595,7 +666,8 @@ pub fn get_encoded_governance_call(
             Ok(CellarV2_5Calls::SetAutomationActions(call).encode())
         }
         GovernanceFunction::CachePriceRouter(params) => {
-            log_cellar_call(
+            log_governance_cellar_call(
+                proposal_id,
                 CELLAR_NAME,
                 &CachePriceRouterCall::function_name(),
                 cellar_id,

@@ -121,6 +121,52 @@ pub fn get_call(function: Function, cellar_id: String) -> Result<CellarV2Calls, 
 
             Ok(CellarV2Calls::SetupAdaptor(call))
         }
+        Function::InitiateShutdown(_) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &InitiateShutdownCall::function_name(),
+                &cellar_id,
+            );
+            let call = InitiateShutdownCall {};
+            Ok(CellarV2Calls::InitiateShutdown(call))
+        }
+        Function::LiftShutdown(_) => {
+            log_cellar_call(CELLAR_NAME, &LiftShutdownCall::function_name(), &cellar_id);
+            let call = LiftShutdownCall {};
+            Ok(CellarV2Calls::LiftShutdown(call))
+        }
+        Function::SetPlatformFee(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetPlatformFeeCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetPlatformFeeCall {
+                new_platform_fee: params.amount,
+            };
+            Ok(CellarV2Calls::SetPlatformFee(call))
+        }
+        Function::SetStrategistPlatformCut(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetStrategistPlatformCutCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetStrategistPlatformCutCall { cut: params.amount };
+            Ok(CellarV2Calls::SetStrategistPlatformCut(call))
+        }
+        Function::SetRebalanceDeviation(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetRebalanceDeviationCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetRebalanceDeviationCall {
+                new_deviation: string_to_u256(params.new_deviation)?,
+            };
+
+            Ok(CellarV2Calls::SetRebalanceDeviation(call))
+        }
     }
 }
 
