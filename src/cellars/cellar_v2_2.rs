@@ -23,6 +23,7 @@ use crate::{
 
 use super::{
     check_blocked_adaptor, check_blocked_position, log_cellar_call, log_governance_cellar_call,
+    validate_cache_price_router, validate_new_adaptor, validate_new_position, V2_2_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2.2";
@@ -51,7 +52,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
         .ok_or_else(|| sp_call_error("call data is empty".to_string()))?;
     match function {
         Function::AddPosition(params) => {
-            check_blocked_position(&params.position_id)?;
+            check_blocked_position(&params.position_id, &V2_2_PERMISSIONS)?;
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
 
             let call = AddPositionCall {
@@ -146,6 +147,110 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_2Calls::SwapPositions(call).encode())
         }
+        Function::CachePriceRouter(params) => {
+            validate_cache_price_router(
+                &cellar_id,
+                params.check_total_assets,
+                params.allowable_range,
+                None,
+            )?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &CachePriceRouterCall::function_name(),
+                &cellar_id,
+            );
+            let call = CachePriceRouterCall {
+                check_total_assets: params.check_total_assets,
+                allowable_range: params.allowable_range as u16,
+            };
+
+            Ok(CellarV2_2Calls::CachePriceRouter(call).encode())
+        }
+        Function::AddAdaptorToCatalogue(params) => {
+            validate_new_adaptor(&cellar_id, &params.adaptor, &V2_2_PERMISSIONS)?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &AddAdaptorToCatalogueCall::function_name(),
+                &cellar_id,
+            );
+            let call = AddAdaptorToCatalogueCall {
+                adaptor: sp_call_parse_address(params.adaptor)?,
+            };
+
+            Ok(CellarV2_2Calls::AddAdaptorToCatalogue(call).encode())
+        }
+        Function::AddPositionToCatalogue(params) => {
+            validate_new_position(&cellar_id, params.position_id, &V2_2_PERMISSIONS)?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &AddPositionToCatalogueCall::function_name(),
+                &cellar_id,
+            );
+            let call = AddPositionToCatalogueCall {
+                position_id: params.position_id,
+            };
+
+            Ok(CellarV2_2Calls::AddPositionToCatalogue(call).encode())
+        }
+        Function::SetRebalanceDeviation(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetRebalanceDeviationCall::function_name(),
+                &cellar_id,
+            );
+
+            let new_deviation = string_to_u256(params.new_deviation)?;
+            if new_deviation > U256::from(5000000000000000u64) {
+                return Err(ErrorKind::SPCallError
+                    .context("deviation must be 0.5% or less".to_string())
+                    .into());
+            }
+
+            let call = SetRebalanceDeviationCall { new_deviation };
+
+            Ok(CellarV2_2Calls::SetRebalanceDeviation(call).encode())
+        }
+        Function::InitiateShutdown(_) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &InitiateShutdownCall::function_name(),
+                &cellar_id,
+            );
+            let call = InitiateShutdownCall {};
+
+            Ok(CellarV2_2Calls::InitiateShutdown(call).encode())
+        }
+        Function::SetStrategistPlatformCut(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetStrategistPlatformCutCall::function_name(),
+                &cellar_id,
+            );
+
+            let call = SetStrategistPlatformCutCall {
+                cut: params.new_cut,
+            };
+
+            Ok(CellarV2_2Calls::SetStrategistPlatformCut(call).encode())
+        }
+        Function::LiftShutdown(_) => {
+            log_cellar_call(CELLAR_NAME, &LiftShutdownCall::function_name(), &cellar_id);
+            let call = LiftShutdownCall {};
+
+            Ok(CellarV2_2Calls::LiftShutdown(call).encode())
+        }
+        Function::SetShareLockPeriod(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetShareLockPeriodCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetShareLockPeriodCall {
+                new_lock: string_to_u256(params.new_lock)?,
+            };
+
+            Ok(CellarV2_2Calls::SetShareLockPeriod(call).encode())
+        }
     }
 }
 
@@ -185,7 +290,7 @@ pub fn get_encoded_governance_call(
                 cellar_id,
             );
 
-            if let Err(err) = check_blocked_position(&params.position_id) {
+            if let Err(err) = check_blocked_position(&params.position_id, &V2_2_PERMISSIONS) {
                 info!(
                     "did not process governance call due to blocked position id {}",
                     params.position_id

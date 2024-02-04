@@ -34,6 +34,8 @@ use crate::{
 
 use super::{
     check_blocked_adaptor, check_blocked_position, log_cellar_call, log_governance_cellar_call,
+    validate_cache_price_router, validate_new_adaptor, validate_new_position, validate_oracle,
+    V2_5_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2.5";
@@ -222,6 +224,111 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarWithMultiAssetDepositV1Calls::DropAlternativeAssetData(call).encode())
         }
+        Function::SetSharePriceOracle(params) => {
+            validate_oracle(&cellar_id, &params.registry_id, &params.share_price_oracle)?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetSharePriceOracleCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetSharePriceOracleCall {
+                registry_id: string_to_u256(params.registry_id)?,
+                share_price_oracle: sp_call_parse_address(params.share_price_oracle)?,
+            };
+
+            Ok(CellarV2_5Calls::SetSharePriceOracle(call).encode())
+        }
+        Function::CachePriceRouter(params) => {
+            validate_cache_price_router(
+                &cellar_id,
+                params.check_total_assets,
+                params.allowable_range,
+                Some(params.expected_price_router.clone()),
+            )?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &CachePriceRouterCall::function_name(),
+                &cellar_id,
+            );
+            let call = CachePriceRouterCall {
+                check_total_assets: params.check_total_assets,
+                allowable_range: params.allowable_range as u16,
+                expected_price_router: sp_call_parse_address(params.expected_price_router)?,
+            };
+
+            Ok(CellarV2_5Calls::CachePriceRouter(call).encode())
+        }
+        Function::AddAdaptorToCatalogue(params) => {
+            validate_new_adaptor(&cellar_id, &params.adaptor, &V2_5_PERMISSIONS)?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &AddAdaptorToCatalogueCall::function_name(),
+                &cellar_id,
+            );
+
+            let call = AddAdaptorToCatalogueCall {
+                adaptor: sp_call_parse_address(params.adaptor)?,
+            };
+
+            Ok(CellarV2_5Calls::AddAdaptorToCatalogue(call).encode())
+        }
+        Function::AddPositionToCatalogue(params) => {
+            validate_new_position(&cellar_id, params.position_id, &V2_5_PERMISSIONS)?;
+            log_cellar_call(
+                CELLAR_NAME,
+                &AddPositionToCatalogueCall::function_name(),
+                &cellar_id,
+            );
+
+            let call = AddPositionToCatalogueCall {
+                position_id: params.position_id,
+            };
+
+            Ok(CellarV2_5Calls::AddPositionToCatalogue(call).encode())
+        }
+        Function::SetRebalanceDeviation(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetRebalanceDeviationCall::function_name(),
+                &cellar_id,
+            );
+
+            let new_deviation = string_to_u256(params.new_deviation)?;
+            if new_deviation > U256::from(5000000000000000u64) {
+                return Err(ErrorKind::SPCallError
+                    .context("deviation must be 0.5% or less".to_string())
+                    .into());
+            }
+
+            let call = SetRebalanceDeviationCall { new_deviation };
+
+            Ok(CellarV2_5Calls::SetRebalanceDeviation(call).encode())
+        }
+        Function::SetStrategistPlatformCut(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetStrategistPlatformCutCall::function_name(),
+                &cellar_id,
+            );
+
+            let call = SetStrategistPlatformCutCall {
+                cut: params.new_cut,
+            };
+
+            Ok(CellarV2_5Calls::SetStrategistPlatformCut(call).encode())
+        }
+        Function::IncreaseShareSupplyCap(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &IncreaseShareSupplyCapCall::function_name(),
+                &cellar_id,
+            );
+            let call = IncreaseShareSupplyCapCall {
+                new_share_supply_cap: string_to_u256(params.new_cap)?,
+            };
+
+            Ok(CellarV2_5Calls::IncreaseShareSupplyCap(call).encode())
+        }
     }
 }
 
@@ -379,7 +486,7 @@ pub fn get_encoded_governance_call(
                 cellar_id,
             );
 
-            if let Err(err) = check_blocked_position(&params.position_id) {
+            if let Err(err) = check_blocked_position(&params.position_id, &V2_5_PERMISSIONS) {
                 info!(
                     "did not process governance call due to blocked position id {}",
                     params.position_id
@@ -455,7 +562,8 @@ pub fn get_encoded_governance_call(
             Ok(CellarV2_5Calls::ToggleIgnorePause(call).encode())
         }
         GovernanceFunction::SetSharePriceOracle(params) => {
-            log_cellar_call(
+            log_governance_cellar_call(
+                proposal_id,
                 CELLAR_NAME,
                 &SetSharePriceOracleCall::function_name(),
                 cellar_id,
@@ -468,7 +576,8 @@ pub fn get_encoded_governance_call(
             Ok(CellarV2_5Calls::SetSharePriceOracle(call).encode())
         }
         GovernanceFunction::IncreaseShareSupplyCap(params) => {
-            log_cellar_call(
+            log_governance_cellar_call(
+                proposal_id,
                 CELLAR_NAME,
                 &IncreaseShareSupplyCapCall::function_name(),
                 cellar_id,
@@ -480,7 +589,8 @@ pub fn get_encoded_governance_call(
             Ok(CellarV2_5Calls::IncreaseShareSupplyCap(call).encode())
         }
         GovernanceFunction::SetAutomationActions(params) => {
-            log_cellar_call(
+            log_governance_cellar_call(
+                proposal_id,
                 CELLAR_NAME,
                 &SetAutomationActionsCall::function_name(),
                 cellar_id,
@@ -495,7 +605,8 @@ pub fn get_encoded_governance_call(
             Ok(CellarV2_5Calls::SetAutomationActions(call).encode())
         }
         GovernanceFunction::CachePriceRouter(params) => {
-            log_cellar_call(
+            log_governance_cellar_call(
+                proposal_id,
                 CELLAR_NAME,
                 &CachePriceRouterCall::function_name(),
                 cellar_id,
