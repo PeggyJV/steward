@@ -266,14 +266,6 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
                 &cellar_id,
             );
 
-            if let Err(err) = check_blocked_adaptor(&params.adaptor) {
-                info!(
-                    "did not process governance call due to blocked adaptor {}",
-                    params.adaptor
-                );
-                return Err(err);
-            }
-
             let call = AddAdaptorToCatalogueCall {
                 adaptor: sp_call_parse_address(params.adaptor)?,
             };
@@ -287,14 +279,6 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
                 &AddPositionToCatalogueCall::function_name(),
                 &cellar_id,
             );
-
-            if let Err(err) = check_blocked_position(&params.position_id, &V2_5_PERMISSIONS) {
-                info!(
-                    "did not process governance call due to blocked position id {}",
-                    params.position_id
-                );
-                return Err(err);
-            }
 
             let call = AddPositionToCatalogueCall {
                 position_id: params.position_id,

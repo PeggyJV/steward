@@ -2,12 +2,16 @@
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
 use abscissa_core::tracing::{debug, info};
-use ethers::{abi::AbiEncode, contract::EthCall, types::Bytes};
+use ethers::{
+    abi::AbiEncode,
+    contract::EthCall,
+    types::{Bytes, U256},
+};
 
 use crate::{
     abi::cellar_v2::{AdaptorCall as AbiAdaptorCall, *},
     cellars::adaptors,
-    error::Error,
+    error::{Error, ErrorKind},
     proto::{
         adaptor_call::CallData::*, cellar_v2::Function,
         cellar_v2_governance::Function as GovernanceFunction, AdaptorCall,
@@ -162,9 +166,14 @@ pub fn get_call(function: Function, cellar_id: String) -> Result<CellarV2Calls, 
                 &SetRebalanceDeviationCall::function_name(),
                 &cellar_id,
             );
-            let call = SetRebalanceDeviationCall {
-                new_deviation: string_to_u256(params.new_deviation)?,
-            };
+            let new_deviation = string_to_u256(params.new_deviation)?;
+            if new_deviation > U256::from(5000000000000000u64) {
+                return Err(ErrorKind::SPCallError
+                    .context("deviation must be 0.5% or less".to_string())
+                    .into());
+            }
+
+            let call = SetRebalanceDeviationCall { new_deviation };
 
             Ok(CellarV2Calls::SetRebalanceDeviation(call))
         }
