@@ -6,6 +6,7 @@ pub mod balancer_pool;
 pub mod compound;
 pub mod convex;
 pub mod curve;
+pub mod erc4626;
 pub mod fees_and_reserves;
 pub mod frax;
 pub mod morpho;

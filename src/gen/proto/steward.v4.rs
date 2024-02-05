@@ -1196,6 +1196,61 @@ pub struct CompoundCTokenAdaptorV2Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<CompoundCTokenAdaptorV2>,
 }
+/// Represents call data for the ERC4626 adaptor V1
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct Erc4626AdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(oneof = "erc4626_adaptor_v1::Function", tags = "1, 2, 3")]
+    pub function: ::core::option::Option<erc4626_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `ERC4626AdaptorV1`.
+pub mod erc4626_adaptor_v1 {
+    ///
+    /// Allows strategists to deposit into ERC4626 positions.
+    ///
+    /// Represents function `depositToVault(ERC4626 erc4626Vault, uint256 assets)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct DepositToVault {
+        /// The address of the ERC4626 vault
+        #[prost(string, tag = "1")]
+        pub erc4626_vault: ::prost::alloc::string::String,
+        /// The amount of assets to deposit
+        #[prost(string, tag = "2")]
+        pub assets: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to withdraw from ERC4626 positions.
+    ///
+    /// Represents function `withdrawFromVault(ERC4626 erc4626Vault, uint256 assets)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct WithdrawFromVault {
+        /// The address of the ERC4626 vault
+        #[prost(string, tag = "1")]
+        pub erc4626_vault: ::prost::alloc::string::String,
+        /// The amount of assets to withdraw
+        #[prost(string, tag = "2")]
+        pub assets: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `depositToVault(ERC4626 erc4626Vault, uint256 assets)`
+        #[prost(message, tag = "2")]
+        DepositToVault(DepositToVault),
+        /// Represents function `withdrawFromVault(ERC4626 erc4626Vault, uint256 assets)`
+        #[prost(message, tag = "3")]
+        WithdrawFromVault(WithdrawFromVault),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct Erc4626AdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<Erc4626AdaptorV1>,
+}
 /// Represents call data for the Frax adaptor.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct FTokenAdaptorV1 {
@@ -2363,7 +2418,7 @@ pub mod balancer_pool_adaptor_v1_flash_loan {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_balancer_pool_flash_loan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_balancer_pool_flash_loan::CallData>,
     }
@@ -2466,6 +2521,9 @@ pub mod balancer_pool_adaptor_v1_flash_loan {
             /// Represents function calls for the MorphoBlueSupplyAdaptorV1
             #[prost(message, tag = "31")]
             MorphoBlueSupplyV1Calls(super::super::MorphoBlueSupplyAdaptorV1Calls),
+            /// Represents function calls for the ERC4626AdaptorV1
+            #[prost(message, tag = "32")]
+            Erc4626V1Calls(super::super::Erc4626AdaptorV1Calls),
         }
     }
 }
@@ -3266,7 +3324,7 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_aave_v3_flash_loan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flash_loan::CallData>,
     }
@@ -3369,6 +3427,9 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
             /// Represents function calls for the MorphoBlueSupplyAdaptorV1
             #[prost(message, tag = "31")]
             MorphoBlueSupplyV1Calls(super::super::MorphoBlueSupplyAdaptorV1Calls),
+            /// Represents function calls for the ERC4626AdaptorV1
+            #[prost(message, tag = "32")]
+            Erc4626V1Calls(super::super::Erc4626AdaptorV1Calls),
         }
     }
 }
@@ -4539,7 +4600,7 @@ pub struct AdaptorCall {
     /// The function call data for the adaptor
     #[prost(
         oneof = "adaptor_call::CallData",
-        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34"
+        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35"
     )]
     pub call_data: ::core::option::Option<adaptor_call::CallData>,
 }
@@ -4647,6 +4708,9 @@ pub mod adaptor_call {
         /// Represents function calls for the MorphoBlueSupplyAdaptorV1
         #[prost(message, tag = "34")]
         MorphoBlueSupplyV1Calls(super::MorphoBlueSupplyAdaptorV1Calls),
+        /// Represents function calls for the ERC4626AdaptorV1
+        #[prost(message, tag = "35")]
+        Erc4626V1Calls(super::Erc4626AdaptorV1Calls),
     }
 }
 ///

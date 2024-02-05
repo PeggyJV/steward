@@ -123,6 +123,10 @@ pub mod abi {
             include!("gen/abi/debt_f_token_adaptor_v1.rs");
         }
 
+        pub mod erc4626_adaptor_v1 {
+            include!("gen/abi/erc4626_adaptor_v1.rs");
+        }
+
         pub mod fees_and_reserves_adaptor_v1 {
             include!("gen/abi/fees_and_reserves_adaptor_v1.rs");
         }
