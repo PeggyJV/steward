@@ -1,4 +1,3 @@
-
 /*
 * Protos for function calls to the Staking adaptor.
 */
@@ -33,7 +32,7 @@ message StakingAdaptorV1 {
         Unwrap unwrap = 7;
         // Represents function `mintERC20(ERC20 depositAsset, uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
         MintERC20 mint_erc20 = 8;
-        // Represents function `removeClaimedRequest(uint256 id, bytes calldata wildcard)`
+        // Represents function `removeClaimedRequest(uint256, bytes calldata)`
         RemoveClaimedRequest remove_claimed_request = 9;
     }
 

@@ -83,6 +83,8 @@ pub fn staking_adaptor_v1_calls(params: StakingAdaptorV1Calls) -> Result<Vec<Byt
                 calls.push(AbiStakingAdaptorV1Calls::MintERC20(call).encode().into())
             }
             Function::RemoveClaimedRequest(p) => {
+                // This function is virtual and defined without parameter names in the contract, thus the
+                // unusal struct format.
                 let call = staking_adaptor_v1::RemoveClaimedRequestCall(
                     string_to_u256(p.id)?,
                     hex_to_bytes(p.wildcard)?,

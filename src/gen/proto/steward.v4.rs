@@ -2547,7 +2547,7 @@ pub mod staking_adaptor_v1 {
         /// Represents function `mintERC20(ERC20 depositAsset, uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
         #[prost(message, tag = "8")]
         MintErc20(MintErc20),
-        /// Represents function `removeClaimedRequest(uint256 id, bytes calldata wildcard)`
+        /// Represents function `removeClaimedRequest(uint256, bytes calldata)`
         #[prost(message, tag = "9")]
         RemoveClaimedRequest(RemoveClaimedRequest),
     }
