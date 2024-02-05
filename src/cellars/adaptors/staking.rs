@@ -98,4 +98,3 @@ pub fn staking_adaptor_v1_calls(params: StakingAdaptorV1Calls) -> Result<Vec<Byt
 
     Ok(calls)
 }
-

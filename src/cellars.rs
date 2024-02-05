@@ -81,7 +81,8 @@ lazy_static! {
 
 pub const ALLOWED_V2_0_SETUP_ADAPTORS: [(&str, &str); 0] = [];
 pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
-pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 0] = [];
+pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 1] =
+    [(CELLAR_TURBO_EETH_DEPLOYMENT_1, ADAPTOR_ERC4626_V1)];
 
 // due to position size limits in v2.0, positions must be added and removed from the limited list
 // and thus approved positions need to be allowed to be re-added, hence this large list
@@ -108,8 +109,8 @@ pub const ALLOWED_V2_0_POSITIONS: [(&str, u32); 20] = [
     (CELLAR_RYUSD, 29),
 ];
 pub const ALLOWED_V2_2_CATALOGUE_POSITIONS: [(&str, u32); 0] = [];
-pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 2] =
-    [(CELLAR_TURBO_EETH, 7000002), (CELLAR_TURBO_EETH, 7500002)];
+pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 1] =
+    [(CELLAR_TURBO_EETH_DEPLOYMENT_1, 10000004)];
 
 pub const BLOCKED_ADAPTORS: [&str; 3] = [
     ADAPTOR_UNIV3_V1,
@@ -157,7 +158,8 @@ pub const CELLAR_TURBO_SWETH: &str = "d33dad974b938744dac81fe00ac67cb5aa13958e";
 pub const CELLAR_TURBO_GHO: &str = "0c190ded9be5f512bd72827bdad4003e9cc7975c";
 pub const CELLAR_TURBO_STETH: &str = "fd6db5011b171b05e1ea3b92f9eacaeeb055e971";
 pub const CELLAR_TURBO_SOMM: &str = "5195222f69c5821f8095ec565e71e18ab6a2298f";
-pub const CELLAR_TURBO_EETH: &str = "9a7b4980c6f0fcaa50cd5f288ad7038f434c692e";
+pub const CELLAR_TURBO_EETH_DEPLOYMENT_1: &str = "9a7b4980c6f0fcaa50cd5f288ad7038f434c692e";
+pub const CELLAR_TURBO_EETH_DEPLOYMENT_2: &str = "dadc82e26b3739750e036dfd9defd3ed459b877a";
 
 // deprecated adaptors
 
@@ -175,6 +177,7 @@ pub const ADAPTOR_COLLATERAL_F_TOKEN_V1: &str = "0055cf6a99eba1405d100c7dfaa88a3
 pub const ADAPTOR_CONVEX_CURVE_ADAPTOR_V1: &str = "98c44ff447c62364e3750c5e2ef8acc38391a8b0";
 pub const ADAPTOR_CURVE_ADAPTOR_V1: &str = "94e28529f73dad189cd0bf9d83a06572d4bfb26a";
 pub const ADAPTOR_DEBT_F_TOKEN_V1: &str = "50d8f70a5da95021dab86579db4751a863c1b87c";
+pub const ADAPTOR_ERC4626_V1: &str = "411a4e55a4867610279ef35cba4da91a7753a93e";
 pub const ADAPTOR_LEGACY_CELLAR_V1: &str = "1e22adf9e63ef8f2a3626841ddddd19683e31068";
 pub const ADAPTOR_MORPHO_AAVE_V2_A_TOKEN_V1: &str = "1a4cb53edb8c65c3df6aa9d88c1ab4cf35312b73";
 pub const ADAPTOR_MORPHO_AAVE_V2_DEBT_TOKEN_V1: &str = "407d5489f201013ee6a6ca20fccb05047c548138";
