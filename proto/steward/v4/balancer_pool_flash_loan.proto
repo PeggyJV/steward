@@ -33,6 +33,7 @@ import "collateral_f_token.proto";
 import "aura_erc4626.proto";
 import "convex_curve.proto";
 import "curve.proto";
+import "staking.proto";
 
 // Represents flash loan call data for the Balancer Pool adaptor V1, for managing pool positions on Balancer.
 message BalancerPoolAdaptorV1FlashLoan {
@@ -122,6 +123,8 @@ message BalancerPoolAdaptorV1FlashLoan {
             MorphoBlueSupplyAdaptorV1Calls morpho_blue_supply_v1_calls = 31;
             // Represents function calls for the ERC4626AdaptorV1 
             ERC4626AdaptorV1Calls erc4626_v1_calls = 32;
+            // Represents function calls for the StakingAdaptorV1
+            StakingAdaptorV1Calls staking_v1_calls = 33;
         }
     }
 }

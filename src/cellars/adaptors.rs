@@ -12,6 +12,7 @@ pub mod frax;
 pub mod morpho;
 pub mod oneinch;
 pub mod sommelier;
+pub mod staking;
 pub mod swap_with_uniswap;
 pub mod uniswap_v3;
 pub mod vesting_simple;

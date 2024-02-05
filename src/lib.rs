@@ -171,6 +171,10 @@ pub mod abi {
             include!("gen/abi/oneinch_adaptor_v1.rs");
         }
 
+        pub mod staking_adaptor_v1 {
+            include!("gen/abi/staking_adaptor_v1.rs");
+        }
+
         pub mod swap_with_uniswap_adaptor_v1 {
             include!("gen/abi/swap_with_uniswap_adaptor_v1.rs");
         }
