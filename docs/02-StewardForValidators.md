@@ -30,7 +30,7 @@ A few of the necessary fields required in this config TOML file are covered in t
 - [ ] On-disk key store containing a [delegate key](./02-StewardForValidators.md#cosmos-delegate-key) in this key store for Steward and Orchestrator to share. This can be generated with Steward, or you may have already done this step with `gorc` in the past. If that's the case you can just use the delegate key you’ve already created.
 - [ ] TLS 1.3 [server CA and certificate signed with said CA](./04-GeneratingCertificates.md)
 - [ ] [TOML config file](./01-Configuration.md#complete-example-configtoml) containing the above values
-- [ ] [Create a Subscriber]() on chain representing your steward's identity. 
+- [ ] [Create a Subscriber](./05-PubsubForValidators.md#registering-steward-as-a-subscriber) on chain representing your steward's identity. *If your steward was in the Steward Registry before the v7 upgrade, it has already been included as a subscriber in the migration*.
 
 ### TLS Certificates
 
@@ -52,4 +52,4 @@ The Cosmos delegate key generated (called "orchestrator" in the Sommelier docs) 
 
 Other important configuration fields like your Sommelier node's endpoint are also required so that Steward knows where to send corks. Here is an [example configuration](./01-Configuration.md#complete-example-configtoml) you can use to get your config file started. Most of the fields have sensible defaults; you can use the [configuration reference](./01-Configuration.md#reference) to determine which fields you don't need to explicity set if you wish.
 
-Once your keys, certs, and config file are ready, you have created a Subscriber on the x/pubsub module, and your Sommelier node is running, refer to the [Quickstart section](#quickstart) above to start Steward!
+Once your keys, certs, and config file are ready, you have [created a Subscriber](./05-PubsubForValidators.md#registering-steward-as-a-subscriber) on the x/pubsub module, and your Sommelier node is running, refer to the [Quickstart section](#quickstart) above to start Steward!

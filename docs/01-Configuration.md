@@ -497,7 +497,7 @@ server_key_path = "/server/key/path"
 
 # Meant for use by strategists for development and testing
 [simulate]
-use_tls = false,
+use_tls = false
 network_id = "1"
 tenderly_access_key = ""
 tenderly_project_name = ""
