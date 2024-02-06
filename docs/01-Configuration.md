@@ -248,7 +248,7 @@ proposal_poll_period = 300
 
 Type: integer
 
-How many times steward should try to submit an scheduled cork proposal that errored during processing. 
+How many times steward should try to submit a scheduled cork proposal that errored during processing. 
 
 ```
 [cork]
