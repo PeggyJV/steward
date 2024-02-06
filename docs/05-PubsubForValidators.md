@@ -23,7 +23,7 @@ A `Subscriber` is an entity representing the identity of your steward instance. 
 A subscriber can be created using the following CLI command
 
 ```bash
-sommelier tx pubsub <subscriber_address> [<ca_cert_file>] [<push_url>]
+sommelier tx pubsub add-subscriber <subscriber_address> [<ca_cert_file>] [<push_url>]
 ```
 
 *The signer must match the address argument*. If you are using your delegate address, sign the transaction with your delegate key, etc.
@@ -35,14 +35,14 @@ To update an existing subscriber, such as to replace an expired CA cert, simply 
 If a subscriber needs to be altogether replaced, such as if a change in keys occurs, the old subscriber can be removed using the counterpart to the previous command:
 
 ```bash
-sommelier tx pubsub <subscriber_address>
+sommelier tx pubsub remove-subscriber <subscriber_address>
 ```
 
 Once again, the signer of the transaction must match the `subscriber_address` argument.
 
 ## Overriding Default Subscriptions
 
-For convenience, default subscriptions exist in x/pubsub that map Cellar IDs to their agreed upon "default" publisher. Steward will load these subscriptions into its Publisher Trust Cache automatically once configured. It is possible that Sommelier participants may choose to delegate managing authorty to a different publisher for a particular Cellar. This can be accomplished by creating a `SubscriberIntent`, whereby a validator registers their intent to receive requests for the target Cellar from an alternative publisher. Steward will override any default subscriptions in its cache with the respective subscriber intents reigstered by the owning validator.
+For convenience, default subscriptions exist in x/pubsub that map Cellar IDs to their agreed upon "default" publisher. Steward will load these subscriptions into its Publisher Trust Cache automatically once configured. It is possible that Sommelier participants may choose to delegate managing authorty to a different publisher for a particular Cellar. This can be accomplished by creating a `SubscriberIntent`, whereby a validator registers their intent to receive requests for the target Cellar from an alternative publisher. Steward will override any default subscriptions in its cache with the respective subscriber intents registered by the owning validator.
 
 To create a subscriber intent use the following command:
 
