@@ -1196,6 +1196,61 @@ pub struct CompoundCTokenAdaptorV2Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<CompoundCTokenAdaptorV2>,
 }
+/// Represents call data for the ERC4626 adaptor V1
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct Erc4626AdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(oneof = "erc4626_adaptor_v1::Function", tags = "1, 2, 3")]
+    pub function: ::core::option::Option<erc4626_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `ERC4626AdaptorV1`.
+pub mod erc4626_adaptor_v1 {
+    ///
+    /// Allows strategists to deposit into ERC4626 positions.
+    ///
+    /// Represents function `depositToVault(ERC4626 erc4626Vault, uint256 assets)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct DepositToVault {
+        /// The address of the ERC4626 vault
+        #[prost(string, tag = "1")]
+        pub erc4626_vault: ::prost::alloc::string::String,
+        /// The amount of assets to deposit
+        #[prost(string, tag = "2")]
+        pub assets: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategists to withdraw from ERC4626 positions.
+    ///
+    /// Represents function `withdrawFromVault(ERC4626 erc4626Vault, uint256 assets)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct WithdrawFromVault {
+        /// The address of the ERC4626 vault
+        #[prost(string, tag = "1")]
+        pub erc4626_vault: ::prost::alloc::string::String,
+        /// The amount of assets to withdraw
+        #[prost(string, tag = "2")]
+        pub assets: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `depositToVault(ERC4626 erc4626Vault, uint256 assets)`
+        #[prost(message, tag = "2")]
+        DepositToVault(DepositToVault),
+        /// Represents function `withdrawFromVault(ERC4626 erc4626Vault, uint256 assets)`
+        #[prost(message, tag = "3")]
+        WithdrawFromVault(WithdrawFromVault),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct Erc4626AdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<Erc4626AdaptorV1>,
+}
 /// Represents call data for the Frax adaptor.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct FTokenAdaptorV1 {
@@ -2330,6 +2385,178 @@ pub struct CurveAdaptorV1Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<CurveAdaptorV1>,
 }
+/// Represents call data for the Staking adaptor V1
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct StakingAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(
+        oneof = "staking_adaptor_v1::Function",
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9"
+    )]
+    pub function: ::core::option::Option<staking_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `StakingAdaptorV1`.
+pub mod staking_adaptor_v1 {
+    ///
+    /// Allows a strategist to `mint` a derivative asset using the chains native asset.
+    ///
+    /// Represents the function `mint(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct Mint {
+        /// The amount of the asset to mint
+        #[prost(string, tag = "1")]
+        pub amount: ::prost::alloc::string::String,
+        /// The minimum amount of the asset to receive
+        #[prost(string, tag = "2")]
+        pub min_amount_out: ::prost::alloc::string::String,
+        /// Arbitrary ABI encoded data that can be used by inheriting adaptors
+        #[prost(string, tag = "3")]
+        pub wildcard: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows a strategist to request to burn/withdraw a derivative for a chains native asset.   
+    ///
+    /// Represents the function `requestBurn(uint256 amount, bytes calldata wildcard)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RequestBurn {
+        /// The amount of the asset to burn
+        #[prost(string, tag = "1")]
+        pub amount: ::prost::alloc::string::String,
+        /// Arbitrary ABI encoded data that can be used by inheriting adaptors
+        #[prost(string, tag = "2")]
+        pub wildcard: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows a strategist to complete a burn/withdraw of a derivative asset for a native asset.
+    ///
+    /// Represents the function `completeBurn(uint256 id, uint256 minAmountOut, bytes calldata wildcard)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct CompleteBurn {
+        /// The id of the burn request
+        #[prost(string, tag = "1")]
+        pub id: ::prost::alloc::string::String,
+        /// The minimum amount of the asset to receive
+        #[prost(string, tag = "2")]
+        pub min_amount_out: ::prost::alloc::string::String,
+        /// Arbitrary ABI encoded data that can be used by inheriting adaptors
+        #[prost(string, tag = "3")]
+        pub wildcard: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows a strategist to cancel an active burn/withdraw request.
+    ///
+    /// Represents the function `cancelBurn(uint256 id, bytes calldata wildcard)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct CancelBurn {
+        /// The id of the burn request
+        #[prost(string, tag = "1")]
+        pub id: ::prost::alloc::string::String,
+        /// Arbitrary ABI encoded data that can be used by inheriting adaptors
+        #[prost(string, tag = "2")]
+        pub wildcard: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows a strategist to wrap a derivative asset.
+    ///
+    /// Represents the function `wrap(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct Wrap {
+        /// The amount of the asset to wrap
+        #[prost(string, tag = "1")]
+        pub amount: ::prost::alloc::string::String,
+        /// The minimum amount of the asset to receive
+        #[prost(string, tag = "2")]
+        pub min_amount_out: ::prost::alloc::string::String,
+        /// Arbitrary ABI encoded data that can be used by inheriting adaptors
+        #[prost(string, tag = "3")]
+        pub wildcard: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows a strategist to unwrap a wrapped derivative asset.
+    ///
+    /// Represents the function `unwrap(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct Unwrap {
+        /// The amount of the asset to unwrap
+        #[prost(string, tag = "1")]
+        pub amount: ::prost::alloc::string::String,
+        /// The minimum amount of the asset to receive
+        #[prost(string, tag = "2")]
+        pub min_amount_out: ::prost::alloc::string::String,
+        /// Arbitrary ABI encoded data that can be used by inheriting adaptors
+        #[prost(string, tag = "3")]
+        pub wildcard: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows a strategist to mint a derivative asset using an ERC20.
+    ///
+    /// Represents the function `mintERC20(ERC20 depositAsset, uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct MintErc20 {
+        /// The address of the ERC20 asset to deposit
+        #[prost(string, tag = "1")]
+        pub deposit_asset: ::prost::alloc::string::String,
+        /// The amount of the asset to mint
+        #[prost(string, tag = "2")]
+        pub amount: ::prost::alloc::string::String,
+        /// The minimum amount of the asset to receive
+        #[prost(string, tag = "3")]
+        pub min_amount_out: ::prost::alloc::string::String,
+        /// Arbitrary ABI encoded data that can be used by inheriting adaptors
+        #[prost(string, tag = "4")]
+        pub wildcard: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to remove a request from `requestIds` if it has already been claimed.
+    ///
+    /// Represents the function `removeClaimedRequest(uint256, bytes calldata)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RemoveClaimedRequest {
+        /// The id of the request to remove
+        #[prost(string, tag = "1")]
+        pub id: ::prost::alloc::string::String,
+        /// Arbitrary ABI encoded data that can be used by inheriting adaptors
+        #[prost(string, tag = "2")]
+        pub wildcard: ::prost::alloc::string::String,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `mint(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+        #[prost(message, tag = "2")]
+        Mint(Mint),
+        /// Represents function `requestBurn(uint256 amount, bytes calldata wildcard)`
+        #[prost(message, tag = "3")]
+        RequestBurn(RequestBurn),
+        /// Represents function `completeBurn(uint256 id, uint256 minAmountOut, bytes calldata wildcard)`
+        #[prost(message, tag = "4")]
+        CompleteBurn(CompleteBurn),
+        /// Represents function `cancelBurn(uint256 id, bytes calldata wildcard)`
+        #[prost(message, tag = "5")]
+        CancelBurn(CancelBurn),
+        /// Represents function `wrap(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+        #[prost(message, tag = "6")]
+        Wrap(Wrap),
+        /// Represents function `unwrap(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+        #[prost(message, tag = "7")]
+        Unwrap(Unwrap),
+        /// Represents function `mintERC20(ERC20 depositAsset, uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+        #[prost(message, tag = "8")]
+        MintErc20(MintErc20),
+        /// Represents function `removeClaimedRequest(uint256, bytes calldata)`
+        #[prost(message, tag = "9")]
+        RemoveClaimedRequest(RemoveClaimedRequest),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct StakingAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<StakingAdaptorV1>,
+}
 /// Represents flash loan call data for the Balancer Pool adaptor V1, for managing pool positions on Balancer.
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct BalancerPoolAdaptorV1FlashLoan {
@@ -2363,7 +2590,7 @@ pub mod balancer_pool_adaptor_v1_flash_loan {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_balancer_pool_flash_loan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_balancer_pool_flash_loan::CallData>,
     }
@@ -2466,6 +2693,12 @@ pub mod balancer_pool_adaptor_v1_flash_loan {
             /// Represents function calls for the MorphoBlueSupplyAdaptorV1
             #[prost(message, tag = "31")]
             MorphoBlueSupplyV1Calls(super::super::MorphoBlueSupplyAdaptorV1Calls),
+            /// Represents function calls for the ERC4626AdaptorV1
+            #[prost(message, tag = "32")]
+            Erc4626V1Calls(super::super::Erc4626AdaptorV1Calls),
+            /// Represents function calls for the StakingAdaptorV1
+            #[prost(message, tag = "33")]
+            StakingV1Calls(super::super::StakingAdaptorV1Calls),
         }
     }
 }
@@ -3266,7 +3499,7 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_aave_v3_flash_loan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flash_loan::CallData>,
     }
@@ -3369,6 +3602,12 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
             /// Represents function calls for the MorphoBlueSupplyAdaptorV1
             #[prost(message, tag = "31")]
             MorphoBlueSupplyV1Calls(super::super::MorphoBlueSupplyAdaptorV1Calls),
+            /// Represents function calls for the ERC4626AdaptorV1
+            #[prost(message, tag = "32")]
+            Erc4626V1Calls(super::super::Erc4626AdaptorV1Calls),
+            /// Represents function calls for the StakingAdaptorV1
+            #[prost(message, tag = "33")]
+            StakingV1Calls(super::super::StakingAdaptorV1Calls),
         }
     }
 }
@@ -4539,7 +4778,7 @@ pub struct AdaptorCall {
     /// The function call data for the adaptor
     #[prost(
         oneof = "adaptor_call::CallData",
-        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34"
+        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36"
     )]
     pub call_data: ::core::option::Option<adaptor_call::CallData>,
 }
@@ -4647,6 +4886,12 @@ pub mod adaptor_call {
         /// Represents function calls for the MorphoBlueSupplyAdaptorV1
         #[prost(message, tag = "34")]
         MorphoBlueSupplyV1Calls(super::MorphoBlueSupplyAdaptorV1Calls),
+        /// Represents function calls for the ERC4626AdaptorV1
+        #[prost(message, tag = "35")]
+        Erc4626V1Calls(super::Erc4626AdaptorV1Calls),
+        /// Represents function calls for the StakingAdaptorV1
+        #[prost(message, tag = "36")]
+        StakingV1Calls(super::StakingAdaptorV1Calls),
     }
 }
 ///

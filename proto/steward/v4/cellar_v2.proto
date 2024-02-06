@@ -17,6 +17,7 @@ import "aave_v3_debt_token_flash_loan.proto";
 import "balancer_pool.proto";
 import "balancer_pool_flash_loan.proto";
 import "c_token.proto";
+import "erc4626.proto";
 import "f_token.proto";
 import "morpho_aave_v2_a_token.proto";
 import "morpho_aave_v2_debt_token.proto";
@@ -40,6 +41,7 @@ import "collateral_f_token.proto";
 import "aura_erc4626.proto";
 import "convex_curve.proto";
 import "curve.proto";
+import "staking.proto";
 
 /*
 * Represents a function call to a cellar that implements Cellar.sol
@@ -1105,5 +1107,9 @@ message AdaptorCall {
         MorphoBlueDebtAdaptorV1Calls morpho_blue_debt_v1_calls = 33;
         // Represents function calls for the MorphoBlueSupplyAdaptorV1
         MorphoBlueSupplyAdaptorV1Calls morpho_blue_supply_v1_calls = 34;
+        // Represents function calls for the ERC4626AdaptorV1 
+        ERC4626AdaptorV1Calls erc4626_v1_calls = 35;
+        // Represents function calls for the StakingAdaptorV1
+        StakingAdaptorV1Calls staking_v1_calls = 36;
     }
 }

@@ -89,6 +89,8 @@ fn generate_contract_abis() {
             "morpho_blue_collateral_adaptor_v1",
         ),
         ("MorphoBlueDebtAdaptorV1", "morpho_blue_debt_adaptor_v1"),
+        ("ERC4626AdaptorV1", "erc4626_adaptor_v1"),
+        ("StakingAdaptorV1", "staking_adaptor_v1"),
     ];
 
     contracts.iter().for_each(|n| {

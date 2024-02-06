@@ -1,0 +1,150 @@
+/*
+* Protos for function calls to the Staking adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+// Represents call data for the Staking adaptor V1
+message StakingAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+        // Represents function `mint(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+        Mint mint = 2;
+        // Represents function `requestBurn(uint256 amount, bytes calldata wildcard)`
+        RequestBurn request_burn = 3;
+        // Represents function `completeBurn(uint256 id, uint256 minAmountOut, bytes calldata wildcard)`
+        CompleteBurn complete_burn = 4;
+        // Represents function `cancelBurn(uint256 id, bytes calldata wildcard)`
+        CancelBurn cancel_burn = 5;
+        // Represents function `wrap(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+        Wrap wrap = 6;
+        // Represents function `unwrap(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+        Unwrap unwrap = 7;
+        // Represents function `mintERC20(ERC20 depositAsset, uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+        MintERC20 mint_erc20 = 8;
+        // Represents function `removeClaimedRequest(uint256, bytes calldata)`
+        RemoveClaimedRequest remove_claimed_request = 9;
+    }
+
+    /*
+    * Allows a strategist to `mint` a derivative asset using the chains native asset.
+    *
+    * Represents the function `mint(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+    */
+    message Mint {
+        // The amount of the asset to mint
+        string amount = 1;
+        // The minimum amount of the asset to receive
+        string min_amount_out = 2;
+        // Arbitrary ABI encoded data that can be used by inheriting adaptors
+        string wildcard = 3;
+    }
+
+    /*
+    * Allows a strategist to request to burn/withdraw a derivative for a chains native asset.   
+    *
+    * Represents the function `requestBurn(uint256 amount, bytes calldata wildcard)`
+    */
+    message RequestBurn {
+        // The amount of the asset to burn
+        string amount = 1;
+        // Arbitrary ABI encoded data that can be used by inheriting adaptors
+        string wildcard = 2;
+    }
+
+    /*
+    * Allows a strategist to complete a burn/withdraw of a derivative asset for a native asset.
+    *
+    * Represents the function `completeBurn(uint256 id, uint256 minAmountOut, bytes calldata wildcard)`
+    */
+    message CompleteBurn {
+        // The id of the burn request
+        string id = 1;
+        // The minimum amount of the asset to receive
+        string min_amount_out = 2;
+        // Arbitrary ABI encoded data that can be used by inheriting adaptors
+        string wildcard = 3;
+    }
+
+    /*
+    * Allows a strategist to cancel an active burn/withdraw request. 
+    *
+    * Represents the function `cancelBurn(uint256 id, bytes calldata wildcard)`
+    */
+    message CancelBurn {
+        // The id of the burn request
+        string id = 1;
+        // Arbitrary ABI encoded data that can be used by inheriting adaptors
+        string wildcard = 2;
+    }
+
+    /*
+    * Allows a strategist to wrap a derivative asset. 
+    *
+    * Represents the function `wrap(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+    */
+    message Wrap {
+        // The amount of the asset to wrap
+        string amount = 1;
+        // The minimum amount of the asset to receive
+        string min_amount_out = 2;
+        // Arbitrary ABI encoded data that can be used by inheriting adaptors
+        string wildcard = 3;
+    }
+
+    /*
+    * Allows a strategist to unwrap a wrapped derivative asset.
+    *
+    * Represents the function `unwrap(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+    */
+    message Unwrap {
+        // The amount of the asset to unwrap
+        string amount = 1;
+        // The minimum amount of the asset to receive
+        string min_amount_out = 2;
+        // Arbitrary ABI encoded data that can be used by inheriting adaptors
+        string wildcard = 3;
+    }
+
+    /*
+    * Allows a strategist to mint a derivative asset using an ERC20. 
+    *
+    * Represents the function `mintERC20(ERC20 depositAsset, uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+    */
+    message MintERC20 {
+        // The address of the ERC20 asset to deposit
+        string deposit_asset = 1;
+        // The amount of the asset to mint
+        string amount = 2;
+        // The minimum amount of the asset to receive
+        string min_amount_out = 3;
+        // Arbitrary ABI encoded data that can be used by inheriting adaptors
+        string wildcard = 4;
+    }
+
+    /*
+    * Allows strategist to remove a request from `requestIds` if it has already been claimed.
+    *
+    * Represents the function `removeClaimedRequest(uint256, bytes calldata)`
+    */
+    message RemoveClaimedRequest {
+        // The id of the request to remove
+        string id = 1;
+        // Arbitrary ABI encoded data that can be used by inheriting adaptors
+        string wildcard = 2;
+    }
+}
+
+message StakingAdaptorV1Calls {
+    repeated StakingAdaptorV1 calls = 1;
+}
