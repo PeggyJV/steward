@@ -470,11 +470,11 @@ key_derivation_path = "m/44'/60'/0'/0/0"
 rpc = "http://localhost:8545"
 
 [gravity]
-contract = "0x0000000000000000000000000000000000000000"
+contract = "0x69592e6f9d21989a043646fe8225da2600e5a0f7"
 fees_denom = "usomm"
 
 [keys]
-delegate_key = "mykey"
+delegate_key = "orchestrator"
 
 [cork]
 cache_refresh_period = 60
