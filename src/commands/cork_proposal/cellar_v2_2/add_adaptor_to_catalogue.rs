@@ -6,7 +6,7 @@ use crate::{
     commands::cork_proposal::{get_proposal_json, print_proposal},
     prelude::*,
     proto::{
-        cellar_v2_2governance::{AddAdaptorToCatalogue, Function},
+        cellar_v2_2governance::{AddAdaptorToCatalogue, function_call::Function},
         governance_call::Call,
         CellarV22governance, GovernanceCall,
     },
@@ -54,10 +54,11 @@ impl Runnable for AddAdaptorToCatalogueCmd {
 
             let governance_call = GovernanceCall {
                 call: Some(Call::CellarV22(CellarV22governance {
-                    function: Some(Function::AddAdaptorToCatalogue(AddAdaptorToCatalogue {
+                    call_type: Some(CellarV22governance::CallType::FunctionCall(
+                    Function::AddAdaptorToCatalogue(AddAdaptorToCatalogue {
                         adaptor: self.adaptor_address.clone(),
-                    })),
-                })),
+                    }),
+                ))})),
             };
 
             let proposal_json = get_proposal_json(
