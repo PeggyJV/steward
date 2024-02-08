@@ -1,6 +1,6 @@
 # Reference: https://www.lpalmieri.com/posts/fast-rust-docker-builds/
 
-FROM rust:1.70-bullseye as cargo-chef-rust
+FROM rust:1.74-bullseye as cargo-chef-rust
 RUN cargo install cargo-chef --version 0.1.62
 RUN rustup component add rustfmt
 
