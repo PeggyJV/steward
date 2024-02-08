@@ -118,7 +118,7 @@ pub(crate) async fn auth_config(
     };
     let mut server_config = rustls::ServerConfig::new(client_auth);
     let alpn_protocols: Vec<u8> = "h2".into();
-    server_config.set_protocols(alpn_protocols);
+    server_config.set_protocols(&[alpn_protocols]);
     server_config.set_single_cert(cert, key).unwrap();
 
     Ok(server_config)
