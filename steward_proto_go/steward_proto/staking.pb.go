@@ -189,7 +189,7 @@ type StakingAdaptorV1_MintErc20 struct {
 }
 
 type StakingAdaptorV1_RemoveClaimedRequest_ struct {
-	// Represents function `removeClaimedRequest(uint256, bytes calldata)`
+	// Represents function `removeClaimedRequest(uint256 id, bytes calldata wildcard)`
 	RemoveClaimedRequest *StakingAdaptorV1_RemoveClaimedRequest `protobuf:"bytes,9,opt,name=remove_claimed_request,json=removeClaimedRequest,proto3,oneof"`
 }
 

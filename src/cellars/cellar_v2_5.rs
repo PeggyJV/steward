@@ -16,7 +16,7 @@ use crate::abi::{
 use crate::proto::{
     adaptor_call::CallData::*,
     cellar_v2_5::{function_call::Function, CallType, FunctionCall},
-    cellar_v2_5governance::{function_call::Function as GovernanceFunction, CallType as GovernanceCallType, FunctionCall as GovernanceFunctionCall},
+    cellar_v2_5governance::Function as GovernanceFunction,
     AdaptorCall,
 };
 use abscissa_core::tracing::{debug, info};
@@ -456,32 +456,11 @@ fn get_encoded_adaptor_calls(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCal
     Ok(result)
 }
 
-/// Encodes a Governance call to a CellarV2.5 contract
-pub fn get_encoded_governance_call(call_type: GovernanceCallType, cellar_id: String, proposal_id: u64) -> Result<Vec<u8>, Error> {
-    match call_type {
-        GovernanceCallType::FunctionCall(f) => get_encoded_governance_function(f, &cellar_id, proposal_id),
-        GovernanceCallType::Multicall(m) => {
-            let mut multicall = MulticallCall::default();
-            m.function_calls
-                .iter()
-                .map(|f| get_encoded_governance_function(f.clone(), &cellar_id, proposal_id))
-                .collect::<Result<Vec<Vec<u8>>, Error>>()?
-                .iter()
-                .for_each(|f| multicall.data.push(Bytes::from(f.clone())));
-
-            Ok(multicall.encode())
-        }
-    }
-}
-
-pub fn get_encoded_governance_function(
-    call: GovernanceFunctionCall,
+pub fn get_encoded_governance_call(
+    function: GovernanceFunction,
     cellar_id: &str,
     proposal_id: u64,
 ) -> Result<Vec<u8>, Error> {
-    let function = call
-        .function
-        .ok_or_else(|| sp_call_error("call data is empty".to_string()))?;
     match function {
         GovernanceFunction::AddAdaptorToCatalogue(params) => {
             log_governance_cellar_call(

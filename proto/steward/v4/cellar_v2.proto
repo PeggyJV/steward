@@ -493,46 +493,28 @@ message CellarV2_2 {
 * Represent a function call initiated through a governance proposal
 */
 message CellarV2_2Governance {
-    oneof call_type {
-        // Represents a single function call
-        FunctionCall function_call = 1;
-        // Represents multiple, ordered function calls
-        Multicall multicall = 2;
-    }
-
-    message FunctionCall {
-        // The function to call on the target cellar
-        oneof function {
-            // Represents function `addAdaptorToCatalogue(address adaptor)`
-            AddAdaptorToCatalogue add_adaptor_to_catalogue = 1;
-            // Represents function `addPositionToCatalogue(uint32 positionId)`
-            AddPositionToCatalogue add_position_to_catalogue = 2;
-            // Represents function `setRebalanceDeviation(uint265)`
-            SetRebalanceDeviation set_rebalance_deviation = 3;
-            // Represents function `setShareLockPeriod(uint256 newLock)`
-            SetShareLockPeriod set_share_lock_period = 4;
-            // Represents function `setStrategistPlatformCut(uint64 cut)`
-            SetStrategistPlatformCut set_strategist_platform_cut = 5;
-            // Represents function `initiateShutdown()`
-            InitiateShutdown initiate_shutdown = 6;
-            // Represents function `liftShutdown()`
-            LiftShutdown lift_shutdown = 7;
-            // Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
-            ForcePositionOut force_position_out = 8;
-            // Represents function `toggleIgnorePause(bool ignore)`
-            ToggleIgnorePause toggle_ignore_pause = 9;
-            // Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
-            CachePriceRouter cache_price_router = 10;
-        }
-    }
-
-    /*
-    * Allows caller to call multiple functions in a single TX.
-    *
-    * Represents function `multicall(bytes[] data)`
-    */
-    message Multicall {
-        repeated FunctionCall function_calls = 1;
+    // The function to call on the target cellar
+    oneof function {
+        // Represents function `addAdaptorToCatalogue(address adaptor)`
+        AddAdaptorToCatalogue add_adaptor_to_catalogue = 1;
+        // Represents function `addPositionToCatalogue(uint32 positionId)`
+        AddPositionToCatalogue add_position_to_catalogue = 2;
+        // Represents function `setRebalanceDeviation(uint265)`
+        SetRebalanceDeviation set_rebalance_deviation = 3;
+        // Represents function `setShareLockPeriod(uint256 newLock)`
+        SetShareLockPeriod set_share_lock_period = 4;
+        // Represents function `setStrategistPlatformCut(uint64 cut)`
+        SetStrategistPlatformCut set_strategist_platform_cut = 5;
+        // Represents function `initiateShutdown()`
+        InitiateShutdown initiate_shutdown = 6;
+        // Represents function `liftShutdown()`
+        LiftShutdown lift_shutdown = 7;
+        // Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+        ForcePositionOut force_position_out = 8;
+        // Represents function `toggleIgnorePause(bool ignore)`
+        ToggleIgnorePause toggle_ignore_pause = 9;
+        // Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+        CachePriceRouter cache_price_router = 10;
     }
 
     /*
@@ -923,46 +905,28 @@ message CellarV2_5 {
 * Represent a function call initiated through a governance proposal
 */
 message CellarV2_5Governance {
-    oneof call_type {
-        // Represents a single function call
-        FunctionCall function_call = 1;
-        // Represents multiple, ordered function calls
-        Multicall multicall = 2;
-    }
-
-    message FunctionCall {
-        // The function to call on the target cellar
-        oneof function {
-            // Represents function `addAdaptorToCatalogue(address adaptor)`
-            AddAdaptorToCatalogue add_adaptor_to_catalogue = 1;
-            // Represents function `addPositionToCatalogue(uint32 positionId)`
-            AddPositionToCatalogue add_position_to_catalogue = 2;
-            // Represents function `setRebalanceDeviation(uint265)`
-            SetRebalanceDeviation set_rebalance_deviation = 3;
-            // Represents function `setStrategistPlatformCut(uint64 cut)`
-            SetStrategistPlatformCut set_strategist_platform_cut = 4;
-            // Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
-            ForcePositionOut force_position_out = 5;
-            // Represents function `toggleIgnorePause()`
-            ToggleIgnorePause toggle_ignore_pause = 6;
-            // Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
-            SetSharePriceOracle set_share_price_oracle = 7;
-            // Represents function `increaseShareSupplyCap(uint192 _newShareSupplyCap)`
-            IncreaseShareSupplyCap increase_share_supply_cap = 8;
-            // Represents function `setAutomatiionActions(uint256 _registryId, address _expectedAutomationActions)`
-            SetAutomationActions set_automation_actions = 9;
-            // Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
-            CachePriceRouter cache_price_router = 10;
-        }
-    }
-
-    /*
-    * Allows caller to call multiple functions in a single TX.
-    *
-    * Represents function `multicall(bytes[] data)`
-    */
-    message Multicall {
-        repeated FunctionCall function_calls = 1;
+    // The function to call on the target cellar
+    oneof function {
+        // Represents function `addAdaptorToCatalogue(address adaptor)`
+        AddAdaptorToCatalogue add_adaptor_to_catalogue = 1;
+        // Represents function `addPositionToCatalogue(uint32 positionId)`
+        AddPositionToCatalogue add_position_to_catalogue = 2;
+        // Represents function `setRebalanceDeviation(uint265)`
+        SetRebalanceDeviation set_rebalance_deviation = 3;
+        // Represents function `setStrategistPlatformCut(uint64 cut)`
+        SetStrategistPlatformCut set_strategist_platform_cut = 4;
+        // Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+        ForcePositionOut force_position_out = 5;
+        // Represents function `toggleIgnorePause()`
+        ToggleIgnorePause toggle_ignore_pause = 6;
+        // Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
+        SetSharePriceOracle set_share_price_oracle = 7;
+        // Represents function `increaseShareSupplyCap(uint192 _newShareSupplyCap)`
+        IncreaseShareSupplyCap increase_share_supply_cap = 8;
+        // Represents function `setAutomatiionActions(uint256 _registryId, address _expectedAutomationActions)`
+        SetAutomationActions set_automation_actions = 9;
+        // Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+        CachePriceRouter cache_price_router = 10;
     }
 
     /*
