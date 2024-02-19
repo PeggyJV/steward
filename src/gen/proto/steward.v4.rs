@@ -4139,15 +4139,65 @@ pub mod cellar_v2_2 {
 /// Represent a function call initiated through a governance proposal
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct CellarV22governance {
-    /// The function to call on the target cellar
-    #[prost(
-        oneof = "cellar_v2_2governance::Function",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
-    )]
-    pub function: ::core::option::Option<cellar_v2_2governance::Function>,
+    #[prost(oneof = "cellar_v2_2governance::CallType", tags = "1, 2")]
+    pub call_type: ::core::option::Option<cellar_v2_2governance::CallType>,
 }
 /// Nested message and enum types in `CellarV2_2Governance`.
 pub mod cellar_v2_2governance {
+    /// The function you wish to execute on the target cellar
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct FunctionCall {
+        #[prost(
+            oneof = "function_call::Function",
+            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
+        )]
+        pub function: ::core::option::Option<function_call::Function>,
+    }
+    /// Nested message and enum types in `FunctionCall`.
+    pub mod function_call {
+        #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+        pub enum Function {
+            /// Represents function `addAdaptorToCatalogue(address adaptor)`
+            #[prost(message, tag = "1")]
+            AddAdaptorToCatalogue(super::AddAdaptorToCatalogue),
+            /// Represents function `addPositionToCatalogue(uint32 positionId)`
+            #[prost(message, tag = "2")]
+            AddPositionToCatalogue(super::AddPositionToCatalogue),
+            /// Represents function `setRebalanceDeviation(uint265)`
+            #[prost(message, tag = "3")]
+            SetRebalanceDeviation(super::SetRebalanceDeviation),
+            /// Represents function `setShareLockPeriod(uint256 newLock)`
+            #[prost(message, tag = "4")]
+            SetShareLockPeriod(super::SetShareLockPeriod),
+            /// Represents function `setStrategistPlatformCut(uint64 cut)`
+            #[prost(message, tag = "5")]
+            SetStrategistPlatformCut(super::SetStrategistPlatformCut),
+            /// Represents function `initiateShutdown()`
+            #[prost(message, tag = "6")]
+            InitiateShutdown(super::InitiateShutdown),
+            /// Represents function `liftShutdown()`
+            #[prost(message, tag = "7")]
+            LiftShutdown(super::LiftShutdown),
+            /// Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+            #[prost(message, tag = "8")]
+            ForcePositionOut(super::ForcePositionOut),
+            /// Represents function `toggleIgnorePause(bool ignore)`
+            #[prost(message, tag = "9")]
+            ToggleIgnorePause(super::ToggleIgnorePause),
+            /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+            #[prost(message, tag = "10")]
+            CachePriceRouter(super::CachePriceRouter),
+        }
+    }
+    ///
+    /// Allows caller to call multiple functions in a single TX.
+    ///
+    /// Represents function `multicall(bytes[] data)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct Multicall {
+        #[prost(message, repeated, tag = "1")]
+        pub function_calls: ::prost::alloc::vec::Vec<FunctionCall>,
+    }
     ///
     /// Allows the owner to add an adaptor to the Cellar's adaptor catalogue
     ///
@@ -4245,39 +4295,14 @@ pub mod cellar_v2_2governance {
         #[prost(string, tag = "3")]
         pub expected_price_router: ::prost::alloc::string::String,
     }
-    /// The function to call on the target cellar
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum Function {
-        /// Represents function `addAdaptorToCatalogue(address adaptor)`
+    pub enum CallType {
+        /// Represents a single function call
         #[prost(message, tag = "1")]
-        AddAdaptorToCatalogue(AddAdaptorToCatalogue),
-        /// Represents function `addPositionToCatalogue(uint32 positionId)`
+        FunctionCall(FunctionCall),
+        /// Represents multiple, ordered function calls
         #[prost(message, tag = "2")]
-        AddPositionToCatalogue(AddPositionToCatalogue),
-        /// Represents function `setRebalanceDeviation(uint265)`
-        #[prost(message, tag = "3")]
-        SetRebalanceDeviation(SetRebalanceDeviation),
-        /// Represents function `setShareLockPeriod(uint256 newLock)`
-        #[prost(message, tag = "4")]
-        SetShareLockPeriod(SetShareLockPeriod),
-        /// Represents function `setStrategistPlatformCut(uint64 cut)`
-        #[prost(message, tag = "5")]
-        SetStrategistPlatformCut(SetStrategistPlatformCut),
-        /// Represents function `initiateShutdown()`
-        #[prost(message, tag = "6")]
-        InitiateShutdown(InitiateShutdown),
-        /// Represents function `liftShutdown()`
-        #[prost(message, tag = "7")]
-        LiftShutdown(LiftShutdown),
-        /// Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
-        #[prost(message, tag = "8")]
-        ForcePositionOut(ForcePositionOut),
-        /// Represents function `toggleIgnorePause(bool ignore)`
-        #[prost(message, tag = "9")]
-        ToggleIgnorePause(ToggleIgnorePause),
-        /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
-        #[prost(message, tag = "10")]
-        CachePriceRouter(CachePriceRouter),
+        Multicall(Multicall),
     }
 }
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -4617,15 +4642,65 @@ pub mod cellar_v2_5 {
 /// Represent a function call initiated through a governance proposal
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct CellarV25governance {
-    /// The function to call on the target cellar
-    #[prost(
-        oneof = "cellar_v2_5governance::Function",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
-    )]
-    pub function: ::core::option::Option<cellar_v2_5governance::Function>,
+    #[prost(oneof = "cellar_v2_5governance::CallType", tags = "1, 2")]
+    pub call_type: ::core::option::Option<cellar_v2_5governance::CallType>,
 }
 /// Nested message and enum types in `CellarV2_5Governance`.
 pub mod cellar_v2_5governance {
+    /// The function you wish to execute on the target cellar   
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct FunctionCall {
+        #[prost(
+            oneof = "function_call::Function",
+            tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
+        )]
+        pub function: ::core::option::Option<function_call::Function>,
+    }
+    /// Nested message and enum types in `FunctionCall`.
+    pub mod function_call {
+        #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+        pub enum Function {
+            /// Represents function `addAdaptorToCatalogue(address adaptor)`
+            #[prost(message, tag = "1")]
+            AddAdaptorToCatalogue(super::AddAdaptorToCatalogue),
+            /// Represents function `addPositionToCatalogue(uint32 positionId)`
+            #[prost(message, tag = "2")]
+            AddPositionToCatalogue(super::AddPositionToCatalogue),
+            /// Represents function `setRebalanceDeviation(uint265)`
+            #[prost(message, tag = "3")]
+            SetRebalanceDeviation(super::SetRebalanceDeviation),
+            /// Represents function `setStrategistPlatformCut(uint64 cut)`
+            #[prost(message, tag = "4")]
+            SetStrategistPlatformCut(super::SetStrategistPlatformCut),
+            /// Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+            #[prost(message, tag = "5")]
+            ForcePositionOut(super::ForcePositionOut),
+            /// Represents function `toggleIgnorePause()`
+            #[prost(message, tag = "6")]
+            ToggleIgnorePause(super::ToggleIgnorePause),
+            /// Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
+            #[prost(message, tag = "7")]
+            SetSharePriceOracle(super::SetSharePriceOracle),
+            /// Represents function `increaseShareSupplyCap(uint192 _newShareSupplyCap)`
+            #[prost(message, tag = "8")]
+            IncreaseShareSupplyCap(super::IncreaseShareSupplyCap),
+            /// Represents function `setAutomatiionActions(uint256 _registryId, address _expectedAutomationActions)`
+            #[prost(message, tag = "9")]
+            SetAutomationActions(super::SetAutomationActions),
+            /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+            #[prost(message, tag = "10")]
+            CachePriceRouter(super::CachePriceRouter),
+        }
+    }
+    ///
+    /// Allows caller to call multiple functions in a single TX.
+    ///
+    /// Represents function `multicall(bytes[] data)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct Multicall {
+        #[prost(message, repeated, tag = "1")]
+        pub function_calls: ::prost::alloc::vec::Vec<FunctionCall>,
+    }
     ///
     /// Allows the owner to add an adaptor to the Cellar's adaptor catalogue
     ///
@@ -4734,39 +4809,14 @@ pub mod cellar_v2_5governance {
         #[prost(string, tag = "3")]
         pub expected_price_router: ::prost::alloc::string::String,
     }
-    /// The function to call on the target cellar
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
-    pub enum Function {
-        /// Represents function `addAdaptorToCatalogue(address adaptor)`
+    pub enum CallType {
+        /// Represents a single function call
         #[prost(message, tag = "1")]
-        AddAdaptorToCatalogue(AddAdaptorToCatalogue),
-        /// Represents function `addPositionToCatalogue(uint32 positionId)`
+        FunctionCall(FunctionCall),
+        /// Represents multiple, ordered function calls
         #[prost(message, tag = "2")]
-        AddPositionToCatalogue(AddPositionToCatalogue),
-        /// Represents function `setRebalanceDeviation(uint265)`
-        #[prost(message, tag = "3")]
-        SetRebalanceDeviation(SetRebalanceDeviation),
-        /// Represents function `setStrategistPlatformCut(uint64 cut)`
-        #[prost(message, tag = "4")]
-        SetStrategistPlatformCut(SetStrategistPlatformCut),
-        /// Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
-        #[prost(message, tag = "5")]
-        ForcePositionOut(ForcePositionOut),
-        /// Represents function `toggleIgnorePause()`
-        #[prost(message, tag = "6")]
-        ToggleIgnorePause(ToggleIgnorePause),
-        /// Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
-        #[prost(message, tag = "7")]
-        SetSharePriceOracle(SetSharePriceOracle),
-        /// Represents function `increaseShareSupplyCap(uint192 _newShareSupplyCap)`
-        #[prost(message, tag = "8")]
-        IncreaseShareSupplyCap(IncreaseShareSupplyCap),
-        /// Represents function `setAutomatiionActions(uint256 _registryId, address _expectedAutomationActions)`
-        #[prost(message, tag = "9")]
-        SetAutomationActions(SetAutomationActions),
-        /// Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
-        #[prost(message, tag = "10")]
-        CachePriceRouter(CachePriceRouter),
+        Multicall(Multicall),
     }
 }
 /// Represents a call to adaptor an. The cellar must be authorized to call the target adaptor.
