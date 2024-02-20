@@ -206,12 +206,12 @@ func (s *IntegrationTestSuite) TestScheduledCorkMulticallProposal() {
 	currentHeight, err := s.GetLatestBlockHeight(orchClientCtx)
 	s.Require().NoError(err)
 	protoJson := fmt.Sprintf(`
-	{
-		"call": {
-			"CellarV22": {
+    {
+        "call": {
+            "CellarV22": {
                 "call_type": {
                     "Multicall": {
-                        "function_calls": [ 
+                        "function_calls": [
                             {
                                 "function": {
                                     "AddAdaptorToCatalogue": {
@@ -226,13 +226,13 @@ func (s *IntegrationTestSuite) TestScheduledCorkMulticallProposal() {
                                     }
                                 }
                             }
-                       ]
+                        ]
                     }
-                }				
-			}
-		}
-	}
-`, adaptorContract.Hex())	
+                }
+            }
+        }
+    }
+    `, adaptorContract.Hex())	
 
     targetBlockHeight := currentHeight + 90
 	proposal := corktypes.NewScheduledCorkProposal(
