@@ -523,6 +523,20 @@ message CellarV2_2Governance {
             ToggleIgnorePause toggle_ignore_pause = 9;
             // Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
             CachePriceRouter cache_price_router = 10;
+            // Represents function `addPosition(uint256 index, address position)`
+            AddPosition add_position = 11;
+            // Represents function `callOnAdaptor(AdaptorCall[] memory data)`
+            CallOnAdaptor call_on_adaptor = 12;
+            // Represents function `removePosition(uint256 index, bool inDebtArray)`
+            RemovePosition remove_position = 13;
+            // Represents function `removeAdaptorFromCatalogue(address adaptor)`
+            RemoveAdaptorFromCatalogue remove_adaptor_from_catalogue = 14;
+            // Represents function `removePositionFromCatalogue(uint32 positionId)`
+            RemovePositionFromCatalogue remove_position_from_catalogue = 15;
+            // Represents function `setHoldingPosition(uint32 position_id)`
+            SetHoldingPosition set_holding_position = 16;
+            // Represents function `swapPositions(uint256 index1, uint256 index2)`
+            SwapPositions swap_positions = 18;
         }
     }
     
@@ -628,6 +642,94 @@ message CellarV2_2Governance {
         uint32 allowable_range = 2;
         // The expected price router address
         string expected_price_router = 3;
+    }
+
+    /*
+    * Insert a trusted position to the list of positions used by the cellar at a given index.
+    *
+    * Represents function `addPosition(uint32 index, uint32 positionId, bytes configurationData, bool inDebtArray)`
+    */
+    message AddPosition {
+        // Index at which to add the position
+        uint32 index = 1;
+        // The position's ID in the cellar registry
+        uint32 position_id = 2;
+        // Data used to configure how the position behaves
+        bytes configuration_data = 3;
+        // Whether to add position in the debt array, or the credit array.
+        bool in_debt_array = 4;
+    }
+
+    /*
+    * Allows strategists to manage their Cellar using arbitrary logic calls to adaptors.
+    *
+    * Represents function `callOnAdaptor(AdaptorCall[] memory data)`
+    */
+    message CallOnAdaptor {
+        repeated AdaptorCall data = 1;
+    }
+
+    /*
+    * Remove the position at a given index from the list of positions used by the cellar.
+    *
+    * Represents function `removePosition(uint32 index, bool inDebtArray)`
+    */
+    message RemovePosition {
+        // Index at which to remove the position
+        uint32 index = 1;
+        // Whether to remove position from the debt array, or the credit array.
+        bool in_debt_array = 2;
+    }
+
+    /*
+    * Allows callers to remove adaptors from this cellar's catalogue
+    *
+    * Represents function `removeAdaptorFromCatalogue(address adaptor)`
+    */
+    message RemoveAdaptorFromCatalogue {
+        string adaptor = 1;
+    }
+
+    /*
+    * Allows caller to remove positions from this cellar's catalogue
+    *
+    * Represents function `removePositionFromCatalogue(uint32 positionId)`
+    */
+    message RemovePositionFromCatalogue {
+        uint32 position_id = 1;
+    }
+
+    /*
+    * Set the holding position used of the cellar.
+    *
+    * Represents function `setHoldingIndex(uint8 index)`
+    */
+    message SetHoldingPosition {
+        // ID (index) of the new holding position to use
+        uint32 position_id = 1;
+    }
+
+    /*
+    * Sets the Strategists payout address.
+    *
+    * Represents function `setStrategistPayoutAddress(address payout)`
+    */
+    message SetStrategistPayoutAddress {
+        string payout = 1;
+    }
+
+    /*
+    * Swap the positions at two given indeces.
+    *
+    * Represents function `swapPositions(uint32 index1, uint32 index2)`
+    */
+    message SwapPositions {
+        // Index of the first position
+        uint32 index_1 = 1;
+        // Index of the second position
+        uint32 index_2 = 2;
+        // Whether to switch positions in the debt array, or the credit array.
+        bool in_debt_array = 3;
     }
 }
 

@@ -286,7 +286,7 @@ type CellarV1_SetShareLockPeriod_ struct {
 }
 
 type CellarV1_SetRebalanceDeviation_ struct {
-	// Represents function `setRebalanceDeviation(uint265)`
+	// Represents function `setRebalanceDeviation(uint256)`
 	SetRebalanceDeviation *CellarV1_SetRebalanceDeviation `protobuf:"bytes,12,opt,name=set_rebalance_deviation,json=setRebalanceDeviation,proto3,oneof"`
 }
 

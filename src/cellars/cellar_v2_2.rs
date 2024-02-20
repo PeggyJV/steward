@@ -433,7 +433,8 @@ pub fn get_encoded_governance_function(
             Ok(CellarV2_2Calls::ToggleIgnorePause(call).encode())
         }
         GovernanceFunction::CachePriceRouter(params) => {
-            log_cellar_call(
+            log_governance_cellar_call(
+                proposal_id,
                 CELLAR_NAME,
                 &CachePriceRouterCall::function_name(),
                 cellar_id,
@@ -444,6 +445,109 @@ pub fn get_encoded_governance_function(
             };
 
             Ok(CellarV2_2Calls::CachePriceRouter(call).encode())
+        }
+        GovernanceFunction::AddPosition(params) => {
+            check_blocked_position(&params.position_id, &V2_2_PERMISSIONS)?;
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &AddPositionCall::function_name(),
+                cellar_id,
+            );
+
+            let call = AddPositionCall {
+                index: params.index,
+                position_id: params.position_id,
+                configuration_data: params.configuration_data.into(),
+                in_debt_array: params.in_debt_array,
+            };
+
+            Ok(CellarV2_2Calls::AddPosition(call).encode())
+        }
+        GovernanceFunction::CallOnAdaptor(params) => {
+            for adaptor_call in params.data.clone() {
+                check_blocked_adaptor(&adaptor_call.adaptor)?;
+            }
+
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &CallOnAdaptorCall::function_name(),
+                cellar_id,
+            );
+            let call = CallOnAdaptorCall {
+                data: get_encoded_adaptor_calls(params.data)?,
+            };
+
+            Ok(CellarV2_2Calls::CallOnAdaptor(call).encode())
+        }
+        GovernanceFunction::RemovePosition(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &RemovePositionCall::function_name(),
+                cellar_id,
+            );
+            let call = RemovePositionCall {
+                index: params.index,
+                in_debt_array: params.in_debt_array,
+            };
+
+            Ok(CellarV2_2Calls::RemovePosition(call).encode())
+        }
+        GovernanceFunction::RemoveAdaptorFromCatalogue(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &RemoveAdaptorFromCatalogueCall::function_name(),
+                cellar_id,
+            );
+            let call = RemoveAdaptorFromCatalogueCall {
+                adaptor: sp_call_parse_address(params.adaptor)?,
+            };
+
+            Ok(CellarV2_2Calls::RemoveAdaptorFromCatalogue(call).encode())
+        }
+        GovernanceFunction::RemovePositionFromCatalogue(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &RemovePositionFromCatalogueCall::function_name(),
+                cellar_id,
+            );
+            let call = RemovePositionFromCatalogueCall {
+                position_id: params.position_id,
+            };
+
+            Ok(CellarV2_2Calls::RemovePositionFromCatalogue(call).encode())
+        }
+        GovernanceFunction::SetHoldingPosition(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &SetHoldingPositionCall::function_name(),
+                cellar_id,
+            );
+            let call = SetHoldingPositionCall {
+                position_id: params.position_id,
+            };
+
+            Ok(CellarV2_2Calls::SetHoldingPosition(call).encode())
+        }
+        GovernanceFunction::SwapPositions(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &SwapPositionsCall::function_name(),
+                cellar_id,
+            );
+            let call = SwapPositionsCall {
+                index_1: params.index_1,
+                index_2: params.index_2,
+                in_debt_array: params.in_debt_array,
+            };
+
+            Ok(CellarV2_2Calls::SwapPositions(call).encode())
         }
     }
 }
