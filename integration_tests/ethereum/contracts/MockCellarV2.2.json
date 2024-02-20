@@ -8,6 +8,32 @@
         "anonymous": false,
         "inputs": [
             {
+                "indexed": false,
+                "internalType": "address",
+                "name": "adaptor",
+                "type": "address"
+            }
+        ],
+        "name": "AddAdaptorToCatalogue",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint32",
+                "name": "position",
+                "type": "uint32"
+            }
+        ],
+        "name": "AddPositionToCatalogue",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
                 "components": [
                     {
                         "internalType": "address",
@@ -53,6 +79,32 @@
         ],
         "name": "OwnerUpdated",
         "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "adaptor",
+                "type": "address"
+            }
+        ],
+        "name": "addAdaptorToCatalogue",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint32",
+                "name": "position",
+                "type": "uint32"
+            }
+        ],
+        "name": "addPositionToCatalogue",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
         "inputs": [

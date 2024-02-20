@@ -314,7 +314,7 @@ fn get_encoded_governance_call(
             cellar_v2::get_encoded_governance_call(function, cellar_id, proposal_id)
         }
         Call::CellarV22(data) => {
-            if data.function.is_none() {
+            if data.call_type.is_none() {
                 return Err(ErrorKind::GovernanceCall
                     .context(format!(
                         "proposal {} call data contains no function data and will be ignored: {:?}",
@@ -323,11 +323,11 @@ fn get_encoded_governance_call(
                     .into());
             }
 
-            let function = data.function.unwrap();
-            cellar_v2_2::get_encoded_governance_call(function, cellar_id, proposal_id)
+            let call = data.call_type.unwrap();
+            cellar_v2_2::get_encoded_governance_call(call, cellar_id, proposal_id)
         }
         Call::CellarV25(data) => {
-            if data.function.is_none() {
+            if data.call_type.is_none() {
                 return Err(ErrorKind::GovernanceCall
                     .context(format!(
                         "proposal {} call data contains no function data and will be ignored: {:?}",
@@ -336,8 +336,8 @@ fn get_encoded_governance_call(
                     .into());
             }
 
-            let function = data.function.unwrap();
-            cellar_v2_5::get_encoded_governance_call(function, cellar_id, proposal_id)
+            let call = data.call_type.unwrap();
+            cellar_v2_5::get_encoded_governance_call(call, cellar_id, proposal_id)
         }
     }
 }

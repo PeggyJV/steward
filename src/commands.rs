@@ -11,7 +11,8 @@
 //! application's configuration file.
 
 mod config_cmd;
-mod cork_proposal;
+// TODO: Update cork proposal commands to support multicall
+// mod cork_proposal;
 mod cosmos_to_eth;
 mod deploy;
 mod eth_to_cosmos;
@@ -22,7 +23,7 @@ mod sign_delegate_keys;
 mod simulate;
 mod start;
 
-use self::{config_cmd::ConfigCmd, cork_proposal::CorkProposalCmd, keys::KeysCmd, start::StartCmd};
+use self::{config_cmd::ConfigCmd, keys::KeysCmd, start::StartCmd};
 
 use crate::config::StewardConfig;
 use abscissa_core::{clap::Parser, Command, Configurable, FrameworkError, Runnable};
@@ -34,8 +35,8 @@ pub const CONFIG_FILE: &str = "steward.toml";
 /// Steward Subcommands
 #[derive(Command, Debug, Parser, Runnable)]
 pub enum StewardCmd {
-    #[clap(subcommand)]
-    CorkProposal(CorkProposalCmd),
+    // #[clap(subcommand)]
+    // CorkProposal(CorkProposalCmd),
     #[clap(subcommand)]
     Keys(KeysCmd),
     /// Print default configurations

@@ -16,7 +16,10 @@ use crate::abi::{
 use crate::proto::{
     adaptor_call::CallData::*,
     cellar_v2_5::{function_call::Function, CallType, FunctionCall},
-    cellar_v2_5governance::Function as GovernanceFunction,
+    cellar_v2_5governance::{
+        function_call::Function as GovernanceFunction, CallType as GovernanceCallType,
+        FunctionCall as GovernanceFunctionCall,
+    },
     AdaptorCall,
 };
 use abscissa_core::tracing::{debug, info};
@@ -456,11 +459,38 @@ fn get_encoded_adaptor_calls(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCal
     Ok(result)
 }
 
+/// Encodes a call to a CellarV2.5 contract
 pub fn get_encoded_governance_call(
-    function: GovernanceFunction,
+    call_type: GovernanceCallType,
     cellar_id: &str,
     proposal_id: u64,
 ) -> Result<Vec<u8>, Error> {
+    match call_type {
+        GovernanceCallType::FunctionCall(f) => {
+            get_encoded_governance_function(f, cellar_id, proposal_id)
+        }
+        GovernanceCallType::Multicall(m) => {
+            let mut multicall = MulticallCall::default();
+            m.function_calls
+                .iter()
+                .map(|f| get_encoded_governance_function(f.clone(), cellar_id, proposal_id))
+                .collect::<Result<Vec<Vec<u8>>, Error>>()?
+                .iter()
+                .for_each(|f| multicall.data.push(Bytes::from(f.clone())));
+
+            Ok(multicall.encode())
+        }
+    }
+}
+
+pub fn get_encoded_governance_function(
+    call: GovernanceFunctionCall,
+    cellar_id: &str,
+    proposal_id: u64,
+) -> Result<Vec<u8>, Error> {
+    let function = call
+        .function
+        .ok_or_else(|| sp_call_error("call data is empty".to_string()))?;
     match function {
         GovernanceFunction::AddAdaptorToCatalogue(params) => {
             log_governance_cellar_call(
@@ -624,6 +654,128 @@ pub fn get_encoded_governance_call(
             };
 
             Ok(CellarV2_5Calls::CachePriceRouter(call).encode())
+        }
+        GovernanceFunction::InitiateShutdown(_) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &InitiateShutdownCall::function_name(),
+                cellar_id,
+            );
+            let call = InitiateShutdownCall {};
+
+            Ok(CellarV2_5Calls::InitiateShutdown(call).encode())
+        }
+        GovernanceFunction::LiftShutdown(_) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &LiftShutdownCall::function_name(),
+                cellar_id,
+            );
+            let call = LiftShutdownCall {};
+
+            Ok(CellarV2_5Calls::LiftShutdown(call).encode())
+        }
+        GovernanceFunction::RemoveAdaptorFromCatalogue(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &RemoveAdaptorFromCatalogueCall::function_name(),
+                cellar_id,
+            );
+            let call = RemoveAdaptorFromCatalogueCall {
+                adaptor: sp_call_parse_address(params.adaptor)?,
+            };
+
+            Ok(CellarV2_5Calls::RemoveAdaptorFromCatalogue(call).encode())
+        }
+        GovernanceFunction::RemovePositionFromCatalogue(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &RemovePositionFromCatalogueCall::function_name(),
+                cellar_id,
+            );
+            let call = RemovePositionFromCatalogueCall {
+                position_id: params.position_id,
+            };
+
+            Ok(CellarV2_5Calls::RemovePositionFromCatalogue(call).encode())
+        }
+        GovernanceFunction::DecreaseShareSupplyCap(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &DecreaseShareSupplyCapCall::function_name(),
+                cellar_id,
+            );
+            let call = DecreaseShareSupplyCapCall {
+                new_share_supply_cap: string_to_u256(params.new_cap)?,
+            };
+
+            Ok(CellarV2_5Calls::DecreaseShareSupplyCap(call).encode())
+        }
+        GovernanceFunction::AddPosition(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &AddPositionCall::function_name(),
+                cellar_id,
+            );
+
+            let call = AddPositionCall {
+                index: params.index,
+                position_id: params.position_id,
+                configuration_data: params.configuration_data.into(),
+                in_debt_array: params.in_debt_array,
+            };
+
+            Ok(CellarV2_5Calls::AddPosition(call).encode())
+        }
+        GovernanceFunction::CallOnAdaptor(params) => {
+            for adaptor_call in params.data.clone() {
+                check_blocked_adaptor(&adaptor_call.adaptor)?;
+            }
+
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &CallOnAdaptorCall::function_name(),
+                cellar_id,
+            );
+            let call = CallOnAdaptorCall {
+                data: get_encoded_adaptor_calls(params.data)?,
+            };
+
+            Ok(CellarV2_5Calls::CallOnAdaptor(call).encode())
+        }
+        GovernanceFunction::RemovePosition(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &RemovePositionCall::function_name(),
+                cellar_id,
+            );
+            let call = RemovePositionCall {
+                index: params.index,
+                in_debt_array: params.in_debt_array,
+            };
+
+            Ok(CellarV2_5Calls::RemovePosition(call).encode())
+        }
+        GovernanceFunction::SetHoldingPosition(params) => {
+            log_governance_cellar_call(
+                proposal_id,
+                CELLAR_NAME,
+                &SetHoldingPositionCall::function_name(),
+                cellar_id,
+            );
+            let call = SetHoldingPositionCall {
+                position_id: params.position_id,
+            };
+
+            Ok(CellarV2_5Calls::SetHoldingPosition(call).encode())
         }
     }
 }

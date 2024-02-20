@@ -36,7 +36,7 @@ type CellarV2_2AdaptorCall struct {
 
 // CellarV22MetaData contains all meta data concerning the CellarV22 contract.
 var CellarV22MetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"adaptor\",\"type\":\"address\"},{\"internalType\":\"bytes[]\",\"name\":\"callData\",\"type\":\"bytes[]\"}],\"indexed\":false,\"internalType\":\"structCellarV2_2.AdaptorCall[]\",\"name\":\"data\",\"type\":\"tuple[]\"}],\"name\":\"CallOnAdaptor\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"Multicall\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnerUpdated\",\"type\":\"event\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"adaptor\",\"type\":\"address\"},{\"internalType\":\"bytes[]\",\"name\":\"callData\",\"type\":\"bytes[]\"}],\"internalType\":\"structCellarV2_2.AdaptorCall[]\",\"name\":\"data\",\"type\":\"tuple[]\"}],\"name\":\"callOnAdaptor\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes[]\",\"name\":\"data\",\"type\":\"bytes[]\"}],\"name\":\"multicall\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"setOwner\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"adaptor\",\"type\":\"address\"}],\"name\":\"AddAdaptorToCatalogue\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint32\",\"name\":\"position\",\"type\":\"uint32\"}],\"name\":\"AddPositionToCatalogue\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"adaptor\",\"type\":\"address\"},{\"internalType\":\"bytes[]\",\"name\":\"callData\",\"type\":\"bytes[]\"}],\"indexed\":false,\"internalType\":\"structCellarV2_2.AdaptorCall[]\",\"name\":\"data\",\"type\":\"tuple[]\"}],\"name\":\"CallOnAdaptor\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"Multicall\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnerUpdated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"adaptor\",\"type\":\"address\"}],\"name\":\"addAdaptorToCatalogue\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"position\",\"type\":\"uint32\"}],\"name\":\"addPositionToCatalogue\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"adaptor\",\"type\":\"address\"},{\"internalType\":\"bytes[]\",\"name\":\"callData\",\"type\":\"bytes[]\"}],\"internalType\":\"structCellarV2_2.AdaptorCall[]\",\"name\":\"data\",\"type\":\"tuple[]\"}],\"name\":\"callOnAdaptor\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes[]\",\"name\":\"data\",\"type\":\"bytes[]\"}],\"name\":\"multicall\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"setOwner\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // CellarV22ABI is the input ABI used to generate the binding from.
@@ -216,6 +216,48 @@ func (_CellarV22 *CellarV22CallerSession) Owner() (common.Address, error) {
 	return _CellarV22.Contract.Owner(&_CellarV22.CallOpts)
 }
 
+// AddAdaptorToCatalogue is a paid mutator transaction binding the contract method 0x3d8ab1e5.
+//
+// Solidity: function addAdaptorToCatalogue(address adaptor) returns()
+func (_CellarV22 *CellarV22Transactor) AddAdaptorToCatalogue(opts *bind.TransactOpts, adaptor common.Address) (*types.Transaction, error) {
+	return _CellarV22.contract.Transact(opts, "addAdaptorToCatalogue", adaptor)
+}
+
+// AddAdaptorToCatalogue is a paid mutator transaction binding the contract method 0x3d8ab1e5.
+//
+// Solidity: function addAdaptorToCatalogue(address adaptor) returns()
+func (_CellarV22 *CellarV22Session) AddAdaptorToCatalogue(adaptor common.Address) (*types.Transaction, error) {
+	return _CellarV22.Contract.AddAdaptorToCatalogue(&_CellarV22.TransactOpts, adaptor)
+}
+
+// AddAdaptorToCatalogue is a paid mutator transaction binding the contract method 0x3d8ab1e5.
+//
+// Solidity: function addAdaptorToCatalogue(address adaptor) returns()
+func (_CellarV22 *CellarV22TransactorSession) AddAdaptorToCatalogue(adaptor common.Address) (*types.Transaction, error) {
+	return _CellarV22.Contract.AddAdaptorToCatalogue(&_CellarV22.TransactOpts, adaptor)
+}
+
+// AddPositionToCatalogue is a paid mutator transaction binding the contract method 0x501eb4fe.
+//
+// Solidity: function addPositionToCatalogue(uint32 position) returns()
+func (_CellarV22 *CellarV22Transactor) AddPositionToCatalogue(opts *bind.TransactOpts, position uint32) (*types.Transaction, error) {
+	return _CellarV22.contract.Transact(opts, "addPositionToCatalogue", position)
+}
+
+// AddPositionToCatalogue is a paid mutator transaction binding the contract method 0x501eb4fe.
+//
+// Solidity: function addPositionToCatalogue(uint32 position) returns()
+func (_CellarV22 *CellarV22Session) AddPositionToCatalogue(position uint32) (*types.Transaction, error) {
+	return _CellarV22.Contract.AddPositionToCatalogue(&_CellarV22.TransactOpts, position)
+}
+
+// AddPositionToCatalogue is a paid mutator transaction binding the contract method 0x501eb4fe.
+//
+// Solidity: function addPositionToCatalogue(uint32 position) returns()
+func (_CellarV22 *CellarV22TransactorSession) AddPositionToCatalogue(position uint32) (*types.Transaction, error) {
+	return _CellarV22.Contract.AddPositionToCatalogue(&_CellarV22.TransactOpts, position)
+}
+
 // CallOnAdaptor is a paid mutator transaction binding the contract method 0x4e84befe.
 //
 // Solidity: function callOnAdaptor((address,bytes[])[] data) returns()
@@ -277,6 +319,274 @@ func (_CellarV22 *CellarV22Session) SetOwner(newOwner common.Address) (*types.Tr
 // Solidity: function setOwner(address newOwner) returns()
 func (_CellarV22 *CellarV22TransactorSession) SetOwner(newOwner common.Address) (*types.Transaction, error) {
 	return _CellarV22.Contract.SetOwner(&_CellarV22.TransactOpts, newOwner)
+}
+
+// CellarV22AddAdaptorToCatalogueIterator is returned from FilterAddAdaptorToCatalogue and is used to iterate over the raw logs and unpacked data for AddAdaptorToCatalogue events raised by the CellarV22 contract.
+type CellarV22AddAdaptorToCatalogueIterator struct {
+	Event *CellarV22AddAdaptorToCatalogue // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *CellarV22AddAdaptorToCatalogueIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(CellarV22AddAdaptorToCatalogue)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(CellarV22AddAdaptorToCatalogue)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *CellarV22AddAdaptorToCatalogueIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *CellarV22AddAdaptorToCatalogueIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// CellarV22AddAdaptorToCatalogue represents a AddAdaptorToCatalogue event raised by the CellarV22 contract.
+type CellarV22AddAdaptorToCatalogue struct {
+	Adaptor common.Address
+	Raw     types.Log // Blockchain specific contextual infos
+}
+
+// FilterAddAdaptorToCatalogue is a free log retrieval operation binding the contract event 0xb26de74984a77d9ebfcb8124ee04005e08bf103897d24f765b87164f7205708b.
+//
+// Solidity: event AddAdaptorToCatalogue(address adaptor)
+func (_CellarV22 *CellarV22Filterer) FilterAddAdaptorToCatalogue(opts *bind.FilterOpts) (*CellarV22AddAdaptorToCatalogueIterator, error) {
+
+	logs, sub, err := _CellarV22.contract.FilterLogs(opts, "AddAdaptorToCatalogue")
+	if err != nil {
+		return nil, err
+	}
+	return &CellarV22AddAdaptorToCatalogueIterator{contract: _CellarV22.contract, event: "AddAdaptorToCatalogue", logs: logs, sub: sub}, nil
+}
+
+// WatchAddAdaptorToCatalogue is a free log subscription operation binding the contract event 0xb26de74984a77d9ebfcb8124ee04005e08bf103897d24f765b87164f7205708b.
+//
+// Solidity: event AddAdaptorToCatalogue(address adaptor)
+func (_CellarV22 *CellarV22Filterer) WatchAddAdaptorToCatalogue(opts *bind.WatchOpts, sink chan<- *CellarV22AddAdaptorToCatalogue) (event.Subscription, error) {
+
+	logs, sub, err := _CellarV22.contract.WatchLogs(opts, "AddAdaptorToCatalogue")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(CellarV22AddAdaptorToCatalogue)
+				if err := _CellarV22.contract.UnpackLog(event, "AddAdaptorToCatalogue", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseAddAdaptorToCatalogue is a log parse operation binding the contract event 0xb26de74984a77d9ebfcb8124ee04005e08bf103897d24f765b87164f7205708b.
+//
+// Solidity: event AddAdaptorToCatalogue(address adaptor)
+func (_CellarV22 *CellarV22Filterer) ParseAddAdaptorToCatalogue(log types.Log) (*CellarV22AddAdaptorToCatalogue, error) {
+	event := new(CellarV22AddAdaptorToCatalogue)
+	if err := _CellarV22.contract.UnpackLog(event, "AddAdaptorToCatalogue", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// CellarV22AddPositionToCatalogueIterator is returned from FilterAddPositionToCatalogue and is used to iterate over the raw logs and unpacked data for AddPositionToCatalogue events raised by the CellarV22 contract.
+type CellarV22AddPositionToCatalogueIterator struct {
+	Event *CellarV22AddPositionToCatalogue // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *CellarV22AddPositionToCatalogueIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(CellarV22AddPositionToCatalogue)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(CellarV22AddPositionToCatalogue)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *CellarV22AddPositionToCatalogueIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *CellarV22AddPositionToCatalogueIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// CellarV22AddPositionToCatalogue represents a AddPositionToCatalogue event raised by the CellarV22 contract.
+type CellarV22AddPositionToCatalogue struct {
+	Position uint32
+	Raw      types.Log // Blockchain specific contextual infos
+}
+
+// FilterAddPositionToCatalogue is a free log retrieval operation binding the contract event 0x96b5ebca40bfbafa51fb503417bf2f7d24710e145c354c9b7852e2dedc383dd9.
+//
+// Solidity: event AddPositionToCatalogue(uint32 position)
+func (_CellarV22 *CellarV22Filterer) FilterAddPositionToCatalogue(opts *bind.FilterOpts) (*CellarV22AddPositionToCatalogueIterator, error) {
+
+	logs, sub, err := _CellarV22.contract.FilterLogs(opts, "AddPositionToCatalogue")
+	if err != nil {
+		return nil, err
+	}
+	return &CellarV22AddPositionToCatalogueIterator{contract: _CellarV22.contract, event: "AddPositionToCatalogue", logs: logs, sub: sub}, nil
+}
+
+// WatchAddPositionToCatalogue is a free log subscription operation binding the contract event 0x96b5ebca40bfbafa51fb503417bf2f7d24710e145c354c9b7852e2dedc383dd9.
+//
+// Solidity: event AddPositionToCatalogue(uint32 position)
+func (_CellarV22 *CellarV22Filterer) WatchAddPositionToCatalogue(opts *bind.WatchOpts, sink chan<- *CellarV22AddPositionToCatalogue) (event.Subscription, error) {
+
+	logs, sub, err := _CellarV22.contract.WatchLogs(opts, "AddPositionToCatalogue")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(CellarV22AddPositionToCatalogue)
+				if err := _CellarV22.contract.UnpackLog(event, "AddPositionToCatalogue", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseAddPositionToCatalogue is a log parse operation binding the contract event 0x96b5ebca40bfbafa51fb503417bf2f7d24710e145c354c9b7852e2dedc383dd9.
+//
+// Solidity: event AddPositionToCatalogue(uint32 position)
+func (_CellarV22 *CellarV22Filterer) ParseAddPositionToCatalogue(log types.Log) (*CellarV22AddPositionToCatalogue, error) {
+	event := new(CellarV22AddPositionToCatalogue)
+	if err := _CellarV22.contract.UnpackLog(event, "AddPositionToCatalogue", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
 }
 
 // CellarV22CallOnAdaptorIterator is returned from FilterCallOnAdaptor and is used to iterate over the raw logs and unpacked data for CallOnAdaptor events raised by the CellarV22 contract.

@@ -137,7 +137,7 @@ async fn get_signed_messages(
     Ok(msg_bytes)
 }
 
-fn get_fee(messages: &Vec<Msg>) -> Fee {
+fn get_fee(messages: &[Msg]) -> Fee {
     let config = APP.config();
     let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
     let fee = Coin {

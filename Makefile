@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := e2e_cork_test
 
-VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:main"
+SOMMELIER_VERSION := "v7.0.1"
+VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:$(SOMMELIER_VERSION)"
 ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:main"
 
 go_protos:
@@ -20,7 +21,7 @@ e2e_build_images: e2e_clean_slate
 e2e_clean_slate:
 	@scripts/clean_slate.sh
 
-e2e_cork_test: e2e_aave_v2_stablecoin_test e2e_cellar_v1_test e2e_cellar_v2_test e2e_cellar_v2_2_test e2e_scheduled_cork_proposal_test e2e_scheduled_axelar_cork_proposal_test
+e2e_cork_test: e2e_aave_v2_stablecoin_test e2e_cellar_v1_test e2e_cellar_v2_test e2e_cellar_v2_2_test e2e_scheduled_cork_proposal_test e2e_scheduled_axelar_cork_proposal_test e2e_scheduled_cork_proposal_multicall_test
 
 # Because of the way `make` works, using the e2e_clean_slate as as a prerequisite for
 # the individual tests doesn't work when `e2e_cork_test` runs the test targets in series,
@@ -48,6 +49,10 @@ e2e_scheduled_cork_proposal_test:
 e2e_scheduled_axelar_cork_proposal_test:
 	@scripts/clean_slate.sh
 	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestScheduledAxelarCorkProposal || make -s fail
+
+e2e_scheduled_cork_proposal_multicall_test:
+	@scripts/clean_slate.sh
+	@E2E_SKIP_CLEANUP=true integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m TestScheduledCorkMulticallProposal || make -s fail
 
 fail:
 	@echo 'test failed; dumping container logs into ./testdata for review'
