@@ -4386,15 +4386,6 @@ pub mod cellar_v2_2governance {
         pub position_id: u32,
     }
     ///
-    /// Sets the Strategists payout address.
-    ///
-    /// Represents function `setStrategistPayoutAddress(address payout)`
-    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
-    pub struct SetStrategistPayoutAddress {
-        #[prost(string, tag = "1")]
-        pub payout: ::prost::alloc::string::String,
-    }
-    ///
     /// Swap the positions at two given indeces.
     ///
     /// Represents function `swapPositions(uint32 index1, uint32 index2)`

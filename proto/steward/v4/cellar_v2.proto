@@ -710,15 +710,6 @@ message CellarV2_2Governance {
     }
 
     /*
-    * Sets the Strategists payout address.
-    *
-    * Represents function `setStrategistPayoutAddress(address payout)`
-    */
-    message SetStrategistPayoutAddress {
-        string payout = 1;
-    }
-
-    /*
     * Swap the positions at two given indeces.
     *
     * Represents function `swapPositions(uint32 index1, uint32 index2)`
