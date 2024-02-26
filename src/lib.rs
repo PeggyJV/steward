@@ -195,4 +195,3 @@ pub mod abi {
 
 #[allow(clippy::all)]
 pub use steward_proto::proto;
-

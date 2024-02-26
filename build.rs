@@ -29,7 +29,7 @@ fn main() {
         .expect("abi dir merkle tree build failed")
         .root
         .item
-        .hash; 
+        .hash;
     let current_proto_hash = MerkleTree::builder("proto")
         .algorithm(Algorithm::Blake3)
         .hash_names(false)
