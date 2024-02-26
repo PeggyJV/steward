@@ -1,9 +1,13 @@
 [package]
 name = "steward-proto"
+description = "Protobuf bindings for Steward, the Sommelier blockchain sidecar"
+authors = ["Collin Brittain"]
 version.workspace = true 
 edition.workspace = true
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+keywords = ["steward", "sommelier"]
+repository = "https://github.com/PeggyJV/steward"
+readme = "README.md"
+categories = ["blockchain", "sommelier"]
 
 [dependencies]
 prost.workspace = true
