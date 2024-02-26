@@ -7,16 +7,49 @@ use std::{
     fs::{self, create_dir_all, remove_dir_all},
     path::PathBuf,
 };
+
+use merkle_hash::{Algorithm, MerkleTree};
 use walkdir::WalkDir;
 
 /// A temporary directory for proto building
 const TMP_PATH: &str = "/tmp/steward/";
 /// the output directory
-const OUT_PATH: &str = "src/gen/proto/";
+const OUT_PATH: &str = "crates/steward-proto/src/gen/";
+const HASH_ABI_FILE: &str = "hash_abi";
+const HASH_PROTO_FILE: &str = "hash_proto";
 
 fn main() {
-    generate_contract_abis();
-    generate_rust_protos();
+    // only generate bindings if changes have occurred
+    let previous_abi_hash = fs::read_to_string(HASH_ABI_FILE).unwrap_or_default();
+    let previous_proto_hash = fs::read_to_string(HASH_PROTO_FILE).unwrap_or_default();
+    let current_abi_hash = MerkleTree::builder("abi")
+        .algorithm(Algorithm::Blake3)
+        .hash_names(false)
+        .build()
+        .expect("abi dir merkle tree build failed")
+        .root
+        .item
+        .hash;
+    let current_proto_hash = MerkleTree::builder("proto")
+        .algorithm(Algorithm::Blake3)
+        .hash_names(false)
+        .build()
+        .expect("proto dir merkle tree build failed")
+        .root
+        .item
+        .hash;
+    let current_abi_hash = hex::encode(current_abi_hash);
+    let current_proto_hash = hex::encode(current_proto_hash);
+
+    if current_abi_hash != previous_abi_hash {
+        generate_contract_abis();
+        fs::write(HASH_ABI_FILE, current_abi_hash).expect("failed to write abi hash");
+    }
+
+    if current_proto_hash != previous_proto_hash {
+        generate_rust_protos();
+        fs::write(HASH_PROTO_FILE, current_proto_hash).expect("failed to write proto hash");
+    }
 }
 
 fn generate_contract_abis() {

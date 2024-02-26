@@ -194,6 +194,4 @@ pub mod abi {
 }
 
 #[allow(clippy::all)]
-pub mod proto {
-    include!("gen/proto/steward.v4.rs");
-}
+pub use steward_proto::proto;
