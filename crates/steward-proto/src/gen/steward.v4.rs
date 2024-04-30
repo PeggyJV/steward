@@ -3499,7 +3499,7 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_aave_v3_flash_loan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flash_loan::CallData>,
     }
@@ -3608,6 +3608,9 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
             /// Represents function calls for the StakingAdaptorV1
             #[prost(message, tag = "33")]
             StakingV1Calls(super::super::StakingAdaptorV1Calls),
+            /// Represents function calls for the AaveV3DebtTokenAdaptor V1
+            #[prost(message, tag = "34")]
+            AaveV3DebtTokenV1Calls(super::super::AaveV3DebtTokenAdaptorV1Calls),
         }
     }
 }
