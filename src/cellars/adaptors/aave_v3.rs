@@ -297,6 +297,9 @@ fn get_encoded_adaptor_calls(
             StakingV1Calls(params) => {
                 calls.extend(adaptors::staking::staking_adaptor_v1_calls(params)?)
             }
+            AaveV3DebtTokenV1Calls(params) => calls.extend(
+                adaptors::aave_v3::aave_v3_debt_token_adaptor_v1_calls(params)?,
+            ),
         };
 
         result.push(AbiAdaptorCall {
