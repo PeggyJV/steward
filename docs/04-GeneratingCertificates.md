@@ -42,100 +42,20 @@ openssl x509 -text -in <output_path>/server.crt
 
 Valid TLS certificates will have "Version 3" near the top of the certificate plaintext. You should also see your domain name as a Subject Alternative Name.
 
-6. Test Steward with your certificate
+6. Provide your CA on-chain by creating or updating your Subscriber
 
-A temporary test client CA can be used to verify your steward process is connectable from the network.  The test client CA MUST BE REMOVED prior to running in production.
+The x/pusbub module on the Sommelier chain acts as a Steward registry, referring to each registration as a Subscriber.
 
-The test client CA is included in this repo at:
-```
-integration_tests/tls/client/test_client_ca.crt
-```
+Subscribers can be created or updated with the `AddSubscriber` message. You can either use the `sommelier` CLI or the `steward` CLI.
 
-Create a TOML config file with the `[server]` section containing the paths to your generated artifacts. See the configuration reference for more info. Your file will need to look something like this:
+A. To add a subscriber with the `sommelier` CLI, follow the steps outlined [in this doc](./05-PubsubForValidators.md)
 
-```toml
-[server]
-client_ca_cert_path = "integration_tests/tls/client/test_client_ca.crt" # this path is relative to the steward repository root
-server_cert_path = "<output_path>/server.crt"
-server_key_path = "<output_path>/server_key_pkcs8.pem"
-```
-
-You'll then need to start Steward and then send a gRPC request to it.
-
-To start steward run
+B. To use the `steward` CLI, you can run the following command:
 
 ```bash
-steward -c <config_toml_path> start
+# use the same config.toml file you use in production
+steward --config <config.toml> pubsub add-subscriber --ca-path <path to CA file> --push-url <your steward endpoint>
 ```
 
-If you see something like the following log messages, so far so good:
-
-```bash
-INFO steward::commands::cosmos_mode: Starting application
-INFO steward::commands::cosmos_mode: listening on 0.0.0.0:5734
-```
-
-Then you'll need to send a gRPC request to the endpoint (in the case above, 0.0.0.0:5734).
-
-You can use your client of preference. Here is an example using `grpcurl` with the test client certs from this repo:
-
-```bash
-# execute with the steward repo root as your current working directory for the
-# test cert relative paths to work
-grpcurl -cert integration_tests/tls/client/test_client.crt \
-	-key integration_tests/tls/client/test_client_key_pkcs8.pem \
-	-cacert <output_path>/server_ca.crt \
-	-d '' \
-	<fqdn_of_server>:5734 \
-	steward.v2.ContractCall/Submit
-```
-
-If you see a response like the following, then your process is accepting connections properly.
-```
-Resolved method descriptor:
-// Handles simple contract call submission
-rpc Submit ( .steward.v2.SubmitRequest ) returns ( .steward.v2.SubmitResponse );
-
-Request metadata to send:
-(empty)
-
-Response headers received:
-(empty)
-
-Response trailers received:
-content-type: application/grpc
-date: Mon, 03 Oct 2022 19:00:02 GMT
-Sent 0 requests and received 0 responses
-ERROR:
-  Code: PermissionDenied
-  Message: cellar ID  not approved by governance
-```
-
-When you send this request, if you get an error establishing a connection, there is probably something wrong with your configuration or your certificates.
-
-A correct configuration/certificate will result in errors like these, indicating the connection between the client and steward instance was established successfully:
-
-```bash
-# steward log
-ERROR steward::cork: cork query client connection failed: transport error: error trying to connect: tcp connect error: Connection refused (os error 61)
-# this is steward failing to connect to the Sommelier chain, which it would not be attempting
-# if your client connection wasn't working.
-
-# client log
-ERROR:
-  Code: Internal
-  Message: failed to query chain to validate cellar id
-```
-
-7. Remove testing configuration
-
-In Production, steward must run without the client_ca_cert_path set.  If you edited your production TOML file for testing, remove the client_ca_cert_path value from the [server] section.
-
-```toml
-client_ca_cert_path = "..." # remove this temporary line
-```
-
-8. Provide your CA to the Strategy Provider
-
-Add your information to the [Steward Registry](https://github.com/peggyjv/steward-registry) by following the steps outlined in the README there.
+As a reminder, your "push URL" is the combination of the fully qualified domain name of your production Steward instance and the port configured for your Steward server. For example `steward.example.com:5734`.
 
