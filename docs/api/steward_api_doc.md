@@ -50,12 +50,41 @@
   
 - [aave_v3_debt_token.proto](#aave_v3_debt_token-proto)
     - [AaveV3DebtTokenAdaptorV1](#steward-v4-AaveV3DebtTokenAdaptorV1)
-    - [AaveV3DebtTokenAdaptorV1.AdaptorCallForAaveV3Flashloan](#steward-v4-AaveV3DebtTokenAdaptorV1-AdaptorCallForAaveV3Flashloan)
     - [AaveV3DebtTokenAdaptorV1.BorrowFromAave](#steward-v4-AaveV3DebtTokenAdaptorV1-BorrowFromAave)
-    - [AaveV3DebtTokenAdaptorV1.FlashLoan](#steward-v4-AaveV3DebtTokenAdaptorV1-FlashLoan)
     - [AaveV3DebtTokenAdaptorV1.RepayAaveDebt](#steward-v4-AaveV3DebtTokenAdaptorV1-RepayAaveDebt)
     - [AaveV3DebtTokenAdaptorV1.RepayWithATokens](#steward-v4-AaveV3DebtTokenAdaptorV1-RepayWithATokens)
     - [AaveV3DebtTokenAdaptorV1Calls](#steward-v4-AaveV3DebtTokenAdaptorV1Calls)
+  
+- [aave_v3_debt_token_flash_loan.proto](#aave_v3_debt_token_flash_loan-proto)
+    - [AaveV3DebtTokenAdaptorV1FlashLoan](#steward-v4-AaveV3DebtTokenAdaptorV1FlashLoan)
+    - [AaveV3DebtTokenAdaptorV1FlashLoan.AdaptorCallForAaveV3FlashLoan](#steward-v4-AaveV3DebtTokenAdaptorV1FlashLoan-AdaptorCallForAaveV3FlashLoan)
+    - [AaveV3DebtTokenAdaptorV1FlashLoan.FlashLoan](#steward-v4-AaveV3DebtTokenAdaptorV1FlashLoan-FlashLoan)
+    - [AaveV3DebtTokenAdaptorV1FlashLoanCalls](#steward-v4-AaveV3DebtTokenAdaptorV1FlashLoanCalls)
+  
+- [aura_erc4626.proto](#aura_erc4626-proto)
+    - [AuraERC4626AdaptorV1](#steward-v4-AuraERC4626AdaptorV1)
+    - [AuraERC4626AdaptorV1.GetRewards](#steward-v4-AuraERC4626AdaptorV1-GetRewards)
+    - [AuraERC4626AdaptorV1Calls](#steward-v4-AuraERC4626AdaptorV1Calls)
+  
+- [balancer_pool.proto](#balancer_pool-proto)
+    - [BalancerPoolAdaptorV1](#steward-v4-BalancerPoolAdaptorV1)
+    - [BalancerPoolAdaptorV1.ClaimRewards](#steward-v4-BalancerPoolAdaptorV1-ClaimRewards)
+    - [BalancerPoolAdaptorV1.ExitPool](#steward-v4-BalancerPoolAdaptorV1-ExitPool)
+    - [BalancerPoolAdaptorV1.ExitPoolRequest](#steward-v4-BalancerPoolAdaptorV1-ExitPoolRequest)
+    - [BalancerPoolAdaptorV1.JoinPool](#steward-v4-BalancerPoolAdaptorV1-JoinPool)
+    - [BalancerPoolAdaptorV1.SingleSwap](#steward-v4-BalancerPoolAdaptorV1-SingleSwap)
+    - [BalancerPoolAdaptorV1.StakeBPT](#steward-v4-BalancerPoolAdaptorV1-StakeBPT)
+    - [BalancerPoolAdaptorV1.SwapData](#steward-v4-BalancerPoolAdaptorV1-SwapData)
+    - [BalancerPoolAdaptorV1.UnstakeBPT](#steward-v4-BalancerPoolAdaptorV1-UnstakeBPT)
+    - [BalancerPoolAdaptorV1Calls](#steward-v4-BalancerPoolAdaptorV1Calls)
+  
+    - [BalancerPoolAdaptorV1.SwapKind](#steward-v4-BalancerPoolAdaptorV1-SwapKind)
+  
+- [balancer_pool_flash_loan.proto](#balancer_pool_flash_loan-proto)
+    - [BalancerPoolAdaptorV1FlashLoan](#steward-v4-BalancerPoolAdaptorV1FlashLoan)
+    - [BalancerPoolAdaptorV1FlashLoan.AdaptorCallForBalancerPoolFlashLoan](#steward-v4-BalancerPoolAdaptorV1FlashLoan-AdaptorCallForBalancerPoolFlashLoan)
+    - [BalancerPoolAdaptorV1FlashLoan.MakeFlashLoan](#steward-v4-BalancerPoolAdaptorV1FlashLoan-MakeFlashLoan)
+    - [BalancerPoolAdaptorV1FlashLoanCalls](#steward-v4-BalancerPoolAdaptorV1FlashLoanCalls)
   
 - [base.proto](#base-proto)
     - [OracleSwap](#steward-v4-OracleSwap)
@@ -107,26 +136,37 @@
     - [CellarV2](#steward-v4-CellarV2)
     - [CellarV2.AddPosition](#steward-v4-CellarV2-AddPosition)
     - [CellarV2.CallOnAdaptor](#steward-v4-CellarV2-CallOnAdaptor)
+    - [CellarV2.InitiateShutdown](#steward-v4-CellarV2-InitiateShutdown)
+    - [CellarV2.LiftShutdown](#steward-v4-CellarV2-LiftShutdown)
     - [CellarV2.RemovePosition](#steward-v4-CellarV2-RemovePosition)
     - [CellarV2.SetHoldingPosition](#steward-v4-CellarV2-SetHoldingPosition)
+    - [CellarV2.SetPlatformFee](#steward-v4-CellarV2-SetPlatformFee)
     - [CellarV2.SetRebalanceDeviation](#steward-v4-CellarV2-SetRebalanceDeviation)
     - [CellarV2.SetShareLockPeriod](#steward-v4-CellarV2-SetShareLockPeriod)
     - [CellarV2.SetStrategistPayoutAddress](#steward-v4-CellarV2-SetStrategistPayoutAddress)
+    - [CellarV2.SetStrategistPlatformCut](#steward-v4-CellarV2-SetStrategistPlatformCut)
+    - [CellarV2.SetupAdaptor](#steward-v4-CellarV2-SetupAdaptor)
     - [CellarV2.SwapPositions](#steward-v4-CellarV2-SwapPositions)
     - [CellarV2Governance](#steward-v4-CellarV2Governance)
     - [CellarV2Governance.InitiateShutdown](#steward-v4-CellarV2Governance-InitiateShutdown)
     - [CellarV2Governance.LiftShutdown](#steward-v4-CellarV2Governance-LiftShutdown)
     - [CellarV2Governance.SetPlatformFee](#steward-v4-CellarV2Governance-SetPlatformFee)
+    - [CellarV2Governance.SetRebalanceDeviation](#steward-v4-CellarV2Governance-SetRebalanceDeviation)
     - [CellarV2Governance.SetStrategistPlatformCut](#steward-v4-CellarV2Governance-SetStrategistPlatformCut)
     - [CellarV2Governance.SetupAdaptor](#steward-v4-CellarV2Governance-SetupAdaptor)
     - [CellarV2_2](#steward-v4-CellarV2_2)
+    - [CellarV2_2.AddAdaptorToCatalogue](#steward-v4-CellarV2_2-AddAdaptorToCatalogue)
     - [CellarV2_2.AddPosition](#steward-v4-CellarV2_2-AddPosition)
+    - [CellarV2_2.AddPositionToCatalogue](#steward-v4-CellarV2_2-AddPositionToCatalogue)
+    - [CellarV2_2.CachePriceRouter](#steward-v4-CellarV2_2-CachePriceRouter)
     - [CellarV2_2.CallOnAdaptor](#steward-v4-CellarV2_2-CallOnAdaptor)
     - [CellarV2_2.FunctionCall](#steward-v4-CellarV2_2-FunctionCall)
     - [CellarV2_2.InitiateShutdown](#steward-v4-CellarV2_2-InitiateShutdown)
     - [CellarV2_2.LiftShutdown](#steward-v4-CellarV2_2-LiftShutdown)
     - [CellarV2_2.Multicall](#steward-v4-CellarV2_2-Multicall)
+    - [CellarV2_2.RemoveAdaptorFromCatalogue](#steward-v4-CellarV2_2-RemoveAdaptorFromCatalogue)
     - [CellarV2_2.RemovePosition](#steward-v4-CellarV2_2-RemovePosition)
+    - [CellarV2_2.RemovePositionFromCatalogue](#steward-v4-CellarV2_2-RemovePositionFromCatalogue)
     - [CellarV2_2.SetHoldingPosition](#steward-v4-CellarV2_2-SetHoldingPosition)
     - [CellarV2_2.SetRebalanceDeviation](#steward-v4-CellarV2_2-SetRebalanceDeviation)
     - [CellarV2_2.SetShareLockPeriod](#steward-v4-CellarV2_2-SetShareLockPeriod)
@@ -135,13 +175,79 @@
     - [CellarV2_2.SwapPositions](#steward-v4-CellarV2_2-SwapPositions)
     - [CellarV2_2Governance](#steward-v4-CellarV2_2Governance)
     - [CellarV2_2Governance.AddAdaptorToCatalogue](#steward-v4-CellarV2_2Governance-AddAdaptorToCatalogue)
+    - [CellarV2_2Governance.AddPosition](#steward-v4-CellarV2_2Governance-AddPosition)
     - [CellarV2_2Governance.AddPositionToCatalogue](#steward-v4-CellarV2_2Governance-AddPositionToCatalogue)
+    - [CellarV2_2Governance.CachePriceRouter](#steward-v4-CellarV2_2Governance-CachePriceRouter)
+    - [CellarV2_2Governance.CallOnAdaptor](#steward-v4-CellarV2_2Governance-CallOnAdaptor)
     - [CellarV2_2Governance.ForcePositionOut](#steward-v4-CellarV2_2Governance-ForcePositionOut)
+    - [CellarV2_2Governance.FunctionCall](#steward-v4-CellarV2_2Governance-FunctionCall)
+    - [CellarV2_2Governance.InitiateShutdown](#steward-v4-CellarV2_2Governance-InitiateShutdown)
+    - [CellarV2_2Governance.LiftShutdown](#steward-v4-CellarV2_2Governance-LiftShutdown)
+    - [CellarV2_2Governance.Multicall](#steward-v4-CellarV2_2Governance-Multicall)
     - [CellarV2_2Governance.RemoveAdaptorFromCatalogue](#steward-v4-CellarV2_2Governance-RemoveAdaptorFromCatalogue)
+    - [CellarV2_2Governance.RemovePosition](#steward-v4-CellarV2_2Governance-RemovePosition)
     - [CellarV2_2Governance.RemovePositionFromCatalogue](#steward-v4-CellarV2_2Governance-RemovePositionFromCatalogue)
+    - [CellarV2_2Governance.SetHoldingPosition](#steward-v4-CellarV2_2Governance-SetHoldingPosition)
+    - [CellarV2_2Governance.SetRebalanceDeviation](#steward-v4-CellarV2_2Governance-SetRebalanceDeviation)
+    - [CellarV2_2Governance.SetShareLockPeriod](#steward-v4-CellarV2_2Governance-SetShareLockPeriod)
+    - [CellarV2_2Governance.SetStrategistPlatformCut](#steward-v4-CellarV2_2Governance-SetStrategistPlatformCut)
+    - [CellarV2_2Governance.SwapPositions](#steward-v4-CellarV2_2Governance-SwapPositions)
     - [CellarV2_2Governance.ToggleIgnorePause](#steward-v4-CellarV2_2Governance-ToggleIgnorePause)
+    - [CellarV2_5](#steward-v4-CellarV2_5)
+    - [CellarV2_5.AddAdaptorToCatalogue](#steward-v4-CellarV2_5-AddAdaptorToCatalogue)
+    - [CellarV2_5.AddPosition](#steward-v4-CellarV2_5-AddPosition)
+    - [CellarV2_5.AddPositionToCatalogue](#steward-v4-CellarV2_5-AddPositionToCatalogue)
+    - [CellarV2_5.CachePriceRouter](#steward-v4-CellarV2_5-CachePriceRouter)
+    - [CellarV2_5.CallOnAdaptor](#steward-v4-CellarV2_5-CallOnAdaptor)
+    - [CellarV2_5.DecreaseShareSupplyCap](#steward-v4-CellarV2_5-DecreaseShareSupplyCap)
+    - [CellarV2_5.DropAlternativeAssetData](#steward-v4-CellarV2_5-DropAlternativeAssetData)
+    - [CellarV2_5.FunctionCall](#steward-v4-CellarV2_5-FunctionCall)
+    - [CellarV2_5.IncreaseShareSupplyCap](#steward-v4-CellarV2_5-IncreaseShareSupplyCap)
+    - [CellarV2_5.InitiateShutdown](#steward-v4-CellarV2_5-InitiateShutdown)
+    - [CellarV2_5.LiftShutdown](#steward-v4-CellarV2_5-LiftShutdown)
+    - [CellarV2_5.Multicall](#steward-v4-CellarV2_5-Multicall)
+    - [CellarV2_5.RemoveAdaptorFromCatalogue](#steward-v4-CellarV2_5-RemoveAdaptorFromCatalogue)
+    - [CellarV2_5.RemovePosition](#steward-v4-CellarV2_5-RemovePosition)
+    - [CellarV2_5.RemovePositionFromCatalogue](#steward-v4-CellarV2_5-RemovePositionFromCatalogue)
+    - [CellarV2_5.SetAlternativeAssetData](#steward-v4-CellarV2_5-SetAlternativeAssetData)
+    - [CellarV2_5.SetHoldingPosition](#steward-v4-CellarV2_5-SetHoldingPosition)
+    - [CellarV2_5.SetRebalanceDeviation](#steward-v4-CellarV2_5-SetRebalanceDeviation)
+    - [CellarV2_5.SetShareLockPeriod](#steward-v4-CellarV2_5-SetShareLockPeriod)
+    - [CellarV2_5.SetSharePriceOracle](#steward-v4-CellarV2_5-SetSharePriceOracle)
+    - [CellarV2_5.SetStrategistPayoutAddress](#steward-v4-CellarV2_5-SetStrategistPayoutAddress)
+    - [CellarV2_5.SetStrategistPlatformCut](#steward-v4-CellarV2_5-SetStrategistPlatformCut)
+    - [CellarV2_5.SwapPositions](#steward-v4-CellarV2_5-SwapPositions)
+    - [CellarV2_5Governance](#steward-v4-CellarV2_5Governance)
+    - [CellarV2_5Governance.AddAdaptorToCatalogue](#steward-v4-CellarV2_5Governance-AddAdaptorToCatalogue)
+    - [CellarV2_5Governance.AddPosition](#steward-v4-CellarV2_5Governance-AddPosition)
+    - [CellarV2_5Governance.AddPositionToCatalogue](#steward-v4-CellarV2_5Governance-AddPositionToCatalogue)
+    - [CellarV2_5Governance.CachePriceRouter](#steward-v4-CellarV2_5Governance-CachePriceRouter)
+    - [CellarV2_5Governance.CallOnAdaptor](#steward-v4-CellarV2_5Governance-CallOnAdaptor)
+    - [CellarV2_5Governance.DecreaseShareSupplyCap](#steward-v4-CellarV2_5Governance-DecreaseShareSupplyCap)
+    - [CellarV2_5Governance.ForcePositionOut](#steward-v4-CellarV2_5Governance-ForcePositionOut)
+    - [CellarV2_5Governance.FunctionCall](#steward-v4-CellarV2_5Governance-FunctionCall)
+    - [CellarV2_5Governance.IncreaseShareSupplyCap](#steward-v4-CellarV2_5Governance-IncreaseShareSupplyCap)
+    - [CellarV2_5Governance.InitiateShutdown](#steward-v4-CellarV2_5Governance-InitiateShutdown)
+    - [CellarV2_5Governance.LiftShutdown](#steward-v4-CellarV2_5Governance-LiftShutdown)
+    - [CellarV2_5Governance.Multicall](#steward-v4-CellarV2_5Governance-Multicall)
+    - [CellarV2_5Governance.RemoveAdaptorFromCatalogue](#steward-v4-CellarV2_5Governance-RemoveAdaptorFromCatalogue)
+    - [CellarV2_5Governance.RemovePosition](#steward-v4-CellarV2_5Governance-RemovePosition)
+    - [CellarV2_5Governance.RemovePositionFromCatalogue](#steward-v4-CellarV2_5Governance-RemovePositionFromCatalogue)
+    - [CellarV2_5Governance.SetAutomationActions](#steward-v4-CellarV2_5Governance-SetAutomationActions)
+    - [CellarV2_5Governance.SetHoldingPosition](#steward-v4-CellarV2_5Governance-SetHoldingPosition)
+    - [CellarV2_5Governance.SetRebalanceDeviation](#steward-v4-CellarV2_5Governance-SetRebalanceDeviation)
+    - [CellarV2_5Governance.SetSharePriceOracle](#steward-v4-CellarV2_5Governance-SetSharePriceOracle)
+    - [CellarV2_5Governance.SetStrategistPlatformCut](#steward-v4-CellarV2_5Governance-SetStrategistPlatformCut)
+    - [CellarV2_5Governance.ToggleIgnorePause](#steward-v4-CellarV2_5Governance-ToggleIgnorePause)
+  
+- [collateral_f_token.proto](#collateral_f_token-proto)
+    - [CollateralFTokenAdaptorV1](#steward-v4-CollateralFTokenAdaptorV1)
+    - [CollateralFTokenAdaptorV1.AddCollateral](#steward-v4-CollateralFTokenAdaptorV1-AddCollateral)
+    - [CollateralFTokenAdaptorV1.RemoveCollateral](#steward-v4-CollateralFTokenAdaptorV1-RemoveCollateral)
+    - [CollateralFTokenAdaptorV1Calls](#steward-v4-CollateralFTokenAdaptorV1Calls)
   
 - [common.proto](#common-proto)
+    - [MarketParams](#steward-v4-MarketParams)
     - [OracleSwapParams](#steward-v4-OracleSwapParams)
     - [SwapParams](#steward-v4-SwapParams)
     - [UniV2OracleSwapParams](#steward-v4-UniV2OracleSwapParams)
@@ -150,6 +256,31 @@
     - [UniV3SwapParams](#steward-v4-UniV3SwapParams)
   
     - [Exchange](#steward-v4-Exchange)
+  
+- [convex_curve.proto](#convex_curve-proto)
+    - [ConvexCurveAdaptorV1](#steward-v4-ConvexCurveAdaptorV1)
+    - [ConvexCurveAdaptorV1.DepositLPTInConvexAndStake](#steward-v4-ConvexCurveAdaptorV1-DepositLPTInConvexAndStake)
+    - [ConvexCurveAdaptorV1.GetRewards](#steward-v4-ConvexCurveAdaptorV1-GetRewards)
+    - [ConvexCurveAdaptorV1.WithdrawFromBaseRewardPoolAsLPT](#steward-v4-ConvexCurveAdaptorV1-WithdrawFromBaseRewardPoolAsLPT)
+    - [ConvexCurveAdaptorV1Calls](#steward-v4-ConvexCurveAdaptorV1Calls)
+  
+- [curve.proto](#curve-proto)
+    - [CurveAdaptorV1](#steward-v4-CurveAdaptorV1)
+    - [CurveAdaptorV1.AddLiquidity](#steward-v4-CurveAdaptorV1-AddLiquidity)
+    - [CurveAdaptorV1.AddLiquidityETH](#steward-v4-CurveAdaptorV1-AddLiquidityETH)
+    - [CurveAdaptorV1.ClaimRewards](#steward-v4-CurveAdaptorV1-ClaimRewards)
+    - [CurveAdaptorV1.RemoveLiquidity](#steward-v4-CurveAdaptorV1-RemoveLiquidity)
+    - [CurveAdaptorV1.RemoveLiquidityETH](#steward-v4-CurveAdaptorV1-RemoveLiquidityETH)
+    - [CurveAdaptorV1.StakeInGauge](#steward-v4-CurveAdaptorV1-StakeInGauge)
+    - [CurveAdaptorV1.UnstakeFromGauge](#steward-v4-CurveAdaptorV1-UnstakeFromGauge)
+    - [CurveAdaptorV1Calls](#steward-v4-CurveAdaptorV1Calls)
+  
+- [debt_f_token.proto](#debt_f_token-proto)
+    - [DebtFTokenAdaptorV1](#steward-v4-DebtFTokenAdaptorV1)
+    - [DebtFTokenAdaptorV1.BorrowFromFraxlend](#steward-v4-DebtFTokenAdaptorV1-BorrowFromFraxlend)
+    - [DebtFTokenAdaptorV1.CallAddInterest](#steward-v4-DebtFTokenAdaptorV1-CallAddInterest)
+    - [DebtFTokenAdaptorV1.RepayFraxlendDebt](#steward-v4-DebtFTokenAdaptorV1-RepayFraxlendDebt)
+    - [DebtFTokenAdaptorV1Calls](#steward-v4-DebtFTokenAdaptorV1Calls)
   
 - [debt_token.proto](#debt_token-proto)
     - [AaveDebtTokenAdaptorV1](#steward-v4-AaveDebtTokenAdaptorV1)
@@ -161,6 +292,12 @@
     - [AaveDebtTokenAdaptorV2.BorrowFromAave](#steward-v4-AaveDebtTokenAdaptorV2-BorrowFromAave)
     - [AaveDebtTokenAdaptorV2.RepayAaveDebt](#steward-v4-AaveDebtTokenAdaptorV2-RepayAaveDebt)
     - [AaveDebtTokenAdaptorV2Calls](#steward-v4-AaveDebtTokenAdaptorV2Calls)
+  
+- [erc4626.proto](#erc4626-proto)
+    - [ERC4626AdaptorV1](#steward-v4-ERC4626AdaptorV1)
+    - [ERC4626AdaptorV1.DepositToVault](#steward-v4-ERC4626AdaptorV1-DepositToVault)
+    - [ERC4626AdaptorV1.WithdrawFromVault](#steward-v4-ERC4626AdaptorV1-WithdrawFromVault)
+    - [ERC4626AdaptorV1Calls](#steward-v4-ERC4626AdaptorV1Calls)
   
 - [f_token.proto](#f_token-proto)
     - [FTokenAdaptorV1](#steward-v4-FTokenAdaptorV1)
@@ -184,6 +321,12 @@
   
 - [governance.proto](#governance-proto)
     - [GovernanceCall](#steward-v4-GovernanceCall)
+  
+- [legacy_cellar_adaptor.proto](#legacy_cellar_adaptor-proto)
+    - [LegacyCellarAdaptorV1](#steward-v4-LegacyCellarAdaptorV1)
+    - [LegacyCellarAdaptorV1.DepositToCellar](#steward-v4-LegacyCellarAdaptorV1-DepositToCellar)
+    - [LegacyCellarAdaptorV1.WithdrawFromCellar](#steward-v4-LegacyCellarAdaptorV1-WithdrawFromCellar)
+    - [LegacyCellarAdaptorV1Calls](#steward-v4-LegacyCellarAdaptorV1Calls)
   
 - [morpho_aave_v2_a_token.proto](#morpho_aave_v2_a_token-proto)
     - [MorphoAaveV2ATokenAdaptorV1](#steward-v4-MorphoAaveV2ATokenAdaptorV1)
@@ -215,6 +358,24 @@
     - [MorphoAaveV3DebtTokenAdaptorV1.RepayAaveV3MorphoDebt](#steward-v4-MorphoAaveV3DebtTokenAdaptorV1-RepayAaveV3MorphoDebt)
     - [MorphoAaveV3DebtTokenAdaptorV1Calls](#steward-v4-MorphoAaveV3DebtTokenAdaptorV1Calls)
   
+- [morpho_blue_collateral.proto](#morpho_blue_collateral-proto)
+    - [MorphoBlueCollateralAdaptorV1](#steward-v4-MorphoBlueCollateralAdaptorV1)
+    - [MorphoBlueCollateralAdaptorV1.AddCollateral](#steward-v4-MorphoBlueCollateralAdaptorV1-AddCollateral)
+    - [MorphoBlueCollateralAdaptorV1.RemoveCollateral](#steward-v4-MorphoBlueCollateralAdaptorV1-RemoveCollateral)
+    - [MorphoBlueCollateralAdaptorV1Calls](#steward-v4-MorphoBlueCollateralAdaptorV1Calls)
+  
+- [morpho_blue_debt.proto](#morpho_blue_debt-proto)
+    - [MorphoBlueDebtAdaptorV1](#steward-v4-MorphoBlueDebtAdaptorV1)
+    - [MorphoBlueDebtAdaptorV1.BorrowFromMorphoBlue](#steward-v4-MorphoBlueDebtAdaptorV1-BorrowFromMorphoBlue)
+    - [MorphoBlueDebtAdaptorV1.RepayMorphoBlueDebt](#steward-v4-MorphoBlueDebtAdaptorV1-RepayMorphoBlueDebt)
+    - [MorphoBlueDebtAdaptorV1Calls](#steward-v4-MorphoBlueDebtAdaptorV1Calls)
+  
+- [morpho_blue_supply.proto](#morpho_blue_supply-proto)
+    - [MorphoBlueSupplyAdaptorV1](#steward-v4-MorphoBlueSupplyAdaptorV1)
+    - [MorphoBlueSupplyAdaptorV1.LendToMorphoBlue](#steward-v4-MorphoBlueSupplyAdaptorV1-LendToMorphoBlue)
+    - [MorphoBlueSupplyAdaptorV1.WithdrawFromMorphoBlue](#steward-v4-MorphoBlueSupplyAdaptorV1-WithdrawFromMorphoBlue)
+    - [MorphoBlueSupplyAdaptorV1Calls](#steward-v4-MorphoBlueSupplyAdaptorV1Calls)
+  
 - [morpho_reward_handler.proto](#morpho_reward_handler-proto)
     - [Claim](#steward-v4-Claim)
   
@@ -222,6 +383,18 @@
     - [OneInchAdaptorV1](#steward-v4-OneInchAdaptorV1)
     - [OneInchAdaptorV1.SwapWithOneInch](#steward-v4-OneInchAdaptorV1-SwapWithOneInch)
     - [OneInchAdaptorV1Calls](#steward-v4-OneInchAdaptorV1Calls)
+  
+- [staking.proto](#staking-proto)
+    - [StakingAdaptorV1](#steward-v4-StakingAdaptorV1)
+    - [StakingAdaptorV1.CancelBurn](#steward-v4-StakingAdaptorV1-CancelBurn)
+    - [StakingAdaptorV1.CompleteBurn](#steward-v4-StakingAdaptorV1-CompleteBurn)
+    - [StakingAdaptorV1.Mint](#steward-v4-StakingAdaptorV1-Mint)
+    - [StakingAdaptorV1.MintERC20](#steward-v4-StakingAdaptorV1-MintERC20)
+    - [StakingAdaptorV1.RemoveClaimedRequest](#steward-v4-StakingAdaptorV1-RemoveClaimedRequest)
+    - [StakingAdaptorV1.RequestBurn](#steward-v4-StakingAdaptorV1-RequestBurn)
+    - [StakingAdaptorV1.Unwrap](#steward-v4-StakingAdaptorV1-Unwrap)
+    - [StakingAdaptorV1.Wrap](#steward-v4-StakingAdaptorV1-Wrap)
+    - [StakingAdaptorV1Calls](#steward-v4-StakingAdaptorV1Calls)
   
 - [steward.proto](#steward-proto)
     - [ScheduleRequest](#steward-v4-ScheduleRequest)
@@ -965,43 +1138,6 @@ Represents call data for the Aave Debt Token adaptor, used for borrowing and rep
 | borrow_from_aave | [AaveV3DebtTokenAdaptorV1.BorrowFromAave](#steward-v4-AaveV3DebtTokenAdaptorV1-BorrowFromAave) |  | Represents function `borrowFromAave(ERC20 debtTokenToBorrow, uint256 amountToBorrow)` |
 | repay_aave_debt | [AaveV3DebtTokenAdaptorV1.RepayAaveDebt](#steward-v4-AaveV3DebtTokenAdaptorV1-RepayAaveDebt) |  | Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)` |
 | repay_with_a_tokens | [AaveV3DebtTokenAdaptorV1.RepayWithATokens](#steward-v4-AaveV3DebtTokenAdaptorV1-RepayWithATokens) |  | Represents function `repayWithATokens(ERC20 underlying, uint256 amount)` |
-| flash_loan | [AaveV3DebtTokenAdaptorV1.FlashLoan](#steward-v4-AaveV3DebtTokenAdaptorV1-FlashLoan) |  | Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)` |
-
-
-
-
-
-
-<a name="steward-v4-AaveV3DebtTokenAdaptorV1-AdaptorCallForAaveV3Flashloan"></a>
-
-### AaveV3DebtTokenAdaptorV1.AdaptorCallForAaveV3Flashloan
-Represents a call to adaptor an. The cellar must be authorized to call the target adaptor.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| adaptor | [string](#string) |  | Address of the adaptor |
-| aave_a_token_v1_calls | [AaveATokenAdaptorV1Calls](#steward-v4-AaveATokenAdaptorV1Calls) |  | Represents function calls to the AaveATokenAdaptor V1 |
-| aave_debt_token_v1_calls | [AaveDebtTokenAdaptorV1Calls](#steward-v4-AaveDebtTokenAdaptorV1Calls) |  | Represents function calls to the AavaDebtTokenAdaptor V1 |
-| compound_c_token_v2_calls | [CompoundCTokenAdaptorV2Calls](#steward-v4-CompoundCTokenAdaptorV2Calls) |  | Represents function calls to the CompoundCTokenAdaptor V2 |
-| aave_a_token_v2_calls | [AaveATokenAdaptorV2Calls](#steward-v4-AaveATokenAdaptorV2Calls) |  | Represents function calls to the AaveATokenV2Adaptor |
-| aave_debt_token_v2_calls | [AaveDebtTokenAdaptorV2Calls](#steward-v4-AaveDebtTokenAdaptorV2Calls) |  | Represents function calls to the AavaDebtTokenV2Adaptor |
-| aave_v3_a_token_v1_calls | [AaveV3ATokenAdaptorV1Calls](#steward-v4-AaveV3ATokenAdaptorV1Calls) |  | Represents function calls to the AaveATokenV1Adaptor |
-| aave_v3_debt_token_v1_calls | [AaveV3DebtTokenAdaptorV1Calls](#steward-v4-AaveV3DebtTokenAdaptorV1Calls) |  | Represents function calls to the AavaDebtTokenV1Adaptor |
-| one_inch_v1_calls | [OneInchAdaptorV1Calls](#steward-v4-OneInchAdaptorV1Calls) |  | Represents function calls to the OneInchAdaptorV1 |
-| fees_and_reserves_v1_calls | [FeesAndReservesAdaptorV1Calls](#steward-v4-FeesAndReservesAdaptorV1Calls) |  | Represents function calls to the FeesAndReservesAdaptorV1 |
-| zero_x_v1_calls | [ZeroXAdaptorV1Calls](#steward-v4-ZeroXAdaptorV1Calls) |  | Represents functionc alls to the ZeroXAdaptorV1 |
-| swap_with_uniswap_v1_calls | [SwapWithUniswapAdaptorV1Calls](#steward-v4-SwapWithUniswapAdaptorV1Calls) |  | Represents function calls to the SwapWithUniswapAdaptorV1 |
-| vesting_simple_v2_calls | [VestingSimpleAdaptorV2Calls](#steward-v4-VestingSimpleAdaptorV2Calls) |  | Represents function calls to VestingSimpleAdaptor |
-| cellar_v1_calls | [CellarAdaptorV1Calls](#steward-v4-CellarAdaptorV1Calls) |  | Represents function calls to the CellarAdaptor |
-| uniswap_v3_v2_calls | [UniswapV3AdaptorV2Calls](#steward-v4-UniswapV3AdaptorV2Calls) |  | Represents function calls to the UniswapV3Adaptor V2 |
-| aave_v2_enable_asset_as_collateral_v1_calls | [AaveV2EnableAssetAsCollateralAdaptorV1Calls](#steward-v4-AaveV2EnableAssetAsCollateralAdaptorV1Calls) |  | Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1 |
-| f_token_v1_calls | [FTokenAdaptorV1Calls](#steward-v4-FTokenAdaptorV1Calls) |  | Represents function calls to the FTokenAdaptor V1 |
-| morpho_aave_v2_a_token_v1_calls | [MorphoAaveV2ATokenAdaptorV1Calls](#steward-v4-MorphoAaveV2ATokenAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV2AToken V1 |
-| morpho_aave_v2_debt_token_v1_calls | [MorphoAaveV2DebtTokenAdaptorV1Calls](#steward-v4-MorphoAaveV2DebtTokenAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV2DebtToken V1 |
-| morpho_aave_v3_a_token_collateral_v1_calls | [MorphoAaveV3ATokenCollateralAdaptorV1Calls](#steward-v4-MorphoAaveV3ATokenCollateralAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV3ATokenCollateral V1 |
-| morpho_aave_v3_a_token_p2p_v1_calls | [MorphoAaveV3ATokenP2PAdaptorV1Calls](#steward-v4-MorphoAaveV3ATokenP2PAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV3ATokenP2P V1 |
-| morpho_aave_v3_debt_token_v1_calls | [MorphoAaveV3DebtTokenAdaptorV1Calls](#steward-v4-MorphoAaveV3DebtTokenAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV3DebtToken V1 |
 
 
 
@@ -1020,25 +1156,6 @@ Represents function `depositToAave(ERC20 tokenToDeposit, uint256 amountToDeposit
 | ----- | ---- | ----- | ----------- |
 | token | [string](#string) |  | The address of the ERC20 token to borrow |
 | amount | [string](#string) |  | The amount to borrow |
-
-
-
-
-
-
-<a name="steward-v4-AaveV3DebtTokenAdaptorV1-FlashLoan"></a>
-
-### AaveV3DebtTokenAdaptorV1.FlashLoan
-Allows strategists to have Cellars take out flash loans
-
-Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| loan_tokens | [string](#string) | repeated | The addresses of the ERC20 tokens to borrow |
-| loan_amounts | [string](#string) | repeated | The amounts to borrow |
-| params | [AaveV3DebtTokenAdaptorV1.AdaptorCallForAaveV3Flashloan](#steward-v4-AaveV3DebtTokenAdaptorV1-AdaptorCallForAaveV3Flashloan) | repeated | The params to pass to the flash loan callback. |
 
 
 
@@ -1090,6 +1207,512 @@ Represents function `repayWithATokens(ERC20 underlying, uint256 amount)`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | calls | [AaveV3DebtTokenAdaptorV1](#steward-v4-AaveV3DebtTokenAdaptorV1) | repeated |  |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+<a name="aave_v3_debt_token_flash_loan-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## aave_v3_debt_token_flash_loan.proto
+
+
+
+<a name="steward-v4-AaveV3DebtTokenAdaptorV1FlashLoan"></a>
+
+### AaveV3DebtTokenAdaptorV1FlashLoan
+Represents call data for the Aave Debt Token adaptor, used for borrowing and repaying debt on Aave.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| flash_loan | [AaveV3DebtTokenAdaptorV1FlashLoan.FlashLoan](#steward-v4-AaveV3DebtTokenAdaptorV1FlashLoan-FlashLoan) |  | Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)` |
+
+
+
+
+
+
+<a name="steward-v4-AaveV3DebtTokenAdaptorV1FlashLoan-AdaptorCallForAaveV3FlashLoan"></a>
+
+### AaveV3DebtTokenAdaptorV1FlashLoan.AdaptorCallForAaveV3FlashLoan
+Represents a call to adaptor an. The cellar must be authorized to call the target adaptor.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| adaptor | [string](#string) |  | Address of the adaptor |
+| aave_a_token_v1_calls | [AaveATokenAdaptorV1Calls](#steward-v4-AaveATokenAdaptorV1Calls) |  | Represents function calls to the AaveATokenAdaptor V1 |
+| aave_debt_token_v1_calls | [AaveDebtTokenAdaptorV1Calls](#steward-v4-AaveDebtTokenAdaptorV1Calls) |  | Represents function calls to the AavaDebtTokenAdaptor V1 |
+| compound_c_token_v2_calls | [CompoundCTokenAdaptorV2Calls](#steward-v4-CompoundCTokenAdaptorV2Calls) |  | Represents function calls to the CompoundCTokenAdaptor V2 |
+| aave_a_token_v2_calls | [AaveATokenAdaptorV2Calls](#steward-v4-AaveATokenAdaptorV2Calls) |  | Represents function calls to the AaveATokenV2Adaptor |
+| aave_debt_token_v2_calls | [AaveDebtTokenAdaptorV2Calls](#steward-v4-AaveDebtTokenAdaptorV2Calls) |  | Represents function calls to the AavaDebtTokenV2Adaptor |
+| aave_v3_a_token_v1_calls | [AaveV3ATokenAdaptorV1Calls](#steward-v4-AaveV3ATokenAdaptorV1Calls) |  | Represents function calls to the AaveATokenV1Adaptor |
+| one_inch_v1_calls | [OneInchAdaptorV1Calls](#steward-v4-OneInchAdaptorV1Calls) |  | Represents function calls to the OneInchAdaptorV1 |
+| fees_and_reserves_v1_calls | [FeesAndReservesAdaptorV1Calls](#steward-v4-FeesAndReservesAdaptorV1Calls) |  | Represents function calls to the FeesAndReservesAdaptorV1 |
+| zero_x_v1_calls | [ZeroXAdaptorV1Calls](#steward-v4-ZeroXAdaptorV1Calls) |  | Represents functionc alls to the ZeroXAdaptorV1 |
+| swap_with_uniswap_v1_calls | [SwapWithUniswapAdaptorV1Calls](#steward-v4-SwapWithUniswapAdaptorV1Calls) |  | Represents function calls to the SwapWithUniswapAdaptorV1 |
+| vesting_simple_v2_calls | [VestingSimpleAdaptorV2Calls](#steward-v4-VestingSimpleAdaptorV2Calls) |  | Represents function calls to VestingSimpleAdaptor |
+| cellar_v1_calls | [CellarAdaptorV1Calls](#steward-v4-CellarAdaptorV1Calls) |  | Represents function calls to the CellarAdaptor |
+| uniswap_v3_v2_calls | [UniswapV3AdaptorV2Calls](#steward-v4-UniswapV3AdaptorV2Calls) |  | Represents function calls to the UniswapV3Adaptor V2 |
+| aave_v2_enable_asset_as_collateral_v1_calls | [AaveV2EnableAssetAsCollateralAdaptorV1Calls](#steward-v4-AaveV2EnableAssetAsCollateralAdaptorV1Calls) |  | Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1 |
+| f_token_v1_calls | [FTokenAdaptorV1Calls](#steward-v4-FTokenAdaptorV1Calls) |  | Represents function calls to the FTokenAdaptor V1 |
+| morpho_aave_v2_a_token_v1_calls | [MorphoAaveV2ATokenAdaptorV1Calls](#steward-v4-MorphoAaveV2ATokenAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV2AToken V1 |
+| morpho_aave_v2_debt_token_v1_calls | [MorphoAaveV2DebtTokenAdaptorV1Calls](#steward-v4-MorphoAaveV2DebtTokenAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV2DebtToken V1 |
+| morpho_aave_v3_a_token_collateral_v1_calls | [MorphoAaveV3ATokenCollateralAdaptorV1Calls](#steward-v4-MorphoAaveV3ATokenCollateralAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV3ATokenCollateral V1 |
+| morpho_aave_v3_a_token_p2p_v1_calls | [MorphoAaveV3ATokenP2PAdaptorV1Calls](#steward-v4-MorphoAaveV3ATokenP2PAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV3ATokenP2P V1 |
+| morpho_aave_v3_debt_token_v1_calls | [MorphoAaveV3DebtTokenAdaptorV1Calls](#steward-v4-MorphoAaveV3DebtTokenAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV3DebtToken V1 |
+| balancer_pool_v1_calls | [BalancerPoolAdaptorV1Calls](#steward-v4-BalancerPoolAdaptorV1Calls) |  | Represents function calls to the BalancerPoolAdaptor V1 |
+| legacy_cellar_v1_calls | [LegacyCellarAdaptorV1Calls](#steward-v4-LegacyCellarAdaptorV1Calls) |  | Represents function calls to the LegacyCellarAdaptor V1 |
+| debt_f_token_v1_calls | [DebtFTokenAdaptorV1Calls](#steward-v4-DebtFTokenAdaptorV1Calls) |  | Represents function calls to the DebtFTokenAdaptor V1 |
+| collateral_f_token_v1_calls | [CollateralFTokenAdaptorV1Calls](#steward-v4-CollateralFTokenAdaptorV1Calls) |  | Represents function calls to the CollateralFTokenAdaptor V1 |
+| convex_curve_v1_calls | [ConvexCurveAdaptorV1Calls](#steward-v4-ConvexCurveAdaptorV1Calls) |  | Represents function calls for the ConvexCurveAdaptorV1 |
+| curve_v1_calls | [CurveAdaptorV1Calls](#steward-v4-CurveAdaptorV1Calls) |  | Represents function calls for the CurveAdaptorV1 |
+| aura_erc4626_v1_calls | [AuraERC4626AdaptorV1Calls](#steward-v4-AuraERC4626AdaptorV1Calls) |  | Represents function calls for the AuraERC4626AdaptorV1 |
+| morpho_blue_collateral_v1_calls | [MorphoBlueCollateralAdaptorV1Calls](#steward-v4-MorphoBlueCollateralAdaptorV1Calls) |  | Represents function calls for the MorphoBlueCollateralAdaptorV1 |
+| morpho_blue_debt_v1_calls | [MorphoBlueDebtAdaptorV1Calls](#steward-v4-MorphoBlueDebtAdaptorV1Calls) |  | Represents function calls for the MorphoBlueDebtAdaptorV1 |
+| morpho_blue_supply_v1_calls | [MorphoBlueSupplyAdaptorV1Calls](#steward-v4-MorphoBlueSupplyAdaptorV1Calls) |  | Represents function calls for the MorphoBlueSupplyAdaptorV1 |
+| erc4626_v1_calls | [ERC4626AdaptorV1Calls](#steward-v4-ERC4626AdaptorV1Calls) |  | Represents function calls for the ERC4626AdaptorV1 |
+| staking_v1_calls | [StakingAdaptorV1Calls](#steward-v4-StakingAdaptorV1Calls) |  | Represents function calls for the StakingAdaptorV1 |
+| aave_v3_debt_token_v1_calls | [AaveV3DebtTokenAdaptorV1Calls](#steward-v4-AaveV3DebtTokenAdaptorV1Calls) |  | Represents function calls for the AaveV3DebtTokenAdaptor V1 |
+
+
+
+
+
+
+<a name="steward-v4-AaveV3DebtTokenAdaptorV1FlashLoan-FlashLoan"></a>
+
+### AaveV3DebtTokenAdaptorV1FlashLoan.FlashLoan
+Allows strategists to have Cellars take out flash loans
+
+Represents function `flashLoan(address[] loanToken, uint256[] loanAmount, bytes params)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| loan_tokens | [string](#string) | repeated | The addresses of the ERC20 tokens to borrow |
+| loan_amounts | [string](#string) | repeated | The amounts to borrow |
+| params | [AaveV3DebtTokenAdaptorV1FlashLoan.AdaptorCallForAaveV3FlashLoan](#steward-v4-AaveV3DebtTokenAdaptorV1FlashLoan-AdaptorCallForAaveV3FlashLoan) | repeated | The params to pass to the flash loan callback. |
+
+
+
+
+
+
+<a name="steward-v4-AaveV3DebtTokenAdaptorV1FlashLoanCalls"></a>
+
+### AaveV3DebtTokenAdaptorV1FlashLoanCalls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [AaveV3DebtTokenAdaptorV1FlashLoan](#steward-v4-AaveV3DebtTokenAdaptorV1FlashLoan) | repeated |  |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+<a name="aura_erc4626-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## aura_erc4626.proto
+
+
+
+<a name="steward-v4-AuraERC4626AdaptorV1"></a>
+
+### AuraERC4626AdaptorV1
+Represents call data for the Aura ERC4626 adaptor V1
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| revoke_approval | [RevokeApproval](#steward-v4-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| get_rewards | [AuraERC4626AdaptorV1.GetRewards](#steward-v4-AuraERC4626AdaptorV1-GetRewards) |  | Represents function `getRewards(IBaseRewardPool _auraPool, bool _claimExtras)` |
+
+
+
+
+
+
+<a name="steward-v4-AuraERC4626AdaptorV1-GetRewards"></a>
+
+### AuraERC4626AdaptorV1.GetRewards
+Allows strategist to get rewards for an Aura pool.
+
+Represents function `getRewards(IBaseRewardPool _auraPool, bool _claimExtras)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| aura_pool | [string](#string) |  | The address of the Aura pool to get rewards for |
+| claim_extras | [bool](#bool) |  | Whether to claim extra rewards associated with the pool |
+
+
+
+
+
+
+<a name="steward-v4-AuraERC4626AdaptorV1Calls"></a>
+
+### AuraERC4626AdaptorV1Calls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [AuraERC4626AdaptorV1](#steward-v4-AuraERC4626AdaptorV1) | repeated |  |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+<a name="balancer_pool-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## balancer_pool.proto
+
+
+
+<a name="steward-v4-BalancerPoolAdaptorV1"></a>
+
+### BalancerPoolAdaptorV1
+Represents call data for the Balancer Pool adaptor V1, for managing pool positions on Balancer.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| revoke_approval | [RevokeApproval](#steward-v4-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| join_pool | [BalancerPoolAdaptorV1.JoinPool](#steward-v4-BalancerPoolAdaptorV1-JoinPool) |  | Represents function `relayerJoinPool(ERC20[] tokensIn, uint256[] amountsIn, ERC20 btpOut, bytes[] memory callData)` |
+| exit_pool | [BalancerPoolAdaptorV1.ExitPool](#steward-v4-BalancerPoolAdaptorV1-ExitPool) |  | Represents function `relayerExitPool(ERC20 bptIn, uint256 amountIn, ERC20[] memory tokensOut, bytes[] memory callData)` |
+| stake_bpt | [BalancerPoolAdaptorV1.StakeBPT](#steward-v4-BalancerPoolAdaptorV1-StakeBPT) |  | Represents function `stakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountIn)` |
+| unstake_bpt | [BalancerPoolAdaptorV1.UnstakeBPT](#steward-v4-BalancerPoolAdaptorV1-UnstakeBPT) |  | Represents function `unstakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountOut)` |
+| claim_rewards | [BalancerPoolAdaptorV1.ClaimRewards](#steward-v4-BalancerPoolAdaptorV1-ClaimRewards) |  | Represents function `claimRewards(address gauge)` |
+
+
+
+
+
+
+<a name="steward-v4-BalancerPoolAdaptorV1-ClaimRewards"></a>
+
+### BalancerPoolAdaptorV1.ClaimRewards
+Claim rewards ($BAL) from LP position
+
+Represents `function claimRewards(address gauge)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| gauge | [string](#string) |  | The gauge to claim rewards from |
+
+
+
+
+
+
+<a name="steward-v4-BalancerPoolAdaptorV1-ExitPool"></a>
+
+### BalancerPoolAdaptorV1.ExitPool
+Call `BalancerRelayer` on mainnet to carry out exit txs
+
+Represents function `exitPool(ERC20 targetBpt, IVault.SingleSwap[] memory swapsBeforeJoin, SwapData memory swapData, IVault.ExitPoolRequest request)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| target_bpt | [string](#string) |  | The target pool |
+| swaps_after_exit | [BalancerPoolAdaptorV1.SingleSwap](#steward-v4-BalancerPoolAdaptorV1-SingleSwap) | repeated | Swaps to execute after exiting pool |
+| swap_data | [BalancerPoolAdaptorV1.SwapData](#steward-v4-BalancerPoolAdaptorV1-SwapData) |  | Data for swaps |
+| request | [BalancerPoolAdaptorV1.ExitPoolRequest](#steward-v4-BalancerPoolAdaptorV1-ExitPoolRequest) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-BalancerPoolAdaptorV1-ExitPoolRequest"></a>
+
+### BalancerPoolAdaptorV1.ExitPoolRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| assets | [string](#string) | repeated |  |
+| min_amounts_out | [string](#string) | repeated |  |
+| user_data | [bytes](#bytes) |  |  |
+| to_internal_balance | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-BalancerPoolAdaptorV1-JoinPool"></a>
+
+### BalancerPoolAdaptorV1.JoinPool
+Allows strategists to join Balancer pools using EXACT_TOKENS_IN_FOR_BPT_OUT joins
+
+Represents function `joinPool(ERC20 targetBpt, IVault.SingleSwap[] memory swapsBeforeJoin, SwapData memory swapData, uint256 minimumBpt)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| target_bpt | [string](#string) |  | The target pool |
+| swaps_before_join | [BalancerPoolAdaptorV1.SingleSwap](#steward-v4-BalancerPoolAdaptorV1-SingleSwap) | repeated | Swap to execute before joining pool |
+| swap_data | [BalancerPoolAdaptorV1.SwapData](#steward-v4-BalancerPoolAdaptorV1-SwapData) |  | Data for swaps |
+| minimum_bpt | [string](#string) |  | The minimum BPT to mint |
+
+
+
+
+
+
+<a name="steward-v4-BalancerPoolAdaptorV1-SingleSwap"></a>
+
+### BalancerPoolAdaptorV1.SingleSwap
+Data for a single swap executed by `swap`. `amount` is either `amountIn` or `amountOut` depending on the `kind` value.
+Represents the SingleSwap struct defined here:
+https://github.com/PeggyJV/cellar-contracts/blob/main/src/interfaces/external/Balancer/IVault.sol
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| pool_id | [string](#string) |  | The pool ID (bytes32) |
+| kind | [BalancerPoolAdaptorV1.SwapKind](#steward-v4-BalancerPoolAdaptorV1-SwapKind) |  | The swap kind (enum) |
+| asset_in | [string](#string) |  | The asset in (address) |
+| asset_out | [string](#string) |  | The asset out (address) |
+| amount | [string](#string) |  | The amount (uint256) |
+| user_data | [bytes](#bytes) |  | The user data (bytes) |
+
+
+
+
+
+
+<a name="steward-v4-BalancerPoolAdaptorV1-StakeBPT"></a>
+
+### BalancerPoolAdaptorV1.StakeBPT
+Stake (deposit) BPTs into respective pool gauge
+
+Represents `function stakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountIn)``
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| bpt | [string](#string) |  | The BPT to stake |
+| liquidity_gauge | [string](#string) |  | The liquidity gauge to stake into |
+| amount_in | [string](#string) |  | The amount to stake |
+
+
+
+
+
+
+<a name="steward-v4-BalancerPoolAdaptorV1-SwapData"></a>
+
+### BalancerPoolAdaptorV1.SwapData
+Stores each swaps min amount, and deadline
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| min_amounts_for_swaps | [string](#string) | repeated | The minimum amounts for swaps |
+| swap_deadlines | [string](#string) | repeated | The swap deadlines |
+
+
+
+
+
+
+<a name="steward-v4-BalancerPoolAdaptorV1-UnstakeBPT"></a>
+
+### BalancerPoolAdaptorV1.UnstakeBPT
+Unstake (withdraw) BPT from respective pool gauge
+
+Represents `function unstakeBPT(ERC20 _bpt, address _liquidityGauge, uint256 _amountOut)``
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| bpt | [string](#string) |  | The BPT to unstake |
+| liquidity_gauge | [string](#string) |  | The liquidity gauge to unstake from |
+| amount_out | [string](#string) |  | The amount to unstake |
+
+
+
+
+
+
+<a name="steward-v4-BalancerPoolAdaptorV1Calls"></a>
+
+### BalancerPoolAdaptorV1Calls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [BalancerPoolAdaptorV1](#steward-v4-BalancerPoolAdaptorV1) | repeated |  |
+
+
+
+
+
+ 
+
+
+<a name="steward-v4-BalancerPoolAdaptorV1-SwapKind"></a>
+
+### BalancerPoolAdaptorV1.SwapKind
+Represents the SwapKind enum defined here:
+https://github.com/PeggyJV/cellar-contracts/blob/main/src/interfaces/external/Balancer/IVault.sol
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| SWAP_KIND_UNSPECIFIED | 0 |  |
+| SWAP_KIND_GIVEN_IN | 1 |  |
+| SWAP_KIND_GIVEN_OUT | 2 |  |
+
+
+ 
+
+ 
+
+ 
+
+
+
+<a name="balancer_pool_flash_loan-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## balancer_pool_flash_loan.proto
+
+
+
+<a name="steward-v4-BalancerPoolAdaptorV1FlashLoan"></a>
+
+### BalancerPoolAdaptorV1FlashLoan
+Represents flash loan call data for the Balancer Pool adaptor V1, for managing pool positions on Balancer.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| make_flash_loan | [BalancerPoolAdaptorV1FlashLoan.MakeFlashLoan](#steward-v4-BalancerPoolAdaptorV1FlashLoan-MakeFlashLoan) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-BalancerPoolAdaptorV1FlashLoan-AdaptorCallForBalancerPoolFlashLoan"></a>
+
+### BalancerPoolAdaptorV1FlashLoan.AdaptorCallForBalancerPoolFlashLoan
+NOTE: Make FlashLoan takes an array of AdaptorCall. cellar_v2.proto defines it, but also imports this file, therefore we can&#39;t import cellar_v2.proto in order to use the AdaptorCall message here. To avoid the recursive import, we duplicate the message definition.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| adaptor | [string](#string) |  | Address of the adaptor |
+| aave_a_token_v1_calls | [AaveATokenAdaptorV1Calls](#steward-v4-AaveATokenAdaptorV1Calls) |  | Represents function calls to the AaveATokenAdaptor V1 |
+| aave_debt_token_v1_calls | [AaveDebtTokenAdaptorV1Calls](#steward-v4-AaveDebtTokenAdaptorV1Calls) |  | Represents function calls to the AavaDebtTokenAdaptor V1 |
+| compound_c_token_v2_calls | [CompoundCTokenAdaptorV2Calls](#steward-v4-CompoundCTokenAdaptorV2Calls) |  | Represents function calls to the CompoundCTokenAdaptor V2 |
+| aave_a_token_v2_calls | [AaveATokenAdaptorV2Calls](#steward-v4-AaveATokenAdaptorV2Calls) |  | Represents function calls to the AaveATokenV2Adaptor |
+| aave_debt_token_v2_calls | [AaveDebtTokenAdaptorV2Calls](#steward-v4-AaveDebtTokenAdaptorV2Calls) |  | Represents function calls to the AavaDebtTokenV2Adaptor |
+| aave_v3_a_token_v1_calls | [AaveV3ATokenAdaptorV1Calls](#steward-v4-AaveV3ATokenAdaptorV1Calls) |  | Represents function calls to the AaveATokenV1Adaptor |
+| aave_v3_debt_token_v1_calls | [AaveV3DebtTokenAdaptorV1Calls](#steward-v4-AaveV3DebtTokenAdaptorV1Calls) |  | Represents function calls to the AavaDebtTokenV1Adaptor |
+| one_inch_v1_calls | [OneInchAdaptorV1Calls](#steward-v4-OneInchAdaptorV1Calls) |  | Represents function calls to the OneInchAdaptorV1 |
+| fees_and_reserves_v1_calls | [FeesAndReservesAdaptorV1Calls](#steward-v4-FeesAndReservesAdaptorV1Calls) |  | Represents function calls to the FeesAndReservesAdaptorV1 |
+| zero_x_v1_calls | [ZeroXAdaptorV1Calls](#steward-v4-ZeroXAdaptorV1Calls) |  | Represents functionc alls to the ZeroXAdaptorV1 |
+| swap_with_uniswap_v1_calls | [SwapWithUniswapAdaptorV1Calls](#steward-v4-SwapWithUniswapAdaptorV1Calls) |  | Represents function calls to the SwapWithUniswapAdaptorV1 |
+| vesting_simple_v2_calls | [VestingSimpleAdaptorV2Calls](#steward-v4-VestingSimpleAdaptorV2Calls) |  | Represents function calls to VestingSimpleAdaptor |
+| cellar_v1_calls | [CellarAdaptorV1Calls](#steward-v4-CellarAdaptorV1Calls) |  | Represents function calls to the CellarAdaptor |
+| uniswap_v3_v2_calls | [UniswapV3AdaptorV2Calls](#steward-v4-UniswapV3AdaptorV2Calls) |  | Represents function calls to the UniswapV3Adaptor V2 |
+| aave_v2_enable_asset_as_collateral_v1_calls | [AaveV2EnableAssetAsCollateralAdaptorV1Calls](#steward-v4-AaveV2EnableAssetAsCollateralAdaptorV1Calls) |  | Represents function calls to the AaveV2EnableAssetAsCollatorAdaptor V1 |
+| f_token_v1_calls | [FTokenAdaptorV1Calls](#steward-v4-FTokenAdaptorV1Calls) |  | Represents function calls to the FTokenAdaptor V1 |
+| morpho_aave_v2_a_token_v1_calls | [MorphoAaveV2ATokenAdaptorV1Calls](#steward-v4-MorphoAaveV2ATokenAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV2AToken V1 |
+| morpho_aave_v2_debt_token_v1_calls | [MorphoAaveV2DebtTokenAdaptorV1Calls](#steward-v4-MorphoAaveV2DebtTokenAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV2DebtToken V1 |
+| morpho_aave_v3_a_token_collateral_v1_calls | [MorphoAaveV3ATokenCollateralAdaptorV1Calls](#steward-v4-MorphoAaveV3ATokenCollateralAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV3ATokenCollateral V1 |
+| morpho_aave_v3_a_token_p2p_v1_calls | [MorphoAaveV3ATokenP2PAdaptorV1Calls](#steward-v4-MorphoAaveV3ATokenP2PAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV3ATokenP2P V1 |
+| morpho_aave_v3_debt_token_v1_calls | [MorphoAaveV3DebtTokenAdaptorV1Calls](#steward-v4-MorphoAaveV3DebtTokenAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV3DebtToken V1 |
+| legacy_cellar_v1_calls | [LegacyCellarAdaptorV1Calls](#steward-v4-LegacyCellarAdaptorV1Calls) |  | Represents function calls to the LegacyCellarAdaptor V1 |
+| debt_f_token_v1_calls | [DebtFTokenAdaptorV1Calls](#steward-v4-DebtFTokenAdaptorV1Calls) |  | Represents function calls to the DebtFTokenAdaptor V1 |
+| collateral_f_token_v1_calls | [CollateralFTokenAdaptorV1Calls](#steward-v4-CollateralFTokenAdaptorV1Calls) |  | Represents function calls to the CollateralFTokenAdaptor V1 |
+| convex_curve_v1_calls | [ConvexCurveAdaptorV1Calls](#steward-v4-ConvexCurveAdaptorV1Calls) |  | Represents function calls for the ConvexCurveAdaptorV1 |
+| curve_v1_calls | [CurveAdaptorV1Calls](#steward-v4-CurveAdaptorV1Calls) |  | Represents function calls for the CurveAdaptorV1 |
+| aura_erc4626_v1_calls | [AuraERC4626AdaptorV1Calls](#steward-v4-AuraERC4626AdaptorV1Calls) |  | Represents function calls for the AuraERC4626AdaptorV1 |
+| morpho_blue_collateral_v1_calls | [MorphoBlueCollateralAdaptorV1Calls](#steward-v4-MorphoBlueCollateralAdaptorV1Calls) |  | Represents function calls for the MorphoBlueCollateralAdaptorV1 |
+| morpho_blue_debt_v1_calls | [MorphoBlueDebtAdaptorV1Calls](#steward-v4-MorphoBlueDebtAdaptorV1Calls) |  | Represents function calls for the MorphoBlueDebtAdaptorV1 |
+| morpho_blue_supply_v1_calls | [MorphoBlueSupplyAdaptorV1Calls](#steward-v4-MorphoBlueSupplyAdaptorV1Calls) |  | Represents function calls for the MorphoBlueSupplyAdaptorV1 |
+| erc4626_v1_calls | [ERC4626AdaptorV1Calls](#steward-v4-ERC4626AdaptorV1Calls) |  | Represents function calls for the ERC4626AdaptorV1 |
+| staking_v1_calls | [StakingAdaptorV1Calls](#steward-v4-StakingAdaptorV1Calls) |  | Represents function calls for the StakingAdaptorV1 |
+
+
+
+
+
+
+<a name="steward-v4-BalancerPoolAdaptorV1FlashLoan-MakeFlashLoan"></a>
+
+### BalancerPoolAdaptorV1FlashLoan.MakeFlashLoan
+Make a flash loan
+
+Represents `function makeFlashLoan(IERC20[] tokens, uint256[] amounts, bytes memory data)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| tokens | [string](#string) | repeated | The tokens to flash loan |
+| amounts | [string](#string) | repeated | The amounts to flash loan |
+| data | [BalancerPoolAdaptorV1FlashLoan.AdaptorCallForBalancerPoolFlashLoan](#steward-v4-BalancerPoolAdaptorV1FlashLoan-AdaptorCallForBalancerPoolFlashLoan) | repeated | The data to flash loan |
+
+
+
+
+
+
+<a name="steward-v4-BalancerPoolAdaptorV1FlashLoanCalls"></a>
+
+### BalancerPoolAdaptorV1FlashLoanCalls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [BalancerPoolAdaptorV1FlashLoan](#steward-v4-BalancerPoolAdaptorV1FlashLoan) | repeated |  |
 
 
 
@@ -1389,7 +2012,7 @@ Represents a function call to a cellar that implements Cellar.sol
 | set_deposit_limit | [CellarV1.SetDepositLimit](#steward-v4-CellarV1-SetDepositLimit) |  | Represents function `setDepositLimit()` |
 | set_liquidity_limit | [CellarV1.SetLiquidityLimit](#steward-v4-CellarV1-SetLiquidityLimit) |  | Represents function `setLiquidityLimit()` |
 | set_share_lock_period | [CellarV1.SetShareLockPeriod](#steward-v4-CellarV1-SetShareLockPeriod) |  | Represents function `setShareLockPeriod()` |
-| set_rebalance_deviation | [CellarV1.SetRebalanceDeviation](#steward-v4-CellarV1-SetRebalanceDeviation) |  | Represents function `setRebalanceDeviation(uint265)` |
+| set_rebalance_deviation | [CellarV1.SetRebalanceDeviation](#steward-v4-CellarV1-SetRebalanceDeviation) |  | Represents function `setRebalanceDeviation(uint256)` |
 
 
 
@@ -1812,6 +2435,20 @@ Represents a call to adaptor an. The cellar must be authorized to call the targe
 | morpho_aave_v3_a_token_collateral_v1_calls | [MorphoAaveV3ATokenCollateralAdaptorV1Calls](#steward-v4-MorphoAaveV3ATokenCollateralAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV3ATokenCollateral V1 |
 | morpho_aave_v3_a_token_p2p_v1_calls | [MorphoAaveV3ATokenP2PAdaptorV1Calls](#steward-v4-MorphoAaveV3ATokenP2PAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV3ATokenP2P V1 |
 | morpho_aave_v3_debt_token_v1_calls | [MorphoAaveV3DebtTokenAdaptorV1Calls](#steward-v4-MorphoAaveV3DebtTokenAdaptorV1Calls) |  | Represents function calls to the MorphoAaveV3DebtToken V1 |
+| balancer_pool_v1_calls | [BalancerPoolAdaptorV1Calls](#steward-v4-BalancerPoolAdaptorV1Calls) |  | Represents function calls to the BalancerPoolAdaptor V1 |
+| legacy_cellar_v1_calls | [LegacyCellarAdaptorV1Calls](#steward-v4-LegacyCellarAdaptorV1Calls) |  | Represents function calls to the LegacyCellarAdaptor V1 |
+| debt_f_token_v1_calls | [DebtFTokenAdaptorV1Calls](#steward-v4-DebtFTokenAdaptorV1Calls) |  | Represents function calls to the DebtFTokenAdaptor V1 |
+| collateral_f_token_v1_calls | [CollateralFTokenAdaptorV1Calls](#steward-v4-CollateralFTokenAdaptorV1Calls) |  | Represents function calls to the CollateralFTokenAdaptor V1 |
+| aave_v3_debt_token_v1_flash_loan_calls | [AaveV3DebtTokenAdaptorV1FlashLoanCalls](#steward-v4-AaveV3DebtTokenAdaptorV1FlashLoanCalls) |  | Represents function call for the AaveV3DebtTokenAdaptorV1 |
+| balancer_pool_v1_flash_loan_calls | [BalancerPoolAdaptorV1FlashLoanCalls](#steward-v4-BalancerPoolAdaptorV1FlashLoanCalls) |  | Represents function call for the BalancerPoolAdaptorV1 |
+| convex_curve_v1_calls | [ConvexCurveAdaptorV1Calls](#steward-v4-ConvexCurveAdaptorV1Calls) |  | Represents function calls for the ConvexCurveAdaptorV1 |
+| curve_v1_calls | [CurveAdaptorV1Calls](#steward-v4-CurveAdaptorV1Calls) |  | Represents function calls for the CurveAdaptorV1 |
+| aura_erc4626_v1_calls | [AuraERC4626AdaptorV1Calls](#steward-v4-AuraERC4626AdaptorV1Calls) |  | Represents function calls for the AuraERC4626AdaptorV1 |
+| morpho_blue_collateral_v1_calls | [MorphoBlueCollateralAdaptorV1Calls](#steward-v4-MorphoBlueCollateralAdaptorV1Calls) |  | Represents function calls for the MorphoBlueCollateralAdaptorV1 |
+| morpho_blue_debt_v1_calls | [MorphoBlueDebtAdaptorV1Calls](#steward-v4-MorphoBlueDebtAdaptorV1Calls) |  | Represents function calls for the MorphoBlueDebtAdaptorV1 |
+| morpho_blue_supply_v1_calls | [MorphoBlueSupplyAdaptorV1Calls](#steward-v4-MorphoBlueSupplyAdaptorV1Calls) |  | Represents function calls for the MorphoBlueSupplyAdaptorV1 |
+| erc4626_v1_calls | [ERC4626AdaptorV1Calls](#steward-v4-ERC4626AdaptorV1Calls) |  | Represents function calls for the ERC4626AdaptorV1 |
+| staking_v1_calls | [StakingAdaptorV1Calls](#steward-v4-StakingAdaptorV1Calls) |  | Represents function calls for the StakingAdaptorV1 |
 
 
 
@@ -1826,14 +2463,19 @@ Represents a function call to a cellar that implements Cellar.sol
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| add_position | [CellarV2.AddPosition](#steward-v4-CellarV2-AddPosition) |  | Represents function `addPosition(uint256 index, address position)` |
 | call_on_adaptor | [CellarV2.CallOnAdaptor](#steward-v4-CellarV2-CallOnAdaptor) |  | Represents function `callOnAdaptor(AdaptorCall[] memory data)` |
 | remove_position | [CellarV2.RemovePosition](#steward-v4-CellarV2-RemovePosition) |  | Represents function `removePosition(uint256 index)` |
 | set_holding_position | [CellarV2.SetHoldingPosition](#steward-v4-CellarV2-SetHoldingPosition) |  | Represents function `setHoldingPosition(uint32 position_id)` |
 | set_strategist_payout_address | [CellarV2.SetStrategistPayoutAddress](#steward-v4-CellarV2-SetStrategistPayoutAddress) |  | Represents function `setStrategistPayoutAddress(address payout)` |
 | swap_positions | [CellarV2.SwapPositions](#steward-v4-CellarV2-SwapPositions) |  | Represents function `swapPositions(uint256 index1, uint256 index2)` |
-| set_rebalance_deviation | [CellarV2.SetRebalanceDeviation](#steward-v4-CellarV2-SetRebalanceDeviation) |  | Represents function `setRebalanceDeviation(uint265)` |
 | set_share_lock_period | [CellarV2.SetShareLockPeriod](#steward-v4-CellarV2-SetShareLockPeriod) |  | Represents function `setShareLockPeriod(uint256 newLock)` |
+| add_position | [CellarV2.AddPosition](#steward-v4-CellarV2-AddPosition) |  | Represents function `addPosition(uint256 index, address position)` |
+| setup_adaptor | [CellarV2.SetupAdaptor](#steward-v4-CellarV2-SetupAdaptor) |  | Represents function `setupAdaptor(address adaptor)` |
+| initiate_shutdown | [CellarV2.InitiateShutdown](#steward-v4-CellarV2-InitiateShutdown) |  | Represents function `initiateShutdown()` |
+| lift_shutdown | [CellarV2.LiftShutdown](#steward-v4-CellarV2-LiftShutdown) |  | Represents function `liftShutdown()` |
+| set_platform_fee | [CellarV2.SetPlatformFee](#steward-v4-CellarV2-SetPlatformFee) |  | Represents function `setPlatformFee(uint256)` |
+| set_strategist_platform_cut | [CellarV2.SetStrategistPlatformCut](#steward-v4-CellarV2-SetStrategistPlatformCut) |  | Represents function `setStrategistPlatformCut(address)` |
+| set_rebalance_deviation | [CellarV2.SetRebalanceDeviation](#steward-v4-CellarV2-SetRebalanceDeviation) |  | Represents function `setRebalanceDeviation(uint256)` |
 
 
 
@@ -1877,6 +2519,26 @@ Represents function `callOnAdaptor(AdaptorCall[] memory data)`
 
 
 
+<a name="steward-v4-CellarV2-InitiateShutdown"></a>
+
+### CellarV2.InitiateShutdown
+Represents function `initiateShutdown()`
+
+
+
+
+
+
+<a name="steward-v4-CellarV2-LiftShutdown"></a>
+
+### CellarV2.LiftShutdown
+Represents function `liftShutdown()`
+
+
+
+
+
+
 <a name="steward-v4-CellarV2-RemovePosition"></a>
 
 ### CellarV2.RemovePosition
@@ -1906,6 +2568,21 @@ Represents function `setHoldingIndex(uint8 index)`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | position_id | [uint32](#uint32) |  | ID (index) of the new holding position to use |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2-SetPlatformFee"></a>
+
+### CellarV2.SetPlatformFee
+Represents function `setPlatformFee(uint64)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| amount | [uint64](#uint64) |  | New platform fee |
 
 
 
@@ -1964,6 +2641,38 @@ Represents function `setStrategistPayoutAddress(address payout)`
 
 
 
+<a name="steward-v4-CellarV2-SetStrategistPlatformCut"></a>
+
+### CellarV2.SetStrategistPlatformCut
+Represents function `setStrategistPlatformCut(uint64)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| amount | [uint64](#uint64) |  | New strategist platform cut |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2-SetupAdaptor"></a>
+
+### CellarV2.SetupAdaptor
+Allows owner to add new adaptors for the cellar to use.
+
+Represents function `setupAdaptor(address adaptor)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| adaptor | [string](#string) |  | Address of the adaptor |
+
+
+
+
+
+
 <a name="steward-v4-CellarV2-SwapPositions"></a>
 
 ### CellarV2.SwapPositions
@@ -1996,6 +2705,7 @@ Represent a function call initiated through a governance proposal
 | set_platform_fee | [CellarV2Governance.SetPlatformFee](#steward-v4-CellarV2Governance-SetPlatformFee) |  | Represents function `setPlatformFee(uint256)` |
 | set_strategist_platform_cut | [CellarV2Governance.SetStrategistPlatformCut](#steward-v4-CellarV2Governance-SetStrategistPlatformCut) |  | Represents function `setStrategistPlatformCut(address)` |
 | setup_adaptor | [CellarV2Governance.SetupAdaptor](#steward-v4-CellarV2Governance-SetupAdaptor) |  | Represents function `setupAdaptor(address adaptor)` |
+| set_rebalance_deviation | [CellarV2Governance.SetRebalanceDeviation](#steward-v4-CellarV2Governance-SetRebalanceDeviation) |  | Represents function `setRebalanceDeviation(uint256)` |
 
 
 
@@ -2031,6 +2741,24 @@ Represents function `setPlatformFee(uint64)`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | amount | [uint64](#uint64) |  | New platform fee |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2Governance-SetRebalanceDeviation"></a>
+
+### CellarV2Governance.SetRebalanceDeviation
+Changes the cellar&#39;s allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
+during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
+
+Represents function `setRebalanceDeviation(uint256)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_deviation | [string](#string) |  |  |
 
 
 
@@ -2085,6 +2813,23 @@ Represents function `setupAdaptor(address adaptor)`
 
 
 
+<a name="steward-v4-CellarV2_2-AddAdaptorToCatalogue"></a>
+
+### CellarV2_2.AddAdaptorToCatalogue
+Allows the owner to add an adaptor to the Cellar&#39;s adaptor catalogue
+
+Represents function `addAdaptorToCatalogue(address adaptor)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| adaptor | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="steward-v4-CellarV2_2-AddPosition"></a>
 
 ### CellarV2_2.AddPosition
@@ -2099,6 +2844,42 @@ Represents function `addPosition(uint32 index, uint32 positionId, bytes configur
 | position_id | [uint32](#uint32) |  | The position&#39;s ID in the cellar registry |
 | configuration_data | [bytes](#bytes) |  | Data used to configure how the position behaves |
 | in_debt_array | [bool](#bool) |  | Whether to add position in the debt array, or the credit array. |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_2-AddPositionToCatalogue"></a>
+
+### CellarV2_2.AddPositionToCatalogue
+Allows the owner to add a position to the Cellar&#39;s position catalogue
+
+Represents function `addPositionToCatalogue(uint32 positionId)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_2-CachePriceRouter"></a>
+
+### CellarV2_2.CachePriceRouter
+Updates the cellar to use the latest price router in the registry.
+
+Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| check_total_assets | [bool](#bool) |  | Whether to check the total assets of the cellar |
+| allowable_range | [uint32](#uint32) |  | The allowable range of the cellar&#39;s total assets to deviate between old and new routers |
+| expected_price_router | [string](#string) |  | The expected price router address |
 
 
 
@@ -2132,15 +2913,20 @@ The function you wish to execute on the target cellar
 | ----- | ---- | ----- | ----------- |
 | add_position | [CellarV2_2.AddPosition](#steward-v4-CellarV2_2-AddPosition) |  | Represents function `addPosition(uint256 index, address position)` |
 | call_on_adaptor | [CellarV2_2.CallOnAdaptor](#steward-v4-CellarV2_2-CallOnAdaptor) |  | Represents function `callOnAdaptor(AdaptorCall[] memory data)` |
-| remove_position | [CellarV2_2.RemovePosition](#steward-v4-CellarV2_2-RemovePosition) |  | Represents function `removePosition(uint256 index)` |
+| remove_position | [CellarV2_2.RemovePosition](#steward-v4-CellarV2_2-RemovePosition) |  | Represents function `removePosition(uint256 index, bool inDebtArray)` |
+| remove_adaptor_from_catalogue | [CellarV2_2.RemoveAdaptorFromCatalogue](#steward-v4-CellarV2_2-RemoveAdaptorFromCatalogue) |  | Represents function `removeAdaptorFromCatalogue(address adaptor)` |
+| remove_position_from_catalogue | [CellarV2_2.RemovePositionFromCatalogue](#steward-v4-CellarV2_2-RemovePositionFromCatalogue) |  | Represents function `removePositionFromCatalogue(uint32 positionId)` |
 | set_holding_position | [CellarV2_2.SetHoldingPosition](#steward-v4-CellarV2_2-SetHoldingPosition) |  | Represents function `setHoldingPosition(uint32 position_id)` |
 | set_strategist_payout_address | [CellarV2_2.SetStrategistPayoutAddress](#steward-v4-CellarV2_2-SetStrategistPayoutAddress) |  | Represents function `setStrategistPayoutAddress(address payout)` |
 | swap_positions | [CellarV2_2.SwapPositions](#steward-v4-CellarV2_2-SwapPositions) |  | Represents function `swapPositions(uint256 index1, uint256 index2)` |
-| set_rebalance_deviation | [CellarV2_2.SetRebalanceDeviation](#steward-v4-CellarV2_2-SetRebalanceDeviation) |  | Represents function `setRebalanceDeviation(uint265)` |
+| add_adaptor_to_catalogue | [CellarV2_2.AddAdaptorToCatalogue](#steward-v4-CellarV2_2-AddAdaptorToCatalogue) |  | Represents function `addAdaptorToCatalogue(address adaptor)` |
+| add_position_to_catalogue | [CellarV2_2.AddPositionToCatalogue](#steward-v4-CellarV2_2-AddPositionToCatalogue) |  | Represents function `addPositionToCatalogue(uint32 positionId)` |
+| set_rebalance_deviation | [CellarV2_2.SetRebalanceDeviation](#steward-v4-CellarV2_2-SetRebalanceDeviation) |  | Represents function `setRebalanceDeviation(uint256)` |
 | set_share_lock_period | [CellarV2_2.SetShareLockPeriod](#steward-v4-CellarV2_2-SetShareLockPeriod) |  | Represents function `setShareLockPeriod(uint256 newLock)` |
-| initiate_shutdown | [CellarV2_2.InitiateShutdown](#steward-v4-CellarV2_2-InitiateShutdown) |  | Represents function `initiateShutdown()` |
 | set_strategist_platform_cut | [CellarV2_2.SetStrategistPlatformCut](#steward-v4-CellarV2_2-SetStrategistPlatformCut) |  | Represents function `setStrategistPlatformCut(uint64 cut)` |
+| initiate_shutdown | [CellarV2_2.InitiateShutdown](#steward-v4-CellarV2_2-InitiateShutdown) |  | Represents function `initiateShutdown()` |
 | lift_shutdown | [CellarV2_2.LiftShutdown](#steward-v4-CellarV2_2-LiftShutdown) |  | Represents function `liftShutdown()` |
+| cache_price_router | [CellarV2_2.CachePriceRouter](#steward-v4-CellarV2_2-CachePriceRouter) |  | Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)` |
 
 
 
@@ -2188,6 +2974,23 @@ Represents function `multicall(bytes[] data)`
 
 
 
+<a name="steward-v4-CellarV2_2-RemoveAdaptorFromCatalogue"></a>
+
+### CellarV2_2.RemoveAdaptorFromCatalogue
+Allows callers to remove adaptors from this cellar&#39;s catalogue
+
+Represents function `removeAdaptorFromCatalogue(address adaptor)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| adaptor | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="steward-v4-CellarV2_2-RemovePosition"></a>
 
 ### CellarV2_2.RemovePosition
@@ -2200,6 +3003,23 @@ Represents function `removePosition(uint32 index, bool inDebtArray)`
 | ----- | ---- | ----- | ----------- |
 | index | [uint32](#uint32) |  | Index at which to remove the position |
 | in_debt_array | [bool](#bool) |  | Whether to remove position from the debt array, or the credit array. |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_2-RemovePositionFromCatalogue"></a>
+
+### CellarV2_2.RemovePositionFromCatalogue
+Allows caller to remove positions from this cellar&#39;s catalogue
+
+Represents function `removePositionFromCatalogue(uint32 positionId)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [uint32](#uint32) |  |  |
 
 
 
@@ -2319,12 +3139,8 @@ Represent a function call initiated through a governance proposal
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| add_adaptor_to_catalogue | [CellarV2_2Governance.AddAdaptorToCatalogue](#steward-v4-CellarV2_2Governance-AddAdaptorToCatalogue) |  | Represents function `addAdaptorToCatalogue(address adaptor)` |
-| add_position_to_catalogue | [CellarV2_2Governance.AddPositionToCatalogue](#steward-v4-CellarV2_2Governance-AddPositionToCatalogue) |  | Represents function `addPositionToCatalogue(uint32 positionId)` |
-| remove_adaptor_from_catalogue | [CellarV2_2Governance.RemoveAdaptorFromCatalogue](#steward-v4-CellarV2_2Governance-RemoveAdaptorFromCatalogue) |  | Represents function `removeAdaptorFromCatalogue(address adaptor)` |
-| remove_position_from_catalogue | [CellarV2_2Governance.RemovePositionFromCatalogue](#steward-v4-CellarV2_2Governance-RemovePositionFromCatalogue) |  | Represents function `removePositionFromCatalogue(uint32 positionId)` |
-| force_position_out | [CellarV2_2Governance.ForcePositionOut](#steward-v4-CellarV2_2Governance-ForcePositionOut) |  | Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)` |
-| toggle_ignore_pause | [CellarV2_2Governance.ToggleIgnorePause](#steward-v4-CellarV2_2Governance-ToggleIgnorePause) |  | Represents function `toggleIgnorePause(bool ignore)` |
+| function_call | [CellarV2_2Governance.FunctionCall](#steward-v4-CellarV2_2Governance-FunctionCall) |  | Represents a single function call |
+| multicall | [CellarV2_2Governance.Multicall](#steward-v4-CellarV2_2Governance-Multicall) |  | Represents multiple, ordered function calls |
 
 
 
@@ -2348,6 +3164,26 @@ Represents function `addAdaptorToCatalogue(address adaptor)`
 
 
 
+<a name="steward-v4-CellarV2_2Governance-AddPosition"></a>
+
+### CellarV2_2Governance.AddPosition
+Insert a trusted position to the list of positions used by the cellar at a given index.
+
+Represents function `addPosition(uint32 index, uint32 positionId, bytes configurationData, bool inDebtArray)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| index | [uint32](#uint32) |  | Index at which to add the position |
+| position_id | [uint32](#uint32) |  | The position&#39;s ID in the cellar registry |
+| configuration_data | [bytes](#bytes) |  | Data used to configure how the position behaves |
+| in_debt_array | [bool](#bool) |  | Whether to add position in the debt array, or the credit array. |
+
+
+
+
+
+
 <a name="steward-v4-CellarV2_2Governance-AddPositionToCatalogue"></a>
 
 ### CellarV2_2Governance.AddPositionToCatalogue
@@ -2359,6 +3195,42 @@ Represents function `addPositionToCatalogue(uint32 positionId)`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | position_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_2Governance-CachePriceRouter"></a>
+
+### CellarV2_2Governance.CachePriceRouter
+Updates the cellar to use the latest price router in the registry.
+
+Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| check_total_assets | [bool](#bool) |  | Whether to check the total assets of the cellar |
+| allowable_range | [uint32](#uint32) |  | The allowable range of the cellar&#39;s total assets to deviate between old and new routers |
+| expected_price_router | [string](#string) |  | The expected price router address |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_2Governance-CallOnAdaptor"></a>
+
+### CellarV2_2Governance.CallOnAdaptor
+Allows strategists to manage their Cellar using arbitrary logic calls to adaptors.
+
+Represents function `callOnAdaptor(AdaptorCall[] memory data)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| data | [AdaptorCall](#steward-v4-AdaptorCall) | repeated |  |
 
 
 
@@ -2384,6 +3256,78 @@ Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDe
 
 
 
+<a name="steward-v4-CellarV2_2Governance-FunctionCall"></a>
+
+### CellarV2_2Governance.FunctionCall
+The function you wish to execute on the target cellar
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| add_adaptor_to_catalogue | [CellarV2_2Governance.AddAdaptorToCatalogue](#steward-v4-CellarV2_2Governance-AddAdaptorToCatalogue) |  | Represents function `addAdaptorToCatalogue(address adaptor)` |
+| add_position_to_catalogue | [CellarV2_2Governance.AddPositionToCatalogue](#steward-v4-CellarV2_2Governance-AddPositionToCatalogue) |  | Represents function `addPositionToCatalogue(uint32 positionId)` |
+| set_rebalance_deviation | [CellarV2_2Governance.SetRebalanceDeviation](#steward-v4-CellarV2_2Governance-SetRebalanceDeviation) |  | Represents function `setRebalanceDeviation(uint256)` |
+| set_share_lock_period | [CellarV2_2Governance.SetShareLockPeriod](#steward-v4-CellarV2_2Governance-SetShareLockPeriod) |  | Represents function `setShareLockPeriod(uint256 newLock)` |
+| set_strategist_platform_cut | [CellarV2_2Governance.SetStrategistPlatformCut](#steward-v4-CellarV2_2Governance-SetStrategistPlatformCut) |  | Represents function `setStrategistPlatformCut(uint64 cut)` |
+| initiate_shutdown | [CellarV2_2Governance.InitiateShutdown](#steward-v4-CellarV2_2Governance-InitiateShutdown) |  | Represents function `initiateShutdown()` |
+| lift_shutdown | [CellarV2_2Governance.LiftShutdown](#steward-v4-CellarV2_2Governance-LiftShutdown) |  | Represents function `liftShutdown()` |
+| force_position_out | [CellarV2_2Governance.ForcePositionOut](#steward-v4-CellarV2_2Governance-ForcePositionOut) |  | Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)` |
+| toggle_ignore_pause | [CellarV2_2Governance.ToggleIgnorePause](#steward-v4-CellarV2_2Governance-ToggleIgnorePause) |  | Represents function `toggleIgnorePause(bool ignore)` |
+| cache_price_router | [CellarV2_2Governance.CachePriceRouter](#steward-v4-CellarV2_2Governance-CachePriceRouter) |  | Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)` |
+| add_position | [CellarV2_2Governance.AddPosition](#steward-v4-CellarV2_2Governance-AddPosition) |  | Represents function `addPosition(uint256 index, address position)` |
+| call_on_adaptor | [CellarV2_2Governance.CallOnAdaptor](#steward-v4-CellarV2_2Governance-CallOnAdaptor) |  | Represents function `callOnAdaptor(AdaptorCall[] memory data)` |
+| remove_position | [CellarV2_2Governance.RemovePosition](#steward-v4-CellarV2_2Governance-RemovePosition) |  | Represents function `removePosition(uint256 index, bool inDebtArray)` |
+| remove_adaptor_from_catalogue | [CellarV2_2Governance.RemoveAdaptorFromCatalogue](#steward-v4-CellarV2_2Governance-RemoveAdaptorFromCatalogue) |  | Represents function `removeAdaptorFromCatalogue(address adaptor)` |
+| remove_position_from_catalogue | [CellarV2_2Governance.RemovePositionFromCatalogue](#steward-v4-CellarV2_2Governance-RemovePositionFromCatalogue) |  | Represents function `removePositionFromCatalogue(uint32 positionId)` |
+| set_holding_position | [CellarV2_2Governance.SetHoldingPosition](#steward-v4-CellarV2_2Governance-SetHoldingPosition) |  | Represents function `setHoldingPosition(uint32 position_id)` |
+| swap_positions | [CellarV2_2Governance.SwapPositions](#steward-v4-CellarV2_2Governance-SwapPositions) |  | Represents function `swapPositions(uint256 index1, uint256 index2)` |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_2Governance-InitiateShutdown"></a>
+
+### CellarV2_2Governance.InitiateShutdown
+Shutdown the cellar. Used in an emergency or if the cellar has been deprecated.
+
+Represents function `initiateShutdown()`
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_2Governance-LiftShutdown"></a>
+
+### CellarV2_2Governance.LiftShutdown
+Allows the owner to restart a shut down Cellar
+
+Represents function `liftShutdown()`
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_2Governance-Multicall"></a>
+
+### CellarV2_2Governance.Multicall
+Allows caller to call multiple functions in a single TX.
+
+Represents function `multicall(bytes[] data)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| function_calls | [CellarV2_2Governance.FunctionCall](#steward-v4-CellarV2_2Governance-FunctionCall) | repeated |  |
+
+
+
+
+
+
 <a name="steward-v4-CellarV2_2Governance-RemoveAdaptorFromCatalogue"></a>
 
 ### CellarV2_2Governance.RemoveAdaptorFromCatalogue
@@ -2395,6 +3339,24 @@ Represents function `removeAdaptorFromCatalogue(address adaptor)`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | adaptor | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_2Governance-RemovePosition"></a>
+
+### CellarV2_2Governance.RemovePosition
+Remove the position at a given index from the list of positions used by the cellar.
+
+Represents function `removePosition(uint32 index, bool inDebtArray)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| index | [uint32](#uint32) |  | Index at which to remove the position |
+| in_debt_array | [bool](#bool) |  | Whether to remove position from the debt array, or the credit array. |
 
 
 
@@ -2418,6 +3380,94 @@ Represents function `removePositionFromCatalogue(uint32 positionId)`
 
 
 
+<a name="steward-v4-CellarV2_2Governance-SetHoldingPosition"></a>
+
+### CellarV2_2Governance.SetHoldingPosition
+Set the holding position used of the cellar.
+
+Represents function `setHoldingIndex(uint8 index)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [uint32](#uint32) |  | ID (index) of the new holding position to use |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_2Governance-SetRebalanceDeviation"></a>
+
+### CellarV2_2Governance.SetRebalanceDeviation
+Changes the cellar&#39;s allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
+during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
+
+Represents function `setRebalanceDeviation(uint256)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_deviation | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_2Governance-SetShareLockPeriod"></a>
+
+### CellarV2_2Governance.SetShareLockPeriod
+Allows share lock period to be updated.
+
+Represents function `setShareLockPeriod()`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_lock | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_2Governance-SetStrategistPlatformCut"></a>
+
+### CellarV2_2Governance.SetStrategistPlatformCut
+Allows strategist to set the platform cut for the cellar.
+
+Represents function `setStrategistPlatformCut(uint64 cut)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_cut | [uint64](#uint64) |  | The new strategist platform cut |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_2Governance-SwapPositions"></a>
+
+### CellarV2_2Governance.SwapPositions
+Swap the positions at two given indeces.
+
+Represents function `swapPositions(uint32 index1, uint32 index2)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| index_1 | [uint32](#uint32) |  | Index of the first position |
+| index_2 | [uint32](#uint32) |  | Index of the second position |
+| in_debt_array | [bool](#bool) |  | Whether to switch positions in the debt array, or the credit array. |
+
+
+
+
+
+
 <a name="steward-v4-CellarV2_2Governance-ToggleIgnorePause"></a>
 
 ### CellarV2_2Governance.ToggleIgnorePause
@@ -2429,6 +3479,902 @@ Represents function `toggleIgnorePause(bool ignore)`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | ignore | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5"></a>
+
+### CellarV2_5
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| function_call | [CellarV2_5.FunctionCall](#steward-v4-CellarV2_5-FunctionCall) |  | Represents a single function call |
+| multicall | [CellarV2_5.Multicall](#steward-v4-CellarV2_5-Multicall) |  | Represents multiple, ordered function calls |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-AddAdaptorToCatalogue"></a>
+
+### CellarV2_5.AddAdaptorToCatalogue
+Allows the owner to add an adaptor to the Cellar&#39;s adaptor catalogue
+
+Represents function `addAdaptorToCatalogue(address adaptor)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| adaptor | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-AddPosition"></a>
+
+### CellarV2_5.AddPosition
+Insert a trusted position to the list of positions used by the cellar at a given index.
+
+Represents function `addPosition(uint32 index, uint32 positionId, bytes configurationData, bool inDebtArray)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| index | [uint32](#uint32) |  | Index at which to add the position |
+| position_id | [uint32](#uint32) |  | The position&#39;s ID in the cellar registry |
+| configuration_data | [bytes](#bytes) |  | Data used to configure how the position behaves |
+| in_debt_array | [bool](#bool) |  | Whether to add position in the debt array, or the credit array. |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-AddPositionToCatalogue"></a>
+
+### CellarV2_5.AddPositionToCatalogue
+Allows the owner to add a position to the Cellar&#39;s position catalogue
+
+Represents function `addPositionToCatalogue(uint32 positionId)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-CachePriceRouter"></a>
+
+### CellarV2_5.CachePriceRouter
+Updates the cellar to use the latest price router in the registry.
+
+Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| check_total_assets | [bool](#bool) |  | Whether to check the total assets of the cellar |
+| allowable_range | [uint32](#uint32) |  | The allowable range of the cellar&#39;s total assets to deviate between old and new routers |
+| expected_price_router | [string](#string) |  | The expected price router address |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-CallOnAdaptor"></a>
+
+### CellarV2_5.CallOnAdaptor
+Allows strategists to manage their Cellar using arbitrary logic calls to adaptors.
+
+Represents function `callOnAdaptor(AdaptorCall[] memory data)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| data | [AdaptorCall](#steward-v4-AdaptorCall) | repeated |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-DecreaseShareSupplyCap"></a>
+
+### CellarV2_5.DecreaseShareSupplyCap
+Allows strategist to decrease the share supply cap
+
+Represents function `decreaseShareSupplyCap(uint192)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_cap | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-DropAlternativeAssetData"></a>
+
+### CellarV2_5.DropAlternativeAssetData
+Allows the strategist to stop an alternative asset from being deposited.
+
+Represents function `dropAlternativeAssetData(ERC20 _alternativeAsset)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| alternative_asset | [string](#string) |  | The address of the alternative asset |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-FunctionCall"></a>
+
+### CellarV2_5.FunctionCall
+The function you wish to execute on the target cellar
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| add_position | [CellarV2_5.AddPosition](#steward-v4-CellarV2_5-AddPosition) |  | Represents function `addPosition(uint256 index, address position)` |
+| call_on_adaptor | [CellarV2_5.CallOnAdaptor](#steward-v4-CellarV2_5-CallOnAdaptor) |  | Represents function `callOnAdaptor(AdaptorCall[] memory data)` |
+| remove_position | [CellarV2_5.RemovePosition](#steward-v4-CellarV2_5-RemovePosition) |  | Represents function `removePosition(uint256 index)` |
+| set_holding_position | [CellarV2_5.SetHoldingPosition](#steward-v4-CellarV2_5-SetHoldingPosition) |  | Represents function `setHoldingPosition(uint32 position_id)` |
+| set_strategist_payout_address | [CellarV2_5.SetStrategistPayoutAddress](#steward-v4-CellarV2_5-SetStrategistPayoutAddress) |  | Represents function `setStrategistPayoutAddress(address payout)` |
+| swap_positions | [CellarV2_5.SwapPositions](#steward-v4-CellarV2_5-SwapPositions) |  | Represents function `swapPositions(uint256 index1, uint256 index2)` |
+| set_share_lock_period | [CellarV2_5.SetShareLockPeriod](#steward-v4-CellarV2_5-SetShareLockPeriod) |  | Represents function `setShareLockPeriod(uint256 newLock)` |
+| initiate_shutdown | [CellarV2_5.InitiateShutdown](#steward-v4-CellarV2_5-InitiateShutdown) |  | Represents function `initiateShutdown()` |
+| lift_shutdown | [CellarV2_5.LiftShutdown](#steward-v4-CellarV2_5-LiftShutdown) |  | Represents function `liftShutdown()` |
+| remove_adaptor_from_catalogue | [CellarV2_5.RemoveAdaptorFromCatalogue](#steward-v4-CellarV2_5-RemoveAdaptorFromCatalogue) |  | Represents function `removeAdaptorFromCatalogue(address adaptor)` |
+| remove_position_from_catalogue | [CellarV2_5.RemovePositionFromCatalogue](#steward-v4-CellarV2_5-RemovePositionFromCatalogue) |  | Represents function `removePositionFromCatalogue(uint32 positionId)` |
+| decrease_share_supply_cap | [CellarV2_5.DecreaseShareSupplyCap](#steward-v4-CellarV2_5-DecreaseShareSupplyCap) |  | Represents function `decreaseShareSupplyCap(uint192) |
+| set_alternative_asset_data | [CellarV2_5.SetAlternativeAssetData](#steward-v4-CellarV2_5-SetAlternativeAssetData) |  | Represents function `setAlternativeAssetData(ERC20 _alternativeAsset, uint32 _alternativeHoldingPosition, uint32 _alternativeAssetFee)` |
+| drop_alternative_asset_data | [CellarV2_5.DropAlternativeAssetData](#steward-v4-CellarV2_5-DropAlternativeAssetData) |  | Represents function `setDropAlternativeAssetData(ERC20 _alternativeAsset)` |
+| add_adaptor_to_catalogue | [CellarV2_5.AddAdaptorToCatalogue](#steward-v4-CellarV2_5-AddAdaptorToCatalogue) |  | Represents function `addAdaptorToCatalogue(address adaptor)` |
+| add_position_to_catalogue | [CellarV2_5.AddPositionToCatalogue](#steward-v4-CellarV2_5-AddPositionToCatalogue) |  | Represents function `addPositionToCatalogue(uint32 positionId)` |
+| set_rebalance_deviation | [CellarV2_5.SetRebalanceDeviation](#steward-v4-CellarV2_5-SetRebalanceDeviation) |  | Represents function `setRebalanceDeviation(uint256)` |
+| set_strategist_platform_cut | [CellarV2_5.SetStrategistPlatformCut](#steward-v4-CellarV2_5-SetStrategistPlatformCut) |  | Represents function `setStrategistPlatformCut(uint64 cut)` |
+| set_share_price_oracle | [CellarV2_5.SetSharePriceOracle](#steward-v4-CellarV2_5-SetSharePriceOracle) |  | Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)` |
+| increase_share_supply_cap | [CellarV2_5.IncreaseShareSupplyCap](#steward-v4-CellarV2_5-IncreaseShareSupplyCap) |  | Represents function `increaseShareSupplyCap(uint192 _newShareSupplyCap)` |
+| cache_price_router | [CellarV2_5.CachePriceRouter](#steward-v4-CellarV2_5-CachePriceRouter) |  | Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)` |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-IncreaseShareSupplyCap"></a>
+
+### CellarV2_5.IncreaseShareSupplyCap
+Allows the caller to increase the share supply cap
+
+Represents function `increaseShareSupplyCap(uint192 _newShareSupplyCap)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_cap | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-InitiateShutdown"></a>
+
+### CellarV2_5.InitiateShutdown
+Shutdown the cellar. Used in an emergency or if the cellar has been deprecated.
+
+Represents function `initiateShutdown()`
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-LiftShutdown"></a>
+
+### CellarV2_5.LiftShutdown
+Allows the owner to restart a shut down Cellar
+
+Represents function `liftShutdown()`
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-Multicall"></a>
+
+### CellarV2_5.Multicall
+Allows caller to call multiple functions in a single TX.
+
+Represents function `multicall(bytes[] data)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| function_calls | [CellarV2_5.FunctionCall](#steward-v4-CellarV2_5-FunctionCall) | repeated |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-RemoveAdaptorFromCatalogue"></a>
+
+### CellarV2_5.RemoveAdaptorFromCatalogue
+Allows callers to remove adaptors from this cellar&#39;s catalogue
+
+Represents function `removeAdaptorFromCatalogue(address adaptor)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| adaptor | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-RemovePosition"></a>
+
+### CellarV2_5.RemovePosition
+Remove the position at a given index from the list of positions used by the cellar.
+
+Represents function `removePosition(uint32 index, bool inDebtArray)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| index | [uint32](#uint32) |  | Index at which to remove the position |
+| in_debt_array | [bool](#bool) |  | Whether to remove position from the debt array, or the credit array. |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-RemovePositionFromCatalogue"></a>
+
+### CellarV2_5.RemovePositionFromCatalogue
+Allows caller to remove positions from this cellar&#39;s catalogue
+
+Represents function `removePositionFromCatalogue(uint32 positionId)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-SetAlternativeAssetData"></a>
+
+### CellarV2_5.SetAlternativeAssetData
+Allows the strategist to add, or update an existing alternative asset deposit.
+
+Represents function `setAlternativeAssetData(ERC20 _alternativeAsset, uint32 _alternativeHoldingPosition, uint32 _alternativeAssetFee)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| alternative_asset | [string](#string) |  | The address of the alternative asset |
+| alternative_holding_position | [uint32](#uint32) |  | The holding position to direct alternative asset deposits to |
+| alternative_asset_fee | [uint32](#uint32) |  | The fee to charge for depositing this alternative asset |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-SetHoldingPosition"></a>
+
+### CellarV2_5.SetHoldingPosition
+Set the holding position used of the cellar.
+
+Represents function `setHoldingIndex(uint8 index)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [uint32](#uint32) |  | ID (index) of the new holding position to use |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-SetRebalanceDeviation"></a>
+
+### CellarV2_5.SetRebalanceDeviation
+Changes the cellar&#39;s allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
+during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
+
+Represents function `setRebalanceDeviation(uint256)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_deviation | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-SetShareLockPeriod"></a>
+
+### CellarV2_5.SetShareLockPeriod
+Allows share lock period to be updated.
+
+Represents function `setShareLockPeriod()`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_lock | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-SetSharePriceOracle"></a>
+
+### CellarV2_5.SetSharePriceOracle
+Allows the caller to set the share price oracle contract
+
+Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| registry_id | [string](#string) |  | The oracle registry ID |
+| share_price_oracle | [string](#string) |  | The oracle contract address |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-SetStrategistPayoutAddress"></a>
+
+### CellarV2_5.SetStrategistPayoutAddress
+Sets the Strategists payout address.
+
+Represents function `setStrategistPayoutAddress(address payout)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| payout | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-SetStrategistPlatformCut"></a>
+
+### CellarV2_5.SetStrategistPlatformCut
+Allows strategist to set the platform cut for the cellar.
+
+Represents function `setStrategistPlatformCut(uint64 cut)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_cut | [uint64](#uint64) |  | The new strategist platform cut |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5-SwapPositions"></a>
+
+### CellarV2_5.SwapPositions
+Swap the positions at two given indeces.
+
+Represents function `swapPositions(uint32 index1, uint32 index2)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| index_1 | [uint32](#uint32) |  | Index of the first position |
+| index_2 | [uint32](#uint32) |  | Index of the second position |
+| in_debt_array | [bool](#bool) |  | Whether to switch positions in the debt array, or the credit array. |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance"></a>
+
+### CellarV2_5Governance
+Represent a function call initiated through a governance proposal
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| function_call | [CellarV2_5Governance.FunctionCall](#steward-v4-CellarV2_5Governance-FunctionCall) |  | Represents a single function call |
+| multicall | [CellarV2_5Governance.Multicall](#steward-v4-CellarV2_5Governance-Multicall) |  | Represents multiple, ordered function calls |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-AddAdaptorToCatalogue"></a>
+
+### CellarV2_5Governance.AddAdaptorToCatalogue
+Allows the owner to add an adaptor to the Cellar&#39;s adaptor catalogue
+
+Represents function `addAdaptorToCatalogue(address adaptor)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| adaptor | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-AddPosition"></a>
+
+### CellarV2_5Governance.AddPosition
+Insert a trusted position to the list of positions used by the cellar at a given index.
+
+Represents function `addPosition(uint32 index, uint32 positionId, bytes configurationData, bool inDebtArray)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| index | [uint32](#uint32) |  | Index at which to add the position |
+| position_id | [uint32](#uint32) |  | The position&#39;s ID in the cellar registry |
+| configuration_data | [bytes](#bytes) |  | Data used to configure how the position behaves |
+| in_debt_array | [bool](#bool) |  | Whether to add position in the debt array, or the credit array. |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-AddPositionToCatalogue"></a>
+
+### CellarV2_5Governance.AddPositionToCatalogue
+Allows the owner to add a position to the Cellar&#39;s position catalogue
+
+Represents function `addPositionToCatalogue(uint32 positionId)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-CachePriceRouter"></a>
+
+### CellarV2_5Governance.CachePriceRouter
+Updates the cellar to use the latest price router in the registry.
+
+Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| check_total_assets | [bool](#bool) |  | Whether to check the total assets of the cellar |
+| allowable_range | [uint32](#uint32) |  | The allowable range of the cellar&#39;s total assets to deviate between old and new routers |
+| expected_price_router | [string](#string) |  | The expected price router address |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-CallOnAdaptor"></a>
+
+### CellarV2_5Governance.CallOnAdaptor
+Allows strategists to manage their Cellar using arbitrary logic calls to adaptors.
+
+Represents function `callOnAdaptor(AdaptorCall[] memory data)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| data | [AdaptorCall](#steward-v4-AdaptorCall) | repeated |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-DecreaseShareSupplyCap"></a>
+
+### CellarV2_5Governance.DecreaseShareSupplyCap
+Allows strategist to decrease the share supply cap
+
+Represents function `decreaseShareSupplyCap(uint192)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_cap | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-ForcePositionOut"></a>
+
+### CellarV2_5Governance.ForcePositionOut
+Allows caller to force a position out of the cellar
+
+Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| index | [uint32](#uint32) |  |  |
+| position_id | [uint32](#uint32) |  |  |
+| in_debt_array | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-FunctionCall"></a>
+
+### CellarV2_5Governance.FunctionCall
+The function you wish to execute on the target cellar
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| add_adaptor_to_catalogue | [CellarV2_5Governance.AddAdaptorToCatalogue](#steward-v4-CellarV2_5Governance-AddAdaptorToCatalogue) |  | Represents function `addAdaptorToCatalogue(address adaptor)` |
+| add_position_to_catalogue | [CellarV2_5Governance.AddPositionToCatalogue](#steward-v4-CellarV2_5Governance-AddPositionToCatalogue) |  | Represents function `addPositionToCatalogue(uint32 positionId)` |
+| set_rebalance_deviation | [CellarV2_5Governance.SetRebalanceDeviation](#steward-v4-CellarV2_5Governance-SetRebalanceDeviation) |  | Represents function `setRebalanceDeviation(uint256)` |
+| set_strategist_platform_cut | [CellarV2_5Governance.SetStrategistPlatformCut](#steward-v4-CellarV2_5Governance-SetStrategistPlatformCut) |  | Represents function `setStrategistPlatformCut(uint64 cut)` |
+| force_position_out | [CellarV2_5Governance.ForcePositionOut](#steward-v4-CellarV2_5Governance-ForcePositionOut) |  | Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)` |
+| toggle_ignore_pause | [CellarV2_5Governance.ToggleIgnorePause](#steward-v4-CellarV2_5Governance-ToggleIgnorePause) |  | Represents function `toggleIgnorePause()` |
+| set_share_price_oracle | [CellarV2_5Governance.SetSharePriceOracle](#steward-v4-CellarV2_5Governance-SetSharePriceOracle) |  | Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)` |
+| increase_share_supply_cap | [CellarV2_5Governance.IncreaseShareSupplyCap](#steward-v4-CellarV2_5Governance-IncreaseShareSupplyCap) |  | Represents function `increaseShareSupplyCap(uint192 _newShareSupplyCap)` |
+| set_automation_actions | [CellarV2_5Governance.SetAutomationActions](#steward-v4-CellarV2_5Governance-SetAutomationActions) |  | Represents function `setAutomatiionActions(uint256 _registryId, address _expectedAutomationActions)` |
+| cache_price_router | [CellarV2_5Governance.CachePriceRouter](#steward-v4-CellarV2_5Governance-CachePriceRouter) |  | Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)` |
+| initiate_shutdown | [CellarV2_5Governance.InitiateShutdown](#steward-v4-CellarV2_5Governance-InitiateShutdown) |  | Represents function `initiateShutdown()` |
+| lift_shutdown | [CellarV2_5Governance.LiftShutdown](#steward-v4-CellarV2_5Governance-LiftShutdown) |  | Represents function `liftShutdown()` |
+| remove_adaptor_from_catalogue | [CellarV2_5Governance.RemoveAdaptorFromCatalogue](#steward-v4-CellarV2_5Governance-RemoveAdaptorFromCatalogue) |  | Represents function `removeAdaptorFromCatalogue(address adaptor)` |
+| remove_position_from_catalogue | [CellarV2_5Governance.RemovePositionFromCatalogue](#steward-v4-CellarV2_5Governance-RemovePositionFromCatalogue) |  | Represents function `removePositionFromCatalogue(uint32 positionId)` |
+| decrease_share_supply_cap | [CellarV2_5Governance.DecreaseShareSupplyCap](#steward-v4-CellarV2_5Governance-DecreaseShareSupplyCap) |  | Represents function `decreaseShareSupplyCap(uint192) |
+| set_holding_position | [CellarV2_5Governance.SetHoldingPosition](#steward-v4-CellarV2_5Governance-SetHoldingPosition) |  | Represents function `setHoldingPosition(uint32 position_id)` |
+| add_position | [CellarV2_5Governance.AddPosition](#steward-v4-CellarV2_5Governance-AddPosition) |  | Represents function `addPosition(uint256 index, address position)` |
+| call_on_adaptor | [CellarV2_5Governance.CallOnAdaptor](#steward-v4-CellarV2_5Governance-CallOnAdaptor) |  | Represents function `callOnAdaptor(AdaptorCall[] memory data)` |
+| remove_position | [CellarV2_5Governance.RemovePosition](#steward-v4-CellarV2_5Governance-RemovePosition) |  | Represents function `removePosition(uint256 index)` |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-IncreaseShareSupplyCap"></a>
+
+### CellarV2_5Governance.IncreaseShareSupplyCap
+Allows the caller to increase the share supply cap
+
+Represents function `increaseShareSupplyCap(uint192 _newShareSupplyCap)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_cap | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-InitiateShutdown"></a>
+
+### CellarV2_5Governance.InitiateShutdown
+Shutdown the cellar. Used in an emergency or if the cellar has been deprecated.
+
+Represents function `initiateShutdown()`
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-LiftShutdown"></a>
+
+### CellarV2_5Governance.LiftShutdown
+Allows the owner to restart a shut down Cellar
+
+Represents function `liftShutdown()`
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-Multicall"></a>
+
+### CellarV2_5Governance.Multicall
+Allows caller to call multiple functions in a single TX.
+
+Represents function `multicall(bytes[] data)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| function_calls | [CellarV2_5Governance.FunctionCall](#steward-v4-CellarV2_5Governance-FunctionCall) | repeated |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-RemoveAdaptorFromCatalogue"></a>
+
+### CellarV2_5Governance.RemoveAdaptorFromCatalogue
+Allows callers to remove adaptors from this cellar&#39;s catalogue
+
+Represents function `removeAdaptorFromCatalogue(address adaptor)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| adaptor | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-RemovePosition"></a>
+
+### CellarV2_5Governance.RemovePosition
+Remove the position at a given index from the list of positions used by the cellar.
+
+Represents function `removePosition(uint32 index, bool inDebtArray)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| index | [uint32](#uint32) |  | Index at which to remove the position |
+| in_debt_array | [bool](#bool) |  | Whether to remove position from the debt array, or the credit array. |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-RemovePositionFromCatalogue"></a>
+
+### CellarV2_5Governance.RemovePositionFromCatalogue
+Allows caller to remove positions from this cellar&#39;s catalogue
+
+Represents function `removePositionFromCatalogue(uint32 positionId)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-SetAutomationActions"></a>
+
+### CellarV2_5Governance.SetAutomationActions
+Allows caller to set automation actions
+
+Represents function `setAutomatiionActions(uint256 _registryId, address _expectedAutomationActions)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| registry_id | [string](#string) |  | The oracle registry ID |
+| expected_automation_actions | [string](#string) |  | The automation actions contract address |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-SetHoldingPosition"></a>
+
+### CellarV2_5Governance.SetHoldingPosition
+Set the holding position used of the cellar.
+
+Represents function `setHoldingIndex(uint8 index)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| position_id | [uint32](#uint32) |  | ID (index) of the new holding position to use |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-SetRebalanceDeviation"></a>
+
+### CellarV2_5Governance.SetRebalanceDeviation
+Changes the cellar&#39;s allowed rebalance deviation, which is the percent the total assets of a cellar may deviate
+during a `callOnAdaptor`(rebalance) call. The maximum allowed deviation is 100000000000000000 (0.1e18), or 10%.
+
+Represents function `setRebalanceDeviation(uint256)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_deviation | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-SetSharePriceOracle"></a>
+
+### CellarV2_5Governance.SetSharePriceOracle
+Allows the caller to set the share price oracle contract
+
+Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| registry_id | [string](#string) |  | The oracle registry ID |
+| share_price_oracle | [string](#string) |  | The oracle contract address |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-SetStrategistPlatformCut"></a>
+
+### CellarV2_5Governance.SetStrategistPlatformCut
+Allows strategist to set the platform cut for the cellar.
+
+Represents function `setStrategistPlatformCut(uint64 cut)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| new_cut | [uint64](#uint64) |  | The new strategist platform cut |
+
+
+
+
+
+
+<a name="steward-v4-CellarV2_5Governance-ToggleIgnorePause"></a>
+
+### CellarV2_5Governance.ToggleIgnorePause
+Allows caller to toggle the ignorePause flag on the cellar
+
+Represents function `toggleIgnorePause()`
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+<a name="collateral_f_token-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## collateral_f_token.proto
+
+
+
+<a name="steward-v4-CollateralFTokenAdaptorV1"></a>
+
+### CollateralFTokenAdaptorV1
+Represents call data for the Frax Collateral F Token adaptor.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| revoke_approval | [RevokeApproval](#steward-v4-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| add_collateral | [CollateralFTokenAdaptorV1.AddCollateral](#steward-v4-CollateralFTokenAdaptorV1-AddCollateral) |  | Represents function `addCollateral(IFToken _fraxlendPair, uint256 _collateralToDeposit)` |
+| remove_collateral | [CollateralFTokenAdaptorV1.RemoveCollateral](#steward-v4-CollateralFTokenAdaptorV1-RemoveCollateral) |  | Represents function `removeCollateral(uint256 _collateralAmount, IFToken _fraxlendPair)` |
+
+
+
+
+
+
+<a name="steward-v4-CollateralFTokenAdaptorV1-AddCollateral"></a>
+
+### CollateralFTokenAdaptorV1.AddCollateral
+Allows strategists to add collateral to the respective cellar position on FraxLend, enabling borrowing.
+
+Represents function `addCollateral(IFToken _fraxlendPair, uint256 _collateralToDeposit)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| fraxlend_pair | [string](#string) |  | The FraxLend pair to add collateral to. |
+| collateral_to_deposit | [string](#string) |  | The amount of collateral to add to the cellar position. |
+
+
+
+
+
+
+<a name="steward-v4-CollateralFTokenAdaptorV1-RemoveCollateral"></a>
+
+### CollateralFTokenAdaptorV1.RemoveCollateral
+Allows strategists to remove collateral from the respective cellar position on FraxLend.
+
+Represents function `removeCollateral(uint256 _collateralAmount, IFToken _fraxlendPair)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| collateral_amount | [string](#string) |  | The amount of collateral to remove from the cellar position. |
+| fraxlend_pair | [string](#string) |  | The FraxLend pair to remove collateral from. |
+
+
+
+
+
+
+<a name="steward-v4-CollateralFTokenAdaptorV1Calls"></a>
+
+### CollateralFTokenAdaptorV1Calls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [CollateralFTokenAdaptorV1](#steward-v4-CollateralFTokenAdaptorV1) | repeated |  |
 
 
 
@@ -2448,6 +4394,25 @@ Represents function `toggleIgnorePause(bool ignore)`
 <p align="right"><a href="#top">Top</a></p>
 
 ## common.proto
+
+
+
+<a name="steward-v4-MarketParams"></a>
+
+### MarketParams
+Represents parameters for a Morpho Blue market
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| loan_token | [string](#string) |  | The address of the loan token |
+| collateral_token | [string](#string) |  | The address of the collateral token |
+| oracle | [string](#string) |  | The address of the oracle |
+| irm | [string](#string) |  | The address of the interest rate model |
+| lltv | [string](#string) |  | The loan-to-value ratio |
+
+
+
 
 
 
@@ -2562,6 +4527,416 @@ Exchange selector
 | EXCHANGE_UNIV2 | 1 | Represents Uniswap V2 |
 | EXCHANGE_UNIV3 | 2 | Represents Uniswap V3 |
 
+
+ 
+
+ 
+
+ 
+
+
+
+<a name="convex_curve-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## convex_curve.proto
+
+
+
+<a name="steward-v4-ConvexCurveAdaptorV1"></a>
+
+### ConvexCurveAdaptorV1
+Represents call data for the Convex Curve adaptor V1
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| revoke_approval | [RevokeApproval](#steward-v4-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| deposit_lpt_in_convex_and_stake | [ConvexCurveAdaptorV1.DepositLPTInConvexAndStake](#steward-v4-ConvexCurveAdaptorV1-DepositLPTInConvexAndStake) |  | Represents function `depositLPTInConvexAndStake(uint256 _pid, address baseRewardPool, ERC20 _lpt, CurvePool _pool, bytes4 _selector, uint256 _amount)` |
+| withdraw_from_base_reward_pool_as_lpt | [ConvexCurveAdaptorV1.WithdrawFromBaseRewardPoolAsLPT](#steward-v4-ConvexCurveAdaptorV1-WithdrawFromBaseRewardPoolAsLPT) |  | Represents function `withdrawFromBaseRewardPoolAsLPTaddress(_baseRewardPool, uint256 _amount, bool _claim)` |
+| get_rewards | [ConvexCurveAdaptorV1.GetRewards](#steward-v4-ConvexCurveAdaptorV1-GetRewards) |  | Represents function `getRewards(address _baseRewardPool, bool _claimExtras)` |
+
+
+
+
+
+
+<a name="steward-v4-ConvexCurveAdaptorV1-DepositLPTInConvexAndStake"></a>
+
+### ConvexCurveAdaptorV1.DepositLPTInConvexAndStake
+Allows strategists to deposit and stake LPTs into Convex markets via the respective Convex market Booster contract
+
+Represents function `depositLPTInConvexAndStake(uint256 _pid, address baseRewardPool, ERC20 _lpt, CurvePool _pool, bytes4 _selector, uint256 _amount)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| pid | [string](#string) |  |  |
+| base_reward_pool | [string](#string) |  |  |
+| lpt | [string](#string) |  |  |
+| pool | [string](#string) |  |  |
+| selector | [string](#string) |  |  |
+| amount_to_deposit | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-ConvexCurveAdaptorV1-GetRewards"></a>
+
+### ConvexCurveAdaptorV1.GetRewards
+Allows strategists to get rewards for an Convex Booster without withdrawing/unwrapping from Convex market
+
+Represents function `getRewards(address _baseRewardPool, bool _claimExtras)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| base_reward_pool | [string](#string) |  |  |
+| claim_extras | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-ConvexCurveAdaptorV1-WithdrawFromBaseRewardPoolAsLPT"></a>
+
+### ConvexCurveAdaptorV1.WithdrawFromBaseRewardPoolAsLPT
+Allows strategists to withdraw from Convex markets via Booster contract w/ or w/o claiming rewards
+
+Represents function `withdrawFromBaseRewardPoolAsLPTaddress(_baseRewardPool, uint256 _amount, bool _claim)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| base_reward_pool | [string](#string) |  |  |
+| amount_to_withdraw | [string](#string) |  |  |
+| claim | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-ConvexCurveAdaptorV1Calls"></a>
+
+### ConvexCurveAdaptorV1Calls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [ConvexCurveAdaptorV1](#steward-v4-ConvexCurveAdaptorV1) | repeated |  |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+<a name="curve-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## curve.proto
+
+
+
+<a name="steward-v4-CurveAdaptorV1"></a>
+
+### CurveAdaptorV1
+Represents call data for the Curve adaptor V1
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| revoke_approval | [RevokeApproval](#steward-v4-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| add_liquidity | [CurveAdaptorV1.AddLiquidity](#steward-v4-CurveAdaptorV1-AddLiquidity) |  | Represents function `addLiquidity(address pool, ERC20 lpToken, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, CurveGauge gauge, bytes4 selector)` |
+| add_liquidity_eth | [CurveAdaptorV1.AddLiquidityETH](#steward-v4-CurveAdaptorV1-AddLiquidityETH) |  | Represents function `addLiquidityETH(address pool, ERC20 lpToken, uint256[] orderedMinimumUnderlyingTokenAmountsOut, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)` |
+| remove_liquidity | [CurveAdaptorV1.RemoveLiquidity](#steward-v4-CurveAdaptorV1-RemoveLiquidity) |  | Represents function `removeLiquidity(address pool, ERC20 lpToken, uint256 lpTokenAmount, uint256[] orderedMinimumUnderlyingTokenAmountsOut, CurveGauge gauge, bytes4 selector)` |
+| remove_liquidity_eth | [CurveAdaptorV1.RemoveLiquidityETH](#steward-v4-CurveAdaptorV1-RemoveLiquidityETH) |  | Represents function `removeLiquidityETH(address pool, ERC20 lpToken, uint256 lpTokenAmount, uint256[] orderedMinimumUnderlyingTokenAmountsOut, bool useUnderlying, CurveGauge gauge, bytes4 selector)` |
+| stake_in_gauge | [CurveAdaptorV1.StakeInGauge](#steward-v4-CurveAdaptorV1-StakeInGauge) |  | Represents function `stakeInGauge(ERC20 lpToken, CurveGauge gauge, uint256 amount, CurvePool pool, bytes4 selector)` |
+| unstake_from_gauge | [CurveAdaptorV1.UnstakeFromGauge](#steward-v4-CurveAdaptorV1-UnstakeFromGauge) |  | Represents function `unstakeFromGauge(CurveGauge gauge, uint256 amount)` |
+| claim_rewards | [CurveAdaptorV1.ClaimRewards](#steward-v4-CurveAdaptorV1-ClaimRewards) |  | Represents function `claimRewards(CurveGauge gauge)` |
+
+
+
+
+
+
+<a name="steward-v4-CurveAdaptorV1-AddLiquidity"></a>
+
+### CurveAdaptorV1.AddLiquidity
+Allows strategist to add liquidity to Curve pairs that do NOT use the native asset.
+
+Represents function `addLiquidity(address pool, ERC20 lpToken, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, CurveGauge gauge, bytes4 selector)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| pool | [string](#string) |  | Address of the Curve pool |
+| lp_token | [string](#string) |  | Address of the LP token |
+| ordered_underlying_token_amounts | [string](#string) | repeated | Minimum amount of each underlying token to receive |
+| min_lp_amount | [string](#string) |  | Minimum amount of LP tokens to receive |
+| gauge | [string](#string) |  | Address of the Curve gauge |
+| selector | [string](#string) |  | Selector of the function to call |
+
+
+
+
+
+
+<a name="steward-v4-CurveAdaptorV1-AddLiquidityETH"></a>
+
+### CurveAdaptorV1.AddLiquidityETH
+Allows strategist to add liquidity to Curve pairs that use the native asset.
+
+Represents function `addLiquidityETH(address pool, ERC20 lpToken, uint256[] orderedUnderlyingTokenAmounts, uint256 minLPAmount, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| pool | [string](#string) |  | Address of the Curve pool |
+| lp_token | [string](#string) |  | Address of the LP token |
+| ordered_underlying_token_amounts | [string](#string) | repeated | Minimum amount of each underlying token to receive |
+| min_lp_amount | [string](#string) |  | Minimum amount of LP tokens to receive |
+| use_underlying | [bool](#bool) |  | Whether to use the underlying asset or the wrapped asset |
+| gauge | [string](#string) |  | Address of the Curve gauge |
+| selector | [string](#string) |  | Selector of the function to call |
+
+
+
+
+
+
+<a name="steward-v4-CurveAdaptorV1-ClaimRewards"></a>
+
+### CurveAdaptorV1.ClaimRewards
+Allows strategist to claim rewards from a gauge.
+
+Represents function `claimRewards(CurveGauge gauge)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| gauge | [string](#string) |  | Address of the Curve gauge |
+
+
+
+
+
+
+<a name="steward-v4-CurveAdaptorV1-RemoveLiquidity"></a>
+
+### CurveAdaptorV1.RemoveLiquidity
+Allows strategist to remove liquidity from Curve pairs that do NOT use the native asset.
+
+Represents function `removeLiquidity(address pool, ERC20 lpToken, uint256 lpTokenAmount, uint256[] orderedMinimumUnderlyingTokenAmountsOut, CurveGauge gauge, bytes4 selector)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| pool | [string](#string) |  | Address of the Curve pool |
+| lp_token | [string](#string) |  | Address of the LP token |
+| lp_token_amount | [string](#string) |  | Amount of LP tokens to remove |
+| ordered_minimum_underlying_token_amounts_out | [string](#string) | repeated | Minimum amount of each underlying token to receive |
+| gauge | [string](#string) |  | Address of the Curve gauge |
+| selector | [string](#string) |  | Selector of the function to call |
+
+
+
+
+
+
+<a name="steward-v4-CurveAdaptorV1-RemoveLiquidityETH"></a>
+
+### CurveAdaptorV1.RemoveLiquidityETH
+Allows strategist to remove liquidity from Curve pairs that use the native asset.
+
+Represents function `removeLiquidityETH(address pool, ERC20 lpToken, uint256 lpTokenAmount, uint256[] orderedMinimumUnderlyingTokenAmountsOut, bool useUnderlying, CurveGauge gauge, bytes4 selector)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| pool | [string](#string) |  | Address of the Curve pool |
+| lp_token | [string](#string) |  | Address of the LP token |
+| lp_token_amount | [string](#string) |  | Amount of LP tokens to remove |
+| ordered_minimum_underlying_token_amounts_out | [string](#string) | repeated | Minimum amount of each underlying token to receive |
+| use_underlying | [bool](#bool) |  | Whether to use the underlying asset or the wrapped asset |
+| gauge | [string](#string) |  | Address of the Curve gauge |
+| selector | [string](#string) |  | Selector of the function to call |
+
+
+
+
+
+
+<a name="steward-v4-CurveAdaptorV1-StakeInGauge"></a>
+
+### CurveAdaptorV1.StakeInGauge
+Allows strategist to stake Curve LP tokens in their gauge.
+
+Represents function `stakeInGauge(ERC20 lpToken, CurveGauge gauge, uint256 amount, CurvePool pool, bytes4 selector)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| lp_token | [string](#string) |  | Address of the LP token |
+| gauge | [string](#string) |  | Address of the Curve gauge |
+| amount | [string](#string) |  | Amount of LP tokens to stake |
+| pool | [string](#string) |  | Address of the Curve pool |
+| selector | [string](#string) |  | Selector of the function to call |
+
+
+
+
+
+
+<a name="steward-v4-CurveAdaptorV1-UnstakeFromGauge"></a>
+
+### CurveAdaptorV1.UnstakeFromGauge
+Allows strategist to unstake Curve LP tokens from their gauge.
+
+Represents function `unstakeFromGauge(CurveGauge gauge, uint256 amount)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| gauge | [string](#string) |  | Address of the Curve gauge |
+| amount | [string](#string) |  | Amount of LP tokens to unstake |
+
+
+
+
+
+
+<a name="steward-v4-CurveAdaptorV1Calls"></a>
+
+### CurveAdaptorV1Calls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [CurveAdaptorV1](#steward-v4-CurveAdaptorV1) | repeated |  |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+<a name="debt_f_token-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## debt_f_token.proto
+
+
+
+<a name="steward-v4-DebtFTokenAdaptorV1"></a>
+
+### DebtFTokenAdaptorV1
+Represents call data for the Frax adaptor.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| revoke_approval | [RevokeApproval](#steward-v4-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| borrow_from_fraxlend | [DebtFTokenAdaptorV1.BorrowFromFraxlend](#steward-v4-DebtFTokenAdaptorV1-BorrowFromFraxlend) |  | Represents function `borrowFromFraxlend(IFToken fraxlendPair, uint256 amountToBorrow)` |
+| repay_fraxlend_debt | [DebtFTokenAdaptorV1.RepayFraxlendDebt](#steward-v4-DebtFTokenAdaptorV1-RepayFraxlendDebt) |  | Represents function `repayFraxlendDebt(IFToken _fraxlendPair, uint256 _debtTokenRepayAmount)` |
+| call_add_interest | [DebtFTokenAdaptorV1.CallAddInterest](#steward-v4-DebtFTokenAdaptorV1-CallAddInterest) |  | Represents function `callAddInterest(IFToken _fraxlendPair)` |
+
+
+
+
+
+
+<a name="steward-v4-DebtFTokenAdaptorV1-BorrowFromFraxlend"></a>
+
+### DebtFTokenAdaptorV1.BorrowFromFraxlend
+Allows a strategist to borrow assets from Fraxlend 
+
+Represents `function borrowFromFraxlend(IFToken fraxlendPair, uint256 amountToBorrow)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| fraxlend_pair | [string](#string) |  | The address of the Frax Pair to borrow from. |
+| amount_to_borrow | [string](#string) |  | The amount of the asset to borrow. |
+
+
+
+
+
+
+<a name="steward-v4-DebtFTokenAdaptorV1-CallAddInterest"></a>
+
+### DebtFTokenAdaptorV1.CallAddInterest
+Allows a strategist to call `addInterest` on a Frax Pair they are using
+
+Represents `function callAddInterest(IFToken _fraxlendPair)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| fraxlend_pair | [string](#string) |  | The address of the pair to call addInterest on. |
+
+
+
+
+
+
+<a name="steward-v4-DebtFTokenAdaptorV1-RepayFraxlendDebt"></a>
+
+### DebtFTokenAdaptorV1.RepayFraxlendDebt
+Allows strategists to repay loan debt on Fraxlend Pair. 
+Make sure to call addInterest() beforehand to ensure we are repaying what is required.    
+
+Represents `function repayFraxlendDebt(IFToken _fraxlendPair, uint256 _debtTokenRepayAmount)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| fraxlend_pair | [string](#string) |  | The address of the Frax Pair to repay debt on. |
+| debt_token_repay_amount | [string](#string) |  | The amount of the debt token to repay. |
+
+
+
+
+
+
+<a name="steward-v4-DebtFTokenAdaptorV1Calls"></a>
+
+### DebtFTokenAdaptorV1Calls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [DebtFTokenAdaptorV1](#steward-v4-DebtFTokenAdaptorV1) | repeated |  |
+
+
+
+
+
+ 
 
  
 
@@ -2732,6 +5107,90 @@ Represents function `repayAaveDebt(ERC20 tokenToRepay, uint256 amountToRepay)`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | calls | [AaveDebtTokenAdaptorV2](#steward-v4-AaveDebtTokenAdaptorV2) | repeated |  |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+<a name="erc4626-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## erc4626.proto
+
+
+
+<a name="steward-v4-ERC4626AdaptorV1"></a>
+
+### ERC4626AdaptorV1
+Represents call data for the ERC4626 adaptor V1
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| revoke_approval | [RevokeApproval](#steward-v4-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| deposit_to_vault | [ERC4626AdaptorV1.DepositToVault](#steward-v4-ERC4626AdaptorV1-DepositToVault) |  | Represents function `depositToVault(ERC4626 erc4626Vault, uint256 assets)` |
+| withdraw_from_vault | [ERC4626AdaptorV1.WithdrawFromVault](#steward-v4-ERC4626AdaptorV1-WithdrawFromVault) |  | Represents function `withdrawFromVault(ERC4626 erc4626Vault, uint256 assets)` |
+
+
+
+
+
+
+<a name="steward-v4-ERC4626AdaptorV1-DepositToVault"></a>
+
+### ERC4626AdaptorV1.DepositToVault
+Allows strategists to deposit into ERC4626 positions.
+
+Represents function `depositToVault(ERC4626 erc4626Vault, uint256 assets)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| erc4626_vault | [string](#string) |  | The address of the ERC4626 vault |
+| assets | [string](#string) |  | The amount of assets to deposit |
+
+
+
+
+
+
+<a name="steward-v4-ERC4626AdaptorV1-WithdrawFromVault"></a>
+
+### ERC4626AdaptorV1.WithdrawFromVault
+Allows strategists to withdraw from ERC4626 positions.
+
+Represents function `withdrawFromVault(ERC4626 erc4626Vault, uint256 assets)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| erc4626_vault | [string](#string) |  | The address of the ERC4626 vault |
+| assets | [string](#string) |  | The amount of assets to withdraw |
+
+
+
+
+
+
+<a name="steward-v4-ERC4626AdaptorV1Calls"></a>
+
+### ERC4626AdaptorV1Calls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [ERC4626AdaptorV1](#steward-v4-ERC4626AdaptorV1) | repeated |  |
 
 
 
@@ -3078,6 +5537,93 @@ Represents a governance-executed cellar function call. Used for Scheduled Cork P
 | cellar_v1 | [CellarV1Governance](#steward-v4-CellarV1Governance) |  | Governance function calls to V1 cellars |
 | cellar_v2 | [CellarV2Governance](#steward-v4-CellarV2Governance) |  | Governance function calls to V2 cellars |
 | cellar_v2_2 | [CellarV2_2Governance](#steward-v4-CellarV2_2Governance) |  | Governance function calls to the V2.2 cellars |
+| cellar_v2_5 | [CellarV2_5Governance](#steward-v4-CellarV2_5Governance) |  | Governance function calls to the V2.5 cellars |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+<a name="legacy_cellar_adaptor-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## legacy_cellar_adaptor.proto
+
+
+
+<a name="steward-v4-LegacyCellarAdaptorV1"></a>
+
+### LegacyCellarAdaptorV1
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| revoke_approval | [RevokeApproval](#steward-v4-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| depositToCellar | [LegacyCellarAdaptorV1.DepositToCellar](#steward-v4-LegacyCellarAdaptorV1-DepositToCellar) |  | Represents function `depositToCellar(Cellar cellar, uint256 assets, address oracle)` |
+| withdrawFromCellar | [LegacyCellarAdaptorV1.WithdrawFromCellar](#steward-v4-LegacyCellarAdaptorV1-WithdrawFromCellar) |  | Represents function `withdrawFromCellar(Cellar cellar, uint256 assets, address oracle)` |
+
+
+
+
+
+
+<a name="steward-v4-LegacyCellarAdaptorV1-DepositToCellar"></a>
+
+### LegacyCellarAdaptorV1.DepositToCellar
+Allows strategists to deposit into Cellar positions.
+
+Represents function `depositToCellar(Cellar cellar, uint256 assets, address oracle)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| cellar | [string](#string) |  |  |
+| assets | [string](#string) |  |  |
+| oracle | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-LegacyCellarAdaptorV1-WithdrawFromCellar"></a>
+
+### LegacyCellarAdaptorV1.WithdrawFromCellar
+Allows strategists to withdraw from Cellar positions.
+
+Represents function `withdrawFromCellar(Cellar cellar, uint256 assets, address oracle)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| cellar | [string](#string) |  |  |
+| assets | [string](#string) |  |  |
+| oracle | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="steward-v4-LegacyCellarAdaptorV1Calls"></a>
+
+### LegacyCellarAdaptorV1Calls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [LegacyCellarAdaptorV1](#steward-v4-LegacyCellarAdaptorV1) | repeated |  |
 
 
 
@@ -3519,6 +6065,258 @@ Represents function `repayAaveV3MorphoDebt(ERC20 tokenToRepay, uint256 amountToR
 
 
 
+<a name="morpho_blue_collateral-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## morpho_blue_collateral.proto
+
+
+
+<a name="steward-v4-MorphoBlueCollateralAdaptorV1"></a>
+
+### MorphoBlueCollateralAdaptorV1
+Represents call data for the Morpho Blue Collateral adaptor.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| revoke_approval | [RevokeApproval](#steward-v4-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| add_collateral | [MorphoBlueCollateralAdaptorV1.AddCollateral](#steward-v4-MorphoBlueCollateralAdaptorV1-AddCollateral) |  | Represents function `addCollateral(MarketParams memory _market, uint256 _collateralToDeposit)` |
+| remove_collateral | [MorphoBlueCollateralAdaptorV1.RemoveCollateral](#steward-v4-MorphoBlueCollateralAdaptorV1-RemoveCollateral) |  | Represents function `removeCollateral(MarketParams memory _market, uint256 _collateralAmount)` |
+
+
+
+
+
+
+<a name="steward-v4-MorphoBlueCollateralAdaptorV1-AddCollateral"></a>
+
+### MorphoBlueCollateralAdaptorV1.AddCollateral
+Allows strategists to add collateral to the respective cellar position on specified MB Market, enabling borrowing.
+
+Represents function `addCollateral(MarketParams memory _market, uint256 _collateralToDeposit)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| market | [MarketParams](#steward-v4-MarketParams) |  | Identifier of a Morpho Blue Market |
+| collateral_to_deposit | [string](#string) |  | The amount of collateral to add |
+
+
+
+
+
+
+<a name="steward-v4-MorphoBlueCollateralAdaptorV1-RemoveCollateral"></a>
+
+### MorphoBlueCollateralAdaptorV1.RemoveCollateral
+Allows strategists to remove collateral from the respective cellar position on specified MB Market.
+
+Represents function `removeCollateral(MarketParams memory _market, uint256 _collateralAmount)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| market | [MarketParams](#steward-v4-MarketParams) |  | Identifier of a Morpho Blue Market |
+| collateral_amount | [string](#string) |  | The amount of collateral to remove |
+
+
+
+
+
+
+<a name="steward-v4-MorphoBlueCollateralAdaptorV1Calls"></a>
+
+### MorphoBlueCollateralAdaptorV1Calls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [MorphoBlueCollateralAdaptorV1](#steward-v4-MorphoBlueCollateralAdaptorV1) | repeated |  |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+<a name="morpho_blue_debt-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## morpho_blue_debt.proto
+
+
+
+<a name="steward-v4-MorphoBlueDebtAdaptorV1"></a>
+
+### MorphoBlueDebtAdaptorV1
+Represents call data for the Morpho Blue Debt adaptor.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| revoke_approval | [RevokeApproval](#steward-v4-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| borrow_from_morpho_blue | [MorphoBlueDebtAdaptorV1.BorrowFromMorphoBlue](#steward-v4-MorphoBlueDebtAdaptorV1-BorrowFromMorphoBlue) |  | Represents function `borrowFromMorphoBlue(MarketParams memory _market, uint256 _amountToBorrow)` |
+| repay_morpho_blue_debt | [MorphoBlueDebtAdaptorV1.RepayMorphoBlueDebt](#steward-v4-MorphoBlueDebtAdaptorV1-RepayMorphoBlueDebt) |  | Represents function `repayMorphoBlueDebt(MarketParams memory _market, uint256 _debtTokenRepayAmount)` |
+
+
+
+
+
+
+<a name="steward-v4-MorphoBlueDebtAdaptorV1-BorrowFromMorphoBlue"></a>
+
+### MorphoBlueDebtAdaptorV1.BorrowFromMorphoBlue
+Allows strategists borrow a specific amount of an asset on Morpho Blue
+
+Represents function `borrowFromMorphoBlue(MarketParams memory _market, uint256 _amountToBorrow)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| market | [MarketParams](#steward-v4-MarketParams) |  | Identifier of a Morpho Blue Market |
+| amount_to_borrow | [string](#string) |  | The amount of the debt token to borrow |
+
+
+
+
+
+
+<a name="steward-v4-MorphoBlueDebtAdaptorV1-RepayMorphoBlueDebt"></a>
+
+### MorphoBlueDebtAdaptorV1.RepayMorphoBlueDebt
+Allows strategists to repay loan debt on Morph Blue Lending Market. Make sure to call addInterest() beforehand to ensure we are repaying what is required.
+
+Represents function `repayMorphoBlueDebt(MarketParams memory _market, uint256 _debtTokenRepayAmount)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| market | [MarketParams](#steward-v4-MarketParams) |  | Identifier of a Morpho Blue Market |
+| debt_token_repay_amount | [string](#string) |  | The amount of the debt token to repay |
+
+
+
+
+
+
+<a name="steward-v4-MorphoBlueDebtAdaptorV1Calls"></a>
+
+### MorphoBlueDebtAdaptorV1Calls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [MorphoBlueDebtAdaptorV1](#steward-v4-MorphoBlueDebtAdaptorV1) | repeated |  |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+<a name="morpho_blue_supply-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## morpho_blue_supply.proto
+
+
+
+<a name="steward-v4-MorphoBlueSupplyAdaptorV1"></a>
+
+### MorphoBlueSupplyAdaptorV1
+Represents call data for the Morpho Blue Supply adaptor.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| revoke_approval | [RevokeApproval](#steward-v4-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| lend_to_morpho_blue | [MorphoBlueSupplyAdaptorV1.LendToMorphoBlue](#steward-v4-MorphoBlueSupplyAdaptorV1-LendToMorphoBlue) |  | Represents function `lendToMorphoBlue(MarketParams memory _market, uint256 _assets)` |
+| withdraw_from_morpho_blue | [MorphoBlueSupplyAdaptorV1.WithdrawFromMorphoBlue](#steward-v4-MorphoBlueSupplyAdaptorV1-WithdrawFromMorphoBlue) |  | Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)` |
+
+
+
+
+
+
+<a name="steward-v4-MorphoBlueSupplyAdaptorV1-LendToMorphoBlue"></a>
+
+### MorphoBlueSupplyAdaptorV1.LendToMorphoBlue
+Allows strategists to lend a specific amount for an asset on Morpho Blue
+
+Represents function `lendToMorphoBlue(MarketParams memory _market, uint256 _assets)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| market | [MarketParams](#steward-v4-MarketParams) |  | Identifier of a Morpho Blue Market |
+| assets | [string](#string) |  | The amount of the loan token to lend |
+
+
+
+
+
+
+<a name="steward-v4-MorphoBlueSupplyAdaptorV1-WithdrawFromMorphoBlue"></a>
+
+### MorphoBlueSupplyAdaptorV1.WithdrawFromMorphoBlue
+Allows strategists to withdraw the underlying asset plus interest
+
+Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| market | [MarketParams](#steward-v4-MarketParams) |  | Identifier of a Morpho Blue Market |
+| assets | [string](#string) |  | The amount of the loan token to lend |
+
+
+
+
+
+
+<a name="steward-v4-MorphoBlueSupplyAdaptorV1Calls"></a>
+
+### MorphoBlueSupplyAdaptorV1Calls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [MorphoBlueSupplyAdaptorV1](#steward-v4-MorphoBlueSupplyAdaptorV1) | repeated |  |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
 <a name="morpho_reward_handler-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -3620,6 +6418,210 @@ Represents function `swapWithOneInch(ERC20 tokenIn, ERC20 tokenOut, uint256 amou
 
 
 
+<a name="staking-proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## staking.proto
+
+
+
+<a name="steward-v4-StakingAdaptorV1"></a>
+
+### StakingAdaptorV1
+Represents call data for the Staking adaptor V1
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| revoke_approval | [RevokeApproval](#steward-v4-RevokeApproval) |  | Represents function `revokeApproval(ERC20 asset, address spender)` |
+| mint | [StakingAdaptorV1.Mint](#steward-v4-StakingAdaptorV1-Mint) |  | Represents function `mint(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)` |
+| request_burn | [StakingAdaptorV1.RequestBurn](#steward-v4-StakingAdaptorV1-RequestBurn) |  | Represents function `requestBurn(uint256 amount, bytes calldata wildcard)` |
+| complete_burn | [StakingAdaptorV1.CompleteBurn](#steward-v4-StakingAdaptorV1-CompleteBurn) |  | Represents function `completeBurn(uint256 id, uint256 minAmountOut, bytes calldata wildcard)` |
+| cancel_burn | [StakingAdaptorV1.CancelBurn](#steward-v4-StakingAdaptorV1-CancelBurn) |  | Represents function `cancelBurn(uint256 id, bytes calldata wildcard)` |
+| wrap | [StakingAdaptorV1.Wrap](#steward-v4-StakingAdaptorV1-Wrap) |  | Represents function `wrap(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)` |
+| unwrap | [StakingAdaptorV1.Unwrap](#steward-v4-StakingAdaptorV1-Unwrap) |  | Represents function `unwrap(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)` |
+| mint_erc20 | [StakingAdaptorV1.MintERC20](#steward-v4-StakingAdaptorV1-MintERC20) |  | Represents function `mintERC20(ERC20 depositAsset, uint256 amount, uint256 minAmountOut, bytes calldata wildcard)` |
+| remove_claimed_request | [StakingAdaptorV1.RemoveClaimedRequest](#steward-v4-StakingAdaptorV1-RemoveClaimedRequest) |  | Represents function `removeClaimedRequest(uint256, bytes calldata)` |
+
+
+
+
+
+
+<a name="steward-v4-StakingAdaptorV1-CancelBurn"></a>
+
+### StakingAdaptorV1.CancelBurn
+Allows a strategist to cancel an active burn/withdraw request. 
+
+Represents the function `cancelBurn(uint256 id, bytes calldata wildcard)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  | The id of the burn request |
+| wildcard | [string](#string) |  | Arbitrary ABI encoded data that can be used by inheriting adaptors |
+
+
+
+
+
+
+<a name="steward-v4-StakingAdaptorV1-CompleteBurn"></a>
+
+### StakingAdaptorV1.CompleteBurn
+Allows a strategist to complete a burn/withdraw of a derivative asset for a native asset.
+
+Represents the function `completeBurn(uint256 id, uint256 minAmountOut, bytes calldata wildcard)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  | The id of the burn request |
+| min_amount_out | [string](#string) |  | The minimum amount of the asset to receive |
+| wildcard | [string](#string) |  | Arbitrary ABI encoded data that can be used by inheriting adaptors |
+
+
+
+
+
+
+<a name="steward-v4-StakingAdaptorV1-Mint"></a>
+
+### StakingAdaptorV1.Mint
+Allows a strategist to `mint` a derivative asset using the chains native asset.
+
+Represents the function `mint(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| amount | [string](#string) |  | The amount of the asset to mint |
+| min_amount_out | [string](#string) |  | The minimum amount of the asset to receive |
+| wildcard | [string](#string) |  | Arbitrary ABI encoded data that can be used by inheriting adaptors |
+
+
+
+
+
+
+<a name="steward-v4-StakingAdaptorV1-MintERC20"></a>
+
+### StakingAdaptorV1.MintERC20
+Allows a strategist to mint a derivative asset using an ERC20. 
+
+Represents the function `mintERC20(ERC20 depositAsset, uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| deposit_asset | [string](#string) |  | The address of the ERC20 asset to deposit |
+| amount | [string](#string) |  | The amount of the asset to mint |
+| min_amount_out | [string](#string) |  | The minimum amount of the asset to receive |
+| wildcard | [string](#string) |  | Arbitrary ABI encoded data that can be used by inheriting adaptors |
+
+
+
+
+
+
+<a name="steward-v4-StakingAdaptorV1-RemoveClaimedRequest"></a>
+
+### StakingAdaptorV1.RemoveClaimedRequest
+Allows strategist to remove a request from `requestIds` if it has already been claimed.
+
+Represents the function `removeClaimedRequest(uint256, bytes calldata)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  | The id of the request to remove |
+| wildcard | [string](#string) |  | Arbitrary ABI encoded data that can be used by inheriting adaptors |
+
+
+
+
+
+
+<a name="steward-v4-StakingAdaptorV1-RequestBurn"></a>
+
+### StakingAdaptorV1.RequestBurn
+Allows a strategist to request to burn/withdraw a derivative for a chains native asset.   
+
+Represents the function `requestBurn(uint256 amount, bytes calldata wildcard)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| amount | [string](#string) |  | The amount of the asset to burn |
+| wildcard | [string](#string) |  | Arbitrary ABI encoded data that can be used by inheriting adaptors |
+
+
+
+
+
+
+<a name="steward-v4-StakingAdaptorV1-Unwrap"></a>
+
+### StakingAdaptorV1.Unwrap
+Allows a strategist to unwrap a wrapped derivative asset.
+
+Represents the function `unwrap(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| amount | [string](#string) |  | The amount of the asset to unwrap |
+| min_amount_out | [string](#string) |  | The minimum amount of the asset to receive |
+| wildcard | [string](#string) |  | Arbitrary ABI encoded data that can be used by inheriting adaptors |
+
+
+
+
+
+
+<a name="steward-v4-StakingAdaptorV1-Wrap"></a>
+
+### StakingAdaptorV1.Wrap
+Allows a strategist to wrap a derivative asset. 
+
+Represents the function `wrap(uint256 amount, uint256 minAmountOut, bytes calldata wildcard)`
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| amount | [string](#string) |  | The amount of the asset to wrap |
+| min_amount_out | [string](#string) |  | The minimum amount of the asset to receive |
+| wildcard | [string](#string) |  | Arbitrary ABI encoded data that can be used by inheriting adaptors |
+
+
+
+
+
+
+<a name="steward-v4-StakingAdaptorV1Calls"></a>
+
+### StakingAdaptorV1Calls
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| calls | [StakingAdaptorV1](#steward-v4-StakingAdaptorV1) | repeated |  |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
 <a name="steward-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -3641,6 +6643,9 @@ Represents a scheduled function call to a particular Cellar
 | cellar_v1 | [CellarV1](#steward-v4-CellarV1) |  |  |
 | cellar_v2 | [CellarV2](#steward-v4-CellarV2) |  |  |
 | cellar_v2_2 | [CellarV2_2](#steward-v4-CellarV2_2) |  |  |
+| cellar_v2_5 | [CellarV2_5](#steward-v4-CellarV2_5) |  |  |
+| chain_id | [uint64](#uint64) |  | The ID of the chain on which the target Cellar resides |
+| deadline | [uint64](#uint64) |  | The unix timestamp deadline for the contract call to be executed |
 
 
 
@@ -3656,6 +6661,7 @@ Represents a scheduled function call to a particular Cellar
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | id | [string](#string) |  | The hex encoded ID of the scheduled cork |
+| chain_id | [uint64](#uint64) |  | The ID of the chain on which the target Cellar resides |
 
 
 
