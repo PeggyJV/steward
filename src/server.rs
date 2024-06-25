@@ -168,7 +168,6 @@ pub(crate) fn socket_addr(config: &Arc<StewardConfig>) -> Result<SocketAddr, Err
 pub async fn load_server_config(config: &Arc<StewardConfig>) -> Result<ServerConfig, Error> {
     let address = socket_addr(config)?;
 
-    info!("encoding mode disabled");
     let server_config = auth_config(config).await?;
     let tls_config = ServerTlsConfig::new()
         .rustls_server_config(server_config)

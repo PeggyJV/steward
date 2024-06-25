@@ -21,9 +21,7 @@ git checkout v4.2.3
 cargo install --path .
 ```
 
-Or download the latest release here:
-
-https://github.com/PeggyJV/steward/releases/tag/v4.2.3
+[Download the latest release here](https://github.com/PeggyJV/steward/releases/tag/v4.2.3) 
 
 ## Steward use cases
 

@@ -6,13 +6,15 @@ If you plan to use steward for development and testing you will need to install 
 
 ## Encode Mode
 
-Steward can be started in encode mode, which runs a gRPC server that accepts call data params and returns the final hex-encoded contract call data. This is meant intended as a way to test parameter construction with the protos.
+Steward can be started in encode mode, which runs a gRPC server that accepts call data params and returns the final hex-encoded contract call data. This is intended for testing parameter construction with the protos without needing to worry about authentication or network connectivity.
 
 Strategists can run steward locally and send requests without needing TLS authentication. To Start the server simply run:
 
 ```bash
 steward encode start
 ```
+
+By default the server will run on port 5734.
 
 Encode mode is only available in steward 4.2.3 and later.
 
