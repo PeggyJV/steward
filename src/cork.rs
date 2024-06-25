@@ -259,7 +259,7 @@ pub fn id_hash(
         (block_height).to_be_bytes().as_slice(),
         (chain_id).to_be_bytes().as_slice(),
         address.as_bytes(),
-        &encoded_call,
+        encoded_call,
     ]
     .concat();
     hasher.update(input);

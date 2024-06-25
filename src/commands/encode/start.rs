@@ -1,7 +1,7 @@
 use crate::{application::APP, prelude::*, server::start_encode_server};
 use abscissa_core::{clap::Parser, Command, Runnable};
 
-///
+/// Start the Encode server
 #[derive(Command, Debug, Parser)]
 #[clap(long_about = "DESCRIPTION\n\n")]
 pub struct StartCmd {}
