@@ -22,6 +22,14 @@ service ContractCallService {
 }
 
 /*
+ * Service for testing contract call encoding. Simply returns the encoded call data in the response.
+ */
+service EncodingService {
+    // Handles contract call encoding
+    rpc Encode(EncodeRequest) returns (EncodeResponse) {}
+}
+
+/*
  * Service for simulating contract calls encoded by Steward using Tenderly
  */
  service SimulateContractCallService {
@@ -60,6 +68,23 @@ message ScheduleResponse {
     string id = 1;
     // The ID of the chain on which the target Cellar resides
     uint64 chain_id = 2;
+}
+
+message EncodeRequest {
+    string cellar_id = 1;
+    // The data from which the desired contract function will be encoded
+    oneof call_data {
+        AaveV2Stablecoin aave_v2_stablecoin = 2;
+        CellarV1 cellar_v1 = 3;
+        CellarV2 cellar_v2 = 4;
+        CellarV2_2 cellar_v2_2 = 5;
+        CellarV2_5 cellar_v2_5 = 6;
+    }
+}
+
+message EncodeResponse {
+    // The encoded contract call
+    string encoded_call = 1;
 }
 
 /*

@@ -15,6 +15,7 @@ pub mod cellars;
 pub mod commands;
 pub mod config;
 pub mod cork;
+pub mod encode;
 pub mod error;
 pub mod gas;
 pub mod prelude;
