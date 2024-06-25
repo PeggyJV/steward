@@ -1,6 +1,5 @@
-go 1.22.1
+go 1.22
 
 use (
-    ./client_example
     ./steward_proto_go/steward_proto
 )
