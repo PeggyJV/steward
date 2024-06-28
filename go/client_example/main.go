@@ -23,13 +23,15 @@ func main() {
 	// Replace these paths with your own client cert and key, and server CA paths
 	creds, err := buildCredentials("client.crt", "client.key", "server_ca.crt")
 	if err != nil {
-		fmt.Printf("failed to build credentials: %v", err)
-		return
+		panic(err)
 	}
 
 	/// 2. Construct context and client
 
-	conn, client := buildClient(creds)
+	conn, client, err := buildClient(creds)
+	if err != nil {
+		panic(err)
+	}
 	defer conn.Close()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -37,11 +39,17 @@ func main() {
 
 	/// 3. Construct adaptor calls and final request using the builder package
 
-	request := buildScheduleRequest()
+	request, err := buildScheduleRequest()
+	if err != nil {
+		panic(err)
+	}
 
 	/// 4. Send the request
 
 	_, err = client.Schedule(ctx, request)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func buildCredentials(clientCertPath string, clientKeyPath string, serverCAPath string) (credentials.TransportCredentials, error) {
@@ -66,9 +74,8 @@ func buildCredentials(clientCertPath string, clientKeyPath string, serverCAPath 
 }
 
 func getConnection(addr string, creds credentials.TransportCredentials) (*grpc.ClientConn, error) {
-	conn, err := grpc.Dial(
+	conn, err := grpc.NewClient(
 		addr,
-		grpc.WithBlock(),
 		grpc.WithTransportCredentials(creds),
 	)
 	if err != nil {
@@ -78,18 +85,17 @@ func getConnection(addr string, creds credentials.TransportCredentials) (*grpc.C
 	return conn, nil
 }
 
-func buildClient(creds credentials.TransportCredentials) (*grpc.ClientConn, steward_proto.ContractCallServiceClient) {
+func buildClient(creds credentials.TransportCredentials) (*grpc.ClientConn, steward_proto.ContractCallServiceClient, error) {
 	addr := fmt.Sprintf("localhost:5734")
 	conn, err := getConnection(addr, creds)
 	if err != nil {
-		panic("failed to get connection")
+		return nil, nil, err
 	}
-	defer conn.Close()
 
-	return conn, steward_proto.NewContractCallServiceClient(conn)
+	return conn, steward_proto.NewContractCallServiceClient(conn), nil
 }
 
-func buildScheduleRequest() *steward_proto.ScheduleRequest {
+func buildScheduleRequest() (*steward_proto.ScheduleRequest, error) {
 	////// A. Build some adaptor calls
 
 	// This call to the Aave V2 A Token adaptor will have two function calls in it
@@ -123,7 +129,7 @@ func buildScheduleRequest() *steward_proto.ScheduleRequest {
 		Build()
 
 	if err != nil {
-		panic("failed to build cellar call")
+		return nil, err
 	}
 
 	////// C. Build the final schedule request
@@ -140,8 +146,8 @@ func buildScheduleRequest() *steward_proto.ScheduleRequest {
 		Build()
 
 	if err != nil {
-		panic("failed to build schedule request")
+		return nil, err
 	}
 
-	return scheduleRequest
+	return scheduleRequest, nil
 }
