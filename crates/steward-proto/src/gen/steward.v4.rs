@@ -5246,6 +5246,37 @@ pub struct ScheduleResponse {
     #[prost(uint64, tag = "2")]
     pub chain_id: u64,
 }
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct EncodeRequest {
+    #[prost(string, tag = "1")]
+    pub cellar_id: ::prost::alloc::string::String,
+    /// The data from which the desired contract function will be encoded
+    #[prost(oneof = "encode_request::CallData", tags = "2, 3, 4, 5, 6")]
+    pub call_data: ::core::option::Option<encode_request::CallData>,
+}
+/// Nested message and enum types in `EncodeRequest`.
+pub mod encode_request {
+    /// The data from which the desired contract function will be encoded
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum CallData {
+        #[prost(message, tag = "2")]
+        AaveV2Stablecoin(super::AaveV2Stablecoin),
+        #[prost(message, tag = "3")]
+        CellarV1(super::CellarV1),
+        #[prost(message, tag = "4")]
+        CellarV2(super::CellarV2),
+        #[prost(message, tag = "5")]
+        CellarV22(super::CellarV22),
+        #[prost(message, tag = "6")]
+        CellarV25(super::CellarV25),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct EncodeResponse {
+    /// The encoded contract call
+    #[prost(string, tag = "1")]
+    pub encoded_call: ::prost::alloc::string::String,
+}
 ///
 /// Represents a request for Steward's current status
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
@@ -5343,6 +5374,70 @@ pub mod contract_call_service_client {
     impl<T> std::fmt::Debug for ContractCallServiceClient<T> {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             write!(f, "ContractCallServiceClient {{ ... }}")
+        }
+    }
+}
+#[doc = r" Generated client implementations."]
+pub mod encoding_service_client {
+    #![allow(unused_variables, dead_code, missing_docs)]
+    use tonic::codegen::*;
+    #[doc = ""]
+    #[doc = " Service for testing contract call encoding. Simply returns the encoded call data in the response."]
+    pub struct EncodingServiceClient<T> {
+        inner: tonic::client::Grpc<T>,
+    }
+    impl EncodingServiceClient<tonic::transport::Channel> {
+        #[doc = r" Attempt to create a new client by connecting to a given endpoint."]
+        pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
+        where
+            D: std::convert::TryInto<tonic::transport::Endpoint>,
+            D::Error: Into<StdError>,
+        {
+            let conn = tonic::transport::Endpoint::new(dst)?.connect().await?;
+            Ok(Self::new(conn))
+        }
+    }
+    impl<T> EncodingServiceClient<T>
+    where
+        T: tonic::client::GrpcService<tonic::body::BoxBody>,
+        T::ResponseBody: Body + HttpBody + Send + 'static,
+        T::Error: Into<StdError>,
+        <T::ResponseBody as HttpBody>::Error: Into<StdError> + Send,
+    {
+        pub fn new(inner: T) -> Self {
+            let inner = tonic::client::Grpc::new(inner);
+            Self { inner }
+        }
+        pub fn with_interceptor(inner: T, interceptor: impl Into<tonic::Interceptor>) -> Self {
+            let inner = tonic::client::Grpc::with_interceptor(inner, interceptor);
+            Self { inner }
+        }
+        #[doc = " Handles contract call encoding"]
+        pub async fn encode(
+            &mut self,
+            request: impl tonic::IntoRequest<super::EncodeRequest>,
+        ) -> Result<tonic::Response<super::EncodeResponse>, tonic::Status> {
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::new(
+                    tonic::Code::Unknown,
+                    format!("Service was not ready: {}", e.into()),
+                )
+            })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/steward.v4.EncodingService/Encode");
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+    }
+    impl<T: Clone> Clone for EncodingServiceClient<T> {
+        fn clone(&self) -> Self {
+            Self {
+                inner: self.inner.clone(),
+            }
+        }
+    }
+    impl<T> std::fmt::Debug for EncodingServiceClient<T> {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            write!(f, "EncodingServiceClient {{ ... }}")
         }
     }
 }
@@ -5582,6 +5677,115 @@ pub mod contract_call_service_server {
     }
     impl<T: ContractCallService> tonic::transport::NamedService for ContractCallServiceServer<T> {
         const NAME: &'static str = "steward.v4.ContractCallService";
+    }
+}
+#[doc = r" Generated server implementations."]
+pub mod encoding_service_server {
+    #![allow(unused_variables, dead_code, missing_docs)]
+    use tonic::codegen::*;
+    #[doc = "Generated trait containing gRPC methods that should be implemented for use with EncodingServiceServer."]
+    #[async_trait]
+    pub trait EncodingService: Send + Sync + 'static {
+        #[doc = " Handles contract call encoding"]
+        async fn encode(
+            &self,
+            request: tonic::Request<super::EncodeRequest>,
+        ) -> Result<tonic::Response<super::EncodeResponse>, tonic::Status>;
+    }
+    #[doc = ""]
+    #[doc = " Service for testing contract call encoding. Simply returns the encoded call data in the response."]
+    #[derive(Debug)]
+    pub struct EncodingServiceServer<T: EncodingService> {
+        inner: _Inner<T>,
+    }
+    struct _Inner<T>(Arc<T>, Option<tonic::Interceptor>);
+    impl<T: EncodingService> EncodingServiceServer<T> {
+        pub fn new(inner: T) -> Self {
+            let inner = Arc::new(inner);
+            let inner = _Inner(inner, None);
+            Self { inner }
+        }
+        pub fn with_interceptor(inner: T, interceptor: impl Into<tonic::Interceptor>) -> Self {
+            let inner = Arc::new(inner);
+            let inner = _Inner(inner, Some(interceptor.into()));
+            Self { inner }
+        }
+    }
+    impl<T, B> Service<http::Request<B>> for EncodingServiceServer<T>
+    where
+        T: EncodingService,
+        B: HttpBody + Send + Sync + 'static,
+        B::Error: Into<StdError> + Send + 'static,
+    {
+        type Response = http::Response<tonic::body::BoxBody>;
+        type Error = Never;
+        type Future = BoxFuture<Self::Response, Self::Error>;
+        fn poll_ready(&mut self, _cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+            Poll::Ready(Ok(()))
+        }
+        fn call(&mut self, req: http::Request<B>) -> Self::Future {
+            let inner = self.inner.clone();
+            match req.uri().path() {
+                "/steward.v4.EncodingService/Encode" => {
+                    #[allow(non_camel_case_types)]
+                    struct EncodeSvc<T: EncodingService>(pub Arc<T>);
+                    impl<T: EncodingService> tonic::server::UnaryService<super::EncodeRequest> for EncodeSvc<T> {
+                        type Response = super::EncodeResponse;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::EncodeRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).encode(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let interceptor = inner.1.clone();
+                        let inner = inner.0;
+                        let method = EncodeSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = if let Some(interceptor) = interceptor {
+                            tonic::server::Grpc::with_interceptor(codec, interceptor)
+                        } else {
+                            tonic::server::Grpc::new(codec)
+                        };
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                _ => Box::pin(async move {
+                    Ok(http::Response::builder()
+                        .status(200)
+                        .header("grpc-status", "12")
+                        .header("content-type", "application/grpc")
+                        .body(tonic::body::BoxBody::empty())
+                        .unwrap())
+                }),
+            }
+        }
+    }
+    impl<T: EncodingService> Clone for EncodingServiceServer<T> {
+        fn clone(&self) -> Self {
+            let inner = self.inner.clone();
+            Self { inner }
+        }
+    }
+    impl<T: EncodingService> Clone for _Inner<T> {
+        fn clone(&self) -> Self {
+            Self(self.0.clone(), self.1.clone())
+        }
+    }
+    impl<T: std::fmt::Debug> std::fmt::Debug for _Inner<T> {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            write!(f, "{:?}", self.0)
+        }
+    }
+    impl<T: EncodingService> tonic::transport::NamedService for EncodingServiceServer<T> {
+        const NAME: &'static str = "steward.v4.EncodingService";
     }
 }
 #[doc = r" Generated server implementations."]

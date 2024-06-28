@@ -232,9 +232,9 @@ func (s *IntegrationTestSuite) TestScheduledCorkMulticallProposal() {
             }
         }
     }
-    `, adaptorContract.Hex())	
+    `, adaptorContract.Hex())
 
-    targetBlockHeight := currentHeight + 90
+	targetBlockHeight := currentHeight + 90
 	proposal := corktypes.NewScheduledCorkProposal(
 		"scheduled cork proposal test",
 		"description",
@@ -339,7 +339,7 @@ func (s *IntegrationTestSuite) TestScheduledCorkMulticallProposal() {
 	}, 3*time.Minute, 10*time.Second, "never reached scheduled height")
 
 	s.T().Logf("checking for cellar events")
-    s.Require().Eventuallyf(func() bool {
+	s.Require().Eventuallyf(func() bool {
 		s.T().Log("querying add adaptor cellar event...")
 		ethClient, err := ethclient.Dial(fmt.Sprintf("http://%s", s.ethResource.GetHostPort("8545/tcp")))
 		if err != nil {
@@ -373,13 +373,13 @@ func (s *IntegrationTestSuite) TestScheduledCorkMulticallProposal() {
 		s.Require().NoError(err)
 
 		if len(logs) > 0 {
-            s.T().Logf("found %d logs!", len(logs))
+			s.T().Logf("found %d logs!", len(logs))
 			for _, log := range logs {
 				if len(log.Data) > 0 {
 					var event CellarV22AddAdaptorToCatalogue
 					err := vault_abi.UnpackIntoInterface(&event, "AddAdaptorToCatalogue", log.Data)
 					s.Require().NoError(err, "failed to unpack AddAdaptorToCatalogue event from log data")
-                    s.Require().Equal(common.HexToAddress(adaptorContract.Hex()), event.Adaptor)
+					s.Require().Equal(common.HexToAddress(adaptorContract.Hex()), event.Adaptor)
 
 					return true
 				}
@@ -423,13 +423,13 @@ func (s *IntegrationTestSuite) TestScheduledCorkMulticallProposal() {
 		s.Require().NoError(err)
 
 		if len(logs) > 0 {
-            s.T().Logf("found %d logs!", len(logs))
+			s.T().Logf("found %d logs!", len(logs))
 			for _, log := range logs {
 				if len(log.Data) > 0 {
 					var event CellarV22AddPositionToCatalogue
 					err := vault_abi.UnpackIntoInterface(&event, "AddPositionToCatalogue", log.Data)
 					s.Require().NoError(err, "failed to unpack AddPositionToCatalogue event from log data")
-                    s.Require().Equal(uint32(1), event.Position)
+					s.Require().Equal(uint32(1), event.Position)
 
 					return true
 				}
@@ -466,15 +466,15 @@ func (s *IntegrationTestSuite) TestScheduledAxelarCorkProposal() {
 
 	targetBlockHeight := currentHeight + 90
 	chainID := uint64(10)
-    deadline := uint64(time.Now().Add(10 * time.Minute).Unix())
-    proposal := axelarcorktypes.NewAxelarScheduledCorkProposal(
+	deadline := uint64(time.Now().Add(10 * time.Minute).Unix())
+	proposal := axelarcorktypes.NewAxelarScheduledCorkProposal(
 		"axelarscheduled cork proposal test",
 		"description",
 		uint64(targetBlockHeight),
 		chainID,
 		vaultCellar.String(),
 		protoJson,
-        deadline,
+		deadline,
 	)
 
 	proposalMsg, err := govtypesv1beta1.NewMsgSubmitProposal(
@@ -571,17 +571,17 @@ func (s *IntegrationTestSuite) TestScheduledAxelarCorkProposal() {
 		return false
 	}, 3*time.Minute, 10*time.Second, "never reached scheduled height")
 
-    s.T().Log("waiting to see approved cork result")
-    s.Require().Eventually(func() bool {
-        axelarcorkResultQueryResponse, _ := axelarcorkQueryClient.QueryCorkResults(context.Background(), &axelarcorktypes.QueryCorkResultsRequest{ChainId: chainID})
-        if len(axelarcorkResultQueryResponse.CorkResults) > 0 {
-            if !axelarcorkResultQueryResponse.CorkResults[0].Approved {
-                s.Fail("cork result not approved") 
-            }
+	s.T().Log("waiting to see approved cork result")
+	s.Require().Eventually(func() bool {
+		axelarcorkResultQueryResponse, _ := axelarcorkQueryClient.QueryCorkResults(context.Background(), &axelarcorktypes.QueryCorkResultsRequest{ChainId: chainID})
+		if len(axelarcorkResultQueryResponse.CorkResults) > 0 {
+			if !axelarcorkResultQueryResponse.CorkResults[0].Approved {
+				s.Fail("cork result not approved")
+			}
 
-            return true
-        }
+			return true
+		}
 
-        return false
-    }, time.Second*30, time.Second*5, "cork result not approved")
+		return false
+	}, time.Second*30, time.Second*5, "cork result not approved")
 }

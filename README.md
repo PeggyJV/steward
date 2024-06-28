@@ -8,6 +8,21 @@ It integrates the full functionality of [Gorc](https://github.com/PeggyJV/gravit
 
 Steward is built with the [Abscissa](https://github.com/iqlusioninc/abscissa) app micro-framework.
 
+## Installation
+
+You can build steward from source or download one of the provided binaries. 
+
+To build from source, you will need to have Rust and Git installed.
+
+```bash
+git clone https://github.com/peggyjv/steward
+cd steward
+git checkout v4.2.3 
+cargo install --path .
+```
+
+[Download the latest release here](https://github.com/PeggyJV/steward/releases/tag/v4.2.3) 
+
 ## Steward use cases
 
 ###  1. Gravity Bridge Operator

@@ -18,3 +18,4 @@
         - [Create or import a Cosmos key](./03-TheOrchestrator.md#create-or-import-cosmos-key)
         - [Configuration](./03-TheOrchestrator.md#configuration)
 4. [Pubsub for Validators](./05-PubsubForValidators.md)
+5. [Steward for Strategists](./06-StewardForStrategists.md)
