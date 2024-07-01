@@ -384,29 +384,29 @@ func (s *IntegrationTestSuite) initGenesis() {
 
 	axelarcorkGenState := axelarcorktypes.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[axelarcorktypes.ModuleName], &axelarcorkGenState))
-	configuration := &axelarcorktypes.ChainConfiguration{
-		Name:         "test",
-		Id:           10,
-		ProxyAddress: "0x0000000000000000000000000000000000000000",
-		BridgeFees: sdk.Coins{
-			{
-				Denom:  "usomm",
-				Amount: sdk.NewInt(10000),
-			},
-		},
-	}
-	axelarcorkGenState.ChainConfigurations = axelarcorktypes.ChainConfigurations{
-		Configurations: []*axelarcorktypes.ChainConfiguration{
-			configuration,
-		},
-	}
-	axelarcorkGenState.CellarIds = []*axelarcorktypes.CellarIDSet{
-		{
-			Ids:     []string{aaveCellar.Hex(), vaultCellar.Hex(), v2_2Cellar.Hex()},
-			ChainId: 10,
-		},
-	}
-	axelarcorkGenState.Params.Enabled = true
+	//configuration := &axelarcorktypes.ChainConfiguration{
+	//	Name:         "test",
+	//	Id:           10,
+	//	ProxyAddress: "0x0000000000000000000000000000000000000000",
+	//	BridgeFees: sdk.Coins{
+	//		{
+	//			Denom:  "usomm",
+	//			Amount: sdk.NewInt(10000),
+	//		},
+	//	},
+	//}
+	//axelarcorkGenState.ChainConfigurations = axelarcorktypes.ChainConfigurations{
+	//	Configurations: []*axelarcorktypes.ChainConfiguration{
+	//		configuration,
+	//	},
+	//}
+	//axelarcorkGenState.CellarIds = []*axelarcorktypes.CellarIDSet{
+	//	{
+	//		Ids:     []string{aaveCellar.Hex(), vaultCellar.Hex(), v2_2Cellar.Hex()},
+	//		ChainId: 10,
+	//	},
+	//}
+	//axelarcorkGenState.Params.Enabled = true
 	bz, err = cdc.MarshalJSON(&axelarcorkGenState)
 	s.Require().NoError(err)
 	appGenState[axelarcorktypes.ModuleName] = bz
