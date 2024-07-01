@@ -272,7 +272,6 @@ func (s *IntegrationTestSuite) initGenesis() {
 	config.Moniker = s.chain.validators[0].moniker
 
 	genFilePath := config.GenesisFile()
-    s.T().Logf("genesis file path: %s", genFilePath)
 	appGenState, genDoc, err := genutiltypes.GenesisStateFromGenFile(genFilePath)
 	s.Require().NoError(err)
 
@@ -489,19 +488,16 @@ func (s *IntegrationTestSuite) initGenesis() {
 	appGenState[gravitytypes.ModuleName] = bz
 
 	// serialize genesis state
-    s.T().Log("serializing genesis")
 	bz, err = json.MarshalIndent(appGenState, "", "  ")
 	s.Require().NoError(err)
 
 	genDoc.AppState = bz
 
-    s.T().Log("marshaling genesis")
 	bz, err = tmjson.MarshalIndent(genDoc, "", "  ")
 	s.Require().NoError(err)
 
 	// write the updated genesis file to each validator
-	for i, val := range s.chain.validators {
-        s.T().Logf("writing genesis to val %d", i)
+	for _, val := range s.chain.validators {
 		s.Require().NoError(writeFile(filepath.Join(val.configDir(), "config", "genesis.json"), bz))
 	}
 }
@@ -734,10 +730,10 @@ func (s *IntegrationTestSuite) runValidators() {
 				if !ok {
 					s.T().Logf("no container by 'sommelier0'")
 				} else {
-					//if container.Container.State.Status == "exited" {
-				//		s.Fail("validators exited", "state: %s logs: \n%s", container.Container.State.String(), s.logsByContainerID(container.Container.ID))
-				//		s.T().FailNow()
-				//	}
+					if container.Container.State.Status == "exited" {
+						s.Fail("validators exited", "state: %s logs: \n%s", container.Container.State.String(), s.logsByContainerID(container.Container.ID))
+						s.T().FailNow()
+					}
 					s.T().Logf("state: %v, health: %v", container.Container.State.Status, container.Container.State.Health)
 				}
 				return false

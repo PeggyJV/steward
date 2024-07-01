@@ -193,6 +193,14 @@ jobs:
         run: ./integration_tests/integration_tests.test -test.failfast -test.v -test.run IntegrationTestSuite -testify.m Test${{ matrix.test_type }}
         env:
           E2E_SKIP_CLEANUP: true
+      - name: Show docker logs
+        run: docker logs sommelier0
+      - name: Show docker logs
+        run: docker logs sommelier1
+      - name: Show docker logs
+        run: docker logs sommelier2
+      - name: Show docker logs
+        run: docker logs sommelier3
       - name: Clean up docker images
         run: scripts/clean_slate.sh
       - name: Remove testnet tempdir
