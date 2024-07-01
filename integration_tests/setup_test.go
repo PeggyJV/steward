@@ -501,7 +501,7 @@ func (s *IntegrationTestSuite) initGenesis() {
 
 	// write the updated genesis file to each validator
 	for i, val := range s.chain.validators {
-        s.T().Log("writing genesis to val %d", i)
+        s.T().Logf("writing genesis to val %d", i)
 		s.Require().NoError(writeFile(filepath.Join(val.configDir(), "config", "genesis.json"), bz))
 	}
 }
