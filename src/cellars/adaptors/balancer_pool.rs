@@ -321,6 +321,9 @@ fn get_encoded_adaptor_calls(
             StakingV1Calls(params) => {
                 calls.extend(adaptors::staking::staking_adaptor_v1_calls(params)?)
             }
+            PendleV1Calls(params) => {
+                calls.extend(adaptors::pendle::pendle_adaptor_v1_calls(params)?)
+            }
         };
 
         result.push(AbiAdaptorCall {

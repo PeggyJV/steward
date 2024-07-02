@@ -42,6 +42,7 @@ import "aura_erc4626.proto";
 import "convex_curve.proto";
 import "curve.proto";
 import "staking.proto";
+import "pendle.proto";
 
 /*
 * Represents a function call to a cellar that implements Cellar.sol
@@ -1346,5 +1347,7 @@ message AdaptorCall {
         ERC4626AdaptorV1Calls erc4626_v1_calls = 35;
         // Represents function calls for the StakingAdaptorV1
         StakingAdaptorV1Calls staking_v1_calls = 36;
+        // Represents function calls for the PendleAdaptorV1
+        PendleAdaptorV1Calls pendle_v1_calls = 37;
     }
 }

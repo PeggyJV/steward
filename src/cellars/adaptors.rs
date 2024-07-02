@@ -11,6 +11,7 @@ pub mod fees_and_reserves;
 pub mod frax;
 pub mod morpho;
 pub mod oneinch;
+pub mod pendle;
 pub mod sommelier;
 pub mod staking;
 pub mod swap_with_uniswap;

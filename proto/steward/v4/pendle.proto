@@ -1,0 +1,251 @@
+/*
+* Protos for function calls to the Pendle adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+// Represents call data for the Pendle adaptor.
+message PendleAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `mintSyFromToken(IPendleMarket market, uint256 minSyOut, TokenInput memory input)`
+        MintSyFromToken mint_sy_from_token = 2;
+        // Represents function `mintPyFromSy(IPendleMarket market, uint256 netSyIn, uint256 minPyOut)`
+        MintPyFromSy mint_py_from_sy = 3;
+        // Represents function `swapExactPtForYt(IPendleMarket market, uint256 exactPtIn, uint256 minYtOut, ApproxParams calldata guessTotalYtToSwap)`
+        SwapExactPtForYt swap_exact_pt_for_yt = 4;
+        // Represents function `swapExactYtForPt(IPendleMarket market, uint256 exactYtIn, uint256 minPtOut, ApproxParams calldata guessTotalPtToSwap)`
+        SwapExactYtForPt swap_exact_yt_for_pt = 5;
+        // Represents function `addLiquidityDualSyAndPt(IPendleMarket market, uint256 netSyDesired, uint256 netPtDesired, uint256 minLpOut)`
+        AddLiquidityDualSyAndPt add_liquidity_dual_sy_and_pt = 6;
+        // Represents function `removeLiquidityDualSyAndPt(IPendleMarket market, uint256 netLpToRemove, uint256 minSyOut, uint256 minPtOut)`
+        RemoveLiquidityDualSyAndPt remove_liquidity_dual_sy_and_pt = 7;
+        // Represents function `redeemPyToSy(IPendleMarket market, uint256 netPyIn, uint256 minSyOut)`
+        RedeemPyToSy redeem_py_to_sy = 8;
+        // Represents function `redeemSyToToken(IPendleMarket market, uint256 netSyIn, TokenOutput memory output)`
+        RedeemSyToToken redeem_sy_to_token = 9;
+    }
+
+    message SwapData {
+        // The swap type
+        int32 swap_type = 1;
+
+        // The external router address.
+        string ext_router = 2;
+
+        // The external calldata.
+        string ext_calldata = 3;
+
+        // Whether or not scaling is needed.
+        bool need_scale = 4;
+    }
+
+    message TokenInput {
+        // The input token address.
+        string token_in = 1;
+
+        // The net amount of the input token.
+        string net_token_in = 2;
+
+        // The token address to mint SY.
+        string token_mint_sy = 3;
+
+        // The Pendle swap address.
+        string pendle_swap = 4;
+
+        // The swap data.
+        SwapData swap_data = 5;
+    }
+
+    /*
+    * Allows strategist to exchange a token for an SY. 
+    *
+    * Represents function `mintSyFromToken(IPendleMarket market, uint256 minSyOut, TokenInput memory input)`
+    */
+    message MintSyFromToken {
+        // The address of the Pendle market to mint SY from.
+        string market = 1;
+
+        // The minimum amount of SY to receive.
+        string min_sy_out = 2;
+
+        // The input token address to exchange for SY.
+        TokenInput input = 3; 
+    }
+
+    /*
+    * Allows strategist to exchange an SY for a PY.
+    *
+    * Represents function `mintPyFromSy(IPendleMarket market, uint256 netSyIn, uint256 minPyOut)`
+    */
+    message MintPyFromSy {
+        // The address of the Pendle market to mint PY from.
+        string market = 1;
+
+        // The net amount of SY to exchange for PY.
+        string net_sy_in = 2;
+
+        // The minimum amount of PY to receive.
+        string min_py_out = 3;
+    }
+
+    /*
+    * Allows strategist to exchange PT for YT.
+    *
+    * Represents function `swapExactPtForYt(IPendleMarket market, uint256 exactPtIn, uint256 minYtOut, ApproxParams calldata guessTotalYtToSwap)`
+    */
+    message SwapExactPtForYt {
+        // The address of the Pendle market to swap PT for YT.
+        string market = 1;
+
+        // The exact amount of PT to swap for YT.
+        string exact_pt_in = 2;
+
+        // The minimum amount of YT to receive.
+        string min_yt_out = 3;
+
+        // The approximate parameters for the swap.
+        ApproxParams guess_total_yt_to_swap = 4;
+    }
+ 
+    
+    // All of these fields are uint256
+    message ApproxParams {
+        // The minimum guess for the swap.
+        string guess_min = 1;
+
+        // The maximum guess for the swap.
+        string guess_max = 2;
+
+        // The offchain guess for the swap.
+        string guess_offchain = 3;
+
+        // The maximum number of iterations for the swap.
+        // Every iteration, the diff between guessMin and guessMax will be divided by 2.
+        string max_iteration = 4;
+
+        // the max eps between the returned result & the correct result, base 1e18. Normally this number will be set to 1e15 (1e18/1000 = 0.1%)
+        string eps = 5;
+    }
+
+    /*
+    * Allows strategist to exchange YT for PT.
+    *
+    * Represents function `swapExactYtForPt(IPendleMarket market, uint256 exactYtIn, uint256 minPtOut, ApproxParams calldata guessTotalPtToSwap)`
+    */
+    message SwapExactYtForPt {
+        // The address of the Pendle market to swap YT for PT.
+        string market = 1;
+
+        // The exact amount of YT to swap for PT.
+        string exact_yt_in = 2;
+
+        // The minimum amount of PT to receive.
+        string min_pt_out = 3;
+
+        // The approximation parameters for the swap.
+        ApproxParams guess_total_pt_to_swap = 4;
+    }
+
+    /*
+    * Allows strategist to add liquidity to a Pendle market.
+    *
+    * Represents function `addLiquidityDualSyAndPt(IPendleMarket market, uint256 netSyDesired, uint256 netPtDesired, uint256 minLpOut)`
+    */
+    message AddLiquidityDualSyAndPt {
+        // The address of the Pendle market to add liquidity to.
+        string market = 1;
+
+        // The net amount of SY to add to the market.
+        string net_sy_desired = 2;
+
+        // The net amount of PT to add to the market.
+        string net_pt_desired = 3;
+
+        // The minimum amount of LP tokens to receive.
+        string min_lp_out = 4;
+    }
+
+    /*
+    * Allows strategist to remove liquidity from a Pendle market.
+    *
+    * Represents function `removeLiquidityDualSyAndPt(IPendleMarket market, uint256 netLpToRemove, uint256 minSyOut, uint256 minPtOut)`
+    */
+    message RemoveLiquidityDualSyAndPt {
+        // The address of the Pendle market to remove liquidity from.
+        string market = 1;
+
+        // The net amount of LP tokens to remove from the market.
+        string net_lp_to_remove = 2;
+
+        // The minimum amount of SY to receive.
+        string min_sy_out = 3;
+
+        // The minimum amount of PT to receive.
+        string min_pt_out = 4;
+    }
+
+    /*
+    * Allows strategist to redeem PY for SY.
+    *
+    * Represents function `redeemPyToSy(IPendleMarket market, uint256 netPyIn, uint256 minSyOut)`
+    */
+    message RedeemPyToSy {
+        // The address of the Pendle market to redeem PY from.
+        string market = 1;
+
+        // The net amount of PY to redeem for SY.
+        string net_py_in = 2;
+
+        // The minimum amount of SY to receive.
+        string min_sy_out = 3;
+    }
+
+    message TokenOutput {
+        // The output token address.
+        string token_out = 1;
+
+        // The minimum amount of the output token.
+        string min_token_out = 2;
+
+        // The token address to redeem SY.
+        string token_redeem_sy = 3;
+
+        // The Pendle swap address.
+        string pendle_swap = 4;
+
+        // The swap data.
+        SwapData swap_data = 5;    
+    }
+
+    /*
+    * Allows strategist to redeem SY for a token.
+    *
+    * Represents function `redeemSyToToken(IPendleMarket market, uint256 netSyIn, TokenOutput memory output)`
+    */
+    message RedeemSyToToken {
+        // The address of the Pendle market to redeem SY from.
+        string market = 1;
+
+        // The net amount of SY to redeem for a token.
+        string net_sy_in = 2;
+
+        // The output token address to receive.
+        TokenOutput output = 3;
+    }
+}
+
+message PendleAdaptorV1Calls {
+    repeated PendleAdaptorV1 calls = 1;
+}
