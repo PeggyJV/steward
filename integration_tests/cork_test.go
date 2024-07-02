@@ -19,7 +19,7 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	gravityTypes "github.com/peggyjv/gravity-bridge/module/v4/x/gravity/types"
-	corktypesv1 "github.com/peggyjv/sommelier/v7/x/cork/types/v1"
+	corktypesv2 "github.com/peggyjv/sommelier/v7/x/cork/types/v2"
 	"github.com/peggyjv/steward/steward_proto_go/steward_proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -790,7 +790,7 @@ func (s *IntegrationTestSuite) checkCellarExists(cellar common.Address) {
 	queryClient, err := s.chain.validators[0].GetQueryClient()
 	s.Require().NoError(err, "error getting query client")
 	s.Require().Eventuallyf(func() bool {
-		res, err := queryClient.QueryCellarIDs(context.Background(), &corktypesv1.QueryCellarIDsRequest{})
+		res, err := queryClient.QueryCellarIDs(context.Background(), &corktypesv2.QueryCellarIDsRequest{})
 		if err != nil || res == nil {
 			return false
 		}
