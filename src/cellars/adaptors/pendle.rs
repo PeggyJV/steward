@@ -1,4 +1,3 @@
-use abscissa_core::tracing::log::debug;
 use ethers::{abi::AbiEncode, types::Bytes};
 
 use crate::{
