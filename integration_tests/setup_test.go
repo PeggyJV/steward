@@ -18,6 +18,7 @@ import (
 	gravitytypes "github.com/peggyjv/gravity-bridge/module/v4/x/gravity/types"
 
 	corktypes "github.com/peggyjv/sommelier/v7/x/cork/types"
+	corktypesv1 "github.com/peggyjv/sommelier/v7/x/cork/types/v1"
 	incentivestypes "github.com/peggyjv/sommelier/v7/x/incentives/types"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -373,9 +374,9 @@ func (s *IntegrationTestSuite) initGenesis() {
 	s.Require().NoError(err)
 	appGenState[genutiltypes.ModuleName] = bz
 
-	corkGenState := corktypes.DefaultGenesisState()
+	corkGenState := corktypesv1.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[corktypes.ModuleName], &corkGenState))
-	corkGenState.CellarIds = corktypes.CellarIDSet{
+	corkGenState.CellarIds = corktypesv1.CellarIDSet{
 		Ids: []string{aaveCellar.Hex(), vaultCellar.Hex(), v2_2Cellar.Hex()},
 	}
 	bz, err = cdc.MarshalJSON(&corkGenState)
