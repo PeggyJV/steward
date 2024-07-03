@@ -58,3 +58,20 @@ grpcurl \
 # }
 #
 ```
+
+### Testing and Development
+
+Steward can be run locally for testing and development purposes. It has a simulate mode that comes with two useful features:
+
+1. Encode only, which simply takes a `ScheduleRequest` and returns the ABI encoded call data. 
+2. Transaction simulation, which uses Tenderly to simulate the actual transaction execution against a contract. This allows the strategist confirm they get the expected state changes from their call data parameters.
+
+To use the simulation features you will need to have a Tenderly account, project, and API key. You can sign up for a free account at [Tenderly](https://tenderly.co/). You will also need to install the `steward` binary. Installation steps can be found [here](https://github.com/PeggyJV/steward?tab=readme-ov-file#installation). You may need to build from source if you are planning to use it on your local machine. Windows has not been tested.
+
+To start steward in simulate mode, run:
+
+```bash
+steward simulate start
+```
+
+By default this will run the simulate server on port 5734.
