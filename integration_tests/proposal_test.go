@@ -14,8 +14,7 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	axelarcorktypes "github.com/peggyjv/sommelier/v7/x/axelarcork/types"
-	"github.com/peggyjv/sommelier/v7/x/cork/types"
-	corktypes "github.com/peggyjv/sommelier/v7/x/cork/types"
+	corktypesv2 "github.com/peggyjv/sommelier/v7/x/cork/types/v2"
 )
 
 func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
@@ -43,7 +42,7 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 	`
 
 	targetBlockHeight := currentHeight + 90
-	proposal := corktypes.NewScheduledCorkProposal(
+	proposal := corktypesv2.NewScheduledCorkProposal(
 		"scheduled cork proposal test",
 		"description",
 		uint64(targetBlockHeight),
@@ -116,9 +115,9 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 	s.T().Log("Proposal approved!")
 
 	s.T().Log("Waiting for scheduled cork to be created by steward")
-	corkQueryClient := corktypes.NewQueryClient(orchClientCtx)
+	corkQueryClient := corktypesv2.NewQueryClient(orchClientCtx)
 	s.Require().Eventually(func() bool {
-		proposalQueryResponse, _ := corkQueryClient.QueryScheduledCorks(context.Background(), &corktypes.QueryScheduledCorksRequest{})
+		proposalQueryResponse, _ := corkQueryClient.QueryScheduledCorks(context.Background(), &corktypesv2.QueryScheduledCorksRequest{})
 		return len(proposalQueryResponse.Corks) > 0
 	}, time.Second*120, time.Second*2, "corks never scheduled")
 
@@ -132,7 +131,7 @@ func (s *IntegrationTestSuite) TestScheduledCorkProposal() {
 		if currentHeight >= targetBlockHeight {
 			return true
 		} else {
-			res, err := corkQueryClient.QueryScheduledCorks(context.Background(), &types.QueryScheduledCorksRequest{})
+			res, err := corkQueryClient.QueryScheduledCorks(context.Background(), &corktypesv2.QueryScheduledCorksRequest{})
 			if err != nil {
 				s.T().Logf("error: %s", err)
 				return false
@@ -235,7 +234,7 @@ func (s *IntegrationTestSuite) TestScheduledCorkMulticallProposal() {
     `, adaptorContract.Hex())
 
 	targetBlockHeight := currentHeight + 90
-	proposal := corktypes.NewScheduledCorkProposal(
+	proposal := corktypesv2.NewScheduledCorkProposal(
 		"scheduled cork proposal test",
 		"description",
 		uint64(targetBlockHeight),
@@ -308,9 +307,9 @@ func (s *IntegrationTestSuite) TestScheduledCorkMulticallProposal() {
 	s.T().Log("Proposal approved!")
 
 	s.T().Log("Waiting for scheduled cork to be created by steward")
-	corkQueryClient := corktypes.NewQueryClient(orchClientCtx)
+	corkQueryClient := corktypesv2.NewQueryClient(orchClientCtx)
 	s.Require().Eventually(func() bool {
-		proposalQueryResponse, _ := corkQueryClient.QueryScheduledCorks(context.Background(), &corktypes.QueryScheduledCorksRequest{})
+		proposalQueryResponse, _ := corkQueryClient.QueryScheduledCorks(context.Background(), &corktypesv2.QueryScheduledCorksRequest{})
 		return len(proposalQueryResponse.Corks) > 0
 	}, time.Second*120, time.Second*2, "corks never scheduled")
 
@@ -324,7 +323,7 @@ func (s *IntegrationTestSuite) TestScheduledCorkMulticallProposal() {
 		if currentHeight >= targetBlockHeight {
 			return true
 		} else {
-			res, err := corkQueryClient.QueryScheduledCorks(context.Background(), &types.QueryScheduledCorksRequest{})
+			res, err := corkQueryClient.QueryScheduledCorks(context.Background(), &corktypesv2.QueryScheduledCorksRequest{})
 			if err != nil {
 				s.T().Logf("error: %s", err)
 				return false

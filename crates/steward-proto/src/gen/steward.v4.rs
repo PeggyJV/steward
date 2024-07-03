@@ -690,6 +690,267 @@ pub struct ZeroXAdaptorV1Calls {
     #[prost(message, repeated, tag = "1")]
     pub calls: ::prost::alloc::vec::Vec<ZeroXAdaptorV1>,
 }
+/// Represents call data for the Pendle adaptor.
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct PendleAdaptorV1 {
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[prost(
+        oneof = "pendle_adaptor_v1::Function",
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9"
+    )]
+    pub function: ::core::option::Option<pendle_adaptor_v1::Function>,
+}
+/// Nested message and enum types in `PendleAdaptorV1`.
+pub mod pendle_adaptor_v1 {
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SwapData {
+        /// The swap type
+        #[prost(int32, tag = "1")]
+        pub swap_type: i32,
+        /// The external router address.
+        #[prost(string, tag = "2")]
+        pub ext_router: ::prost::alloc::string::String,
+        /// The external calldata.
+        #[prost(string, tag = "3")]
+        pub ext_calldata: ::prost::alloc::string::String,
+        /// Whether or not scaling is needed.
+        #[prost(bool, tag = "4")]
+        pub need_scale: bool,
+    }
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct TokenInput {
+        /// The input token address.
+        #[prost(string, tag = "1")]
+        pub token_in: ::prost::alloc::string::String,
+        /// The net amount of the input token.
+        #[prost(string, tag = "2")]
+        pub net_token_in: ::prost::alloc::string::String,
+        /// The token address to mint SY.
+        #[prost(string, tag = "3")]
+        pub token_mint_sy: ::prost::alloc::string::String,
+        /// The Pendle swap address.
+        #[prost(string, tag = "4")]
+        pub pendle_swap: ::prost::alloc::string::String,
+        /// The swap data.
+        #[prost(message, optional, tag = "5")]
+        pub swap_data: ::core::option::Option<SwapData>,
+    }
+    ///
+    /// Allows strategist to exchange a token for an SY.
+    ///
+    /// Represents function `mintSyFromToken(IPendleMarket market, uint256 minSyOut, TokenInput memory input)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct MintSyFromToken {
+        /// The address of the Pendle market to mint SY from.
+        #[prost(string, tag = "1")]
+        pub market: ::prost::alloc::string::String,
+        /// The minimum amount of SY to receive.
+        #[prost(string, tag = "2")]
+        pub min_sy_out: ::prost::alloc::string::String,
+        /// The input token address to exchange for SY.
+        #[prost(message, optional, tag = "3")]
+        pub input: ::core::option::Option<TokenInput>,
+    }
+    ///
+    /// Allows strategist to exchange an SY for a PY.
+    ///
+    /// Represents function `mintPyFromSy(IPendleMarket market, uint256 netSyIn, uint256 minPyOut)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct MintPyFromSy {
+        /// The address of the Pendle market to mint PY from.
+        #[prost(string, tag = "1")]
+        pub market: ::prost::alloc::string::String,
+        /// The net amount of SY to exchange for PY.
+        #[prost(string, tag = "2")]
+        pub net_sy_in: ::prost::alloc::string::String,
+        /// The minimum amount of PY to receive.
+        #[prost(string, tag = "3")]
+        pub min_py_out: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to exchange PT for YT.
+    ///
+    /// Represents function `swapExactPtForYt(IPendleMarket market, uint256 exactPtIn, uint256 minYtOut, ApproxParams calldata guessTotalYtToSwap)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SwapExactPtForYt {
+        /// The address of the Pendle market to swap PT for YT.
+        #[prost(string, tag = "1")]
+        pub market: ::prost::alloc::string::String,
+        /// The exact amount of PT to swap for YT.
+        #[prost(string, tag = "2")]
+        pub exact_pt_in: ::prost::alloc::string::String,
+        /// The minimum amount of YT to receive.
+        #[prost(string, tag = "3")]
+        pub min_yt_out: ::prost::alloc::string::String,
+        /// The approximate parameters for the swap.
+        #[prost(message, optional, tag = "4")]
+        pub guess_total_yt_to_swap: ::core::option::Option<ApproxParams>,
+    }
+    /// All of these fields are uint256
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct ApproxParams {
+        /// The minimum guess for the swap.
+        #[prost(string, tag = "1")]
+        pub guess_min: ::prost::alloc::string::String,
+        /// The maximum guess for the swap.
+        #[prost(string, tag = "2")]
+        pub guess_max: ::prost::alloc::string::String,
+        /// The offchain guess for the swap.
+        #[prost(string, tag = "3")]
+        pub guess_offchain: ::prost::alloc::string::String,
+        /// The maximum number of iterations for the swap.
+        /// Every iteration, the diff between guessMin and guessMax will be divided by 2.
+        #[prost(string, tag = "4")]
+        pub max_iteration: ::prost::alloc::string::String,
+        /// the max eps between the returned result & the correct result, base 1e18. Normally this number will be set to 1e15 (1e18/1000 = 0.1%)
+        #[prost(string, tag = "5")]
+        pub eps: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to exchange YT for PT.
+    ///
+    /// Represents function `swapExactYtForPt(IPendleMarket market, uint256 exactYtIn, uint256 minPtOut, ApproxParams calldata guessTotalPtToSwap)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct SwapExactYtForPt {
+        /// The address of the Pendle market to swap YT for PT.
+        #[prost(string, tag = "1")]
+        pub market: ::prost::alloc::string::String,
+        /// The exact amount of YT to swap for PT.
+        #[prost(string, tag = "2")]
+        pub exact_yt_in: ::prost::alloc::string::String,
+        /// The minimum amount of PT to receive.
+        #[prost(string, tag = "3")]
+        pub min_pt_out: ::prost::alloc::string::String,
+        /// The approximation parameters for the swap.
+        #[prost(message, optional, tag = "4")]
+        pub guess_total_pt_to_swap: ::core::option::Option<ApproxParams>,
+    }
+    ///
+    /// Allows strategist to add liquidity to a Pendle market.
+    ///
+    /// Represents function `addLiquidityDualSyAndPt(IPendleMarket market, uint256 netSyDesired, uint256 netPtDesired, uint256 minLpOut)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct AddLiquidityDualSyAndPt {
+        /// The address of the Pendle market to add liquidity to.
+        #[prost(string, tag = "1")]
+        pub market: ::prost::alloc::string::String,
+        /// The net amount of SY to add to the market.
+        #[prost(string, tag = "2")]
+        pub net_sy_desired: ::prost::alloc::string::String,
+        /// The net amount of PT to add to the market.
+        #[prost(string, tag = "3")]
+        pub net_pt_desired: ::prost::alloc::string::String,
+        /// The minimum amount of LP tokens to receive.
+        #[prost(string, tag = "4")]
+        pub min_lp_out: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to remove liquidity from a Pendle market.
+    ///
+    /// Represents function `removeLiquidityDualSyAndPt(IPendleMarket market, uint256 netLpToRemove, uint256 minSyOut, uint256 minPtOut)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RemoveLiquidityDualSyAndPt {
+        /// The address of the Pendle market to remove liquidity from.
+        #[prost(string, tag = "1")]
+        pub market: ::prost::alloc::string::String,
+        /// The net amount of LP tokens to remove from the market.
+        #[prost(string, tag = "2")]
+        pub net_lp_to_remove: ::prost::alloc::string::String,
+        /// The minimum amount of SY to receive.
+        #[prost(string, tag = "3")]
+        pub min_sy_out: ::prost::alloc::string::String,
+        /// The minimum amount of PT to receive.
+        #[prost(string, tag = "4")]
+        pub min_pt_out: ::prost::alloc::string::String,
+    }
+    ///
+    /// Allows strategist to redeem PY for SY.
+    ///
+    /// Represents function `redeemPyToSy(IPendleMarket market, uint256 netPyIn, uint256 minSyOut)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RedeemPyToSy {
+        /// The address of the Pendle market to redeem PY from.
+        #[prost(string, tag = "1")]
+        pub market: ::prost::alloc::string::String,
+        /// The net amount of PY to redeem for SY.
+        #[prost(string, tag = "2")]
+        pub net_py_in: ::prost::alloc::string::String,
+        /// The minimum amount of SY to receive.
+        #[prost(string, tag = "3")]
+        pub min_sy_out: ::prost::alloc::string::String,
+    }
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct TokenOutput {
+        /// The output token address.
+        #[prost(string, tag = "1")]
+        pub token_out: ::prost::alloc::string::String,
+        /// The minimum amount of the output token.
+        #[prost(string, tag = "2")]
+        pub min_token_out: ::prost::alloc::string::String,
+        /// The token address to redeem SY.
+        #[prost(string, tag = "3")]
+        pub token_redeem_sy: ::prost::alloc::string::String,
+        /// The Pendle swap address.
+        #[prost(string, tag = "4")]
+        pub pendle_swap: ::prost::alloc::string::String,
+        /// The swap data.
+        #[prost(message, optional, tag = "5")]
+        pub swap_data: ::core::option::Option<SwapData>,
+    }
+    ///
+    /// Allows strategist to redeem SY for a token.
+    ///
+    /// Represents function `redeemSyToToken(IPendleMarket market, uint256 netSyIn, TokenOutput memory output)`
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+    pub struct RedeemSyToToken {
+        /// The address of the Pendle market to redeem SY from.
+        #[prost(string, tag = "1")]
+        pub market: ::prost::alloc::string::String,
+        /// The net amount of SY to redeem for a token.
+        #[prost(string, tag = "2")]
+        pub net_sy_in: ::prost::alloc::string::String,
+        /// The output token address to receive.
+        #[prost(message, optional, tag = "3")]
+        pub output: ::core::option::Option<TokenOutput>,
+    }
+    ///**** BASE ADAPTOR FUNCTIONS ****
+    #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Oneof)]
+    pub enum Function {
+        /// Represents function `revokeApproval(ERC20 asset, address spender)`
+        #[prost(message, tag = "1")]
+        RevokeApproval(super::RevokeApproval),
+        //**** ADAPTOR-SPECIFIC FUNCTIONS ****
+        /// Represents function `mintSyFromToken(IPendleMarket market, uint256 minSyOut, TokenInput memory input)`
+        #[prost(message, tag = "2")]
+        MintSyFromToken(MintSyFromToken),
+        /// Represents function `mintPyFromSy(IPendleMarket market, uint256 netSyIn, uint256 minPyOut)`
+        #[prost(message, tag = "3")]
+        MintPyFromSy(MintPyFromSy),
+        /// Represents function `swapExactPtForYt(IPendleMarket market, uint256 exactPtIn, uint256 minYtOut, ApproxParams calldata guessTotalYtToSwap)`
+        #[prost(message, tag = "4")]
+        SwapExactPtForYt(SwapExactPtForYt),
+        /// Represents function `swapExactYtForPt(IPendleMarket market, uint256 exactYtIn, uint256 minPtOut, ApproxParams calldata guessTotalPtToSwap)`
+        #[prost(message, tag = "5")]
+        SwapExactYtForPt(SwapExactYtForPt),
+        /// Represents function `addLiquidityDualSyAndPt(IPendleMarket market, uint256 netSyDesired, uint256 netPtDesired, uint256 minLpOut)`
+        #[prost(message, tag = "6")]
+        AddLiquidityDualSyAndPt(AddLiquidityDualSyAndPt),
+        /// Represents function `removeLiquidityDualSyAndPt(IPendleMarket market, uint256 netLpToRemove, uint256 minSyOut, uint256 minPtOut)`
+        #[prost(message, tag = "7")]
+        RemoveLiquidityDualSyAndPt(RemoveLiquidityDualSyAndPt),
+        /// Represents function `redeemPyToSy(IPendleMarket market, uint256 netPyIn, uint256 minSyOut)`
+        #[prost(message, tag = "8")]
+        RedeemPyToSy(RedeemPyToSy),
+        /// Represents function `redeemSyToToken(IPendleMarket market, uint256 netSyIn, TokenOutput memory output)`
+        #[prost(message, tag = "9")]
+        RedeemSyToToken(RedeemSyToToken),
+    }
+}
+#[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
+pub struct PendleAdaptorV1Calls {
+    #[prost(message, repeated, tag = "1")]
+    pub calls: ::prost::alloc::vec::Vec<PendleAdaptorV1>,
+}
 /// Represents call data for the Aave AToken adaptor V1, used to manage lending positions on Aave
 #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
 pub struct AaveATokenAdaptorV1 {
@@ -2590,7 +2851,7 @@ pub mod balancer_pool_adaptor_v1_flash_loan {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_balancer_pool_flash_loan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_balancer_pool_flash_loan::CallData>,
     }
@@ -2699,6 +2960,9 @@ pub mod balancer_pool_adaptor_v1_flash_loan {
             /// Represents function calls for the StakingAdaptorV1
             #[prost(message, tag = "33")]
             StakingV1Calls(super::super::StakingAdaptorV1Calls),
+            /// Represents function calls for the PendleAdaptorV1
+            #[prost(message, tag = "34")]
+            PendleV1Calls(super::super::PendleAdaptorV1Calls),
         }
     }
 }
@@ -3499,7 +3763,7 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
         /// The function call data for the adaptor
         #[prost(
             oneof = "adaptor_call_for_aave_v3_flash_loan::CallData",
-            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34"
+            tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35"
         )]
         pub call_data: ::core::option::Option<adaptor_call_for_aave_v3_flash_loan::CallData>,
     }
@@ -3611,6 +3875,9 @@ pub mod aave_v3_debt_token_adaptor_v1_flash_loan {
             /// Represents function calls for the AaveV3DebtTokenAdaptor V1
             #[prost(message, tag = "34")]
             AaveV3DebtTokenV1Calls(super::super::AaveV3DebtTokenAdaptorV1Calls),
+            /// Represents function calls for the PendleAdaptorV1
+            #[prost(message, tag = "35")]
+            PendleV1Calls(super::super::PendleAdaptorV1Calls),
         }
     }
 }
@@ -5054,7 +5321,7 @@ pub struct AdaptorCall {
     /// The function call data for the adaptor
     #[prost(
         oneof = "adaptor_call::CallData",
-        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36"
+        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37"
     )]
     pub call_data: ::core::option::Option<adaptor_call::CallData>,
 }
@@ -5168,6 +5435,9 @@ pub mod adaptor_call {
         /// Represents function calls for the StakingAdaptorV1
         #[prost(message, tag = "36")]
         StakingV1Calls(super::StakingAdaptorV1Calls),
+        /// Represents function calls for the PendleAdaptorV1
+        #[prost(message, tag = "37")]
+        PendleV1Calls(super::PendleAdaptorV1Calls),
     }
 }
 ///
