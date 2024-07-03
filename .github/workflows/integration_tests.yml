@@ -13,7 +13,7 @@ env:
   IMAGE_NAME: steward-steward
   HARDHAT_IMAGE_NAME: steward-hardhat
   ORCHESTRATOR_IMAGE_NAME: ghcr.io/peggyjv/gravity-bridge-orchestrator:main
-  SOMMELIER_IMAGE: ghcr.io/peggyjv/sommelier-sommelier:main
+  SOMMELIER_IMAGE: ghcr.io/peggyjv/sommelier-sommelier:v7.0.1
   STEWARD_ARTIFACT: steward_steward
   HARDHAT_ARTIFACT: steward_hardhat
   UPLOAD_DIR: /tmp/uploaded_artifacts
