@@ -7,6 +7,8 @@ import (
 	"github.com/peggyjv/steward/steward_proto_go/steward_proto"
 )
 
+// AaveV2ATokenAdaptorV2CallBuilder is a builder for AaveV2ATokenAdaptorV2 calls.
+// Contract: https://github.com/PeggyJV/cellar-contracts/blob/main/src/modules/adaptors/Aave/AaveATokenAdaptor.sol
 type AaveV2ATokenAdaptorV2CallBuilder struct {
 	adaptor common.Address
 	calls   []*steward_proto.AaveATokenAdaptorV2

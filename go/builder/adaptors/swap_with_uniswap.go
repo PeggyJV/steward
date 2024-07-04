@@ -7,7 +7,8 @@ import (
 	"github.com/peggyjv/steward/steward_proto_go/steward_proto"
 )
 
-// Builder for SwapWithUniswapAdaptorV1
+// SwapWithUniswapAdaptorV1CallBuilder is a builder for SwapWithUniswapAdaptorV1 calls
+// Contract: https://github.com/PeggyJV/cellar-contracts/blob/main/src/modules/adaptors/Uniswap/SwapWithUniswapAdaptor.sol
 type SwapWithUniswapAdaptorV1CallBuilder struct {
 	adaptor common.Address
 	calls   []*steward_proto.SwapWithUniswapAdaptorV1
@@ -21,7 +22,6 @@ func NewSwapWithUniswapAdaptorV1CallBuilder(adaptor common.Address) *SwapWithUni
 	}
 }
 
-// Build builds the AdaptorCall
 func (b *SwapWithUniswapAdaptorV1CallBuilder) Build() *steward_proto.AdaptorCall {
 	return &steward_proto.AdaptorCall{
 		Adaptor: b.adaptor.Hex(),

@@ -13,6 +13,8 @@ const (
 	BalancerSwapKindGivenOut
 )
 
+// BalancerPoolAdaptorV1CallBuilder is a builder for BalancerPoolAdaptorV1 calls
+// Contract: https://github.com/PeggyJV/cellar-contracts/blob/main/src/modules/adaptors/Balancer/BalancerPoolAdaptor.sol
 type BalancerPoolAdaptorV1CallBuilder struct {
 	adaptor common.Address
 	calls   []*steward_proto.BalancerPoolAdaptorV1

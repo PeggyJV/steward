@@ -7,7 +7,8 @@ import (
 	"github.com/peggyjv/steward/steward_proto_go/steward_proto"
 )
 
-// Builder
+// PendleAdaptorCallBuilder is a builder for PendleAdaptorV1 calls
+// Contract: https://github.com/PeggyJV/cellar-contracts/blob/main/src/modules/adaptors/Pendle/PendleAdaptor.sol
 type PendleAdaptorCallBuilder struct {
 	adaptor common.Address
 	calls   []*steward_proto.PendleAdaptorV1

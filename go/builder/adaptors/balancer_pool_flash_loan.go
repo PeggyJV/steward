@@ -7,7 +7,8 @@ import (
 	"github.com/peggyjv/steward/steward_proto_go/steward_proto"
 )
 
-// Builder
+// BalancerPoolAdaptorV1CallBuilder is a builder for using flash loans with the BalancerPoolAdaptorV1 adaptor.
+// Contract: https://github.com/PeggyJV/cellar-contracts/blob/main/src/modules/adaptors/Balancer/BalancerPoolAdaptor.sol
 type BalancerPoolFlashLoanAdaptorV1CallBuilder struct {
 	adaptor common.Address
 	calls   []*steward_proto.BalancerPoolAdaptorV1FlashLoan

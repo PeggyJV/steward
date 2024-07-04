@@ -8,16 +8,19 @@ import (
 	"github.com/peggyjv/steward/steward_proto_go/steward_proto"
 )
 
+// CellarCallBuilder is the builder for cellar call data. It can be used to string together multiple function calls to one Cellar. Function calls will execute in the order they are added to the builder.
 type CellarCallBuilder struct {
 	functionCalls []*steward_proto.CellarV2_5_FunctionCall
 }
 
+// NewCallDataBuilder creates a new CallDataBuilder
 func NewCallDataBuilder() *CellarCallBuilder {
 	return &CellarCallBuilder{
 		functionCalls: make([]*steward_proto.CellarV2_5_FunctionCall, 0),
 	}
 }
 
+// Build returns the CallData struct with the function calls added to the builder
 func (cdb *CellarCallBuilder) Build() (*steward_proto.CellarV2_5, error) {
 	if len(cdb.functionCalls) == 0 {
 		return nil, fmt.Errorf("no function calls added to CallDataBuilder")
