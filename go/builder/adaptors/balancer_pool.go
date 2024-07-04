@@ -49,7 +49,7 @@ func (b *BalancerPoolAdaptorV1CallBuilder) RevokeApproval(asset common.Address, 
 	return b
 }
 
-type SingleSwap struct {
+type BalancerSingleSwap struct {
 	poolId   string
 	kind     int
 	assetIn  common.Address
@@ -58,12 +58,12 @@ type SingleSwap struct {
 	userData []byte
 }
 
-type SwapData struct {
+type BalancerSwapData struct {
 	minAmountsForSwaps []*big.Int
 	swapDeadlines      []*big.Int
 }
 
-func (b *BalancerPoolAdaptorV1CallBuilder) JoinPool(targetBpt common.Address, swapsBeforeJoin []*SingleSwap, swapData SwapData, minimumBPT *big.Int) *BalancerPoolAdaptorV1CallBuilder {
+func (b *BalancerPoolAdaptorV1CallBuilder) JoinPool(targetBpt common.Address, swapsBeforeJoin []*BalancerSingleSwap, swapData BalancerSwapData, minimumBPT *big.Int) *BalancerPoolAdaptorV1CallBuilder {
 	singleSwaps := make([]*steward_proto.BalancerPoolAdaptorV1_SingleSwap, len(swapsBeforeJoin))
 	for i, swap := range swapsBeforeJoin {
 		singleSwaps[i] = &steward_proto.BalancerPoolAdaptorV1_SingleSwap{
@@ -100,14 +100,14 @@ func (b *BalancerPoolAdaptorV1CallBuilder) JoinPool(targetBpt common.Address, sw
 	return b
 }
 
-type ExitPoolRequest struct {
+type BalancerExitPoolRequest struct {
 	assets            []common.Address
 	minAmountsOut     []big.Int
 	userData          []byte
 	toInternalBalance bool
 }
 
-func (b *BalancerPoolAdaptorV1CallBuilder) ExitPool(targetBpt common.Address, swapsAfterExit []*SingleSwap, swapData SwapData, exitRequest *ExitPoolRequest) *BalancerPoolAdaptorV1CallBuilder {
+func (b *BalancerPoolAdaptorV1CallBuilder) ExitPool(targetBpt common.Address, swapsAfterExit []*BalancerSingleSwap, swapData BalancerSwapData, exitRequest *BalancerExitPoolRequest) *BalancerPoolAdaptorV1CallBuilder {
 	singleSwaps := make([]*steward_proto.BalancerPoolAdaptorV1_SingleSwap, len(swapsAfterExit))
 	for i, swap := range swapsAfterExit {
 		singleSwaps[i] = &steward_proto.BalancerPoolAdaptorV1_SingleSwap{
