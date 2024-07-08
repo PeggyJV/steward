@@ -15,7 +15,7 @@ type PendleAdaptorCallBuilder struct {
 }
 
 // Constructor
-func NewPendleAdaptorCall(adaptor common.Address) *PendleAdaptorCallBuilder {
+func NewPendleAdaptorV1CallBuilder(adaptor common.Address) *PendleAdaptorCallBuilder {
 	return &PendleAdaptorCallBuilder{
 		adaptor: adaptor,
 		calls:   make([]*steward_proto.PendleAdaptorV1, 0),
@@ -52,7 +52,7 @@ func convertPendleSwapData(data PendleSwapData) *steward_proto.PendleAdaptorV1_S
 
 type PendleTokenInput struct {
 	TokenIn     common.Address
-	NetTokenIn  big.Int
+	NetTokenIn  *big.Int
 	TokenMintSy common.Address
 	PendleSwap  common.Address
 	SwapData    PendleSwapData
@@ -69,11 +69,11 @@ func convertPendleTokenInput(input PendleTokenInput) *steward_proto.PendleAdapto
 }
 
 type PendleApproxParams struct {
-	GuessMin      big.Int
-	GuessMax      big.Int
-	GuessOffchain big.Int
-	MaxIteration  big.Int
-	Eps           big.Int
+	GuessMin      *big.Int
+	GuessMax      *big.Int
+	GuessOffchain *big.Int
+	MaxIteration  *big.Int
+	Eps           *big.Int
 }
 
 func convertPendleApproxParams(params PendleApproxParams) *steward_proto.PendleAdaptorV1_ApproxParams {
@@ -88,7 +88,7 @@ func convertPendleApproxParams(params PendleApproxParams) *steward_proto.PendleA
 
 type PendleTokenOutput struct {
 	TokenOut      common.Address
-	MinTokenOut   big.Int
+	MinTokenOut   *big.Int
 	TokenRedeemSy common.Address
 	PendleSwap    common.Address
 	SwapData      PendleSwapData
@@ -104,7 +104,7 @@ func convertPendleTokenOutput(output PendleTokenOutput) *steward_proto.PendleAda
 	}
 }
 
-func (b *PendleAdaptorCallBuilder) MintSyFromToken(market common.Address, minSyOut big.Int, tokenInput PendleTokenInput) *PendleAdaptorCallBuilder {
+func (b *PendleAdaptorCallBuilder) MintSyFromToken(market common.Address, minSyOut *big.Int, tokenInput PendleTokenInput) *PendleAdaptorCallBuilder {
 	b.calls = append(b.calls, &steward_proto.PendleAdaptorV1{
 		Function: &steward_proto.PendleAdaptorV1_MintSyFromToken_{
 			MintSyFromToken: &steward_proto.PendleAdaptorV1_MintSyFromToken{
@@ -118,7 +118,7 @@ func (b *PendleAdaptorCallBuilder) MintSyFromToken(market common.Address, minSyO
 	return b
 }
 
-func (b *PendleAdaptorCallBuilder) MintPyFromSy(market common.Address, netSyIn big.Int, minPyOut big.Int) *PendleAdaptorCallBuilder {
+func (b *PendleAdaptorCallBuilder) MintPyFromSy(market common.Address, netSyIn *big.Int, minPyOut *big.Int) *PendleAdaptorCallBuilder {
 	b.calls = append(b.calls, &steward_proto.PendleAdaptorV1{
 		Function: &steward_proto.PendleAdaptorV1_MintPyFromSy_{
 			MintPyFromSy: &steward_proto.PendleAdaptorV1_MintPyFromSy{
@@ -132,7 +132,7 @@ func (b *PendleAdaptorCallBuilder) MintPyFromSy(market common.Address, netSyIn b
 	return b
 }
 
-func (b *PendleAdaptorCallBuilder) SwapExactPtForYt(market common.Address, exactPtIn big.Int, minYtOut big.Int, guessTotalYtToSwap PendleApproxParams) *PendleAdaptorCallBuilder {
+func (b *PendleAdaptorCallBuilder) SwapExactPtForYt(market common.Address, exactPtIn *big.Int, minYtOut *big.Int, guessTotalYtToSwap PendleApproxParams) *PendleAdaptorCallBuilder {
 	b.calls = append(b.calls, &steward_proto.PendleAdaptorV1{
 		Function: &steward_proto.PendleAdaptorV1_SwapExactPtForYt_{
 			SwapExactPtForYt: &steward_proto.PendleAdaptorV1_SwapExactPtForYt{
@@ -148,7 +148,7 @@ func (b *PendleAdaptorCallBuilder) SwapExactPtForYt(market common.Address, exact
 }
 
 // SwapExactYtForPt
-func (b *PendleAdaptorCallBuilder) SwapExactYtForPt(market common.Address, exactYtIn big.Int, minPtOut big.Int, guessTotalPtToSwap PendleApproxParams) *PendleAdaptorCallBuilder {
+func (b *PendleAdaptorCallBuilder) SwapExactYtForPt(market common.Address, exactYtIn *big.Int, minPtOut *big.Int, guessTotalPtToSwap PendleApproxParams) *PendleAdaptorCallBuilder {
 	b.calls = append(b.calls, &steward_proto.PendleAdaptorV1{
 		Function: &steward_proto.PendleAdaptorV1_SwapExactYtForPt_{
 			SwapExactYtForPt: &steward_proto.PendleAdaptorV1_SwapExactYtForPt{
@@ -164,7 +164,7 @@ func (b *PendleAdaptorCallBuilder) SwapExactYtForPt(market common.Address, exact
 }
 
 // AddLiquidityDualSyAndPt
-func (b *PendleAdaptorCallBuilder) AddLiquidityDualSyAndPt(market common.Address, netSyDesired big.Int, netPtDesired big.Int, minLpOut big.Int) *PendleAdaptorCallBuilder {
+func (b *PendleAdaptorCallBuilder) AddLiquidityDualSyAndPt(market common.Address, netSyDesired *big.Int, netPtDesired *big.Int, minLpOut *big.Int) *PendleAdaptorCallBuilder {
 	b.calls = append(b.calls, &steward_proto.PendleAdaptorV1{
 		Function: &steward_proto.PendleAdaptorV1_AddLiquidityDualSyAndPt_{
 			AddLiquidityDualSyAndPt: &steward_proto.PendleAdaptorV1_AddLiquidityDualSyAndPt{
@@ -180,7 +180,7 @@ func (b *PendleAdaptorCallBuilder) AddLiquidityDualSyAndPt(market common.Address
 }
 
 // RedeemPyToSy
-func (b *PendleAdaptorCallBuilder) RedeemPyToSy(market common.Address, netPyIn big.Int, minSyOut big.Int) *PendleAdaptorCallBuilder {
+func (b *PendleAdaptorCallBuilder) RedeemPyToSy(market common.Address, netPyIn *big.Int, minSyOut *big.Int) *PendleAdaptorCallBuilder {
 	b.calls = append(b.calls, &steward_proto.PendleAdaptorV1{
 		Function: &steward_proto.PendleAdaptorV1_RedeemPyToSy_{
 			RedeemPyToSy: &steward_proto.PendleAdaptorV1_RedeemPyToSy{
@@ -195,7 +195,7 @@ func (b *PendleAdaptorCallBuilder) RedeemPyToSy(market common.Address, netPyIn b
 }
 
 // RedeemSyToToken
-func (b *PendleAdaptorCallBuilder) RedeemSyToToken(market common.Address, netSyIn big.Int, tokenOutput PendleTokenOutput) *PendleAdaptorCallBuilder {
+func (b *PendleAdaptorCallBuilder) RedeemSyToToken(market common.Address, netSyIn *big.Int, tokenOutput PendleTokenOutput) *PendleAdaptorCallBuilder {
 	b.calls = append(b.calls, &steward_proto.PendleAdaptorV1{
 		Function: &steward_proto.PendleAdaptorV1_RedeemSyToToken_{
 			RedeemSyToToken: &steward_proto.PendleAdaptorV1_RedeemSyToToken{

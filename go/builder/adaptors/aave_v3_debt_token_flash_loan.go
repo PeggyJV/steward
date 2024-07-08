@@ -15,7 +15,7 @@ type AaveV3DebtTokenFlashLoanAdaptorV1CallBuilder struct {
 }
 
 // Constructor
-func NewAaveV3DebtTokenFlashLoanAdaptorV1Call(adaptor common.Address) *AaveV3DebtTokenFlashLoanAdaptorV1CallBuilder {
+func NewAaveV3DebtTokenFlashLoanAdaptorV1CallBuilder(adaptor common.Address) *AaveV3DebtTokenFlashLoanAdaptorV1CallBuilder {
 	return &AaveV3DebtTokenFlashLoanAdaptorV1CallBuilder{
 		adaptor: adaptor,
 	}
