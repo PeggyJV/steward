@@ -10,18 +10,18 @@ import (
 )
 
 func CreateInsecureSimulateClient() {
-    addr := "localhost:5734"
-    conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
-    if err != nil {
-        panic(err)
-    }
+	addr := "localhost:5734"
+	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		panic(err)
+	}
 
-    defer conn.Close()
+	defer conn.Close()
 
-    client := steward_proto.NewSimulateContractCallServiceClient(conn) 
+	client := steward_proto.NewSimulateContractCallServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-    // Use the client
-    client.Simulate(ctx, nil)
+	// Use the client
+	client.Simulate(ctx, nil)
 }
