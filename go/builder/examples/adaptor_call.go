@@ -11,7 +11,7 @@ import (
 	"github.com/peggyjv/steward/go/builder/adaptors"
 )
 
-func ExampleDepositToAaveRequest() {
+func ExampleAdaptorCall() {
 	// Get client and context
 	client, err := CreateTlsClient()
 	if err != nil {
@@ -30,7 +30,7 @@ func ExampleDepositToAaveRequest() {
 		Build()
 
 	// Build call data
-	callData, err := builder.NewCallDataBuilder().
+	callData, err := builder.NewCellarCallDataBuilder().
 		CallOnAdaptor(adaptorCall).
 		Build()
 	if err != nil {
