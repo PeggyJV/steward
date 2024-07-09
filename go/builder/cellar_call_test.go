@@ -11,7 +11,7 @@ import (
 // Test the CallDataBuilder constructor
 func TestNewCallData(t *testing.T) {
 	// Create a new CellarCallBuilder
-	builder := NewCallDataBuilder()
+	builder := NewCellarCallDataBuilder()
 
 	// Check the builder
 	assert.Equal(t, 0, len(builder.functionCalls))

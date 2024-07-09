@@ -68,7 +68,7 @@ func TestBuilderIntegration(t *testing.T) {
 			WithdrawFromAave(token, amount).
 			Build()
 
-		callData, err := NewCallDataBuilder().
+		callData, err := NewCellarCallDataBuilder().
 			CallOnAdaptor(adaptorCalls).
 			Build()
 
@@ -77,9 +77,7 @@ func TestBuilderIntegration(t *testing.T) {
 		request, err := newRequest(callData)
 		assert.NoError(t, err)
 
-		response, err := client.Simulate(ctx, request)
+		_, err = client.Simulate(ctx, request)
 		assert.NoError(t, err)
-
-		response.EncodedCall
 	})
 }
