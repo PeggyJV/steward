@@ -31,6 +31,10 @@ func TestNewAaveATokenAdaptorCall(t *testing.T) {
 	assert.IsType(t, &steward_proto.AaveATokenAdaptorV2_RevokeApproval{}, builder.calls[0].Function)
 	assert.IsType(t, &steward_proto.AaveATokenAdaptorV2_DepositToAave_{}, builder.calls[1].Function)
 	assert.IsType(t, &steward_proto.AaveATokenAdaptorV2_WithdrawFromAave_{}, builder.calls[2].Function)
+
+	result := builder.Build()
+	assert.Equal(t, adaptor.Hex(), result.Adaptor)
+	assert.IsType(t, &steward_proto.AdaptorCall_AaveATokenV2Calls{}, result.CallData)
 }
 
 func TestEmptyBuilder(t *testing.T) {
@@ -38,6 +42,10 @@ func TestEmptyBuilder(t *testing.T) {
 	builder := NewAaveV2ATokenAdaptorV2CallBuilder(adaptor)
 
 	assert.Equal(t, 0, len(builder.calls))
+
+	result := builder.Build()
+	assert.Equal(t, adaptor.Hex(), result.Adaptor)
+	assert.IsType(t, &steward_proto.AdaptorCall_AaveATokenV2Calls{}, result.CallData)
 }
 
 func TestRevokeApproval(t *testing.T) {

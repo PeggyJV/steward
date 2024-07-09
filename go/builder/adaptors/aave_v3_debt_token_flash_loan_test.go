@@ -33,4 +33,5 @@ func TestRequestFlashLoan(t *testing.T) {
 
 	assert.Equal(t, 1, len(builder.calls))
 	assert.IsType(t, &steward_proto.AaveV3DebtTokenAdaptorV1FlashLoan_FlashLoan{}, builder.calls[0].FlashLoan)
+
 }
