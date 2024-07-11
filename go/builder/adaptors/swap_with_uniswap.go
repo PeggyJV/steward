@@ -33,6 +33,19 @@ func (b *SwapWithUniswapAdaptorV1CallBuilder) Build() *steward_proto.AdaptorCall
 	}
 }
 
+func (b *SwapWithUniswapAdaptorV1CallBuilder) RevokeApproval(asset common.Address, spender common.Address) *SwapWithUniswapAdaptorV1CallBuilder {
+	b.calls = append(b.calls, &steward_proto.SwapWithUniswapAdaptorV1{
+		Function: &steward_proto.SwapWithUniswapAdaptorV1_RevokeApproval{
+			RevokeApproval: &steward_proto.RevokeApproval{
+				Asset:   asset.Hex(),
+				Spender: spender.Hex(),
+			},
+		},
+	})
+
+	return b
+}
+
 func (b *SwapWithUniswapAdaptorV1CallBuilder) SwapWithUniV2(path []common.Address, amount *big.Int, amountOutMin *big.Int) *SwapWithUniswapAdaptorV1CallBuilder {
 	pathStrs := make([]string, 0)
 	for _, addr := range path {

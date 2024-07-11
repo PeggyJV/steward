@@ -25,6 +25,20 @@ func TestSwapWithUniswapAdaptorV1Build(t *testing.T) {
 	assert.NotNil(t, call.CallData)
 }
 
+func TestSwapWithUniswapRevokeApproval(t *testing.T) {
+	adaptor := common.HexToAddress("0x1234567890abcdef1234567890abcdef12345678")
+	asset := common.HexToAddress("0xadefabcdefabcdefabcdefabcdefabcdefabcdef")
+	spender := common.HexToAddress("0x1234567890abcdef1234567890abcdef12345678")
+
+	builder := NewSwapWithUniswapAdaptorV1CallBuilder(adaptor).
+		RevokeApproval(asset, spender)
+
+	assert.Len(t, builder.calls, 1)
+	call := builder.calls[0].GetRevokeApproval()
+	assert.Equal(t, asset.Hex(), call.Asset)
+	assert.Equal(t, spender.Hex(), call.Spender)
+}
+
 func TestSwapWithUniV2(t *testing.T) {
 	adaptor := common.HexToAddress("0x1234567890abcdef1234567890abcdef12345678")
 	path := []common.Address{

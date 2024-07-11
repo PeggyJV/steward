@@ -34,6 +34,19 @@ func (b *PendleAdaptorCallBuilder) Build() *steward_proto.AdaptorCall {
 	}
 }
 
+func (b *PendleAdaptorCallBuilder) RevokeApproval(asset common.Address, spender common.Address) *PendleAdaptorCallBuilder {
+	b.calls = append(b.calls, &steward_proto.PendleAdaptorV1{
+		Function: &steward_proto.PendleAdaptorV1_RevokeApproval{
+			RevokeApproval: &steward_proto.RevokeApproval{
+				Asset:   asset.Hex(),
+				Spender: spender.Hex(),
+			},
+		},
+	})
+
+	return b
+}
+
 type PendleSwapData struct {
 	SwapType    int32
 	ExtRouter   common.Address

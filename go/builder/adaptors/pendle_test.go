@@ -26,6 +26,21 @@ func TestBuild(t *testing.T) {
 	assert.NotNil(t, call.CallData)
 }
 
+func TestPendleRevokeApproval(t *testing.T) {
+	adaptor := common.HexToAddress("0x1234567890abcdef1234567890abcdef12345678")
+	asset := common.HexToAddress("0xabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef")
+	spender := common.HexToAddress("0x1234567890abcdef1234567890abcdef12345678")
+
+	builder := NewPendleAdaptorV1CallBuilder(adaptor).
+		RevokeApproval(asset, spender)
+
+	assert.Len(t, builder.calls, 1)
+	call := builder.calls[0].GetRevokeApproval()
+	assert.Equal(t, asset.Hex(), call.Asset)
+	assert.Equal(t, spender.Hex(), call.Spender)
+	assert.IsType(t, &steward_proto.PendleAdaptorV1_RevokeApproval{}, call)
+}
+
 func TestAddLiquidityDualSyAndPt(t *testing.T) {
 	adaptor := common.HexToAddress("0x1234567890abcdef1234567890abcdef12345678")
 	market := common.HexToAddress("0xabcdefabcdefabcdefabcdefabcdefabcdefabcdef")

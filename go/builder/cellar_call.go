@@ -143,7 +143,7 @@ func (cdb *CellarCallDataBuilder) SwapPositions(index1, index2 uint32, inDebtArr
 }
 
 // SetShareLockPeriod adds call data for the SetShareLockPeriod function to the builder
-func (cdb *CellarCallDataBuilder) SetShareLockPeriod(newLock big.Int) *CellarCallDataBuilder {
+func (cdb *CellarCallDataBuilder) SetShareLockPeriod(newLock *big.Int) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_SetShareLockPeriod{
 			SetShareLockPeriod: &steward_proto.CellarV2_5_SetShareLockPeriod{
@@ -177,6 +177,19 @@ func (cdb *CellarCallDataBuilder) LiftShutdown() *CellarCallDataBuilder {
 	return cdb
 }
 
+// AddAdaptorToCatalogue adds call data for the AddAdaptorToCatalogue function to the builder
+func (cdb *CellarCallDataBuilder) AddAdaptorToCatalogue(adaptor common.Address) *CellarCallDataBuilder {
+	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
+		Function: &steward_proto.CellarV2_5_FunctionCall_AddAdaptorToCatalogue{
+			AddAdaptorToCatalogue: &steward_proto.CellarV2_5_AddAdaptorToCatalogue{
+				Adaptor: adaptor.Hex(),
+			},
+		},
+	})
+
+	return cdb
+}
+
 // RemoveAdaptorFromCatalogue adds call data for the RemoveAdaptorFromCatalogue function to the builder
 func (cdb *CellarCallDataBuilder) RemoveAdaptorFromCatalogue(adaptor common.Address) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
@@ -204,7 +217,7 @@ func (cdb *CellarCallDataBuilder) RemovePositionFromCatalogue(positionId uint32)
 }
 
 // DecreaseShareSupplyCap adds call data for the DecreaseShareSupplyCap function to the builder
-func (cdb *CellarCallDataBuilder) DecreaseShareSupplyCap(newCap big.Int) *CellarCallDataBuilder {
+func (cdb *CellarCallDataBuilder) DecreaseShareSupplyCap(newCap *big.Int) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_DecreaseShareSupplyCap{
 			DecreaseShareSupplyCap: &steward_proto.CellarV2_5_DecreaseShareSupplyCap{
@@ -230,7 +243,7 @@ func (cdb *CellarCallDataBuilder) AddPositionToCatalogue(positionId uint32) *Cel
 }
 
 // SetRebalanceDeviation adds call data for the SetRebalanceDeviation function to the builder
-func (cdb *CellarCallDataBuilder) SetRebalanceDeviation(newDeviation big.Int) *CellarCallDataBuilder {
+func (cdb *CellarCallDataBuilder) SetRebalanceDeviation(newDeviation *big.Int) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_SetRebalanceDeviation{
 			SetRebalanceDeviation: &steward_proto.CellarV2_5_SetRebalanceDeviation{
@@ -256,7 +269,7 @@ func (cdb *CellarCallDataBuilder) SetStrategistPlatformCut(newCut uint64) *Cella
 }
 
 // IncreaseShareSupplyCap adds call data for the IncreaseShareSupplyCap function to the builder
-func (cdb *CellarCallDataBuilder) IncreaseShareSupplyCap(newCap big.Int) *CellarCallDataBuilder {
+func (cdb *CellarCallDataBuilder) IncreaseShareSupplyCap(newCap *big.Int) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_IncreaseShareSupplyCap{
 			IncreaseShareSupplyCap: &steward_proto.CellarV2_5_IncreaseShareSupplyCap{
@@ -269,7 +282,7 @@ func (cdb *CellarCallDataBuilder) IncreaseShareSupplyCap(newCap big.Int) *Cellar
 }
 
 // SetSharePriceOracle adds call data for the SetSharePriceOracle function to the builder
-func (cdb *CellarCallDataBuilder) SetSharePriceOracle(registryId big.Int, sharePriceOracle common.Address) *CellarCallDataBuilder {
+func (cdb *CellarCallDataBuilder) SetSharePriceOracle(registryId *big.Int, sharePriceOracle common.Address) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_SetSharePriceOracle{
 			SetSharePriceOracle: &steward_proto.CellarV2_5_SetSharePriceOracle{

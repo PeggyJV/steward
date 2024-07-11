@@ -15,7 +15,7 @@ type BalancerPoolFlashLoanAdaptorV1CallBuilder struct {
 }
 
 // Constructor
-func NewBalancerPoolFlashLoanAdaptorV1Call(adaptor common.Address) *BalancerPoolFlashLoanAdaptorV1CallBuilder {
+func NewBalancerPoolFlashLoanAdaptorV1CallBuilder(adaptor common.Address) *BalancerPoolFlashLoanAdaptorV1CallBuilder {
 	return &BalancerPoolFlashLoanAdaptorV1CallBuilder{
 		adaptor: adaptor,
 	}
