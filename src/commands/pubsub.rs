@@ -1,3 +1,4 @@
+mod add_publisher;
 mod add_subscriber;
 mod remove_subscriber;
 mod subscribe;
@@ -8,6 +9,7 @@ use abscissa_core::{clap::Parser, Command, Runnable};
 /// Commands for managing stewards identity and cellar subscriptions in the pubsub module
 #[derive(Command, Debug, Parser, Runnable)]
 pub enum PubsubCmd {
+    AddPublisher(add_publisher::AddPublisherCmd),
     AddSubscriber(add_subscriber::AddSubscriberCmd),
     RemoveSubscriber(remove_subscriber::RemoveSubscriberCmd),
     Subscribe(subscribe::SubscribeCmd),

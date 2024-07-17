@@ -1,4 +1,7 @@
 use abscissa_core::{clap::Parser, Command, Runnable};
+use steward_proto::proto::cellar_v2_5governance::{
+    function_call::Function, CallType, FunctionCall,
+};
 
 use crate::{
     application::APP,
@@ -6,9 +9,8 @@ use crate::{
     commands::cork_proposal::{get_proposal_json, print_proposal},
     prelude::*,
     proto::{
-        cellar_v2_5governance::{CachePriceRouter, Function},
-        governance_call::Call,
-        CellarV25governance, GovernanceCall,
+        cellar_v2_5governance::CachePriceRouter, governance_call::Call, CellarV25governance,
+        GovernanceCall,
     },
 };
 
@@ -62,10 +64,12 @@ impl Runnable for CachePriceRouterCmd {
 
             let governance_call = GovernanceCall {
                 call: Some(Call::CellarV25(CellarV25governance {
-                    function: Some(Function::CachePriceRouter(CachePriceRouter {
-                        check_total_assets: self.check_total_assets,
-                        allowable_range: self.allowable_range,
-                        expected_price_router: self.expected_price_router.clone(),
+                    call_type: Some(CallType::FunctionCall(FunctionCall {
+                        function: Some(Function::CachePriceRouter(CachePriceRouter {
+                            check_total_assets: self.check_total_assets,
+                            allowable_range: self.allowable_range,
+                            expected_price_router: self.expected_price_router.clone(),
+                        })),
                     })),
                 })),
             };

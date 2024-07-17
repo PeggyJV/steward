@@ -1,16 +1,17 @@
-use abscissa_core::{clap::Parser, Command, Runnable};
-
 use crate::{
     application::APP,
     cellars,
     commands::cork_proposal::{get_proposal_json, print_proposal},
     prelude::*,
     proto::{
-        cellar_v2_2governance::{Function, SetRebalanceDeviation},
-        governance_call::Call,
-        CellarV22governance, GovernanceCall,
+        cellar_v2_2governance::SetRebalanceDeviation, governance_call::Call, CellarV22governance,
+        GovernanceCall,
     },
     utils::string_to_u256,
+};
+use abscissa_core::{clap::Parser, Command, Runnable};
+use steward_proto::proto::cellar_v2_2governance::{
+    function_call::Function, CallType, FunctionCall,
 };
 
 #[derive(Command, Debug, Parser)]
@@ -55,8 +56,10 @@ impl Runnable for SetRebalanceDeviationCmd {
 
             let governance_call = GovernanceCall {
                 call: Some(Call::CellarV22(CellarV22governance {
-                    function: Some(Function::SetRebalanceDeviation(SetRebalanceDeviation {
-                        new_deviation: self.deviation.clone(),
+                    call_type: Some(CallType::FunctionCall(FunctionCall {
+                        function: Some(Function::SetRebalanceDeviation(SetRebalanceDeviation {
+                            new_deviation: self.deviation.clone(),
+                        })),
                     })),
                 })),
             };

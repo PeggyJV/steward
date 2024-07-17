@@ -1,4 +1,7 @@
 use abscissa_core::{clap::Parser, Command, Runnable};
+use steward_proto::proto::cellar_v2_5governance::{
+    function_call::Function, CallType, FunctionCall,
+};
 
 use crate::{
     application::APP,
@@ -6,9 +9,8 @@ use crate::{
     commands::cork_proposal::{get_proposal_json, print_proposal},
     prelude::*,
     proto::{
-        cellar_v2_5governance::{Function, SetSharePriceOracle},
-        governance_call::Call,
-        CellarV25governance, GovernanceCall,
+        cellar_v2_5governance::SetSharePriceOracle, governance_call::Call, CellarV25governance,
+        GovernanceCall,
     },
     utils::string_to_u256,
 };
@@ -64,9 +66,11 @@ impl Runnable for SetSharePriceOracleCmd {
 
             let governance_call = GovernanceCall {
                 call: Some(Call::CellarV25(CellarV25governance {
-                    function: Some(Function::SetSharePriceOracle(SetSharePriceOracle {
-                        registry_id: self.registry_id.clone(),
-                        share_price_oracle: self.share_price_oracle.clone(),
+                    call_type: Some(CallType::FunctionCall(FunctionCall {
+                        function: Some(Function::SetSharePriceOracle(SetSharePriceOracle {
+                            registry_id: self.registry_id.clone(),
+                            share_price_oracle: self.share_price_oracle.clone(),
+                        })),
                     })),
                 })),
             };

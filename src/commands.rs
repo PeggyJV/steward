@@ -12,7 +12,7 @@
 
 mod config_cmd;
 // TODO: Update cork proposal commands to support multicall
-// mod cork_proposal;
+mod cork_proposal;
 mod cosmos_to_eth;
 mod deploy;
 mod encode;
