@@ -4006,7 +4006,7 @@ dependencies = [
 [[package]]
 name = "somm_proto"
 version = "7.0.0"
-source = "git+https://github.com/PeggyJV/sommelier?rev=34bf4246db57270338479c80ba12c50949ca805b#34bf4246db57270338479c80ba12c50949ca805b"
+source = "git+https://github.com/PeggyJV/sommelier?rev=cec0a521bff793c6f01ce05429214113b22a588c#cec0a521bff793c6f01ce05429214113b22a588c"
 dependencies = [
  "bytes",
  "cosmos-sdk-proto",
