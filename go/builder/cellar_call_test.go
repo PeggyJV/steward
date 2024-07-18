@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// Test the CallDataBuilder constructor
-func TestNewCallData(t *testing.T) {
-	// Create a new CellarCallBuilder
+// Test the CellarCallDataBuilder constructor
+func TestNewCellarCallData(t *testing.T) {
+	// Create a new CellarCallDataBuilder
 	builder := NewCellarCallDataBuilder()
 
 	// Check the builder

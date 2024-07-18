@@ -31,22 +31,20 @@ func buildCredentials(clientCertPath string, clientKeyPath string, serverCAPath 
 	return credentials.NewTLS(tlsConfig), nil
 }
 
-func CreateTlsClient() (steward_proto.ContractCallServiceClient, error) {
+func CreateTlsClient() (*grpc.ClientConn, steward_proto.ContractCallServiceClient, error) {
 	// This example uses fake file paths for the auth materials
 	creds, err := buildCredentials("client.crt", "client.key", "server_ca.crt")
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	addr := "localhost:5734"
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(creds))
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-
-	defer conn.Close()
 
 	client := steward_proto.NewContractCallServiceClient(conn)
 
-	return client, nil
+	return conn, client, nil
 }

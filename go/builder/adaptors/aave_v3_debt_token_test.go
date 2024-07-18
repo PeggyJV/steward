@@ -24,7 +24,7 @@ func TestRepayDebt(t *testing.T) {
 	adaptor := common.HexToAddress("0x1234567890123456789012345678901234567890")
 	builder := NewAaveV3DebtTokenAdaptorV1CallBuilder(adaptor)
 
-	asset := common.HexToAddress("0x00000000000000000000000000000000000000000")
+	asset := common.HexToAddress("0x0000000000000000000000000000000000000000")
 	builder.RepayAaveDebt(asset, big.NewInt(100))
 
 	assert.Equal(t, 1, len(builder.calls))

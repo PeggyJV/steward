@@ -27,10 +27,12 @@ func ExampleBroadcastRequests() {
 	subscribers := res.Subscribers
 
 	// Get client
-	client, err := CreateTlsClient()
+	conn, client, err := CreateTlsClient()
 	if err != nil {
 		panic(err)
 	}
+
+	defer conn.Close()
 
 	// Build request
 	request, err := BuildMulticallRequest()

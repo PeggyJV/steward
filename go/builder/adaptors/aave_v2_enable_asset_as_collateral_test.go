@@ -14,7 +14,7 @@ func TestEnableAssetAsCollateral(t *testing.T) {
 	builder := NewAaveV2EnableAssetAsCollateralAdaptorV1CallBuilder(adaptor)
 
 	// Test enabling
-	asset := common.HexToAddress("0x00000000000000000000000000000000000000000")
+	asset := common.HexToAddress("0x0000000000000000000000000000000000000000")
 	builder.SetUserUseReserveAsCollateral(asset, true)
 
 	// Check the builder

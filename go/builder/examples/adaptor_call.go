@@ -13,10 +13,12 @@ import (
 
 func ExampleAdaptorCall() {
 	// Get client and context
-	client, err := CreateTlsClient()
+	conn, client, err := CreateTlsClient()
 	if err != nil {
 		panic(err)
 	}
+
+	defer conn.Close()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()

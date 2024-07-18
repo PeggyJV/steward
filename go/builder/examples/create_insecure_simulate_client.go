@@ -2,6 +2,7 @@ package examples
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/peggyjv/steward/steward_proto_go/steward_proto"
@@ -23,5 +24,11 @@ func CreateInsecureSimulateClient() {
 	defer cancel()
 
 	// Use the client
-	client.Simulate(ctx, nil)
+	resp, err := client.Simulate(ctx, nil)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Printf("Response: %s", resp)
 }
