@@ -12,7 +12,6 @@ pub struct AddAxelarManagedCellarIDsCmd {
     chain_id: u64,
 
     /// Cellar IDs
-    #[clap(long, short)]
     cellar_ids: Vec<String>,
 
     /// Publisher's domain

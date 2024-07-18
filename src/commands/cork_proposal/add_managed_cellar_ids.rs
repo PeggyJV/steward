@@ -8,7 +8,6 @@ use somm_proto::cork::AddManagedCellarIDsProposalWithDeposit;
 )]
 pub struct AddManagedCellarIDsCmd {
     /// Cellar IDs
-    #[clap(long, short)]
     cellar_ids: Vec<String>,
 
     /// Publisher's domain
@@ -18,6 +17,13 @@ pub struct AddManagedCellarIDsCmd {
 
 impl Runnable for AddManagedCellarIDsCmd {
     fn run(&self) {
+        // make sure each cellar ID is a valid evm address
+        for cellar_id in &self.cellar_ids {
+            cellar_id
+                .parse::<ethers::types::Address>()
+                .expect("invalid cellar ID");
+        }
+
         let proposal = AddManagedCellarIDsProposalWithDeposit {
             cellar_ids: self.cellar_ids.clone(),
             publisher_domain: self.publisher_domain.clone(),

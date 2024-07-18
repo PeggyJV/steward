@@ -55,6 +55,8 @@ pub enum StewardCmd {
     Start(StartCmd),
     #[clap(subcommand)]
     Encode(encode::EncodeCmd),
+    #[clap(subcommand)]
+    CorkProposal(cork_proposal::CorkProposalCmd),
 }
 
 /// Entry point for the application. It needs to be a struct to allow using subcommands!
