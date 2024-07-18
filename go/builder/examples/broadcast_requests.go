@@ -3,6 +3,7 @@ package examples
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	pubsub "github.com/peggyjv/sommelier/v7/x/pubsub/types"
@@ -12,8 +13,7 @@ import (
 // executed. Right now there is no single endpoint that handles broadcastic the call to each
 // Steward instance, so we must query the endpoints and then send the request to each one.
 //
-// This example simple sends the requests sequentially in a loop. In production it would be better to
-// send the requests concurrently.
+// This example includes a concurrent loop that sends the request to each subscriber, which is the optimal way to broadcast in production due to the time constraint of the scheduled height.
 func ExampleBroadcastRequests() {
 	// Query the Sommelier chain to get the list of Steward instances
 	sommCtx := client.Context{}.WithNodeURI("http://localhost:26657")
@@ -40,13 +40,23 @@ func ExampleBroadcastRequests() {
 		panic(err)
 	}
 
-	// Send request to each subscriber
-	for _, subscriber := range subscribers {
-		response, err := client.Schedule(context.Background(), request)
-		if err != nil {
-			fmt.Printf("Error sending request to %s: %s\n", subscriber, err)
-		}
+	// Send request to each subscriber concurrently
+	var wg sync.WaitGroup
 
-		fmt.Print("Sent request to ", subscriber, " with response: ", response, "\n")
+	for _, subscriber := range subscribers {
+		wg.Add(1)
+		go func(pushUrl string) {
+			defer wg.Done()
+
+			response, err := client.Schedule(context.Background(), request)
+			if err != nil {
+				fmt.Printf("Error sending request to %s: %s\n", pushUrl, err)
+				return
+			}
+
+			fmt.Print("Sent request to ", pushUrl, " with response: ", response, "\n")
+		}(subscriber.PushUrl)
 	}
+
+	wg.Wait()
 }
