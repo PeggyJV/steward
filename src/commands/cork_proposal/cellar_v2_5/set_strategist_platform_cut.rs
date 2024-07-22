@@ -4,12 +4,14 @@ use crate::{
     commands::cork_proposal::{get_proposal_json, print_proposal},
     prelude::*,
     proto::{
-        cellar_v2_5governance::{Function, SetStrategistPlatformCut},
-        governance_call::Call,
+        cellar_v2_5governance::SetStrategistPlatformCut, governance_call::Call,
         CellarV25governance, GovernanceCall,
     },
 };
 use abscissa_core::{clap::Parser, Command, Runnable};
+use steward_proto::proto::cellar_v2_5governance::{
+    function_call::Function, CallType, FunctionCall,
+};
 
 /// Fees Distributor subcommand
 #[derive(Command, Debug, Parser)]
@@ -49,9 +51,11 @@ impl Runnable for SetStrategistPlatformCutCmd {
 
             let governance_call = GovernanceCall {
                 call: Some(Call::CellarV25(CellarV25governance {
-                    function: Some(Function::SetStrategistPlatformCut(
-                        SetStrategistPlatformCut { new_cut: self.cut },
-                    )),
+                    call_type: Some(CallType::FunctionCall(FunctionCall {
+                        function: Some(Function::SetStrategistPlatformCut(
+                            SetStrategistPlatformCut { new_cut: self.cut },
+                        )),
+                    })),
                 })),
             };
 

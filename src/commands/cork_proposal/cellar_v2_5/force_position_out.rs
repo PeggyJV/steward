@@ -1,4 +1,7 @@
 use abscissa_core::{clap::Parser, Command, Runnable};
+use steward_proto::proto::cellar_v2_5governance::{
+    function_call::Function, CallType, FunctionCall,
+};
 
 use crate::{
     application::APP,
@@ -6,9 +9,8 @@ use crate::{
     commands::cork_proposal::{get_proposal_json, print_proposal},
     prelude::*,
     proto::{
-        cellar_v2_5governance::{ForcePositionOut, Function},
-        governance_call::Call,
-        CellarV25governance, GovernanceCall,
+        cellar_v2_5governance::ForcePositionOut, governance_call::Call, CellarV25governance,
+        GovernanceCall,
     },
 };
 
@@ -57,10 +59,12 @@ impl Runnable for ForcePositionOutCmd {
 
             let governance_call = GovernanceCall {
                 call: Some(Call::CellarV25(CellarV25governance {
-                    function: Some(Function::ForcePositionOut(ForcePositionOut {
-                        position_id: self.position_id,
-                        index: self.index,
-                        in_debt_array: self.in_debt_array,
+                    call_type: Some(CallType::FunctionCall(FunctionCall {
+                        function: Some(Function::ForcePositionOut(ForcePositionOut {
+                            position_id: self.position_id,
+                            index: self.index,
+                            in_debt_array: self.in_debt_array,
+                        })),
                     })),
                 })),
             };

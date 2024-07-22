@@ -4,12 +4,14 @@ use crate::{
     commands::cork_proposal::{get_proposal_json, print_proposal},
     prelude::*,
     proto::{
-        cellar_v2_5governance::{Function, ToggleIgnorePause},
-        governance_call::Call,
-        CellarV25governance, GovernanceCall,
+        cellar_v2_5governance::ToggleIgnorePause, governance_call::Call, CellarV25governance,
+        GovernanceCall,
     },
 };
 use abscissa_core::{clap::Parser, Command, Runnable};
+use steward_proto::proto::cellar_v2_5governance::{
+    function_call::Function, CallType, FunctionCall,
+};
 
 /// Shutdown subcommand
 #[derive(Command, Debug, Parser)]
@@ -45,7 +47,9 @@ impl Runnable for ToggleIgnorePauseCmd {
 
             let governance_call = GovernanceCall {
                 call: Some(Call::CellarV25(CellarV25governance {
-                    function: Some(Function::ToggleIgnorePause(ToggleIgnorePause {})),
+                    call_type: Some(CallType::FunctionCall(FunctionCall {
+                        function: Some(Function::ToggleIgnorePause(ToggleIgnorePause {})),
+                    })),
                 })),
             };
 

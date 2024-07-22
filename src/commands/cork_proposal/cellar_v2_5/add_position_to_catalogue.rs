@@ -1,4 +1,7 @@
 use abscissa_core::{clap::Parser, Command, Runnable};
+use steward_proto::proto::cellar_v2_5governance::{
+    function_call::Function, CallType, FunctionCall,
+};
 
 use crate::{
     application::APP,
@@ -6,9 +9,8 @@ use crate::{
     commands::cork_proposal::{get_proposal_json, print_proposal},
     prelude::*,
     proto::{
-        cellar_v2_5governance::{AddPositionToCatalogue, Function},
-        governance_call::Call,
-        CellarV25governance, GovernanceCall,
+        cellar_v2_5governance::AddPositionToCatalogue, governance_call::Call, CellarV25governance,
+        GovernanceCall,
     },
 };
 
@@ -49,8 +51,10 @@ impl Runnable for AddPositionToCatalogueCmd {
 
             let governance_call = GovernanceCall {
                 call: Some(Call::CellarV25(CellarV25governance {
-                    function: Some(Function::AddPositionToCatalogue(AddPositionToCatalogue {
-                        position_id: self.position_id,
+                    call_type: Some(CallType::FunctionCall(FunctionCall {
+                        function: Some(Function::AddPositionToCatalogue(AddPositionToCatalogue {
+                            position_id: self.position_id,
+                        })),
                     })),
                 })),
             };

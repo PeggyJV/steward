@@ -1,4 +1,6 @@
 mod aave_v2_stablecoin;
+mod add_axelar_managed_cellar_ids;
+mod add_managed_cellar_ids;
 mod cellar_v1;
 mod cellar_v2;
 mod cellar_v2_2;
@@ -10,6 +12,8 @@ use crate::{
 use abscissa_core::{clap::Parser, Command, Runnable};
 use somm_proto::{axelar_cork::AxelarScheduledCorkProposal, cork::ScheduledCorkProposal};
 
+use self::add_axelar_managed_cellar_ids::AddAxelarManagedCellarIDsCmd;
+use self::add_managed_cellar_ids::AddManagedCellarIDsCmd;
 use self::cellar_v1::CellarV1Cmd;
 use self::cellar_v2::CellarV2Cmd;
 use self::cellar_v2_2::CellarV2_2Cmd;
@@ -21,6 +25,12 @@ pub enum CorkProposalCmd {
     /// Generates a proposal template for the Aave V2 Stablecoin cellar
     #[clap(name = "aave-v2-stablecoin", subcommand)]
     AaveV2StablecoinCellar(AaveV2StablecoinCellarCmd),
+    /// Generates a proposal template for the AddManagedCellarIDs proposal
+    #[clap(name = "add-managed-cellar-ids")]
+    AddManagedCellarIDs(AddManagedCellarIDsCmd),
+    /// Generates a proposal template for the AddAxelarManagedCellarIDs proposal
+    #[clap(name = "add-axelar-managed-cellar-ids")]
+    AddAxelarManagedCellarIDs(AddAxelarManagedCellarIDsCmd),
     /// Generates a proposal template for a V1 cellar
     #[clap(name = "cellar-v1", subcommand)]
     CellarV1(CellarV1Cmd),

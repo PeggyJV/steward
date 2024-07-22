@@ -12,7 +12,7 @@
 
 mod config_cmd;
 // TODO: Update cork proposal commands to support multicall
-// mod cork_proposal;
+mod cork_proposal;
 mod cosmos_to_eth;
 mod deploy;
 mod encode;
@@ -55,6 +55,8 @@ pub enum StewardCmd {
     Start(StartCmd),
     #[clap(subcommand)]
     Encode(encode::EncodeCmd),
+    #[clap(subcommand)]
+    CorkProposal(cork_proposal::CorkProposalCmd),
 }
 
 /// Entry point for the application. It needs to be a struct to allow using subcommands!
