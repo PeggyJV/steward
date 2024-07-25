@@ -7,7 +7,8 @@ import (
 	"github.com/peggyjv/steward/steward_proto_go/steward_proto"
 )
 
-// Builder for SwapWithUniswapAdaptorV1
+// SwapWithUniswapAdaptorV1CallBuilder is a builder for SwapWithUniswapAdaptorV1 calls
+// Contract: https://github.com/PeggyJV/cellar-contracts/blob/main/src/modules/adaptors/Uniswap/SwapWithUniswapAdaptor.sol
 type SwapWithUniswapAdaptorV1CallBuilder struct {
 	adaptor common.Address
 	calls   []*steward_proto.SwapWithUniswapAdaptorV1
@@ -21,7 +22,6 @@ func NewSwapWithUniswapAdaptorV1CallBuilder(adaptor common.Address) *SwapWithUni
 	}
 }
 
-// Build builds the AdaptorCall
 func (b *SwapWithUniswapAdaptorV1CallBuilder) Build() *steward_proto.AdaptorCall {
 	return &steward_proto.AdaptorCall{
 		Adaptor: b.adaptor.Hex(),
@@ -31,6 +31,19 @@ func (b *SwapWithUniswapAdaptorV1CallBuilder) Build() *steward_proto.AdaptorCall
 			},
 		},
 	}
+}
+
+func (b *SwapWithUniswapAdaptorV1CallBuilder) RevokeApproval(asset common.Address, spender common.Address) *SwapWithUniswapAdaptorV1CallBuilder {
+	b.calls = append(b.calls, &steward_proto.SwapWithUniswapAdaptorV1{
+		Function: &steward_proto.SwapWithUniswapAdaptorV1_RevokeApproval{
+			RevokeApproval: &steward_proto.RevokeApproval{
+				Asset:   asset.Hex(),
+				Spender: spender.Hex(),
+			},
+		},
+	})
+
+	return b
 }
 
 func (b *SwapWithUniswapAdaptorV1CallBuilder) SwapWithUniV2(path []common.Address, amount *big.Int, amountOutMin *big.Int) *SwapWithUniswapAdaptorV1CallBuilder {

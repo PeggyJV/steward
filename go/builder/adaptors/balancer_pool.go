@@ -13,6 +13,8 @@ const (
 	BalancerSwapKindGivenOut
 )
 
+// BalancerPoolAdaptorV1CallBuilder is a builder for BalancerPoolAdaptorV1 calls
+// Contract: https://github.com/PeggyJV/cellar-contracts/blob/main/src/modules/adaptors/Balancer/BalancerPoolAdaptor.sol
 type BalancerPoolAdaptorV1CallBuilder struct {
 	adaptor common.Address
 	calls   []*steward_proto.BalancerPoolAdaptorV1
@@ -49,40 +51,40 @@ func (b *BalancerPoolAdaptorV1CallBuilder) RevokeApproval(asset common.Address, 
 	return b
 }
 
-type SingleSwap struct {
-	poolId   string
-	kind     int
-	assetIn  common.Address
-	assetOut common.Address
-	amount   *big.Int
-	userData []byte
+type BalancerSingleSwap struct {
+	PoolId   string
+	Kind     int
+	AssetIn  common.Address
+	AssetOut common.Address
+	Amount   *big.Int
+	UserData []byte
 }
 
-type SwapData struct {
-	minAmountsForSwaps []*big.Int
-	swapDeadlines      []*big.Int
+type BalancerSwapData struct {
+	MinAmountsForSwaps []*big.Int
+	SwapDeadlines      []*big.Int
 }
 
-func (b *BalancerPoolAdaptorV1CallBuilder) JoinPool(targetBpt common.Address, swapsBeforeJoin []*SingleSwap, swapData SwapData, minimumBPT *big.Int) *BalancerPoolAdaptorV1CallBuilder {
+func (b *BalancerPoolAdaptorV1CallBuilder) JoinPool(targetBpt common.Address, swapsBeforeJoin []*BalancerSingleSwap, swapData BalancerSwapData, minimumBPT *big.Int) *BalancerPoolAdaptorV1CallBuilder {
 	singleSwaps := make([]*steward_proto.BalancerPoolAdaptorV1_SingleSwap, len(swapsBeforeJoin))
 	for i, swap := range swapsBeforeJoin {
 		singleSwaps[i] = &steward_proto.BalancerPoolAdaptorV1_SingleSwap{
-			PoolId:   swap.poolId[:],
-			Kind:     steward_proto.BalancerPoolAdaptorV1_SwapKind(swap.kind),
-			AssetIn:  swap.assetIn.Hex(),
-			AssetOut: swap.assetOut.Hex(),
-			Amount:   swap.amount.String(),
-			UserData: swap.userData,
+			PoolId:   swap.PoolId[:],
+			Kind:     steward_proto.BalancerPoolAdaptorV1_SwapKind(swap.Kind),
+			AssetIn:  swap.AssetIn.Hex(),
+			AssetOut: swap.AssetOut.Hex(),
+			Amount:   swap.Amount.String(),
+			UserData: swap.UserData,
 		}
 	}
 	data := &steward_proto.BalancerPoolAdaptorV1_SwapData{
-		MinAmountsForSwaps: make([]string, len(swapData.minAmountsForSwaps)),
-		SwapDeadlines:      make([]string, len(swapData.swapDeadlines)),
+		MinAmountsForSwaps: make([]string, len(swapData.MinAmountsForSwaps)),
+		SwapDeadlines:      make([]string, len(swapData.SwapDeadlines)),
 	}
-	for i, amount := range swapData.minAmountsForSwaps {
+	for i, amount := range swapData.MinAmountsForSwaps {
 		data.MinAmountsForSwaps[i] = amount.String()
 	}
-	for i, deadline := range swapData.swapDeadlines {
+	for i, deadline := range swapData.SwapDeadlines {
 		data.SwapDeadlines[i] = deadline.String()
 	}
 
@@ -100,42 +102,42 @@ func (b *BalancerPoolAdaptorV1CallBuilder) JoinPool(targetBpt common.Address, sw
 	return b
 }
 
-type ExitPoolRequest struct {
-	assets            []common.Address
-	minAmountsOut     []big.Int
-	userData          []byte
-	toInternalBalance bool
+type BalancerExitPoolRequest struct {
+	Assets            []common.Address
+	MinAmountsOut     []*big.Int
+	UserData          []byte
+	ToInternalBalance bool
 }
 
-func (b *BalancerPoolAdaptorV1CallBuilder) ExitPool(targetBpt common.Address, swapsAfterExit []*SingleSwap, swapData SwapData, exitRequest *ExitPoolRequest) *BalancerPoolAdaptorV1CallBuilder {
+func (b *BalancerPoolAdaptorV1CallBuilder) ExitPool(targetBpt common.Address, swapsAfterExit []*BalancerSingleSwap, swapData BalancerSwapData, exitRequest *BalancerExitPoolRequest) *BalancerPoolAdaptorV1CallBuilder {
 	singleSwaps := make([]*steward_proto.BalancerPoolAdaptorV1_SingleSwap, len(swapsAfterExit))
 	for i, swap := range swapsAfterExit {
 		singleSwaps[i] = &steward_proto.BalancerPoolAdaptorV1_SingleSwap{
-			PoolId:   swap.poolId[:],
-			Kind:     steward_proto.BalancerPoolAdaptorV1_SwapKind(swap.kind),
-			AssetIn:  swap.assetIn.Hex(),
-			AssetOut: swap.assetOut.Hex(),
-			Amount:   swap.amount.String(),
-			UserData: swap.userData,
+			PoolId:   swap.PoolId[:],
+			Kind:     steward_proto.BalancerPoolAdaptorV1_SwapKind(swap.Kind),
+			AssetIn:  swap.AssetIn.Hex(),
+			AssetOut: swap.AssetOut.Hex(),
+			Amount:   swap.Amount.String(),
+			UserData: swap.UserData,
 		}
 	}
 	data := &steward_proto.BalancerPoolAdaptorV1_SwapData{
-		MinAmountsForSwaps: make([]string, len(swapData.minAmountsForSwaps)),
-		SwapDeadlines:      make([]string, len(swapData.swapDeadlines)),
+		MinAmountsForSwaps: make([]string, len(swapData.MinAmountsForSwaps)),
+		SwapDeadlines:      make([]string, len(swapData.SwapDeadlines)),
 	}
-	for i, amount := range swapData.minAmountsForSwaps {
+	for i, amount := range swapData.MinAmountsForSwaps {
 		data.MinAmountsForSwaps[i] = amount.String()
 	}
-	for i, deadline := range swapData.swapDeadlines {
+	for i, deadline := range swapData.SwapDeadlines {
 		data.SwapDeadlines[i] = deadline.String()
 	}
 
-	assets := make([]string, len(exitRequest.assets))
-	minAmountsOut := make([]string, len(exitRequest.minAmountsOut))
-	for i, asset := range exitRequest.assets {
+	assets := make([]string, len(exitRequest.Assets))
+	minAmountsOut := make([]string, len(exitRequest.MinAmountsOut))
+	for i, asset := range exitRequest.Assets {
 		assets[i] = asset.Hex()
 	}
-	for i, amount := range exitRequest.minAmountsOut {
+	for i, amount := range exitRequest.MinAmountsOut {
 		minAmountsOut[i] = amount.String()
 	}
 
@@ -148,8 +150,8 @@ func (b *BalancerPoolAdaptorV1CallBuilder) ExitPool(targetBpt common.Address, sw
 				Request: &steward_proto.BalancerPoolAdaptorV1_ExitPoolRequest{
 					Assets:            assets,
 					MinAmountsOut:     minAmountsOut,
-					UserData:          exitRequest.userData,
-					ToInternalBalance: exitRequest.toInternalBalance,
+					UserData:          exitRequest.UserData,
+					ToInternalBalance: exitRequest.ToInternalBalance,
 				},
 			},
 		},

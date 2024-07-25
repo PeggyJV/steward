@@ -5,6 +5,8 @@ import (
 	"github.com/peggyjv/steward/steward_proto_go/steward_proto"
 )
 
+// AaveV2EnableAssetAsCollateralAdaptorV1CallBuilder builds calls for the AaveV2EnableAssetAsCollateralAdaptorV1 adaptor
+// Contract: https://github.com/PeggyJV/cellar-contracts/blob/main/src/modules/adaptors/Aave/AaveV2EnableAssetAsCollateralAdaptor.sol
 type AaveV2EnableAssetAsCollateralAdaptorV1CallBuilder struct {
 	adaptor common.Address
 	calls   []*steward_proto.AaveV2EnableAssetAsCollateralAdaptorV1

@@ -31,4 +31,53 @@ func TestNewAaveATokenAdaptorCall(t *testing.T) {
 	assert.IsType(t, &steward_proto.AaveATokenAdaptorV2_RevokeApproval{}, builder.calls[0].Function)
 	assert.IsType(t, &steward_proto.AaveATokenAdaptorV2_DepositToAave_{}, builder.calls[1].Function)
 	assert.IsType(t, &steward_proto.AaveATokenAdaptorV2_WithdrawFromAave_{}, builder.calls[2].Function)
+
+	result := builder.Build()
+	assert.Equal(t, adaptor.Hex(), result.Adaptor)
+	assert.IsType(t, &steward_proto.AdaptorCall_AaveATokenV2Calls{}, result.CallData)
+}
+
+func TestEmptyBuilder(t *testing.T) {
+	adaptor := common.HexToAddress("0x1234567890123456789012345678901234567890")
+	builder := NewAaveV2ATokenAdaptorV2CallBuilder(adaptor)
+
+	assert.Equal(t, 0, len(builder.calls))
+
+	result := builder.Build()
+	assert.Equal(t, adaptor.Hex(), result.Adaptor)
+	assert.IsType(t, &steward_proto.AdaptorCall_AaveATokenV2Calls{}, result.CallData)
+}
+
+func TestRevokeApproval(t *testing.T) {
+	adaptor := common.HexToAddress("0x1234567890123456789012345678901234567890")
+	builder := NewAaveV2ATokenAdaptorV2CallBuilder(adaptor)
+
+	asset := common.HexToAddress("0x00000000000000000000000000000000000000000")
+	spender := common.HexToAddress("0x11111111111111111111111111111111111111111")
+	builder.RevokeApproval(asset, spender)
+
+	assert.Equal(t, 1, len(builder.calls))
+	assert.IsType(t, &steward_proto.AaveATokenAdaptorV2_RevokeApproval{}, builder.calls[0].Function)
+}
+
+func TestDepositToAave(t *testing.T) {
+	adaptor := common.HexToAddress("0x1234567890123456789012345678901234567890")
+	builder := NewAaveV2ATokenAdaptorV2CallBuilder(adaptor)
+
+	asset := common.HexToAddress("0x00000000000000000000000000000000000000000")
+	builder.DepositToAave(asset, big.NewInt(100))
+
+	assert.Equal(t, 1, len(builder.calls))
+	assert.IsType(t, &steward_proto.AaveATokenAdaptorV2_DepositToAave_{}, builder.calls[0].Function)
+}
+
+func TestWithdrawFromAave(t *testing.T) {
+	adaptor := common.HexToAddress("0x1234567890123456789012345678901234567890")
+	builder := NewAaveV2ATokenAdaptorV2CallBuilder(adaptor)
+
+	asset := common.HexToAddress("0x00000000000000000000000000000000000000000")
+	builder.WithdrawFromAave(asset, big.NewInt(100))
+
+	assert.Equal(t, 1, len(builder.calls))
+	assert.IsType(t, &steward_proto.AaveATokenAdaptorV2_WithdrawFromAave_{}, builder.calls[0].Function)
 }

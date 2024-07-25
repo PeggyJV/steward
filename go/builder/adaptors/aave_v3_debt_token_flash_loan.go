@@ -7,14 +7,15 @@ import (
 	"github.com/peggyjv/steward/steward_proto_go/steward_proto"
 )
 
-// Builder
+// Builder for using flash loans with the AaveV3DebtTokenAdaptorV1 adaptor
+// Contract: https://github.com/PeggyJV/cellar-contracts/blob/main/src/modules/adaptors/Aave/V3/AaveV3DebtTokenAdaptor.sol
 type AaveV3DebtTokenFlashLoanAdaptorV1CallBuilder struct {
 	adaptor common.Address
 	calls   []*steward_proto.AaveV3DebtTokenAdaptorV1FlashLoan
 }
 
 // Constructor
-func NewAaveV3DebtTokenFlashLoanAdaptorV1Call(adaptor common.Address) *AaveV3DebtTokenFlashLoanAdaptorV1CallBuilder {
+func NewAaveV3DebtTokenFlashLoanAdaptorV1CallBuilder(adaptor common.Address) *AaveV3DebtTokenFlashLoanAdaptorV1CallBuilder {
 	return &AaveV3DebtTokenFlashLoanAdaptorV1CallBuilder{
 		adaptor: adaptor,
 	}

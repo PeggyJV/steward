@@ -8,17 +8,24 @@ import (
 	"github.com/peggyjv/steward/steward_proto_go/steward_proto"
 )
 
-type CellarCallBuilder struct {
+// CellarCallDataBuilder is the builder for cellar call data. It can be used to string together multiple function calls to one Cellar. Function calls will execute in the order they are added to the builder.
+type CellarCallDataBuilder struct {
 	functionCalls []*steward_proto.CellarV2_5_FunctionCall
 }
 
-func NewCallDataBuilder() *CellarCallBuilder {
-	return &CellarCallBuilder{
+// NewCellarCallDataBuilder creates a new CallDataBuilder
+func NewCellarCallDataBuilder() *CellarCallDataBuilder {
+	return &CellarCallDataBuilder{
 		functionCalls: make([]*steward_proto.CellarV2_5_FunctionCall, 0),
 	}
 }
 
-func (cdb *CellarCallBuilder) Build() (*steward_proto.CellarV2_5, error) {
+func (cdb *CellarCallDataBuilder) GetFunctionCalls() []*steward_proto.CellarV2_5_FunctionCall {
+	return cdb.functionCalls
+}
+
+// Build returns the CallData struct with the function calls added to the builder
+func (cdb *CellarCallDataBuilder) Build() (*steward_proto.CellarV2_5, error) {
 	if len(cdb.functionCalls) == 0 {
 		return nil, fmt.Errorf("no function calls added to CallDataBuilder")
 	} else if len(cdb.functionCalls) == 1 {
@@ -39,14 +46,14 @@ func (cdb *CellarCallBuilder) Build() (*steward_proto.CellarV2_5, error) {
 }
 
 // CallOnAdaptor adds call data for the CallOnAdaptor function to the builder
-func (cdb *CellarCallBuilder) CallOnAdaptor(adaptorCall *steward_proto.AdaptorCall) *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) CallOnAdaptor(adaptorCalls ...*steward_proto.AdaptorCall) *CellarCallDataBuilder {
 	// search functionCalls for type steward_proto.CellarV2_5_FunctionCall_CallOnAdaptor and if
 	// it already exists, append to CallOnAdaptor.Data instead of creating a new CallOnAdaptor struct
 	found := false
 	for _, call := range cdb.functionCalls {
 		if call.GetCallOnAdaptor() != nil {
 			found = true
-			call.GetCallOnAdaptor().Data = append(call.GetCallOnAdaptor().Data, adaptorCall)
+			call.GetCallOnAdaptor().Data = append(call.GetCallOnAdaptor().Data, adaptorCalls...)
 			break
 		}
 	}
@@ -55,7 +62,7 @@ func (cdb *CellarCallBuilder) CallOnAdaptor(adaptorCall *steward_proto.AdaptorCa
 		cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 			Function: &steward_proto.CellarV2_5_FunctionCall_CallOnAdaptor{
 				CallOnAdaptor: &steward_proto.CellarV2_5_CallOnAdaptor{
-					Data: []*steward_proto.AdaptorCall{adaptorCall},
+					Data: adaptorCalls,
 				},
 			},
 		})
@@ -65,7 +72,7 @@ func (cdb *CellarCallBuilder) CallOnAdaptor(adaptorCall *steward_proto.AdaptorCa
 }
 
 // AddPosition adds call data for the AddPosition function to the builder
-func (cdb *CellarCallBuilder) AddPosition(index uint32, positionId uint32, configurationData []byte, inDebtArray bool) *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) AddPosition(index uint32, positionId uint32, configurationData []byte, inDebtArray bool) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_AddPosition{
 			AddPosition: &steward_proto.CellarV2_5_AddPosition{
@@ -81,7 +88,7 @@ func (cdb *CellarCallBuilder) AddPosition(index uint32, positionId uint32, confi
 }
 
 // RemovePosition adds call data for the RemovePosition function to the builder
-func (cdb *CellarCallBuilder) RemovePosition(index uint32, inDebtArray bool) *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) RemovePosition(index uint32, inDebtArray bool) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_RemovePosition{
 			RemovePosition: &steward_proto.CellarV2_5_RemovePosition{
@@ -95,7 +102,7 @@ func (cdb *CellarCallBuilder) RemovePosition(index uint32, inDebtArray bool) *Ce
 }
 
 // SetHoldingPosition adds call data for the SetHoldingPosition function to the builder
-func (cdb *CellarCallBuilder) SetHoldingPosition(positionId uint32) *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) SetHoldingPosition(positionId uint32) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_SetHoldingPosition{
 			SetHoldingPosition: &steward_proto.CellarV2_5_SetHoldingPosition{
@@ -108,7 +115,7 @@ func (cdb *CellarCallBuilder) SetHoldingPosition(positionId uint32) *CellarCallB
 }
 
 // SetStrategistPayoutAddress adds call data for the SetStrategistPayoutAddress function to the builder
-func (cdb *CellarCallBuilder) SetStrategistPayoutAddress(payout common.Address) *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) SetStrategistPayoutAddress(payout common.Address) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_SetStrategistPayoutAddress{
 			SetStrategistPayoutAddress: &steward_proto.CellarV2_5_SetStrategistPayoutAddress{
@@ -121,7 +128,7 @@ func (cdb *CellarCallBuilder) SetStrategistPayoutAddress(payout common.Address) 
 }
 
 // SwapPositions adds call data for the SwapPositions function to the builder
-func (cdb *CellarCallBuilder) SwapPositions(index1, index2 uint32, inDebtArray bool) *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) SwapPositions(index1, index2 uint32, inDebtArray bool) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_SwapPositions{
 			SwapPositions: &steward_proto.CellarV2_5_SwapPositions{
@@ -136,7 +143,7 @@ func (cdb *CellarCallBuilder) SwapPositions(index1, index2 uint32, inDebtArray b
 }
 
 // SetShareLockPeriod adds call data for the SetShareLockPeriod function to the builder
-func (cdb *CellarCallBuilder) SetShareLockPeriod(newLock big.Int) *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) SetShareLockPeriod(newLock *big.Int) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_SetShareLockPeriod{
 			SetShareLockPeriod: &steward_proto.CellarV2_5_SetShareLockPeriod{
@@ -149,7 +156,7 @@ func (cdb *CellarCallBuilder) SetShareLockPeriod(newLock big.Int) *CellarCallBui
 }
 
 // InitiateShutdown adds call data for the InitiateShutdown function to the builder
-func (cdb *CellarCallBuilder) InitiateShutdown() *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) InitiateShutdown() *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_InitiateShutdown{
 			InitiateShutdown: &steward_proto.CellarV2_5_InitiateShutdown{},
@@ -160,7 +167,7 @@ func (cdb *CellarCallBuilder) InitiateShutdown() *CellarCallBuilder {
 }
 
 // LiftShutdown adds call data for the LiftShutdown function to the builder
-func (cdb *CellarCallBuilder) LiftShutdown() *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) LiftShutdown() *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_LiftShutdown{
 			LiftShutdown: &steward_proto.CellarV2_5_LiftShutdown{},
@@ -170,8 +177,21 @@ func (cdb *CellarCallBuilder) LiftShutdown() *CellarCallBuilder {
 	return cdb
 }
 
+// AddAdaptorToCatalogue adds call data for the AddAdaptorToCatalogue function to the builder
+func (cdb *CellarCallDataBuilder) AddAdaptorToCatalogue(adaptor common.Address) *CellarCallDataBuilder {
+	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
+		Function: &steward_proto.CellarV2_5_FunctionCall_AddAdaptorToCatalogue{
+			AddAdaptorToCatalogue: &steward_proto.CellarV2_5_AddAdaptorToCatalogue{
+				Adaptor: adaptor.Hex(),
+			},
+		},
+	})
+
+	return cdb
+}
+
 // RemoveAdaptorFromCatalogue adds call data for the RemoveAdaptorFromCatalogue function to the builder
-func (cdb *CellarCallBuilder) RemoveAdaptorFromCatalogue(adaptor common.Address) *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) RemoveAdaptorFromCatalogue(adaptor common.Address) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_RemoveAdaptorFromCatalogue{
 			RemoveAdaptorFromCatalogue: &steward_proto.CellarV2_5_RemoveAdaptorFromCatalogue{
@@ -184,7 +204,7 @@ func (cdb *CellarCallBuilder) RemoveAdaptorFromCatalogue(adaptor common.Address)
 }
 
 // RemovePositionFromCatalogue adds call data for the RemovePositionFromCatalogue function to the builder
-func (cdb *CellarCallBuilder) RemovePositionFromCatalogue(positionId uint32) *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) RemovePositionFromCatalogue(positionId uint32) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_RemovePositionFromCatalogue{
 			RemovePositionFromCatalogue: &steward_proto.CellarV2_5_RemovePositionFromCatalogue{
@@ -197,7 +217,7 @@ func (cdb *CellarCallBuilder) RemovePositionFromCatalogue(positionId uint32) *Ce
 }
 
 // DecreaseShareSupplyCap adds call data for the DecreaseShareSupplyCap function to the builder
-func (cdb *CellarCallBuilder) DecreaseShareSupplyCap(newCap big.Int) *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) DecreaseShareSupplyCap(newCap *big.Int) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_DecreaseShareSupplyCap{
 			DecreaseShareSupplyCap: &steward_proto.CellarV2_5_DecreaseShareSupplyCap{
@@ -210,7 +230,7 @@ func (cdb *CellarCallBuilder) DecreaseShareSupplyCap(newCap big.Int) *CellarCall
 }
 
 // AddPositionToCatalogue adds call data for the AddPositionToCatalogue function to the builder
-func (cdb *CellarCallBuilder) AddPositionToCatalogue(positionId uint32) *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) AddPositionToCatalogue(positionId uint32) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_AddPositionToCatalogue{
 			AddPositionToCatalogue: &steward_proto.CellarV2_5_AddPositionToCatalogue{
@@ -223,7 +243,7 @@ func (cdb *CellarCallBuilder) AddPositionToCatalogue(positionId uint32) *CellarC
 }
 
 // SetRebalanceDeviation adds call data for the SetRebalanceDeviation function to the builder
-func (cdb *CellarCallBuilder) SetRebalanceDeviation(newDeviation big.Int) *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) SetRebalanceDeviation(newDeviation *big.Int) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_SetRebalanceDeviation{
 			SetRebalanceDeviation: &steward_proto.CellarV2_5_SetRebalanceDeviation{
@@ -236,7 +256,7 @@ func (cdb *CellarCallBuilder) SetRebalanceDeviation(newDeviation big.Int) *Cella
 }
 
 // SetStrategistPlatformCut adds call data for the SetStrategistPlatformCut function to the builder
-func (cdb *CellarCallBuilder) SetStrategistPlatformCut(newCut uint64) *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) SetStrategistPlatformCut(newCut uint64) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_SetStrategistPlatformCut{
 			SetStrategistPlatformCut: &steward_proto.CellarV2_5_SetStrategistPlatformCut{
@@ -249,7 +269,7 @@ func (cdb *CellarCallBuilder) SetStrategistPlatformCut(newCut uint64) *CellarCal
 }
 
 // IncreaseShareSupplyCap adds call data for the IncreaseShareSupplyCap function to the builder
-func (cdb *CellarCallBuilder) IncreaseShareSupplyCap(newCap big.Int) *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) IncreaseShareSupplyCap(newCap *big.Int) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_IncreaseShareSupplyCap{
 			IncreaseShareSupplyCap: &steward_proto.CellarV2_5_IncreaseShareSupplyCap{
@@ -262,7 +282,7 @@ func (cdb *CellarCallBuilder) IncreaseShareSupplyCap(newCap big.Int) *CellarCall
 }
 
 // SetSharePriceOracle adds call data for the SetSharePriceOracle function to the builder
-func (cdb *CellarCallBuilder) SetSharePriceOracle(registryId big.Int, sharePriceOracle common.Address) *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) SetSharePriceOracle(registryId *big.Int, sharePriceOracle common.Address) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_SetSharePriceOracle{
 			SetSharePriceOracle: &steward_proto.CellarV2_5_SetSharePriceOracle{
@@ -276,7 +296,7 @@ func (cdb *CellarCallBuilder) SetSharePriceOracle(registryId big.Int, sharePrice
 }
 
 // CachePriceRouter adds call data for the CachePriceRouter function to the builder
-func (cdb *CellarCallBuilder) CachePriceRouter(checkTotalAssets bool, allowableRange uint32, expectedPriceRouter common.Address) *CellarCallBuilder {
+func (cdb *CellarCallDataBuilder) CachePriceRouter(checkTotalAssets bool, allowableRange uint32, expectedPriceRouter common.Address) *CellarCallDataBuilder {
 	cdb.functionCalls = append(cdb.functionCalls, &steward_proto.CellarV2_5_FunctionCall{
 		Function: &steward_proto.CellarV2_5_FunctionCall_CachePriceRouter{
 			CachePriceRouter: &steward_proto.CellarV2_5_CachePriceRouter{
