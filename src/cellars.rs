@@ -372,7 +372,7 @@ pub async fn validate_cellar_id(chain_id: u64, cellar_id: &str) -> Result<(), Er
             .into());
     }
 
-    let cellar_id = to_checksum_address(cellar_id)?;
+    let (cellar_id, _) = to_checksum_address(cellar_id)?;
 
     if !is_approved(chain_id, &cellar_id) {
         if let Err(err) = cache::refresh_approved_cellars().await {
@@ -394,7 +394,7 @@ pub async fn validate_cellar_id(chain_id: u64, cellar_id: &str) -> Result<(), Er
     Ok(())
 }
 
-pub(crate) fn to_checksum_address(address: &str) -> Result<String, Error> {
+pub(crate) fn to_checksum_address(address: &str) -> Result<(String, Vec<u8>), Error> {
     let address = match address.parse::<Address>() {
         Ok(a) => a,
         Err(e) => {
@@ -403,9 +403,10 @@ pub(crate) fn to_checksum_address(address: &str) -> Result<String, Error> {
                 .into())
         }
     };
+    let address_bytes = address.as_bytes().to_vec();
     let address = ethers::utils::to_checksum(&address, None);
 
-    Ok(address)
+    Ok((address, address_bytes))
 }
 
 #[cfg(test)]
