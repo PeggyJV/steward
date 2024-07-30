@@ -90,8 +90,7 @@ impl Runnable for CosmosToEthCmd {
                 "Asset {} has ERC20 representation {}",
                 denom,
                 val.into_inner().erc20
-            ),
-            Err(_e) => {
+            ), Err(_e) => {
                 println!(
                     "Asset {} has no ERC20 representation, you may need to deploy an ERC20 for it!",
                     denom

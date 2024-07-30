@@ -7,16 +7,49 @@ use std::{
     fs::{self, create_dir_all, remove_dir_all},
     path::PathBuf,
 };
+
+use merkle_hash::{Algorithm, MerkleTree};
 use walkdir::WalkDir;
 
 /// A temporary directory for proto building
 const TMP_PATH: &str = "/tmp/steward/";
 /// the output directory
-const OUT_PATH: &str = "src/gen/proto/";
+const OUT_PATH: &str = "crates/steward-proto/src/gen/";
+const HASH_ABI_FILE: &str = "hash_abi";
+const HASH_PROTO_FILE: &str = "hash_proto";
 
 fn main() {
-    generate_contract_abis();
-    generate_rust_protos();
+    // only generate bindings if changes have occurred
+    let previous_abi_hash = fs::read_to_string(HASH_ABI_FILE).unwrap_or_default();
+    let previous_proto_hash = fs::read_to_string(HASH_PROTO_FILE).unwrap_or_default();
+    let current_abi_hash = MerkleTree::builder("abi")
+        .algorithm(Algorithm::Blake3)
+        .hash_names(false)
+        .build()
+        .expect("abi dir merkle tree build failed")
+        .root
+        .item
+        .hash;
+    let current_proto_hash = MerkleTree::builder("proto")
+        .algorithm(Algorithm::Blake3)
+        .hash_names(false)
+        .build()
+        .expect("proto dir merkle tree build failed")
+        .root
+        .item
+        .hash;
+    let current_abi_hash = hex::encode(current_abi_hash);
+    let current_proto_hash = hex::encode(current_proto_hash);
+
+    if current_abi_hash != previous_abi_hash {
+        generate_contract_abis();
+        fs::write(HASH_ABI_FILE, current_abi_hash).expect("failed to write abi hash");
+    }
+
+    if current_proto_hash != previous_proto_hash {
+        generate_rust_protos();
+        fs::write(HASH_PROTO_FILE, current_proto_hash).expect("failed to write proto hash");
+    }
 }
 
 fn generate_contract_abis() {
@@ -26,13 +59,10 @@ fn generate_contract_abis() {
         ("CellarV1", "cellar_v1"),
         ("CellarV2", "cellar_v2"),
         ("CellarV2_2", "cellar_v2_2"),
+        ("UniswapV3AdaptorV1", "uniswap_v3_adaptor_v1"),
         ("UniswapV3AdaptorV2", "uniswap_v3_adaptor_v2"),
         ("AaveATokenAdaptorV1", "aave_a_token_adaptor_v1"),
         ("AaveDebtTokenAdaptorV1", "aave_debt_token_adaptor_v1"),
-        (
-            "AaveV2EnableAssetAsCollateralAdaptorV1",
-            "aave_v2_collateral_adaptor_v1",
-        ),
         ("AaveATokenAdaptorV2", "aave_a_token_adaptor_v2"),
         ("AaveDebtTokenAdaptorV2", "aave_debt_token_adaptor_v2"),
         ("AaveV3ATokenAdaptorV1", "aave_v3_a_token_adaptor_v1"),
@@ -70,6 +100,31 @@ fn generate_contract_abis() {
             "morpho_aave_v3_debt_token_adaptor_v1",
         ),
         ("MorphoRewardHandler", "morpho_reward_handler"),
+        ("BalancerPoolAdaptorV1", "balancer_pool_adaptor_v1"),
+        ("CellarV2_5", "cellar_v2_5"),
+        (
+            "CellarWithShareLockPeriodV1",
+            "cellar_with_share_lock_period_v1",
+        ),
+        ("DebtFTokenAdaptorV1", "debt_f_token_adaptor_v1"),
+        ("CollateralFTokenAdaptorV1", "collateral_f_token_adaptor_v1"),
+        ("LegacyCellarAdaptorV1", "legacy_cellar_adaptor_v1"),
+        ("CurveAdaptorV1", "curve_adaptor_v1"),
+        ("ConvexCurveAdaptorV1", "convex_curve_adaptor_v1"),
+        ("AuraERC4626AdaptorV1", "aura_erc4626_adaptor_v1"),
+        (
+            "CellarWithMultiAssetDepositV1",
+            "cellar_with_multi_asset_deposit_v1",
+        ),
+        ("MorphoBlueSupplyAdaptorV1", "morpho_blue_supply_adaptor_v1"),
+        (
+            "MorphoBlueCollateralAdaptorV1",
+            "morpho_blue_collateral_adaptor_v1",
+        ),
+        ("MorphoBlueDebtAdaptorV1", "morpho_blue_debt_adaptor_v1"),
+        ("ERC4626AdaptorV1", "erc4626_adaptor_v1"),
+        ("StakingAdaptorV1", "staking_adaptor_v1"),
+        ("PendleAdaptorV1", "pendle_adaptor_v1"),
     ];
 
     contracts.iter().for_each(|n| {

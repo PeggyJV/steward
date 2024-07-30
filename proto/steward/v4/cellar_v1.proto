@@ -42,7 +42,7 @@ message CellarV1 {
         SetLiquidityLimit set_liquidity_limit = 10;
         // Represents function `setShareLockPeriod()`
         SetShareLockPeriod set_share_lock_period = 11;
-        // Represents function `setRebalanceDeviation(uint265)`
+        // Represents function `setRebalanceDeviation(uint256)`
         SetRebalanceDeviation set_rebalance_deviation = 12;
     }
 

@@ -1,14 +1,16 @@
 use abscissa_core::{clap::Parser, Command, Runnable};
+use steward_proto::proto::cellar_v2_2governance::{
+    function_call::Function, CallType, FunctionCall,
+};
 
 use crate::{
     application::APP,
     cellars::{self, is_evm_address},
-    commands::cork_proposal::print_proposal,
+    commands::cork_proposal::{get_proposal_json, print_proposal},
     prelude::*,
     proto::{
-        cellar_v2_2governance::{AddAdaptorToCatalogue, Function},
-        governance_call::Call,
-        CellarV22governance, GovernanceCall,
+        cellar_v2_2governance::AddAdaptorToCatalogue, governance_call::Call, CellarV22governance,
+        GovernanceCall,
     },
 };
 
@@ -54,18 +56,22 @@ impl Runnable for AddAdaptorToCatalogueCmd {
 
             let governance_call = GovernanceCall {
                 call: Some(Call::CellarV22(CellarV22governance {
-                    function: Some(Function::AddAdaptorToCatalogue(AddAdaptorToCatalogue {
-                        adaptor: self.adaptor_address.clone(),
+                    call_type: Some(CallType::FunctionCall(FunctionCall {
+                        function: Some(Function::AddAdaptorToCatalogue(AddAdaptorToCatalogue {
+                            adaptor: self.adaptor_address.clone(),
+                        })),
                     })),
                 })),
             };
 
-            print_proposal(
+            let proposal_json = get_proposal_json(
                 self.block_height,
                 self.cellar_id.clone(),
                 governance_call,
-                self.quiet,
-            )
+                self.chain_id,
+            );
+
+            print_proposal(proposal_json, self.quiet)
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

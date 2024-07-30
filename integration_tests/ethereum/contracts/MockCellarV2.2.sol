@@ -38,4 +38,16 @@ contract CellarV2_2 is Owned {
 
         emit CallOnAdaptor(data);
     }
+
+    event AddAdaptorToCatalogue(address adaptor);
+
+    function addAdaptorToCatalogue(address adaptor) external onlyOwner {
+        emit AddAdaptorToCatalogue(adaptor);
+    }
+
+    event AddPositionToCatalogue(uint32 position);
+
+    function addPositionToCatalogue(uint32 position) external onlyOwner {
+        emit AddPositionToCatalogue(position);
+    }
 }

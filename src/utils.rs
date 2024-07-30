@@ -31,6 +31,15 @@ pub fn bytes_to_hex_str(bytes: &[u8]) -> String {
         .fold(String::new(), |acc, x| acc + &x)
 }
 
+pub fn hex_to_bytes(hex: String) -> Result<Bytes, Error> {
+    match hex::decode(hex) {
+        Ok(bytes) => Ok(Bytes::from(bytes)),
+        Err(e) => Err(ErrorKind::ParsingError
+            .context(format!("failed to parse hex: {:?}", e))
+            .into()),
+    }
+}
+
 pub fn string_to_u128(value: String) -> Result<U128, Error> {
     match U128::from_dec_str(value.as_str()) {
         Ok(v) => Ok(v),
@@ -222,4 +231,15 @@ pub fn encode_oracle_swap_params(params: OracleSwapParams) -> Result<Vec<u8>, Er
             Ok(abi::encode(&[path, pool]))
         }
     }
+}
+
+pub fn parse_selector(selector: String) -> Result<[u8; 4], Error> {
+    let bytes = hex::decode(selector)?;
+    if bytes.len() != 4 {
+        return Err(sp_call_error("selector must be 4 bytes".to_string()));
+    }
+    let mut array = [0u8; 4];
+    array.copy_from_slice(&bytes);
+
+    Ok(array)
 }

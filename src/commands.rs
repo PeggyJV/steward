@@ -11,9 +11,11 @@
 //! application's configuration file.
 
 mod config_cmd;
+// TODO: Update cork proposal commands to support multicall
 mod cork_proposal;
 mod cosmos_to_eth;
 mod deploy;
+mod encode;
 mod eth_to_cosmos;
 mod keys;
 mod orchestrator;
@@ -22,7 +24,7 @@ mod sign_delegate_keys;
 mod simulate;
 mod start;
 
-use self::{config_cmd::ConfigCmd, cork_proposal::CorkProposalCmd, keys::KeysCmd, start::StartCmd};
+use self::{config_cmd::ConfigCmd, keys::KeysCmd, start::StartCmd};
 
 use crate::config::StewardConfig;
 use abscissa_core::{clap::Parser, Command, Configurable, FrameworkError, Runnable};
@@ -34,8 +36,8 @@ pub const CONFIG_FILE: &str = "steward.toml";
 /// Steward Subcommands
 #[derive(Command, Debug, Parser, Runnable)]
 pub enum StewardCmd {
-    #[clap(subcommand)]
-    CorkProposal(CorkProposalCmd),
+    // #[clap(subcommand)]
+    // CorkProposal(CorkProposalCmd),
     #[clap(subcommand)]
     Keys(KeysCmd),
     /// Print default configurations
@@ -51,6 +53,10 @@ pub enum StewardCmd {
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
     Simulate(simulate::SimulateCmd),
     Start(StartCmd),
+    #[clap(subcommand)]
+    Encode(encode::EncodeCmd),
+    #[clap(subcommand)]
+    CorkProposal(cork_proposal::CorkProposalCmd),
 }
 
 /// Entry point for the application. It needs to be a struct to allow using subcommands!

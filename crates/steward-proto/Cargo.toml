@@ -1,0 +1,16 @@
+[package]
+name = "steward-proto"
+description = "Protobuf bindings for Steward, the Sommelier blockchain sidecar"
+authors = ["Collin Brittain"]
+version.workspace = true 
+edition.workspace = true
+keywords = ["steward", "sommelier"]
+repository = "https://github.com/PeggyJV/steward"
+readme = "README.md"
+categories = ["blockchain", "sommelier"]
+
+[dependencies]
+prost.workspace = true
+serde.workspace = true
+tonic.workspace = true
+

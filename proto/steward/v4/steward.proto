@@ -22,6 +22,14 @@ service ContractCallService {
 }
 
 /*
+ * Service for testing contract call encoding. Simply returns the encoded call data in the response.
+ */
+service EncodingService {
+    // Handles contract call encoding
+    rpc Encode(EncodeRequest) returns (EncodeResponse) {}
+}
+
+/*
  * Service for simulating contract calls encoded by Steward using Tenderly
  */
  service SimulateContractCallService {
@@ -47,11 +55,12 @@ message ScheduleRequest {
         CellarV1 cellar_v1 = 4;
         CellarV2 cellar_v2 = 5;
         CellarV2_2 cellar_v2_2 = 6;
+        CellarV2_5 cellar_v2_5 = 7;
     }
     // The ID of the chain on which the target Cellar resides
-    uint64 chain_id = 7;
+    uint64 chain_id = 8;
     // The unix timestamp deadline for the contract call to be executed
-    uint64 deadline = 8;
+    uint64 deadline = 9;
 }
 
 message ScheduleResponse {
@@ -61,6 +70,23 @@ message ScheduleResponse {
     uint64 chain_id = 2;
     // Invalidation scope for the gravity tx, keccak256 of the target contract address and encoded contract call
     string invalidation_scope = 3;
+}
+
+message EncodeRequest {
+    string cellar_id = 1;
+    // The data from which the desired contract function will be encoded
+    oneof call_data {
+        AaveV2Stablecoin aave_v2_stablecoin = 2;
+        CellarV1 cellar_v1 = 3;
+        CellarV2 cellar_v2 = 4;
+        CellarV2_2 cellar_v2_2 = 5;
+        CellarV2_5 cellar_v2_5 = 6;
+    }
+}
+
+message EncodeResponse {
+    // The encoded contract call
+    string encoded_call = 1;
 }
 
 /*

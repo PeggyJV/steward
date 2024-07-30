@@ -218,7 +218,68 @@ The name of the key in `keystore` used for delegate signing by both Steward and 
 delegate_key = ""
 ```
 
-### [metrics] table
+### `[cork]` table
+
+Config related to steward's interaction with the x/cork and x/axelarcork modules.
+
+#### `cache_refresh_period`
+
+Type: integer
+
+Steward's approved cellar cache refresh period in seconds.
+
+```
+[cork]
+cache_refresh_period = 3600
+```
+
+#### `proposal_poll_period`
+
+Type: integer
+
+How frequently (in seconds) steward should query the chain for approved scheduled cork proposals that must be submitted to the chain.
+
+```
+[cork]
+proposal_poll_period = 300
+```
+
+#### `max_scheduling_retries`
+
+Type: integer
+
+How many times steward should try to submit a scheduled cork proposal that errored during processing. 
+
+```
+[cork]
+max_scheduling_retries = 3
+```
+
+### `[pubsub]` table
+
+#### `cache_refresh_period`
+
+Type: integer
+
+How often steward's publisher trust data cache should be refreshed
+
+```
+[pubsub]
+cache_refresh_period = 3600
+```
+
+#### `publisher_domain_block_list`
+
+Type: string array
+
+Publisher domains that steward should reject calls from. Primarily used in emergency situations.
+
+```
+[pubsub]
+publisher_domain_block_list = ["compromised-publisher.example.com"]
+```
+
+### `[metrics]` table
 
 Config related to the Orchestrator metrics server
 
@@ -233,7 +294,7 @@ The server endpoint for monitoring Orchestrator metrics
 listen_addr = "127.0.0.1:3000"
 ```
 
-### [server] table
+### `[server]` table
 
 Config related to the Steward server
 
@@ -246,19 +307,6 @@ The IP address at which the Steward server will run
 ```
 [server]
 address = "0.0.0.0"
-```
-
-#### `client_ca_cert_path`
-
-Type: string
-
-The path to the trusted CA used to sign the Strategy Provider's client certificate
-
-> :warning: Please leave this value unset for now as it defaults to the Seven Seas CA internally
-
-```
-[server]
-client_ca_cert_path = ""
 ```
 
 #### `port`
@@ -294,6 +342,107 @@ The path to the PKCS8-formatted key used to generate the server certificate
 server_key_path = ""
 ```
 
+### `[simulate]` table
+
+#### `use_tls`
+
+Type: boolean
+
+Whether to require TLS for calls in simulate mode
+
+```
+[simulate]
+use_tls = false
+```
+
+#### `network_id`
+
+Type: string
+
+The EVM network ID of the target Ethereum network
+
+```
+[simulate]
+network_id = "1"
+```
+
+#### `tenderly_access_key`
+
+Type: string
+
+Tenderly access key for to use the API for running simulations
+
+```
+[simulate]
+tenderly_access_key = ""
+```
+
+#### `tenderly_project_name`
+
+Type: string
+
+Tenderly project name
+
+```
+[simulate]
+tenderly_project_name = "my_project"
+```
+
+#### `tenderly_username`
+
+Type: string
+
+Tenderly username
+
+```
+[simulate]
+tenderly_username = "myuser"
+```
+
+#### `gravity_address`
+
+Type: string
+
+Address of the gravity contract on the target network
+
+```
+[simulate]
+gravity_address = ""
+```
+
+#### `server_cert_path`
+
+Type: string
+
+Path to the server certificate to use if `use_tls` is `true`
+
+```
+[simulate]
+server_cert_path = ""
+```
+
+#### `server_key_path`
+
+Type: string
+
+Path to the server key used to create the server cert if `use_tls` is `true`
+
+```
+[simulate]
+server_cert_path = ""
+```
+
+#### `client_ca_cert_path`
+
+Type: string
+
+Path to the client certificate authority for use if `use_tls` is `true`
+
+```
+[simulate]
+client_ca_cert_path = ""
+```
+
 ## Complete Example config.toml
 
 This example will not work as is, you'll need to supply your own values.
@@ -321,11 +470,20 @@ key_derivation_path = "m/44'/60'/0'/0/0"
 rpc = "http://localhost:8545"
 
 [gravity]
-contract = "0x0000000000000000000000000000000000000000"
+contract = "0x69592e6f9d21989a043646fe8225da2600e5a0f7"
 fees_denom = "usomm"
 
 [keys]
-delegate_key = "mykey"
+delegate_key = "orchestrator"
+
+[cork]
+cache_refresh_period = 60
+proposal_poll_period = 300
+max_scheduling_retries = 3
+
+[pubsub]
+cache_refresh_period = 3600
+publisher_domain_block_list = [] 
 
 [metrics]
 listen_addr = "127.0.0.1:3000"
@@ -336,4 +494,16 @@ address = "0.0.0.0"
 port = 5734
 server_cert_path = "/server/cert/path"
 server_key_path = "/server/key/path"
+
+# Meant for use by strategists for development and testing
+[simulate]
+use_tls = false
+network_id = "1"
+tenderly_access_key = ""
+tenderly_project_name = ""
+tenderly_username = ""
+gravity_address = ""
+server_cert_path = ""
+server_key_path = ""
+client_ca_cert_path = ""
 ```

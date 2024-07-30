@@ -1,0 +1,68 @@
+/*
+* Protos for function calls to the Convex Curve adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+// Represents call data for the Convex Curve adaptor V1
+message ConvexCurveAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `depositLPTInConvexAndStake(uint256 _pid, address baseRewardPool, ERC20 _lpt, CurvePool _pool, bytes4 _selector, uint256 _amount)`
+        DepositLPTInConvexAndStake deposit_lpt_in_convex_and_stake = 2;
+        // Represents function `withdrawFromBaseRewardPoolAsLPTaddress(_baseRewardPool, uint256 _amount, bool _claim)`
+        WithdrawFromBaseRewardPoolAsLPT withdraw_from_base_reward_pool_as_lpt = 3;
+        // Represents function `getRewards(address _baseRewardPool, bool _claimExtras)`
+        GetRewards get_rewards = 4;
+    }
+
+    /*
+    * Allows strategists to deposit and stake LPTs into Convex markets via the respective Convex market Booster contract
+    *
+    * Represents function `depositLPTInConvexAndStake(uint256 _pid, address baseRewardPool, ERC20 _lpt, CurvePool _pool, bytes4 _selector, uint256 _amount)`
+    */
+    message DepositLPTInConvexAndStake {
+        string pid = 1;
+        string base_reward_pool = 2;
+        string lpt = 3;
+        string pool = 4;
+        string selector = 5;
+        string amount_to_deposit = 6;
+    }
+
+    /*
+    * Allows strategists to withdraw from Convex markets via Booster contract w/ or w/o claiming rewards
+    *
+    * Represents function `withdrawFromBaseRewardPoolAsLPTaddress(_baseRewardPool, uint256 _amount, bool _claim)`
+    */
+    message WithdrawFromBaseRewardPoolAsLPT {
+        string base_reward_pool = 1;
+        string amount_to_withdraw = 2;
+        bool claim = 3;
+    }
+
+    /*
+    * Allows strategists to get rewards for an Convex Booster without withdrawing/unwrapping from Convex market
+    *
+    * Represents function `getRewards(address _baseRewardPool, bool _claimExtras)`
+    */
+    message GetRewards {
+        string base_reward_pool = 1;
+        bool claim_extras = 2;
+    }
+}
+
+message ConvexCurveAdaptorV1Calls {
+    repeated ConvexCurveAdaptorV1 calls = 1;
+}

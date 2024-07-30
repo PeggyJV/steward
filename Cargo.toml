@@ -1,8 +1,27 @@
+[workspace]
+members = [
+    ".",
+    "crates/steward-proto",
+]
+default-members = [
+    ".",
+]
+resolver = "2"
+
+[workspace.package]
+version = "4.2.3"
+edition = "2021"
+
+[workspace.dependencies]
+prost = "0.7"
+serde = { version = "1.0", features = ["serde_derive"] }
+tonic = { version = "0.4.3", features = ["codegen", "tls", "tower", "transport"] }
+
 [package]
 name = "steward"
-authors = []
-version = "4.0.0"
-edition = "2021"
+authors = ["Collin Brittain", "Eric Bolten", "Ukpai Ugochi", "Zaki Manian"]
+version.workspace = true
+edition.workspace = true
 
 [dependencies]
 abscissa_tokio = "0.6.0"
@@ -22,22 +41,23 @@ num-bigint = "0.4"
 num-rational = "0.4"
 num-traits = "0.2"
 pkcs8 = { version = "0.7", features = ["pem"] }
-prost = "0.7"
+prost.workspace = true
 prost-types = "0.7"
 rand_core = { version = "0.6", features = ["std"] }
 rand = "0.8.0"
 regex = "1.5.4"
 rpassword = "5"
-serde = { version = "1.0", features = ["serde_derive"] }
+serde.workspace = true
 serde_json = "1.0.64"
 sha2 = "0.9"
 sha3 = "0.10.6"
 signatory = "0.23.0-pre"
-somm_proto = { git = "https://github.com/PeggyJV/sommelier", rev = "55929891728ac0c21625bd23970b9c59c1f10843" }
+somm_proto = { git = "https://github.com/PeggyJV/sommelier", rev = "cec0a521bff793c6f01ce05429214113b22a588c" }
+steward-proto = { path = "crates/steward-proto" }
 thiserror = "1"
 tokio ={ version = "1", features = ["macros", "fs"] }
 toml = { version = "0.5" }
-tonic = { version = "0.4.3", features = ["codegen", "tls", "tower", "transport"] }
+tonic.workspace = true
 tonic-reflection = "0.1.0"
 tower = { version = "0.4", features = ["buffer", "util"] }
 url = "2.2.2"
@@ -76,6 +96,8 @@ tempdir = "0.3"
 
 [build-dependencies]
 ethers = { git = "https://github.com/iqlusioninc/ethers-rs.git", branch="zaki/error_abi_support", features = ["abigen"] }
+hex = "0.4"
+merkle_hash = "3.6"
 prost-build = "0.7"
 tonic = { version = "0.4.3", features = ["codegen", "tls", "transport"] }
 tonic-build = "0.4"

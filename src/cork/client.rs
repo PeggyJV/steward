@@ -58,7 +58,7 @@ impl CorkQueryClient {
         }
 
         for set in axelarcork_result.into_inner().cellar_ids {
-            let chain_id = set.chain.unwrap().id;
+            let chain_id = set.chain_id;
             let cellar_ids = set.ids.clone();
             for id in cellar_ids.into_iter() {
                 let (normalized_id, _) = match to_checksum_address(&id) {

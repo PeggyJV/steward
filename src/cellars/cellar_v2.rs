@@ -2,35 +2,38 @@
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
 use abscissa_core::tracing::{debug, info};
-use ethers::{abi::AbiEncode, contract::EthCall, types::Bytes};
-use GovernanceFunction::*;
-use StrategyFunction::*;
+use ethers::{
+    abi::AbiEncode,
+    contract::EthCall,
+    types::{Bytes, U256},
+};
 
 use crate::{
     abi::cellar_v2::{AdaptorCall as AbiAdaptorCall, *},
     cellars::adaptors,
-    error::Error,
+    error::{Error, ErrorKind},
     proto::{
-        adaptor_call::CallData::*, cellar_v2::Function as StrategyFunction,
+        adaptor_call::CallData::*, cellar_v2::Function,
         cellar_v2_governance::Function as GovernanceFunction, AdaptorCall,
     },
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
 };
 
 use super::{
-    check_blocked_adaptor, check_blocked_position, log_cellar_call, log_governance_cellar_call,
+    check_blocked_adaptor, log_cellar_call, log_governance_cellar_call, validate_new_adaptor,
+    validate_new_position, V2_0_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2";
 
-pub fn get_encoded_call(function: StrategyFunction, cellar_id: String) -> Result<Vec<u8>, Error> {
+pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>, Error> {
     get_call(function, cellar_id).map(|call| call.encode())
 }
 
-pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV2Calls, Error> {
+pub fn get_call(function: Function, cellar_id: String) -> Result<CellarV2Calls, Error> {
     match function {
-        AddPosition(params) => {
-            check_blocked_position(&params.position_id)?;
+        Function::AddPosition(params) => {
+            validate_new_position(&cellar_id, params.position_id, &V2_0_PERMISSIONS)?;
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
 
             let call = AddPositionCall {
@@ -42,7 +45,7 @@ pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV
 
             Ok(CellarV2Calls::AddPosition(call))
         }
-        CallOnAdaptor(params) => {
+        Function::CallOnAdaptor(params) => {
             for adaptor_call in params.data.clone() {
                 check_blocked_adaptor(&adaptor_call.adaptor)?;
             }
@@ -54,7 +57,7 @@ pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV
 
             Ok(CellarV2Calls::CallOnAdaptor(call))
         }
-        RemovePosition(params) => {
+        Function::RemovePosition(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &RemovePositionCall::function_name(),
@@ -67,7 +70,7 @@ pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV
 
             Ok(CellarV2Calls::RemovePosition(call))
         }
-        SetHoldingPosition(params) => {
+        Function::SetHoldingPosition(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetHoldingPositionCall::function_name(),
@@ -79,7 +82,7 @@ pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV
 
             Ok(CellarV2Calls::SetHoldingPosition(call))
         }
-        SetStrategistPayoutAddress(params) => {
+        Function::SetStrategistPayoutAddress(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetStrategistPayoutAddressCall::function_name(),
@@ -91,7 +94,7 @@ pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV
 
             Ok(CellarV2Calls::SetStrategistPayoutAddress(call))
         }
-        SwapPositions(params) => {
+        Function::SwapPositions(params) => {
             log_cellar_call(CELLAR_NAME, &SwapPositionsCall::function_name(), &cellar_id);
             let call = SwapPositionsCall {
                 index_1: params.index_1,
@@ -101,7 +104,7 @@ pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV
 
             Ok(CellarV2Calls::SwapPositions(call))
         }
-        SetShareLockPeriod(params) => {
+        Function::SetShareLockPeriod(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetShareLockPeriodCall::function_name(),
@@ -113,6 +116,67 @@ pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV
 
             Ok(CellarV2Calls::SetShareLockPeriod(call))
         }
+        Function::SetupAdaptor(params) => {
+            validate_new_adaptor(&cellar_id, &params.adaptor, &V2_0_PERMISSIONS)?;
+            log_cellar_call(CELLAR_NAME, &SetupAdaptorCall::function_name(), &cellar_id);
+
+            let call = SetupAdaptorCall {
+                adaptor: sp_call_parse_address(params.adaptor)?,
+            };
+
+            Ok(CellarV2Calls::SetupAdaptor(call))
+        }
+        Function::InitiateShutdown(_) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &InitiateShutdownCall::function_name(),
+                &cellar_id,
+            );
+            let call = InitiateShutdownCall {};
+            Ok(CellarV2Calls::InitiateShutdown(call))
+        }
+        Function::LiftShutdown(_) => {
+            log_cellar_call(CELLAR_NAME, &LiftShutdownCall::function_name(), &cellar_id);
+            let call = LiftShutdownCall {};
+            Ok(CellarV2Calls::LiftShutdown(call))
+        }
+        Function::SetPlatformFee(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetPlatformFeeCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetPlatformFeeCall {
+                new_platform_fee: params.amount,
+            };
+            Ok(CellarV2Calls::SetPlatformFee(call))
+        }
+        Function::SetStrategistPlatformCut(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetStrategistPlatformCutCall::function_name(),
+                &cellar_id,
+            );
+            let call = SetStrategistPlatformCutCall { cut: params.amount };
+            Ok(CellarV2Calls::SetStrategistPlatformCut(call))
+        }
+        Function::SetRebalanceDeviation(params) => {
+            log_cellar_call(
+                CELLAR_NAME,
+                &SetRebalanceDeviationCall::function_name(),
+                &cellar_id,
+            );
+            let new_deviation = string_to_u256(params.new_deviation)?;
+            if new_deviation > U256::from(5000000000000000u64) {
+                return Err(ErrorKind::SPCallError
+                    .context("deviation must be 0.5% or less".to_string())
+                    .into());
+            }
+
+            let call = SetRebalanceDeviationCall { new_deviation };
+
+            Ok(CellarV2Calls::SetRebalanceDeviation(call))
+        }
     }
 }
 
@@ -122,7 +186,7 @@ pub fn get_encoded_governance_call(
     proposal_id: u64,
 ) -> Result<Vec<u8>, Error> {
     match function {
-        InitiateShutdown(_) => {
+        GovernanceFunction::InitiateShutdown(_) => {
             log_governance_cellar_call(
                 proposal_id,
                 CELLAR_NAME,
@@ -132,7 +196,7 @@ pub fn get_encoded_governance_call(
             let call = InitiateShutdownCall {};
             Ok(CellarV2Calls::InitiateShutdown(call).encode())
         }
-        LiftShutdown(_) => {
+        GovernanceFunction::LiftShutdown(_) => {
             log_governance_cellar_call(
                 proposal_id,
                 CELLAR_NAME,
@@ -142,7 +206,7 @@ pub fn get_encoded_governance_call(
             let call = LiftShutdownCall {};
             Ok(CellarV2Calls::LiftShutdown(call).encode())
         }
-        SetPlatformFee(params) => {
+        GovernanceFunction::SetPlatformFee(params) => {
             log_governance_cellar_call(
                 proposal_id,
                 CELLAR_NAME,
@@ -154,7 +218,7 @@ pub fn get_encoded_governance_call(
             };
             Ok(CellarV2Calls::SetPlatformFee(call).encode())
         }
-        SetStrategistPlatformCut(params) => {
+        GovernanceFunction::SetStrategistPlatformCut(params) => {
             log_governance_cellar_call(
                 proposal_id,
                 CELLAR_NAME,
@@ -164,7 +228,7 @@ pub fn get_encoded_governance_call(
             let call = SetStrategistPlatformCutCall { cut: params.amount };
             Ok(CellarV2Calls::SetStrategistPlatformCut(call).encode())
         }
-        SetupAdaptor(params) => {
+        GovernanceFunction::SetupAdaptor(params) => {
             log_governance_cellar_call(
                 proposal_id,
                 CELLAR_NAME,
@@ -186,7 +250,7 @@ pub fn get_encoded_governance_call(
 
             Ok(CellarV2Calls::SetupAdaptor(call).encode())
         }
-        SetRebalanceDeviation(params) => {
+        GovernanceFunction::SetRebalanceDeviation(params) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetRebalanceDeviationCall::function_name(),
@@ -230,6 +294,8 @@ fn get_encoded_adaptor_calls(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCal
             AaveV3DebtTokenV1Calls(params) => calls.extend(
                 adaptors::aave_v3::aave_v3_debt_token_adaptor_v1_calls(params)?,
             ),
+            AaveV3DebtTokenV1FlashLoanCalls(params) => calls
+                .extend(adaptors::aave_v3::aave_v3_debt_token_adaptor_v1_flash_loan_calls(params)?),
             OneInchV1Calls(params) => {
                 calls.extend(adaptors::oneinch::one_inch_adaptor_v1_calls(params)?)
             }
@@ -258,7 +324,7 @@ fn get_encoded_adaptor_calls(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCal
                 )?,
             ),
             FTokenV1Calls(params) => {
-                calls.extend(adaptors::f_token::f_token_adaptor_v1_calls(params)?)
+                calls.extend(adaptors::frax::f_token_adaptor_v1_calls(params)?)
             }
             MorphoAaveV2ATokenV1Calls(params) => calls.extend(
                 adaptors::morpho::morpho_aave_v2_a_token_adaptor_v1_calls(params)?,
@@ -274,6 +340,46 @@ fn get_encoded_adaptor_calls(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCal
             }
             MorphoAaveV3DebtTokenV1Calls(params) => {
                 calls.extend(adaptors::morpho::morpho_aave_v3_debt_token_adaptor_v1_calls(params)?)
+            }
+            BalancerPoolV1Calls(params) => calls.extend(
+                adaptors::balancer_pool::balancer_pool_adaptor_v1_calls(params)?,
+            ),
+            BalancerPoolV1FlashLoanCalls(params) => calls.extend(
+                adaptors::balancer_pool::balancer_pool_adaptor_v1_flash_loan_calls(params)?,
+            ),
+            LegacyCellarV1Calls(params) => {
+                calls.extend(adaptors::sommelier::legacy_cellar_adaptor_v1_calls(params)?)
+            }
+            DebtFTokenV1Calls(params) => {
+                calls.extend(adaptors::frax::debt_f_token_adaptor_v1_calls(params)?)
+            }
+            CollateralFTokenV1Calls(params) => {
+                calls.extend(adaptors::frax::collateral_f_token_adaptor_v1_calls(params)?)
+            }
+            ConvexCurveV1Calls(params) => {
+                calls.extend(adaptors::convex::convex_curve_adaptor_v1_calls(params)?)
+            }
+            CurveV1Calls(params) => calls.extend(adaptors::curve::curve_adaptor_v1_calls(params)?),
+            AuraErc4626V1Calls(params) => {
+                calls.extend(adaptors::aura::aura_erc4626_adaptor_v1_calls(params)?)
+            }
+            MorphoBlueCollateralV1Calls(params) => calls.extend(
+                adaptors::morpho::morpho_blue_collateral_adaptor_v1_calls(params)?,
+            ),
+            MorphoBlueDebtV1Calls(params) => {
+                calls.extend(adaptors::morpho::morpho_blue_debt_adaptor_v1_calls(params)?)
+            }
+            MorphoBlueSupplyV1Calls(params) => calls.extend(
+                adaptors::morpho::morpho_blue_supply_adaptor_v1_calls(params)?,
+            ),
+            Erc4626V1Calls(params) => {
+                calls.extend(adaptors::erc4626::erc4626_adaptor_v1_calls(params)?)
+            }
+            StakingV1Calls(params) => {
+                calls.extend(adaptors::staking::staking_adaptor_v1_calls(params)?)
+            }
+            PendleV1Calls(params) => {
+                calls.extend(adaptors::pendle::pendle_adaptor_v1_calls(params)?)
             }
         };
 

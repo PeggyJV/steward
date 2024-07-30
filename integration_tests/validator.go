@@ -26,7 +26,7 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	gravitytypes "github.com/peggyjv/gravity-bridge/module/v4/x/gravity/types"
 	"github.com/peggyjv/sommelier/v7/app"
-	"github.com/peggyjv/sommelier/v7/x/cork/types"
+	typesv2 "github.com/peggyjv/sommelier/v7/x/cork/types/v2"
 	tmcfg "github.com/tendermint/tendermint/config"
 	tmos "github.com/tendermint/tendermint/libs/os"
 	"github.com/tendermint/tendermint/p2p"
@@ -52,13 +52,13 @@ type ethereumKey struct {
 	address    string
 }
 
-func (v *validator) GetQueryClient() (types.QueryClient, error) {
+func (v *validator) GetQueryClient() (typesv2.QueryClient, error) {
 	clientCtx, err := v.clientContext("tcp://localhost:26657")
 	if err != nil {
 		return nil, err
 	}
 
-	return types.NewQueryClient(clientCtx), nil
+	return typesv2.NewQueryClient(clientCtx), nil
 }
 
 func (v *validator) instanceName() string {

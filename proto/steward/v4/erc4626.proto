@@ -1,0 +1,55 @@
+/*
+* Protos for function calls to the ERC4626 adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+
+// Represents call data for the ERC4626 adaptor V1
+message ERC4626AdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+        // Represents function `depositToVault(ERC4626 erc4626Vault, uint256 assets)`
+        DepositToVault deposit_to_vault = 2;
+        // Represents function `withdrawFromVault(ERC4626 erc4626Vault, uint256 assets)`
+        WithdrawFromVault withdraw_from_vault = 3;
+    }
+
+    /*
+    * Allows strategists to deposit into ERC4626 positions.
+    *
+    * Represents function `depositToVault(ERC4626 erc4626Vault, uint256 assets)`
+    */
+    message DepositToVault {
+        // The address of the ERC4626 vault
+        string erc4626_vault = 1;
+        // The amount of assets to deposit
+        string assets = 2;
+    }
+
+    /*
+    * Allows strategists to withdraw from ERC4626 positions.
+    *
+    * Represents function `withdrawFromVault(ERC4626 erc4626Vault, uint256 assets)`
+    */
+    message WithdrawFromVault {
+        // The address of the ERC4626 vault
+        string erc4626_vault = 1;
+        // The amount of assets to withdraw
+        string assets = 2;
+    }
+}
+
+message ERC4626AdaptorV1Calls {
+    repeated ERC4626AdaptorV1 calls = 1;
+}
+

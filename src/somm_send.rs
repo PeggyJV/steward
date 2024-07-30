@@ -1,4 +1,4 @@
-use abscissa_core::Application;
+use abscissa_core::{tracing::debug, Application};
 use deep_space::coin::Coin;
 use deep_space::error::CosmosGrpcError;
 use deep_space::Contact;
@@ -88,6 +88,7 @@ pub async fn schedule_cork(cork: Cork, block_height: u64) -> Result<TxResponse, 
     };
     let msg = Msg::new("/cork.v2.MsgScheduleCorkRequest", msg);
 
+    debug!("sending cork msg: {msg:?}");
     send_messages(vec![msg]).await
 }
 
@@ -103,6 +104,7 @@ pub async fn schedule_axelar_cork(
     };
     let msg = Msg::new("/axelarcork.v1.MsgScheduleAxelarCorkRequest", msg);
 
+    debug!("sending axelarcork msg: {msg:?}");
     send_messages(vec![msg]).await
 }
 
@@ -113,6 +115,8 @@ async fn send_messages(messages: Vec<Msg>) -> Result<TxResponse, CosmosGrpcError
         .send_transaction(msg_bytes, BroadcastMode::Sync)
         .await?;
 
+    debug!("transaction response: {response:?}");
+    debug!("waiting for tx to be included");
     contact.wait_for_tx(response, TIMEOUT).await
 }
 
@@ -133,7 +137,7 @@ async fn get_signed_messages(
     Ok(msg_bytes)
 }
 
-fn get_fee(messages: &Vec<Msg>) -> Fee {
+fn get_fee(messages: &[Msg]) -> Fee {
     let config = APP.config();
     let cosmos_gas_price = config.cosmos.gas_price.as_tuple();
     let fee = Coin {

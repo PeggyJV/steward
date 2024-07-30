@@ -3,16 +3,22 @@ use std::{net::SocketAddr, sync::Arc};
 use crate::{
     config::StewardConfig,
     cork::CorkHandler,
+    encode::EncodingHandler,
     error::{Error, ErrorKind},
     prelude::APP,
-    proto::contract_call_service_server::ContractCallServiceServer,
+    proto::{
+        contract_call_service_server::ContractCallServiceServer,
+        status_service_server::StatusServiceServer,
+    },
     pubsub::cache::{lookup_trust_data_by_subject_key_identifier, PUBLISHER_TRUST_STATE_CACHE},
+    status::StatusHandler,
 };
 use abscissa_core::{
     status_err,
     tracing::log::{error, info},
     Application,
 };
+use steward_proto::proto::encoding_service_server::EncodingServiceServer;
 use tokio::sync::mpsc::Receiver;
 use tokio_util::sync::CancellationToken;
 use tonic::{
@@ -22,7 +28,8 @@ use tonic::{
 use x509_parser::prelude::{FromDer, KeyIdentifier, ParsedExtension, X509Certificate};
 
 // for gRPC reflection
-pub const FILE_DESCRIPTOR_SET: &[u8] = include_bytes!("gen/proto/descriptor.bin");
+pub const FILE_DESCRIPTOR_SET: &[u8] =
+    include_bytes!("../crates/steward-proto/src/gen/descriptor.bin");
 
 pub struct ServerConfig {
     pub tls_config: Option<ServerTlsConfig>,
@@ -70,8 +77,39 @@ pub(crate) async fn start_server(cancellation_token: CancellationToken) {
             std::process::exit(1)
         })
         .add_service(ContractCallServiceServer::new(CorkHandler))
+        .add_service(StatusServiceServer::new(StatusHandler))
         .add_service(proto_descriptor_service)
         .serve_with_shutdown(server_config.address, cancellation_token.cancelled())
+        .await
+    {
+        status_err!("server error: {}", err);
+        std::process::exit(1)
+    }
+}
+
+pub(crate) async fn start_encode_server() {
+    // Reflection required for certain clients to function... such as grpcurl
+    let contents = FILE_DESCRIPTOR_SET.to_vec();
+    let proto_descriptor_service = tonic_reflection::server::Builder::configure()
+        .register_encoded_file_descriptor_set(contents.as_slice())
+        .build()
+        .unwrap_or_else(|err| {
+            status_err!("failed to build descriptor service: {}", err);
+            std::process::exit(1)
+        });
+    let config = APP.config();
+    let server_config = load_encoding_server_config(&config)
+        .await
+        .unwrap_or_else(|err| {
+            status_err!("failed to load server config: {}", err);
+            std::process::exit(1)
+        });
+
+    info!("test server listening on {}", server_config.address);
+    if let Err(err) = tonic::transport::Server::builder()
+        .add_service(EncodingServiceServer::new(EncodingHandler))
+        .add_service(proto_descriptor_service)
+        .serve(server_config.address)
         .await
     {
         status_err!("server error: {}", err);
@@ -112,6 +150,8 @@ pub(crate) async fn auth_config(
         _ => panic!("cannot parse private key .pem file"),
     };
     let mut server_config = rustls::ServerConfig::new(client_auth);
+    let alpn_protocols: Vec<u8> = "h2".into();
+    server_config.set_protocols(&[alpn_protocols]);
     server_config.set_single_cert(cert, key).unwrap();
 
     Ok(server_config)
@@ -126,14 +166,26 @@ pub(crate) fn socket_addr(config: &Arc<StewardConfig>) -> Result<SocketAddr, Err
 }
 
 pub async fn load_server_config(config: &Arc<StewardConfig>) -> Result<ServerConfig, Error> {
+    let address = socket_addr(config)?;
+
     let server_config = auth_config(config).await?;
     let tls_config = ServerTlsConfig::new()
         .rustls_server_config(server_config)
         .to_owned();
-    let address = socket_addr(config)?;
 
     Ok(ServerConfig {
         tls_config: Some(tls_config),
+        address,
+    })
+}
+
+pub async fn load_encoding_server_config(
+    config: &Arc<StewardConfig>,
+) -> Result<ServerConfig, Error> {
+    let address = socket_addr(config)?;
+
+    Ok(ServerConfig {
+        tls_config: None,
         address,
     })
 }

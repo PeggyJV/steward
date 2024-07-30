@@ -13,7 +13,7 @@ env:
   IMAGE_NAME: steward-steward
   HARDHAT_IMAGE_NAME: steward-hardhat
   ORCHESTRATOR_IMAGE_NAME: ghcr.io/peggyjv/gravity-bridge-orchestrator:main
-  SOMMELIER_IMAGE: ghcr.io/peggyjv/sommelier-sommelier:main
+  SOMMELIER_IMAGE: ghcr.io/peggyjv/sommelier-sommelier:v7.0.1
   STEWARD_ARTIFACT: steward_steward
   HARDHAT_ARTIFACT: steward_hardhat
   UPLOAD_DIR: /tmp/uploaded_artifacts
@@ -125,12 +125,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test_type: [ "AaveV2Stablecoin", "CellarV1", "CellarV2", "CellarV2_2", "ScheduledCorkProposal" ]
+        test_type: [ "AaveV2Stablecoin", "CellarV1", "CellarV2", "CellarV2_2", "ScheduledCorkProposal", "ScheduledAxelarCorkProposal", "ScheduledCorkMulticallProposal"]
     steps:
-      - name: Set up Go 1.19
+      - name: Set up Go 1.22
         uses: actions/setup-go@v2
         with:
-          go-version: 1.19
+          go-version: 1.22
       - name: checkout
         uses: actions/checkout@v2
       - name: go-cache

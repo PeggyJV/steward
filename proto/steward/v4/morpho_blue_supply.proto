@@ -1,0 +1,58 @@
+/*
+* Protos for function calls to the Morpho Blue Supply adaptor.
+*/
+
+syntax = "proto3";
+package steward.v4;
+
+option go_package = "/steward_proto";
+
+import "base.proto";
+import "common.proto";
+
+// Represents call data for the Morpho Blue Supply adaptor.
+message MorphoBlueSupplyAdaptorV1 {
+    oneof function {
+        /***** BASE ADAPTOR FUNCTIONS *****/
+
+        // Represents function `revokeApproval(ERC20 asset, address spender)`
+        RevokeApproval revoke_approval = 1;
+
+        /***** ADAPTOR-SPECIFIC FUNCTIONS *****/
+
+        // Represents function `lendToMorphoBlue(MarketParams memory _market, uint256 _assets)`
+        LendToMorphoBlue lend_to_morpho_blue = 2;
+        // Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
+        WithdrawFromMorphoBlue withdraw_from_morpho_blue = 3;
+    }
+
+    /*
+    * Allows strategists to lend a specific amount for an asset on Morpho Blue
+    *
+    * Represents function `lendToMorphoBlue(MarketParams memory _market, uint256 _assets)`
+    */
+    message LendToMorphoBlue {
+        // Identifier of a Morpho Blue Market 
+        MarketParams market = 1;
+
+        // The amount of the loan token to lend
+        string assets = 2;
+    }
+
+    /*
+    * Allows strategists to withdraw the underlying asset plus interest
+    *
+    * Represents function `withdrawFromMorphoBlue(MarketParams memory _market, uint256 _assets)`
+    */
+    message WithdrawFromMorphoBlue {
+       // Identifier of a Morpho Blue Market 
+        MarketParams market = 1;
+
+        // The amount of the loan token to lend
+        string assets = 2;
+    }
+}
+
+message MorphoBlueSupplyAdaptorV1Calls {
+    repeated MorphoBlueSupplyAdaptorV1 calls = 1;
+}
