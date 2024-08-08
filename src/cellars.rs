@@ -85,7 +85,7 @@ lazy_static! {
 // permissions
 
 pub const ALLOWED_V2_0_SETUP_ADAPTORS: [(&str, &str); 0] = [];
-pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 2] = [
+pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 3] = [
     (CELLAR_RYETH, ADAPTOR_AAVE_V3_A_TOKEN_V1_LIDO),
     (CELLAR_RYETH, ADAPTOR_AAVE_V3_DEBT_TOKEN_V1_LIDO),
     (CELLAR_RYETH, ADAPTOR_PENDLE_ADAPTOR_V1),
