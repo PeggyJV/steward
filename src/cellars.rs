@@ -85,12 +85,14 @@ lazy_static! {
 // permissions
 
 pub const ALLOWED_V2_0_SETUP_ADAPTORS: [(&str, &str); 0] = [];
-pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 1] =
-    [(CELLAR_RYETH, ADAPTOR_LIDO_STAKING_V1)];
-pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 3] = [
-    (CELLAR_TURBO_EETH_DEPLOYMENT_1, ADAPTOR_ERC4626_V1),
-    (CELLAR_TURBO_STETH, ADAPTOR_LIDO_STAKING_V1),
-    (CELLAR_TURBO_STETH, ADAPTOR_VESTING_SIMPLE_V1_1_DEPLOYMENT2),
+pub const ALLOWED_V2_2_CATALOGUE_ADAPTORS: [(&str, &str); 2] = [
+    (CELLAR_RYETH, ADAPTOR_AAVE_V3_A_TOKEN_V1_LIDO),
+    (CELLAR_RYETH, ADAPTOR_AAVE_V3_DEBT_TOKEN_V1_LIDO),
+    (CELLAR_RYETH, ADAPTOR_PENDLE_ADAPTOR_V1),
+];
+pub const ALLOWED_V2_5_CATALOGUE_ADAPTORS: [(&str, &str); 2] = [
+    (CELLAR_TURBO_STETH, ADAPTOR_AAVE_V3_A_TOKEN_V1_LIDO),
+    (CELLAR_TURBO_STETH, ADAPTOR_AAVE_V3_DEBT_TOKEN_V1_LIDO),
 ];
 
 // due to position size limits in v2.0, positions must be added and removed from the limited list
