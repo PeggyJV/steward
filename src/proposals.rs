@@ -194,6 +194,8 @@ async fn poll_approved_proposals(
                 } else if err.code() == Code::Unknown {
                     error!("error querying proposal {}: {}", proposal_id, err);
 
+                    state.last_finalized_proposal_id = proposal_id;
+
                     continue;
                 } else {
                     return Err(proposal_processing_error(format!(
