@@ -192,10 +192,8 @@ async fn poll_approved_proposals(
                         break;
                     }
                 } else {
-                    return Err(proposal_processing_error(format!(
-                        "error querying proposal {}: {}",
-                        proposal_id, err
-                    )));
+                    error!("error querying proposal {}: {}", proposal_id, err);
+                    continue;
                 }
             }
         };
