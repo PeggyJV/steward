@@ -21,6 +21,24 @@ pub(crate) mod cellar_v2_5;
 // addresses are normalized by removing the 0x prefix and converting to lowercase for reliable comparison
 
 // oracles
+//
+//
+// TurboSteth
+pub const TURBOSTETH_ORACLE1: (U256, &str) = (
+    U256([24, 0, 0, 0]),
+    "762e003b3aB6042a358619e78cba9624BeB69b8e",
+);
+pub const ALLOWED_TURBOSTETH_PRICE_ORACLES: [(U256, &str); 1] = [TURBOSTETH_ORACLE1];
+
+//TurboGHO
+pub const TURBOGHO_ORACLE1: (U256, &str) = (
+    U256([25, 0, 0, 0]),
+    "8e692B7Ae230827Bc2DB30ffa6f3be8eD1a76FC1",
+);
+
+pub const ALLOWED_TURBOGHO_PRICE_ORACLES: [(U256, &str); 1] = [TURBOGHO_ORACLE1];
+
+// TurboSweth
 
 pub const TURBOSWETH_ORACLE1: (U256, &str) = (
     U256([3, 0, 0, 0]),
@@ -43,12 +61,18 @@ pub const TURBOSWETH_ORACLE5: (U256, &str) = (
     "7acdb8096e51b2730387977bad340b9efde61342",
 );
 
-pub const ALLOWED_TURBOSWETH_PRICE_ORACLES: [(U256, &str); 5] = [
+pub const TURBOSWETH_ORACLE6: (U256, &str) = (
+    U256([26, 0, 0, 0]),
+    "0AcDB8096E51b2730387977Bad340B9EFDE61342",
+);
+
+pub const ALLOWED_TURBOSWETH_PRICE_ORACLES: [(U256, &str); 6] = [
     TURBOSWETH_ORACLE1,
     TURBOSWETH_ORACLE2,
     TURBOSWETH_ORACLE3,
     TURBOSWETH_ORACLE4,
     TURBOSWETH_ORACLE5,
+    TURBOSWETH_ORACLE6,
 ];
 
 pub const TURBOSOMM_ORACLE1: (U256, &str) = (
@@ -143,11 +167,15 @@ pub const ALLOWED_V2_2_CATALOGUE_POSITIONS: [(&str, u32); 22] = [
     (CELLAR_RYETH, 222),
     (CELLAR_RYETH, 223),
 ];
-pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 4] = [
+pub const ALLOWED_V2_5_CATALOGUE_POSITIONS: [(&str, u32); 8] = [
     (CELLAR_TURBO_STETH, 7000),
     (CELLAR_TURBO_STETH, 7001),
     (CELLAR_TURBO_STETH, 7500),
     (CELLAR_TURBO_STETH, 7501),
+    (CELLAR_RYBTC, 224),
+    (CELLAR_RYBTC, 225),
+    (CELLAR_ETH_GROWTH, 33333),
+    (CELLAR_ETH_GROWTH, 33334),
 ];
 
 pub const BLOCKED_ADAPTORS: [&str; 3] = [
@@ -199,6 +227,7 @@ pub const CELLAR_TURBO_STETH: &str = "fd6db5011b171b05e1ea3b92f9eacaeeb055e971";
 pub const CELLAR_TURBO_SOMM: &str = "5195222f69c5821f8095ec565e71e18ab6a2298f";
 pub const CELLAR_TURBO_EETH_DEPLOYMENT_1: &str = "9a7b4980c6f0fcaa50cd5f288ad7038f434c692e";
 pub const CELLAR_TURBO_EETH_DEPLOYMENT_2: &str = "dadc82e26b3739750e036dfd9defd3ed459b877a";
+pub const CELLAR_ETH_GROWTH: &str = "6c51041A91C91C86f3F08a72cB4D3F67f1208897";
 
 // deprecated adaptors
 
@@ -324,6 +353,18 @@ pub fn validate_oracle(
     }
     if cellar_id_normalized.eq(CELLAR_TURBO_SOMM)
         && ALLOWED_TURBOSOMM_PRICE_ORACLES.contains(&(registry_id_in, oracle_in.as_str()))
+    {
+        return Ok(());
+    }
+
+    if cellar_id_normalized.eq(CELLAR_TURBO_STETH)
+        && ALLOWED_TURBOSTETH_PRICE_ORACLES.contains(&(registry_id_in, oracle_in.as_str()))
+    {
+        return Ok(());
+    }
+
+    if cellar_id_normalized.eq(CELLAR_TURBO_GHO)
+        && ALLOWED_TURBOGHO_PRICE_ORACLES.contains(&(registry_id_in, oracle_in.as_str()))
     {
         return Ok(());
     }
