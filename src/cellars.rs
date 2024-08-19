@@ -26,14 +26,14 @@ pub(crate) mod cellar_v2_5;
 // TurboSteth
 pub const TURBOSTETH_ORACLE1: (U256, &str) = (
     U256([24, 0, 0, 0]),
-    "762e003b3aB6042a358619e78cba9624BeB69b8e",
+    "762e003b3ab6042a358619e78cba9624beb69b8e",
 );
 pub const ALLOWED_TURBOSTETH_PRICE_ORACLES: [(U256, &str); 1] = [TURBOSTETH_ORACLE1];
 
 //TurboGHO
 pub const TURBOGHO_ORACLE1: (U256, &str) = (
     U256([25, 0, 0, 0]),
-    "8e692B7Ae230827Bc2DB30ffa6f3be8eD1a76FC1",
+    "8e692b7ae230827bc2db30ffa6f3be8ed1a76fc1",
 );
 
 pub const ALLOWED_TURBOGHO_PRICE_ORACLES: [(U256, &str); 1] = [TURBOGHO_ORACLE1];
@@ -63,7 +63,7 @@ pub const TURBOSWETH_ORACLE5: (U256, &str) = (
 
 pub const TURBOSWETH_ORACLE6: (U256, &str) = (
     U256([26, 0, 0, 0]),
-    "0AcDB8096E51b2730387977Bad340B9EFDE61342",
+    "0acdb8096e51b2730387977bad340b9efde61342",
 );
 
 pub const ALLOWED_TURBOSWETH_PRICE_ORACLES: [(U256, &str); 6] = [
@@ -227,7 +227,7 @@ pub const CELLAR_TURBO_STETH: &str = "fd6db5011b171b05e1ea3b92f9eacaeeb055e971";
 pub const CELLAR_TURBO_SOMM: &str = "5195222f69c5821f8095ec565e71e18ab6a2298f";
 pub const CELLAR_TURBO_EETH_DEPLOYMENT_1: &str = "9a7b4980c6f0fcaa50cd5f288ad7038f434c692e";
 pub const CELLAR_TURBO_EETH_DEPLOYMENT_2: &str = "dadc82e26b3739750e036dfd9defd3ed459b877a";
-pub const CELLAR_ETH_GROWTH: &str = "6c51041A91C91C86f3F08a72cB4D3F67f1208897";
+pub const CELLAR_ETH_GROWTH: &str = "6c51041a91c91c86f3f08a72cb4d3f67f1208897";
 
 // deprecated adaptors
 
