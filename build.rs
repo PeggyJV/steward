@@ -191,6 +191,7 @@ fn generate_rust_protos() {
     let mut config = prost_build::Config::default();
     config.out_dir(tmp_dir);
     config.type_attribute(".", "#[derive(serde::Deserialize, serde::Serialize)]");
+    config.type_attribute(".", "#[serde(rename_all = \"camelCase\")]");
     config.compile_protos(&protos, &steward_proto_dir).unwrap();
 
     // Compile all proto client for GRPC services
