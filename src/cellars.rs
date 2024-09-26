@@ -68,7 +68,7 @@ pub const TURBOSWETH_ORACLE6: (U256, &str) = (
 
 pub const TEST_RYUSD_ORACLE: (U256, &str) = (
     // need the real id
-    U256([2, 0, 0, 0]),
+    U256([4, 0, 0, 0]),
     "ddf603866d6d8d207c6200552655df1ebde5a641",
 );
 
