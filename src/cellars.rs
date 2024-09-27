@@ -66,6 +66,13 @@ pub const TURBOSWETH_ORACLE6: (U256, &str) = (
     "0acdb8096e51b2730387977bad340b9efde61342",
 );
 
+pub const TEST_RYUSD_ORACLE: (U256, &str) = (
+    U256([4, 0, 0, 0]),
+    "ddf603866d6d8d207c6200552655df1ebde5a641",
+);
+
+pub const ALLOWED_TEST_RYUSD_PRICE_ORACLES: [(U256, &str); 1] = [TEST_RYUSD_ORACLE];
+
 pub const ALLOWED_TURBOSWETH_PRICE_ORACLES: [(U256, &str); 6] = [
     TURBOSWETH_ORACLE1,
     TURBOSWETH_ORACLE2,
@@ -228,6 +235,7 @@ pub const CELLAR_TURBO_SOMM: &str = "5195222f69c5821f8095ec565e71e18ab6a2298f";
 pub const CELLAR_TURBO_EETH_DEPLOYMENT_1: &str = "9a7b4980c6f0fcaa50cd5f288ad7038f434c692e";
 pub const CELLAR_TURBO_EETH_DEPLOYMENT_2: &str = "dadc82e26b3739750e036dfd9defd3ed459b877a";
 pub const CELLAR_ETH_GROWTH: &str = "6c51041a91c91c86f3f08a72cb4d3f67f1208897";
+pub const CELLAR_TEST_RYUSD: &str = "01a4a3e1e730d245f210eebc6aee54f2381cac63";
 
 // deprecated adaptors
 
@@ -365,6 +373,12 @@ pub fn validate_oracle(
 
     if cellar_id_normalized.eq(CELLAR_TURBO_GHO)
         && ALLOWED_TURBOGHO_PRICE_ORACLES.contains(&(registry_id_in, oracle_in.as_str()))
+    {
+        return Ok(());
+    }
+
+    if cellar_id_normalized.eq(CELLAR_TEST_RYUSD)
+        && ALLOWED_TEST_RYUSD_PRICE_ORACLES.contains(&(registry_id_in, oracle_in.as_str()))
     {
         return Ok(());
     }
