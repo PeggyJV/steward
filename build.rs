@@ -125,7 +125,10 @@ fn generate_contract_abis() {
         ("ERC4626AdaptorV1", "erc4626_adaptor_v1"),
         ("StakingAdaptorV1", "staking_adaptor_v1"),
         ("PendleAdaptorV1", "pendle_adaptor_v1"),
-        ("boring-vault/ManagerWithMerkleVerification", "boring_vault/manager_with_merkle_verification"),
+        (
+            "boring-vault/ManagerWithMerkleVerification",
+            "boring_vault/manager_with_merkle_verification",
+        ),
     ];
 
     contracts.iter().for_each(|n| {
