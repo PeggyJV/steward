@@ -168,9 +168,11 @@ fn generate_rust_protos() {
     let tmp_dir = Path::new(&TMP_PATH);
     let root = env!("CARGO_MANIFEST_DIR");
     let root: PathBuf = root.parse().unwrap();
-    let mut steward_proto_dir = root;
+    let mut steward_proto_dir = root.clone();
     steward_proto_dir.push("proto/steward/v4");
-    let steward_proto_dir = [steward_proto_dir];
+    let mut boring_vault_proto_dir = root;
+    boring_vault_proto_dir.push("proto/steward/v4/boring_vault/v1");
+    let steward_proto_dir = [steward_proto_dir, boring_vault_proto_dir];
 
     // List available proto files
     let mut protos: Vec<PathBuf> = vec![];
