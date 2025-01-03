@@ -1,7 +1,7 @@
 //! Handlers for V2.5 of the Cellar.sol contract functions
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
-use crate::abi::{
+use crate::{abi::{
     adaptors::{
         cellar_with_multi_asset_deposit_v1::{
             CellarWithMultiAssetDepositV1Calls, DropAlternativeAssetDataCall,
@@ -12,7 +12,7 @@ use crate::abi::{
         },
     },
     cellar_v2_5::{AdaptorCall as AbiAdaptorCall, *},
-};
+}, utils::sp_disabled_call_error};
 use crate::proto::{
     adaptor_call::CallData::*,
     cellar_v2_5::{function_call::Function, CallType, FunctionCall},
@@ -307,18 +307,14 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_5Calls::SetRebalanceDeviation(call).encode())
         }
-        Function::SetStrategistPlatformCut(params) => {
+        Function::SetStrategistPlatformCut(_) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetStrategistPlatformCutCall::function_name(),
                 &cellar_id,
             );
 
-            let call = SetStrategistPlatformCutCall {
-                cut: params.new_cut,
-            };
-
-            Ok(CellarV2_5Calls::SetStrategistPlatformCut(call).encode())
+            Err(sp_disabled_call_error("SetStrategistPlatformCut is no longer available as a strategist function".to_string()))
         }
         Function::IncreaseShareSupplyCap(params) => {
             log_cellar_call(

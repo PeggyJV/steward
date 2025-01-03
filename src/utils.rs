@@ -97,6 +97,10 @@ pub fn sp_call_error(message: String) -> Error {
     ErrorKind::SPCallError.context(message).into()
 }
 
+pub fn sp_disabled_call_error(message: String) -> Error {
+    ErrorKind::SPDisabledCallError.context(message).into()
+}
+
 pub fn sp_call_parse_address(address: String) -> Result<H160, Error> {
     match address.parse::<H160>() {
         Ok(addr) => Ok(addr),

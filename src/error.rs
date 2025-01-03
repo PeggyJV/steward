@@ -49,6 +49,9 @@ pub enum ErrorKind {
     /// Strategy Provider call error
     #[error("SP call error")]
     SPCallError,
+    /// Strategy Provider disabled call error
+    #[error("SP disabled call error")]
+    SPDisabledCallError,
     /// Governance call error
     #[error("SP call error")]
     GovernanceCall,

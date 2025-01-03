@@ -11,6 +11,7 @@ use crate::proto::{
     },
     AdaptorCall,
 };
+use crate::utils::sp_disabled_call_error;
 use abscissa_core::tracing::{debug, info};
 use ethers::{
     abi::AbiEncode,
@@ -223,18 +224,14 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
 
             Ok(CellarV2_2Calls::InitiateShutdown(call).encode())
         }
-        Function::SetStrategistPlatformCut(params) => {
+        Function::SetStrategistPlatformCut(_) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetStrategistPlatformCutCall::function_name(),
                 &cellar_id,
             );
 
-            let call = SetStrategistPlatformCutCall {
-                cut: params.new_cut,
-            };
-
-            Ok(CellarV2_2Calls::SetStrategistPlatformCut(call).encode())
+            Err(sp_disabled_call_error("SetStrategistPlatformCut is no longer available as a strategist function".to_string()))
         }
         Function::LiftShutdown(_) => {
             log_cellar_call(CELLAR_NAME, &LiftShutdownCall::function_name(), &cellar_id);

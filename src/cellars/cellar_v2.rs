@@ -16,7 +16,7 @@ use crate::{
         adaptor_call::CallData::*, cellar_v2::Function,
         cellar_v2_governance::Function as GovernanceFunction, AdaptorCall,
     },
-    utils::{sp_call_error, sp_call_parse_address, string_to_u256},
+    utils::{sp_call_error, sp_call_parse_address, sp_disabled_call_error, string_to_u256},
 };
 
 use super::{
@@ -140,25 +140,23 @@ pub fn get_call(function: Function, cellar_id: String) -> Result<CellarV2Calls, 
             let call = LiftShutdownCall {};
             Ok(CellarV2Calls::LiftShutdown(call))
         }
-        Function::SetPlatformFee(params) => {
+        Function::SetPlatformFee(_) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetPlatformFeeCall::function_name(),
                 &cellar_id,
             );
-            let call = SetPlatformFeeCall {
-                new_platform_fee: params.amount,
-            };
-            Ok(CellarV2Calls::SetPlatformFee(call))
+
+            Err(sp_disabled_call_error("SetPlatformCut is no longer available as a strategist function".to_string()))
         }
-        Function::SetStrategistPlatformCut(params) => {
+        Function::SetStrategistPlatformCut(_) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetStrategistPlatformCutCall::function_name(),
                 &cellar_id,
             );
-            let call = SetStrategistPlatformCutCall { cut: params.amount };
-            Ok(CellarV2Calls::SetStrategistPlatformCut(call))
+
+            Err(sp_disabled_call_error("SetStrategistPlatformCut is no longer available as a strategist function".to_string()))
         }
         Function::SetRebalanceDeviation(params) => {
             log_cellar_call(
