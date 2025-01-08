@@ -231,7 +231,10 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
                 &cellar_id,
             );
 
-            Err(sp_disabled_call_error("SetStrategistPlatformCut is no longer available as a strategist function".to_string()))
+            Err(sp_disabled_call_error(
+                "SetStrategistPlatformCut is no longer available as a strategist function"
+                    .to_string(),
+            ))
         }
         Function::LiftShutdown(_) => {
             log_cellar_call(CELLAR_NAME, &LiftShutdownCall::function_name(), &cellar_id);

@@ -147,7 +147,9 @@ pub fn get_call(function: Function, cellar_id: String) -> Result<CellarV2Calls, 
                 &cellar_id,
             );
 
-            Err(sp_disabled_call_error("SetPlatformCut is no longer available as a strategist function".to_string()))
+            Err(sp_disabled_call_error(
+                "SetPlatformCut is no longer available as a strategist function".to_string(),
+            ))
         }
         Function::SetStrategistPlatformCut(_) => {
             log_cellar_call(
@@ -156,7 +158,10 @@ pub fn get_call(function: Function, cellar_id: String) -> Result<CellarV2Calls, 
                 &cellar_id,
             );
 
-            Err(sp_disabled_call_error("SetStrategistPlatformCut is no longer available as a strategist function".to_string()))
+            Err(sp_disabled_call_error(
+                "SetStrategistPlatformCut is no longer available as a strategist function"
+                    .to_string(),
+            ))
         }
         Function::SetRebalanceDeviation(params) => {
             log_cellar_call(
