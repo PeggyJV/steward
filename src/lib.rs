@@ -18,6 +18,7 @@ pub mod cork;
 pub mod encode;
 pub mod error;
 pub mod gas;
+pub mod jobs;
 pub mod prelude;
 pub mod proposals;
 pub mod pubsub;

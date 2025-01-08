@@ -94,6 +94,8 @@ pub enum ErrorKind {
     /// CallDecodeError
     #[error("call decode error")]
     CallDecodeError,
+    #[error("empty response error")]
+    EmptyResponseError,
 }
 
 impl ErrorKind {
