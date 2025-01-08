@@ -36,7 +36,7 @@ type CellarV2_2AdaptorCall struct {
 
 // CellarV22MetaData contains all meta data concerning the CellarV22 contract.
 var CellarV22MetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"adaptor\",\"type\":\"address\"}],\"name\":\"AddAdaptorToCatalogue\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint32\",\"name\":\"position\",\"type\":\"uint32\"}],\"name\":\"AddPositionToCatalogue\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"adaptor\",\"type\":\"address\"},{\"internalType\":\"bytes[]\",\"name\":\"callData\",\"type\":\"bytes[]\"}],\"indexed\":false,\"internalType\":\"structCellarV2_2.AdaptorCall[]\",\"name\":\"data\",\"type\":\"tuple[]\"}],\"name\":\"CallOnAdaptor\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"Multicall\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnerUpdated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"adaptor\",\"type\":\"address\"}],\"name\":\"addAdaptorToCatalogue\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"position\",\"type\":\"uint32\"}],\"name\":\"addPositionToCatalogue\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"adaptor\",\"type\":\"address\"},{\"internalType\":\"bytes[]\",\"name\":\"callData\",\"type\":\"bytes[]\"}],\"internalType\":\"structCellarV2_2.AdaptorCall[]\",\"name\":\"data\",\"type\":\"tuple[]\"}],\"name\":\"callOnAdaptor\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes[]\",\"name\":\"data\",\"type\":\"bytes[]\"}],\"name\":\"multicall\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"setOwner\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"Cellar__InvalidFeeCut\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"adaptor\",\"type\":\"address\"}],\"name\":\"AddAdaptorToCatalogue\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint32\",\"name\":\"position\",\"type\":\"uint32\"}],\"name\":\"AddPositionToCatalogue\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"adaptor\",\"type\":\"address\"},{\"internalType\":\"bytes[]\",\"name\":\"callData\",\"type\":\"bytes[]\"}],\"indexed\":false,\"internalType\":\"structCellarV2_2.AdaptorCall[]\",\"name\":\"data\",\"type\":\"tuple[]\"}],\"name\":\"CallOnAdaptor\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"Multicall\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnerUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"oldPlatformCut\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"newPlatformCut\",\"type\":\"uint64\"}],\"name\":\"StrategistPlatformCutChanged\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"MAX_FEE_CUT\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"adaptor\",\"type\":\"address\"}],\"name\":\"addAdaptorToCatalogue\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"position\",\"type\":\"uint32\"}],\"name\":\"addPositionToCatalogue\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"adaptor\",\"type\":\"address\"},{\"internalType\":\"bytes[]\",\"name\":\"callData\",\"type\":\"bytes[]\"}],\"internalType\":\"structCellarV2_2.AdaptorCall[]\",\"name\":\"data\",\"type\":\"tuple[]\"}],\"name\":\"callOnAdaptor\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"feeData\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"strategistPlatformCut\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"platformFee\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"lastAccrual\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"strategistPayoutAddress\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes[]\",\"name\":\"data\",\"type\":\"bytes[]\"}],\"name\":\"multicall\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"setOwner\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"cut\",\"type\":\"uint64\"}],\"name\":\"setStrategistPlatformCut\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // CellarV22ABI is the input ABI used to generate the binding from.
@@ -185,6 +185,92 @@ func (_CellarV22 *CellarV22TransactorRaw) Transact(opts *bind.TransactOpts, meth
 	return _CellarV22.Contract.contract.Transact(opts, method, params...)
 }
 
+// MAXFEECUT is a free data retrieval call binding the contract method 0xeef33eca.
+//
+// Solidity: function MAX_FEE_CUT() view returns(uint64)
+func (_CellarV22 *CellarV22Caller) MAXFEECUT(opts *bind.CallOpts) (uint64, error) {
+	var out []interface{}
+	err := _CellarV22.contract.Call(opts, &out, "MAX_FEE_CUT")
+
+	if err != nil {
+		return *new(uint64), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(uint64)).(*uint64)
+
+	return out0, err
+
+}
+
+// MAXFEECUT is a free data retrieval call binding the contract method 0xeef33eca.
+//
+// Solidity: function MAX_FEE_CUT() view returns(uint64)
+func (_CellarV22 *CellarV22Session) MAXFEECUT() (uint64, error) {
+	return _CellarV22.Contract.MAXFEECUT(&_CellarV22.CallOpts)
+}
+
+// MAXFEECUT is a free data retrieval call binding the contract method 0xeef33eca.
+//
+// Solidity: function MAX_FEE_CUT() view returns(uint64)
+func (_CellarV22 *CellarV22CallerSession) MAXFEECUT() (uint64, error) {
+	return _CellarV22.Contract.MAXFEECUT(&_CellarV22.CallOpts)
+}
+
+// FeeData is a free data retrieval call binding the contract method 0xe753e600.
+//
+// Solidity: function feeData() view returns(uint64 strategistPlatformCut, uint64 platformFee, uint64 lastAccrual, address strategistPayoutAddress)
+func (_CellarV22 *CellarV22Caller) FeeData(opts *bind.CallOpts) (struct {
+	StrategistPlatformCut   uint64
+	PlatformFee             uint64
+	LastAccrual             uint64
+	StrategistPayoutAddress common.Address
+}, error) {
+	var out []interface{}
+	err := _CellarV22.contract.Call(opts, &out, "feeData")
+
+	outstruct := new(struct {
+		StrategistPlatformCut   uint64
+		PlatformFee             uint64
+		LastAccrual             uint64
+		StrategistPayoutAddress common.Address
+	})
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.StrategistPlatformCut = *abi.ConvertType(out[0], new(uint64)).(*uint64)
+	outstruct.PlatformFee = *abi.ConvertType(out[1], new(uint64)).(*uint64)
+	outstruct.LastAccrual = *abi.ConvertType(out[2], new(uint64)).(*uint64)
+	outstruct.StrategistPayoutAddress = *abi.ConvertType(out[3], new(common.Address)).(*common.Address)
+
+	return *outstruct, err
+
+}
+
+// FeeData is a free data retrieval call binding the contract method 0xe753e600.
+//
+// Solidity: function feeData() view returns(uint64 strategistPlatformCut, uint64 platformFee, uint64 lastAccrual, address strategistPayoutAddress)
+func (_CellarV22 *CellarV22Session) FeeData() (struct {
+	StrategistPlatformCut   uint64
+	PlatformFee             uint64
+	LastAccrual             uint64
+	StrategistPayoutAddress common.Address
+}, error) {
+	return _CellarV22.Contract.FeeData(&_CellarV22.CallOpts)
+}
+
+// FeeData is a free data retrieval call binding the contract method 0xe753e600.
+//
+// Solidity: function feeData() view returns(uint64 strategistPlatformCut, uint64 platformFee, uint64 lastAccrual, address strategistPayoutAddress)
+func (_CellarV22 *CellarV22CallerSession) FeeData() (struct {
+	StrategistPlatformCut   uint64
+	PlatformFee             uint64
+	LastAccrual             uint64
+	StrategistPayoutAddress common.Address
+}, error) {
+	return _CellarV22.Contract.FeeData(&_CellarV22.CallOpts)
+}
+
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
 //
 // Solidity: function owner() view returns(address)
@@ -319,6 +405,27 @@ func (_CellarV22 *CellarV22Session) SetOwner(newOwner common.Address) (*types.Tr
 // Solidity: function setOwner(address newOwner) returns()
 func (_CellarV22 *CellarV22TransactorSession) SetOwner(newOwner common.Address) (*types.Transaction, error) {
 	return _CellarV22.Contract.SetOwner(&_CellarV22.TransactOpts, newOwner)
+}
+
+// SetStrategistPlatformCut is a paid mutator transaction binding the contract method 0xb5292a99.
+//
+// Solidity: function setStrategistPlatformCut(uint64 cut) returns()
+func (_CellarV22 *CellarV22Transactor) SetStrategistPlatformCut(opts *bind.TransactOpts, cut uint64) (*types.Transaction, error) {
+	return _CellarV22.contract.Transact(opts, "setStrategistPlatformCut", cut)
+}
+
+// SetStrategistPlatformCut is a paid mutator transaction binding the contract method 0xb5292a99.
+//
+// Solidity: function setStrategistPlatformCut(uint64 cut) returns()
+func (_CellarV22 *CellarV22Session) SetStrategistPlatformCut(cut uint64) (*types.Transaction, error) {
+	return _CellarV22.Contract.SetStrategistPlatformCut(&_CellarV22.TransactOpts, cut)
+}
+
+// SetStrategistPlatformCut is a paid mutator transaction binding the contract method 0xb5292a99.
+//
+// Solidity: function setStrategistPlatformCut(uint64 cut) returns()
+func (_CellarV22 *CellarV22TransactorSession) SetStrategistPlatformCut(cut uint64) (*types.Transaction, error) {
+	return _CellarV22.Contract.SetStrategistPlatformCut(&_CellarV22.TransactOpts, cut)
 }
 
 // CellarV22AddAdaptorToCatalogueIterator is returned from FilterAddAdaptorToCatalogue and is used to iterate over the raw logs and unpacked data for AddAdaptorToCatalogue events raised by the CellarV22 contract.
@@ -1003,6 +1110,141 @@ func (_CellarV22 *CellarV22Filterer) WatchOwnerUpdated(opts *bind.WatchOpts, sin
 func (_CellarV22 *CellarV22Filterer) ParseOwnerUpdated(log types.Log) (*CellarV22OwnerUpdated, error) {
 	event := new(CellarV22OwnerUpdated)
 	if err := _CellarV22.contract.UnpackLog(event, "OwnerUpdated", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// CellarV22StrategistPlatformCutChangedIterator is returned from FilterStrategistPlatformCutChanged and is used to iterate over the raw logs and unpacked data for StrategistPlatformCutChanged events raised by the CellarV22 contract.
+type CellarV22StrategistPlatformCutChangedIterator struct {
+	Event *CellarV22StrategistPlatformCutChanged // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *CellarV22StrategistPlatformCutChangedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(CellarV22StrategistPlatformCutChanged)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(CellarV22StrategistPlatformCutChanged)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *CellarV22StrategistPlatformCutChangedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *CellarV22StrategistPlatformCutChangedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// CellarV22StrategistPlatformCutChanged represents a StrategistPlatformCutChanged event raised by the CellarV22 contract.
+type CellarV22StrategistPlatformCutChanged struct {
+	OldPlatformCut uint64
+	NewPlatformCut uint64
+	Raw            types.Log // Blockchain specific contextual infos
+}
+
+// FilterStrategistPlatformCutChanged is a free log retrieval operation binding the contract event 0xb5cc994a260a85a42d6588668221571ae0a14f0a28f9e4817a5195262102c868.
+//
+// Solidity: event StrategistPlatformCutChanged(uint64 oldPlatformCut, uint64 newPlatformCut)
+func (_CellarV22 *CellarV22Filterer) FilterStrategistPlatformCutChanged(opts *bind.FilterOpts) (*CellarV22StrategistPlatformCutChangedIterator, error) {
+
+	logs, sub, err := _CellarV22.contract.FilterLogs(opts, "StrategistPlatformCutChanged")
+	if err != nil {
+		return nil, err
+	}
+	return &CellarV22StrategistPlatformCutChangedIterator{contract: _CellarV22.contract, event: "StrategistPlatformCutChanged", logs: logs, sub: sub}, nil
+}
+
+// WatchStrategistPlatformCutChanged is a free log subscription operation binding the contract event 0xb5cc994a260a85a42d6588668221571ae0a14f0a28f9e4817a5195262102c868.
+//
+// Solidity: event StrategistPlatformCutChanged(uint64 oldPlatformCut, uint64 newPlatformCut)
+func (_CellarV22 *CellarV22Filterer) WatchStrategistPlatformCutChanged(opts *bind.WatchOpts, sink chan<- *CellarV22StrategistPlatformCutChanged) (event.Subscription, error) {
+
+	logs, sub, err := _CellarV22.contract.WatchLogs(opts, "StrategistPlatformCutChanged")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(CellarV22StrategistPlatformCutChanged)
+				if err := _CellarV22.contract.UnpackLog(event, "StrategistPlatformCutChanged", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseStrategistPlatformCutChanged is a log parse operation binding the contract event 0xb5cc994a260a85a42d6588668221571ae0a14f0a28f9e4817a5195262102c868.
+//
+// Solidity: event StrategistPlatformCutChanged(uint64 oldPlatformCut, uint64 newPlatformCut)
+func (_CellarV22 *CellarV22Filterer) ParseStrategistPlatformCutChanged(log types.Log) (*CellarV22StrategistPlatformCutChanged, error) {
+	event := new(CellarV22StrategistPlatformCutChanged)
+	if err := _CellarV22.contract.UnpackLog(event, "StrategistPlatformCutChanged", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
