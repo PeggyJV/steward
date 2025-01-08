@@ -9,6 +9,7 @@
 #![forbid(unsafe_code)]
 #![warn(trivial_casts)]
 #![allow(clippy::uninlined_format_args)]
+#![allow(non_local_definitions)]
 
 pub mod application;
 pub mod cellars;

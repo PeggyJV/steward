@@ -34,6 +34,7 @@ use std::{env, path::PathBuf};
 pub const CONFIG_FILE: &str = "steward.toml";
 
 /// Steward Subcommands
+#[allow(non_local_definitions)]
 #[derive(Command, Debug, Parser, Runnable)]
 pub enum StewardCmd {
     // #[clap(subcommand)]
