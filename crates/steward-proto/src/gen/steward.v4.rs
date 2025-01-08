@@ -5023,7 +5023,7 @@ pub struct CellarV25governance {
 }
 /// Nested message and enum types in `CellarV2_5Governance`.
 pub mod cellar_v2_5governance {
-    /// The function you wish to execute on the target cellar   
+    /// The function you wish to execute on the target cellar
     #[derive(serde::Deserialize, serde::Serialize, Clone, PartialEq, ::prost::Message)]
     pub struct FunctionCall {
         #[prost(

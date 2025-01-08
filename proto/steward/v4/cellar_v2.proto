@@ -49,7 +49,7 @@ import "pendle.proto";
 */
 message CellarV2 {
     // The function you wish to execute on the target cellar
-    oneof function { 
+    oneof function {
         // Represents function `callOnAdaptor(AdaptorCall[] memory data)`
         CallOnAdaptor call_on_adaptor = 1;
         // Represents function `removePosition(uint256 index)`
@@ -76,9 +76,9 @@ message CellarV2 {
         // Represents function `liftShutdown()`
         LiftShutdown lift_shutdown = 10;
         // Represents function `setPlatformFee(uint256)`
-        SetPlatformFee set_platform_fee = 11;
+        SetPlatformFee set_platform_fee = 11 [deprecated = true];
         // Represents function `setStrategistPlatformCut(address)`
-        SetStrategistPlatformCut set_strategist_platform_cut = 12;
+        SetStrategistPlatformCut set_strategist_platform_cut = 12 [deprecated = true];
         // Represents function `setRebalanceDeviation(uint256)`
         SetRebalanceDeviation set_rebalance_deviation = 13;
     }
@@ -306,13 +306,13 @@ message CellarV2_2 {
             // Represents function `setShareLockPeriod(uint256 newLock)`
             SetShareLockPeriod set_share_lock_period = 12;
             // Represents function `setStrategistPlatformCut(uint64 cut)`
-            SetStrategistPlatformCut set_strategist_platform_cut = 13;
+            SetStrategistPlatformCut set_strategist_platform_cut = 13 [deprecated = true];
             // Represents function `initiateShutdown()`
             InitiateShutdown initiate_shutdown = 14;
             // Represents function `liftShutdown()`
-            LiftShutdown lift_shutdown = 15; 
+            LiftShutdown lift_shutdown = 15;
             // Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
-            CachePriceRouter cache_price_router = 16;        
+            CachePriceRouter cache_price_router = 16;
         }
     }
 
@@ -540,7 +540,7 @@ message CellarV2_2Governance {
             SwapPositions swap_positions = 18;
         }
     }
-    
+
     /*
     * Allows caller to call multiple functions in a single TX.
     *
@@ -776,7 +776,7 @@ message CellarV2_5 {
             // Represents function `setRebalanceDeviation(uint256)`
             SetRebalanceDeviation set_rebalance_deviation = 19;
             // Represents function `setStrategistPlatformCut(uint64 cut)`
-            SetStrategistPlatformCut set_strategist_platform_cut = 20;
+            SetStrategistPlatformCut set_strategist_platform_cut = 20 [deprecated = true];
             // Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
             SetSharePriceOracle set_share_price_oracle = 21;
             // Represents function `increaseShareSupplyCap(uint192 _newShareSupplyCap)`
@@ -913,7 +913,7 @@ message CellarV2_5 {
     */
     message DecreaseShareSupplyCap {
         string new_cap = 1;
-    } 
+    }
 
     /*
     * Allows the strategist to add, or update an existing alternative asset deposit.
@@ -990,7 +990,7 @@ message CellarV2_5 {
     * Allows the caller to set the share price oracle contract
     *
     * Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
-    */  
+    */
     message SetSharePriceOracle {
         // The oracle registry ID
         string registry_id = 1;
@@ -1024,7 +1024,7 @@ message CellarV2_5Governance {
         Multicall multicall = 2;
     }
 
-    // The function you wish to execute on the target cellar   
+    // The function you wish to execute on the target cellar
     message FunctionCall {
         oneof function {
             // Represents function `addAdaptorToCatalogue(address adaptor)`
@@ -1158,7 +1158,7 @@ message CellarV2_5Governance {
     * Allows the caller to set the share price oracle contract
     *
     * Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`
-    */  
+    */
     message SetSharePriceOracle {
         // The oracle registry ID
         string registry_id = 1;
@@ -1343,7 +1343,7 @@ message AdaptorCall {
         MorphoBlueDebtAdaptorV1Calls morpho_blue_debt_v1_calls = 33;
         // Represents function calls for the MorphoBlueSupplyAdaptorV1
         MorphoBlueSupplyAdaptorV1Calls morpho_blue_supply_v1_calls = 34;
-        // Represents function calls for the ERC4626AdaptorV1 
+        // Represents function calls for the ERC4626AdaptorV1
         ERC4626AdaptorV1Calls erc4626_v1_calls = 35;
         // Represents function calls for the StakingAdaptorV1
         StakingAdaptorV1Calls staking_v1_calls = 36;

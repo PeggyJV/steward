@@ -16,7 +16,9 @@ use ethers::{
     prelude::{types::Address as EthAddress, *},
 };
 use gravity_bridge::gravity_utils::ethereum::downcast_to_u64;
+use somm_proto::cosmos_sdk_proto::cosmos::base::tendermint::v1beta1::GetLatestBlockRequest;
 use std::{convert::TryFrom, time::Duration};
+use tonic::transport::Channel;
 
 pub const TIMEOUT: Duration = Duration::from_secs(60);
 
@@ -95,6 +97,10 @@ pub async fn get_eth_provider() -> Result<Provider<Http>, Error> {
 
 pub fn sp_call_error(message: String) -> Error {
     ErrorKind::SPCallError.context(message).into()
+}
+
+pub fn sp_disabled_call_error(message: String) -> Error {
+    ErrorKind::SPDisabledCallError.context(message).into()
 }
 
 pub fn sp_call_parse_address(address: String) -> Result<H160, Error> {
@@ -242,4 +248,24 @@ pub fn parse_selector(selector: String) -> Result<[u8; 4], Error> {
     array.copy_from_slice(&bytes);
 
     Ok(array)
+}
+
+pub async fn get_latest_block_height(grpc_url: String) -> Result<u64, Error> {
+    type TendermintClient = somm_proto::cosmos_sdk_proto::cosmos::base::tendermint::v1beta1::service_client::ServiceClient<Channel>;
+
+    let mut client = TendermintClient::connect(grpc_url).await?;
+    let response = client.get_latest_block(GetLatestBlockRequest {}).await?;
+    let response = response.into_inner();
+    let Some(block) = response.block else {
+        return Err(ErrorKind::EmptyResponseError
+            .context("block is None in response")
+            .into());
+    };
+    let Some(header) = block.header else {
+        return Err(ErrorKind::EmptyResponseError
+            .context("header is None in response")
+            .into());
+    };
+
+    Ok(header.height as u64)
 }

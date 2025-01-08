@@ -73,7 +73,8 @@ var (
 	vaultCellar     = common.HexToAddress("0x0000000000000000000000000000000000000000")
 	adaptorContract = common.HexToAddress("0x0000000000000000000000000000000000000000")
 	gravityContract = common.HexToAddress("0x04C89607413713Ec9775E14b954286519d836FEf")
-	v2_2Cellar      = common.HexToAddress("0x0000000000000000000000000000000000000000")
+	v2_2Cellar      = common.HexToAddress("0xa513e6e4b8f2a923d98304ec87f64353c4d5c853")
+	v2_5Cellar      = common.HexToAddress("0x2279b7a0a67db372996a5fab50d91eaa73d2ebe6")
 )
 
 type IntegrationTestSuite struct {
@@ -377,7 +378,7 @@ func (s *IntegrationTestSuite) initGenesis() {
 	corkGenState := corktypesv2.DefaultGenesisState()
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[corktypes.ModuleName], &corkGenState))
 	corkGenState.CellarIds = corktypesv2.CellarIDSet{
-		Ids: []string{aaveCellar.Hex(), vaultCellar.Hex(), v2_2Cellar.Hex()},
+		Ids: []string{aaveCellar.Hex(), vaultCellar.Hex(), v2_2Cellar.Hex(), v2_5Cellar.Hex()},
 	}
 	bz, err = cdc.MarshalJSON(&corkGenState)
 	s.Require().NoError(err)
@@ -655,13 +656,25 @@ func (s *IntegrationTestSuite) runEthContainer() {
 
 		for _, s := range strings.Split(ethereumLogOutput.String(), "\n") {
 			if strings.HasPrefix(s, "cellar v2.2 contract deployed at") {
-				strSpl := strings.Split(s, "-")
-				v2_2Cellar = common.HexToAddress(strings.ReplaceAll(strSpl[1], " ", ""))
+				// strSpl := strings.Split(s, "-")
+				// v2_2Cellar = common.HexToAddress(strings.ReplaceAll(strSpl[1], " ", ""))
 				return true
 			}
 		}
 		return false
 	}, time.Minute*5, time.Second*10, "unable to retrieve cellar v2.2 contract address from logs")
+
+	s.Require().Eventuallyf(func() bool {
+
+		for _, s := range strings.Split(ethereumLogOutput.String(), "\n") {
+			if strings.HasPrefix(s, "cellar v2.5 contract deployed at") {
+				// strSpl := strings.Split(s, "-")
+				// v2_5Cellar = common.HexToAddress(strings.ReplaceAll(strSpl[1], " ", ""))
+				return true
+			}
+		}
+		return false
+	}, time.Minute*5, time.Second*10, "unable to retrieve cellar v2.5 contract address from logs")
 
 	s.Require().Eventuallyf(func() bool {
 
@@ -679,6 +692,8 @@ func (s *IntegrationTestSuite) runEthContainer() {
 	s.T().Logf("aave contract deployed at %s", aaveCellar.String())
 	s.T().Logf("vault cellar contract deployed at %s", vaultCellar.String())
 	s.T().Logf("adaptor contract deployed at %s", adaptorContract.String())
+	// s.T().Logf("cellar v2.2 contract deployed at %s", v2_2Cellar.String())
+	// s.T().Logf("cellar v2.5 contract deployed at %s", v2_5Cellar.String())
 
 	s.T().Logf("started Ethereum container: %s", s.ethResource.Container.ID)
 }
@@ -897,9 +912,16 @@ server_key_path = "/root/steward/test_server_key_pkcs8.pem"
 
 [pubsub]
 cache_refresh_period = 3
+
+[jobs.update_strategist_platform_cut]
+height = 30
+cellars_v2_2 = ["%s"]
+cellars_v2_5 = ["%s"]
 `,
 			s.valResources[i].Container.Name[1:],
 			testDenom,
+			v2_2Cellar.String(),
+			v2_5Cellar.String(),
 		)
 
 		stewardCfgPath := steward.configDir()

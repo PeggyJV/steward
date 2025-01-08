@@ -9,6 +9,7 @@
 #![forbid(unsafe_code)]
 #![warn(trivial_casts)]
 #![allow(clippy::uninlined_format_args)]
+#![allow(non_local_definitions)]
 
 pub mod application;
 pub mod cellars;
@@ -18,6 +19,7 @@ pub mod cork;
 pub mod encode;
 pub mod error;
 pub mod gas;
+pub mod jobs;
 pub mod prelude;
 pub mod proposals;
 pub mod pubsub;
