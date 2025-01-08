@@ -51,6 +51,7 @@ pub struct StewardConfig {
     pub server: ServerSection,
     pub simulate: SimulateSection,
     pub pubsub: PubsubConfig,
+    pub jobs: JobsConfig,
 }
 
 impl StewardConfig {
@@ -101,6 +102,7 @@ impl Default for StewardConfig {
             server: ServerSection::default(),
             simulate: SimulateSection::default(),
             pubsub: PubsubConfig::default(),
+            jobs: JobsConfig::default(),
         }
     }
 }
@@ -305,6 +307,38 @@ impl Default for SimulateSection {
             server_cert_path: "".to_string(),
             server_key_path: "".to_string(),
             client_ca_cert_path: "".to_string(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct JobsConfig {
+    pub update_strategist_platform_cut: Option<UpdateStrategistPlatformCutConfig>,
+}
+
+impl Default for JobsConfig {
+    fn default() -> Self {
+        Self {
+            update_strategist_platform_cut: None,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct UpdateStrategistPlatformCutConfig {
+    pub height: u64,
+    pub cellars_v2_2: Vec<String>,
+    pub cellars_v2_5: Vec<String>,
+}
+
+impl Default for UpdateStrategistPlatformCutConfig {
+    fn default() -> Self {
+        Self {
+            height: 0,
+            cellars_v2_2: Vec::default(),
+            cellars_v2_5: Vec::default(),
         }
     }
 }

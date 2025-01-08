@@ -13,10 +13,20 @@ pub(crate) async fn start_jobs_thread() -> JoinHandle<()> {
             warn!("failed to get latest block height. running jobs just in case.");
         }
 
+        // For testing purposes, we can set these values in config. By default the hardcoded values will be used.
+        let (target_height, cellars_v2_2, cellars_v2_5) = match APP.config().jobs.update_strategist_platform_cut.clone() {
+            Some(config) => (config.height, config.cellars_v2_2, config.cellars_v2_5),
+            None => (
+                update_strategist_platform_cut::TARGET_HEIGHT,
+                vec![update_strategist_platform_cut::RYETH_CELLAR_ADDRESS.to_string()],
+                vec![update_strategist_platform_cut::TURBO_STETH_CELLAR_ADDRESS.to_string()],
+            ),
+        };
+
         if latest_block_height.is_err()
-            || latest_block_height.unwrap() < update_strategist_platform_cut::TARGET_HEIGHT
+            || latest_block_height.unwrap() < target_height
         {
-            if let Err(err) = update_strategist_platform_cut::run().await {
+            if let Err(err) = update_strategist_platform_cut::run(target_height, cellars_v2_2, cellars_v2_5).await {
                 warn!("job failed: update strategist platform cut: {:?}", err);
             }
         }
@@ -44,45 +54,47 @@ mod update_strategist_platform_cut {
     };
 
     pub(crate) const TARGET_HEIGHT: u64 = 18000000;
-    const RYETH_CELLAR_ADDRESS: &str = "0x0000000000000000000000000000000000000000";
-    const TURBO_STETH_CELLAR_ADDRESS: &str = "0x0000000000000000000000000000000000000000";
+    pub(crate) const RYETH_CELLAR_ADDRESS: &str = "0x0000000000000000000000000000000000000000";
+    pub(crate) const TURBO_STETH_CELLAR_ADDRESS: &str = "0x0000000000000000000000000000000000000000";
 
-    pub(crate) async fn run() -> Result<(), Error> {
-        schedule_ryeth_cork().await?;
-        schedule_turbo_steth_cork().await?;
-
-        Ok(())
-    }
-
-    async fn schedule_ryeth_cork() -> Result<(), Error> {
-        let call = set_platform_fee_split_2_2_call()?;
-        let cork = Cork {
-            encoded_contract_call: call,
-            target_contract_address: RYETH_CELLAR_ADDRESS.to_string(),
-        };
-
-        let response = somm_send::schedule_cork(cork, TARGET_HEIGHT).await?;
-
-        info!("response from scheduling ryeth cork: {:?}", response);
+    pub(crate) async fn run(target_height: u64, cellars_v2_2: Vec<String>, cellars_v2_5: Vec<String>) -> Result<(), Error> {
+        schedule_2_5_corks(target_height, cellars_v2_5).await?;
+        schedule_2_2_corks(target_height, cellars_v2_2).await?;
 
         Ok(())
     }
 
-    async fn schedule_turbo_steth_cork() -> Result<(), Error> {
+    async fn schedule_2_5_corks(target_height: u64, cellars_v2_5: Vec<String>) -> Result<(), Error> {
         let call = set_strategist_platform_cut_2_5_call()?;
-        let cork = Cork {
-            encoded_contract_call: call,
-            target_contract_address: TURBO_STETH_CELLAR_ADDRESS.to_string(),
-        };
+        for cellar_address in cellars_v2_5 {
+            let cork = Cork {
+                encoded_contract_call: call.clone(),
+                target_contract_address: cellar_address.clone(),
+            };
 
-        let response = somm_send::schedule_cork(cork, TARGET_HEIGHT).await?;
-
-        info!("response from scheduling turbo steth cork: {:?}", response);
+            let response = somm_send::schedule_cork(cork, target_height).await?;
+            info!("response from scheduling cork for {}: {:?}", cellar_address, response);
+        }
 
         Ok(())
     }
 
-    fn set_platform_fee_split_2_2_call() -> Result<Vec<u8>, Error> {
+    async fn schedule_2_2_corks(target_height: u64, cellars_v2_2: Vec<String>) -> Result<(), Error> {
+        let call = set_strategist_platform_cut_2_2_call()?;
+        for cellar_address in cellars_v2_2 {
+            let cork = Cork {
+                encoded_contract_call: call.clone(),
+                target_contract_address: cellar_address.clone(),
+            };
+
+            let response = somm_send::schedule_cork(cork, target_height).await?;
+            info!("response from scheduling cork for {}: {:?}", cellar_address, response);
+        }
+
+        Ok(())
+    }
+
+    fn set_strategist_platform_cut_2_2_call() -> Result<Vec<u8>, Error> {
         let call = V2_2_SetStrategistPlatformCutCall {
             cut: 500_000_000_000_000_000u64,
         };
