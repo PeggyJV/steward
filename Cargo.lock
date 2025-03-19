@@ -4223,7 +4223,6 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 name = "steward"
 version = "4.2.7"
 dependencies = [
- "abscissa_core 0.6.0",
  "abscissa_core 0.8.2",
  "abscissa_tokio 0.8.0",
  "addr",

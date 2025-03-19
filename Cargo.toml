@@ -91,7 +91,7 @@ version = "0.8.1"
 # features = ["gimli-backtrace"]
 
 [dev-dependencies]
-abscissa_core = { version = "0.6.0", features = ["testing"] }
+abscissa_core = { version = "0.8.1", features = ["testing"] }
 assay = "0.1"
 hex = "0.4.3"
 once_cell = "1.2"
