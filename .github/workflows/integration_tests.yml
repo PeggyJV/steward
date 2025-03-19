@@ -24,14 +24,14 @@ jobs:
     permissions:
       contents: write
       packages: write
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: checkout
         uses: actions/checkout@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: docker-cache
         with:
           path: /tmp/.buildx-cache
@@ -58,7 +58,7 @@ jobs:
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
           outputs: type=docker,dest=${{ env.UPLOAD_DIR }}/${{ env.HARDHAT_ARTIFACT }}
       - name: Make hardhat image artifact available to other jobs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.HARDHAT_IMAGE_NAME }}
           path: ${{ env.UPLOAD_DIR }}/${{ env.HARDHAT_ARTIFACT }}
@@ -72,14 +72,14 @@ jobs:
     permissions:
       contents: write
       packages: write
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: checkout
         uses: actions/checkout@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: docker-cache
         with:
           path: /tmp/.buildx-cache
@@ -105,7 +105,7 @@ jobs:
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
           outputs: type=docker,dest=${{ env.UPLOAD_DIR }}/${{ env.STEWARD_ARTIFACT }}
       - name: Make Steward artifact available to other jobs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.IMAGE_NAME }}
           path: ${{ env.UPLOAD_DIR }}/${{ env.STEWARD_ARTIFACT }}
@@ -120,7 +120,7 @@ jobs:
       contents: write
       packages: write
     environment: CI
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [ steward-build, hardhat-build ]
     strategy:
       fail-fast: false
@@ -134,7 +134,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: go-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cache/go-build
@@ -168,7 +168,7 @@ jobs:
       - name: Make download dir
         run: mkdir -p ${{ env.DOWNLOAD_DIR }}
       - name: Get hardhat artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.HARDHAT_IMAGE_NAME }}
           path: ${{ env.DOWNLOAD_DIR }}/
@@ -177,7 +177,7 @@ jobs:
       - name: Rename hardhat image
         run: docker tag ${{ steps.meta-hardhat.outputs.tags }} ethereum:prebuilt
       - name: Get steward artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.IMAGE_NAME }}
           path: ${{ env.DOWNLOAD_DIR }}/

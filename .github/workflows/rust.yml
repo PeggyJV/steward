@@ -11,12 +11,12 @@ env:
 
 jobs:
   rust-test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout branch
         uses: actions/checkout@v3
       - name: Set up Rust caches
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: rust-cache
         with:
           path: |
@@ -30,12 +30,12 @@ jobs:
         run: cargo test --all --verbose
 
   rust-build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout branch
         uses: actions/checkout@v3
       - name: Set up Rust caches
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: rust-cache
         with:
           path: |
@@ -50,7 +50,7 @@ jobs:
 
   fmt:
     name: Rustfmt
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout branch
         uses: actions/checkout@v3
@@ -61,7 +61,7 @@ jobs:
 
   clippy:
     name: Clippy
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout branch
         uses: actions/checkout@v3

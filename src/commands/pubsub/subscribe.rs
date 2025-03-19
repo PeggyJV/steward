@@ -19,6 +19,7 @@ pub struct SubscribeCmd {
 
 impl Runnable for SubscribeCmd {
     fn run(&self) {
+        #[allow(deprecated)]
         openssl_probe::init_ssl_cert_env_vars();
 
         validate_url(&self.publisher_domain).unwrap_or_else(|e| {

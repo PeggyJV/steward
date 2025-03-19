@@ -296,11 +296,11 @@ pub fn log_governance_cellar_call(
 // since a string prefixed with or without 0x is parsable, ensure the string comparison is valid
 pub fn normalize_address(address: String) -> String {
     let lowercase_address = address.to_lowercase();
-    return address
+    address
         .to_lowercase()
         .strip_prefix("0x")
         .unwrap_or(&lowercase_address)
-        .to_string();
+        .to_string()
 }
 
 // validation logic
