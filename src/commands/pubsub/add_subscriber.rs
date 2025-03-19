@@ -19,6 +19,7 @@ pub struct AddSubscriberCmd {
 
 impl Runnable for AddSubscriberCmd {
     fn run(&self) {
+        #[allow(deprecated)]
         openssl_probe::init_ssl_cert_env_vars();
 
         let data = std::fs::read_to_string(&self.ca_path).unwrap_or_else(|e| {

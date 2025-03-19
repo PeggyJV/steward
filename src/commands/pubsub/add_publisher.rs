@@ -25,6 +25,7 @@ pub struct AddPublisherCmd {
 
 impl Runnable for AddPublisherCmd {
     fn run(&self) {
+        #[allow(deprecated)]
         openssl_probe::init_ssl_cert_env_vars();
 
         let data = std::fs::read_to_string(&self.ca_path).unwrap_or_else(|e| {

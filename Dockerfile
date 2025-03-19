@@ -1,10 +1,10 @@
 # Reference: https://www.lpalmieri.com/posts/fast-rust-docker-builds/
 
-FROM rust:1.78-bullseye as cargo-chef-rust
+FROM rust:1.78-bullseye AS cargo-chef-rust
 RUN cargo install cargo-chef --version 0.1.62 --locked
 RUN rustup component add rustfmt
 
-FROM cargo-chef-rust as planner
+FROM cargo-chef-rust AS planner
 WORKDIR /app
 # We only pay the installation cost once,
 # it will be cached from the second build onwards
@@ -13,12 +13,12 @@ WORKDIR /app
 COPY . .
 RUN cargo chef prepare --recipe-path recipe.json
 
-FROM cargo-chef-rust as cacher
+FROM cargo-chef-rust AS cacher
 WORKDIR /app
 COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
 
-FROM cargo-chef-rust as builder
+FROM cargo-chef-rust AS builder
 WORKDIR /app
 COPY . .
 # Copy over the cached dependencies
@@ -26,7 +26,7 @@ COPY --from=cacher /app/target target
 COPY --from=cacher /usr/local/cargo /usr/local/cargo
 RUN cargo build --release --bin steward
 
-FROM debian:bullseye as runtime
+FROM debian:bullseye AS runtime
 WORKDIR /app
 COPY --from=builder /app/target/release/steward /usr/local/bin
-CMD steward start
+CMD ["steward", "start"]
