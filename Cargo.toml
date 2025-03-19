@@ -25,10 +25,10 @@ edition.workspace = true
 rust-version = "1.76.0"
 
 [dependencies]
-abscissa_tokio = "0.6.0"
+abscissa_tokio = { version = "0.8.0", features = ["actix"] }
 bip32 = "0.2"
 bytes = "1.0"
-clap = "3"
+clap = "4"
 clarity = "0.4.12"
 deep_space = { git = "https://github.com/iqlusioninc/deep_space/", branch = "master" }
 ethers = { git = "https://github.com/iqlusioninc/ethers-rs.git", branch = "zaki/error_abi_support", features = [
@@ -85,7 +85,7 @@ addr = "0.15.6"
 
 
 [dependencies.abscissa_core]
-version = "0.6.0"
+version = "0.8.1"
 # optional: use `gimli` to capture backtraces
 # see https://github.com/rust-lang/backtrace-rs/issues/189
 # features = ["gimli-backtrace"]
