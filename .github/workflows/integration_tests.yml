@@ -58,7 +58,7 @@ jobs:
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
           outputs: type=docker,dest=${{ env.UPLOAD_DIR }}/${{ env.HARDHAT_ARTIFACT }}
       - name: Make hardhat image artifact available to other jobs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.HARDHAT_IMAGE_NAME }}
           path: ${{ env.UPLOAD_DIR }}/${{ env.HARDHAT_ARTIFACT }}
@@ -105,7 +105,7 @@ jobs:
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
           outputs: type=docker,dest=${{ env.UPLOAD_DIR }}/${{ env.STEWARD_ARTIFACT }}
       - name: Make Steward artifact available to other jobs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.IMAGE_NAME }}
           path: ${{ env.UPLOAD_DIR }}/${{ env.STEWARD_ARTIFACT }}
