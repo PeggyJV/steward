@@ -168,7 +168,7 @@ jobs:
       - name: Make download dir
         run: mkdir -p ${{ env.DOWNLOAD_DIR }}
       - name: Get hardhat artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.HARDHAT_IMAGE_NAME }}
           path: ${{ env.DOWNLOAD_DIR }}/
@@ -177,7 +177,7 @@ jobs:
       - name: Rename hardhat image
         run: docker tag ${{ steps.meta-hardhat.outputs.tags }} ethereum:prebuilt
       - name: Get steward artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.IMAGE_NAME }}
           path: ${{ env.DOWNLOAD_DIR }}/
