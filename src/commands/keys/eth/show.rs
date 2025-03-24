@@ -1,6 +1,7 @@
 use crate::application::APP;
 use abscissa_core::{clap::Parser, Application, Command, Runnable};
 use ethers::prelude::*;
+use sha3::digest::generic_array::GenericArray;
 use signatory::FsKeyStore;
 use std::path;
 
@@ -20,15 +21,13 @@ impl Runnable for ShowKeyCmd {
         let keystore = path::Path::new(&config.keystore);
         let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
         let name = self.name.parse().expect("Could not parse name");
-
         let key = keystore.load(&name).expect("Could not load key");
-
-        let key = key
-            .to_pem()
-            .parse::<k256::elliptic_curve::SecretKey<k256::Secp256k1>>()
-            .expect("Could not parse key");
-
-        let wallet: LocalWallet = Wallet::from(key);
+        let pem = key.to_pem();
+        let key_bytes: &[u8] = pem.as_bytes();
+        let key_bytes = GenericArray::from_slice(key_bytes);
+        let ethers_secret = ethers::core::k256::SecretKey::from_bytes(&key_bytes).unwrap();
+        let signing_key = ethers::core::k256::ecdsa::SigningKey::from(ethers_secret);
+        let wallet = LocalWallet::from(signing_key);
 
         let address = wallet.address();
 

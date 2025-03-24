@@ -4,10 +4,12 @@ use abscissa_core::{
     tracing::{debug, error, info, log::warn},
     Application,
 };
+use deep_space::Msg;
 use gravity_bridge::gravity_proto::{
     cosmos_sdk_proto::cosmos::base::tendermint::v1beta1::GetLatestBlockRequest,
     gravity::DelegateKeysByOrchestratorRequest,
 };
+use prost_types::Any;
 use somm_proto::cosmos_sdk_proto::cosmos::gov::v1beta1::{ProposalStatus, QueryProposalRequest};
 use tokio::{sync::mpsc::Sender, task::JoinHandle};
 use tonic::{transport::Channel, Code};
@@ -284,6 +286,10 @@ async fn poll_approved_proposals(
 
                 continue;
             }
+        };
+        let content = Any {
+            type_url: content.type_url,
+            value: content.value,
         };
 
         match content.type_url.as_str() {

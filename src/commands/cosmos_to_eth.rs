@@ -1,11 +1,15 @@
 use crate::application::APP;
 use abscissa_core::{clap::Parser, status_err, Application, Command, Runnable};
-use clarity::Uint256;
 use deep_space::coin::Coin;
+use deep_space::PrivateKey;
 use ethers::types::Address as EthAddress;
-use gravity_bridge::cosmos_gravity::send::send_to_eth;
+use gravity_bridge::gravity::send::send_to_eth;
+use gravity_bridge::gravity::utils::connection_prep::{
+    check_for_fee_denom, create_rpc_connections,
+};
 use gravity_bridge::gravity_proto::gravity::DenomToErc20Request;
-use gravity_bridge::gravity_utils::connection_prep::{check_for_fee_denom, create_rpc_connections};
+use num256::uint256::Uint256 as NumUint256;
+use std::str::FromStr;
 use std::{process::exit, time::Duration};
 
 const TIMEOUT: Duration = Duration::from_secs(60);
@@ -45,13 +49,13 @@ pub fn one_atom() -> f64 {
     1000000f64
 }
 
-pub fn print_atom(input: Uint256) -> String {
+pub fn print_atom(input: NumUint256) -> String {
     let float: f64 = input.to_string().parse().unwrap();
     let res = float / one_atom();
     format!("{}", res)
 }
 
-pub fn print_eth(input: Uint256) -> String {
+pub fn print_eth(input: NumUint256) -> String {
     let float: f64 = input.to_string().parse().unwrap();
     let res = float / one_eth();
     format!("{}", res)
@@ -63,8 +67,9 @@ impl Runnable for CosmosToEthCmd {
         let denom = self.denom.to_string();
         let is_cosmos_originated = !denom.starts_with("gravity");
 
-        let amount: Uint256 = self.amount.parse().expect("cannot parse amount");
-        let cosmos_key = config.load_gravity_deep_space_key(self.cosmos_key.to_string());
+        let amount =
+            NumUint256::from_str(&self.amount).expect("cannot convert amount");
+        let cosmos_key = config.load_deep_space_key(self.cosmos_key.to_string());
 
         let cosmos_prefix = config.cosmos.prefix.trim();
         let cosmos_address = cosmos_key.to_address(cosmos_prefix).unwrap();
@@ -104,7 +109,7 @@ impl Runnable for CosmosToEthCmd {
             denom: denom.clone(),
         };
         let bridge_fee = Coin {
-            amount: 1u64.into(),
+            amount: NumUint256::from(1u64),
             denom: denom.clone(),
         };
 

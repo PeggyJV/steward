@@ -58,7 +58,7 @@ pub(crate) async fn start_server(cancellation_token: CancellationToken) {
     let contents = FILE_DESCRIPTOR_SET.to_vec();
     let proto_descriptor_service = tonic_reflection::server::Builder::configure()
         .register_encoded_file_descriptor_set(contents.as_slice())
-        .build()
+        .build_v1()
         .unwrap_or_else(|err| {
             status_err!("failed to build descriptor service: {}", err);
             std::process::exit(1)
@@ -92,7 +92,7 @@ pub(crate) async fn start_encode_server() {
     let contents = FILE_DESCRIPTOR_SET.to_vec();
     let proto_descriptor_service = tonic_reflection::server::Builder::configure()
         .register_encoded_file_descriptor_set(contents.as_slice())
-        .build()
+        .build_v1()
         .unwrap_or_else(|err| {
             status_err!("failed to build descriptor service: {}", err);
             std::process::exit(1)

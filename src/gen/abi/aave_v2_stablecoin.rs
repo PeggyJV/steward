@@ -1,406 +1,3210 @@
-pub use aavev2stablecoincellar_mod::*;
-#[allow(clippy::too_many_arguments)]
-mod aavev2stablecoincellar_mod {
-    #![allow(clippy::enum_variant_names)]
-    #![allow(dead_code)]
-    #![allow(clippy::type_complexity)]
-    #![allow(unused_imports)]
-    use ethers::contract::{
-        builders::{ContractCall, Event},
-        Contract, Lazy,
-    };
-    use ethers::core::{
-        abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
-        types::*,
-    };
-    use ethers::providers::Middleware;
-    #[doc = "AaveV2StablecoinCellar was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
-    use std::sync::Arc;
-    pub static AAVEV2STABLECOINCELLAR_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
-        ethers::contract::Lazy::new(|| {
-            serde_json :: from_str ("{\n  \"_format\": \"hh-sol-artifact-1\",\n  \"contractName\": \"AaveV2StablecoinCellar\",\n  \"sourceName\": \"src/AaveV2StablecoinCellar.sol\",\n  \"abi\": [\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"contract ERC20\",\n          \"name\": \"_asset\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"contract ERC20[]\",\n          \"name\": \"_approvedPositions\",\n          \"type\": \"address[]\"\n        },\n        {\n          \"internalType\": \"contract ICurveSwaps\",\n          \"name\": \"_curveRegistryExchange\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"contract ISushiSwapRouter\",\n          \"name\": \"_sushiswapRouter\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"contract ILendingPool\",\n          \"name\": \"_lendingPool\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"contract IAaveIncentivesController\",\n          \"name\": \"_incentivesController\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"contract IGravity\",\n          \"name\": \"_gravityBridge\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"contract IStakedTokenV2\",\n          \"name\": \"_stkAAVE\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"contract ERC20\",\n          \"name\": \"_AAVE\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"contract ERC20\",\n          \"name\": \"_WETH\",\n          \"type\": \"address\"\n        }\n      ],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"constructor\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"STATE_AccrualOngoing\",\n      \"type\": \"error\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"STATE_ContractShutdown\",\n      \"type\": \"error\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        },\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"maxDeposit\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"USR_DepositRestricted\",\n      \"type\": \"error\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"token\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"USR_ProtectedAsset\",\n      \"type\": \"error\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"position\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"USR_SamePosition\",\n      \"type\": \"error\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint8\",\n          \"name\": \"newDecimals\",\n          \"type\": \"uint8\"\n        },\n        {\n          \"internalType\": \"uint8\",\n          \"name\": \"maxDecimals\",\n          \"type\": \"uint8\"\n        }\n      ],\n      \"name\": \"USR_TooManyDecimals\",\n      \"type\": \"error\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"unsupportedPosition\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"USR_UnsupportedPosition\",\n      \"type\": \"error\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"position\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"USR_UntrustedPosition\",\n      \"type\": \"error\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"platformFees\",\n          \"type\": \"uint256\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"performanceFees\",\n          \"type\": \"uint256\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"yield\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"Accrual\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint32\",\n          \"name\": \"oldPeriod\",\n          \"type\": \"uint32\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint32\",\n          \"name\": \"newPeriod\",\n          \"type\": \"uint32\"\n        }\n      ],\n      \"name\": \"AccrualPeriodChanged\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"owner\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"spender\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"amount\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"Approval\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"rewards\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"ClaimAndUnstake\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"caller\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"owner\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"shares\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"Deposit\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"position\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"DepositIntoPosition\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"oldLimit\",\n          \"type\": \"uint256\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"newLimit\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"DepositLimitChanged\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"position\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"EnterPosition\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"position\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"ExitPosition\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": false,\n          \"internalType\": \"bytes32\",\n          \"name\": \"oldFeesDistributor\",\n          \"type\": \"bytes32\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"bytes32\",\n          \"name\": \"newFeesDistributor\",\n          \"type\": \"bytes32\"\n        }\n      ],\n      \"name\": \"FeesDistributorChanged\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"oldLimit\",\n          \"type\": \"uint256\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"newLimit\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"LiquidityLimitChanged\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"previousOwner\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"newOwner\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"OwnershipTransferred\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint64\",\n          \"name\": \"oldPerformanceFee\",\n          \"type\": \"uint64\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint64\",\n          \"name\": \"newPerformanceFee\",\n          \"type\": \"uint64\"\n        }\n      ],\n      \"name\": \"PerformanceFeeChanged\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint64\",\n          \"name\": \"oldPlatformFee\",\n          \"type\": \"uint64\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint64\",\n          \"name\": \"newPlatformFee\",\n          \"type\": \"uint64\"\n        }\n      ],\n      \"name\": \"PlatformFeeChanged\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"oldAsset\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"newAsset\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"Rebalance\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"token\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"rewards\",\n          \"type\": \"uint256\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"Reinvest\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"feesInSharesRedeemed\",\n          \"type\": \"uint256\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"feesInAssetsSent\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"SendFees\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": false,\n          \"internalType\": \"bool\",\n          \"name\": \"emptyPositions\",\n          \"type\": \"bool\"\n        }\n      ],\n      \"name\": \"ShutdownInitiated\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [],\n      \"name\": \"ShutdownLifted\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"token\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"to\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"amount\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"Sweep\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"from\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"to\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"amount\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"Transfer\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"position\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"bool\",\n          \"name\": \"trusted\",\n          \"type\": \"bool\"\n        }\n      ],\n      \"name\": \"TrustChanged\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"caller\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"receiver\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"owner\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"shares\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"Withdraw\",\n      \"type\": \"event\"\n    },\n    {\n      \"anonymous\": false,\n      \"inputs\": [\n        {\n          \"indexed\": true,\n          \"internalType\": \"address\",\n          \"name\": \"position\",\n          \"type\": \"address\"\n        },\n        {\n          \"indexed\": false,\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"WithdrawFromPosition\",\n      \"type\": \"event\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"AAVE\",\n      \"outputs\": [\n        {\n          \"internalType\": \"contract ERC20\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"DOMAIN_SEPARATOR\",\n      \"outputs\": [\n        {\n          \"internalType\": \"bytes32\",\n          \"name\": \"\",\n          \"type\": \"bytes32\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"WETH\",\n      \"outputs\": [\n        {\n          \"internalType\": \"contract ERC20\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"accrualPeriod\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint32\",\n          \"name\": \"\",\n          \"type\": \"uint32\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"accrue\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"address\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"allowance\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"spender\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"amount\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"approve\",\n      \"outputs\": [\n        {\n          \"internalType\": \"bool\",\n          \"name\": \"\",\n          \"type\": \"bool\"\n        }\n      ],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"asset\",\n      \"outputs\": [\n        {\n          \"internalType\": \"contract ERC20\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"assetAToken\",\n      \"outputs\": [\n        {\n          \"internalType\": \"contract ERC20\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"assetDecimals\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint8\",\n          \"name\": \"\",\n          \"type\": \"uint8\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"balanceOf\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"claimAndUnstake\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"rewards\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"shares\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"convertToAssets\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"convertToShares\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"shares\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"curveRegistryExchange\",\n      \"outputs\": [\n        {\n          \"internalType\": \"contract ICurveSwaps\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"decimals\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint8\",\n          \"name\": \"\",\n          \"type\": \"uint8\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        },\n        {\n          \"internalType\": \"address\",\n          \"name\": \"receiver\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"deposit\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"shares\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"depositLimit\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"enterPosition\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"enterPosition\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"exitPosition\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"exitPosition\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"feesDistributor\",\n      \"outputs\": [\n        {\n          \"internalType\": \"bytes32\",\n          \"name\": \"\",\n          \"type\": \"bytes32\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"gravityBridge\",\n      \"outputs\": [\n        {\n          \"internalType\": \"contract IGravity\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"incentivesController\",\n      \"outputs\": [\n        {\n          \"internalType\": \"contract IAaveIncentivesController\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"bool\",\n          \"name\": \"emptyPosition\",\n          \"type\": \"bool\"\n        }\n      ],\n      \"name\": \"initiateShutdown\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"isShutdown\",\n      \"outputs\": [\n        {\n          \"internalType\": \"bool\",\n          \"name\": \"\",\n          \"type\": \"bool\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"contract ERC20\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"isTrusted\",\n      \"outputs\": [\n        {\n          \"internalType\": \"bool\",\n          \"name\": \"\",\n          \"type\": \"bool\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"lastAccrual\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint64\",\n          \"name\": \"\",\n          \"type\": \"uint64\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"lendingPool\",\n      \"outputs\": [\n        {\n          \"internalType\": \"contract ILendingPool\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"liftShutdown\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"liquidityLimit\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"receiver\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"maxDeposit\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"maxLocked\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint160\",\n          \"name\": \"\",\n          \"type\": \"uint160\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"receiver\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"maxMint\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"shares\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"owner\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"maxRedeem\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"owner\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"maxWithdraw\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"shares\",\n          \"type\": \"uint256\"\n        },\n        {\n          \"internalType\": \"address\",\n          \"name\": \"receiver\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"mint\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"bytes[]\",\n          \"name\": \"data\",\n          \"type\": \"bytes[]\"\n        }\n      ],\n      \"name\": \"multicall\",\n      \"outputs\": [\n        {\n          \"internalType\": \"bytes[]\",\n          \"name\": \"results\",\n          \"type\": \"bytes[]\"\n        }\n      ],\n      \"stateMutability\": \"payable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"name\",\n      \"outputs\": [\n        {\n          \"internalType\": \"string\",\n          \"name\": \"\",\n          \"type\": \"string\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"nonces\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"owner\",\n      \"outputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"performanceFee\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint64\",\n          \"name\": \"\",\n          \"type\": \"uint64\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"owner\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"address\",\n          \"name\": \"spender\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"value\",\n          \"type\": \"uint256\"\n        },\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"deadline\",\n          \"type\": \"uint256\"\n        },\n        {\n          \"internalType\": \"uint8\",\n          \"name\": \"v\",\n          \"type\": \"uint8\"\n        },\n        {\n          \"internalType\": \"bytes32\",\n          \"name\": \"r\",\n          \"type\": \"bytes32\"\n        },\n        {\n          \"internalType\": \"bytes32\",\n          \"name\": \"s\",\n          \"type\": \"bytes32\"\n        }\n      ],\n      \"name\": \"permit\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"platformFee\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint64\",\n          \"name\": \"\",\n          \"type\": \"uint64\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"previewDeposit\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"shares\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"previewMint\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"shares\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"previewRedeem\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"previewWithdraw\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"shares\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address[9]\",\n          \"name\": \"route\",\n          \"type\": \"address[9]\"\n        },\n        {\n          \"internalType\": \"uint256[3][4]\",\n          \"name\": \"swapParams\",\n          \"type\": \"uint256[3][4]\"\n        },\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"minAssetsOut\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"rebalance\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"shares\",\n          \"type\": \"uint256\"\n        },\n        {\n          \"internalType\": \"address\",\n          \"name\": \"receiver\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"address\",\n          \"name\": \"owner\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"redeem\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"minAssetsOut\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"reinvest\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"renounceOwnership\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"sendFees\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint32\",\n          \"name\": \"newAccrualPeriod\",\n          \"type\": \"uint32\"\n        }\n      ],\n      \"name\": \"setAccrualPeriod\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"newLimit\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"setDepositLimit\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"bytes32\",\n          \"name\": \"newFeesDistributor\",\n          \"type\": \"bytes32\"\n        }\n      ],\n      \"name\": \"setFeesDistributor\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"newLimit\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"setLiquidityLimit\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"contract ERC20\",\n          \"name\": \"position\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"bool\",\n          \"name\": \"trust\",\n          \"type\": \"bool\"\n        }\n      ],\n      \"name\": \"setTrust\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"stkAAVE\",\n      \"outputs\": [\n        {\n          \"internalType\": \"contract IStakedTokenV2\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"sushiswapRouter\",\n      \"outputs\": [\n        {\n          \"internalType\": \"contract ISushiSwapRouter\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"contract ERC20\",\n          \"name\": \"token\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"address\",\n          \"name\": \"to\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"sweep\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"symbol\",\n      \"outputs\": [\n        {\n          \"internalType\": \"string\",\n          \"name\": \"\",\n          \"type\": \"string\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"totalAssets\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"totalBalance\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint240\",\n          \"name\": \"\",\n          \"type\": \"uint240\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"totalHoldings\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"totalLocked\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"totalSupply\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"to\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"amount\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"transfer\",\n      \"outputs\": [\n        {\n          \"internalType\": \"bool\",\n          \"name\": \"\",\n          \"type\": \"bool\"\n        }\n      ],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"from\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"address\",\n          \"name\": \"to\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"amount\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"name\": \"transferFrom\",\n      \"outputs\": [\n        {\n          \"internalType\": \"bool\",\n          \"name\": \"\",\n          \"type\": \"bool\"\n        }\n      ],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"newOwner\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"transferOwnership\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"assets\",\n          \"type\": \"uint256\"\n        },\n        {\n          \"internalType\": \"address\",\n          \"name\": \"receiver\",\n          \"type\": \"address\"\n        },\n        {\n          \"internalType\": \"address\",\n          \"name\": \"owner\",\n          \"type\": \"address\"\n        }\n      ],\n      \"name\": \"withdraw\",\n      \"outputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"shares\",\n          \"type\": \"uint256\"\n        }\n      ],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    }\n  ],\n  \"bytecode\": \"0x6101e0604052600a805463ffffffff191662093a8017905573b813554b423266bbd4c16c32fa383394868c1f55600b553480156200003c57600080fd5b5060405162005542380380620055428339810160408190526200005f916200070c565b896040518060600160405280602c815260200162005516602c913960408051808201909152600b81526a61617665322d434c522d5360a81b602082015260128282826000620000af848262000923565b506001620000be838262000923565b5060ff81166080524660a052620000d46200025c565b60c0525050600680546001600160a01b0319166001600160a01b039690961695909517909455506200011292503391506200010c9050565b620002f8565b6001600160a01b0380891660e05287811661010052868116610120528581166101405284811661016052838116610180528281166101a0528181166101c0528a166000908152600c60205260408120805460ff19166001179055620001778b6200034a565b905060006200018882600a62000b04565b90506200019981624c4b4062000b15565b600d55620001aa8161c35062000b15565b600e5560005b8b518110156200021c576001600c60008e8481518110620001d557620001d562000b37565b6020908102919091018101516001600160a01b03168252810191909152604001600020805460ff191691151591909117905580620002138162000b4d565b915050620001b0565b50600a8054600160201b600160601b0319164263ffffffff16640100000000021790556200024a866200057d565b50505050505050505050505062000d6f565b60007f8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f600060405162000290919062000b69565b6040805191829003822060208301939093528101919091527fc89efdaa54c0f20c7adf612882df0950f5a951637e0307cdcb4c672f298b8bc660608201524660808201523060a082015260c00160405160208183030381529060405280519060200120905090565b600780546001600160a01b038381166001600160a01b0319831681179093556040519116919082907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e090600090a35050565b610120516040516335ea6a7560e01b81526001600160a01b03838116600483015260009283929116906335ea6a759060240161018060405180830381865afa1580156200039b573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190620003c1919062000c11565b50929a50506001600160a01b038a1698506200040997505050505050505057604051630a5c5e7d60e11b81526001600160a01b03841660048201526024015b60405180910390fd5b6000600860149054906101000a900460ff169050836001600160a01b031663313ce5676040518163ffffffff1660e01b8152600401602060405180830381865afa1580156200045c573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019062000482919062000d08565b925060128360ff161115620004b757604051630651982f60e11b815260ff841660048201526012602482015260440162000400565b60ff811615801590620004d057508260ff168160ff1614155b156200053357600e54600d5460001982146200050657620005028386846200064e60201b62003057179092919060201c565b600e555b600019811462000530576200052c8386836200064e60201b62003057179092919060201c565b600d555b50505b50600680546001600160a01b03199081166001600160a01b0395861617909155600880546001600160a81b031916600160a01b60ff86160290921691909117919093161790915590565b6007546001600160a01b03163314620005d95760405162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604482015260640162000400565b6001600160a01b038116620006405760405162461bcd60e51b815260206004820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b606482015260840162000400565b6200064b81620002f8565b50565b60008160ff168360ff160362000666575082620006c7565b8160ff168360ff161015620006a25762000681838362000d26565b6200068e90600a62000b04565b6200069a908562000b15565b9050620006c7565b620006ae828462000d26565b620006bb90600a62000b04565b6200069a908562000d4c565b9392505050565b6001600160a01b03811681146200064b57600080fd5b8051620006f181620006ce565b919050565b634e487b7160e01b600052604160045260246000fd5b6000806000806000806000806000806101408b8d0312156200072d57600080fd5b8a516200073a81620006ce565b60208c0151909a506001600160401b03808211156200075857600080fd5b818d0191508d601f8301126200076d57600080fd5b815181811115620007825762000782620006f6565b604051601f19603f8360051b011681018181108482111715620007a957620007a9620006f6565b6040528181526020808201935060059290921b8401909101908f821115620007d057600080fd5b6020840193505b81841015620007fd57620007eb84620006e4565b835260209384019390920191620007d7565b9b50620008119250505060408c01620006e4565b97506200082160608c01620006e4565b96506200083160808c01620006e4565b95506200084160a08c01620006e4565b94506200085160c08c01620006e4565b93506200086160e08c01620006e4565b9250620008726101008c01620006e4565b9150620008836101208c01620006e4565b90509295989b9194979a5092959850565b600181811c90821680620008a957607f821691505b602082108103620008ca57634e487b7160e01b600052602260045260246000fd5b50919050565b601f8211156200091e57600081815260208120601f850160051c81016020861015620008f95750805b601f850160051c820191505b818110156200091a5782815560010162000905565b5050505b505050565b81516001600160401b038111156200093f576200093f620006f6565b620009578162000950845462000894565b84620008d0565b602080601f8311600181146200098f5760008415620009765750858301515b600019600386901b1c1916600185901b1785556200091a565b600085815260208120601f198616915b82811015620009c0578886015182559484019460019091019084016200099f565b5085821015620009df5787850151600019600388901b60f8161c191681555b5050505050600190811b01905550565b634e487b7160e01b600052601160045260246000fd5b600181815b8085111562000a4657816000190482111562000a2a5762000a2a620009ef565b8085161562000a3857918102915b93841c939080029062000a0a565b509250929050565b60008262000a5f5750600162000afe565b8162000a6e5750600062000afe565b816001811462000a87576002811462000a925762000ab2565b600191505062000afe565b60ff84111562000aa65762000aa6620009ef565b50506001821b62000afe565b5060208310610133831016604e8410600b841016171562000ad7575081810a62000afe565b62000ae3838362000a05565b806000190482111562000afa5762000afa620009ef565b0290505b92915050565b6000620006c760ff84168362000a4e565b600081600019048311821515161562000b325762000b32620009ef565b500290565b634e487b7160e01b600052603260045260246000fd5b60006001820162000b625762000b62620009ef565b5060010190565b600080835462000b798162000894565b6001828116801562000b94576001811462000baa5762000bdb565b60ff198416875282151583028701945062000bdb565b8760005260208060002060005b8581101562000bd25781548a82015290840190820162000bb7565b50505082870194505b50929695505050505050565b80516001600160801b0381168114620006f157600080fd5b805160ff81168114620006f157600080fd5b6000806000806000806000806000806000806101808d8f03121562000c3557600080fd5b8c519b5062000c4760208e0162000be7565b9a5062000c5760408e0162000be7565b995062000c6760608e0162000be7565b985062000c7760808e0162000be7565b975062000c8760a08e0162000be7565b965060c08d015164ffffffffff8116811462000ca257600080fd5b955062000cb260e08e01620006e4565b945062000cc36101008e01620006e4565b935062000cd46101208e01620006e4565b925062000ce56101408e01620006e4565b915062000cf66101608e0162000bff565b90509295989b509295989b509295989b565b60006020828403121562000d1b57600080fd5b620006c78262000bff565b600060ff821660ff84168082101562000d435762000d43620009ef565b90039392505050565b60008262000d6a57634e487b7160e01b600052601260045260246000fd5b500490565b60805160a05160c05160e05161010051610120516101405161016051610180516101a0516101c0516146a262000e7460003960008181610a200152611b1e01526000818161067301528181611a1f01528181611aca0152611ba0015260008181610524015281816119a40152818161209301526122c101526000818161092f01528181612a630152612ab9015260008181610a8c015261200f0152600081816109630152818161313c015281816132970152818161349d01526134f5015260008181610cfe01528181611bc20152611bf30152600081816109b7015281816111d90152611218015260006114a001526000611470015260006105c301526146a26000f3fe60806040526004361061041b5760003560e01c8063997292161161021e578063c63d75b611610123578063e9240c2d116100ab578063ef7ac8831161007a578063ef7ac88314610d6b578063ef8b30f714610d8b578063f2fde38b14610dab578063f666415514610dcb578063f8ba4cff14610dfd57600080fd5b8063e9240c2d14610cec578063e9ec2e9914610d20578063ecf7085814610d35578063ef465d9214610d4b57600080fd5b8063d505accf116100f2578063d505accf14610c29578063d905777e14610c49578063dd62ed3e14610c7f578063df05a52a14610cb7578063dff90b5b14610cd757600080fd5b8063c63d75b614610ba9578063c6e6f59214610bc9578063cab5923814610be9578063ce96cb7714610c0957600080fd5b8063af1df255116101a6578063ba08765211610175578063ba08765214610b0e578063bdc8144b14610b2e578063bf86d69014610b4e578063c17f674014610b68578063c2d4160114610b8857600080fd5b8063af1df25514610a7a578063b3d7f6b914610aae578063b460af9414610ace578063b8dc491b14610aee57600080fd5b8063ac353510116101ed578063ac353510146109a5578063ac9650d8146109d9578063ad004e20146109f9578063ad5c464814610a0e578063ad7a672f14610a4257600080fd5b80639972921614610908578063a4da2d021461091d578063a59a997314610951578063a9059cbb1461098557600080fd5b80635e2c576e116103245780637ecebe00116102ac5780638e0bae7f1161027b5780638e0bae7f146108665780638fdc9dfa1461087c57806394bf804d146108a357806395d89b41146108c357806396d64879146108d857600080fd5b80637ecebe00146107df57806383b4918b1461080c578063877887821461082c5780638da5cb5b1461084857600080fd5b806370a08231116102f357806370a082311461073f578063715018a61461076c578063721637151461078157806378dc9059146107975780637b3baab4146107b757600080fd5b80635e2c576e146106ca5780636e08406b146106df5780636e553f65146106ff5780636e85f1831461071f57600080fd5b806326232a2e116103a75780633dc6eabf116103765780633dc6eabf1461062c578063402d267d1461064157806348ccda3c146106615780634cdad5061461069557806356891412146106b557600080fd5b806326232a2e1461057e578063313ce567146105b15780633644e515146105f757806338d52e0f1461060c57600080fd5b80630a28a477116103ee5780630a28a477146104ba57806315f4c611146104da57806318160ddd146104fc5780631fc29c011461051257806323b872dd1461055e57600080fd5b806301e1d1141461042057806306fdde031461044857806307a2d13a1461046a578063095ea7b31461048a575b600080fd5b34801561042c57600080fd5b50610435610e12565b6040519081526020015b60405180910390f35b34801561045457600080fd5b5061045d610e49565b60405161043f91906139e6565b34801561047657600080fd5b506104356104853660046139f9565b610ed7565b34801561049657600080fd5b506104aa6104a5366004613a27565b610f1d565b604051901515815260200161043f565b3480156104c657600080fd5b506104356104d53660046139f9565b610f8a565b3480156104e657600080fd5b506104fa6104f5366004613b06565b610fc4565b005b34801561050857600080fd5b5061043560025481565b34801561051e57600080fd5b506105467f000000000000000000000000000000000000000000000000000000000000000081565b6040516001600160a01b03909116815260200161043f565b34801561056a57600080fd5b506104aa610579366004613c10565b61138c565b34801561058a57600080fd5b506105996608e1bc9bf0400081565b6040516001600160401b03909116815260200161043f565b3480156105bd57600080fd5b506105e57f000000000000000000000000000000000000000000000000000000000000000081565b60405160ff909116815260200161043f565b34801561060357600080fd5b5061043561146c565b34801561061857600080fd5b50600654610546906001600160a01b031681565b34801561063857600080fd5b506104fa6114c2565b34801561064d57600080fd5b5061043561065c366004613c51565b6114cf565b34801561066d57600080fd5b506105467f000000000000000000000000000000000000000000000000000000000000000081565b3480156106a157600080fd5b506104356106b03660046139f9565b611547565b3480156106c157600080fd5b50610435611552565b3480156106d657600080fd5b506104fa6115cd565b3480156106eb57600080fd5b506104fa6106fa3660046139f9565b61162c565b34801561070b57600080fd5b5061043561071a366004613c6e565b61171c565b34801561072b57600080fd5b506104fa61073a3660046139f9565b6117e0565b34801561074b57600080fd5b5061043561075a366004613c51565b60036020526000908152604090205481565b34801561077857600080fd5b506104fa61184b565b34801561078d57600080fd5b50610435600d5481565b3480156107a357600080fd5b506104fa6107b23660046139f9565b61187f565b3480156107c357600080fd5b50600a546105999064010000000090046001600160401b031681565b3480156107eb57600080fd5b506104356107fa366004613c51565b60056020526000908152604090205481565b34801561081857600080fd5b506104fa6108273660046139f9565b61195d565b34801561083857600080fd5b5061059967016345785d8a000081565b34801561085457600080fd5b506007546001600160a01b0316610546565b34801561087257600080fd5b50610435600b5481565b34801561088857600080fd5b50600a5461054690600160601b90046001600160a01b031681565b3480156108af57600080fd5b506104356108be366004613c6e565b611d1f565b3480156108cf57600080fd5b5061045d611d9c565b3480156108e457600080fd5b506104aa6108f3366004613c51565b600c6020526000908152604090205460ff1681565b34801561091457600080fd5b506104fa611da9565b34801561092957600080fd5b506105467f000000000000000000000000000000000000000000000000000000000000000081565b34801561095d57600080fd5b506105467f000000000000000000000000000000000000000000000000000000000000000081565b34801561099157600080fd5b506104aa6109a0366004613a27565b611dbe565b3480156109b157600080fd5b506105467f000000000000000000000000000000000000000000000000000000000000000081565b6109ec6109e7366004613c9e565b611e24565b60405161043f9190613d12565b348015610a0557600080fd5b50610435611f7b565b348015610a1a57600080fd5b506105467f000000000000000000000000000000000000000000000000000000000000000081565b348015610a4e57600080fd5b50600954610a62906001600160f01b031681565b6040516001600160f01b03909116815260200161043f565b348015610a8657600080fd5b506105467f000000000000000000000000000000000000000000000000000000000000000081565b348015610aba57600080fd5b50610435610ac93660046139f9565b612141565b348015610ada57600080fd5b50610435610ae9366004613d74565b612160565b348015610afa57600080fd5b506104fa610b09366004613db6565b612253565b348015610b1a57600080fd5b50610435610b29366004613d74565b6123f1565b348015610b3a57600080fd5b506104fa610b493660046139f9565b612522565b348015610b5a57600080fd5b50600f546104aa9060ff1681565b348015610b7457600080fd5b50600854610546906001600160a01b031681565b348015610b9457600080fd5b506008546105e590600160a01b900460ff1681565b348015610bb557600080fd5b50610435610bc4366004613c51565b61258d565b348015610bd557600080fd5b50610435610be43660046139f9565b6125f7565b348015610bf557600080fd5b506104fa610c04366004613df9565b612617565b348015610c1557600080fd5b50610435610c24366004613c51565b6126e4565b348015610c3557600080fd5b506104fa610c44366004613e3d565b612706565b348015610c5557600080fd5b50610435610c64366004613c51565b6001600160a01b031660009081526003602052604090205490565b348015610c8b57600080fd5b50610435610c9a366004613db6565b600460209081526000928352604080842090915290825290205481565b348015610cc357600080fd5b506104fa610cd23660046139f9565b61294a565b348015610ce357600080fd5b506104fa6129b5565b348015610cf857600080fd5b506105467f000000000000000000000000000000000000000000000000000000000000000081565b348015610d2c57600080fd5b50610435612b56565b348015610d4157600080fd5b50610435600e5481565b348015610d5757600080fd5b506104fa610d66366004613eae565b612bc3565b348015610d7757600080fd5b506104fa610d86366004613ec9565b612c78565b348015610d9757600080fd5b50610435610da63660046139f9565b612d2b565b348015610db757600080fd5b506104fa610dc6366004613c51565b612d36565b348015610dd757600080fd5b50600a54610de89063ffffffff1681565b60405163ffffffff909116815260200161043f565b348015610e0957600080fd5b506104fa612dd1565b6000610e1c611552565b610e24612b56565b600954610e3a91906001600160f01b0316613f05565b610e449190613f1d565b905090565b60008054610e5690613f34565b80601f0160208091040260200160405190810160405280929190818152602001828054610e8290613f34565b8015610ecf5780601f10610ea457610100808354040283529160200191610ecf565b820191906000526020600020905b815481529060010190602001808311610eb257829003601f168201915b505050505081565b6002546000908015610efb57610ef6610eee610e12565b8490836130c0565b610f16565b600854610f16908490601290600160a01b900460ff16613057565b9392505050565b3360008181526004602090815260408083206001600160a01b038716808552925280832085905551919290917f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b92590610f789086815260200190565b60405180910390a35060015b92915050565b6002546000908015610faa57610ef681610fa2610e12565b8591906130df565b600854610f16908490600160a01b900460ff166012613057565b600f5460ff1615610fe857604051632f22819760e11b815260040160405180910390fd5b6007546001600160a01b0316331461101b5760405162461bcd60e51b815260040161101290613f6e565b60405180910390fd5b6000805b80600814806110575750600085611037836001613f05565b6009811061104757611047613fa3565b60200201516001600160a01b0316145b1561107a5784816009811061106e5761106e613fa3565b6020020151915061108c565b611085600282613f05565b905061101f565b506001600160a01b0381166000908152600c602052604090205460ff166110d1576040516386433f2b60e01b81526001600160a01b0382166004820152602401611012565b6006546001600160a01b0390811690821681900361110d57604051630613aecf60e11b81526001600160a01b0382166004820152602401611012565b6000611117612b56565b6009549091506000906111349083906001600160f01b0316613f05565b6008546040516370a0823160e01b815230600482015291925060009182916001600160a01b0316906370a0823190602401602060405180830381865afa158015611182573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906111a69190613fb9565b116111b157826111c8565b826111be8560001961310d565b6111c89190613f05565b90506111fe6001600160a01b0385167f0000000000000000000000000000000000000000000000000000000000000000836131f6565b604051630d4f290960e21b81526000906001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000169063353ca42490611253908c908c9087908d90600401613fd2565b6020604051808303816000875af1158015611272573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906112969190613fb9565b600854909150600160a01b900460ff1660006112b188613273565b90506112bd888461348e565b600a546112db90600160601b90046001600160a01b03168383613057565b600a80546001600160a01b0392909216600160601b026bffffffffffffffffffffffff909216919091179055600061131d611317878585613057565b8561358c565b600980546001600160f01b0319166001600160f01b0383161790556040518181529091506001600160a01b038a811691908a16907fb0850b8e0f9e8315dde3c9f9f31138283e6bbe16cd29e8552eb1dcdf9fac9e3b9060200160405180910390a3505050505050505050505050565b6001600160a01b038316600090815260046020908152604080832033845290915281205460001981146113e8576113c38382613f1d565b6001600160a01b03861660009081526004602090815260408083203384529091529020555b6001600160a01b03851660009081526003602052604081208054859290611410908490613f1d565b90915550506001600160a01b038085166000818152600360205260409081902080548701905551909187169060008051602061464d833981519152906114599087815260200190565b60405180910390a3506001949350505050565b60007f0000000000000000000000000000000000000000000000000000000000000000461461149d57610e446135a2565b507f000000000000000000000000000000000000000000000000000000000000000090565b6114cd6106fa612b56565b565b600f5460009060ff16156114e557506000919050565b600e54600d54600019821480156114fd575060001981145b1561150d57506000199392505050565b600061152261151b866126e4565b849061363c565b9050600061153161151b610e12565b905061153d828261358c565b9695505050505050565b6000610f8482610ed7565b600a546000906001600160401b036401000000008204169063ffffffff1661157a8183613f05565b42106115895760009250505090565b600a54600160601b90046001600160a01b0316816115a78442613f1d565b6115b1908361406e565b6115bb919061408d565b6115c59082613f1d565b935050505090565b6007546001600160a01b031633146115f75760405162461bcd60e51b815260040161101290613f6e565b600f805460ff191690556040517f09bec6199b5712abe9cbb71997b06f6149a453eca5abec15d528e14e65e1605e90600090a1565b600f5460ff161561165057604051632f22819760e11b815260040160405180910390fd5b6007546001600160a01b0316331461167a5760405162461bcd60e51b815260040161101290613f6e565b600654600980546001600160a01b03909216918391906000906116a79084906001600160f01b03166140af565b92506101000a8154816001600160f01b0302191690836001600160f01b031602179055506116d5818361348e565b806001600160a01b03167fb6f4b9255ee989b1844a8e6b7da8906b81200c38f7b3f4f1ac31e9a241c757508360405161171091815260200190565b60405180910390a25050565b600061172783612d2b565b9050806000036117675760405162461bcd60e51b815260206004820152600b60248201526a5a45524f5f53484152455360a81b6044820152606401611012565b611772838284613656565b60065461178a906001600160a01b03163330866136b2565b611794828261373c565b60408051848152602081018390526001600160a01b0384169133917fdcbc1c05240f31ff3ad067ef1ee35ce4997762752e3a095284754544f4c709d791015b60405180910390a3610f84565b6007546001600160a01b0316331461180a5760405162461bcd60e51b815260040161101290613f6e565b600b5460408051918252602082018390527f513ac19cbbaaad4e450c732ed37635178b7d83bf8e84a940ffe7e052c9c7caa2910160405180910390a1600b55565b6007546001600160a01b031633146118755760405162461bcd60e51b815260040161101290613f6e565b6114cd6000613796565b600f5460ff16156118a357604051632f22819760e11b815260040160405180910390fd5b6007546001600160a01b031633146118cd5760405162461bcd60e51b815260040161101290613f6e565b6006546001600160a01b03166118e3818361310d565b600980546000906118fe9084906001600160f01b03166140da565b92506101000a8154816001600160f01b0302191690836001600160f01b03160217905550806001600160a01b03167fde4cc1d2dd41970a827a8df55efd18c527c17c26485847d680cc2b4c71e7a87c8360405161171091815260200190565b6007546001600160a01b031633146119875760405162461bcd60e51b815260040161101290613f6e565b6040516301e9a69560e41b815230600482015260001960248201527f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031690631e9a695090604401600060405180830381600087803b1580156119f057600080fd5b505af1158015611a04573d6000803e3d6000fd5b50506040516370a0823160e01b8152306004820152600092507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031691506370a0823190602401602060405180830381865afa158015611a6f573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190611a939190613fb9565b600654604080516003808252608082019092529293506001600160a01b0390911691600091602082016060803683370190505090507f000000000000000000000000000000000000000000000000000000000000000081600081518110611afc57611afc613fa3565b60200260200101906001600160a01b031690816001600160a01b0316815250507f000000000000000000000000000000000000000000000000000000000000000081600181518110611b5057611b50613fa3565b60200260200101906001600160a01b031690816001600160a01b0316815250508181600281518110611b8457611b84613fa3565b6001600160a01b039283166020918202929092010152611be7907f0000000000000000000000000000000000000000000000000000000000000000167f0000000000000000000000000000000000000000000000000000000000000000856131f6565b60006001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000166338ed173985878530611c2742603c613f05565b6040518663ffffffff1660e01b8152600401611c47959493929190614146565b6000604051808303816000875af1158015611c66573d6000803e3d6000fd5b505050506040513d6000823e601f3d908101601f19168201604052611c8e9190810190614182565b905060008160018351611ca19190613f1d565b81518110611cb157611cb1613fa3565b6020908102919091010151600f5490915060ff16611cd357611cd3848261348e565b60408051868152602081018390526001600160a01b038616917fc003f45bc224d116b6d079100d4ab57a5b9633244c47a5a92a176c5b79a85f28910160405180910390a2505050505050565b6000611d2a83612141565b9050611d37818484613656565b600654611d4f906001600160a01b03163330846136b2565b611d59828461373c565b60408051828152602081018590526001600160a01b0384169133917fdcbc1c05240f31ff3ad067ef1ee35ce4997762752e3a095284754544f4c709d791016117d3565b60018054610e5690613f34565b6009546114cd906001600160f01b031661187f565b33600090815260036020526040812080548391908390611ddf908490613f1d565b90915550506001600160a01b0383166000818152600360205260409081902080548501905551339060008051602061464d83398151915290610f789086815260200190565b6060816001600160401b03811115611e3e57611e3e613a53565b604051908082528060200260200182016040528015611e7157816020015b6060815260200190600190039081611e5c5790505b50905060005b82811015611f745760008030868685818110611e9557611e95613fa3565b9050602002810190611ea79190614227565b604051611eb5929190614274565b600060405180830381855af49150503d8060008114611ef0576040519150601f19603f3d011682016040523d82523d6000602084013e611ef5565b606091505b509150915081611f4157604481511015611f0e57600080fd5b60048101905080806020019051810190611f289190614284565b60405162461bcd60e51b815260040161101291906139e6565b80848481518110611f5457611f54613fa3565b602002602001018190525050508080611f6c90614317565b915050611e77565b5092915050565b6007546000906001600160a01b03163314611fa85760405162461bcd60e51b815260040161101290613f6e565b60408051600180825281830190925260009160208083019080368337505060085482519293506001600160a01b031691839150600090611fea57611fea613fa3565b6001600160a01b039283166020918202929092010152604051633111e7b360e01b81527f000000000000000000000000000000000000000000000000000000000000000090911690633111e7b39061204c908490600019903090600401614330565b6020604051808303816000875af115801561206b573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061208f9190613fb9565b91507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031663787a08a66040518163ffffffff1660e01b8152600401600060405180830381600087803b1580156120ec57600080fd5b505af1158015612100573d6000803e3d6000fd5b505050507f8ca0188d9770b383d1a7a2ddfe5e0c1f029084481a53697d6c51525c47a8d88e8260405161213591815260200190565b60405180910390a15090565b6002546000908015610efb57610ef6612158610e12565b8490836130df565b600061216b84610f8a565b9050336001600160a01b038316146121db576001600160a01b038216600090815260046020908152604080832033845290915290205460001981146121d9576121b48282613f1d565b6001600160a01b03841660009081526004602090815260408083203384529091529020555b505b6121e7848285856137e8565b6121f18282613863565b60408051858152602081018390526001600160a01b03808516929086169133917ffbde797d201c681b91056529119e0b02407c7bb96a4a2c75c01fc9667232c8db910160405180910390a4600654610ef6906001600160a01b031684866138c5565b6007546001600160a01b0316331461227d5760405162461bcd60e51b815260040161101290613f6e565b6006546001600160a01b03838116911614806122a657506008546001600160a01b038381169116145b806122b957506001600160a01b03821630145b806122f557507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316826001600160a01b0316145b1561231e576040516339b8549160e01b81526001600160a01b0383166004820152602401611012565b6040516370a0823160e01b81523060048201526000906001600160a01b038416906370a0823190602401602060405180830381865afa158015612365573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906123899190613fb9565b905061239f6001600160a01b03841683836138c5565b816001600160a01b0316836001600160a01b03167fed679328aebf74ede77ae09efcf36e90244f83643dadac1c2d9f0b21a46f6ab7836040516123e491815260200190565b60405180910390a3505050565b6000336001600160a01b03831614612461576001600160a01b0382166000908152600460209081526040808320338452909152902054600019811461245f5761243a8582613f1d565b6001600160a01b03841660009081526004602090815260408083203384529091529020555b505b61246a84611547565b9050806000036124aa5760405162461bcd60e51b815260206004820152600b60248201526a5a45524f5f41535345545360a81b6044820152606401611012565b6124b6818585856137e8565b6124c08285613863565b60408051828152602081018690526001600160a01b03808516929086169133917ffbde797d201c681b91056529119e0b02407c7bb96a4a2c75c01fc9667232c8db910160405180910390a4600654610ef6906001600160a01b031684836138c5565b6007546001600160a01b0316331461254c5760405162461bcd60e51b815260040161101290613f6e565b600e5460408051918252602082018390527fcfb5a454b8aa7dc04ecb5bc1410b2a57969ca1d67f66d565196f60c6f9975404910160405180910390a1600e55565b600f5460009060ff16156125a357506000919050565b600e54600d54600019821480156125bb575060001981145b156125cb57506000199392505050565b60006125d961151b866126e4565b905060006125e861151b610e12565b905061153d610be4838361358c565b6002546000908015610faa57610ef68161260f610e12565b8591906130c0565b6007546001600160a01b031633146126415760405162461bcd60e51b815260040161101290613f6e565b6001600160a01b038281166000908152600c60205260409020805460ff1916831580159182179092556006549092169161268c5750806001600160a01b0316836001600160a01b0316145b1561269a5761269a8161393d565b826001600160a01b03167fd600b9348603c6deff34b4e0b28b60e1c8036c806741b9e6d90032e7f37dd27f836040516126d7911515815260200190565b60405180910390a2505050565b6001600160a01b038116600090815260036020526040812054610f8490610ed7565b428410156127565760405162461bcd60e51b815260206004820152601760248201527f5045524d49545f444541444c494e455f455850495245440000000000000000006044820152606401611012565b6000600161276261146c565b6001600160a01b038a811660008181526005602090815260409182902080546001810190915582517f6e71edae12b1b97f4d1f60370fef10105fa2faae0126114a169c64845d6126c98184015280840194909452938d166060840152608083018c905260a083019390935260c08083018b90528151808403909101815260e08301909152805192019190912061190160f01b6101008301526101028201929092526101228101919091526101420160408051601f198184030181528282528051602091820120600084529083018083525260ff871690820152606081018590526080810184905260a0016020604051602081039080840390855afa15801561286e573d6000803e3d6000fd5b5050604051601f1901519150506001600160a01b038116158015906128a45750876001600160a01b0316816001600160a01b0316145b6128e15760405162461bcd60e51b815260206004820152600e60248201526d24a72b20a624a22fa9a4a3a722a960911b6044820152606401611012565b6001600160a01b0390811660009081526004602090815260408083208a8516808552908352928190208990555188815291928a16917f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925910160405180910390a350505050505050565b6007546001600160a01b031633146129745760405162461bcd60e51b815260040161101290613f6e565b600d5460408051918252602082018390527f1f21432dd7b8ead64d2e7c06a74baf13783b2d2f7153f099e2c4cabc3c5dbec6910160405180910390a1600d55565b6007546001600160a01b031633146129df5760405162461bcd60e51b815260040161101290613f6e565b30600090815260036020526040812054906129f982611547565b905080600003612a395760405162461bcd60e51b815260206004820152600b60248201526a5a45524f5f41535345545360a81b6044820152606401611012565b612a478160008060006137e8565b612a513083613863565b6006546001600160a01b0316612a88817f0000000000000000000000000000000000000000000000000000000000000000846131f6565b600b54604051631ffbe7f960e01b81526001600160a01b0383811660048301526024820192909252604481018490527f000000000000000000000000000000000000000000000000000000000000000090911690631ffbe7f990606401600060405180830381600087803b158015612aff57600080fd5b505af1158015612b13573d6000803e3d6000fd5b505060408051868152602081018690527f15e3e2a76a6839c244c1ed0a821c233ce8af552dffcb856089eae6cbbbb71ea6935001905060405180910390a1505050565b6006546040516370a0823160e01b81523060048201526000916001600160a01b0316906370a0823190602401602060405180830381865afa158015612b9f573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610e449190613fb9565b600f5460ff1615612be757604051632f22819760e11b815260040160405180910390fd5b6007546001600160a01b03163314612c115760405162461bcd60e51b815260040161101290613f6e565b8015612c2c57600654612c2c906001600160a01b031661393d565b600f805460ff191660011790556040517f6e7cab6accf9b093a6b800ed920df610db4dbfd8807417f5f2c48dd66c03babb90612c6d90831515815260200190565b60405180910390a150565b6007546001600160a01b03163314612ca25760405162461bcd60e51b815260040161101290613f6e565b6000612cac611552565b1115612ccb57604051636b86639360e11b815260040160405180910390fd5b600a546040805163ffffffff928316815291831660208301527f3c392b44ad99b1fb7c87ae7b914cbd1de1aeed3e9369a20d3070cc771669898f910160405180910390a1600a805463ffffffff191663ffffffff92909216919091179055565b6000610f84826125f7565b6007546001600160a01b03163314612d605760405162461bcd60e51b815260040161101290613f6e565b6001600160a01b038116612dc55760405162461bcd60e51b815260206004820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b6064820152608401611012565b612dce81613796565b50565b6000612ddb611552565b9050612def6007546001600160a01b031690565b6001600160a01b0316336001600160a01b031614158015612e105750600081115b15612e2e57604051636b86639360e11b815260040160405180910390fd5b600854600090612e4990600160a01b900460ff16600a614447565b90506000612e56826125f7565b6009546008546040516370a0823160e01b81523060048201529293506001600160f01b03909116916000916001600160a01b0316906370a0823190602401602060405180830381865afa158015612eb1573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190612ed59190613fb9565b600a54909150600090612ef99064010000000090046001600160401b031642613f1d565b905060006301e13380670de0b6b3a76400006608e1bc9bf04000612f1d858761406e565b612f27919061406e565b612f31919061408d565b612f3b919061408d565b90506000612f4a8287896130c0565b90506000612f58858761363c565b90506000612f6e8267016345785d8a0000613979565b90506000612f7d828a8c6130c0565b9050612f9230612f8d8387613f05565b61373c565b612f9f61151b8387613f05565b612fa9908c613f05565b600a805463ffffffff908116600160601b6001600160a01b0394909416939093026bffffffffffffffff000000001916929092174290921664010000000002919091179055600980546001600160f01b0319166001600160f01b03891617905560408051858152602081018390529081018490527ffd23cefb4992bc1b95df1f544efdb9908d901288354421270f7a8f8a0dfec20a9060600160405180910390a15050505050505050505050565b60008160ff168360ff160361306d575082610f16565b8160ff168360ff1610156130a1576130858383614456565b61309090600a614447565b61309a908561406e565b9050610f16565b6130ab8284614456565b6130b690600a614447565b61309a908561408d565b8282028115158415858304851417166130d857600080fd5b0492915050565b8282028115158415858304851417166130f757600080fd5b6001826001830304018115150290509392505050565b604051631a4ca37b60e21b81526001600160a01b038381166004830152602482018390523060448301526000917f0000000000000000000000000000000000000000000000000000000000000000909116906369328dec906064016020604051808303816000875af1158015613187573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906131ab9190613fb9565b9050826001600160a01b03167f84343cc97621dbc51bce198a258218a2063c160e4d473ff51007c7a60eec5fa1826040516131e891815260200190565b60405180910390a292915050565b600060405163095ea7b360e01b8152836004820152826024820152602060006044836000895af13d15601f3d116001600051141617169150508061326d5760405162461bcd60e51b815260206004820152600e60248201526d1054141493d59157d1905253115160921b6044820152606401611012565b50505050565b6040516335ea6a7560e01b81526001600160a01b03828116600483015260009182917f000000000000000000000000000000000000000000000000000000000000000016906335ea6a759060240161018060405180830381865afa1580156132df573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061330391906144af565b50929a50506001600160a01b038a16985061334597505050505050505057604051630a5c5e7d60e11b81526001600160a01b0384166004820152602401611012565b6000600860149054906101000a900460ff169050836001600160a01b031663313ce5676040518163ffffffff1660e01b8152600401602060405180830381865afa158015613397573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906133bb9190614590565b925060128360ff1611156133ee57604051630651982f60e11b815260ff8416600482015260126024820152604401611012565b60ff81161580159061340657508260ff168160ff1614155b1561344457600e54600d54600019821461342957613425828487613057565b600e555b60001981146134415761343d818487613057565b600d555b50505b50600680546001600160a01b03199081166001600160a01b0395861617909155600880546001600160a81b031916600160a01b60ff86160290921691909117919093161790915590565b6134c26001600160a01b0383167f0000000000000000000000000000000000000000000000000000000000000000836131f6565b60405163e8eda9df60e01b81526001600160a01b03838116600483015260248201839052306044830152600060648301527f0000000000000000000000000000000000000000000000000000000000000000169063e8eda9df90608401600060405180830381600087803b15801561353957600080fd5b505af115801561354d573d6000803e3d6000fd5b50505050816001600160a01b03167ff099efd56d0c64f9a1aa1379a470d871392b67ea7678ed5659ad4bfe7dd765758260405161171091815260200190565b600081831061359b5781610f16565b5090919050565b60007f8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f60006040516135d491906145ad565b6040805191829003822060208301939093528101919091527fc89efdaa54c0f20c7adf612882df0950f5a951637e0307cdcb4c672f298b8bc660608201524660808201523060a082015260c00160405160208183030381529060405280519060200120905090565b600081831161364c576000610f16565b610f168284613f1d565b600f5460ff161561367a57604051632f22819760e11b815260040160405180910390fd5b6000613685826114cf565b90508084111561326d576040516323dc290560e21b81526004810185905260248101829052604401611012565b60006040516323b872dd60e01b81528460048201528360248201528260448201526020600060648360008a5af13d15601f3d11600160005114161716915050806137355760405162461bcd60e51b81526020600482015260146024820152731514905394d1915497d19493d357d1905253115160621b6044820152606401611012565b5050505050565b806002600082825461374e9190613f05565b90915550506001600160a01b03821660008181526003602090815260408083208054860190555184815260008051602061464d83398151915291015b60405180910390a35050565b600780546001600160a01b038381166001600160a01b0319831681179093556040519116919082907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e090600090a35050565b6006546001600160a01b031660006137fe612b56565b90508086111561385b5761381b826138168389613f1d565b61310d565b600980546000906138369084906001600160f01b03166140da565b92506101000a8154816001600160f01b0302191690836001600160f01b031602179055505b505050505050565b6001600160a01b0382166000908152600360205260408120805483929061388b908490613f1d565b90915550506002805482900390556040518181526000906001600160a01b0384169060008051602061464d8339815191529060200161378a565b600060405163a9059cbb60e01b8152836004820152826024820152602060006044836000895af13d15601f3d116001600051141617169150508061326d5760405162461bcd60e51b815260206004820152600f60248201526e1514905394d1915497d19052531151608a1b6044820152606401611012565b6009546001600160f01b0316801561397557613957612dd1565b6139638260001961310d565b50600980546001600160f01b03191690555b5050565b6000610f168383670de0b6b3a76400006130c0565b60005b838110156139a9578181015183820152602001613991565b8381111561326d5750506000910152565b600081518084526139d281602086016020860161398e565b601f01601f19169290920160200192915050565b602081526000610f1660208301846139ba565b600060208284031215613a0b57600080fd5b5035919050565b6001600160a01b0381168114612dce57600080fd5b60008060408385031215613a3a57600080fd5b8235613a4581613a12565b946020939093013593505050565b634e487b7160e01b600052604160045260246000fd5b60405161012081016001600160401b0381118282101715613a8c57613a8c613a53565b60405290565b604051608081016001600160401b0381118282101715613a8c57613a8c613a53565b604051606081016001600160401b0381118282101715613a8c57613a8c613a53565b604051601f8201601f191681016001600160401b0381118282101715613afe57613afe613a53565b604052919050565b60008060006102c08486031215613b1c57600080fd5b601f8581860112613b2c57600080fd5b613b34613a69565b80610120870188811115613b4757600080fd5b875b81811015613b6a578035613b5c81613a12565b845260209384019301613b49565b508196508861013f890112613b7e57600080fd5b613b86613a92565b92508291506102a0880189811115613b9d57600080fd5b80821015613c00578985830112613bb45760008081fd5b613bbc613ab4565b80606084018c811115613bcf5760008081fd5b845b81811015613be9578035845260209384019301613bd1565b505085525060209093019260609190910190613b9d565b9699919850509435955050505050565b600080600060608486031215613c2557600080fd5b8335613c3081613a12565b92506020840135613c4081613a12565b929592945050506040919091013590565b600060208284031215613c6357600080fd5b8135610f1681613a12565b60008060408385031215613c8157600080fd5b823591506020830135613c9381613a12565b809150509250929050565b60008060208385031215613cb157600080fd5b82356001600160401b0380821115613cc857600080fd5b818501915085601f830112613cdc57600080fd5b813581811115613ceb57600080fd5b8660208260051b8501011115613d0057600080fd5b60209290920196919550909350505050565b6000602080830181845280855180835260408601915060408160051b870101925083870160005b82811015613d6757603f19888603018452613d558583516139ba565b94509285019290850190600101613d39565b5092979650505050505050565b600080600060608486031215613d8957600080fd5b833592506020840135613d9b81613a12565b91506040840135613dab81613a12565b809150509250925092565b60008060408385031215613dc957600080fd5b8235613dd481613a12565b91506020830135613c9381613a12565b80358015158114613df457600080fd5b919050565b60008060408385031215613e0c57600080fd5b8235613e1781613a12565b9150613e2560208401613de4565b90509250929050565b60ff81168114612dce57600080fd5b600080600080600080600060e0888a031215613e5857600080fd5b8735613e6381613a12565b96506020880135613e7381613a12565b955060408801359450606088013593506080880135613e9181613e2e565b9699959850939692959460a0840135945060c09093013592915050565b600060208284031215613ec057600080fd5b610f1682613de4565b600060208284031215613edb57600080fd5b813563ffffffff81168114610f1657600080fd5b634e487b7160e01b600052601160045260246000fd5b60008219821115613f1857613f18613eef565b500190565b600082821015613f2f57613f2f613eef565b500390565b600181811c90821680613f4857607f821691505b602082108103613f6857634e487b7160e01b600052602260045260246000fd5b50919050565b6020808252818101527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604082015260600190565b634e487b7160e01b600052603260045260246000fd5b600060208284031215613fcb57600080fd5b5051919050565b6102e08101818660005b60098110156140045781516001600160a01b0316835260209283019290910190600101613fdc565b50505061012082018560005b60048110156140575781518360005b600381101561403e57825182526020928301929091019060010161401f565b5050506060929092019160209190910190600101614010565b5050506102a08201939093526102c0015292915050565b600081600019048311821515161561408857614088613eef565b500290565b6000826140aa57634e487b7160e01b600052601260045260246000fd5b500490565b60006001600160f01b038281168482168083038211156140d1576140d1613eef565b01949350505050565b60006001600160f01b03838116908316818110156140fa576140fa613eef565b039392505050565b600081518084526020808501945080840160005b8381101561413b5781516001600160a01b031687529582019590820190600101614116565b509495945050505050565b85815284602082015260a06040820152600061416560a0830186614102565b6001600160a01b0394909416606083015250608001529392505050565b6000602080838503121561419557600080fd5b82516001600160401b03808211156141ac57600080fd5b818501915085601f8301126141c057600080fd5b8151818111156141d2576141d2613a53565b8060051b91506141e3848301613ad6565b81815291830184019184810190888411156141fd57600080fd5b938501935b8385101561421b57845182529385019390850190614202565b98975050505050505050565b6000808335601e1984360301811261423e57600080fd5b8301803591506001600160401b0382111561425857600080fd5b60200191503681900382131561426d57600080fd5b9250929050565b8183823760009101908152919050565b60006020828403121561429657600080fd5b81516001600160401b03808211156142ad57600080fd5b818401915084601f8301126142c157600080fd5b8151818111156142d3576142d3613a53565b6142e6601f8201601f1916602001613ad6565b91508082528560208285010111156142fd57600080fd5b61430e81602084016020860161398e565b50949350505050565b60006001820161432957614329613eef565b5060010190565b6060815260006143436060830186614102565b6020830194909452506001600160a01b0391909116604090910152919050565b600181815b8085111561439e57816000190482111561438457614384613eef565b8085161561439157918102915b93841c9390800290614368565b509250929050565b6000826143b557506001610f84565b816143c257506000610f84565b81600181146143d857600281146143e2576143fe565b6001915050610f84565b60ff8411156143f3576143f3613eef565b50506001821b610f84565b5060208310610133831016604e8410600b8410161715614421575081810a610f84565b61442b8383614363565b806000190482111561443f5761443f613eef565b029392505050565b6000610f1660ff8416836143a6565b600060ff821660ff84168082101561447057614470613eef565b90039392505050565b80516fffffffffffffffffffffffffffffffff81168114613df457600080fd5b8051613df481613a12565b8051613df481613e2e565b6000806000806000806000806000806000806101808d8f0312156144d257600080fd5b8c519b506144e260208e01614479565b9a506144f060408e01614479565b99506144fe60608e01614479565b985061450c60808e01614479565b975061451a60a08e01614479565b965060c08d015164ffffffffff8116811461453457600080fd5b955061454260e08e01614499565b94506145516101008e01614499565b93506145606101208e01614499565b925061456f6101408e01614499565b915061457e6101608e016144a4565b90509295989b509295989b509295989b565b6000602082840312156145a257600080fd5b8151610f1681613e2e565b600080835481600182811c9150808316806145c957607f831692505b602080841082036145e857634e487b7160e01b86526022600452602486fd5b8180156145fc57600181146146115761463e565b60ff198616895284151585028901965061463e565b60008a81526020902060005b868110156146365781548b82015290850190830161461d565b505084890196505b50949897505050505050505056feddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3efa2646970667358221220ea6498ab16f3f2edc730577a9653186b5a6461655c1a554ed9f137096534cbd164736f6c634300080f0033536f6d6d656c696572204161766520563220537461626c65636f696e2043656c6c6172204c5020546f6b656e\",\n  \"deployedBytecode\": \"0x60806040526004361061041b5760003560e01c8063997292161161021e578063c63d75b611610123578063e9240c2d116100ab578063ef7ac8831161007a578063ef7ac88314610d6b578063ef8b30f714610d8b578063f2fde38b14610dab578063f666415514610dcb578063f8ba4cff14610dfd57600080fd5b8063e9240c2d14610cec578063e9ec2e9914610d20578063ecf7085814610d35578063ef465d9214610d4b57600080fd5b8063d505accf116100f2578063d505accf14610c29578063d905777e14610c49578063dd62ed3e14610c7f578063df05a52a14610cb7578063dff90b5b14610cd757600080fd5b8063c63d75b614610ba9578063c6e6f59214610bc9578063cab5923814610be9578063ce96cb7714610c0957600080fd5b8063af1df255116101a6578063ba08765211610175578063ba08765214610b0e578063bdc8144b14610b2e578063bf86d69014610b4e578063c17f674014610b68578063c2d4160114610b8857600080fd5b8063af1df25514610a7a578063b3d7f6b914610aae578063b460af9414610ace578063b8dc491b14610aee57600080fd5b8063ac353510116101ed578063ac353510146109a5578063ac9650d8146109d9578063ad004e20146109f9578063ad5c464814610a0e578063ad7a672f14610a4257600080fd5b80639972921614610908578063a4da2d021461091d578063a59a997314610951578063a9059cbb1461098557600080fd5b80635e2c576e116103245780637ecebe00116102ac5780638e0bae7f1161027b5780638e0bae7f146108665780638fdc9dfa1461087c57806394bf804d146108a357806395d89b41146108c357806396d64879146108d857600080fd5b80637ecebe00146107df57806383b4918b1461080c578063877887821461082c5780638da5cb5b1461084857600080fd5b806370a08231116102f357806370a082311461073f578063715018a61461076c578063721637151461078157806378dc9059146107975780637b3baab4146107b757600080fd5b80635e2c576e146106ca5780636e08406b146106df5780636e553f65146106ff5780636e85f1831461071f57600080fd5b806326232a2e116103a75780633dc6eabf116103765780633dc6eabf1461062c578063402d267d1461064157806348ccda3c146106615780634cdad5061461069557806356891412146106b557600080fd5b806326232a2e1461057e578063313ce567146105b15780633644e515146105f757806338d52e0f1461060c57600080fd5b80630a28a477116103ee5780630a28a477146104ba57806315f4c611146104da57806318160ddd146104fc5780631fc29c011461051257806323b872dd1461055e57600080fd5b806301e1d1141461042057806306fdde031461044857806307a2d13a1461046a578063095ea7b31461048a575b600080fd5b34801561042c57600080fd5b50610435610e12565b6040519081526020015b60405180910390f35b34801561045457600080fd5b5061045d610e49565b60405161043f91906139e6565b34801561047657600080fd5b506104356104853660046139f9565b610ed7565b34801561049657600080fd5b506104aa6104a5366004613a27565b610f1d565b604051901515815260200161043f565b3480156104c657600080fd5b506104356104d53660046139f9565b610f8a565b3480156104e657600080fd5b506104fa6104f5366004613b06565b610fc4565b005b34801561050857600080fd5b5061043560025481565b34801561051e57600080fd5b506105467f000000000000000000000000000000000000000000000000000000000000000081565b6040516001600160a01b03909116815260200161043f565b34801561056a57600080fd5b506104aa610579366004613c10565b61138c565b34801561058a57600080fd5b506105996608e1bc9bf0400081565b6040516001600160401b03909116815260200161043f565b3480156105bd57600080fd5b506105e57f000000000000000000000000000000000000000000000000000000000000000081565b60405160ff909116815260200161043f565b34801561060357600080fd5b5061043561146c565b34801561061857600080fd5b50600654610546906001600160a01b031681565b34801561063857600080fd5b506104fa6114c2565b34801561064d57600080fd5b5061043561065c366004613c51565b6114cf565b34801561066d57600080fd5b506105467f000000000000000000000000000000000000000000000000000000000000000081565b3480156106a157600080fd5b506104356106b03660046139f9565b611547565b3480156106c157600080fd5b50610435611552565b3480156106d657600080fd5b506104fa6115cd565b3480156106eb57600080fd5b506104fa6106fa3660046139f9565b61162c565b34801561070b57600080fd5b5061043561071a366004613c6e565b61171c565b34801561072b57600080fd5b506104fa61073a3660046139f9565b6117e0565b34801561074b57600080fd5b5061043561075a366004613c51565b60036020526000908152604090205481565b34801561077857600080fd5b506104fa61184b565b34801561078d57600080fd5b50610435600d5481565b3480156107a357600080fd5b506104fa6107b23660046139f9565b61187f565b3480156107c357600080fd5b50600a546105999064010000000090046001600160401b031681565b3480156107eb57600080fd5b506104356107fa366004613c51565b60056020526000908152604090205481565b34801561081857600080fd5b506104fa6108273660046139f9565b61195d565b34801561083857600080fd5b5061059967016345785d8a000081565b34801561085457600080fd5b506007546001600160a01b0316610546565b34801561087257600080fd5b50610435600b5481565b34801561088857600080fd5b50600a5461054690600160601b90046001600160a01b031681565b3480156108af57600080fd5b506104356108be366004613c6e565b611d1f565b3480156108cf57600080fd5b5061045d611d9c565b3480156108e457600080fd5b506104aa6108f3366004613c51565b600c6020526000908152604090205460ff1681565b34801561091457600080fd5b506104fa611da9565b34801561092957600080fd5b506105467f000000000000000000000000000000000000000000000000000000000000000081565b34801561095d57600080fd5b506105467f000000000000000000000000000000000000000000000000000000000000000081565b34801561099157600080fd5b506104aa6109a0366004613a27565b611dbe565b3480156109b157600080fd5b506105467f000000000000000000000000000000000000000000000000000000000000000081565b6109ec6109e7366004613c9e565b611e24565b60405161043f9190613d12565b348015610a0557600080fd5b50610435611f7b565b348015610a1a57600080fd5b506105467f000000000000000000000000000000000000000000000000000000000000000081565b348015610a4e57600080fd5b50600954610a62906001600160f01b031681565b6040516001600160f01b03909116815260200161043f565b348015610a8657600080fd5b506105467f000000000000000000000000000000000000000000000000000000000000000081565b348015610aba57600080fd5b50610435610ac93660046139f9565b612141565b348015610ada57600080fd5b50610435610ae9366004613d74565b612160565b348015610afa57600080fd5b506104fa610b09366004613db6565b612253565b348015610b1a57600080fd5b50610435610b29366004613d74565b6123f1565b348015610b3a57600080fd5b506104fa610b493660046139f9565b612522565b348015610b5a57600080fd5b50600f546104aa9060ff1681565b348015610b7457600080fd5b50600854610546906001600160a01b031681565b348015610b9457600080fd5b506008546105e590600160a01b900460ff1681565b348015610bb557600080fd5b50610435610bc4366004613c51565b61258d565b348015610bd557600080fd5b50610435610be43660046139f9565b6125f7565b348015610bf557600080fd5b506104fa610c04366004613df9565b612617565b348015610c1557600080fd5b50610435610c24366004613c51565b6126e4565b348015610c3557600080fd5b506104fa610c44366004613e3d565b612706565b348015610c5557600080fd5b50610435610c64366004613c51565b6001600160a01b031660009081526003602052604090205490565b348015610c8b57600080fd5b50610435610c9a366004613db6565b600460209081526000928352604080842090915290825290205481565b348015610cc357600080fd5b506104fa610cd23660046139f9565b61294a565b348015610ce357600080fd5b506104fa6129b5565b348015610cf857600080fd5b506105467f000000000000000000000000000000000000000000000000000000000000000081565b348015610d2c57600080fd5b50610435612b56565b348015610d4157600080fd5b50610435600e5481565b348015610d5757600080fd5b506104fa610d66366004613eae565b612bc3565b348015610d7757600080fd5b506104fa610d86366004613ec9565b612c78565b348015610d9757600080fd5b50610435610da63660046139f9565b612d2b565b348015610db757600080fd5b506104fa610dc6366004613c51565b612d36565b348015610dd757600080fd5b50600a54610de89063ffffffff1681565b60405163ffffffff909116815260200161043f565b348015610e0957600080fd5b506104fa612dd1565b6000610e1c611552565b610e24612b56565b600954610e3a91906001600160f01b0316613f05565b610e449190613f1d565b905090565b60008054610e5690613f34565b80601f0160208091040260200160405190810160405280929190818152602001828054610e8290613f34565b8015610ecf5780601f10610ea457610100808354040283529160200191610ecf565b820191906000526020600020905b815481529060010190602001808311610eb257829003601f168201915b505050505081565b6002546000908015610efb57610ef6610eee610e12565b8490836130c0565b610f16565b600854610f16908490601290600160a01b900460ff16613057565b9392505050565b3360008181526004602090815260408083206001600160a01b038716808552925280832085905551919290917f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b92590610f789086815260200190565b60405180910390a35060015b92915050565b6002546000908015610faa57610ef681610fa2610e12565b8591906130df565b600854610f16908490600160a01b900460ff166012613057565b600f5460ff1615610fe857604051632f22819760e11b815260040160405180910390fd5b6007546001600160a01b0316331461101b5760405162461bcd60e51b815260040161101290613f6e565b60405180910390fd5b6000805b80600814806110575750600085611037836001613f05565b6009811061104757611047613fa3565b60200201516001600160a01b0316145b1561107a5784816009811061106e5761106e613fa3565b6020020151915061108c565b611085600282613f05565b905061101f565b506001600160a01b0381166000908152600c602052604090205460ff166110d1576040516386433f2b60e01b81526001600160a01b0382166004820152602401611012565b6006546001600160a01b0390811690821681900361110d57604051630613aecf60e11b81526001600160a01b0382166004820152602401611012565b6000611117612b56565b6009549091506000906111349083906001600160f01b0316613f05565b6008546040516370a0823160e01b815230600482015291925060009182916001600160a01b0316906370a0823190602401602060405180830381865afa158015611182573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906111a69190613fb9565b116111b157826111c8565b826111be8560001961310d565b6111c89190613f05565b90506111fe6001600160a01b0385167f0000000000000000000000000000000000000000000000000000000000000000836131f6565b604051630d4f290960e21b81526000906001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000169063353ca42490611253908c908c9087908d90600401613fd2565b6020604051808303816000875af1158015611272573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906112969190613fb9565b600854909150600160a01b900460ff1660006112b188613273565b90506112bd888461348e565b600a546112db90600160601b90046001600160a01b03168383613057565b600a80546001600160a01b0392909216600160601b026bffffffffffffffffffffffff909216919091179055600061131d611317878585613057565b8561358c565b600980546001600160f01b0319166001600160f01b0383161790556040518181529091506001600160a01b038a811691908a16907fb0850b8e0f9e8315dde3c9f9f31138283e6bbe16cd29e8552eb1dcdf9fac9e3b9060200160405180910390a3505050505050505050505050565b6001600160a01b038316600090815260046020908152604080832033845290915281205460001981146113e8576113c38382613f1d565b6001600160a01b03861660009081526004602090815260408083203384529091529020555b6001600160a01b03851660009081526003602052604081208054859290611410908490613f1d565b90915550506001600160a01b038085166000818152600360205260409081902080548701905551909187169060008051602061464d833981519152906114599087815260200190565b60405180910390a3506001949350505050565b60007f0000000000000000000000000000000000000000000000000000000000000000461461149d57610e446135a2565b507f000000000000000000000000000000000000000000000000000000000000000090565b6114cd6106fa612b56565b565b600f5460009060ff16156114e557506000919050565b600e54600d54600019821480156114fd575060001981145b1561150d57506000199392505050565b600061152261151b866126e4565b849061363c565b9050600061153161151b610e12565b905061153d828261358c565b9695505050505050565b6000610f8482610ed7565b600a546000906001600160401b036401000000008204169063ffffffff1661157a8183613f05565b42106115895760009250505090565b600a54600160601b90046001600160a01b0316816115a78442613f1d565b6115b1908361406e565b6115bb919061408d565b6115c59082613f1d565b935050505090565b6007546001600160a01b031633146115f75760405162461bcd60e51b815260040161101290613f6e565b600f805460ff191690556040517f09bec6199b5712abe9cbb71997b06f6149a453eca5abec15d528e14e65e1605e90600090a1565b600f5460ff161561165057604051632f22819760e11b815260040160405180910390fd5b6007546001600160a01b0316331461167a5760405162461bcd60e51b815260040161101290613f6e565b600654600980546001600160a01b03909216918391906000906116a79084906001600160f01b03166140af565b92506101000a8154816001600160f01b0302191690836001600160f01b031602179055506116d5818361348e565b806001600160a01b03167fb6f4b9255ee989b1844a8e6b7da8906b81200c38f7b3f4f1ac31e9a241c757508360405161171091815260200190565b60405180910390a25050565b600061172783612d2b565b9050806000036117675760405162461bcd60e51b815260206004820152600b60248201526a5a45524f5f53484152455360a81b6044820152606401611012565b611772838284613656565b60065461178a906001600160a01b03163330866136b2565b611794828261373c565b60408051848152602081018390526001600160a01b0384169133917fdcbc1c05240f31ff3ad067ef1ee35ce4997762752e3a095284754544f4c709d791015b60405180910390a3610f84565b6007546001600160a01b0316331461180a5760405162461bcd60e51b815260040161101290613f6e565b600b5460408051918252602082018390527f513ac19cbbaaad4e450c732ed37635178b7d83bf8e84a940ffe7e052c9c7caa2910160405180910390a1600b55565b6007546001600160a01b031633146118755760405162461bcd60e51b815260040161101290613f6e565b6114cd6000613796565b600f5460ff16156118a357604051632f22819760e11b815260040160405180910390fd5b6007546001600160a01b031633146118cd5760405162461bcd60e51b815260040161101290613f6e565b6006546001600160a01b03166118e3818361310d565b600980546000906118fe9084906001600160f01b03166140da565b92506101000a8154816001600160f01b0302191690836001600160f01b03160217905550806001600160a01b03167fde4cc1d2dd41970a827a8df55efd18c527c17c26485847d680cc2b4c71e7a87c8360405161171091815260200190565b6007546001600160a01b031633146119875760405162461bcd60e51b815260040161101290613f6e565b6040516301e9a69560e41b815230600482015260001960248201527f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031690631e9a695090604401600060405180830381600087803b1580156119f057600080fd5b505af1158015611a04573d6000803e3d6000fd5b50506040516370a0823160e01b8152306004820152600092507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031691506370a0823190602401602060405180830381865afa158015611a6f573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190611a939190613fb9565b600654604080516003808252608082019092529293506001600160a01b0390911691600091602082016060803683370190505090507f000000000000000000000000000000000000000000000000000000000000000081600081518110611afc57611afc613fa3565b60200260200101906001600160a01b031690816001600160a01b0316815250507f000000000000000000000000000000000000000000000000000000000000000081600181518110611b5057611b50613fa3565b60200260200101906001600160a01b031690816001600160a01b0316815250508181600281518110611b8457611b84613fa3565b6001600160a01b039283166020918202929092010152611be7907f0000000000000000000000000000000000000000000000000000000000000000167f0000000000000000000000000000000000000000000000000000000000000000856131f6565b60006001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000166338ed173985878530611c2742603c613f05565b6040518663ffffffff1660e01b8152600401611c47959493929190614146565b6000604051808303816000875af1158015611c66573d6000803e3d6000fd5b505050506040513d6000823e601f3d908101601f19168201604052611c8e9190810190614182565b905060008160018351611ca19190613f1d565b81518110611cb157611cb1613fa3565b6020908102919091010151600f5490915060ff16611cd357611cd3848261348e565b60408051868152602081018390526001600160a01b038616917fc003f45bc224d116b6d079100d4ab57a5b9633244c47a5a92a176c5b79a85f28910160405180910390a2505050505050565b6000611d2a83612141565b9050611d37818484613656565b600654611d4f906001600160a01b03163330846136b2565b611d59828461373c565b60408051828152602081018590526001600160a01b0384169133917fdcbc1c05240f31ff3ad067ef1ee35ce4997762752e3a095284754544f4c709d791016117d3565b60018054610e5690613f34565b6009546114cd906001600160f01b031661187f565b33600090815260036020526040812080548391908390611ddf908490613f1d565b90915550506001600160a01b0383166000818152600360205260409081902080548501905551339060008051602061464d83398151915290610f789086815260200190565b6060816001600160401b03811115611e3e57611e3e613a53565b604051908082528060200260200182016040528015611e7157816020015b6060815260200190600190039081611e5c5790505b50905060005b82811015611f745760008030868685818110611e9557611e95613fa3565b9050602002810190611ea79190614227565b604051611eb5929190614274565b600060405180830381855af49150503d8060008114611ef0576040519150601f19603f3d011682016040523d82523d6000602084013e611ef5565b606091505b509150915081611f4157604481511015611f0e57600080fd5b60048101905080806020019051810190611f289190614284565b60405162461bcd60e51b815260040161101291906139e6565b80848481518110611f5457611f54613fa3565b602002602001018190525050508080611f6c90614317565b915050611e77565b5092915050565b6007546000906001600160a01b03163314611fa85760405162461bcd60e51b815260040161101290613f6e565b60408051600180825281830190925260009160208083019080368337505060085482519293506001600160a01b031691839150600090611fea57611fea613fa3565b6001600160a01b039283166020918202929092010152604051633111e7b360e01b81527f000000000000000000000000000000000000000000000000000000000000000090911690633111e7b39061204c908490600019903090600401614330565b6020604051808303816000875af115801561206b573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061208f9190613fb9565b91507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031663787a08a66040518163ffffffff1660e01b8152600401600060405180830381600087803b1580156120ec57600080fd5b505af1158015612100573d6000803e3d6000fd5b505050507f8ca0188d9770b383d1a7a2ddfe5e0c1f029084481a53697d6c51525c47a8d88e8260405161213591815260200190565b60405180910390a15090565b6002546000908015610efb57610ef6612158610e12565b8490836130df565b600061216b84610f8a565b9050336001600160a01b038316146121db576001600160a01b038216600090815260046020908152604080832033845290915290205460001981146121d9576121b48282613f1d565b6001600160a01b03841660009081526004602090815260408083203384529091529020555b505b6121e7848285856137e8565b6121f18282613863565b60408051858152602081018390526001600160a01b03808516929086169133917ffbde797d201c681b91056529119e0b02407c7bb96a4a2c75c01fc9667232c8db910160405180910390a4600654610ef6906001600160a01b031684866138c5565b6007546001600160a01b0316331461227d5760405162461bcd60e51b815260040161101290613f6e565b6006546001600160a01b03838116911614806122a657506008546001600160a01b038381169116145b806122b957506001600160a01b03821630145b806122f557507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316826001600160a01b0316145b1561231e576040516339b8549160e01b81526001600160a01b0383166004820152602401611012565b6040516370a0823160e01b81523060048201526000906001600160a01b038416906370a0823190602401602060405180830381865afa158015612365573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906123899190613fb9565b905061239f6001600160a01b03841683836138c5565b816001600160a01b0316836001600160a01b03167fed679328aebf74ede77ae09efcf36e90244f83643dadac1c2d9f0b21a46f6ab7836040516123e491815260200190565b60405180910390a3505050565b6000336001600160a01b03831614612461576001600160a01b0382166000908152600460209081526040808320338452909152902054600019811461245f5761243a8582613f1d565b6001600160a01b03841660009081526004602090815260408083203384529091529020555b505b61246a84611547565b9050806000036124aa5760405162461bcd60e51b815260206004820152600b60248201526a5a45524f5f41535345545360a81b6044820152606401611012565b6124b6818585856137e8565b6124c08285613863565b60408051828152602081018690526001600160a01b03808516929086169133917ffbde797d201c681b91056529119e0b02407c7bb96a4a2c75c01fc9667232c8db910160405180910390a4600654610ef6906001600160a01b031684836138c5565b6007546001600160a01b0316331461254c5760405162461bcd60e51b815260040161101290613f6e565b600e5460408051918252602082018390527fcfb5a454b8aa7dc04ecb5bc1410b2a57969ca1d67f66d565196f60c6f9975404910160405180910390a1600e55565b600f5460009060ff16156125a357506000919050565b600e54600d54600019821480156125bb575060001981145b156125cb57506000199392505050565b60006125d961151b866126e4565b905060006125e861151b610e12565b905061153d610be4838361358c565b6002546000908015610faa57610ef68161260f610e12565b8591906130c0565b6007546001600160a01b031633146126415760405162461bcd60e51b815260040161101290613f6e565b6001600160a01b038281166000908152600c60205260409020805460ff1916831580159182179092556006549092169161268c5750806001600160a01b0316836001600160a01b0316145b1561269a5761269a8161393d565b826001600160a01b03167fd600b9348603c6deff34b4e0b28b60e1c8036c806741b9e6d90032e7f37dd27f836040516126d7911515815260200190565b60405180910390a2505050565b6001600160a01b038116600090815260036020526040812054610f8490610ed7565b428410156127565760405162461bcd60e51b815260206004820152601760248201527f5045524d49545f444541444c494e455f455850495245440000000000000000006044820152606401611012565b6000600161276261146c565b6001600160a01b038a811660008181526005602090815260409182902080546001810190915582517f6e71edae12b1b97f4d1f60370fef10105fa2faae0126114a169c64845d6126c98184015280840194909452938d166060840152608083018c905260a083019390935260c08083018b90528151808403909101815260e08301909152805192019190912061190160f01b6101008301526101028201929092526101228101919091526101420160408051601f198184030181528282528051602091820120600084529083018083525260ff871690820152606081018590526080810184905260a0016020604051602081039080840390855afa15801561286e573d6000803e3d6000fd5b5050604051601f1901519150506001600160a01b038116158015906128a45750876001600160a01b0316816001600160a01b0316145b6128e15760405162461bcd60e51b815260206004820152600e60248201526d24a72b20a624a22fa9a4a3a722a960911b6044820152606401611012565b6001600160a01b0390811660009081526004602090815260408083208a8516808552908352928190208990555188815291928a16917f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925910160405180910390a350505050505050565b6007546001600160a01b031633146129745760405162461bcd60e51b815260040161101290613f6e565b600d5460408051918252602082018390527f1f21432dd7b8ead64d2e7c06a74baf13783b2d2f7153f099e2c4cabc3c5dbec6910160405180910390a1600d55565b6007546001600160a01b031633146129df5760405162461bcd60e51b815260040161101290613f6e565b30600090815260036020526040812054906129f982611547565b905080600003612a395760405162461bcd60e51b815260206004820152600b60248201526a5a45524f5f41535345545360a81b6044820152606401611012565b612a478160008060006137e8565b612a513083613863565b6006546001600160a01b0316612a88817f0000000000000000000000000000000000000000000000000000000000000000846131f6565b600b54604051631ffbe7f960e01b81526001600160a01b0383811660048301526024820192909252604481018490527f000000000000000000000000000000000000000000000000000000000000000090911690631ffbe7f990606401600060405180830381600087803b158015612aff57600080fd5b505af1158015612b13573d6000803e3d6000fd5b505060408051868152602081018690527f15e3e2a76a6839c244c1ed0a821c233ce8af552dffcb856089eae6cbbbb71ea6935001905060405180910390a1505050565b6006546040516370a0823160e01b81523060048201526000916001600160a01b0316906370a0823190602401602060405180830381865afa158015612b9f573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610e449190613fb9565b600f5460ff1615612be757604051632f22819760e11b815260040160405180910390fd5b6007546001600160a01b03163314612c115760405162461bcd60e51b815260040161101290613f6e565b8015612c2c57600654612c2c906001600160a01b031661393d565b600f805460ff191660011790556040517f6e7cab6accf9b093a6b800ed920df610db4dbfd8807417f5f2c48dd66c03babb90612c6d90831515815260200190565b60405180910390a150565b6007546001600160a01b03163314612ca25760405162461bcd60e51b815260040161101290613f6e565b6000612cac611552565b1115612ccb57604051636b86639360e11b815260040160405180910390fd5b600a546040805163ffffffff928316815291831660208301527f3c392b44ad99b1fb7c87ae7b914cbd1de1aeed3e9369a20d3070cc771669898f910160405180910390a1600a805463ffffffff191663ffffffff92909216919091179055565b6000610f84826125f7565b6007546001600160a01b03163314612d605760405162461bcd60e51b815260040161101290613f6e565b6001600160a01b038116612dc55760405162461bcd60e51b815260206004820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b6064820152608401611012565b612dce81613796565b50565b6000612ddb611552565b9050612def6007546001600160a01b031690565b6001600160a01b0316336001600160a01b031614158015612e105750600081115b15612e2e57604051636b86639360e11b815260040160405180910390fd5b600854600090612e4990600160a01b900460ff16600a614447565b90506000612e56826125f7565b6009546008546040516370a0823160e01b81523060048201529293506001600160f01b03909116916000916001600160a01b0316906370a0823190602401602060405180830381865afa158015612eb1573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190612ed59190613fb9565b600a54909150600090612ef99064010000000090046001600160401b031642613f1d565b905060006301e13380670de0b6b3a76400006608e1bc9bf04000612f1d858761406e565b612f27919061406e565b612f31919061408d565b612f3b919061408d565b90506000612f4a8287896130c0565b90506000612f58858761363c565b90506000612f6e8267016345785d8a0000613979565b90506000612f7d828a8c6130c0565b9050612f9230612f8d8387613f05565b61373c565b612f9f61151b8387613f05565b612fa9908c613f05565b600a805463ffffffff908116600160601b6001600160a01b0394909416939093026bffffffffffffffff000000001916929092174290921664010000000002919091179055600980546001600160f01b0319166001600160f01b03891617905560408051858152602081018390529081018490527ffd23cefb4992bc1b95df1f544efdb9908d901288354421270f7a8f8a0dfec20a9060600160405180910390a15050505050505050505050565b60008160ff168360ff160361306d575082610f16565b8160ff168360ff1610156130a1576130858383614456565b61309090600a614447565b61309a908561406e565b9050610f16565b6130ab8284614456565b6130b690600a614447565b61309a908561408d565b8282028115158415858304851417166130d857600080fd5b0492915050565b8282028115158415858304851417166130f757600080fd5b6001826001830304018115150290509392505050565b604051631a4ca37b60e21b81526001600160a01b038381166004830152602482018390523060448301526000917f0000000000000000000000000000000000000000000000000000000000000000909116906369328dec906064016020604051808303816000875af1158015613187573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906131ab9190613fb9565b9050826001600160a01b03167f84343cc97621dbc51bce198a258218a2063c160e4d473ff51007c7a60eec5fa1826040516131e891815260200190565b60405180910390a292915050565b600060405163095ea7b360e01b8152836004820152826024820152602060006044836000895af13d15601f3d116001600051141617169150508061326d5760405162461bcd60e51b815260206004820152600e60248201526d1054141493d59157d1905253115160921b6044820152606401611012565b50505050565b6040516335ea6a7560e01b81526001600160a01b03828116600483015260009182917f000000000000000000000000000000000000000000000000000000000000000016906335ea6a759060240161018060405180830381865afa1580156132df573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061330391906144af565b50929a50506001600160a01b038a16985061334597505050505050505057604051630a5c5e7d60e11b81526001600160a01b0384166004820152602401611012565b6000600860149054906101000a900460ff169050836001600160a01b031663313ce5676040518163ffffffff1660e01b8152600401602060405180830381865afa158015613397573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906133bb9190614590565b925060128360ff1611156133ee57604051630651982f60e11b815260ff8416600482015260126024820152604401611012565b60ff81161580159061340657508260ff168160ff1614155b1561344457600e54600d54600019821461342957613425828487613057565b600e555b60001981146134415761343d818487613057565b600d555b50505b50600680546001600160a01b03199081166001600160a01b0395861617909155600880546001600160a81b031916600160a01b60ff86160290921691909117919093161790915590565b6134c26001600160a01b0383167f0000000000000000000000000000000000000000000000000000000000000000836131f6565b60405163e8eda9df60e01b81526001600160a01b03838116600483015260248201839052306044830152600060648301527f0000000000000000000000000000000000000000000000000000000000000000169063e8eda9df90608401600060405180830381600087803b15801561353957600080fd5b505af115801561354d573d6000803e3d6000fd5b50505050816001600160a01b03167ff099efd56d0c64f9a1aa1379a470d871392b67ea7678ed5659ad4bfe7dd765758260405161171091815260200190565b600081831061359b5781610f16565b5090919050565b60007f8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f60006040516135d491906145ad565b6040805191829003822060208301939093528101919091527fc89efdaa54c0f20c7adf612882df0950f5a951637e0307cdcb4c672f298b8bc660608201524660808201523060a082015260c00160405160208183030381529060405280519060200120905090565b600081831161364c576000610f16565b610f168284613f1d565b600f5460ff161561367a57604051632f22819760e11b815260040160405180910390fd5b6000613685826114cf565b90508084111561326d576040516323dc290560e21b81526004810185905260248101829052604401611012565b60006040516323b872dd60e01b81528460048201528360248201528260448201526020600060648360008a5af13d15601f3d11600160005114161716915050806137355760405162461bcd60e51b81526020600482015260146024820152731514905394d1915497d19493d357d1905253115160621b6044820152606401611012565b5050505050565b806002600082825461374e9190613f05565b90915550506001600160a01b03821660008181526003602090815260408083208054860190555184815260008051602061464d83398151915291015b60405180910390a35050565b600780546001600160a01b038381166001600160a01b0319831681179093556040519116919082907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e090600090a35050565b6006546001600160a01b031660006137fe612b56565b90508086111561385b5761381b826138168389613f1d565b61310d565b600980546000906138369084906001600160f01b03166140da565b92506101000a8154816001600160f01b0302191690836001600160f01b031602179055505b505050505050565b6001600160a01b0382166000908152600360205260408120805483929061388b908490613f1d565b90915550506002805482900390556040518181526000906001600160a01b0384169060008051602061464d8339815191529060200161378a565b600060405163a9059cbb60e01b8152836004820152826024820152602060006044836000895af13d15601f3d116001600051141617169150508061326d5760405162461bcd60e51b815260206004820152600f60248201526e1514905394d1915497d19052531151608a1b6044820152606401611012565b6009546001600160f01b0316801561397557613957612dd1565b6139638260001961310d565b50600980546001600160f01b03191690555b5050565b6000610f168383670de0b6b3a76400006130c0565b60005b838110156139a9578181015183820152602001613991565b8381111561326d5750506000910152565b600081518084526139d281602086016020860161398e565b601f01601f19169290920160200192915050565b602081526000610f1660208301846139ba565b600060208284031215613a0b57600080fd5b5035919050565b6001600160a01b0381168114612dce57600080fd5b60008060408385031215613a3a57600080fd5b8235613a4581613a12565b946020939093013593505050565b634e487b7160e01b600052604160045260246000fd5b60405161012081016001600160401b0381118282101715613a8c57613a8c613a53565b60405290565b604051608081016001600160401b0381118282101715613a8c57613a8c613a53565b604051606081016001600160401b0381118282101715613a8c57613a8c613a53565b604051601f8201601f191681016001600160401b0381118282101715613afe57613afe613a53565b604052919050565b60008060006102c08486031215613b1c57600080fd5b601f8581860112613b2c57600080fd5b613b34613a69565b80610120870188811115613b4757600080fd5b875b81811015613b6a578035613b5c81613a12565b845260209384019301613b49565b508196508861013f890112613b7e57600080fd5b613b86613a92565b92508291506102a0880189811115613b9d57600080fd5b80821015613c00578985830112613bb45760008081fd5b613bbc613ab4565b80606084018c811115613bcf5760008081fd5b845b81811015613be9578035845260209384019301613bd1565b505085525060209093019260609190910190613b9d565b9699919850509435955050505050565b600080600060608486031215613c2557600080fd5b8335613c3081613a12565b92506020840135613c4081613a12565b929592945050506040919091013590565b600060208284031215613c6357600080fd5b8135610f1681613a12565b60008060408385031215613c8157600080fd5b823591506020830135613c9381613a12565b809150509250929050565b60008060208385031215613cb157600080fd5b82356001600160401b0380821115613cc857600080fd5b818501915085601f830112613cdc57600080fd5b813581811115613ceb57600080fd5b8660208260051b8501011115613d0057600080fd5b60209290920196919550909350505050565b6000602080830181845280855180835260408601915060408160051b870101925083870160005b82811015613d6757603f19888603018452613d558583516139ba565b94509285019290850190600101613d39565b5092979650505050505050565b600080600060608486031215613d8957600080fd5b833592506020840135613d9b81613a12565b91506040840135613dab81613a12565b809150509250925092565b60008060408385031215613dc957600080fd5b8235613dd481613a12565b91506020830135613c9381613a12565b80358015158114613df457600080fd5b919050565b60008060408385031215613e0c57600080fd5b8235613e1781613a12565b9150613e2560208401613de4565b90509250929050565b60ff81168114612dce57600080fd5b600080600080600080600060e0888a031215613e5857600080fd5b8735613e6381613a12565b96506020880135613e7381613a12565b955060408801359450606088013593506080880135613e9181613e2e565b9699959850939692959460a0840135945060c09093013592915050565b600060208284031215613ec057600080fd5b610f1682613de4565b600060208284031215613edb57600080fd5b813563ffffffff81168114610f1657600080fd5b634e487b7160e01b600052601160045260246000fd5b60008219821115613f1857613f18613eef565b500190565b600082821015613f2f57613f2f613eef565b500390565b600181811c90821680613f4857607f821691505b602082108103613f6857634e487b7160e01b600052602260045260246000fd5b50919050565b6020808252818101527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604082015260600190565b634e487b7160e01b600052603260045260246000fd5b600060208284031215613fcb57600080fd5b5051919050565b6102e08101818660005b60098110156140045781516001600160a01b0316835260209283019290910190600101613fdc565b50505061012082018560005b60048110156140575781518360005b600381101561403e57825182526020928301929091019060010161401f565b5050506060929092019160209190910190600101614010565b5050506102a08201939093526102c0015292915050565b600081600019048311821515161561408857614088613eef565b500290565b6000826140aa57634e487b7160e01b600052601260045260246000fd5b500490565b60006001600160f01b038281168482168083038211156140d1576140d1613eef565b01949350505050565b60006001600160f01b03838116908316818110156140fa576140fa613eef565b039392505050565b600081518084526020808501945080840160005b8381101561413b5781516001600160a01b031687529582019590820190600101614116565b509495945050505050565b85815284602082015260a06040820152600061416560a0830186614102565b6001600160a01b0394909416606083015250608001529392505050565b6000602080838503121561419557600080fd5b82516001600160401b03808211156141ac57600080fd5b818501915085601f8301126141c057600080fd5b8151818111156141d2576141d2613a53565b8060051b91506141e3848301613ad6565b81815291830184019184810190888411156141fd57600080fd5b938501935b8385101561421b57845182529385019390850190614202565b98975050505050505050565b6000808335601e1984360301811261423e57600080fd5b8301803591506001600160401b0382111561425857600080fd5b60200191503681900382131561426d57600080fd5b9250929050565b8183823760009101908152919050565b60006020828403121561429657600080fd5b81516001600160401b03808211156142ad57600080fd5b818401915084601f8301126142c157600080fd5b8151818111156142d3576142d3613a53565b6142e6601f8201601f1916602001613ad6565b91508082528560208285010111156142fd57600080fd5b61430e81602084016020860161398e565b50949350505050565b60006001820161432957614329613eef565b5060010190565b6060815260006143436060830186614102565b6020830194909452506001600160a01b0391909116604090910152919050565b600181815b8085111561439e57816000190482111561438457614384613eef565b8085161561439157918102915b93841c9390800290614368565b509250929050565b6000826143b557506001610f84565b816143c257506000610f84565b81600181146143d857600281146143e2576143fe565b6001915050610f84565b60ff8411156143f3576143f3613eef565b50506001821b610f84565b5060208310610133831016604e8410600b8410161715614421575081810a610f84565b61442b8383614363565b806000190482111561443f5761443f613eef565b029392505050565b6000610f1660ff8416836143a6565b600060ff821660ff84168082101561447057614470613eef565b90039392505050565b80516fffffffffffffffffffffffffffffffff81168114613df457600080fd5b8051613df481613a12565b8051613df481613e2e565b6000806000806000806000806000806000806101808d8f0312156144d257600080fd5b8c519b506144e260208e01614479565b9a506144f060408e01614479565b99506144fe60608e01614479565b985061450c60808e01614479565b975061451a60a08e01614479565b965060c08d015164ffffffffff8116811461453457600080fd5b955061454260e08e01614499565b94506145516101008e01614499565b93506145606101208e01614499565b925061456f6101408e01614499565b915061457e6101608e016144a4565b90509295989b509295989b509295989b565b6000602082840312156145a257600080fd5b8151610f1681613e2e565b600080835481600182811c9150808316806145c957607f831692505b602080841082036145e857634e487b7160e01b86526022600452602486fd5b8180156145fc57600181146146115761463e565b60ff198616895284151585028901965061463e565b60008a81526020902060005b868110156146365781548b82015290850190830161461d565b505084890196505b50949897505050505050505056feddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3efa2646970667358221220ea6498ab16f3f2edc730577a9653186b5a6461655c1a554ed9f137096534cbd164736f6c634300080f0033\",\n  \"linkReferences\": {},\n  \"deployedLinkReferences\": {}\n}\n") . expect ("invalid abi")
-        });
-    #[derive(Clone)]
-    pub struct AaveV2StablecoinCellar<M>(ethers::contract::Contract<M>);
-    impl<M> std::ops::Deref for AaveV2StablecoinCellar<M> {
-        type Target = ethers::contract::Contract<M>;
+pub use aave_v2_stablecoin_cellar::*;
+/// This module was auto-generated with ethers-rs Abigen.
+/// More information at: <https://github.com/gakonst/ethers-rs>
+#[allow(
+    clippy::enum_variant_names,
+    clippy::too_many_arguments,
+    clippy::upper_case_acronyms,
+    clippy::type_complexity,
+    dead_code,
+    non_camel_case_types,
+)]
+pub mod aave_v2_stablecoin_cellar {
+    #[allow(deprecated)]
+    fn __abi() -> ::ethers::core::abi::Abi {
+        ::ethers::core::abi::ethabi::Contract {
+            constructor: ::core::option::Option::Some(::ethers::core::abi::ethabi::Constructor {
+                inputs: ::std::vec![
+                    ::ethers::core::abi::ethabi::Param {
+                        name: ::std::borrow::ToOwned::to_owned("_asset"),
+                        kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                        internal_type: ::core::option::Option::Some(
+                            ::std::borrow::ToOwned::to_owned("contract ERC20"),
+                        ),
+                    },
+                    ::ethers::core::abi::ethabi::Param {
+                        name: ::std::borrow::ToOwned::to_owned("_approvedPositions"),
+                        kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                            ::std::boxed::Box::new(
+                                ::ethers::core::abi::ethabi::ParamType::Address,
+                            ),
+                        ),
+                        internal_type: ::core::option::Option::Some(
+                            ::std::borrow::ToOwned::to_owned("contract ERC20[]"),
+                        ),
+                    },
+                    ::ethers::core::abi::ethabi::Param {
+                        name: ::std::borrow::ToOwned::to_owned("_curveRegistryExchange"),
+                        kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                        internal_type: ::core::option::Option::Some(
+                            ::std::borrow::ToOwned::to_owned("contract ICurveSwaps"),
+                        ),
+                    },
+                    ::ethers::core::abi::ethabi::Param {
+                        name: ::std::borrow::ToOwned::to_owned("_sushiswapRouter"),
+                        kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                        internal_type: ::core::option::Option::Some(
+                            ::std::borrow::ToOwned::to_owned("contract ISushiSwapRouter"),
+                        ),
+                    },
+                    ::ethers::core::abi::ethabi::Param {
+                        name: ::std::borrow::ToOwned::to_owned("_lendingPool"),
+                        kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                        internal_type: ::core::option::Option::Some(
+                            ::std::borrow::ToOwned::to_owned("contract ILendingPool"),
+                        ),
+                    },
+                    ::ethers::core::abi::ethabi::Param {
+                        name: ::std::borrow::ToOwned::to_owned("_incentivesController"),
+                        kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                        internal_type: ::core::option::Option::Some(
+                            ::std::borrow::ToOwned::to_owned(
+                                "contract IAaveIncentivesController",
+                            ),
+                        ),
+                    },
+                    ::ethers::core::abi::ethabi::Param {
+                        name: ::std::borrow::ToOwned::to_owned("_gravityBridge"),
+                        kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                        internal_type: ::core::option::Option::Some(
+                            ::std::borrow::ToOwned::to_owned("contract IGravity"),
+                        ),
+                    },
+                    ::ethers::core::abi::ethabi::Param {
+                        name: ::std::borrow::ToOwned::to_owned("_stkAAVE"),
+                        kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                        internal_type: ::core::option::Option::Some(
+                            ::std::borrow::ToOwned::to_owned("contract IStakedTokenV2"),
+                        ),
+                    },
+                    ::ethers::core::abi::ethabi::Param {
+                        name: ::std::borrow::ToOwned::to_owned("_AAVE"),
+                        kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                        internal_type: ::core::option::Option::Some(
+                            ::std::borrow::ToOwned::to_owned("contract ERC20"),
+                        ),
+                    },
+                    ::ethers::core::abi::ethabi::Param {
+                        name: ::std::borrow::ToOwned::to_owned("_WETH"),
+                        kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                        internal_type: ::core::option::Option::Some(
+                            ::std::borrow::ToOwned::to_owned("contract ERC20"),
+                        ),
+                    },
+                ],
+            }),
+            functions: ::core::convert::From::from([
+                (
+                    ::std::borrow::ToOwned::to_owned("AAVE"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("AAVE"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("contract ERC20"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("DOMAIN_SEPARATOR"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("DOMAIN_SEPARATOR"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::FixedBytes(
+                                        32usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes32"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("WETH"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("WETH"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("contract ERC20"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("accrualPeriod"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("accrualPeriod"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("accrue"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("accrue"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("allowance"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("allowance"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("approve"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("approve"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("spender"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("amount"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("asset"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("asset"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("contract ERC20"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("assetAToken"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("assetAToken"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("contract ERC20"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("assetDecimals"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("assetDecimals"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(8usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint8"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("balanceOf"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("balanceOf"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("claimAndUnstake"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("claimAndUnstake"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("rewards"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("convertToAssets"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("convertToAssets"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("convertToShares"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("convertToShares"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("curveRegistryExchange"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "curveRegistryExchange",
+                            ),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("contract ICurveSwaps"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("decimals"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("decimals"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(8usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint8"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("deposit"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("deposit"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("receiver"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("depositLimit"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("depositLimit"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("enterPosition"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("enterPosition"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("enterPosition"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("exitPosition"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("exitPosition"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("exitPosition"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("feesDistributor"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("feesDistributor"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::FixedBytes(
+                                        32usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes32"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("gravityBridge"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("gravityBridge"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("contract IGravity"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("incentivesController"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "incentivesController",
+                            ),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned(
+                                            "contract IAaveIncentivesController",
+                                        ),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("initiateShutdown"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("initiateShutdown"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("emptyPosition"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("isShutdown"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("isShutdown"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("isTrusted"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("isTrusted"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("contract ERC20"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("lastAccrual"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("lastAccrual"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint64"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("lendingPool"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("lendingPool"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("contract ILendingPool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("liftShutdown"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("liftShutdown"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("liquidityLimit"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("liquidityLimit"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("maxDeposit"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("maxDeposit"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("receiver"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("maxLocked"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("maxLocked"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        160usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint160"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("maxMint"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("maxMint"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("receiver"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("maxRedeem"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("maxRedeem"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("owner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("maxWithdraw"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("maxWithdraw"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("owner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("mint"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("mint"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("receiver"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("multicall"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("multicall"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("data"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::Bytes,
+                                        ),
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes[]"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("results"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::Bytes,
+                                        ),
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes[]"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::Payable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("name"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("name"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::String,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("string"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("nonces"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("nonces"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("owner"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("owner"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("performanceFee"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("performanceFee"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint64"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("permit"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("permit"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("owner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("spender"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("value"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("deadline"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("v"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(8usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint8"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("r"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::FixedBytes(
+                                        32usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes32"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("s"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::FixedBytes(
+                                        32usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes32"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("platformFee"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("platformFee"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint64"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("previewDeposit"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("previewDeposit"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("previewMint"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("previewMint"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("previewRedeem"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("previewRedeem"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("previewWithdraw"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("previewWithdraw"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("rebalance"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("rebalance"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("route"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::FixedArray(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::Address,
+                                        ),
+                                        9usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address[9]"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("swapParams"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::FixedArray(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::FixedArray(
+                                                ::std::boxed::Box::new(
+                                                    ::ethers::core::abi::ethabi::ParamType::Uint(256usize),
+                                                ),
+                                                3usize,
+                                            ),
+                                        ),
+                                        4usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256[3][4]"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("minAssetsOut"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("redeem"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("redeem"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("receiver"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("owner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("reinvest"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("reinvest"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("minAssetsOut"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("renounceOwnership"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("renounceOwnership"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("sendFees"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("sendFees"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("setAccrualPeriod"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("setAccrualPeriod"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("newAccrualPeriod"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("setDepositLimit"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("setDepositLimit"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("newLimit"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("setFeesDistributor"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("setFeesDistributor"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned(
+                                        "newFeesDistributor",
+                                    ),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::FixedBytes(
+                                        32usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes32"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("setLiquidityLimit"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("setLiquidityLimit"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("newLimit"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("setTrust"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("setTrust"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("position"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("contract ERC20"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("trust"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("stkAAVE"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("stkAAVE"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("contract IStakedTokenV2"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("sushiswapRouter"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("sushiswapRouter"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned(
+                                            "contract ISushiSwapRouter",
+                                        ),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("sweep"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("sweep"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("token"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("contract ERC20"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("to"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("symbol"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("symbol"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::String,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("string"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("totalAssets"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("totalAssets"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("totalBalance"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("totalBalance"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        240usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint240"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("totalHoldings"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("totalHoldings"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("totalLocked"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("totalLocked"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("totalSupply"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("totalSupply"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("transfer"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("transfer"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("to"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("amount"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("transferFrom"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("transferFrom"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("from"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("to"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("amount"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("transferOwnership"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("transferOwnership"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("newOwner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("withdraw"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("withdraw"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("receiver"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("owner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+            ]),
+            events: ::core::convert::From::from([
+                (
+                    ::std::borrow::ToOwned::to_owned("Accrual"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("Accrual"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("platformFees"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("performanceFees"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("yield"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("AccrualPeriodChanged"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "AccrualPeriodChanged",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("oldPeriod"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("newPeriod"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Approval"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("Approval"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("owner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("spender"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("amount"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("ClaimAndUnstake"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("ClaimAndUnstake"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("rewards"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Deposit"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("Deposit"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("caller"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("owner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("DepositIntoPosition"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "DepositIntoPosition",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("position"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("DepositLimitChanged"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "DepositLimitChanged",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("oldLimit"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("newLimit"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("EnterPosition"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("EnterPosition"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("position"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("ExitPosition"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("ExitPosition"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("position"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("FeesDistributorChanged"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "FeesDistributorChanged",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned(
+                                        "oldFeesDistributor",
+                                    ),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::FixedBytes(
+                                        32usize,
+                                    ),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned(
+                                        "newFeesDistributor",
+                                    ),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::FixedBytes(
+                                        32usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("LiquidityLimitChanged"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "LiquidityLimitChanged",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("oldLimit"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("newLimit"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("OwnershipTransferred"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "OwnershipTransferred",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("previousOwner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("newOwner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("PerformanceFeeChanged"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "PerformanceFeeChanged",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("oldPerformanceFee"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("newPerformanceFee"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("PlatformFeeChanged"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("PlatformFeeChanged"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("oldPlatformFee"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("newPlatformFee"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Rebalance"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("Rebalance"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("oldAsset"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("newAsset"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Reinvest"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("Reinvest"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("token"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("rewards"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("SendFees"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("SendFees"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned(
+                                        "feesInSharesRedeemed",
+                                    ),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("feesInAssetsSent"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("ShutdownInitiated"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("ShutdownInitiated"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("emptyPositions"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("ShutdownLifted"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("ShutdownLifted"),
+                            inputs: ::std::vec![],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Sweep"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("Sweep"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("token"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("to"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("amount"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Transfer"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("Transfer"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("from"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("to"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("amount"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("TrustChanged"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("TrustChanged"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("position"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("trusted"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Withdraw"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("Withdraw"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("caller"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("receiver"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("owner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("WithdrawFromPosition"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "WithdrawFromPosition",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("position"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+            ]),
+            errors: ::core::convert::From::from([
+                (
+                    ::std::borrow::ToOwned::to_owned("STATE_AccrualOngoing"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "STATE_AccrualOngoing",
+                            ),
+                            inputs: ::std::vec![],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("STATE_ContractShutdown"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "STATE_ContractShutdown",
+                            ),
+                            inputs: ::std::vec![],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("USR_DepositRestricted"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "USR_DepositRestricted",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("maxDeposit"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("USR_ProtectedAsset"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned("USR_ProtectedAsset"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("token"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("USR_SamePosition"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned("USR_SamePosition"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("position"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("USR_TooManyDecimals"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "USR_TooManyDecimals",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("newDecimals"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(8usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint8"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("maxDecimals"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(8usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint8"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("USR_UnsupportedPosition"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "USR_UnsupportedPosition",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned(
+                                        "unsupportedPosition",
+                                    ),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("USR_UntrustedPosition"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "USR_UntrustedPosition",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("position"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+            ]),
+            receive: false,
+            fallback: false,
+        }
+    }
+    ///The parsed JSON ABI of the contract.
+    pub static AAVEV2STABLECOINCELLAR_ABI: ::ethers::contract::Lazy<
+        ::ethers::core::abi::Abi,
+    > = ::ethers::contract::Lazy::new(__abi);
+    #[rustfmt::skip]
+    const __BYTECODE: &[u8] = b"a\x01\xE0`@R`\n\x80Tc\xFF\xFF\xFF\xFF\x19\x16b\t:\x80\x17\x90Us\xB8\x13UKB2f\xBB\xD4\xC1l2\xFA83\x94\x86\x8C\x1FU`\x0BU4\x80\x15b\0\0<W`\0\x80\xFD[P`@Qb\0UB8\x03\x80b\0UB\x839\x81\x01`@\x81\x90Rb\0\0_\x91b\0\x07\x0CV[\x89`@Q\x80``\x01`@R\x80`,\x81R` \x01b\0U\x16`,\x919`@\x80Q\x80\x82\x01\x90\x91R`\x0B\x81Rjaave2-CLR-S`\xA8\x1B` \x82\x01R`\x12\x82\x82\x82`\0b\0\0\xAF\x84\x82b\0\t#V[P`\x01b\0\0\xBE\x83\x82b\0\t#V[P`\xFF\x81\x16`\x80RF`\xA0Rb\0\0\xD4b\0\x02\\V[`\xC0RPP`\x06\x80T`\x01`\x01`\xA0\x1B\x03\x19\x16`\x01`\x01`\xA0\x1B\x03\x96\x90\x96\x16\x95\x90\x95\x17\x90\x94UPb\0\x01\x12\x92P3\x91Pb\0\x01\x0C\x90PV[b\0\x02\xF8V[`\x01`\x01`\xA0\x1B\x03\x80\x89\x16`\xE0R\x87\x81\x16a\x01\0R\x86\x81\x16a\x01 R\x85\x81\x16a\x01@R\x84\x81\x16a\x01`R\x83\x81\x16a\x01\x80R\x82\x81\x16a\x01\xA0R\x81\x81\x16a\x01\xC0R\x8A\x16`\0\x90\x81R`\x0C` R`@\x81 \x80T`\xFF\x19\x16`\x01\x17\x90Ub\0\x01w\x8Bb\0\x03JV[\x90P`\0b\0\x01\x88\x82`\nb\0\x0B\x04V[\x90Pb\0\x01\x99\x81bLK@b\0\x0B\x15V[`\rUb\0\x01\xAA\x81a\xC3Pb\0\x0B\x15V[`\x0EU`\0[\x8BQ\x81\x10\x15b\0\x02\x1CW`\x01`\x0C`\0\x8E\x84\x81Q\x81\x10b\0\x01\xD5Wb\0\x01\xD5b\0\x0B7V[` \x90\x81\x02\x91\x90\x91\x01\x81\x01Q`\x01`\x01`\xA0\x1B\x03\x16\x82R\x81\x01\x91\x90\x91R`@\x01`\0 \x80T`\xFF\x19\x16\x91\x15\x15\x91\x90\x91\x17\x90U\x80b\0\x02\x13\x81b\0\x0BMV[\x91PPb\0\x01\xB0V[P`\n\x80T`\x01` \x1B`\x01``\x1B\x03\x19\x16Bc\xFF\xFF\xFF\xFF\x16d\x01\0\0\0\0\x02\x17\x90Ub\0\x02J\x86b\0\x05}V[PPPPPPPPPPPPb\0\roV[`\0\x7F\x8Bs\xC3\xC6\x9B\xB8\xFE=Q.\xCCL\xF7Y\xCCy#\x9F{\x17\x9B\x0F\xFA\xCA\xA9\xA7]R+9@\x0F`\0`@Qb\0\x02\x90\x91\x90b\0\x0BiV[`@\x80Q\x91\x82\x90\x03\x82 ` \x83\x01\x93\x90\x93R\x81\x01\x91\x90\x91R\x7F\xC8\x9E\xFD\xAAT\xC0\xF2\x0Cz\xDFa(\x82\xDF\tP\xF5\xA9Qc~\x03\x07\xCD\xCBLg/)\x8B\x8B\xC6``\x82\x01RF`\x80\x82\x01R0`\xA0\x82\x01R`\xC0\x01`@Q` \x81\x83\x03\x03\x81R\x90`@R\x80Q\x90` \x01 \x90P\x90V[`\x07\x80T`\x01`\x01`\xA0\x1B\x03\x83\x81\x16`\x01`\x01`\xA0\x1B\x03\x19\x83\x16\x81\x17\x90\x93U`@Q\x91\x16\x91\x90\x82\x90\x7F\x8B\xE0\x07\x9CS\x16Y\x14\x13D\xCD\x1F\xD0\xA4\xF2\x84\x19I\x7F\x97\"\xA3\xDA\xAF\xE3\xB4\x18okdW\xE0\x90`\0\x90\xA3PPV[a\x01 Q`@Qc5\xEAju`\xE0\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x83\x81\x16`\x04\x83\x01R`\0\x92\x83\x92\x91\x16\x90c5\xEAju\x90`$\x01a\x01\x80`@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15b\0\x03\x9BW=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90b\0\x03\xC1\x91\x90b\0\x0C\x11V[P\x92\x9APP`\x01`\x01`\xA0\x1B\x03\x8A\x16\x98Pb\0\x04\t\x97PPPPPPPPW`@Qc\n\\^}`\xE1\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x84\x16`\x04\x82\x01R`$\x01[`@Q\x80\x91\x03\x90\xFD[`\0`\x08`\x14\x90T\x90a\x01\0\n\x90\x04`\xFF\x16\x90P\x83`\x01`\x01`\xA0\x1B\x03\x16c1<\xE5g`@Q\x81c\xFF\xFF\xFF\xFF\x16`\xE0\x1B\x81R`\x04\x01` `@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15b\0\x04\\W=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90b\0\x04\x82\x91\x90b\0\r\x08V[\x92P`\x12\x83`\xFF\x16\x11\x15b\0\x04\xB7W`@Qc\x06Q\x98/`\xE1\x1B\x81R`\xFF\x84\x16`\x04\x82\x01R`\x12`$\x82\x01R`D\x01b\0\x04\0V[`\xFF\x81\x16\x15\x80\x15\x90b\0\x04\xD0WP\x82`\xFF\x16\x81`\xFF\x16\x14\x15[\x15b\0\x053W`\x0ET`\rT`\0\x19\x82\x14b\0\x05\x06Wb\0\x05\x02\x83\x86\x84b\0\x06N` \x1Bb\x000W\x17\x90\x92\x91\x90` \x1CV[`\x0EU[`\0\x19\x81\x14b\0\x050Wb\0\x05,\x83\x86\x83b\0\x06N` \x1Bb\x000W\x17\x90\x92\x91\x90` \x1CV[`\rU[PP[P`\x06\x80T`\x01`\x01`\xA0\x1B\x03\x19\x90\x81\x16`\x01`\x01`\xA0\x1B\x03\x95\x86\x16\x17\x90\x91U`\x08\x80T`\x01`\x01`\xA8\x1B\x03\x19\x16`\x01`\xA0\x1B`\xFF\x86\x16\x02\x90\x92\x16\x91\x90\x91\x17\x91\x90\x93\x16\x17\x90\x91U\x90V[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14b\0\x05\xD9W`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01\x81\x90R`$\x82\x01R\x7FOwnable: caller is not the owner`D\x82\x01R`d\x01b\0\x04\0V[`\x01`\x01`\xA0\x1B\x03\x81\x16b\0\x06@W`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`&`$\x82\x01R\x7FOwnable: new owner is the zero a`D\x82\x01Reddress`\xD0\x1B`d\x82\x01R`\x84\x01b\0\x04\0V[b\0\x06K\x81b\0\x02\xF8V[PV[`\0\x81`\xFF\x16\x83`\xFF\x16\x03b\0\x06fWP\x82b\0\x06\xC7V[\x81`\xFF\x16\x83`\xFF\x16\x10\x15b\0\x06\xA2Wb\0\x06\x81\x83\x83b\0\r&V[b\0\x06\x8E\x90`\nb\0\x0B\x04V[b\0\x06\x9A\x90\x85b\0\x0B\x15V[\x90Pb\0\x06\xC7V[b\0\x06\xAE\x82\x84b\0\r&V[b\0\x06\xBB\x90`\nb\0\x0B\x04V[b\0\x06\x9A\x90\x85b\0\rLV[\x93\x92PPPV[`\x01`\x01`\xA0\x1B\x03\x81\x16\x81\x14b\0\x06KW`\0\x80\xFD[\x80Qb\0\x06\xF1\x81b\0\x06\xCEV[\x91\x90PV[cNH{q`\xE0\x1B`\0R`A`\x04R`$`\0\xFD[`\0\x80`\0\x80`\0\x80`\0\x80`\0\x80a\x01@\x8B\x8D\x03\x12\x15b\0\x07-W`\0\x80\xFD[\x8AQb\0\x07:\x81b\0\x06\xCEV[` \x8C\x01Q\x90\x9AP`\x01`\x01`@\x1B\x03\x80\x82\x11\x15b\0\x07XW`\0\x80\xFD[\x81\x8D\x01\x91P\x8D`\x1F\x83\x01\x12b\0\x07mW`\0\x80\xFD[\x81Q\x81\x81\x11\x15b\0\x07\x82Wb\0\x07\x82b\0\x06\xF6V[`@Q`\x1F\x19`?\x83`\x05\x1B\x01\x16\x81\x01\x81\x81\x10\x84\x82\x11\x17\x15b\0\x07\xA9Wb\0\x07\xA9b\0\x06\xF6V[`@R\x81\x81R` \x80\x82\x01\x93P`\x05\x92\x90\x92\x1B\x84\x01\x90\x91\x01\x90\x8F\x82\x11\x15b\0\x07\xD0W`\0\x80\xFD[` \x84\x01\x93P[\x81\x84\x10\x15b\0\x07\xFDWb\0\x07\xEB\x84b\0\x06\xE4V[\x83R` \x93\x84\x01\x93\x90\x92\x01\x91b\0\x07\xD7V[\x9BPb\0\x08\x11\x92PPP`@\x8C\x01b\0\x06\xE4V[\x97Pb\0\x08!``\x8C\x01b\0\x06\xE4V[\x96Pb\0\x081`\x80\x8C\x01b\0\x06\xE4V[\x95Pb\0\x08A`\xA0\x8C\x01b\0\x06\xE4V[\x94Pb\0\x08Q`\xC0\x8C\x01b\0\x06\xE4V[\x93Pb\0\x08a`\xE0\x8C\x01b\0\x06\xE4V[\x92Pb\0\x08ra\x01\0\x8C\x01b\0\x06\xE4V[\x91Pb\0\x08\x83a\x01 \x8C\x01b\0\x06\xE4V[\x90P\x92\x95\x98\x9B\x91\x94\x97\x9AP\x92\x95\x98PV[`\x01\x81\x81\x1C\x90\x82\x16\x80b\0\x08\xA9W`\x7F\x82\x16\x91P[` \x82\x10\x81\x03b\0\x08\xCAWcNH{q`\xE0\x1B`\0R`\"`\x04R`$`\0\xFD[P\x91\x90PV[`\x1F\x82\x11\x15b\0\t\x1EW`\0\x81\x81R` \x81 `\x1F\x85\x01`\x05\x1C\x81\x01` \x86\x10\x15b\0\x08\xF9WP\x80[`\x1F\x85\x01`\x05\x1C\x82\x01\x91P[\x81\x81\x10\x15b\0\t\x1AW\x82\x81U`\x01\x01b\0\t\x05V[PPP[PPPV[\x81Q`\x01`\x01`@\x1B\x03\x81\x11\x15b\0\t?Wb\0\t?b\0\x06\xF6V[b\0\tW\x81b\0\tP\x84Tb\0\x08\x94V[\x84b\0\x08\xD0V[` \x80`\x1F\x83\x11`\x01\x81\x14b\0\t\x8FW`\0\x84\x15b\0\tvWP\x85\x83\x01Q[`\0\x19`\x03\x86\x90\x1B\x1C\x19\x16`\x01\x85\x90\x1B\x17\x85Ub\0\t\x1AV[`\0\x85\x81R` \x81 `\x1F\x19\x86\x16\x91[\x82\x81\x10\x15b\0\t\xC0W\x88\x86\x01Q\x82U\x94\x84\x01\x94`\x01\x90\x91\x01\x90\x84\x01b\0\t\x9FV[P\x85\x82\x10\x15b\0\t\xDFW\x87\x85\x01Q`\0\x19`\x03\x88\x90\x1B`\xF8\x16\x1C\x19\x16\x81U[PPPPP`\x01\x90\x81\x1B\x01\x90UPV[cNH{q`\xE0\x1B`\0R`\x11`\x04R`$`\0\xFD[`\x01\x81\x81[\x80\x85\x11\x15b\0\nFW\x81`\0\x19\x04\x82\x11\x15b\0\n*Wb\0\n*b\0\t\xEFV[\x80\x85\x16\x15b\0\n8W\x91\x81\x02\x91[\x93\x84\x1C\x93\x90\x80\x02\x90b\0\n\nV[P\x92P\x92\x90PV[`\0\x82b\0\n_WP`\x01b\0\n\xFEV[\x81b\0\nnWP`\0b\0\n\xFEV[\x81`\x01\x81\x14b\0\n\x87W`\x02\x81\x14b\0\n\x92Wb\0\n\xB2V[`\x01\x91PPb\0\n\xFEV[`\xFF\x84\x11\x15b\0\n\xA6Wb\0\n\xA6b\0\t\xEFV[PP`\x01\x82\x1Bb\0\n\xFEV[P` \x83\x10a\x013\x83\x10\x16`N\x84\x10`\x0B\x84\x10\x16\x17\x15b\0\n\xD7WP\x81\x81\nb\0\n\xFEV[b\0\n\xE3\x83\x83b\0\n\x05V[\x80`\0\x19\x04\x82\x11\x15b\0\n\xFAWb\0\n\xFAb\0\t\xEFV[\x02\x90P[\x92\x91PPV[`\0b\0\x06\xC7`\xFF\x84\x16\x83b\0\nNV[`\0\x81`\0\x19\x04\x83\x11\x82\x15\x15\x16\x15b\0\x0B2Wb\0\x0B2b\0\t\xEFV[P\x02\x90V[cNH{q`\xE0\x1B`\0R`2`\x04R`$`\0\xFD[`\0`\x01\x82\x01b\0\x0BbWb\0\x0Bbb\0\t\xEFV[P`\x01\x01\x90V[`\0\x80\x83Tb\0\x0By\x81b\0\x08\x94V[`\x01\x82\x81\x16\x80\x15b\0\x0B\x94W`\x01\x81\x14b\0\x0B\xAAWb\0\x0B\xDBV[`\xFF\x19\x84\x16\x87R\x82\x15\x15\x83\x02\x87\x01\x94Pb\0\x0B\xDBV[\x87`\0R` \x80`\0 `\0[\x85\x81\x10\x15b\0\x0B\xD2W\x81T\x8A\x82\x01R\x90\x84\x01\x90\x82\x01b\0\x0B\xB7V[PPP\x82\x87\x01\x94P[P\x92\x96\x95PPPPPPV[\x80Q`\x01`\x01`\x80\x1B\x03\x81\x16\x81\x14b\0\x06\xF1W`\0\x80\xFD[\x80Q`\xFF\x81\x16\x81\x14b\0\x06\xF1W`\0\x80\xFD[`\0\x80`\0\x80`\0\x80`\0\x80`\0\x80`\0\x80a\x01\x80\x8D\x8F\x03\x12\x15b\0\x0C5W`\0\x80\xFD[\x8CQ\x9BPb\0\x0CG` \x8E\x01b\0\x0B\xE7V[\x9APb\0\x0CW`@\x8E\x01b\0\x0B\xE7V[\x99Pb\0\x0Cg``\x8E\x01b\0\x0B\xE7V[\x98Pb\0\x0Cw`\x80\x8E\x01b\0\x0B\xE7V[\x97Pb\0\x0C\x87`\xA0\x8E\x01b\0\x0B\xE7V[\x96P`\xC0\x8D\x01Qd\xFF\xFF\xFF\xFF\xFF\x81\x16\x81\x14b\0\x0C\xA2W`\0\x80\xFD[\x95Pb\0\x0C\xB2`\xE0\x8E\x01b\0\x06\xE4V[\x94Pb\0\x0C\xC3a\x01\0\x8E\x01b\0\x06\xE4V[\x93Pb\0\x0C\xD4a\x01 \x8E\x01b\0\x06\xE4V[\x92Pb\0\x0C\xE5a\x01@\x8E\x01b\0\x06\xE4V[\x91Pb\0\x0C\xF6a\x01`\x8E\x01b\0\x0B\xFFV[\x90P\x92\x95\x98\x9BP\x92\x95\x98\x9BP\x92\x95\x98\x9BV[`\0` \x82\x84\x03\x12\x15b\0\r\x1BW`\0\x80\xFD[b\0\x06\xC7\x82b\0\x0B\xFFV[`\0`\xFF\x82\x16`\xFF\x84\x16\x80\x82\x10\x15b\0\rCWb\0\rCb\0\t\xEFV[\x90\x03\x93\x92PPPV[`\0\x82b\0\rjWcNH{q`\xE0\x1B`\0R`\x12`\x04R`$`\0\xFD[P\x04\x90V[`\x80Q`\xA0Q`\xC0Q`\xE0Qa\x01\0Qa\x01 Qa\x01@Qa\x01`Qa\x01\x80Qa\x01\xA0Qa\x01\xC0QaF\xA2b\0\x0Et`\09`\0\x81\x81a\n \x01Ra\x1B\x1E\x01R`\0\x81\x81a\x06s\x01R\x81\x81a\x1A\x1F\x01R\x81\x81a\x1A\xCA\x01Ra\x1B\xA0\x01R`\0\x81\x81a\x05$\x01R\x81\x81a\x19\xA4\x01R\x81\x81a \x93\x01Ra\"\xC1\x01R`\0\x81\x81a\t/\x01R\x81\x81a*c\x01Ra*\xB9\x01R`\0\x81\x81a\n\x8C\x01Ra \x0F\x01R`\0\x81\x81a\tc\x01R\x81\x81a1<\x01R\x81\x81a2\x97\x01R\x81\x81a4\x9D\x01Ra4\xF5\x01R`\0\x81\x81a\x0C\xFE\x01R\x81\x81a\x1B\xC2\x01Ra\x1B\xF3\x01R`\0\x81\x81a\t\xB7\x01R\x81\x81a\x11\xD9\x01Ra\x12\x18\x01R`\0a\x14\xA0\x01R`\0a\x14p\x01R`\0a\x05\xC3\x01RaF\xA2`\0\xF3\xFE`\x80`@R`\x046\x10a\x04\x1BW`\x005`\xE0\x1C\x80c\x99r\x92\x16\x11a\x02\x1EW\x80c\xC6=u\xB6\x11a\x01#W\x80c\xE9$\x0C-\x11a\0\xABW\x80c\xEFz\xC8\x83\x11a\0zW\x80c\xEFz\xC8\x83\x14a\rkW\x80c\xEF\x8B0\xF7\x14a\r\x8BW\x80c\xF2\xFD\xE3\x8B\x14a\r\xABW\x80c\xF6fAU\x14a\r\xCBW\x80c\xF8\xBAL\xFF\x14a\r\xFDW`\0\x80\xFD[\x80c\xE9$\x0C-\x14a\x0C\xECW\x80c\xE9\xEC.\x99\x14a\r W\x80c\xEC\xF7\x08X\x14a\r5W\x80c\xEFF]\x92\x14a\rKW`\0\x80\xFD[\x80c\xD5\x05\xAC\xCF\x11a\0\xF2W\x80c\xD5\x05\xAC\xCF\x14a\x0C)W\x80c\xD9\x05w~\x14a\x0CIW\x80c\xDDb\xED>\x14a\x0C\x7FW\x80c\xDF\x05\xA5*\x14a\x0C\xB7W\x80c\xDF\xF9\x0B[\x14a\x0C\xD7W`\0\x80\xFD[\x80c\xC6=u\xB6\x14a\x0B\xA9W\x80c\xC6\xE6\xF5\x92\x14a\x0B\xC9W\x80c\xCA\xB5\x928\x14a\x0B\xE9W\x80c\xCE\x96\xCBw\x14a\x0C\tW`\0\x80\xFD[\x80c\xAF\x1D\xF2U\x11a\x01\xA6W\x80c\xBA\x08vR\x11a\x01uW\x80c\xBA\x08vR\x14a\x0B\x0EW\x80c\xBD\xC8\x14K\x14a\x0B.W\x80c\xBF\x86\xD6\x90\x14a\x0BNW\x80c\xC1\x7Fg@\x14a\x0BhW\x80c\xC2\xD4\x16\x01\x14a\x0B\x88W`\0\x80\xFD[\x80c\xAF\x1D\xF2U\x14a\nzW\x80c\xB3\xD7\xF6\xB9\x14a\n\xAEW\x80c\xB4`\xAF\x94\x14a\n\xCEW\x80c\xB8\xDCI\x1B\x14a\n\xEEW`\0\x80\xFD[\x80c\xAC55\x10\x11a\x01\xEDW\x80c\xAC55\x10\x14a\t\xA5W\x80c\xAC\x96P\xD8\x14a\t\xD9W\x80c\xAD\0N \x14a\t\xF9W\x80c\xAD\\FH\x14a\n\x0EW\x80c\xADzg/\x14a\nBW`\0\x80\xFD[\x80c\x99r\x92\x16\x14a\t\x08W\x80c\xA4\xDA-\x02\x14a\t\x1DW\x80c\xA5\x9A\x99s\x14a\tQW\x80c\xA9\x05\x9C\xBB\x14a\t\x85W`\0\x80\xFD[\x80c^,Wn\x11a\x03$W\x80c~\xCE\xBE\0\x11a\x02\xACW\x80c\x8E\x0B\xAE\x7F\x11a\x02{W\x80c\x8E\x0B\xAE\x7F\x14a\x08fW\x80c\x8F\xDC\x9D\xFA\x14a\x08|W\x80c\x94\xBF\x80M\x14a\x08\xA3W\x80c\x95\xD8\x9BA\x14a\x08\xC3W\x80c\x96\xD6Hy\x14a\x08\xD8W`\0\x80\xFD[\x80c~\xCE\xBE\0\x14a\x07\xDFW\x80c\x83\xB4\x91\x8B\x14a\x08\x0CW\x80c\x87x\x87\x82\x14a\x08,W\x80c\x8D\xA5\xCB[\x14a\x08HW`\0\x80\xFD[\x80cp\xA0\x821\x11a\x02\xF3W\x80cp\xA0\x821\x14a\x07?W\x80cqP\x18\xA6\x14a\x07lW\x80cr\x167\x15\x14a\x07\x81W\x80cx\xDC\x90Y\x14a\x07\x97W\x80c{;\xAA\xB4\x14a\x07\xB7W`\0\x80\xFD[\x80c^,Wn\x14a\x06\xCAW\x80cn\x08@k\x14a\x06\xDFW\x80cnU?e\x14a\x06\xFFW\x80cn\x85\xF1\x83\x14a\x07\x1FW`\0\x80\xFD[\x80c&#*.\x11a\x03\xA7W\x80c=\xC6\xEA\xBF\x11a\x03vW\x80c=\xC6\xEA\xBF\x14a\x06,W\x80c@-&}\x14a\x06AW\x80cH\xCC\xDA<\x14a\x06aW\x80cL\xDA\xD5\x06\x14a\x06\x95W\x80cV\x89\x14\x12\x14a\x06\xB5W`\0\x80\xFD[\x80c&#*.\x14a\x05~W\x80c1<\xE5g\x14a\x05\xB1W\x80c6D\xE5\x15\x14a\x05\xF7W\x80c8\xD5.\x0F\x14a\x06\x0CW`\0\x80\xFD[\x80c\n(\xA4w\x11a\x03\xEEW\x80c\n(\xA4w\x14a\x04\xBAW\x80c\x15\xF4\xC6\x11\x14a\x04\xDAW\x80c\x18\x16\r\xDD\x14a\x04\xFCW\x80c\x1F\xC2\x9C\x01\x14a\x05\x12W\x80c#\xB8r\xDD\x14a\x05^W`\0\x80\xFD[\x80c\x01\xE1\xD1\x14\x14a\x04 W\x80c\x06\xFD\xDE\x03\x14a\x04HW\x80c\x07\xA2\xD1:\x14a\x04jW\x80c\t^\xA7\xB3\x14a\x04\x8AW[`\0\x80\xFD[4\x80\x15a\x04,W`\0\x80\xFD[Pa\x045a\x0E\x12V[`@Q\x90\x81R` \x01[`@Q\x80\x91\x03\x90\xF3[4\x80\x15a\x04TW`\0\x80\xFD[Pa\x04]a\x0EIV[`@Qa\x04?\x91\x90a9\xE6V[4\x80\x15a\x04vW`\0\x80\xFD[Pa\x045a\x04\x856`\x04a9\xF9V[a\x0E\xD7V[4\x80\x15a\x04\x96W`\0\x80\xFD[Pa\x04\xAAa\x04\xA56`\x04a:'V[a\x0F\x1DV[`@Q\x90\x15\x15\x81R` \x01a\x04?V[4\x80\x15a\x04\xC6W`\0\x80\xFD[Pa\x045a\x04\xD56`\x04a9\xF9V[a\x0F\x8AV[4\x80\x15a\x04\xE6W`\0\x80\xFD[Pa\x04\xFAa\x04\xF56`\x04a;\x06V[a\x0F\xC4V[\0[4\x80\x15a\x05\x08W`\0\x80\xFD[Pa\x045`\x02T\x81V[4\x80\x15a\x05\x1EW`\0\x80\xFD[Pa\x05F\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[`@Q`\x01`\x01`\xA0\x1B\x03\x90\x91\x16\x81R` \x01a\x04?V[4\x80\x15a\x05jW`\0\x80\xFD[Pa\x04\xAAa\x05y6`\x04a<\x10V[a\x13\x8CV[4\x80\x15a\x05\x8AW`\0\x80\xFD[Pa\x05\x99f\x08\xE1\xBC\x9B\xF0@\0\x81V[`@Q`\x01`\x01`@\x1B\x03\x90\x91\x16\x81R` \x01a\x04?V[4\x80\x15a\x05\xBDW`\0\x80\xFD[Pa\x05\xE5\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[`@Q`\xFF\x90\x91\x16\x81R` \x01a\x04?V[4\x80\x15a\x06\x03W`\0\x80\xFD[Pa\x045a\x14lV[4\x80\x15a\x06\x18W`\0\x80\xFD[P`\x06Ta\x05F\x90`\x01`\x01`\xA0\x1B\x03\x16\x81V[4\x80\x15a\x068W`\0\x80\xFD[Pa\x04\xFAa\x14\xC2V[4\x80\x15a\x06MW`\0\x80\xFD[Pa\x045a\x06\\6`\x04a<QV[a\x14\xCFV[4\x80\x15a\x06mW`\0\x80\xFD[Pa\x05F\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[4\x80\x15a\x06\xA1W`\0\x80\xFD[Pa\x045a\x06\xB06`\x04a9\xF9V[a\x15GV[4\x80\x15a\x06\xC1W`\0\x80\xFD[Pa\x045a\x15RV[4\x80\x15a\x06\xD6W`\0\x80\xFD[Pa\x04\xFAa\x15\xCDV[4\x80\x15a\x06\xEBW`\0\x80\xFD[Pa\x04\xFAa\x06\xFA6`\x04a9\xF9V[a\x16,V[4\x80\x15a\x07\x0BW`\0\x80\xFD[Pa\x045a\x07\x1A6`\x04a<nV[a\x17\x1CV[4\x80\x15a\x07+W`\0\x80\xFD[Pa\x04\xFAa\x07:6`\x04a9\xF9V[a\x17\xE0V[4\x80\x15a\x07KW`\0\x80\xFD[Pa\x045a\x07Z6`\x04a<QV[`\x03` R`\0\x90\x81R`@\x90 T\x81V[4\x80\x15a\x07xW`\0\x80\xFD[Pa\x04\xFAa\x18KV[4\x80\x15a\x07\x8DW`\0\x80\xFD[Pa\x045`\rT\x81V[4\x80\x15a\x07\xA3W`\0\x80\xFD[Pa\x04\xFAa\x07\xB26`\x04a9\xF9V[a\x18\x7FV[4\x80\x15a\x07\xC3W`\0\x80\xFD[P`\nTa\x05\x99\x90d\x01\0\0\0\0\x90\x04`\x01`\x01`@\x1B\x03\x16\x81V[4\x80\x15a\x07\xEBW`\0\x80\xFD[Pa\x045a\x07\xFA6`\x04a<QV[`\x05` R`\0\x90\x81R`@\x90 T\x81V[4\x80\x15a\x08\x18W`\0\x80\xFD[Pa\x04\xFAa\x08'6`\x04a9\xF9V[a\x19]V[4\x80\x15a\x088W`\0\x80\xFD[Pa\x05\x99g\x01cEx]\x8A\0\0\x81V[4\x80\x15a\x08TW`\0\x80\xFD[P`\x07T`\x01`\x01`\xA0\x1B\x03\x16a\x05FV[4\x80\x15a\x08rW`\0\x80\xFD[Pa\x045`\x0BT\x81V[4\x80\x15a\x08\x88W`\0\x80\xFD[P`\nTa\x05F\x90`\x01``\x1B\x90\x04`\x01`\x01`\xA0\x1B\x03\x16\x81V[4\x80\x15a\x08\xAFW`\0\x80\xFD[Pa\x045a\x08\xBE6`\x04a<nV[a\x1D\x1FV[4\x80\x15a\x08\xCFW`\0\x80\xFD[Pa\x04]a\x1D\x9CV[4\x80\x15a\x08\xE4W`\0\x80\xFD[Pa\x04\xAAa\x08\xF36`\x04a<QV[`\x0C` R`\0\x90\x81R`@\x90 T`\xFF\x16\x81V[4\x80\x15a\t\x14W`\0\x80\xFD[Pa\x04\xFAa\x1D\xA9V[4\x80\x15a\t)W`\0\x80\xFD[Pa\x05F\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[4\x80\x15a\t]W`\0\x80\xFD[Pa\x05F\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[4\x80\x15a\t\x91W`\0\x80\xFD[Pa\x04\xAAa\t\xA06`\x04a:'V[a\x1D\xBEV[4\x80\x15a\t\xB1W`\0\x80\xFD[Pa\x05F\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[a\t\xECa\t\xE76`\x04a<\x9EV[a\x1E$V[`@Qa\x04?\x91\x90a=\x12V[4\x80\x15a\n\x05W`\0\x80\xFD[Pa\x045a\x1F{V[4\x80\x15a\n\x1AW`\0\x80\xFD[Pa\x05F\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[4\x80\x15a\nNW`\0\x80\xFD[P`\tTa\nb\x90`\x01`\x01`\xF0\x1B\x03\x16\x81V[`@Q`\x01`\x01`\xF0\x1B\x03\x90\x91\x16\x81R` \x01a\x04?V[4\x80\x15a\n\x86W`\0\x80\xFD[Pa\x05F\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[4\x80\x15a\n\xBAW`\0\x80\xFD[Pa\x045a\n\xC96`\x04a9\xF9V[a!AV[4\x80\x15a\n\xDAW`\0\x80\xFD[Pa\x045a\n\xE96`\x04a=tV[a!`V[4\x80\x15a\n\xFAW`\0\x80\xFD[Pa\x04\xFAa\x0B\t6`\x04a=\xB6V[a\"SV[4\x80\x15a\x0B\x1AW`\0\x80\xFD[Pa\x045a\x0B)6`\x04a=tV[a#\xF1V[4\x80\x15a\x0B:W`\0\x80\xFD[Pa\x04\xFAa\x0BI6`\x04a9\xF9V[a%\"V[4\x80\x15a\x0BZW`\0\x80\xFD[P`\x0FTa\x04\xAA\x90`\xFF\x16\x81V[4\x80\x15a\x0BtW`\0\x80\xFD[P`\x08Ta\x05F\x90`\x01`\x01`\xA0\x1B\x03\x16\x81V[4\x80\x15a\x0B\x94W`\0\x80\xFD[P`\x08Ta\x05\xE5\x90`\x01`\xA0\x1B\x90\x04`\xFF\x16\x81V[4\x80\x15a\x0B\xB5W`\0\x80\xFD[Pa\x045a\x0B\xC46`\x04a<QV[a%\x8DV[4\x80\x15a\x0B\xD5W`\0\x80\xFD[Pa\x045a\x0B\xE46`\x04a9\xF9V[a%\xF7V[4\x80\x15a\x0B\xF5W`\0\x80\xFD[Pa\x04\xFAa\x0C\x046`\x04a=\xF9V[a&\x17V[4\x80\x15a\x0C\x15W`\0\x80\xFD[Pa\x045a\x0C$6`\x04a<QV[a&\xE4V[4\x80\x15a\x0C5W`\0\x80\xFD[Pa\x04\xFAa\x0CD6`\x04a>=V[a'\x06V[4\x80\x15a\x0CUW`\0\x80\xFD[Pa\x045a\x0Cd6`\x04a<QV[`\x01`\x01`\xA0\x1B\x03\x16`\0\x90\x81R`\x03` R`@\x90 T\x90V[4\x80\x15a\x0C\x8BW`\0\x80\xFD[Pa\x045a\x0C\x9A6`\x04a=\xB6V[`\x04` \x90\x81R`\0\x92\x83R`@\x80\x84 \x90\x91R\x90\x82R\x90 T\x81V[4\x80\x15a\x0C\xC3W`\0\x80\xFD[Pa\x04\xFAa\x0C\xD26`\x04a9\xF9V[a)JV[4\x80\x15a\x0C\xE3W`\0\x80\xFD[Pa\x04\xFAa)\xB5V[4\x80\x15a\x0C\xF8W`\0\x80\xFD[Pa\x05F\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[4\x80\x15a\r,W`\0\x80\xFD[Pa\x045a+VV[4\x80\x15a\rAW`\0\x80\xFD[Pa\x045`\x0ET\x81V[4\x80\x15a\rWW`\0\x80\xFD[Pa\x04\xFAa\rf6`\x04a>\xAEV[a+\xC3V[4\x80\x15a\rwW`\0\x80\xFD[Pa\x04\xFAa\r\x866`\x04a>\xC9V[a,xV[4\x80\x15a\r\x97W`\0\x80\xFD[Pa\x045a\r\xA66`\x04a9\xF9V[a-+V[4\x80\x15a\r\xB7W`\0\x80\xFD[Pa\x04\xFAa\r\xC66`\x04a<QV[a-6V[4\x80\x15a\r\xD7W`\0\x80\xFD[P`\nTa\r\xE8\x90c\xFF\xFF\xFF\xFF\x16\x81V[`@Qc\xFF\xFF\xFF\xFF\x90\x91\x16\x81R` \x01a\x04?V[4\x80\x15a\x0E\tW`\0\x80\xFD[Pa\x04\xFAa-\xD1V[`\0a\x0E\x1Ca\x15RV[a\x0E$a+VV[`\tTa\x0E:\x91\x90`\x01`\x01`\xF0\x1B\x03\x16a?\x05V[a\x0ED\x91\x90a?\x1DV[\x90P\x90V[`\0\x80Ta\x0EV\x90a?4V[\x80`\x1F\x01` \x80\x91\x04\x02` \x01`@Q\x90\x81\x01`@R\x80\x92\x91\x90\x81\x81R` \x01\x82\x80Ta\x0E\x82\x90a?4V[\x80\x15a\x0E\xCFW\x80`\x1F\x10a\x0E\xA4Wa\x01\0\x80\x83T\x04\x02\x83R\x91` \x01\x91a\x0E\xCFV[\x82\x01\x91\x90`\0R` `\0 \x90[\x81T\x81R\x90`\x01\x01\x90` \x01\x80\x83\x11a\x0E\xB2W\x82\x90\x03`\x1F\x16\x82\x01\x91[PPPPP\x81V[`\x02T`\0\x90\x80\x15a\x0E\xFBWa\x0E\xF6a\x0E\xEEa\x0E\x12V[\x84\x90\x83a0\xC0V[a\x0F\x16V[`\x08Ta\x0F\x16\x90\x84\x90`\x12\x90`\x01`\xA0\x1B\x90\x04`\xFF\x16a0WV[\x93\x92PPPV[3`\0\x81\x81R`\x04` \x90\x81R`@\x80\x83 `\x01`\x01`\xA0\x1B\x03\x87\x16\x80\x85R\x92R\x80\x83 \x85\x90UQ\x91\x92\x90\x91\x7F\x8C[\xE1\xE5\xEB\xEC}[\xD1OqB}\x1E\x84\xF3\xDD\x03\x14\xC0\xF7\xB2)\x1E[ \n\xC8\xC7\xC3\xB9%\x90a\x0Fx\x90\x86\x81R` \x01\x90V[`@Q\x80\x91\x03\x90\xA3P`\x01[\x92\x91PPV[`\x02T`\0\x90\x80\x15a\x0F\xAAWa\x0E\xF6\x81a\x0F\xA2a\x0E\x12V[\x85\x91\x90a0\xDFV[`\x08Ta\x0F\x16\x90\x84\x90`\x01`\xA0\x1B\x90\x04`\xFF\x16`\x12a0WV[`\x0FT`\xFF\x16\x15a\x0F\xE8W`@Qc/\"\x81\x97`\xE1\x1B\x81R`\x04\x01`@Q\x80\x91\x03\x90\xFD[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a\x10\x1BW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`@Q\x80\x91\x03\x90\xFD[`\0\x80[\x80`\x08\x14\x80a\x10WWP`\0\x85a\x107\x83`\x01a?\x05V[`\t\x81\x10a\x10GWa\x10Ga?\xA3V[` \x02\x01Q`\x01`\x01`\xA0\x1B\x03\x16\x14[\x15a\x10zW\x84\x81`\t\x81\x10a\x10nWa\x10na?\xA3V[` \x02\x01Q\x91Pa\x10\x8CV[a\x10\x85`\x02\x82a?\x05V[\x90Pa\x10\x1FV[P`\x01`\x01`\xA0\x1B\x03\x81\x16`\0\x90\x81R`\x0C` R`@\x90 T`\xFF\x16a\x10\xD1W`@Qc\x86C?+`\xE0\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x82\x16`\x04\x82\x01R`$\x01a\x10\x12V[`\x06T`\x01`\x01`\xA0\x1B\x03\x90\x81\x16\x90\x82\x16\x81\x90\x03a\x11\rW`@Qc\x06\x13\xAE\xCF`\xE1\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x82\x16`\x04\x82\x01R`$\x01a\x10\x12V[`\0a\x11\x17a+VV[`\tT\x90\x91P`\0\x90a\x114\x90\x83\x90`\x01`\x01`\xF0\x1B\x03\x16a?\x05V[`\x08T`@Qcp\xA0\x821`\xE0\x1B\x81R0`\x04\x82\x01R\x91\x92P`\0\x91\x82\x91`\x01`\x01`\xA0\x1B\x03\x16\x90cp\xA0\x821\x90`$\x01` `@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15a\x11\x82W=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a\x11\xA6\x91\x90a?\xB9V[\x11a\x11\xB1W\x82a\x11\xC8V[\x82a\x11\xBE\x85`\0\x19a1\rV[a\x11\xC8\x91\x90a?\x05V[\x90Pa\x11\xFE`\x01`\x01`\xA0\x1B\x03\x85\x16\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x83a1\xF6V[`@Qc\rO)\t`\xE2\x1B\x81R`\0\x90`\x01`\x01`\xA0\x1B\x03\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x16\x90c5<\xA4$\x90a\x12S\x90\x8C\x90\x8C\x90\x87\x90\x8D\x90`\x04\x01a?\xD2V[` `@Q\x80\x83\x03\x81`\0\x87Z\xF1\x15\x80\x15a\x12rW=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a\x12\x96\x91\x90a?\xB9V[`\x08T\x90\x91P`\x01`\xA0\x1B\x90\x04`\xFF\x16`\0a\x12\xB1\x88a2sV[\x90Pa\x12\xBD\x88\x84a4\x8EV[`\nTa\x12\xDB\x90`\x01``\x1B\x90\x04`\x01`\x01`\xA0\x1B\x03\x16\x83\x83a0WV[`\n\x80T`\x01`\x01`\xA0\x1B\x03\x92\x90\x92\x16`\x01``\x1B\x02k\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x90\x92\x16\x91\x90\x91\x17\x90U`\0a\x13\x1Da\x13\x17\x87\x85\x85a0WV[\x85a5\x8CV[`\t\x80T`\x01`\x01`\xF0\x1B\x03\x19\x16`\x01`\x01`\xF0\x1B\x03\x83\x16\x17\x90U`@Q\x81\x81R\x90\x91P`\x01`\x01`\xA0\x1B\x03\x8A\x81\x16\x91\x90\x8A\x16\x90\x7F\xB0\x85\x0B\x8E\x0F\x9E\x83\x15\xDD\xE3\xC9\xF9\xF3\x118(>k\xBE\x16\xCD)\xE8U.\xB1\xDC\xDF\x9F\xAC\x9E;\x90` \x01`@Q\x80\x91\x03\x90\xA3PPPPPPPPPPPPV[`\x01`\x01`\xA0\x1B\x03\x83\x16`\0\x90\x81R`\x04` \x90\x81R`@\x80\x83 3\x84R\x90\x91R\x81 T`\0\x19\x81\x14a\x13\xE8Wa\x13\xC3\x83\x82a?\x1DV[`\x01`\x01`\xA0\x1B\x03\x86\x16`\0\x90\x81R`\x04` \x90\x81R`@\x80\x83 3\x84R\x90\x91R\x90 U[`\x01`\x01`\xA0\x1B\x03\x85\x16`\0\x90\x81R`\x03` R`@\x81 \x80T\x85\x92\x90a\x14\x10\x90\x84\x90a?\x1DV[\x90\x91UPP`\x01`\x01`\xA0\x1B\x03\x80\x85\x16`\0\x81\x81R`\x03` R`@\x90\x81\x90 \x80T\x87\x01\x90UQ\x90\x91\x87\x16\x90`\0\x80Q` aFM\x839\x81Q\x91R\x90a\x14Y\x90\x87\x81R` \x01\x90V[`@Q\x80\x91\x03\x90\xA3P`\x01\x94\x93PPPPV[`\0\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0F\x14a\x14\x9DWa\x0EDa5\xA2V[P\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x90V[a\x14\xCDa\x06\xFAa+VV[V[`\x0FT`\0\x90`\xFF\x16\x15a\x14\xE5WP`\0\x91\x90PV[`\x0ET`\rT`\0\x19\x82\x14\x80\x15a\x14\xFDWP`\0\x19\x81\x14[\x15a\x15\rWP`\0\x19\x93\x92PPPV[`\0a\x15\"a\x15\x1B\x86a&\xE4V[\x84\x90a6<V[\x90P`\0a\x151a\x15\x1Ba\x0E\x12V[\x90Pa\x15=\x82\x82a5\x8CV[\x96\x95PPPPPPV[`\0a\x0F\x84\x82a\x0E\xD7V[`\nT`\0\x90`\x01`\x01`@\x1B\x03d\x01\0\0\0\0\x82\x04\x16\x90c\xFF\xFF\xFF\xFF\x16a\x15z\x81\x83a?\x05V[B\x10a\x15\x89W`\0\x92PPP\x90V[`\nT`\x01``\x1B\x90\x04`\x01`\x01`\xA0\x1B\x03\x16\x81a\x15\xA7\x84Ba?\x1DV[a\x15\xB1\x90\x83a@nV[a\x15\xBB\x91\x90a@\x8DV[a\x15\xC5\x90\x82a?\x1DV[\x93PPPP\x90V[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a\x15\xF7W`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\x0F\x80T`\xFF\x19\x16\x90U`@Q\x7F\t\xBE\xC6\x19\x9BW\x12\xAB\xE9\xCB\xB7\x19\x97\xB0oaI\xA4S\xEC\xA5\xAB\xEC\x15\xD5(\xE1Ne\xE1`^\x90`\0\x90\xA1V[`\x0FT`\xFF\x16\x15a\x16PW`@Qc/\"\x81\x97`\xE1\x1B\x81R`\x04\x01`@Q\x80\x91\x03\x90\xFD[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a\x16zW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\x06T`\t\x80T`\x01`\x01`\xA0\x1B\x03\x90\x92\x16\x91\x83\x91\x90`\0\x90a\x16\xA7\x90\x84\x90`\x01`\x01`\xF0\x1B\x03\x16a@\xAFV[\x92Pa\x01\0\n\x81T\x81`\x01`\x01`\xF0\x1B\x03\x02\x19\x16\x90\x83`\x01`\x01`\xF0\x1B\x03\x16\x02\x17\x90UPa\x16\xD5\x81\x83a4\x8EV[\x80`\x01`\x01`\xA0\x1B\x03\x16\x7F\xB6\xF4\xB9%^\xE9\x89\xB1\x84J\x8Ek}\xA8\x90k\x81 \x0C8\xF7\xB3\xF4\xF1\xAC1\xE9\xA2A\xC7WP\x83`@Qa\x17\x10\x91\x81R` \x01\x90V[`@Q\x80\x91\x03\x90\xA2PPV[`\0a\x17'\x83a-+V[\x90P\x80`\0\x03a\x17gW`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`\x0B`$\x82\x01RjZERO_SHARES`\xA8\x1B`D\x82\x01R`d\x01a\x10\x12V[a\x17r\x83\x82\x84a6VV[`\x06Ta\x17\x8A\x90`\x01`\x01`\xA0\x1B\x03\x1630\x86a6\xB2V[a\x17\x94\x82\x82a7<V[`@\x80Q\x84\x81R` \x81\x01\x83\x90R`\x01`\x01`\xA0\x1B\x03\x84\x16\x913\x91\x7F\xDC\xBC\x1C\x05$\x0F1\xFF:\xD0g\xEF\x1E\xE3\\\xE4\x99wbu.:\tR\x84uED\xF4\xC7\t\xD7\x91\x01[`@Q\x80\x91\x03\x90\xA3a\x0F\x84V[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a\x18\nW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\x0BT`@\x80Q\x91\x82R` \x82\x01\x83\x90R\x7FQ:\xC1\x9C\xBB\xAA\xADNE\x0Cs.\xD3v5\x17\x8B}\x83\xBF\x8E\x84\xA9@\xFF\xE7\xE0R\xC9\xC7\xCA\xA2\x91\x01`@Q\x80\x91\x03\x90\xA1`\x0BUV[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a\x18uW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[a\x14\xCD`\0a7\x96V[`\x0FT`\xFF\x16\x15a\x18\xA3W`@Qc/\"\x81\x97`\xE1\x1B\x81R`\x04\x01`@Q\x80\x91\x03\x90\xFD[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a\x18\xCDW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\x06T`\x01`\x01`\xA0\x1B\x03\x16a\x18\xE3\x81\x83a1\rV[`\t\x80T`\0\x90a\x18\xFE\x90\x84\x90`\x01`\x01`\xF0\x1B\x03\x16a@\xDAV[\x92Pa\x01\0\n\x81T\x81`\x01`\x01`\xF0\x1B\x03\x02\x19\x16\x90\x83`\x01`\x01`\xF0\x1B\x03\x16\x02\x17\x90UP\x80`\x01`\x01`\xA0\x1B\x03\x16\x7F\xDEL\xC1\xD2\xDDA\x97\n\x82z\x8D\xF5^\xFD\x18\xC5'\xC1|&HXG\xD6\x80\xCC+Lq\xE7\xA8|\x83`@Qa\x17\x10\x91\x81R` \x01\x90V[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a\x19\x87W`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`@Qc\x01\xE9\xA6\x95`\xE4\x1B\x81R0`\x04\x82\x01R`\0\x19`$\x82\x01R\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`\x01`\x01`\xA0\x1B\x03\x16\x90c\x1E\x9AiP\x90`D\x01`\0`@Q\x80\x83\x03\x81`\0\x87\x80;\x15\x80\x15a\x19\xF0W`\0\x80\xFD[PZ\xF1\x15\x80\x15a\x1A\x04W=`\0\x80>=`\0\xFD[PP`@Qcp\xA0\x821`\xE0\x1B\x81R0`\x04\x82\x01R`\0\x92P\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`\x01`\x01`\xA0\x1B\x03\x16\x91Pcp\xA0\x821\x90`$\x01` `@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15a\x1AoW=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a\x1A\x93\x91\x90a?\xB9V[`\x06T`@\x80Q`\x03\x80\x82R`\x80\x82\x01\x90\x92R\x92\x93P`\x01`\x01`\xA0\x1B\x03\x90\x91\x16\x91`\0\x91` \x82\x01``\x806\x837\x01\x90PP\x90P\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81`\0\x81Q\x81\x10a\x1A\xFCWa\x1A\xFCa?\xA3V[` \x02` \x01\x01\x90`\x01`\x01`\xA0\x1B\x03\x16\x90\x81`\x01`\x01`\xA0\x1B\x03\x16\x81RPP\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81`\x01\x81Q\x81\x10a\x1BPWa\x1BPa?\xA3V[` \x02` \x01\x01\x90`\x01`\x01`\xA0\x1B\x03\x16\x90\x81`\x01`\x01`\xA0\x1B\x03\x16\x81RPP\x81\x81`\x02\x81Q\x81\x10a\x1B\x84Wa\x1B\x84a?\xA3V[`\x01`\x01`\xA0\x1B\x03\x92\x83\x16` \x91\x82\x02\x92\x90\x92\x01\x01Ra\x1B\xE7\x90\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x16\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x85a1\xF6V[`\0`\x01`\x01`\xA0\x1B\x03\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x16c8\xED\x179\x85\x87\x850a\x1C'B`<a?\x05V[`@Q\x86c\xFF\xFF\xFF\xFF\x16`\xE0\x1B\x81R`\x04\x01a\x1CG\x95\x94\x93\x92\x91\x90aAFV[`\0`@Q\x80\x83\x03\x81`\0\x87Z\xF1\x15\x80\x15a\x1CfW=`\0\x80>=`\0\xFD[PPPP`@Q=`\0\x82>`\x1F=\x90\x81\x01`\x1F\x19\x16\x82\x01`@Ra\x1C\x8E\x91\x90\x81\x01\x90aA\x82V[\x90P`\0\x81`\x01\x83Qa\x1C\xA1\x91\x90a?\x1DV[\x81Q\x81\x10a\x1C\xB1Wa\x1C\xB1a?\xA3V[` \x90\x81\x02\x91\x90\x91\x01\x01Q`\x0FT\x90\x91P`\xFF\x16a\x1C\xD3Wa\x1C\xD3\x84\x82a4\x8EV[`@\x80Q\x86\x81R` \x81\x01\x83\x90R`\x01`\x01`\xA0\x1B\x03\x86\x16\x91\x7F\xC0\x03\xF4[\xC2$\xD1\x16\xB6\xD0y\x10\rJ\xB5z[\x963$LG\xA5\xA9*\x17l[y\xA8_(\x91\x01`@Q\x80\x91\x03\x90\xA2PPPPPPV[`\0a\x1D*\x83a!AV[\x90Pa\x1D7\x81\x84\x84a6VV[`\x06Ta\x1DO\x90`\x01`\x01`\xA0\x1B\x03\x1630\x84a6\xB2V[a\x1DY\x82\x84a7<V[`@\x80Q\x82\x81R` \x81\x01\x85\x90R`\x01`\x01`\xA0\x1B\x03\x84\x16\x913\x91\x7F\xDC\xBC\x1C\x05$\x0F1\xFF:\xD0g\xEF\x1E\xE3\\\xE4\x99wbu.:\tR\x84uED\xF4\xC7\t\xD7\x91\x01a\x17\xD3V[`\x01\x80Ta\x0EV\x90a?4V[`\tTa\x14\xCD\x90`\x01`\x01`\xF0\x1B\x03\x16a\x18\x7FV[3`\0\x90\x81R`\x03` R`@\x81 \x80T\x83\x91\x90\x83\x90a\x1D\xDF\x90\x84\x90a?\x1DV[\x90\x91UPP`\x01`\x01`\xA0\x1B\x03\x83\x16`\0\x81\x81R`\x03` R`@\x90\x81\x90 \x80T\x85\x01\x90UQ3\x90`\0\x80Q` aFM\x839\x81Q\x91R\x90a\x0Fx\x90\x86\x81R` \x01\x90V[``\x81`\x01`\x01`@\x1B\x03\x81\x11\x15a\x1E>Wa\x1E>a:SV[`@Q\x90\x80\x82R\x80` \x02` \x01\x82\x01`@R\x80\x15a\x1EqW\x81` \x01[``\x81R` \x01\x90`\x01\x90\x03\x90\x81a\x1E\\W\x90P[P\x90P`\0[\x82\x81\x10\x15a\x1FtW`\0\x800\x86\x86\x85\x81\x81\x10a\x1E\x95Wa\x1E\x95a?\xA3V[\x90P` \x02\x81\x01\x90a\x1E\xA7\x91\x90aB'V[`@Qa\x1E\xB5\x92\x91\x90aBtV[`\0`@Q\x80\x83\x03\x81\x85Z\xF4\x91PP=\x80`\0\x81\x14a\x1E\xF0W`@Q\x91P`\x1F\x19`?=\x01\x16\x82\x01`@R=\x82R=`\0` \x84\x01>a\x1E\xF5V[``\x91P[P\x91P\x91P\x81a\x1FAW`D\x81Q\x10\x15a\x1F\x0EW`\0\x80\xFD[`\x04\x81\x01\x90P\x80\x80` \x01\x90Q\x81\x01\x90a\x1F(\x91\x90aB\x84V[`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x91\x90a9\xE6V[\x80\x84\x84\x81Q\x81\x10a\x1FTWa\x1FTa?\xA3V[` \x02` \x01\x01\x81\x90RPPP\x80\x80a\x1Fl\x90aC\x17V[\x91PPa\x1EwV[P\x92\x91PPV[`\x07T`\0\x90`\x01`\x01`\xA0\x1B\x03\x163\x14a\x1F\xA8W`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`@\x80Q`\x01\x80\x82R\x81\x83\x01\x90\x92R`\0\x91` \x80\x83\x01\x90\x806\x837PP`\x08T\x82Q\x92\x93P`\x01`\x01`\xA0\x1B\x03\x16\x91\x83\x91P`\0\x90a\x1F\xEAWa\x1F\xEAa?\xA3V[`\x01`\x01`\xA0\x1B\x03\x92\x83\x16` \x91\x82\x02\x92\x90\x92\x01\x01R`@Qc1\x11\xE7\xB3`\xE0\x1B\x81R\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x90\x91\x16\x90c1\x11\xE7\xB3\x90a L\x90\x84\x90`\0\x19\x900\x90`\x04\x01aC0V[` `@Q\x80\x83\x03\x81`\0\x87Z\xF1\x15\x80\x15a kW=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a \x8F\x91\x90a?\xB9V[\x91P\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`\x01`\x01`\xA0\x1B\x03\x16cxz\x08\xA6`@Q\x81c\xFF\xFF\xFF\xFF\x16`\xE0\x1B\x81R`\x04\x01`\0`@Q\x80\x83\x03\x81`\0\x87\x80;\x15\x80\x15a \xECW`\0\x80\xFD[PZ\xF1\x15\x80\x15a!\0W=`\0\x80>=`\0\xFD[PPPP\x7F\x8C\xA0\x18\x8D\x97p\xB3\x83\xD1\xA7\xA2\xDD\xFE^\x0C\x1F\x02\x90\x84H\x1ASi}lQR\\G\xA8\xD8\x8E\x82`@Qa!5\x91\x81R` \x01\x90V[`@Q\x80\x91\x03\x90\xA1P\x90V[`\x02T`\0\x90\x80\x15a\x0E\xFBWa\x0E\xF6a!Xa\x0E\x12V[\x84\x90\x83a0\xDFV[`\0a!k\x84a\x0F\x8AV[\x90P3`\x01`\x01`\xA0\x1B\x03\x83\x16\x14a!\xDBW`\x01`\x01`\xA0\x1B\x03\x82\x16`\0\x90\x81R`\x04` \x90\x81R`@\x80\x83 3\x84R\x90\x91R\x90 T`\0\x19\x81\x14a!\xD9Wa!\xB4\x82\x82a?\x1DV[`\x01`\x01`\xA0\x1B\x03\x84\x16`\0\x90\x81R`\x04` \x90\x81R`@\x80\x83 3\x84R\x90\x91R\x90 U[P[a!\xE7\x84\x82\x85\x85a7\xE8V[a!\xF1\x82\x82a8cV[`@\x80Q\x85\x81R` \x81\x01\x83\x90R`\x01`\x01`\xA0\x1B\x03\x80\x85\x16\x92\x90\x86\x16\x913\x91\x7F\xFB\xDEy} \x1Ch\x1B\x91\x05e)\x11\x9E\x0B\x02@|{\xB9jJ,u\xC0\x1F\xC9fr2\xC8\xDB\x91\x01`@Q\x80\x91\x03\x90\xA4`\x06Ta\x0E\xF6\x90`\x01`\x01`\xA0\x1B\x03\x16\x84\x86a8\xC5V[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a\"}W`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\x06T`\x01`\x01`\xA0\x1B\x03\x83\x81\x16\x91\x16\x14\x80a\"\xA6WP`\x08T`\x01`\x01`\xA0\x1B\x03\x83\x81\x16\x91\x16\x14[\x80a\"\xB9WP`\x01`\x01`\xA0\x1B\x03\x82\x160\x14[\x80a\"\xF5WP\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`\x01`\x01`\xA0\x1B\x03\x16\x82`\x01`\x01`\xA0\x1B\x03\x16\x14[\x15a#\x1EW`@Qc9\xB8T\x91`\xE0\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x83\x16`\x04\x82\x01R`$\x01a\x10\x12V[`@Qcp\xA0\x821`\xE0\x1B\x81R0`\x04\x82\x01R`\0\x90`\x01`\x01`\xA0\x1B\x03\x84\x16\x90cp\xA0\x821\x90`$\x01` `@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15a#eW=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a#\x89\x91\x90a?\xB9V[\x90Pa#\x9F`\x01`\x01`\xA0\x1B\x03\x84\x16\x83\x83a8\xC5V[\x81`\x01`\x01`\xA0\x1B\x03\x16\x83`\x01`\x01`\xA0\x1B\x03\x16\x7F\xEDg\x93(\xAE\xBFt\xED\xE7z\xE0\x9E\xFC\xF3n\x90$O\x83d=\xAD\xAC\x1C-\x9F\x0B!\xA4oj\xB7\x83`@Qa#\xE4\x91\x81R` \x01\x90V[`@Q\x80\x91\x03\x90\xA3PPPV[`\x003`\x01`\x01`\xA0\x1B\x03\x83\x16\x14a$aW`\x01`\x01`\xA0\x1B\x03\x82\x16`\0\x90\x81R`\x04` \x90\x81R`@\x80\x83 3\x84R\x90\x91R\x90 T`\0\x19\x81\x14a$_Wa$:\x85\x82a?\x1DV[`\x01`\x01`\xA0\x1B\x03\x84\x16`\0\x90\x81R`\x04` \x90\x81R`@\x80\x83 3\x84R\x90\x91R\x90 U[P[a$j\x84a\x15GV[\x90P\x80`\0\x03a$\xAAW`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`\x0B`$\x82\x01RjZERO_ASSETS`\xA8\x1B`D\x82\x01R`d\x01a\x10\x12V[a$\xB6\x81\x85\x85\x85a7\xE8V[a$\xC0\x82\x85a8cV[`@\x80Q\x82\x81R` \x81\x01\x86\x90R`\x01`\x01`\xA0\x1B\x03\x80\x85\x16\x92\x90\x86\x16\x913\x91\x7F\xFB\xDEy} \x1Ch\x1B\x91\x05e)\x11\x9E\x0B\x02@|{\xB9jJ,u\xC0\x1F\xC9fr2\xC8\xDB\x91\x01`@Q\x80\x91\x03\x90\xA4`\x06Ta\x0E\xF6\x90`\x01`\x01`\xA0\x1B\x03\x16\x84\x83a8\xC5V[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a%LW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\x0ET`@\x80Q\x91\x82R` \x82\x01\x83\x90R\x7F\xCF\xB5\xA4T\xB8\xAA}\xC0N\xCB[\xC1A\x0B*W\x96\x9C\xA1\xD6\x7Ff\xD5e\x19o`\xC6\xF9\x97T\x04\x91\x01`@Q\x80\x91\x03\x90\xA1`\x0EUV[`\x0FT`\0\x90`\xFF\x16\x15a%\xA3WP`\0\x91\x90PV[`\x0ET`\rT`\0\x19\x82\x14\x80\x15a%\xBBWP`\0\x19\x81\x14[\x15a%\xCBWP`\0\x19\x93\x92PPPV[`\0a%\xD9a\x15\x1B\x86a&\xE4V[\x90P`\0a%\xE8a\x15\x1Ba\x0E\x12V[\x90Pa\x15=a\x0B\xE4\x83\x83a5\x8CV[`\x02T`\0\x90\x80\x15a\x0F\xAAWa\x0E\xF6\x81a&\x0Fa\x0E\x12V[\x85\x91\x90a0\xC0V[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a&AW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\x01`\x01`\xA0\x1B\x03\x82\x81\x16`\0\x90\x81R`\x0C` R`@\x90 \x80T`\xFF\x19\x16\x83\x15\x80\x15\x91\x82\x17\x90\x92U`\x06T\x90\x92\x16\x91a&\x8CWP\x80`\x01`\x01`\xA0\x1B\x03\x16\x83`\x01`\x01`\xA0\x1B\x03\x16\x14[\x15a&\x9AWa&\x9A\x81a9=V[\x82`\x01`\x01`\xA0\x1B\x03\x16\x7F\xD6\0\xB94\x86\x03\xC6\xDE\xFF4\xB4\xE0\xB2\x8B`\xE1\xC8\x03l\x80gA\xB9\xE6\xD9\x002\xE7\xF3}\xD2\x7F\x83`@Qa&\xD7\x91\x15\x15\x81R` \x01\x90V[`@Q\x80\x91\x03\x90\xA2PPPV[`\x01`\x01`\xA0\x1B\x03\x81\x16`\0\x90\x81R`\x03` R`@\x81 Ta\x0F\x84\x90a\x0E\xD7V[B\x84\x10\x15a'VW`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`\x17`$\x82\x01R\x7FPERMIT_DEADLINE_EXPIRED\0\0\0\0\0\0\0\0\0`D\x82\x01R`d\x01a\x10\x12V[`\0`\x01a'ba\x14lV[`\x01`\x01`\xA0\x1B\x03\x8A\x81\x16`\0\x81\x81R`\x05` \x90\x81R`@\x91\x82\x90 \x80T`\x01\x81\x01\x90\x91U\x82Q\x7Fnq\xED\xAE\x12\xB1\xB9\x7FM\x1F`7\x0F\xEF\x10\x10_\xA2\xFA\xAE\x01&\x11J\x16\x9Cd\x84]a&\xC9\x81\x84\x01R\x80\x84\x01\x94\x90\x94R\x93\x8D\x16``\x84\x01R`\x80\x83\x01\x8C\x90R`\xA0\x83\x01\x93\x90\x93R`\xC0\x80\x83\x01\x8B\x90R\x81Q\x80\x84\x03\x90\x91\x01\x81R`\xE0\x83\x01\x90\x91R\x80Q\x92\x01\x91\x90\x91 a\x19\x01`\xF0\x1Ba\x01\0\x83\x01Ra\x01\x02\x82\x01\x92\x90\x92Ra\x01\"\x81\x01\x91\x90\x91Ra\x01B\x01`@\x80Q`\x1F\x19\x81\x84\x03\x01\x81R\x82\x82R\x80Q` \x91\x82\x01 `\0\x84R\x90\x83\x01\x80\x83RR`\xFF\x87\x16\x90\x82\x01R``\x81\x01\x85\x90R`\x80\x81\x01\x84\x90R`\xA0\x01` `@Q` \x81\x03\x90\x80\x84\x03\x90\x85Z\xFA\x15\x80\x15a(nW=`\0\x80>=`\0\xFD[PP`@Q`\x1F\x19\x01Q\x91PP`\x01`\x01`\xA0\x1B\x03\x81\x16\x15\x80\x15\x90a(\xA4WP\x87`\x01`\x01`\xA0\x1B\x03\x16\x81`\x01`\x01`\xA0\x1B\x03\x16\x14[a(\xE1W`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`\x0E`$\x82\x01Rm$\xA7+ \xA6$\xA2/\xA9\xA4\xA3\xA7\"\xA9`\x91\x1B`D\x82\x01R`d\x01a\x10\x12V[`\x01`\x01`\xA0\x1B\x03\x90\x81\x16`\0\x90\x81R`\x04` \x90\x81R`@\x80\x83 \x8A\x85\x16\x80\x85R\x90\x83R\x92\x81\x90 \x89\x90UQ\x88\x81R\x91\x92\x8A\x16\x91\x7F\x8C[\xE1\xE5\xEB\xEC}[\xD1OqB}\x1E\x84\xF3\xDD\x03\x14\xC0\xF7\xB2)\x1E[ \n\xC8\xC7\xC3\xB9%\x91\x01`@Q\x80\x91\x03\x90\xA3PPPPPPPV[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a)tW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\rT`@\x80Q\x91\x82R` \x82\x01\x83\x90R\x7F\x1F!C-\xD7\xB8\xEA\xD6M.|\x06\xA7K\xAF\x13x;-/qS\xF0\x99\xE2\xC4\xCA\xBC<]\xBE\xC6\x91\x01`@Q\x80\x91\x03\x90\xA1`\rUV[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a)\xDFW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[0`\0\x90\x81R`\x03` R`@\x81 T\x90a)\xF9\x82a\x15GV[\x90P\x80`\0\x03a*9W`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`\x0B`$\x82\x01RjZERO_ASSETS`\xA8\x1B`D\x82\x01R`d\x01a\x10\x12V[a*G\x81`\0\x80`\0a7\xE8V[a*Q0\x83a8cV[`\x06T`\x01`\x01`\xA0\x1B\x03\x16a*\x88\x81\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x84a1\xF6V[`\x0BT`@Qc\x1F\xFB\xE7\xF9`\xE0\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x83\x81\x16`\x04\x83\x01R`$\x82\x01\x92\x90\x92R`D\x81\x01\x84\x90R\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x90\x91\x16\x90c\x1F\xFB\xE7\xF9\x90`d\x01`\0`@Q\x80\x83\x03\x81`\0\x87\x80;\x15\x80\x15a*\xFFW`\0\x80\xFD[PZ\xF1\x15\x80\x15a+\x13W=`\0\x80>=`\0\xFD[PP`@\x80Q\x86\x81R` \x81\x01\x86\x90R\x7F\x15\xE3\xE2\xA7jh9\xC2D\xC1\xED\n\x82\x1C#<\xE8\xAFU-\xFF\xCB\x85`\x89\xEA\xE6\xCB\xBB\xB7\x1E\xA6\x93P\x01\x90P`@Q\x80\x91\x03\x90\xA1PPPV[`\x06T`@Qcp\xA0\x821`\xE0\x1B\x81R0`\x04\x82\x01R`\0\x91`\x01`\x01`\xA0\x1B\x03\x16\x90cp\xA0\x821\x90`$\x01` `@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15a+\x9FW=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a\x0ED\x91\x90a?\xB9V[`\x0FT`\xFF\x16\x15a+\xE7W`@Qc/\"\x81\x97`\xE1\x1B\x81R`\x04\x01`@Q\x80\x91\x03\x90\xFD[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a,\x11W`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[\x80\x15a,,W`\x06Ta,,\x90`\x01`\x01`\xA0\x1B\x03\x16a9=V[`\x0F\x80T`\xFF\x19\x16`\x01\x17\x90U`@Q\x7Fn|\xABj\xCC\xF9\xB0\x93\xA6\xB8\0\xED\x92\r\xF6\x10\xDBM\xBF\xD8\x80t\x17\xF5\xF2\xC4\x8D\xD6l\x03\xBA\xBB\x90a,m\x90\x83\x15\x15\x81R` \x01\x90V[`@Q\x80\x91\x03\x90\xA1PV[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a,\xA2W`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\0a,\xACa\x15RV[\x11\x15a,\xCBW`@Qck\x86c\x93`\xE1\x1B\x81R`\x04\x01`@Q\x80\x91\x03\x90\xFD[`\nT`@\x80Qc\xFF\xFF\xFF\xFF\x92\x83\x16\x81R\x91\x83\x16` \x83\x01R\x7F<9+D\xAD\x99\xB1\xFB|\x87\xAE{\x91L\xBD\x1D\xE1\xAE\xED>\x93i\xA2\r0p\xCCw\x16i\x89\x8F\x91\x01`@Q\x80\x91\x03\x90\xA1`\n\x80Tc\xFF\xFF\xFF\xFF\x19\x16c\xFF\xFF\xFF\xFF\x92\x90\x92\x16\x91\x90\x91\x17\x90UV[`\0a\x0F\x84\x82a%\xF7V[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a-`W`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\x01`\x01`\xA0\x1B\x03\x81\x16a-\xC5W`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`&`$\x82\x01R\x7FOwnable: new owner is the zero a`D\x82\x01Reddress`\xD0\x1B`d\x82\x01R`\x84\x01a\x10\x12V[a-\xCE\x81a7\x96V[PV[`\0a-\xDBa\x15RV[\x90Pa-\xEF`\x07T`\x01`\x01`\xA0\x1B\x03\x16\x90V[`\x01`\x01`\xA0\x1B\x03\x163`\x01`\x01`\xA0\x1B\x03\x16\x14\x15\x80\x15a.\x10WP`\0\x81\x11[\x15a..W`@Qck\x86c\x93`\xE1\x1B\x81R`\x04\x01`@Q\x80\x91\x03\x90\xFD[`\x08T`\0\x90a.I\x90`\x01`\xA0\x1B\x90\x04`\xFF\x16`\naDGV[\x90P`\0a.V\x82a%\xF7V[`\tT`\x08T`@Qcp\xA0\x821`\xE0\x1B\x81R0`\x04\x82\x01R\x92\x93P`\x01`\x01`\xF0\x1B\x03\x90\x91\x16\x91`\0\x91`\x01`\x01`\xA0\x1B\x03\x16\x90cp\xA0\x821\x90`$\x01` `@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15a.\xB1W=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a.\xD5\x91\x90a?\xB9V[`\nT\x90\x91P`\0\x90a.\xF9\x90d\x01\0\0\0\0\x90\x04`\x01`\x01`@\x1B\x03\x16Ba?\x1DV[\x90P`\0c\x01\xE13\x80g\r\xE0\xB6\xB3\xA7d\0\0f\x08\xE1\xBC\x9B\xF0@\0a/\x1D\x85\x87a@nV[a/'\x91\x90a@nV[a/1\x91\x90a@\x8DV[a/;\x91\x90a@\x8DV[\x90P`\0a/J\x82\x87\x89a0\xC0V[\x90P`\0a/X\x85\x87a6<V[\x90P`\0a/n\x82g\x01cEx]\x8A\0\0a9yV[\x90P`\0a/}\x82\x8A\x8Ca0\xC0V[\x90Pa/\x920a/\x8D\x83\x87a?\x05V[a7<V[a/\x9Fa\x15\x1B\x83\x87a?\x05V[a/\xA9\x90\x8Ca?\x05V[`\n\x80Tc\xFF\xFF\xFF\xFF\x90\x81\x16`\x01``\x1B`\x01`\x01`\xA0\x1B\x03\x94\x90\x94\x16\x93\x90\x93\x02k\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\0\0\0\0\x19\x16\x92\x90\x92\x17B\x90\x92\x16d\x01\0\0\0\0\x02\x91\x90\x91\x17\x90U`\t\x80T`\x01`\x01`\xF0\x1B\x03\x19\x16`\x01`\x01`\xF0\x1B\x03\x89\x16\x17\x90U`@\x80Q\x85\x81R` \x81\x01\x83\x90R\x90\x81\x01\x84\x90R\x7F\xFD#\xCE\xFBI\x92\xBC\x1B\x95\xDF\x1FTN\xFD\xB9\x90\x8D\x90\x12\x885D!'\x0Fz\x8F\x8A\r\xFE\xC2\n\x90``\x01`@Q\x80\x91\x03\x90\xA1PPPPPPPPPPPV[`\0\x81`\xFF\x16\x83`\xFF\x16\x03a0mWP\x82a\x0F\x16V[\x81`\xFF\x16\x83`\xFF\x16\x10\x15a0\xA1Wa0\x85\x83\x83aDVV[a0\x90\x90`\naDGV[a0\x9A\x90\x85a@nV[\x90Pa\x0F\x16V[a0\xAB\x82\x84aDVV[a0\xB6\x90`\naDGV[a0\x9A\x90\x85a@\x8DV[\x82\x82\x02\x81\x15\x15\x84\x15\x85\x83\x04\x85\x14\x17\x16a0\xD8W`\0\x80\xFD[\x04\x92\x91PPV[\x82\x82\x02\x81\x15\x15\x84\x15\x85\x83\x04\x85\x14\x17\x16a0\xF7W`\0\x80\xFD[`\x01\x82`\x01\x83\x03\x04\x01\x81\x15\x15\x02\x90P\x93\x92PPPV[`@Qc\x1AL\xA3{`\xE2\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x83\x81\x16`\x04\x83\x01R`$\x82\x01\x83\x90R0`D\x83\x01R`\0\x91\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x90\x91\x16\x90ci2\x8D\xEC\x90`d\x01` `@Q\x80\x83\x03\x81`\0\x87Z\xF1\x15\x80\x15a1\x87W=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a1\xAB\x91\x90a?\xB9V[\x90P\x82`\x01`\x01`\xA0\x1B\x03\x16\x7F\x844<\xC9v!\xDB\xC5\x1B\xCE\x19\x8A%\x82\x18\xA2\x06<\x16\x0EMG?\xF5\x10\x07\xC7\xA6\x0E\xEC_\xA1\x82`@Qa1\xE8\x91\x81R` \x01\x90V[`@Q\x80\x91\x03\x90\xA2\x92\x91PPV[`\0`@Qc\t^\xA7\xB3`\xE0\x1B\x81R\x83`\x04\x82\x01R\x82`$\x82\x01R` `\0`D\x83`\0\x89Z\xF1=\x15`\x1F=\x11`\x01`\0Q\x14\x16\x17\x16\x91PP\x80a2mW`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`\x0E`$\x82\x01Rm\x10T\x14\x14\x93\xD5\x91W\xD1\x90RS\x11Q`\x92\x1B`D\x82\x01R`d\x01a\x10\x12V[PPPPV[`@Qc5\xEAju`\xE0\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x82\x81\x16`\x04\x83\x01R`\0\x91\x82\x91\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x16\x90c5\xEAju\x90`$\x01a\x01\x80`@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15a2\xDFW=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a3\x03\x91\x90aD\xAFV[P\x92\x9APP`\x01`\x01`\xA0\x1B\x03\x8A\x16\x98Pa3E\x97PPPPPPPPW`@Qc\n\\^}`\xE1\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x84\x16`\x04\x82\x01R`$\x01a\x10\x12V[`\0`\x08`\x14\x90T\x90a\x01\0\n\x90\x04`\xFF\x16\x90P\x83`\x01`\x01`\xA0\x1B\x03\x16c1<\xE5g`@Q\x81c\xFF\xFF\xFF\xFF\x16`\xE0\x1B\x81R`\x04\x01` `@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15a3\x97W=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a3\xBB\x91\x90aE\x90V[\x92P`\x12\x83`\xFF\x16\x11\x15a3\xEEW`@Qc\x06Q\x98/`\xE1\x1B\x81R`\xFF\x84\x16`\x04\x82\x01R`\x12`$\x82\x01R`D\x01a\x10\x12V[`\xFF\x81\x16\x15\x80\x15\x90a4\x06WP\x82`\xFF\x16\x81`\xFF\x16\x14\x15[\x15a4DW`\x0ET`\rT`\0\x19\x82\x14a4)Wa4%\x82\x84\x87a0WV[`\x0EU[`\0\x19\x81\x14a4AWa4=\x81\x84\x87a0WV[`\rU[PP[P`\x06\x80T`\x01`\x01`\xA0\x1B\x03\x19\x90\x81\x16`\x01`\x01`\xA0\x1B\x03\x95\x86\x16\x17\x90\x91U`\x08\x80T`\x01`\x01`\xA8\x1B\x03\x19\x16`\x01`\xA0\x1B`\xFF\x86\x16\x02\x90\x92\x16\x91\x90\x91\x17\x91\x90\x93\x16\x17\x90\x91U\x90V[a4\xC2`\x01`\x01`\xA0\x1B\x03\x83\x16\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x83a1\xF6V[`@Qc\xE8\xED\xA9\xDF`\xE0\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x83\x81\x16`\x04\x83\x01R`$\x82\x01\x83\x90R0`D\x83\x01R`\0`d\x83\x01R\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x16\x90c\xE8\xED\xA9\xDF\x90`\x84\x01`\0`@Q\x80\x83\x03\x81`\0\x87\x80;\x15\x80\x15a59W`\0\x80\xFD[PZ\xF1\x15\x80\x15a5MW=`\0\x80>=`\0\xFD[PPPP\x81`\x01`\x01`\xA0\x1B\x03\x16\x7F\xF0\x99\xEF\xD5m\x0Cd\xF9\xA1\xAA\x13y\xA4p\xD8q9+g\xEAvx\xEDVY\xADK\xFE}\xD7eu\x82`@Qa\x17\x10\x91\x81R` \x01\x90V[`\0\x81\x83\x10a5\x9BW\x81a\x0F\x16V[P\x90\x91\x90PV[`\0\x7F\x8Bs\xC3\xC6\x9B\xB8\xFE=Q.\xCCL\xF7Y\xCCy#\x9F{\x17\x9B\x0F\xFA\xCA\xA9\xA7]R+9@\x0F`\0`@Qa5\xD4\x91\x90aE\xADV[`@\x80Q\x91\x82\x90\x03\x82 ` \x83\x01\x93\x90\x93R\x81\x01\x91\x90\x91R\x7F\xC8\x9E\xFD\xAAT\xC0\xF2\x0Cz\xDFa(\x82\xDF\tP\xF5\xA9Qc~\x03\x07\xCD\xCBLg/)\x8B\x8B\xC6``\x82\x01RF`\x80\x82\x01R0`\xA0\x82\x01R`\xC0\x01`@Q` \x81\x83\x03\x03\x81R\x90`@R\x80Q\x90` \x01 \x90P\x90V[`\0\x81\x83\x11a6LW`\0a\x0F\x16V[a\x0F\x16\x82\x84a?\x1DV[`\x0FT`\xFF\x16\x15a6zW`@Qc/\"\x81\x97`\xE1\x1B\x81R`\x04\x01`@Q\x80\x91\x03\x90\xFD[`\0a6\x85\x82a\x14\xCFV[\x90P\x80\x84\x11\x15a2mW`@Qc#\xDC)\x05`\xE2\x1B\x81R`\x04\x81\x01\x85\x90R`$\x81\x01\x82\x90R`D\x01a\x10\x12V[`\0`@Qc#\xB8r\xDD`\xE0\x1B\x81R\x84`\x04\x82\x01R\x83`$\x82\x01R\x82`D\x82\x01R` `\0`d\x83`\0\x8AZ\xF1=\x15`\x1F=\x11`\x01`\0Q\x14\x16\x17\x16\x91PP\x80a75W`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`\x14`$\x82\x01Rs\x15\x14\x90S\x94\xD1\x91T\x97\xD1\x94\x93\xD3W\xD1\x90RS\x11Q`b\x1B`D\x82\x01R`d\x01a\x10\x12V[PPPPPV[\x80`\x02`\0\x82\x82Ta7N\x91\x90a?\x05V[\x90\x91UPP`\x01`\x01`\xA0\x1B\x03\x82\x16`\0\x81\x81R`\x03` \x90\x81R`@\x80\x83 \x80T\x86\x01\x90UQ\x84\x81R`\0\x80Q` aFM\x839\x81Q\x91R\x91\x01[`@Q\x80\x91\x03\x90\xA3PPV[`\x07\x80T`\x01`\x01`\xA0\x1B\x03\x83\x81\x16`\x01`\x01`\xA0\x1B\x03\x19\x83\x16\x81\x17\x90\x93U`@Q\x91\x16\x91\x90\x82\x90\x7F\x8B\xE0\x07\x9CS\x16Y\x14\x13D\xCD\x1F\xD0\xA4\xF2\x84\x19I\x7F\x97\"\xA3\xDA\xAF\xE3\xB4\x18okdW\xE0\x90`\0\x90\xA3PPV[`\x06T`\x01`\x01`\xA0\x1B\x03\x16`\0a7\xFEa+VV[\x90P\x80\x86\x11\x15a8[Wa8\x1B\x82a8\x16\x83\x89a?\x1DV[a1\rV[`\t\x80T`\0\x90a86\x90\x84\x90`\x01`\x01`\xF0\x1B\x03\x16a@\xDAV[\x92Pa\x01\0\n\x81T\x81`\x01`\x01`\xF0\x1B\x03\x02\x19\x16\x90\x83`\x01`\x01`\xF0\x1B\x03\x16\x02\x17\x90UP[PPPPPPV[`\x01`\x01`\xA0\x1B\x03\x82\x16`\0\x90\x81R`\x03` R`@\x81 \x80T\x83\x92\x90a8\x8B\x90\x84\x90a?\x1DV[\x90\x91UPP`\x02\x80T\x82\x90\x03\x90U`@Q\x81\x81R`\0\x90`\x01`\x01`\xA0\x1B\x03\x84\x16\x90`\0\x80Q` aFM\x839\x81Q\x91R\x90` \x01a7\x8AV[`\0`@Qc\xA9\x05\x9C\xBB`\xE0\x1B\x81R\x83`\x04\x82\x01R\x82`$\x82\x01R` `\0`D\x83`\0\x89Z\xF1=\x15`\x1F=\x11`\x01`\0Q\x14\x16\x17\x16\x91PP\x80a2mW`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`\x0F`$\x82\x01Rn\x15\x14\x90S\x94\xD1\x91T\x97\xD1\x90RS\x11Q`\x8A\x1B`D\x82\x01R`d\x01a\x10\x12V[`\tT`\x01`\x01`\xF0\x1B\x03\x16\x80\x15a9uWa9Wa-\xD1V[a9c\x82`\0\x19a1\rV[P`\t\x80T`\x01`\x01`\xF0\x1B\x03\x19\x16\x90U[PPV[`\0a\x0F\x16\x83\x83g\r\xE0\xB6\xB3\xA7d\0\0a0\xC0V[`\0[\x83\x81\x10\x15a9\xA9W\x81\x81\x01Q\x83\x82\x01R` \x01a9\x91V[\x83\x81\x11\x15a2mWPP`\0\x91\x01RV[`\0\x81Q\x80\x84Ra9\xD2\x81` \x86\x01` \x86\x01a9\x8EV[`\x1F\x01`\x1F\x19\x16\x92\x90\x92\x01` \x01\x92\x91PPV[` \x81R`\0a\x0F\x16` \x83\x01\x84a9\xBAV[`\0` \x82\x84\x03\x12\x15a:\x0BW`\0\x80\xFD[P5\x91\x90PV[`\x01`\x01`\xA0\x1B\x03\x81\x16\x81\x14a-\xCEW`\0\x80\xFD[`\0\x80`@\x83\x85\x03\x12\x15a::W`\0\x80\xFD[\x825a:E\x81a:\x12V[\x94` \x93\x90\x93\x015\x93PPPV[cNH{q`\xE0\x1B`\0R`A`\x04R`$`\0\xFD[`@Qa\x01 \x81\x01`\x01`\x01`@\x1B\x03\x81\x11\x82\x82\x10\x17\x15a:\x8CWa:\x8Ca:SV[`@R\x90V[`@Q`\x80\x81\x01`\x01`\x01`@\x1B\x03\x81\x11\x82\x82\x10\x17\x15a:\x8CWa:\x8Ca:SV[`@Q``\x81\x01`\x01`\x01`@\x1B\x03\x81\x11\x82\x82\x10\x17\x15a:\x8CWa:\x8Ca:SV[`@Q`\x1F\x82\x01`\x1F\x19\x16\x81\x01`\x01`\x01`@\x1B\x03\x81\x11\x82\x82\x10\x17\x15a:\xFEWa:\xFEa:SV[`@R\x91\x90PV[`\0\x80`\0a\x02\xC0\x84\x86\x03\x12\x15a;\x1CW`\0\x80\xFD[`\x1F\x85\x81\x86\x01\x12a;,W`\0\x80\xFD[a;4a:iV[\x80a\x01 \x87\x01\x88\x81\x11\x15a;GW`\0\x80\xFD[\x87[\x81\x81\x10\x15a;jW\x805a;\\\x81a:\x12V[\x84R` \x93\x84\x01\x93\x01a;IV[P\x81\x96P\x88a\x01?\x89\x01\x12a;~W`\0\x80\xFD[a;\x86a:\x92V[\x92P\x82\x91Pa\x02\xA0\x88\x01\x89\x81\x11\x15a;\x9DW`\0\x80\xFD[\x80\x82\x10\x15a<\0W\x89\x85\x83\x01\x12a;\xB4W`\0\x80\x81\xFD[a;\xBCa:\xB4V[\x80``\x84\x01\x8C\x81\x11\x15a;\xCFW`\0\x80\x81\xFD[\x84[\x81\x81\x10\x15a;\xE9W\x805\x84R` \x93\x84\x01\x93\x01a;\xD1V[PP\x85RP` \x90\x93\x01\x92``\x91\x90\x91\x01\x90a;\x9DV[\x96\x99\x91\x98PP\x945\x95PPPPPV[`\0\x80`\0``\x84\x86\x03\x12\x15a<%W`\0\x80\xFD[\x835a<0\x81a:\x12V[\x92P` \x84\x015a<@\x81a:\x12V[\x92\x95\x92\x94PPP`@\x91\x90\x91\x015\x90V[`\0` \x82\x84\x03\x12\x15a<cW`\0\x80\xFD[\x815a\x0F\x16\x81a:\x12V[`\0\x80`@\x83\x85\x03\x12\x15a<\x81W`\0\x80\xFD[\x825\x91P` \x83\x015a<\x93\x81a:\x12V[\x80\x91PP\x92P\x92\x90PV[`\0\x80` \x83\x85\x03\x12\x15a<\xB1W`\0\x80\xFD[\x825`\x01`\x01`@\x1B\x03\x80\x82\x11\x15a<\xC8W`\0\x80\xFD[\x81\x85\x01\x91P\x85`\x1F\x83\x01\x12a<\xDCW`\0\x80\xFD[\x815\x81\x81\x11\x15a<\xEBW`\0\x80\xFD[\x86` \x82`\x05\x1B\x85\x01\x01\x11\x15a=\0W`\0\x80\xFD[` \x92\x90\x92\x01\x96\x91\x95P\x90\x93PPPPV[`\0` \x80\x83\x01\x81\x84R\x80\x85Q\x80\x83R`@\x86\x01\x91P`@\x81`\x05\x1B\x87\x01\x01\x92P\x83\x87\x01`\0[\x82\x81\x10\x15a=gW`?\x19\x88\x86\x03\x01\x84Ra=U\x85\x83Qa9\xBAV[\x94P\x92\x85\x01\x92\x90\x85\x01\x90`\x01\x01a=9V[P\x92\x97\x96PPPPPPPV[`\0\x80`\0``\x84\x86\x03\x12\x15a=\x89W`\0\x80\xFD[\x835\x92P` \x84\x015a=\x9B\x81a:\x12V[\x91P`@\x84\x015a=\xAB\x81a:\x12V[\x80\x91PP\x92P\x92P\x92V[`\0\x80`@\x83\x85\x03\x12\x15a=\xC9W`\0\x80\xFD[\x825a=\xD4\x81a:\x12V[\x91P` \x83\x015a<\x93\x81a:\x12V[\x805\x80\x15\x15\x81\x14a=\xF4W`\0\x80\xFD[\x91\x90PV[`\0\x80`@\x83\x85\x03\x12\x15a>\x0CW`\0\x80\xFD[\x825a>\x17\x81a:\x12V[\x91Pa>%` \x84\x01a=\xE4V[\x90P\x92P\x92\x90PV[`\xFF\x81\x16\x81\x14a-\xCEW`\0\x80\xFD[`\0\x80`\0\x80`\0\x80`\0`\xE0\x88\x8A\x03\x12\x15a>XW`\0\x80\xFD[\x875a>c\x81a:\x12V[\x96P` \x88\x015a>s\x81a:\x12V[\x95P`@\x88\x015\x94P``\x88\x015\x93P`\x80\x88\x015a>\x91\x81a>.V[\x96\x99\x95\x98P\x93\x96\x92\x95\x94`\xA0\x84\x015\x94P`\xC0\x90\x93\x015\x92\x91PPV[`\0` \x82\x84\x03\x12\x15a>\xC0W`\0\x80\xFD[a\x0F\x16\x82a=\xE4V[`\0` \x82\x84\x03\x12\x15a>\xDBW`\0\x80\xFD[\x815c\xFF\xFF\xFF\xFF\x81\x16\x81\x14a\x0F\x16W`\0\x80\xFD[cNH{q`\xE0\x1B`\0R`\x11`\x04R`$`\0\xFD[`\0\x82\x19\x82\x11\x15a?\x18Wa?\x18a>\xEFV[P\x01\x90V[`\0\x82\x82\x10\x15a?/Wa?/a>\xEFV[P\x03\x90V[`\x01\x81\x81\x1C\x90\x82\x16\x80a?HW`\x7F\x82\x16\x91P[` \x82\x10\x81\x03a?hWcNH{q`\xE0\x1B`\0R`\"`\x04R`$`\0\xFD[P\x91\x90PV[` \x80\x82R\x81\x81\x01R\x7FOwnable: caller is not the owner`@\x82\x01R``\x01\x90V[cNH{q`\xE0\x1B`\0R`2`\x04R`$`\0\xFD[`\0` \x82\x84\x03\x12\x15a?\xCBW`\0\x80\xFD[PQ\x91\x90PV[a\x02\xE0\x81\x01\x81\x86`\0[`\t\x81\x10\x15a@\x04W\x81Q`\x01`\x01`\xA0\x1B\x03\x16\x83R` \x92\x83\x01\x92\x90\x91\x01\x90`\x01\x01a?\xDCV[PPPa\x01 \x82\x01\x85`\0[`\x04\x81\x10\x15a@WW\x81Q\x83`\0[`\x03\x81\x10\x15a@>W\x82Q\x82R` \x92\x83\x01\x92\x90\x91\x01\x90`\x01\x01a@\x1FV[PPP``\x92\x90\x92\x01\x91` \x91\x90\x91\x01\x90`\x01\x01a@\x10V[PPPa\x02\xA0\x82\x01\x93\x90\x93Ra\x02\xC0\x01R\x92\x91PPV[`\0\x81`\0\x19\x04\x83\x11\x82\x15\x15\x16\x15a@\x88Wa@\x88a>\xEFV[P\x02\x90V[`\0\x82a@\xAAWcNH{q`\xE0\x1B`\0R`\x12`\x04R`$`\0\xFD[P\x04\x90V[`\0`\x01`\x01`\xF0\x1B\x03\x82\x81\x16\x84\x82\x16\x80\x83\x03\x82\x11\x15a@\xD1Wa@\xD1a>\xEFV[\x01\x94\x93PPPPV[`\0`\x01`\x01`\xF0\x1B\x03\x83\x81\x16\x90\x83\x16\x81\x81\x10\x15a@\xFAWa@\xFAa>\xEFV[\x03\x93\x92PPPV[`\0\x81Q\x80\x84R` \x80\x85\x01\x94P\x80\x84\x01`\0[\x83\x81\x10\x15aA;W\x81Q`\x01`\x01`\xA0\x1B\x03\x16\x87R\x95\x82\x01\x95\x90\x82\x01\x90`\x01\x01aA\x16V[P\x94\x95\x94PPPPPV[\x85\x81R\x84` \x82\x01R`\xA0`@\x82\x01R`\0aAe`\xA0\x83\x01\x86aA\x02V[`\x01`\x01`\xA0\x1B\x03\x94\x90\x94\x16``\x83\x01RP`\x80\x01R\x93\x92PPPV[`\0` \x80\x83\x85\x03\x12\x15aA\x95W`\0\x80\xFD[\x82Q`\x01`\x01`@\x1B\x03\x80\x82\x11\x15aA\xACW`\0\x80\xFD[\x81\x85\x01\x91P\x85`\x1F\x83\x01\x12aA\xC0W`\0\x80\xFD[\x81Q\x81\x81\x11\x15aA\xD2WaA\xD2a:SV[\x80`\x05\x1B\x91PaA\xE3\x84\x83\x01a:\xD6V[\x81\x81R\x91\x83\x01\x84\x01\x91\x84\x81\x01\x90\x88\x84\x11\x15aA\xFDW`\0\x80\xFD[\x93\x85\x01\x93[\x83\x85\x10\x15aB\x1BW\x84Q\x82R\x93\x85\x01\x93\x90\x85\x01\x90aB\x02V[\x98\x97PPPPPPPPV[`\0\x80\x835`\x1E\x19\x846\x03\x01\x81\x12aB>W`\0\x80\xFD[\x83\x01\x805\x91P`\x01`\x01`@\x1B\x03\x82\x11\x15aBXW`\0\x80\xFD[` \x01\x91P6\x81\x90\x03\x82\x13\x15aBmW`\0\x80\xFD[\x92P\x92\x90PV[\x81\x83\x827`\0\x91\x01\x90\x81R\x91\x90PV[`\0` \x82\x84\x03\x12\x15aB\x96W`\0\x80\xFD[\x81Q`\x01`\x01`@\x1B\x03\x80\x82\x11\x15aB\xADW`\0\x80\xFD[\x81\x84\x01\x91P\x84`\x1F\x83\x01\x12aB\xC1W`\0\x80\xFD[\x81Q\x81\x81\x11\x15aB\xD3WaB\xD3a:SV[aB\xE6`\x1F\x82\x01`\x1F\x19\x16` \x01a:\xD6V[\x91P\x80\x82R\x85` \x82\x85\x01\x01\x11\x15aB\xFDW`\0\x80\xFD[aC\x0E\x81` \x84\x01` \x86\x01a9\x8EV[P\x94\x93PPPPV[`\0`\x01\x82\x01aC)WaC)a>\xEFV[P`\x01\x01\x90V[``\x81R`\0aCC``\x83\x01\x86aA\x02V[` \x83\x01\x94\x90\x94RP`\x01`\x01`\xA0\x1B\x03\x91\x90\x91\x16`@\x90\x91\x01R\x91\x90PV[`\x01\x81\x81[\x80\x85\x11\x15aC\x9EW\x81`\0\x19\x04\x82\x11\x15aC\x84WaC\x84a>\xEFV[\x80\x85\x16\x15aC\x91W\x91\x81\x02\x91[\x93\x84\x1C\x93\x90\x80\x02\x90aChV[P\x92P\x92\x90PV[`\0\x82aC\xB5WP`\x01a\x0F\x84V[\x81aC\xC2WP`\0a\x0F\x84V[\x81`\x01\x81\x14aC\xD8W`\x02\x81\x14aC\xE2WaC\xFEV[`\x01\x91PPa\x0F\x84V[`\xFF\x84\x11\x15aC\xF3WaC\xF3a>\xEFV[PP`\x01\x82\x1Ba\x0F\x84V[P` \x83\x10a\x013\x83\x10\x16`N\x84\x10`\x0B\x84\x10\x16\x17\x15aD!WP\x81\x81\na\x0F\x84V[aD+\x83\x83aCcV[\x80`\0\x19\x04\x82\x11\x15aD?WaD?a>\xEFV[\x02\x93\x92PPPV[`\0a\x0F\x16`\xFF\x84\x16\x83aC\xA6V[`\0`\xFF\x82\x16`\xFF\x84\x16\x80\x82\x10\x15aDpWaDpa>\xEFV[\x90\x03\x93\x92PPPV[\x80Qo\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x81\x16\x81\x14a=\xF4W`\0\x80\xFD[\x80Qa=\xF4\x81a:\x12V[\x80Qa=\xF4\x81a>.V[`\0\x80`\0\x80`\0\x80`\0\x80`\0\x80`\0\x80a\x01\x80\x8D\x8F\x03\x12\x15aD\xD2W`\0\x80\xFD[\x8CQ\x9BPaD\xE2` \x8E\x01aDyV[\x9APaD\xF0`@\x8E\x01aDyV[\x99PaD\xFE``\x8E\x01aDyV[\x98PaE\x0C`\x80\x8E\x01aDyV[\x97PaE\x1A`\xA0\x8E\x01aDyV[\x96P`\xC0\x8D\x01Qd\xFF\xFF\xFF\xFF\xFF\x81\x16\x81\x14aE4W`\0\x80\xFD[\x95PaEB`\xE0\x8E\x01aD\x99V[\x94PaEQa\x01\0\x8E\x01aD\x99V[\x93PaE`a\x01 \x8E\x01aD\x99V[\x92PaEoa\x01@\x8E\x01aD\x99V[\x91PaE~a\x01`\x8E\x01aD\xA4V[\x90P\x92\x95\x98\x9BP\x92\x95\x98\x9BP\x92\x95\x98\x9BV[`\0` \x82\x84\x03\x12\x15aE\xA2W`\0\x80\xFD[\x81Qa\x0F\x16\x81a>.V[`\0\x80\x83T\x81`\x01\x82\x81\x1C\x91P\x80\x83\x16\x80aE\xC9W`\x7F\x83\x16\x92P[` \x80\x84\x10\x82\x03aE\xE8WcNH{q`\xE0\x1B\x86R`\"`\x04R`$\x86\xFD[\x81\x80\x15aE\xFCW`\x01\x81\x14aF\x11WaF>V[`\xFF\x19\x86\x16\x89R\x84\x15\x15\x85\x02\x89\x01\x96PaF>V[`\0\x8A\x81R` \x90 `\0[\x86\x81\x10\x15aF6W\x81T\x8B\x82\x01R\x90\x85\x01\x90\x83\x01aF\x1DV[PP\x84\x89\x01\x96P[P\x94\x98\x97PPPPPPPPV\xFE\xDD\xF2R\xAD\x1B\xE2\xC8\x9Bi\xC2\xB0h\xFC7\x8D\xAA\x95+\xA7\xF1c\xC4\xA1\x16(\xF5ZM\xF5#\xB3\xEF\xA2dipfsX\"\x12 \xEAd\x98\xAB\x16\xF3\xF2\xED\xC70Wz\x96S\x18kZdae\\\x1AUN\xD9\xF17\te4\xCB\xD1dsolcC\0\x08\x0F\x003Sommelier Aave V2 Stablecoin Cellar LP Token";
+    /// The bytecode of the contract.
+    pub static AAVEV2STABLECOINCELLAR_BYTECODE: ::ethers::core::types::Bytes = ::ethers::core::types::Bytes::from_static(
+        __BYTECODE,
+    );
+    #[rustfmt::skip]
+    const __DEPLOYED_BYTECODE: &[u8] = b"`\x80`@R`\x046\x10a\x04\x1BW`\x005`\xE0\x1C\x80c\x99r\x92\x16\x11a\x02\x1EW\x80c\xC6=u\xB6\x11a\x01#W\x80c\xE9$\x0C-\x11a\0\xABW\x80c\xEFz\xC8\x83\x11a\0zW\x80c\xEFz\xC8\x83\x14a\rkW\x80c\xEF\x8B0\xF7\x14a\r\x8BW\x80c\xF2\xFD\xE3\x8B\x14a\r\xABW\x80c\xF6fAU\x14a\r\xCBW\x80c\xF8\xBAL\xFF\x14a\r\xFDW`\0\x80\xFD[\x80c\xE9$\x0C-\x14a\x0C\xECW\x80c\xE9\xEC.\x99\x14a\r W\x80c\xEC\xF7\x08X\x14a\r5W\x80c\xEFF]\x92\x14a\rKW`\0\x80\xFD[\x80c\xD5\x05\xAC\xCF\x11a\0\xF2W\x80c\xD5\x05\xAC\xCF\x14a\x0C)W\x80c\xD9\x05w~\x14a\x0CIW\x80c\xDDb\xED>\x14a\x0C\x7FW\x80c\xDF\x05\xA5*\x14a\x0C\xB7W\x80c\xDF\xF9\x0B[\x14a\x0C\xD7W`\0\x80\xFD[\x80c\xC6=u\xB6\x14a\x0B\xA9W\x80c\xC6\xE6\xF5\x92\x14a\x0B\xC9W\x80c\xCA\xB5\x928\x14a\x0B\xE9W\x80c\xCE\x96\xCBw\x14a\x0C\tW`\0\x80\xFD[\x80c\xAF\x1D\xF2U\x11a\x01\xA6W\x80c\xBA\x08vR\x11a\x01uW\x80c\xBA\x08vR\x14a\x0B\x0EW\x80c\xBD\xC8\x14K\x14a\x0B.W\x80c\xBF\x86\xD6\x90\x14a\x0BNW\x80c\xC1\x7Fg@\x14a\x0BhW\x80c\xC2\xD4\x16\x01\x14a\x0B\x88W`\0\x80\xFD[\x80c\xAF\x1D\xF2U\x14a\nzW\x80c\xB3\xD7\xF6\xB9\x14a\n\xAEW\x80c\xB4`\xAF\x94\x14a\n\xCEW\x80c\xB8\xDCI\x1B\x14a\n\xEEW`\0\x80\xFD[\x80c\xAC55\x10\x11a\x01\xEDW\x80c\xAC55\x10\x14a\t\xA5W\x80c\xAC\x96P\xD8\x14a\t\xD9W\x80c\xAD\0N \x14a\t\xF9W\x80c\xAD\\FH\x14a\n\x0EW\x80c\xADzg/\x14a\nBW`\0\x80\xFD[\x80c\x99r\x92\x16\x14a\t\x08W\x80c\xA4\xDA-\x02\x14a\t\x1DW\x80c\xA5\x9A\x99s\x14a\tQW\x80c\xA9\x05\x9C\xBB\x14a\t\x85W`\0\x80\xFD[\x80c^,Wn\x11a\x03$W\x80c~\xCE\xBE\0\x11a\x02\xACW\x80c\x8E\x0B\xAE\x7F\x11a\x02{W\x80c\x8E\x0B\xAE\x7F\x14a\x08fW\x80c\x8F\xDC\x9D\xFA\x14a\x08|W\x80c\x94\xBF\x80M\x14a\x08\xA3W\x80c\x95\xD8\x9BA\x14a\x08\xC3W\x80c\x96\xD6Hy\x14a\x08\xD8W`\0\x80\xFD[\x80c~\xCE\xBE\0\x14a\x07\xDFW\x80c\x83\xB4\x91\x8B\x14a\x08\x0CW\x80c\x87x\x87\x82\x14a\x08,W\x80c\x8D\xA5\xCB[\x14a\x08HW`\0\x80\xFD[\x80cp\xA0\x821\x11a\x02\xF3W\x80cp\xA0\x821\x14a\x07?W\x80cqP\x18\xA6\x14a\x07lW\x80cr\x167\x15\x14a\x07\x81W\x80cx\xDC\x90Y\x14a\x07\x97W\x80c{;\xAA\xB4\x14a\x07\xB7W`\0\x80\xFD[\x80c^,Wn\x14a\x06\xCAW\x80cn\x08@k\x14a\x06\xDFW\x80cnU?e\x14a\x06\xFFW\x80cn\x85\xF1\x83\x14a\x07\x1FW`\0\x80\xFD[\x80c&#*.\x11a\x03\xA7W\x80c=\xC6\xEA\xBF\x11a\x03vW\x80c=\xC6\xEA\xBF\x14a\x06,W\x80c@-&}\x14a\x06AW\x80cH\xCC\xDA<\x14a\x06aW\x80cL\xDA\xD5\x06\x14a\x06\x95W\x80cV\x89\x14\x12\x14a\x06\xB5W`\0\x80\xFD[\x80c&#*.\x14a\x05~W\x80c1<\xE5g\x14a\x05\xB1W\x80c6D\xE5\x15\x14a\x05\xF7W\x80c8\xD5.\x0F\x14a\x06\x0CW`\0\x80\xFD[\x80c\n(\xA4w\x11a\x03\xEEW\x80c\n(\xA4w\x14a\x04\xBAW\x80c\x15\xF4\xC6\x11\x14a\x04\xDAW\x80c\x18\x16\r\xDD\x14a\x04\xFCW\x80c\x1F\xC2\x9C\x01\x14a\x05\x12W\x80c#\xB8r\xDD\x14a\x05^W`\0\x80\xFD[\x80c\x01\xE1\xD1\x14\x14a\x04 W\x80c\x06\xFD\xDE\x03\x14a\x04HW\x80c\x07\xA2\xD1:\x14a\x04jW\x80c\t^\xA7\xB3\x14a\x04\x8AW[`\0\x80\xFD[4\x80\x15a\x04,W`\0\x80\xFD[Pa\x045a\x0E\x12V[`@Q\x90\x81R` \x01[`@Q\x80\x91\x03\x90\xF3[4\x80\x15a\x04TW`\0\x80\xFD[Pa\x04]a\x0EIV[`@Qa\x04?\x91\x90a9\xE6V[4\x80\x15a\x04vW`\0\x80\xFD[Pa\x045a\x04\x856`\x04a9\xF9V[a\x0E\xD7V[4\x80\x15a\x04\x96W`\0\x80\xFD[Pa\x04\xAAa\x04\xA56`\x04a:'V[a\x0F\x1DV[`@Q\x90\x15\x15\x81R` \x01a\x04?V[4\x80\x15a\x04\xC6W`\0\x80\xFD[Pa\x045a\x04\xD56`\x04a9\xF9V[a\x0F\x8AV[4\x80\x15a\x04\xE6W`\0\x80\xFD[Pa\x04\xFAa\x04\xF56`\x04a;\x06V[a\x0F\xC4V[\0[4\x80\x15a\x05\x08W`\0\x80\xFD[Pa\x045`\x02T\x81V[4\x80\x15a\x05\x1EW`\0\x80\xFD[Pa\x05F\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[`@Q`\x01`\x01`\xA0\x1B\x03\x90\x91\x16\x81R` \x01a\x04?V[4\x80\x15a\x05jW`\0\x80\xFD[Pa\x04\xAAa\x05y6`\x04a<\x10V[a\x13\x8CV[4\x80\x15a\x05\x8AW`\0\x80\xFD[Pa\x05\x99f\x08\xE1\xBC\x9B\xF0@\0\x81V[`@Q`\x01`\x01`@\x1B\x03\x90\x91\x16\x81R` \x01a\x04?V[4\x80\x15a\x05\xBDW`\0\x80\xFD[Pa\x05\xE5\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[`@Q`\xFF\x90\x91\x16\x81R` \x01a\x04?V[4\x80\x15a\x06\x03W`\0\x80\xFD[Pa\x045a\x14lV[4\x80\x15a\x06\x18W`\0\x80\xFD[P`\x06Ta\x05F\x90`\x01`\x01`\xA0\x1B\x03\x16\x81V[4\x80\x15a\x068W`\0\x80\xFD[Pa\x04\xFAa\x14\xC2V[4\x80\x15a\x06MW`\0\x80\xFD[Pa\x045a\x06\\6`\x04a<QV[a\x14\xCFV[4\x80\x15a\x06mW`\0\x80\xFD[Pa\x05F\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[4\x80\x15a\x06\xA1W`\0\x80\xFD[Pa\x045a\x06\xB06`\x04a9\xF9V[a\x15GV[4\x80\x15a\x06\xC1W`\0\x80\xFD[Pa\x045a\x15RV[4\x80\x15a\x06\xD6W`\0\x80\xFD[Pa\x04\xFAa\x15\xCDV[4\x80\x15a\x06\xEBW`\0\x80\xFD[Pa\x04\xFAa\x06\xFA6`\x04a9\xF9V[a\x16,V[4\x80\x15a\x07\x0BW`\0\x80\xFD[Pa\x045a\x07\x1A6`\x04a<nV[a\x17\x1CV[4\x80\x15a\x07+W`\0\x80\xFD[Pa\x04\xFAa\x07:6`\x04a9\xF9V[a\x17\xE0V[4\x80\x15a\x07KW`\0\x80\xFD[Pa\x045a\x07Z6`\x04a<QV[`\x03` R`\0\x90\x81R`@\x90 T\x81V[4\x80\x15a\x07xW`\0\x80\xFD[Pa\x04\xFAa\x18KV[4\x80\x15a\x07\x8DW`\0\x80\xFD[Pa\x045`\rT\x81V[4\x80\x15a\x07\xA3W`\0\x80\xFD[Pa\x04\xFAa\x07\xB26`\x04a9\xF9V[a\x18\x7FV[4\x80\x15a\x07\xC3W`\0\x80\xFD[P`\nTa\x05\x99\x90d\x01\0\0\0\0\x90\x04`\x01`\x01`@\x1B\x03\x16\x81V[4\x80\x15a\x07\xEBW`\0\x80\xFD[Pa\x045a\x07\xFA6`\x04a<QV[`\x05` R`\0\x90\x81R`@\x90 T\x81V[4\x80\x15a\x08\x18W`\0\x80\xFD[Pa\x04\xFAa\x08'6`\x04a9\xF9V[a\x19]V[4\x80\x15a\x088W`\0\x80\xFD[Pa\x05\x99g\x01cEx]\x8A\0\0\x81V[4\x80\x15a\x08TW`\0\x80\xFD[P`\x07T`\x01`\x01`\xA0\x1B\x03\x16a\x05FV[4\x80\x15a\x08rW`\0\x80\xFD[Pa\x045`\x0BT\x81V[4\x80\x15a\x08\x88W`\0\x80\xFD[P`\nTa\x05F\x90`\x01``\x1B\x90\x04`\x01`\x01`\xA0\x1B\x03\x16\x81V[4\x80\x15a\x08\xAFW`\0\x80\xFD[Pa\x045a\x08\xBE6`\x04a<nV[a\x1D\x1FV[4\x80\x15a\x08\xCFW`\0\x80\xFD[Pa\x04]a\x1D\x9CV[4\x80\x15a\x08\xE4W`\0\x80\xFD[Pa\x04\xAAa\x08\xF36`\x04a<QV[`\x0C` R`\0\x90\x81R`@\x90 T`\xFF\x16\x81V[4\x80\x15a\t\x14W`\0\x80\xFD[Pa\x04\xFAa\x1D\xA9V[4\x80\x15a\t)W`\0\x80\xFD[Pa\x05F\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[4\x80\x15a\t]W`\0\x80\xFD[Pa\x05F\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[4\x80\x15a\t\x91W`\0\x80\xFD[Pa\x04\xAAa\t\xA06`\x04a:'V[a\x1D\xBEV[4\x80\x15a\t\xB1W`\0\x80\xFD[Pa\x05F\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[a\t\xECa\t\xE76`\x04a<\x9EV[a\x1E$V[`@Qa\x04?\x91\x90a=\x12V[4\x80\x15a\n\x05W`\0\x80\xFD[Pa\x045a\x1F{V[4\x80\x15a\n\x1AW`\0\x80\xFD[Pa\x05F\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[4\x80\x15a\nNW`\0\x80\xFD[P`\tTa\nb\x90`\x01`\x01`\xF0\x1B\x03\x16\x81V[`@Q`\x01`\x01`\xF0\x1B\x03\x90\x91\x16\x81R` \x01a\x04?V[4\x80\x15a\n\x86W`\0\x80\xFD[Pa\x05F\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[4\x80\x15a\n\xBAW`\0\x80\xFD[Pa\x045a\n\xC96`\x04a9\xF9V[a!AV[4\x80\x15a\n\xDAW`\0\x80\xFD[Pa\x045a\n\xE96`\x04a=tV[a!`V[4\x80\x15a\n\xFAW`\0\x80\xFD[Pa\x04\xFAa\x0B\t6`\x04a=\xB6V[a\"SV[4\x80\x15a\x0B\x1AW`\0\x80\xFD[Pa\x045a\x0B)6`\x04a=tV[a#\xF1V[4\x80\x15a\x0B:W`\0\x80\xFD[Pa\x04\xFAa\x0BI6`\x04a9\xF9V[a%\"V[4\x80\x15a\x0BZW`\0\x80\xFD[P`\x0FTa\x04\xAA\x90`\xFF\x16\x81V[4\x80\x15a\x0BtW`\0\x80\xFD[P`\x08Ta\x05F\x90`\x01`\x01`\xA0\x1B\x03\x16\x81V[4\x80\x15a\x0B\x94W`\0\x80\xFD[P`\x08Ta\x05\xE5\x90`\x01`\xA0\x1B\x90\x04`\xFF\x16\x81V[4\x80\x15a\x0B\xB5W`\0\x80\xFD[Pa\x045a\x0B\xC46`\x04a<QV[a%\x8DV[4\x80\x15a\x0B\xD5W`\0\x80\xFD[Pa\x045a\x0B\xE46`\x04a9\xF9V[a%\xF7V[4\x80\x15a\x0B\xF5W`\0\x80\xFD[Pa\x04\xFAa\x0C\x046`\x04a=\xF9V[a&\x17V[4\x80\x15a\x0C\x15W`\0\x80\xFD[Pa\x045a\x0C$6`\x04a<QV[a&\xE4V[4\x80\x15a\x0C5W`\0\x80\xFD[Pa\x04\xFAa\x0CD6`\x04a>=V[a'\x06V[4\x80\x15a\x0CUW`\0\x80\xFD[Pa\x045a\x0Cd6`\x04a<QV[`\x01`\x01`\xA0\x1B\x03\x16`\0\x90\x81R`\x03` R`@\x90 T\x90V[4\x80\x15a\x0C\x8BW`\0\x80\xFD[Pa\x045a\x0C\x9A6`\x04a=\xB6V[`\x04` \x90\x81R`\0\x92\x83R`@\x80\x84 \x90\x91R\x90\x82R\x90 T\x81V[4\x80\x15a\x0C\xC3W`\0\x80\xFD[Pa\x04\xFAa\x0C\xD26`\x04a9\xF9V[a)JV[4\x80\x15a\x0C\xE3W`\0\x80\xFD[Pa\x04\xFAa)\xB5V[4\x80\x15a\x0C\xF8W`\0\x80\xFD[Pa\x05F\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[4\x80\x15a\r,W`\0\x80\xFD[Pa\x045a+VV[4\x80\x15a\rAW`\0\x80\xFD[Pa\x045`\x0ET\x81V[4\x80\x15a\rWW`\0\x80\xFD[Pa\x04\xFAa\rf6`\x04a>\xAEV[a+\xC3V[4\x80\x15a\rwW`\0\x80\xFD[Pa\x04\xFAa\r\x866`\x04a>\xC9V[a,xV[4\x80\x15a\r\x97W`\0\x80\xFD[Pa\x045a\r\xA66`\x04a9\xF9V[a-+V[4\x80\x15a\r\xB7W`\0\x80\xFD[Pa\x04\xFAa\r\xC66`\x04a<QV[a-6V[4\x80\x15a\r\xD7W`\0\x80\xFD[P`\nTa\r\xE8\x90c\xFF\xFF\xFF\xFF\x16\x81V[`@Qc\xFF\xFF\xFF\xFF\x90\x91\x16\x81R` \x01a\x04?V[4\x80\x15a\x0E\tW`\0\x80\xFD[Pa\x04\xFAa-\xD1V[`\0a\x0E\x1Ca\x15RV[a\x0E$a+VV[`\tTa\x0E:\x91\x90`\x01`\x01`\xF0\x1B\x03\x16a?\x05V[a\x0ED\x91\x90a?\x1DV[\x90P\x90V[`\0\x80Ta\x0EV\x90a?4V[\x80`\x1F\x01` \x80\x91\x04\x02` \x01`@Q\x90\x81\x01`@R\x80\x92\x91\x90\x81\x81R` \x01\x82\x80Ta\x0E\x82\x90a?4V[\x80\x15a\x0E\xCFW\x80`\x1F\x10a\x0E\xA4Wa\x01\0\x80\x83T\x04\x02\x83R\x91` \x01\x91a\x0E\xCFV[\x82\x01\x91\x90`\0R` `\0 \x90[\x81T\x81R\x90`\x01\x01\x90` \x01\x80\x83\x11a\x0E\xB2W\x82\x90\x03`\x1F\x16\x82\x01\x91[PPPPP\x81V[`\x02T`\0\x90\x80\x15a\x0E\xFBWa\x0E\xF6a\x0E\xEEa\x0E\x12V[\x84\x90\x83a0\xC0V[a\x0F\x16V[`\x08Ta\x0F\x16\x90\x84\x90`\x12\x90`\x01`\xA0\x1B\x90\x04`\xFF\x16a0WV[\x93\x92PPPV[3`\0\x81\x81R`\x04` \x90\x81R`@\x80\x83 `\x01`\x01`\xA0\x1B\x03\x87\x16\x80\x85R\x92R\x80\x83 \x85\x90UQ\x91\x92\x90\x91\x7F\x8C[\xE1\xE5\xEB\xEC}[\xD1OqB}\x1E\x84\xF3\xDD\x03\x14\xC0\xF7\xB2)\x1E[ \n\xC8\xC7\xC3\xB9%\x90a\x0Fx\x90\x86\x81R` \x01\x90V[`@Q\x80\x91\x03\x90\xA3P`\x01[\x92\x91PPV[`\x02T`\0\x90\x80\x15a\x0F\xAAWa\x0E\xF6\x81a\x0F\xA2a\x0E\x12V[\x85\x91\x90a0\xDFV[`\x08Ta\x0F\x16\x90\x84\x90`\x01`\xA0\x1B\x90\x04`\xFF\x16`\x12a0WV[`\x0FT`\xFF\x16\x15a\x0F\xE8W`@Qc/\"\x81\x97`\xE1\x1B\x81R`\x04\x01`@Q\x80\x91\x03\x90\xFD[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a\x10\x1BW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`@Q\x80\x91\x03\x90\xFD[`\0\x80[\x80`\x08\x14\x80a\x10WWP`\0\x85a\x107\x83`\x01a?\x05V[`\t\x81\x10a\x10GWa\x10Ga?\xA3V[` \x02\x01Q`\x01`\x01`\xA0\x1B\x03\x16\x14[\x15a\x10zW\x84\x81`\t\x81\x10a\x10nWa\x10na?\xA3V[` \x02\x01Q\x91Pa\x10\x8CV[a\x10\x85`\x02\x82a?\x05V[\x90Pa\x10\x1FV[P`\x01`\x01`\xA0\x1B\x03\x81\x16`\0\x90\x81R`\x0C` R`@\x90 T`\xFF\x16a\x10\xD1W`@Qc\x86C?+`\xE0\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x82\x16`\x04\x82\x01R`$\x01a\x10\x12V[`\x06T`\x01`\x01`\xA0\x1B\x03\x90\x81\x16\x90\x82\x16\x81\x90\x03a\x11\rW`@Qc\x06\x13\xAE\xCF`\xE1\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x82\x16`\x04\x82\x01R`$\x01a\x10\x12V[`\0a\x11\x17a+VV[`\tT\x90\x91P`\0\x90a\x114\x90\x83\x90`\x01`\x01`\xF0\x1B\x03\x16a?\x05V[`\x08T`@Qcp\xA0\x821`\xE0\x1B\x81R0`\x04\x82\x01R\x91\x92P`\0\x91\x82\x91`\x01`\x01`\xA0\x1B\x03\x16\x90cp\xA0\x821\x90`$\x01` `@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15a\x11\x82W=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a\x11\xA6\x91\x90a?\xB9V[\x11a\x11\xB1W\x82a\x11\xC8V[\x82a\x11\xBE\x85`\0\x19a1\rV[a\x11\xC8\x91\x90a?\x05V[\x90Pa\x11\xFE`\x01`\x01`\xA0\x1B\x03\x85\x16\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x83a1\xF6V[`@Qc\rO)\t`\xE2\x1B\x81R`\0\x90`\x01`\x01`\xA0\x1B\x03\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x16\x90c5<\xA4$\x90a\x12S\x90\x8C\x90\x8C\x90\x87\x90\x8D\x90`\x04\x01a?\xD2V[` `@Q\x80\x83\x03\x81`\0\x87Z\xF1\x15\x80\x15a\x12rW=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a\x12\x96\x91\x90a?\xB9V[`\x08T\x90\x91P`\x01`\xA0\x1B\x90\x04`\xFF\x16`\0a\x12\xB1\x88a2sV[\x90Pa\x12\xBD\x88\x84a4\x8EV[`\nTa\x12\xDB\x90`\x01``\x1B\x90\x04`\x01`\x01`\xA0\x1B\x03\x16\x83\x83a0WV[`\n\x80T`\x01`\x01`\xA0\x1B\x03\x92\x90\x92\x16`\x01``\x1B\x02k\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x90\x92\x16\x91\x90\x91\x17\x90U`\0a\x13\x1Da\x13\x17\x87\x85\x85a0WV[\x85a5\x8CV[`\t\x80T`\x01`\x01`\xF0\x1B\x03\x19\x16`\x01`\x01`\xF0\x1B\x03\x83\x16\x17\x90U`@Q\x81\x81R\x90\x91P`\x01`\x01`\xA0\x1B\x03\x8A\x81\x16\x91\x90\x8A\x16\x90\x7F\xB0\x85\x0B\x8E\x0F\x9E\x83\x15\xDD\xE3\xC9\xF9\xF3\x118(>k\xBE\x16\xCD)\xE8U.\xB1\xDC\xDF\x9F\xAC\x9E;\x90` \x01`@Q\x80\x91\x03\x90\xA3PPPPPPPPPPPPV[`\x01`\x01`\xA0\x1B\x03\x83\x16`\0\x90\x81R`\x04` \x90\x81R`@\x80\x83 3\x84R\x90\x91R\x81 T`\0\x19\x81\x14a\x13\xE8Wa\x13\xC3\x83\x82a?\x1DV[`\x01`\x01`\xA0\x1B\x03\x86\x16`\0\x90\x81R`\x04` \x90\x81R`@\x80\x83 3\x84R\x90\x91R\x90 U[`\x01`\x01`\xA0\x1B\x03\x85\x16`\0\x90\x81R`\x03` R`@\x81 \x80T\x85\x92\x90a\x14\x10\x90\x84\x90a?\x1DV[\x90\x91UPP`\x01`\x01`\xA0\x1B\x03\x80\x85\x16`\0\x81\x81R`\x03` R`@\x90\x81\x90 \x80T\x87\x01\x90UQ\x90\x91\x87\x16\x90`\0\x80Q` aFM\x839\x81Q\x91R\x90a\x14Y\x90\x87\x81R` \x01\x90V[`@Q\x80\x91\x03\x90\xA3P`\x01\x94\x93PPPPV[`\0\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0F\x14a\x14\x9DWa\x0EDa5\xA2V[P\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x90V[a\x14\xCDa\x06\xFAa+VV[V[`\x0FT`\0\x90`\xFF\x16\x15a\x14\xE5WP`\0\x91\x90PV[`\x0ET`\rT`\0\x19\x82\x14\x80\x15a\x14\xFDWP`\0\x19\x81\x14[\x15a\x15\rWP`\0\x19\x93\x92PPPV[`\0a\x15\"a\x15\x1B\x86a&\xE4V[\x84\x90a6<V[\x90P`\0a\x151a\x15\x1Ba\x0E\x12V[\x90Pa\x15=\x82\x82a5\x8CV[\x96\x95PPPPPPV[`\0a\x0F\x84\x82a\x0E\xD7V[`\nT`\0\x90`\x01`\x01`@\x1B\x03d\x01\0\0\0\0\x82\x04\x16\x90c\xFF\xFF\xFF\xFF\x16a\x15z\x81\x83a?\x05V[B\x10a\x15\x89W`\0\x92PPP\x90V[`\nT`\x01``\x1B\x90\x04`\x01`\x01`\xA0\x1B\x03\x16\x81a\x15\xA7\x84Ba?\x1DV[a\x15\xB1\x90\x83a@nV[a\x15\xBB\x91\x90a@\x8DV[a\x15\xC5\x90\x82a?\x1DV[\x93PPPP\x90V[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a\x15\xF7W`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\x0F\x80T`\xFF\x19\x16\x90U`@Q\x7F\t\xBE\xC6\x19\x9BW\x12\xAB\xE9\xCB\xB7\x19\x97\xB0oaI\xA4S\xEC\xA5\xAB\xEC\x15\xD5(\xE1Ne\xE1`^\x90`\0\x90\xA1V[`\x0FT`\xFF\x16\x15a\x16PW`@Qc/\"\x81\x97`\xE1\x1B\x81R`\x04\x01`@Q\x80\x91\x03\x90\xFD[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a\x16zW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\x06T`\t\x80T`\x01`\x01`\xA0\x1B\x03\x90\x92\x16\x91\x83\x91\x90`\0\x90a\x16\xA7\x90\x84\x90`\x01`\x01`\xF0\x1B\x03\x16a@\xAFV[\x92Pa\x01\0\n\x81T\x81`\x01`\x01`\xF0\x1B\x03\x02\x19\x16\x90\x83`\x01`\x01`\xF0\x1B\x03\x16\x02\x17\x90UPa\x16\xD5\x81\x83a4\x8EV[\x80`\x01`\x01`\xA0\x1B\x03\x16\x7F\xB6\xF4\xB9%^\xE9\x89\xB1\x84J\x8Ek}\xA8\x90k\x81 \x0C8\xF7\xB3\xF4\xF1\xAC1\xE9\xA2A\xC7WP\x83`@Qa\x17\x10\x91\x81R` \x01\x90V[`@Q\x80\x91\x03\x90\xA2PPV[`\0a\x17'\x83a-+V[\x90P\x80`\0\x03a\x17gW`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`\x0B`$\x82\x01RjZERO_SHARES`\xA8\x1B`D\x82\x01R`d\x01a\x10\x12V[a\x17r\x83\x82\x84a6VV[`\x06Ta\x17\x8A\x90`\x01`\x01`\xA0\x1B\x03\x1630\x86a6\xB2V[a\x17\x94\x82\x82a7<V[`@\x80Q\x84\x81R` \x81\x01\x83\x90R`\x01`\x01`\xA0\x1B\x03\x84\x16\x913\x91\x7F\xDC\xBC\x1C\x05$\x0F1\xFF:\xD0g\xEF\x1E\xE3\\\xE4\x99wbu.:\tR\x84uED\xF4\xC7\t\xD7\x91\x01[`@Q\x80\x91\x03\x90\xA3a\x0F\x84V[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a\x18\nW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\x0BT`@\x80Q\x91\x82R` \x82\x01\x83\x90R\x7FQ:\xC1\x9C\xBB\xAA\xADNE\x0Cs.\xD3v5\x17\x8B}\x83\xBF\x8E\x84\xA9@\xFF\xE7\xE0R\xC9\xC7\xCA\xA2\x91\x01`@Q\x80\x91\x03\x90\xA1`\x0BUV[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a\x18uW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[a\x14\xCD`\0a7\x96V[`\x0FT`\xFF\x16\x15a\x18\xA3W`@Qc/\"\x81\x97`\xE1\x1B\x81R`\x04\x01`@Q\x80\x91\x03\x90\xFD[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a\x18\xCDW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\x06T`\x01`\x01`\xA0\x1B\x03\x16a\x18\xE3\x81\x83a1\rV[`\t\x80T`\0\x90a\x18\xFE\x90\x84\x90`\x01`\x01`\xF0\x1B\x03\x16a@\xDAV[\x92Pa\x01\0\n\x81T\x81`\x01`\x01`\xF0\x1B\x03\x02\x19\x16\x90\x83`\x01`\x01`\xF0\x1B\x03\x16\x02\x17\x90UP\x80`\x01`\x01`\xA0\x1B\x03\x16\x7F\xDEL\xC1\xD2\xDDA\x97\n\x82z\x8D\xF5^\xFD\x18\xC5'\xC1|&HXG\xD6\x80\xCC+Lq\xE7\xA8|\x83`@Qa\x17\x10\x91\x81R` \x01\x90V[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a\x19\x87W`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`@Qc\x01\xE9\xA6\x95`\xE4\x1B\x81R0`\x04\x82\x01R`\0\x19`$\x82\x01R\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`\x01`\x01`\xA0\x1B\x03\x16\x90c\x1E\x9AiP\x90`D\x01`\0`@Q\x80\x83\x03\x81`\0\x87\x80;\x15\x80\x15a\x19\xF0W`\0\x80\xFD[PZ\xF1\x15\x80\x15a\x1A\x04W=`\0\x80>=`\0\xFD[PP`@Qcp\xA0\x821`\xE0\x1B\x81R0`\x04\x82\x01R`\0\x92P\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`\x01`\x01`\xA0\x1B\x03\x16\x91Pcp\xA0\x821\x90`$\x01` `@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15a\x1AoW=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a\x1A\x93\x91\x90a?\xB9V[`\x06T`@\x80Q`\x03\x80\x82R`\x80\x82\x01\x90\x92R\x92\x93P`\x01`\x01`\xA0\x1B\x03\x90\x91\x16\x91`\0\x91` \x82\x01``\x806\x837\x01\x90PP\x90P\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81`\0\x81Q\x81\x10a\x1A\xFCWa\x1A\xFCa?\xA3V[` \x02` \x01\x01\x90`\x01`\x01`\xA0\x1B\x03\x16\x90\x81`\x01`\x01`\xA0\x1B\x03\x16\x81RPP\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81`\x01\x81Q\x81\x10a\x1BPWa\x1BPa?\xA3V[` \x02` \x01\x01\x90`\x01`\x01`\xA0\x1B\x03\x16\x90\x81`\x01`\x01`\xA0\x1B\x03\x16\x81RPP\x81\x81`\x02\x81Q\x81\x10a\x1B\x84Wa\x1B\x84a?\xA3V[`\x01`\x01`\xA0\x1B\x03\x92\x83\x16` \x91\x82\x02\x92\x90\x92\x01\x01Ra\x1B\xE7\x90\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x16\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x85a1\xF6V[`\0`\x01`\x01`\xA0\x1B\x03\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x16c8\xED\x179\x85\x87\x850a\x1C'B`<a?\x05V[`@Q\x86c\xFF\xFF\xFF\xFF\x16`\xE0\x1B\x81R`\x04\x01a\x1CG\x95\x94\x93\x92\x91\x90aAFV[`\0`@Q\x80\x83\x03\x81`\0\x87Z\xF1\x15\x80\x15a\x1CfW=`\0\x80>=`\0\xFD[PPPP`@Q=`\0\x82>`\x1F=\x90\x81\x01`\x1F\x19\x16\x82\x01`@Ra\x1C\x8E\x91\x90\x81\x01\x90aA\x82V[\x90P`\0\x81`\x01\x83Qa\x1C\xA1\x91\x90a?\x1DV[\x81Q\x81\x10a\x1C\xB1Wa\x1C\xB1a?\xA3V[` \x90\x81\x02\x91\x90\x91\x01\x01Q`\x0FT\x90\x91P`\xFF\x16a\x1C\xD3Wa\x1C\xD3\x84\x82a4\x8EV[`@\x80Q\x86\x81R` \x81\x01\x83\x90R`\x01`\x01`\xA0\x1B\x03\x86\x16\x91\x7F\xC0\x03\xF4[\xC2$\xD1\x16\xB6\xD0y\x10\rJ\xB5z[\x963$LG\xA5\xA9*\x17l[y\xA8_(\x91\x01`@Q\x80\x91\x03\x90\xA2PPPPPPV[`\0a\x1D*\x83a!AV[\x90Pa\x1D7\x81\x84\x84a6VV[`\x06Ta\x1DO\x90`\x01`\x01`\xA0\x1B\x03\x1630\x84a6\xB2V[a\x1DY\x82\x84a7<V[`@\x80Q\x82\x81R` \x81\x01\x85\x90R`\x01`\x01`\xA0\x1B\x03\x84\x16\x913\x91\x7F\xDC\xBC\x1C\x05$\x0F1\xFF:\xD0g\xEF\x1E\xE3\\\xE4\x99wbu.:\tR\x84uED\xF4\xC7\t\xD7\x91\x01a\x17\xD3V[`\x01\x80Ta\x0EV\x90a?4V[`\tTa\x14\xCD\x90`\x01`\x01`\xF0\x1B\x03\x16a\x18\x7FV[3`\0\x90\x81R`\x03` R`@\x81 \x80T\x83\x91\x90\x83\x90a\x1D\xDF\x90\x84\x90a?\x1DV[\x90\x91UPP`\x01`\x01`\xA0\x1B\x03\x83\x16`\0\x81\x81R`\x03` R`@\x90\x81\x90 \x80T\x85\x01\x90UQ3\x90`\0\x80Q` aFM\x839\x81Q\x91R\x90a\x0Fx\x90\x86\x81R` \x01\x90V[``\x81`\x01`\x01`@\x1B\x03\x81\x11\x15a\x1E>Wa\x1E>a:SV[`@Q\x90\x80\x82R\x80` \x02` \x01\x82\x01`@R\x80\x15a\x1EqW\x81` \x01[``\x81R` \x01\x90`\x01\x90\x03\x90\x81a\x1E\\W\x90P[P\x90P`\0[\x82\x81\x10\x15a\x1FtW`\0\x800\x86\x86\x85\x81\x81\x10a\x1E\x95Wa\x1E\x95a?\xA3V[\x90P` \x02\x81\x01\x90a\x1E\xA7\x91\x90aB'V[`@Qa\x1E\xB5\x92\x91\x90aBtV[`\0`@Q\x80\x83\x03\x81\x85Z\xF4\x91PP=\x80`\0\x81\x14a\x1E\xF0W`@Q\x91P`\x1F\x19`?=\x01\x16\x82\x01`@R=\x82R=`\0` \x84\x01>a\x1E\xF5V[``\x91P[P\x91P\x91P\x81a\x1FAW`D\x81Q\x10\x15a\x1F\x0EW`\0\x80\xFD[`\x04\x81\x01\x90P\x80\x80` \x01\x90Q\x81\x01\x90a\x1F(\x91\x90aB\x84V[`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x91\x90a9\xE6V[\x80\x84\x84\x81Q\x81\x10a\x1FTWa\x1FTa?\xA3V[` \x02` \x01\x01\x81\x90RPPP\x80\x80a\x1Fl\x90aC\x17V[\x91PPa\x1EwV[P\x92\x91PPV[`\x07T`\0\x90`\x01`\x01`\xA0\x1B\x03\x163\x14a\x1F\xA8W`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`@\x80Q`\x01\x80\x82R\x81\x83\x01\x90\x92R`\0\x91` \x80\x83\x01\x90\x806\x837PP`\x08T\x82Q\x92\x93P`\x01`\x01`\xA0\x1B\x03\x16\x91\x83\x91P`\0\x90a\x1F\xEAWa\x1F\xEAa?\xA3V[`\x01`\x01`\xA0\x1B\x03\x92\x83\x16` \x91\x82\x02\x92\x90\x92\x01\x01R`@Qc1\x11\xE7\xB3`\xE0\x1B\x81R\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x90\x91\x16\x90c1\x11\xE7\xB3\x90a L\x90\x84\x90`\0\x19\x900\x90`\x04\x01aC0V[` `@Q\x80\x83\x03\x81`\0\x87Z\xF1\x15\x80\x15a kW=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a \x8F\x91\x90a?\xB9V[\x91P\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`\x01`\x01`\xA0\x1B\x03\x16cxz\x08\xA6`@Q\x81c\xFF\xFF\xFF\xFF\x16`\xE0\x1B\x81R`\x04\x01`\0`@Q\x80\x83\x03\x81`\0\x87\x80;\x15\x80\x15a \xECW`\0\x80\xFD[PZ\xF1\x15\x80\x15a!\0W=`\0\x80>=`\0\xFD[PPPP\x7F\x8C\xA0\x18\x8D\x97p\xB3\x83\xD1\xA7\xA2\xDD\xFE^\x0C\x1F\x02\x90\x84H\x1ASi}lQR\\G\xA8\xD8\x8E\x82`@Qa!5\x91\x81R` \x01\x90V[`@Q\x80\x91\x03\x90\xA1P\x90V[`\x02T`\0\x90\x80\x15a\x0E\xFBWa\x0E\xF6a!Xa\x0E\x12V[\x84\x90\x83a0\xDFV[`\0a!k\x84a\x0F\x8AV[\x90P3`\x01`\x01`\xA0\x1B\x03\x83\x16\x14a!\xDBW`\x01`\x01`\xA0\x1B\x03\x82\x16`\0\x90\x81R`\x04` \x90\x81R`@\x80\x83 3\x84R\x90\x91R\x90 T`\0\x19\x81\x14a!\xD9Wa!\xB4\x82\x82a?\x1DV[`\x01`\x01`\xA0\x1B\x03\x84\x16`\0\x90\x81R`\x04` \x90\x81R`@\x80\x83 3\x84R\x90\x91R\x90 U[P[a!\xE7\x84\x82\x85\x85a7\xE8V[a!\xF1\x82\x82a8cV[`@\x80Q\x85\x81R` \x81\x01\x83\x90R`\x01`\x01`\xA0\x1B\x03\x80\x85\x16\x92\x90\x86\x16\x913\x91\x7F\xFB\xDEy} \x1Ch\x1B\x91\x05e)\x11\x9E\x0B\x02@|{\xB9jJ,u\xC0\x1F\xC9fr2\xC8\xDB\x91\x01`@Q\x80\x91\x03\x90\xA4`\x06Ta\x0E\xF6\x90`\x01`\x01`\xA0\x1B\x03\x16\x84\x86a8\xC5V[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a\"}W`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\x06T`\x01`\x01`\xA0\x1B\x03\x83\x81\x16\x91\x16\x14\x80a\"\xA6WP`\x08T`\x01`\x01`\xA0\x1B\x03\x83\x81\x16\x91\x16\x14[\x80a\"\xB9WP`\x01`\x01`\xA0\x1B\x03\x82\x160\x14[\x80a\"\xF5WP\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`\x01`\x01`\xA0\x1B\x03\x16\x82`\x01`\x01`\xA0\x1B\x03\x16\x14[\x15a#\x1EW`@Qc9\xB8T\x91`\xE0\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x83\x16`\x04\x82\x01R`$\x01a\x10\x12V[`@Qcp\xA0\x821`\xE0\x1B\x81R0`\x04\x82\x01R`\0\x90`\x01`\x01`\xA0\x1B\x03\x84\x16\x90cp\xA0\x821\x90`$\x01` `@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15a#eW=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a#\x89\x91\x90a?\xB9V[\x90Pa#\x9F`\x01`\x01`\xA0\x1B\x03\x84\x16\x83\x83a8\xC5V[\x81`\x01`\x01`\xA0\x1B\x03\x16\x83`\x01`\x01`\xA0\x1B\x03\x16\x7F\xEDg\x93(\xAE\xBFt\xED\xE7z\xE0\x9E\xFC\xF3n\x90$O\x83d=\xAD\xAC\x1C-\x9F\x0B!\xA4oj\xB7\x83`@Qa#\xE4\x91\x81R` \x01\x90V[`@Q\x80\x91\x03\x90\xA3PPPV[`\x003`\x01`\x01`\xA0\x1B\x03\x83\x16\x14a$aW`\x01`\x01`\xA0\x1B\x03\x82\x16`\0\x90\x81R`\x04` \x90\x81R`@\x80\x83 3\x84R\x90\x91R\x90 T`\0\x19\x81\x14a$_Wa$:\x85\x82a?\x1DV[`\x01`\x01`\xA0\x1B\x03\x84\x16`\0\x90\x81R`\x04` \x90\x81R`@\x80\x83 3\x84R\x90\x91R\x90 U[P[a$j\x84a\x15GV[\x90P\x80`\0\x03a$\xAAW`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`\x0B`$\x82\x01RjZERO_ASSETS`\xA8\x1B`D\x82\x01R`d\x01a\x10\x12V[a$\xB6\x81\x85\x85\x85a7\xE8V[a$\xC0\x82\x85a8cV[`@\x80Q\x82\x81R` \x81\x01\x86\x90R`\x01`\x01`\xA0\x1B\x03\x80\x85\x16\x92\x90\x86\x16\x913\x91\x7F\xFB\xDEy} \x1Ch\x1B\x91\x05e)\x11\x9E\x0B\x02@|{\xB9jJ,u\xC0\x1F\xC9fr2\xC8\xDB\x91\x01`@Q\x80\x91\x03\x90\xA4`\x06Ta\x0E\xF6\x90`\x01`\x01`\xA0\x1B\x03\x16\x84\x83a8\xC5V[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a%LW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\x0ET`@\x80Q\x91\x82R` \x82\x01\x83\x90R\x7F\xCF\xB5\xA4T\xB8\xAA}\xC0N\xCB[\xC1A\x0B*W\x96\x9C\xA1\xD6\x7Ff\xD5e\x19o`\xC6\xF9\x97T\x04\x91\x01`@Q\x80\x91\x03\x90\xA1`\x0EUV[`\x0FT`\0\x90`\xFF\x16\x15a%\xA3WP`\0\x91\x90PV[`\x0ET`\rT`\0\x19\x82\x14\x80\x15a%\xBBWP`\0\x19\x81\x14[\x15a%\xCBWP`\0\x19\x93\x92PPPV[`\0a%\xD9a\x15\x1B\x86a&\xE4V[\x90P`\0a%\xE8a\x15\x1Ba\x0E\x12V[\x90Pa\x15=a\x0B\xE4\x83\x83a5\x8CV[`\x02T`\0\x90\x80\x15a\x0F\xAAWa\x0E\xF6\x81a&\x0Fa\x0E\x12V[\x85\x91\x90a0\xC0V[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a&AW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\x01`\x01`\xA0\x1B\x03\x82\x81\x16`\0\x90\x81R`\x0C` R`@\x90 \x80T`\xFF\x19\x16\x83\x15\x80\x15\x91\x82\x17\x90\x92U`\x06T\x90\x92\x16\x91a&\x8CWP\x80`\x01`\x01`\xA0\x1B\x03\x16\x83`\x01`\x01`\xA0\x1B\x03\x16\x14[\x15a&\x9AWa&\x9A\x81a9=V[\x82`\x01`\x01`\xA0\x1B\x03\x16\x7F\xD6\0\xB94\x86\x03\xC6\xDE\xFF4\xB4\xE0\xB2\x8B`\xE1\xC8\x03l\x80gA\xB9\xE6\xD9\x002\xE7\xF3}\xD2\x7F\x83`@Qa&\xD7\x91\x15\x15\x81R` \x01\x90V[`@Q\x80\x91\x03\x90\xA2PPPV[`\x01`\x01`\xA0\x1B\x03\x81\x16`\0\x90\x81R`\x03` R`@\x81 Ta\x0F\x84\x90a\x0E\xD7V[B\x84\x10\x15a'VW`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`\x17`$\x82\x01R\x7FPERMIT_DEADLINE_EXPIRED\0\0\0\0\0\0\0\0\0`D\x82\x01R`d\x01a\x10\x12V[`\0`\x01a'ba\x14lV[`\x01`\x01`\xA0\x1B\x03\x8A\x81\x16`\0\x81\x81R`\x05` \x90\x81R`@\x91\x82\x90 \x80T`\x01\x81\x01\x90\x91U\x82Q\x7Fnq\xED\xAE\x12\xB1\xB9\x7FM\x1F`7\x0F\xEF\x10\x10_\xA2\xFA\xAE\x01&\x11J\x16\x9Cd\x84]a&\xC9\x81\x84\x01R\x80\x84\x01\x94\x90\x94R\x93\x8D\x16``\x84\x01R`\x80\x83\x01\x8C\x90R`\xA0\x83\x01\x93\x90\x93R`\xC0\x80\x83\x01\x8B\x90R\x81Q\x80\x84\x03\x90\x91\x01\x81R`\xE0\x83\x01\x90\x91R\x80Q\x92\x01\x91\x90\x91 a\x19\x01`\xF0\x1Ba\x01\0\x83\x01Ra\x01\x02\x82\x01\x92\x90\x92Ra\x01\"\x81\x01\x91\x90\x91Ra\x01B\x01`@\x80Q`\x1F\x19\x81\x84\x03\x01\x81R\x82\x82R\x80Q` \x91\x82\x01 `\0\x84R\x90\x83\x01\x80\x83RR`\xFF\x87\x16\x90\x82\x01R``\x81\x01\x85\x90R`\x80\x81\x01\x84\x90R`\xA0\x01` `@Q` \x81\x03\x90\x80\x84\x03\x90\x85Z\xFA\x15\x80\x15a(nW=`\0\x80>=`\0\xFD[PP`@Q`\x1F\x19\x01Q\x91PP`\x01`\x01`\xA0\x1B\x03\x81\x16\x15\x80\x15\x90a(\xA4WP\x87`\x01`\x01`\xA0\x1B\x03\x16\x81`\x01`\x01`\xA0\x1B\x03\x16\x14[a(\xE1W`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`\x0E`$\x82\x01Rm$\xA7+ \xA6$\xA2/\xA9\xA4\xA3\xA7\"\xA9`\x91\x1B`D\x82\x01R`d\x01a\x10\x12V[`\x01`\x01`\xA0\x1B\x03\x90\x81\x16`\0\x90\x81R`\x04` \x90\x81R`@\x80\x83 \x8A\x85\x16\x80\x85R\x90\x83R\x92\x81\x90 \x89\x90UQ\x88\x81R\x91\x92\x8A\x16\x91\x7F\x8C[\xE1\xE5\xEB\xEC}[\xD1OqB}\x1E\x84\xF3\xDD\x03\x14\xC0\xF7\xB2)\x1E[ \n\xC8\xC7\xC3\xB9%\x91\x01`@Q\x80\x91\x03\x90\xA3PPPPPPPV[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a)tW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\rT`@\x80Q\x91\x82R` \x82\x01\x83\x90R\x7F\x1F!C-\xD7\xB8\xEA\xD6M.|\x06\xA7K\xAF\x13x;-/qS\xF0\x99\xE2\xC4\xCA\xBC<]\xBE\xC6\x91\x01`@Q\x80\x91\x03\x90\xA1`\rUV[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a)\xDFW`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[0`\0\x90\x81R`\x03` R`@\x81 T\x90a)\xF9\x82a\x15GV[\x90P\x80`\0\x03a*9W`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`\x0B`$\x82\x01RjZERO_ASSETS`\xA8\x1B`D\x82\x01R`d\x01a\x10\x12V[a*G\x81`\0\x80`\0a7\xE8V[a*Q0\x83a8cV[`\x06T`\x01`\x01`\xA0\x1B\x03\x16a*\x88\x81\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x84a1\xF6V[`\x0BT`@Qc\x1F\xFB\xE7\xF9`\xE0\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x83\x81\x16`\x04\x83\x01R`$\x82\x01\x92\x90\x92R`D\x81\x01\x84\x90R\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x90\x91\x16\x90c\x1F\xFB\xE7\xF9\x90`d\x01`\0`@Q\x80\x83\x03\x81`\0\x87\x80;\x15\x80\x15a*\xFFW`\0\x80\xFD[PZ\xF1\x15\x80\x15a+\x13W=`\0\x80>=`\0\xFD[PP`@\x80Q\x86\x81R` \x81\x01\x86\x90R\x7F\x15\xE3\xE2\xA7jh9\xC2D\xC1\xED\n\x82\x1C#<\xE8\xAFU-\xFF\xCB\x85`\x89\xEA\xE6\xCB\xBB\xB7\x1E\xA6\x93P\x01\x90P`@Q\x80\x91\x03\x90\xA1PPPV[`\x06T`@Qcp\xA0\x821`\xE0\x1B\x81R0`\x04\x82\x01R`\0\x91`\x01`\x01`\xA0\x1B\x03\x16\x90cp\xA0\x821\x90`$\x01` `@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15a+\x9FW=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a\x0ED\x91\x90a?\xB9V[`\x0FT`\xFF\x16\x15a+\xE7W`@Qc/\"\x81\x97`\xE1\x1B\x81R`\x04\x01`@Q\x80\x91\x03\x90\xFD[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a,\x11W`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[\x80\x15a,,W`\x06Ta,,\x90`\x01`\x01`\xA0\x1B\x03\x16a9=V[`\x0F\x80T`\xFF\x19\x16`\x01\x17\x90U`@Q\x7Fn|\xABj\xCC\xF9\xB0\x93\xA6\xB8\0\xED\x92\r\xF6\x10\xDBM\xBF\xD8\x80t\x17\xF5\xF2\xC4\x8D\xD6l\x03\xBA\xBB\x90a,m\x90\x83\x15\x15\x81R` \x01\x90V[`@Q\x80\x91\x03\x90\xA1PV[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a,\xA2W`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\0a,\xACa\x15RV[\x11\x15a,\xCBW`@Qck\x86c\x93`\xE1\x1B\x81R`\x04\x01`@Q\x80\x91\x03\x90\xFD[`\nT`@\x80Qc\xFF\xFF\xFF\xFF\x92\x83\x16\x81R\x91\x83\x16` \x83\x01R\x7F<9+D\xAD\x99\xB1\xFB|\x87\xAE{\x91L\xBD\x1D\xE1\xAE\xED>\x93i\xA2\r0p\xCCw\x16i\x89\x8F\x91\x01`@Q\x80\x91\x03\x90\xA1`\n\x80Tc\xFF\xFF\xFF\xFF\x19\x16c\xFF\xFF\xFF\xFF\x92\x90\x92\x16\x91\x90\x91\x17\x90UV[`\0a\x0F\x84\x82a%\xF7V[`\x07T`\x01`\x01`\xA0\x1B\x03\x163\x14a-`W`@QbF\x1B\xCD`\xE5\x1B\x81R`\x04\x01a\x10\x12\x90a?nV[`\x01`\x01`\xA0\x1B\x03\x81\x16a-\xC5W`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`&`$\x82\x01R\x7FOwnable: new owner is the zero a`D\x82\x01Reddress`\xD0\x1B`d\x82\x01R`\x84\x01a\x10\x12V[a-\xCE\x81a7\x96V[PV[`\0a-\xDBa\x15RV[\x90Pa-\xEF`\x07T`\x01`\x01`\xA0\x1B\x03\x16\x90V[`\x01`\x01`\xA0\x1B\x03\x163`\x01`\x01`\xA0\x1B\x03\x16\x14\x15\x80\x15a.\x10WP`\0\x81\x11[\x15a..W`@Qck\x86c\x93`\xE1\x1B\x81R`\x04\x01`@Q\x80\x91\x03\x90\xFD[`\x08T`\0\x90a.I\x90`\x01`\xA0\x1B\x90\x04`\xFF\x16`\naDGV[\x90P`\0a.V\x82a%\xF7V[`\tT`\x08T`@Qcp\xA0\x821`\xE0\x1B\x81R0`\x04\x82\x01R\x92\x93P`\x01`\x01`\xF0\x1B\x03\x90\x91\x16\x91`\0\x91`\x01`\x01`\xA0\x1B\x03\x16\x90cp\xA0\x821\x90`$\x01` `@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15a.\xB1W=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a.\xD5\x91\x90a?\xB9V[`\nT\x90\x91P`\0\x90a.\xF9\x90d\x01\0\0\0\0\x90\x04`\x01`\x01`@\x1B\x03\x16Ba?\x1DV[\x90P`\0c\x01\xE13\x80g\r\xE0\xB6\xB3\xA7d\0\0f\x08\xE1\xBC\x9B\xF0@\0a/\x1D\x85\x87a@nV[a/'\x91\x90a@nV[a/1\x91\x90a@\x8DV[a/;\x91\x90a@\x8DV[\x90P`\0a/J\x82\x87\x89a0\xC0V[\x90P`\0a/X\x85\x87a6<V[\x90P`\0a/n\x82g\x01cEx]\x8A\0\0a9yV[\x90P`\0a/}\x82\x8A\x8Ca0\xC0V[\x90Pa/\x920a/\x8D\x83\x87a?\x05V[a7<V[a/\x9Fa\x15\x1B\x83\x87a?\x05V[a/\xA9\x90\x8Ca?\x05V[`\n\x80Tc\xFF\xFF\xFF\xFF\x90\x81\x16`\x01``\x1B`\x01`\x01`\xA0\x1B\x03\x94\x90\x94\x16\x93\x90\x93\x02k\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\0\0\0\0\x19\x16\x92\x90\x92\x17B\x90\x92\x16d\x01\0\0\0\0\x02\x91\x90\x91\x17\x90U`\t\x80T`\x01`\x01`\xF0\x1B\x03\x19\x16`\x01`\x01`\xF0\x1B\x03\x89\x16\x17\x90U`@\x80Q\x85\x81R` \x81\x01\x83\x90R\x90\x81\x01\x84\x90R\x7F\xFD#\xCE\xFBI\x92\xBC\x1B\x95\xDF\x1FTN\xFD\xB9\x90\x8D\x90\x12\x885D!'\x0Fz\x8F\x8A\r\xFE\xC2\n\x90``\x01`@Q\x80\x91\x03\x90\xA1PPPPPPPPPPPV[`\0\x81`\xFF\x16\x83`\xFF\x16\x03a0mWP\x82a\x0F\x16V[\x81`\xFF\x16\x83`\xFF\x16\x10\x15a0\xA1Wa0\x85\x83\x83aDVV[a0\x90\x90`\naDGV[a0\x9A\x90\x85a@nV[\x90Pa\x0F\x16V[a0\xAB\x82\x84aDVV[a0\xB6\x90`\naDGV[a0\x9A\x90\x85a@\x8DV[\x82\x82\x02\x81\x15\x15\x84\x15\x85\x83\x04\x85\x14\x17\x16a0\xD8W`\0\x80\xFD[\x04\x92\x91PPV[\x82\x82\x02\x81\x15\x15\x84\x15\x85\x83\x04\x85\x14\x17\x16a0\xF7W`\0\x80\xFD[`\x01\x82`\x01\x83\x03\x04\x01\x81\x15\x15\x02\x90P\x93\x92PPPV[`@Qc\x1AL\xA3{`\xE2\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x83\x81\x16`\x04\x83\x01R`$\x82\x01\x83\x90R0`D\x83\x01R`\0\x91\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x90\x91\x16\x90ci2\x8D\xEC\x90`d\x01` `@Q\x80\x83\x03\x81`\0\x87Z\xF1\x15\x80\x15a1\x87W=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a1\xAB\x91\x90a?\xB9V[\x90P\x82`\x01`\x01`\xA0\x1B\x03\x16\x7F\x844<\xC9v!\xDB\xC5\x1B\xCE\x19\x8A%\x82\x18\xA2\x06<\x16\x0EMG?\xF5\x10\x07\xC7\xA6\x0E\xEC_\xA1\x82`@Qa1\xE8\x91\x81R` \x01\x90V[`@Q\x80\x91\x03\x90\xA2\x92\x91PPV[`\0`@Qc\t^\xA7\xB3`\xE0\x1B\x81R\x83`\x04\x82\x01R\x82`$\x82\x01R` `\0`D\x83`\0\x89Z\xF1=\x15`\x1F=\x11`\x01`\0Q\x14\x16\x17\x16\x91PP\x80a2mW`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`\x0E`$\x82\x01Rm\x10T\x14\x14\x93\xD5\x91W\xD1\x90RS\x11Q`\x92\x1B`D\x82\x01R`d\x01a\x10\x12V[PPPPV[`@Qc5\xEAju`\xE0\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x82\x81\x16`\x04\x83\x01R`\0\x91\x82\x91\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x16\x90c5\xEAju\x90`$\x01a\x01\x80`@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15a2\xDFW=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a3\x03\x91\x90aD\xAFV[P\x92\x9APP`\x01`\x01`\xA0\x1B\x03\x8A\x16\x98Pa3E\x97PPPPPPPPW`@Qc\n\\^}`\xE1\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x84\x16`\x04\x82\x01R`$\x01a\x10\x12V[`\0`\x08`\x14\x90T\x90a\x01\0\n\x90\x04`\xFF\x16\x90P\x83`\x01`\x01`\xA0\x1B\x03\x16c1<\xE5g`@Q\x81c\xFF\xFF\xFF\xFF\x16`\xE0\x1B\x81R`\x04\x01` `@Q\x80\x83\x03\x81\x86Z\xFA\x15\x80\x15a3\x97W=`\0\x80>=`\0\xFD[PPPP`@Q=`\x1F\x19`\x1F\x82\x01\x16\x82\x01\x80`@RP\x81\x01\x90a3\xBB\x91\x90aE\x90V[\x92P`\x12\x83`\xFF\x16\x11\x15a3\xEEW`@Qc\x06Q\x98/`\xE1\x1B\x81R`\xFF\x84\x16`\x04\x82\x01R`\x12`$\x82\x01R`D\x01a\x10\x12V[`\xFF\x81\x16\x15\x80\x15\x90a4\x06WP\x82`\xFF\x16\x81`\xFF\x16\x14\x15[\x15a4DW`\x0ET`\rT`\0\x19\x82\x14a4)Wa4%\x82\x84\x87a0WV[`\x0EU[`\0\x19\x81\x14a4AWa4=\x81\x84\x87a0WV[`\rU[PP[P`\x06\x80T`\x01`\x01`\xA0\x1B\x03\x19\x90\x81\x16`\x01`\x01`\xA0\x1B\x03\x95\x86\x16\x17\x90\x91U`\x08\x80T`\x01`\x01`\xA8\x1B\x03\x19\x16`\x01`\xA0\x1B`\xFF\x86\x16\x02\x90\x92\x16\x91\x90\x91\x17\x91\x90\x93\x16\x17\x90\x91U\x90V[a4\xC2`\x01`\x01`\xA0\x1B\x03\x83\x16\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x83a1\xF6V[`@Qc\xE8\xED\xA9\xDF`\xE0\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x83\x81\x16`\x04\x83\x01R`$\x82\x01\x83\x90R0`D\x83\x01R`\0`d\x83\x01R\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x16\x90c\xE8\xED\xA9\xDF\x90`\x84\x01`\0`@Q\x80\x83\x03\x81`\0\x87\x80;\x15\x80\x15a59W`\0\x80\xFD[PZ\xF1\x15\x80\x15a5MW=`\0\x80>=`\0\xFD[PPPP\x81`\x01`\x01`\xA0\x1B\x03\x16\x7F\xF0\x99\xEF\xD5m\x0Cd\xF9\xA1\xAA\x13y\xA4p\xD8q9+g\xEAvx\xEDVY\xADK\xFE}\xD7eu\x82`@Qa\x17\x10\x91\x81R` \x01\x90V[`\0\x81\x83\x10a5\x9BW\x81a\x0F\x16V[P\x90\x91\x90PV[`\0\x7F\x8Bs\xC3\xC6\x9B\xB8\xFE=Q.\xCCL\xF7Y\xCCy#\x9F{\x17\x9B\x0F\xFA\xCA\xA9\xA7]R+9@\x0F`\0`@Qa5\xD4\x91\x90aE\xADV[`@\x80Q\x91\x82\x90\x03\x82 ` \x83\x01\x93\x90\x93R\x81\x01\x91\x90\x91R\x7F\xC8\x9E\xFD\xAAT\xC0\xF2\x0Cz\xDFa(\x82\xDF\tP\xF5\xA9Qc~\x03\x07\xCD\xCBLg/)\x8B\x8B\xC6``\x82\x01RF`\x80\x82\x01R0`\xA0\x82\x01R`\xC0\x01`@Q` \x81\x83\x03\x03\x81R\x90`@R\x80Q\x90` \x01 \x90P\x90V[`\0\x81\x83\x11a6LW`\0a\x0F\x16V[a\x0F\x16\x82\x84a?\x1DV[`\x0FT`\xFF\x16\x15a6zW`@Qc/\"\x81\x97`\xE1\x1B\x81R`\x04\x01`@Q\x80\x91\x03\x90\xFD[`\0a6\x85\x82a\x14\xCFV[\x90P\x80\x84\x11\x15a2mW`@Qc#\xDC)\x05`\xE2\x1B\x81R`\x04\x81\x01\x85\x90R`$\x81\x01\x82\x90R`D\x01a\x10\x12V[`\0`@Qc#\xB8r\xDD`\xE0\x1B\x81R\x84`\x04\x82\x01R\x83`$\x82\x01R\x82`D\x82\x01R` `\0`d\x83`\0\x8AZ\xF1=\x15`\x1F=\x11`\x01`\0Q\x14\x16\x17\x16\x91PP\x80a75W`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`\x14`$\x82\x01Rs\x15\x14\x90S\x94\xD1\x91T\x97\xD1\x94\x93\xD3W\xD1\x90RS\x11Q`b\x1B`D\x82\x01R`d\x01a\x10\x12V[PPPPPV[\x80`\x02`\0\x82\x82Ta7N\x91\x90a?\x05V[\x90\x91UPP`\x01`\x01`\xA0\x1B\x03\x82\x16`\0\x81\x81R`\x03` \x90\x81R`@\x80\x83 \x80T\x86\x01\x90UQ\x84\x81R`\0\x80Q` aFM\x839\x81Q\x91R\x91\x01[`@Q\x80\x91\x03\x90\xA3PPV[`\x07\x80T`\x01`\x01`\xA0\x1B\x03\x83\x81\x16`\x01`\x01`\xA0\x1B\x03\x19\x83\x16\x81\x17\x90\x93U`@Q\x91\x16\x91\x90\x82\x90\x7F\x8B\xE0\x07\x9CS\x16Y\x14\x13D\xCD\x1F\xD0\xA4\xF2\x84\x19I\x7F\x97\"\xA3\xDA\xAF\xE3\xB4\x18okdW\xE0\x90`\0\x90\xA3PPV[`\x06T`\x01`\x01`\xA0\x1B\x03\x16`\0a7\xFEa+VV[\x90P\x80\x86\x11\x15a8[Wa8\x1B\x82a8\x16\x83\x89a?\x1DV[a1\rV[`\t\x80T`\0\x90a86\x90\x84\x90`\x01`\x01`\xF0\x1B\x03\x16a@\xDAV[\x92Pa\x01\0\n\x81T\x81`\x01`\x01`\xF0\x1B\x03\x02\x19\x16\x90\x83`\x01`\x01`\xF0\x1B\x03\x16\x02\x17\x90UP[PPPPPPV[`\x01`\x01`\xA0\x1B\x03\x82\x16`\0\x90\x81R`\x03` R`@\x81 \x80T\x83\x92\x90a8\x8B\x90\x84\x90a?\x1DV[\x90\x91UPP`\x02\x80T\x82\x90\x03\x90U`@Q\x81\x81R`\0\x90`\x01`\x01`\xA0\x1B\x03\x84\x16\x90`\0\x80Q` aFM\x839\x81Q\x91R\x90` \x01a7\x8AV[`\0`@Qc\xA9\x05\x9C\xBB`\xE0\x1B\x81R\x83`\x04\x82\x01R\x82`$\x82\x01R` `\0`D\x83`\0\x89Z\xF1=\x15`\x1F=\x11`\x01`\0Q\x14\x16\x17\x16\x91PP\x80a2mW`@QbF\x1B\xCD`\xE5\x1B\x81R` `\x04\x82\x01R`\x0F`$\x82\x01Rn\x15\x14\x90S\x94\xD1\x91T\x97\xD1\x90RS\x11Q`\x8A\x1B`D\x82\x01R`d\x01a\x10\x12V[`\tT`\x01`\x01`\xF0\x1B\x03\x16\x80\x15a9uWa9Wa-\xD1V[a9c\x82`\0\x19a1\rV[P`\t\x80T`\x01`\x01`\xF0\x1B\x03\x19\x16\x90U[PPV[`\0a\x0F\x16\x83\x83g\r\xE0\xB6\xB3\xA7d\0\0a0\xC0V[`\0[\x83\x81\x10\x15a9\xA9W\x81\x81\x01Q\x83\x82\x01R` \x01a9\x91V[\x83\x81\x11\x15a2mWPP`\0\x91\x01RV[`\0\x81Q\x80\x84Ra9\xD2\x81` \x86\x01` \x86\x01a9\x8EV[`\x1F\x01`\x1F\x19\x16\x92\x90\x92\x01` \x01\x92\x91PPV[` \x81R`\0a\x0F\x16` \x83\x01\x84a9\xBAV[`\0` \x82\x84\x03\x12\x15a:\x0BW`\0\x80\xFD[P5\x91\x90PV[`\x01`\x01`\xA0\x1B\x03\x81\x16\x81\x14a-\xCEW`\0\x80\xFD[`\0\x80`@\x83\x85\x03\x12\x15a::W`\0\x80\xFD[\x825a:E\x81a:\x12V[\x94` \x93\x90\x93\x015\x93PPPV[cNH{q`\xE0\x1B`\0R`A`\x04R`$`\0\xFD[`@Qa\x01 \x81\x01`\x01`\x01`@\x1B\x03\x81\x11\x82\x82\x10\x17\x15a:\x8CWa:\x8Ca:SV[`@R\x90V[`@Q`\x80\x81\x01`\x01`\x01`@\x1B\x03\x81\x11\x82\x82\x10\x17\x15a:\x8CWa:\x8Ca:SV[`@Q``\x81\x01`\x01`\x01`@\x1B\x03\x81\x11\x82\x82\x10\x17\x15a:\x8CWa:\x8Ca:SV[`@Q`\x1F\x82\x01`\x1F\x19\x16\x81\x01`\x01`\x01`@\x1B\x03\x81\x11\x82\x82\x10\x17\x15a:\xFEWa:\xFEa:SV[`@R\x91\x90PV[`\0\x80`\0a\x02\xC0\x84\x86\x03\x12\x15a;\x1CW`\0\x80\xFD[`\x1F\x85\x81\x86\x01\x12a;,W`\0\x80\xFD[a;4a:iV[\x80a\x01 \x87\x01\x88\x81\x11\x15a;GW`\0\x80\xFD[\x87[\x81\x81\x10\x15a;jW\x805a;\\\x81a:\x12V[\x84R` \x93\x84\x01\x93\x01a;IV[P\x81\x96P\x88a\x01?\x89\x01\x12a;~W`\0\x80\xFD[a;\x86a:\x92V[\x92P\x82\x91Pa\x02\xA0\x88\x01\x89\x81\x11\x15a;\x9DW`\0\x80\xFD[\x80\x82\x10\x15a<\0W\x89\x85\x83\x01\x12a;\xB4W`\0\x80\x81\xFD[a;\xBCa:\xB4V[\x80``\x84\x01\x8C\x81\x11\x15a;\xCFW`\0\x80\x81\xFD[\x84[\x81\x81\x10\x15a;\xE9W\x805\x84R` \x93\x84\x01\x93\x01a;\xD1V[PP\x85RP` \x90\x93\x01\x92``\x91\x90\x91\x01\x90a;\x9DV[\x96\x99\x91\x98PP\x945\x95PPPPPV[`\0\x80`\0``\x84\x86\x03\x12\x15a<%W`\0\x80\xFD[\x835a<0\x81a:\x12V[\x92P` \x84\x015a<@\x81a:\x12V[\x92\x95\x92\x94PPP`@\x91\x90\x91\x015\x90V[`\0` \x82\x84\x03\x12\x15a<cW`\0\x80\xFD[\x815a\x0F\x16\x81a:\x12V[`\0\x80`@\x83\x85\x03\x12\x15a<\x81W`\0\x80\xFD[\x825\x91P` \x83\x015a<\x93\x81a:\x12V[\x80\x91PP\x92P\x92\x90PV[`\0\x80` \x83\x85\x03\x12\x15a<\xB1W`\0\x80\xFD[\x825`\x01`\x01`@\x1B\x03\x80\x82\x11\x15a<\xC8W`\0\x80\xFD[\x81\x85\x01\x91P\x85`\x1F\x83\x01\x12a<\xDCW`\0\x80\xFD[\x815\x81\x81\x11\x15a<\xEBW`\0\x80\xFD[\x86` \x82`\x05\x1B\x85\x01\x01\x11\x15a=\0W`\0\x80\xFD[` \x92\x90\x92\x01\x96\x91\x95P\x90\x93PPPPV[`\0` \x80\x83\x01\x81\x84R\x80\x85Q\x80\x83R`@\x86\x01\x91P`@\x81`\x05\x1B\x87\x01\x01\x92P\x83\x87\x01`\0[\x82\x81\x10\x15a=gW`?\x19\x88\x86\x03\x01\x84Ra=U\x85\x83Qa9\xBAV[\x94P\x92\x85\x01\x92\x90\x85\x01\x90`\x01\x01a=9V[P\x92\x97\x96PPPPPPPV[`\0\x80`\0``\x84\x86\x03\x12\x15a=\x89W`\0\x80\xFD[\x835\x92P` \x84\x015a=\x9B\x81a:\x12V[\x91P`@\x84\x015a=\xAB\x81a:\x12V[\x80\x91PP\x92P\x92P\x92V[`\0\x80`@\x83\x85\x03\x12\x15a=\xC9W`\0\x80\xFD[\x825a=\xD4\x81a:\x12V[\x91P` \x83\x015a<\x93\x81a:\x12V[\x805\x80\x15\x15\x81\x14a=\xF4W`\0\x80\xFD[\x91\x90PV[`\0\x80`@\x83\x85\x03\x12\x15a>\x0CW`\0\x80\xFD[\x825a>\x17\x81a:\x12V[\x91Pa>%` \x84\x01a=\xE4V[\x90P\x92P\x92\x90PV[`\xFF\x81\x16\x81\x14a-\xCEW`\0\x80\xFD[`\0\x80`\0\x80`\0\x80`\0`\xE0\x88\x8A\x03\x12\x15a>XW`\0\x80\xFD[\x875a>c\x81a:\x12V[\x96P` \x88\x015a>s\x81a:\x12V[\x95P`@\x88\x015\x94P``\x88\x015\x93P`\x80\x88\x015a>\x91\x81a>.V[\x96\x99\x95\x98P\x93\x96\x92\x95\x94`\xA0\x84\x015\x94P`\xC0\x90\x93\x015\x92\x91PPV[`\0` \x82\x84\x03\x12\x15a>\xC0W`\0\x80\xFD[a\x0F\x16\x82a=\xE4V[`\0` \x82\x84\x03\x12\x15a>\xDBW`\0\x80\xFD[\x815c\xFF\xFF\xFF\xFF\x81\x16\x81\x14a\x0F\x16W`\0\x80\xFD[cNH{q`\xE0\x1B`\0R`\x11`\x04R`$`\0\xFD[`\0\x82\x19\x82\x11\x15a?\x18Wa?\x18a>\xEFV[P\x01\x90V[`\0\x82\x82\x10\x15a?/Wa?/a>\xEFV[P\x03\x90V[`\x01\x81\x81\x1C\x90\x82\x16\x80a?HW`\x7F\x82\x16\x91P[` \x82\x10\x81\x03a?hWcNH{q`\xE0\x1B`\0R`\"`\x04R`$`\0\xFD[P\x91\x90PV[` \x80\x82R\x81\x81\x01R\x7FOwnable: caller is not the owner`@\x82\x01R``\x01\x90V[cNH{q`\xE0\x1B`\0R`2`\x04R`$`\0\xFD[`\0` \x82\x84\x03\x12\x15a?\xCBW`\0\x80\xFD[PQ\x91\x90PV[a\x02\xE0\x81\x01\x81\x86`\0[`\t\x81\x10\x15a@\x04W\x81Q`\x01`\x01`\xA0\x1B\x03\x16\x83R` \x92\x83\x01\x92\x90\x91\x01\x90`\x01\x01a?\xDCV[PPPa\x01 \x82\x01\x85`\0[`\x04\x81\x10\x15a@WW\x81Q\x83`\0[`\x03\x81\x10\x15a@>W\x82Q\x82R` \x92\x83\x01\x92\x90\x91\x01\x90`\x01\x01a@\x1FV[PPP``\x92\x90\x92\x01\x91` \x91\x90\x91\x01\x90`\x01\x01a@\x10V[PPPa\x02\xA0\x82\x01\x93\x90\x93Ra\x02\xC0\x01R\x92\x91PPV[`\0\x81`\0\x19\x04\x83\x11\x82\x15\x15\x16\x15a@\x88Wa@\x88a>\xEFV[P\x02\x90V[`\0\x82a@\xAAWcNH{q`\xE0\x1B`\0R`\x12`\x04R`$`\0\xFD[P\x04\x90V[`\0`\x01`\x01`\xF0\x1B\x03\x82\x81\x16\x84\x82\x16\x80\x83\x03\x82\x11\x15a@\xD1Wa@\xD1a>\xEFV[\x01\x94\x93PPPPV[`\0`\x01`\x01`\xF0\x1B\x03\x83\x81\x16\x90\x83\x16\x81\x81\x10\x15a@\xFAWa@\xFAa>\xEFV[\x03\x93\x92PPPV[`\0\x81Q\x80\x84R` \x80\x85\x01\x94P\x80\x84\x01`\0[\x83\x81\x10\x15aA;W\x81Q`\x01`\x01`\xA0\x1B\x03\x16\x87R\x95\x82\x01\x95\x90\x82\x01\x90`\x01\x01aA\x16V[P\x94\x95\x94PPPPPV[\x85\x81R\x84` \x82\x01R`\xA0`@\x82\x01R`\0aAe`\xA0\x83\x01\x86aA\x02V[`\x01`\x01`\xA0\x1B\x03\x94\x90\x94\x16``\x83\x01RP`\x80\x01R\x93\x92PPPV[`\0` \x80\x83\x85\x03\x12\x15aA\x95W`\0\x80\xFD[\x82Q`\x01`\x01`@\x1B\x03\x80\x82\x11\x15aA\xACW`\0\x80\xFD[\x81\x85\x01\x91P\x85`\x1F\x83\x01\x12aA\xC0W`\0\x80\xFD[\x81Q\x81\x81\x11\x15aA\xD2WaA\xD2a:SV[\x80`\x05\x1B\x91PaA\xE3\x84\x83\x01a:\xD6V[\x81\x81R\x91\x83\x01\x84\x01\x91\x84\x81\x01\x90\x88\x84\x11\x15aA\xFDW`\0\x80\xFD[\x93\x85\x01\x93[\x83\x85\x10\x15aB\x1BW\x84Q\x82R\x93\x85\x01\x93\x90\x85\x01\x90aB\x02V[\x98\x97PPPPPPPPV[`\0\x80\x835`\x1E\x19\x846\x03\x01\x81\x12aB>W`\0\x80\xFD[\x83\x01\x805\x91P`\x01`\x01`@\x1B\x03\x82\x11\x15aBXW`\0\x80\xFD[` \x01\x91P6\x81\x90\x03\x82\x13\x15aBmW`\0\x80\xFD[\x92P\x92\x90PV[\x81\x83\x827`\0\x91\x01\x90\x81R\x91\x90PV[`\0` \x82\x84\x03\x12\x15aB\x96W`\0\x80\xFD[\x81Q`\x01`\x01`@\x1B\x03\x80\x82\x11\x15aB\xADW`\0\x80\xFD[\x81\x84\x01\x91P\x84`\x1F\x83\x01\x12aB\xC1W`\0\x80\xFD[\x81Q\x81\x81\x11\x15aB\xD3WaB\xD3a:SV[aB\xE6`\x1F\x82\x01`\x1F\x19\x16` \x01a:\xD6V[\x91P\x80\x82R\x85` \x82\x85\x01\x01\x11\x15aB\xFDW`\0\x80\xFD[aC\x0E\x81` \x84\x01` \x86\x01a9\x8EV[P\x94\x93PPPPV[`\0`\x01\x82\x01aC)WaC)a>\xEFV[P`\x01\x01\x90V[``\x81R`\0aCC``\x83\x01\x86aA\x02V[` \x83\x01\x94\x90\x94RP`\x01`\x01`\xA0\x1B\x03\x91\x90\x91\x16`@\x90\x91\x01R\x91\x90PV[`\x01\x81\x81[\x80\x85\x11\x15aC\x9EW\x81`\0\x19\x04\x82\x11\x15aC\x84WaC\x84a>\xEFV[\x80\x85\x16\x15aC\x91W\x91\x81\x02\x91[\x93\x84\x1C\x93\x90\x80\x02\x90aChV[P\x92P\x92\x90PV[`\0\x82aC\xB5WP`\x01a\x0F\x84V[\x81aC\xC2WP`\0a\x0F\x84V[\x81`\x01\x81\x14aC\xD8W`\x02\x81\x14aC\xE2WaC\xFEV[`\x01\x91PPa\x0F\x84V[`\xFF\x84\x11\x15aC\xF3WaC\xF3a>\xEFV[PP`\x01\x82\x1Ba\x0F\x84V[P` \x83\x10a\x013\x83\x10\x16`N\x84\x10`\x0B\x84\x10\x16\x17\x15aD!WP\x81\x81\na\x0F\x84V[aD+\x83\x83aCcV[\x80`\0\x19\x04\x82\x11\x15aD?WaD?a>\xEFV[\x02\x93\x92PPPV[`\0a\x0F\x16`\xFF\x84\x16\x83aC\xA6V[`\0`\xFF\x82\x16`\xFF\x84\x16\x80\x82\x10\x15aDpWaDpa>\xEFV[\x90\x03\x93\x92PPPV[\x80Qo\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x81\x16\x81\x14a=\xF4W`\0\x80\xFD[\x80Qa=\xF4\x81a:\x12V[\x80Qa=\xF4\x81a>.V[`\0\x80`\0\x80`\0\x80`\0\x80`\0\x80`\0\x80a\x01\x80\x8D\x8F\x03\x12\x15aD\xD2W`\0\x80\xFD[\x8CQ\x9BPaD\xE2` \x8E\x01aDyV[\x9APaD\xF0`@\x8E\x01aDyV[\x99PaD\xFE``\x8E\x01aDyV[\x98PaE\x0C`\x80\x8E\x01aDyV[\x97PaE\x1A`\xA0\x8E\x01aDyV[\x96P`\xC0\x8D\x01Qd\xFF\xFF\xFF\xFF\xFF\x81\x16\x81\x14aE4W`\0\x80\xFD[\x95PaEB`\xE0\x8E\x01aD\x99V[\x94PaEQa\x01\0\x8E\x01aD\x99V[\x93PaE`a\x01 \x8E\x01aD\x99V[\x92PaEoa\x01@\x8E\x01aD\x99V[\x91PaE~a\x01`\x8E\x01aD\xA4V[\x90P\x92\x95\x98\x9BP\x92\x95\x98\x9BP\x92\x95\x98\x9BV[`\0` \x82\x84\x03\x12\x15aE\xA2W`\0\x80\xFD[\x81Qa\x0F\x16\x81a>.V[`\0\x80\x83T\x81`\x01\x82\x81\x1C\x91P\x80\x83\x16\x80aE\xC9W`\x7F\x83\x16\x92P[` \x80\x84\x10\x82\x03aE\xE8WcNH{q`\xE0\x1B\x86R`\"`\x04R`$\x86\xFD[\x81\x80\x15aE\xFCW`\x01\x81\x14aF\x11WaF>V[`\xFF\x19\x86\x16\x89R\x84\x15\x15\x85\x02\x89\x01\x96PaF>V[`\0\x8A\x81R` \x90 `\0[\x86\x81\x10\x15aF6W\x81T\x8B\x82\x01R\x90\x85\x01\x90\x83\x01aF\x1DV[PP\x84\x89\x01\x96P[P\x94\x98\x97PPPPPPPPV\xFE\xDD\xF2R\xAD\x1B\xE2\xC8\x9Bi\xC2\xB0h\xFC7\x8D\xAA\x95+\xA7\xF1c\xC4\xA1\x16(\xF5ZM\xF5#\xB3\xEF\xA2dipfsX\"\x12 \xEAd\x98\xAB\x16\xF3\xF2\xED\xC70Wz\x96S\x18kZdae\\\x1AUN\xD9\xF17\te4\xCB\xD1dsolcC\0\x08\x0F\x003";
+    /// The deployed bytecode of the contract.
+    pub static AAVEV2STABLECOINCELLAR_DEPLOYED_BYTECODE: ::ethers::core::types::Bytes = ::ethers::core::types::Bytes::from_static(
+        __DEPLOYED_BYTECODE,
+    );
+    pub struct AaveV2StablecoinCellar<M>(::ethers::contract::Contract<M>);
+    impl<M> ::core::clone::Clone for AaveV2StablecoinCellar<M> {
+        fn clone(&self) -> Self {
+            Self(::core::clone::Clone::clone(&self.0))
+        }
+    }
+    impl<M> ::core::ops::Deref for AaveV2StablecoinCellar<M> {
+        type Target = ::ethers::contract::Contract<M>;
         fn deref(&self) -> &Self::Target {
             &self.0
         }
     }
-    impl<M: ethers::providers::Middleware> std::fmt::Debug for AaveV2StablecoinCellar<M> {
-        fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-            f.debug_tuple(stringify!(AaveV2StablecoinCellar))
+    impl<M> ::core::ops::DerefMut for AaveV2StablecoinCellar<M> {
+        fn deref_mut(&mut self) -> &mut Self::Target {
+            &mut self.0
+        }
+    }
+    impl<M> ::core::fmt::Debug for AaveV2StablecoinCellar<M> {
+        fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+            f.debug_tuple(::core::stringify!(AaveV2StablecoinCellar))
                 .field(&self.address())
                 .finish()
         }
     }
-    impl<'a, M: ethers::providers::Middleware> AaveV2StablecoinCellar<M> {
-        #[doc = r" Creates a new contract instance with the specified `ethers`"]
-        #[doc = r" client at the given `Address`. The contract derefs to a `ethers::Contract`"]
-        #[doc = r" object"]
-        pub fn new<T: Into<ethers::core::types::Address>>(
+    impl<M: ::ethers::providers::Middleware> AaveV2StablecoinCellar<M> {
+        /// Creates a new contract instance with the specified `ethers` client at
+        /// `address`. The contract derefs to a `ethers::Contract` object.
+        pub fn new<T: Into<::ethers::core::types::Address>>(
             address: T,
             client: ::std::sync::Arc<M>,
         ) -> Self {
-            let contract = ethers::contract::Contract::new(
-                address.into(),
+            Self(
+                ::ethers::contract::Contract::new(
+                    address.into(),
+                    AAVEV2STABLECOINCELLAR_ABI.clone(),
+                    client,
+                ),
+            )
+        }
+        /// Constructs the general purpose `Deployer` instance based on the provided constructor arguments and sends it.
+        /// Returns a new instance of a deployer that returns an instance of this contract after sending the transaction
+        ///
+        /// Notes:
+        /// - If there are no constructor arguments, you should pass `()` as the argument.
+        /// - The default poll duration is 7 seconds.
+        /// - The default number of confirmations is 1 block.
+        ///
+        ///
+        /// # Example
+        ///
+        /// Generate contract bindings with `abigen!` and deploy a new contract instance.
+        ///
+        /// *Note*: this requires a `bytecode` and `abi` object in the `greeter.json` artifact.
+        ///
+        /// ```ignore
+        /// # async fn deploy<M: ethers::providers::Middleware>(client: ::std::sync::Arc<M>) {
+        ///     abigen!(Greeter, "../greeter.json");
+        ///
+        ///    let greeter_contract = Greeter::deploy(client, "Hello world!".to_string()).unwrap().send().await.unwrap();
+        ///    let msg = greeter_contract.greet().call().await.unwrap();
+        /// # }
+        /// ```
+        pub fn deploy<T: ::ethers::core::abi::Tokenize>(
+            client: ::std::sync::Arc<M>,
+            constructor_args: T,
+        ) -> ::core::result::Result<
+            ::ethers::contract::builders::ContractDeployer<M, Self>,
+            ::ethers::contract::ContractError<M>,
+        > {
+            let factory = ::ethers::contract::ContractFactory::new(
                 AAVEV2STABLECOINCELLAR_ABI.clone(),
+                AAVEV2STABLECOINCELLAR_BYTECODE.clone().into(),
                 client,
             );
-            Self(contract)
+            let deployer = factory.deploy(constructor_args)?;
+            let deployer = ::ethers::contract::ContractDeployer::new(deployer);
+            Ok(deployer)
         }
-        #[doc = "Calls the contract's `AAVE` (0x48ccda3c) function"]
+        ///Calls the contract's `AAVE` (0x48ccda3c) function
         pub fn aave(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([72, 204, 218, 60], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `DOMAIN_SEPARATOR` (0x3644e515) function"]
-        pub fn domain_separator(&self) -> ethers::contract::builders::ContractCall<M, [u8; 32]> {
+        ///Calls the contract's `DOMAIN_SEPARATOR` (0x3644e515) function
+        pub fn domain_separator(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, [u8; 32]> {
             self.0
                 .method_hash([54, 68, 229, 21], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `WETH` (0xad5c4648) function"]
+        ///Calls the contract's `WETH` (0xad5c4648) function
         pub fn weth(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([173, 92, 70, 72], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `accrualPeriod` (0xf6664155) function"]
-        pub fn accrual_period(&self) -> ethers::contract::builders::ContractCall<M, u32> {
+        ///Calls the contract's `accrualPeriod` (0xf6664155) function
+        pub fn accrual_period(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, u32> {
             self.0
                 .method_hash([246, 102, 65, 85], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `accrue` (0xf8ba4cff) function"]
-        pub fn accrue(&self) -> ethers::contract::builders::ContractCall<M, ()> {
+        ///Calls the contract's `accrue` (0xf8ba4cff) function
+        pub fn accrue(&self) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([248, 186, 76, 255], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `allowance` (0xdd62ed3e) function"]
+        ///Calls the contract's `allowance` (0xdd62ed3e) function
         pub fn allowance(
             &self,
-            p0: ethers::core::types::Address,
-            p1: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            p0: ::ethers::core::types::Address,
+            p1: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([221, 98, 237, 62], (p0, p1))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `approve` (0x095ea7b3) function"]
+        ///Calls the contract's `approve` (0x095ea7b3) function
         pub fn approve(
             &self,
-            spender: ethers::core::types::Address,
-            amount: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+            spender: ::ethers::core::types::Address,
+            amount: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([9, 94, 167, 179], (spender, amount))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `asset` (0x38d52e0f) function"]
+        ///Calls the contract's `asset` (0x38d52e0f) function
         pub fn asset(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([56, 213, 46, 15], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `assetAToken` (0xc17f6740) function"]
+        ///Calls the contract's `assetAToken` (0xc17f6740) function
         pub fn asset_a_token(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([193, 127, 103, 64], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `assetDecimals` (0xc2d41601) function"]
-        pub fn asset_decimals(&self) -> ethers::contract::builders::ContractCall<M, u8> {
+        ///Calls the contract's `assetDecimals` (0xc2d41601) function
+        pub fn asset_decimals(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, u8> {
             self.0
                 .method_hash([194, 212, 22, 1], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `balanceOf` (0x70a08231) function"]
+        ///Calls the contract's `balanceOf` (0x70a08231) function
         pub fn balance_of(
             &self,
-            p0: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            p0: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([112, 160, 130, 49], p0)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `claimAndUnstake` (0xad004e20) function"]
+        ///Calls the contract's `claimAndUnstake` (0xad004e20) function
         pub fn claim_and_unstake(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([173, 0, 78, 32], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `convertToAssets` (0x07a2d13a) function"]
+        ///Calls the contract's `convertToAssets` (0x07a2d13a) function
         pub fn convert_to_assets(
             &self,
-            shares: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            shares: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([7, 162, 209, 58], shares)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `convertToShares` (0xc6e6f592) function"]
+        ///Calls the contract's `convertToShares` (0xc6e6f592) function
         pub fn convert_to_shares(
             &self,
-            assets: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            assets: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([198, 230, 245, 146], assets)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `curveRegistryExchange` (0xac353510) function"]
+        ///Calls the contract's `curveRegistryExchange` (0xac353510) function
         pub fn curve_registry_exchange(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([172, 53, 53, 16], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `decimals` (0x313ce567) function"]
-        pub fn decimals(&self) -> ethers::contract::builders::ContractCall<M, u8> {
+        ///Calls the contract's `decimals` (0x313ce567) function
+        pub fn decimals(&self) -> ::ethers::contract::builders::ContractCall<M, u8> {
             self.0
                 .method_hash([49, 60, 229, 103], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `deposit` (0x6e553f65) function"]
+        ///Calls the contract's `deposit` (0x6e553f65) function
         pub fn deposit(
             &self,
-            assets: ethers::core::types::U256,
-            receiver: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            assets: ::ethers::core::types::U256,
+            receiver: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([110, 85, 63, 101], (assets, receiver))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `depositLimit` (0xecf70858) function"]
+        ///Calls the contract's `depositLimit` (0xecf70858) function
         pub fn deposit_limit(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([236, 247, 8, 88], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `enterPosition` (0x3dc6eabf) function"]
-        pub fn enter_position(&self) -> ethers::contract::builders::ContractCall<M, ()> {
+        ///Calls the contract's `enterPosition` (0x3dc6eabf) function
+        pub fn enter_position(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([61, 198, 234, 191], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `enterPosition` (0x6e08406b) function"]
+        ///Calls the contract's `enterPosition` (0x6e08406b) function
         pub fn enter_position_with_assets(
             &self,
-            assets: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            assets: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([110, 8, 64, 107], assets)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `exitPosition` (0x78dc9059) function"]
+        ///Calls the contract's `exitPosition` (0x78dc9059) function
         pub fn exit_position_with_assets(
             &self,
-            assets: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            assets: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([120, 220, 144, 89], assets)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `exitPosition` (0x99729216) function"]
-        pub fn exit_position(&self) -> ethers::contract::builders::ContractCall<M, ()> {
+        ///Calls the contract's `exitPosition` (0x99729216) function
+        pub fn exit_position(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([153, 114, 146, 22], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `feesDistributor` (0x8e0bae7f) function"]
-        pub fn fees_distributor(&self) -> ethers::contract::builders::ContractCall<M, [u8; 32]> {
+        ///Calls the contract's `feesDistributor` (0x8e0bae7f) function
+        pub fn fees_distributor(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, [u8; 32]> {
             self.0
                 .method_hash([142, 11, 174, 127], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `gravityBridge` (0xa4da2d02) function"]
+        ///Calls the contract's `gravityBridge` (0xa4da2d02) function
         pub fn gravity_bridge(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([164, 218, 45, 2], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `incentivesController` (0xaf1df255) function"]
+        ///Calls the contract's `incentivesController` (0xaf1df255) function
         pub fn incentives_controller(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([175, 29, 242, 85], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `initiateShutdown` (0xef465d92) function"]
+        ///Calls the contract's `initiateShutdown` (0xef465d92) function
         pub fn initiate_shutdown(
             &self,
             empty_position: bool,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([239, 70, 93, 146], empty_position)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `isShutdown` (0xbf86d690) function"]
-        pub fn is_shutdown(&self) -> ethers::contract::builders::ContractCall<M, bool> {
+        ///Calls the contract's `isShutdown` (0xbf86d690) function
+        pub fn is_shutdown(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([191, 134, 214, 144], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `isTrusted` (0x96d64879) function"]
+        ///Calls the contract's `isTrusted` (0x96d64879) function
         pub fn is_trusted(
             &self,
-            p0: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+            p0: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([150, 214, 72, 121], p0)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `lastAccrual` (0x7b3baab4) function"]
-        pub fn last_accrual(&self) -> ethers::contract::builders::ContractCall<M, u64> {
+        ///Calls the contract's `lastAccrual` (0x7b3baab4) function
+        pub fn last_accrual(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, u64> {
             self.0
                 .method_hash([123, 59, 170, 180], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `lendingPool` (0xa59a9973) function"]
+        ///Calls the contract's `lendingPool` (0xa59a9973) function
         pub fn lending_pool(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([165, 154, 153, 115], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `liftShutdown` (0x5e2c576e) function"]
-        pub fn lift_shutdown(&self) -> ethers::contract::builders::ContractCall<M, ()> {
+        ///Calls the contract's `liftShutdown` (0x5e2c576e) function
+        pub fn lift_shutdown(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([94, 44, 87, 110], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `liquidityLimit` (0x72163715) function"]
+        ///Calls the contract's `liquidityLimit` (0x72163715) function
         pub fn liquidity_limit(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([114, 22, 55, 21], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `maxDeposit` (0x402d267d) function"]
+        ///Calls the contract's `maxDeposit` (0x402d267d) function
         pub fn max_deposit(
             &self,
-            receiver: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            receiver: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([64, 45, 38, 125], receiver)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `maxLocked` (0x8fdc9dfa) function"]
+        ///Calls the contract's `maxLocked` (0x8fdc9dfa) function
         pub fn max_locked(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([143, 220, 157, 250], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `maxMint` (0xc63d75b6) function"]
+        ///Calls the contract's `maxMint` (0xc63d75b6) function
         pub fn max_mint(
             &self,
-            receiver: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            receiver: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([198, 61, 117, 182], receiver)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `maxRedeem` (0xd905777e) function"]
+        ///Calls the contract's `maxRedeem` (0xd905777e) function
         pub fn max_redeem(
             &self,
-            owner: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            owner: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([217, 5, 119, 126], owner)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `maxWithdraw` (0xce96cb77) function"]
+        ///Calls the contract's `maxWithdraw` (0xce96cb77) function
         pub fn max_withdraw(
             &self,
-            owner: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            owner: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([206, 150, 203, 119], owner)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `mint` (0x94bf804d) function"]
+        ///Calls the contract's `mint` (0x94bf804d) function
         pub fn mint(
             &self,
-            shares: ethers::core::types::U256,
-            receiver: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            shares: ::ethers::core::types::U256,
+            receiver: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([148, 191, 128, 77], (shares, receiver))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `multicall` (0xac9650d8) function"]
+        ///Calls the contract's `multicall` (0xac9650d8) function
         pub fn multicall(
             &self,
-            data: ::std::vec::Vec<ethers::core::types::Bytes>,
-        ) -> ethers::contract::builders::ContractCall<M, ::std::vec::Vec<ethers::core::types::Bytes>>
-        {
+            data: ::std::vec::Vec<::ethers::core::types::Bytes>,
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::std::vec::Vec<::ethers::core::types::Bytes>,
+        > {
             self.0
                 .method_hash([172, 150, 80, 216], data)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `name` (0x06fdde03) function"]
-        pub fn name(&self) -> ethers::contract::builders::ContractCall<M, String> {
+        ///Calls the contract's `name` (0x06fdde03) function
+        pub fn name(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::std::string::String> {
             self.0
                 .method_hash([6, 253, 222, 3], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `nonces` (0x7ecebe00) function"]
+        ///Calls the contract's `nonces` (0x7ecebe00) function
         pub fn nonces(
             &self,
-            p0: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            p0: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([126, 206, 190, 0], p0)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `owner` (0x8da5cb5b) function"]
+        ///Calls the contract's `owner` (0x8da5cb5b) function
         pub fn owner(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([141, 165, 203, 91], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `performanceFee` (0x87788782) function"]
-        pub fn performance_fee(&self) -> ethers::contract::builders::ContractCall<M, u64> {
+        ///Calls the contract's `performanceFee` (0x87788782) function
+        pub fn performance_fee(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, u64> {
             self.0
                 .method_hash([135, 120, 135, 130], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `permit` (0xd505accf) function"]
+        ///Calls the contract's `permit` (0xd505accf) function
         pub fn permit(
             &self,
-            owner: ethers::core::types::Address,
-            spender: ethers::core::types::Address,
-            value: ethers::core::types::U256,
-            deadline: ethers::core::types::U256,
+            owner: ::ethers::core::types::Address,
+            spender: ::ethers::core::types::Address,
+            value: ::ethers::core::types::U256,
+            deadline: ::ethers::core::types::U256,
             v: u8,
             r: [u8; 32],
             s: [u8; 32],
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash(
                     [213, 5, 172, 207],
@@ -408,408 +3212,899 @@ mod aavev2stablecoincellar_mod {
                 )
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `platformFee` (0x26232a2e) function"]
-        pub fn platform_fee(&self) -> ethers::contract::builders::ContractCall<M, u64> {
+        ///Calls the contract's `platformFee` (0x26232a2e) function
+        pub fn platform_fee(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, u64> {
             self.0
                 .method_hash([38, 35, 42, 46], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `previewDeposit` (0xef8b30f7) function"]
+        ///Calls the contract's `previewDeposit` (0xef8b30f7) function
         pub fn preview_deposit(
             &self,
-            assets: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            assets: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([239, 139, 48, 247], assets)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `previewMint` (0xb3d7f6b9) function"]
+        ///Calls the contract's `previewMint` (0xb3d7f6b9) function
         pub fn preview_mint(
             &self,
-            shares: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            shares: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([179, 215, 246, 185], shares)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `previewRedeem` (0x4cdad506) function"]
+        ///Calls the contract's `previewRedeem` (0x4cdad506) function
         pub fn preview_redeem(
             &self,
-            shares: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            shares: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([76, 218, 213, 6], shares)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `previewWithdraw` (0x0a28a477) function"]
+        ///Calls the contract's `previewWithdraw` (0x0a28a477) function
         pub fn preview_withdraw(
             &self,
-            assets: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            assets: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([10, 40, 164, 119], assets)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `rebalance` (0x15f4c611) function"]
+        ///Calls the contract's `rebalance` (0x15f4c611) function
         pub fn rebalance(
             &self,
-            route: [ethers::core::types::Address; 9usize],
-            swap_params: [[ethers::core::types::U256; 3usize]; 4usize],
-            min_assets_out: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            route: [::ethers::core::types::Address; 9],
+            swap_params: [[::ethers::core::types::U256; 3]; 4],
+            min_assets_out: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([21, 244, 198, 17], (route, swap_params, min_assets_out))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `redeem` (0xba087652) function"]
+        ///Calls the contract's `redeem` (0xba087652) function
         pub fn redeem(
             &self,
-            shares: ethers::core::types::U256,
-            receiver: ethers::core::types::Address,
-            owner: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            shares: ::ethers::core::types::U256,
+            receiver: ::ethers::core::types::Address,
+            owner: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([186, 8, 118, 82], (shares, receiver, owner))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `reinvest` (0x83b4918b) function"]
+        ///Calls the contract's `reinvest` (0x83b4918b) function
         pub fn reinvest(
             &self,
-            min_assets_out: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            min_assets_out: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([131, 180, 145, 139], min_assets_out)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `renounceOwnership` (0x715018a6) function"]
-        pub fn renounce_ownership(&self) -> ethers::contract::builders::ContractCall<M, ()> {
+        ///Calls the contract's `renounceOwnership` (0x715018a6) function
+        pub fn renounce_ownership(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([113, 80, 24, 166], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `sendFees` (0xdff90b5b) function"]
-        pub fn send_fees(&self) -> ethers::contract::builders::ContractCall<M, ()> {
+        ///Calls the contract's `sendFees` (0xdff90b5b) function
+        pub fn send_fees(&self) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([223, 249, 11, 91], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `setAccrualPeriod` (0xef7ac883) function"]
+        ///Calls the contract's `setAccrualPeriod` (0xef7ac883) function
         pub fn set_accrual_period(
             &self,
             new_accrual_period: u32,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([239, 122, 200, 131], new_accrual_period)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `setDepositLimit` (0xbdc8144b) function"]
+        ///Calls the contract's `setDepositLimit` (0xbdc8144b) function
         pub fn set_deposit_limit(
             &self,
-            new_limit: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            new_limit: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([189, 200, 20, 75], new_limit)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `setFeesDistributor` (0x6e85f183) function"]
+        ///Calls the contract's `setFeesDistributor` (0x6e85f183) function
         pub fn set_fees_distributor(
             &self,
             new_fees_distributor: [u8; 32],
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([110, 133, 241, 131], new_fees_distributor)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `setLiquidityLimit` (0xdf05a52a) function"]
+        ///Calls the contract's `setLiquidityLimit` (0xdf05a52a) function
         pub fn set_liquidity_limit(
             &self,
-            new_limit: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            new_limit: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([223, 5, 165, 42], new_limit)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `setTrust` (0xcab59238) function"]
+        ///Calls the contract's `setTrust` (0xcab59238) function
         pub fn set_trust(
             &self,
-            position: ethers::core::types::Address,
+            position: ::ethers::core::types::Address,
             trust: bool,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([202, 181, 146, 56], (position, trust))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `stkAAVE` (0x1fc29c01) function"]
+        ///Calls the contract's `stkAAVE` (0x1fc29c01) function
         pub fn stk_aave(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([31, 194, 156, 1], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `sushiswapRouter` (0xe9240c2d) function"]
+        ///Calls the contract's `sushiswapRouter` (0xe9240c2d) function
         pub fn sushiswap_router(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([233, 36, 12, 45], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `sweep` (0xb8dc491b) function"]
+        ///Calls the contract's `sweep` (0xb8dc491b) function
         pub fn sweep(
             &self,
-            token: ethers::core::types::Address,
-            to: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            token: ::ethers::core::types::Address,
+            to: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([184, 220, 73, 27], (token, to))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `symbol` (0x95d89b41) function"]
-        pub fn symbol(&self) -> ethers::contract::builders::ContractCall<M, String> {
+        ///Calls the contract's `symbol` (0x95d89b41) function
+        pub fn symbol(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::std::string::String> {
             self.0
                 .method_hash([149, 216, 155, 65], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `totalAssets` (0x01e1d114) function"]
+        ///Calls the contract's `totalAssets` (0x01e1d114) function
         pub fn total_assets(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([1, 225, 209, 20], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `totalBalance` (0xad7a672f) function"]
+        ///Calls the contract's `totalBalance` (0xad7a672f) function
         pub fn total_balance(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([173, 122, 103, 47], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `totalHoldings` (0xe9ec2e99) function"]
+        ///Calls the contract's `totalHoldings` (0xe9ec2e99) function
         pub fn total_holdings(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([233, 236, 46, 153], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `totalLocked` (0x56891412) function"]
+        ///Calls the contract's `totalLocked` (0x56891412) function
         pub fn total_locked(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([86, 137, 20, 18], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `totalSupply` (0x18160ddd) function"]
+        ///Calls the contract's `totalSupply` (0x18160ddd) function
         pub fn total_supply(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([24, 22, 13, 221], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `transfer` (0xa9059cbb) function"]
+        ///Calls the contract's `transfer` (0xa9059cbb) function
         pub fn transfer(
             &self,
-            to: ethers::core::types::Address,
-            amount: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+            to: ::ethers::core::types::Address,
+            amount: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([169, 5, 156, 187], (to, amount))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `transferFrom` (0x23b872dd) function"]
+        ///Calls the contract's `transferFrom` (0x23b872dd) function
         pub fn transfer_from(
             &self,
-            from: ethers::core::types::Address,
-            to: ethers::core::types::Address,
-            amount: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+            from: ::ethers::core::types::Address,
+            to: ::ethers::core::types::Address,
+            amount: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([35, 184, 114, 221], (from, to, amount))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `transferOwnership` (0xf2fde38b) function"]
+        ///Calls the contract's `transferOwnership` (0xf2fde38b) function
         pub fn transfer_ownership(
             &self,
-            new_owner: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            new_owner: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([242, 253, 227, 139], new_owner)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `withdraw` (0xb460af94) function"]
+        ///Calls the contract's `withdraw` (0xb460af94) function
         pub fn withdraw(
             &self,
-            assets: ethers::core::types::U256,
-            receiver: ethers::core::types::Address,
-            owner: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            assets: ::ethers::core::types::U256,
+            receiver: ::ethers::core::types::Address,
+            owner: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([180, 96, 175, 148], (assets, receiver, owner))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Gets the contract's `Accrual` event"]
-        pub fn accrual_filter(&self) -> ethers::contract::builders::Event<M, AccrualFilter> {
+        ///Gets the contract's `Accrual` event
+        pub fn accrual_filter(
+            &self,
+        ) -> ::ethers::contract::builders::Event<::std::sync::Arc<M>, M, AccrualFilter> {
             self.0.event()
         }
-        #[doc = "Gets the contract's `AccrualPeriodChanged` event"]
+        ///Gets the contract's `AccrualPeriodChanged` event
         pub fn accrual_period_changed_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, AccrualPeriodChangedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            AccrualPeriodChangedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `Approval` event"]
-        pub fn approval_filter(&self) -> ethers::contract::builders::Event<M, ApprovalFilter> {
+        ///Gets the contract's `Approval` event
+        pub fn approval_filter(
+            &self,
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            ApprovalFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `ClaimAndUnstake` event"]
+        ///Gets the contract's `ClaimAndUnstake` event
         pub fn claim_and_unstake_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, ClaimAndUnstakeFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            ClaimAndUnstakeFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `Deposit` event"]
-        pub fn deposit_filter(&self) -> ethers::contract::builders::Event<M, DepositFilter> {
+        ///Gets the contract's `Deposit` event
+        pub fn deposit_filter(
+            &self,
+        ) -> ::ethers::contract::builders::Event<::std::sync::Arc<M>, M, DepositFilter> {
             self.0.event()
         }
-        #[doc = "Gets the contract's `DepositIntoPosition` event"]
+        ///Gets the contract's `DepositIntoPosition` event
         pub fn deposit_into_position_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, DepositIntoPositionFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            DepositIntoPositionFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `DepositLimitChanged` event"]
+        ///Gets the contract's `DepositLimitChanged` event
         pub fn deposit_limit_changed_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, DepositLimitChangedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            DepositLimitChangedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `EnterPosition` event"]
+        ///Gets the contract's `EnterPosition` event
         pub fn enter_position_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, EnterPositionFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            EnterPositionFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `ExitPosition` event"]
+        ///Gets the contract's `ExitPosition` event
         pub fn exit_position_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, ExitPositionFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            ExitPositionFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `FeesDistributorChanged` event"]
+        ///Gets the contract's `FeesDistributorChanged` event
         pub fn fees_distributor_changed_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, FeesDistributorChangedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            FeesDistributorChangedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `LiquidityLimitChanged` event"]
+        ///Gets the contract's `LiquidityLimitChanged` event
         pub fn liquidity_limit_changed_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, LiquidityLimitChangedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            LiquidityLimitChangedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `OwnershipTransferred` event"]
+        ///Gets the contract's `OwnershipTransferred` event
         pub fn ownership_transferred_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, OwnershipTransferredFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            OwnershipTransferredFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `PerformanceFeeChanged` event"]
+        ///Gets the contract's `PerformanceFeeChanged` event
         pub fn performance_fee_changed_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, PerformanceFeeChangedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            PerformanceFeeChangedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `PlatformFeeChanged` event"]
+        ///Gets the contract's `PlatformFeeChanged` event
         pub fn platform_fee_changed_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, PlatformFeeChangedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            PlatformFeeChangedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `Rebalance` event"]
-        pub fn rebalance_filter(&self) -> ethers::contract::builders::Event<M, RebalanceFilter> {
+        ///Gets the contract's `Rebalance` event
+        pub fn rebalance_filter(
+            &self,
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            RebalanceFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `Reinvest` event"]
-        pub fn reinvest_filter(&self) -> ethers::contract::builders::Event<M, ReinvestFilter> {
+        ///Gets the contract's `Reinvest` event
+        pub fn reinvest_filter(
+            &self,
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            ReinvestFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `SendFees` event"]
-        pub fn send_fees_filter(&self) -> ethers::contract::builders::Event<M, SendFeesFilter> {
+        ///Gets the contract's `SendFees` event
+        pub fn send_fees_filter(
+            &self,
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            SendFeesFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `ShutdownInitiated` event"]
+        ///Gets the contract's `ShutdownInitiated` event
         pub fn shutdown_initiated_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, ShutdownInitiatedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            ShutdownInitiatedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `ShutdownLifted` event"]
+        ///Gets the contract's `ShutdownLifted` event
         pub fn shutdown_lifted_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, ShutdownLiftedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            ShutdownLiftedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `Sweep` event"]
-        pub fn sweep_filter(&self) -> ethers::contract::builders::Event<M, SweepFilter> {
+        ///Gets the contract's `Sweep` event
+        pub fn sweep_filter(
+            &self,
+        ) -> ::ethers::contract::builders::Event<::std::sync::Arc<M>, M, SweepFilter> {
             self.0.event()
         }
-        #[doc = "Gets the contract's `Transfer` event"]
-        pub fn transfer_filter(&self) -> ethers::contract::builders::Event<M, TransferFilter> {
+        ///Gets the contract's `Transfer` event
+        pub fn transfer_filter(
+            &self,
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            TransferFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `TrustChanged` event"]
+        ///Gets the contract's `TrustChanged` event
         pub fn trust_changed_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, TrustChangedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            TrustChangedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `Withdraw` event"]
-        pub fn withdraw_filter(&self) -> ethers::contract::builders::Event<M, WithdrawFilter> {
+        ///Gets the contract's `Withdraw` event
+        pub fn withdraw_filter(
+            &self,
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            WithdrawFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `WithdrawFromPosition` event"]
+        ///Gets the contract's `WithdrawFromPosition` event
         pub fn withdraw_from_position_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, WithdrawFromPositionFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            WithdrawFromPositionFilter,
+        > {
             self.0.event()
         }
-        #[doc = r" Returns an [`Event`](#ethers_contract::builders::Event) builder for all events of this contract"]
-        pub fn events(&self) -> ethers::contract::builders::Event<M, AaveV2StablecoinCellarEvents> {
-            self.0.event_with_filter(Default::default())
+        /// Returns an `Event` builder for all the events of this contract.
+        pub fn events(
+            &self,
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            AaveV2StablecoinCellarEvents,
+        > {
+            self.0.event_with_filter(::core::default::Default::default())
+        }
+    }
+    impl<M: ::ethers::providers::Middleware> From<::ethers::contract::Contract<M>>
+    for AaveV2StablecoinCellar<M> {
+        fn from(contract: ::ethers::contract::Contract<M>) -> Self {
+            Self::new(contract.address(), contract.client())
+        }
+    }
+    ///Custom Error type `STATE_AccrualOngoing` with signature `STATE_AccrualOngoing()` and selector `0xd70cc726`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(name = "STATE_AccrualOngoing", abi = "STATE_AccrualOngoing()")]
+    pub struct STATE_AccrualOngoing;
+    ///Custom Error type `STATE_ContractShutdown` with signature `STATE_ContractShutdown()` and selector `0x5e45032e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(name = "STATE_ContractShutdown", abi = "STATE_ContractShutdown()")]
+    pub struct STATE_ContractShutdown;
+    ///Custom Error type `USR_DepositRestricted` with signature `USR_DepositRestricted(uint256,uint256)` and selector `0x8f70a414`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "USR_DepositRestricted",
+        abi = "USR_DepositRestricted(uint256,uint256)"
+    )]
+    pub struct USR_DepositRestricted {
+        pub assets: ::ethers::core::types::U256,
+        pub max_deposit: ::ethers::core::types::U256,
+    }
+    ///Custom Error type `USR_ProtectedAsset` with signature `USR_ProtectedAsset(address)` and selector `0x39b85491`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(name = "USR_ProtectedAsset", abi = "USR_ProtectedAsset(address)")]
+    pub struct USR_ProtectedAsset {
+        pub token: ::ethers::core::types::Address,
+    }
+    ///Custom Error type `USR_SamePosition` with signature `USR_SamePosition(address)` and selector `0x0c275d9e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(name = "USR_SamePosition", abi = "USR_SamePosition(address)")]
+    pub struct USR_SamePosition {
+        pub position: ::ethers::core::types::Address,
+    }
+    ///Custom Error type `USR_TooManyDecimals` with signature `USR_TooManyDecimals(uint8,uint8)` and selector `0x0ca3305e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(name = "USR_TooManyDecimals", abi = "USR_TooManyDecimals(uint8,uint8)")]
+    pub struct USR_TooManyDecimals {
+        pub new_decimals: u8,
+        pub max_decimals: u8,
+    }
+    ///Custom Error type `USR_UnsupportedPosition` with signature `USR_UnsupportedPosition(address)` and selector `0x14b8bcfa`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "USR_UnsupportedPosition",
+        abi = "USR_UnsupportedPosition(address)"
+    )]
+    pub struct USR_UnsupportedPosition {
+        pub unsupported_position: ::ethers::core::types::Address,
+    }
+    ///Custom Error type `USR_UntrustedPosition` with signature `USR_UntrustedPosition(address)` and selector `0x86433f2b`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(name = "USR_UntrustedPosition", abi = "USR_UntrustedPosition(address)")]
+    pub struct USR_UntrustedPosition {
+        pub position: ::ethers::core::types::Address,
+    }
+    ///Container type for all of the contract's custom errors
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Deserialize,
+        serde::Serialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub enum AaveV2StablecoinCellarErrors {
+        STATE_AccrualOngoing(STATE_AccrualOngoing),
+        STATE_ContractShutdown(STATE_ContractShutdown),
+        USR_DepositRestricted(USR_DepositRestricted),
+        USR_ProtectedAsset(USR_ProtectedAsset),
+        USR_SamePosition(USR_SamePosition),
+        USR_TooManyDecimals(USR_TooManyDecimals),
+        USR_UnsupportedPosition(USR_UnsupportedPosition),
+        USR_UntrustedPosition(USR_UntrustedPosition),
+        /// The standard solidity revert string, with selector
+        /// Error(string) -- 0x08c379a0
+        RevertString(::std::string::String),
+    }
+    impl ::ethers::core::abi::AbiDecode for AaveV2StablecoinCellarErrors {
+        fn decode(
+            data: impl AsRef<[u8]>,
+        ) -> ::core::result::Result<Self, ::ethers::core::abi::AbiError> {
+            let data = data.as_ref();
+            if let Ok(decoded) = <::std::string::String as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::RevertString(decoded));
+            }
+            if let Ok(decoded) = <STATE_AccrualOngoing as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::STATE_AccrualOngoing(decoded));
+            }
+            if let Ok(decoded) = <STATE_ContractShutdown as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::STATE_ContractShutdown(decoded));
+            }
+            if let Ok(decoded) = <USR_DepositRestricted as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::USR_DepositRestricted(decoded));
+            }
+            if let Ok(decoded) = <USR_ProtectedAsset as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::USR_ProtectedAsset(decoded));
+            }
+            if let Ok(decoded) = <USR_SamePosition as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::USR_SamePosition(decoded));
+            }
+            if let Ok(decoded) = <USR_TooManyDecimals as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::USR_TooManyDecimals(decoded));
+            }
+            if let Ok(decoded) = <USR_UnsupportedPosition as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::USR_UnsupportedPosition(decoded));
+            }
+            if let Ok(decoded) = <USR_UntrustedPosition as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::USR_UntrustedPosition(decoded));
+            }
+            Err(::ethers::core::abi::Error::InvalidData.into())
+        }
+    }
+    impl ::ethers::core::abi::AbiEncode for AaveV2StablecoinCellarErrors {
+        fn encode(self) -> ::std::vec::Vec<u8> {
+            match self {
+                Self::STATE_AccrualOngoing(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::STATE_ContractShutdown(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::USR_DepositRestricted(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::USR_ProtectedAsset(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::USR_SamePosition(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::USR_TooManyDecimals(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::USR_UnsupportedPosition(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::USR_UntrustedPosition(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::RevertString(s) => ::ethers::core::abi::AbiEncode::encode(s),
+            }
+        }
+    }
+    impl ::ethers::contract::ContractRevert for AaveV2StablecoinCellarErrors {
+        fn valid_selector(selector: [u8; 4]) -> bool {
+            match selector {
+                [0x08, 0xc3, 0x79, 0xa0] => true,
+                _ if selector
+                    == <STATE_AccrualOngoing as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <STATE_ContractShutdown as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <USR_DepositRestricted as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <USR_ProtectedAsset as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <USR_SamePosition as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <USR_TooManyDecimals as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <USR_UnsupportedPosition as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <USR_UntrustedPosition as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ => false,
+            }
+        }
+    }
+    impl ::core::fmt::Display for AaveV2StablecoinCellarErrors {
+        fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+            match self {
+                Self::STATE_AccrualOngoing(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::STATE_ContractShutdown(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::USR_DepositRestricted(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::USR_ProtectedAsset(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::USR_SamePosition(element) => ::core::fmt::Display::fmt(element, f),
+                Self::USR_TooManyDecimals(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::USR_UnsupportedPosition(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::USR_UntrustedPosition(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::RevertString(s) => ::core::fmt::Display::fmt(s, f),
+            }
+        }
+    }
+    impl ::core::convert::From<::std::string::String> for AaveV2StablecoinCellarErrors {
+        fn from(value: String) -> Self {
+            Self::RevertString(value)
+        }
+    }
+    impl ::core::convert::From<STATE_AccrualOngoing> for AaveV2StablecoinCellarErrors {
+        fn from(value: STATE_AccrualOngoing) -> Self {
+            Self::STATE_AccrualOngoing(value)
+        }
+    }
+    impl ::core::convert::From<STATE_ContractShutdown> for AaveV2StablecoinCellarErrors {
+        fn from(value: STATE_ContractShutdown) -> Self {
+            Self::STATE_ContractShutdown(value)
+        }
+    }
+    impl ::core::convert::From<USR_DepositRestricted> for AaveV2StablecoinCellarErrors {
+        fn from(value: USR_DepositRestricted) -> Self {
+            Self::USR_DepositRestricted(value)
+        }
+    }
+    impl ::core::convert::From<USR_ProtectedAsset> for AaveV2StablecoinCellarErrors {
+        fn from(value: USR_ProtectedAsset) -> Self {
+            Self::USR_ProtectedAsset(value)
+        }
+    }
+    impl ::core::convert::From<USR_SamePosition> for AaveV2StablecoinCellarErrors {
+        fn from(value: USR_SamePosition) -> Self {
+            Self::USR_SamePosition(value)
+        }
+    }
+    impl ::core::convert::From<USR_TooManyDecimals> for AaveV2StablecoinCellarErrors {
+        fn from(value: USR_TooManyDecimals) -> Self {
+            Self::USR_TooManyDecimals(value)
+        }
+    }
+    impl ::core::convert::From<USR_UnsupportedPosition>
+    for AaveV2StablecoinCellarErrors {
+        fn from(value: USR_UnsupportedPosition) -> Self {
+            Self::USR_UnsupportedPosition(value)
+        }
+    }
+    impl ::core::convert::From<USR_UntrustedPosition> for AaveV2StablecoinCellarErrors {
+        fn from(value: USR_UntrustedPosition) -> Self {
+            Self::USR_UntrustedPosition(value)
         }
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "Accrual", abi = "Accrual(uint256,uint256,uint256)")]
     pub struct AccrualFilter {
-        pub platform_fees: ethers::core::types::U256,
-        pub performance_fees: ethers::core::types::U256,
-        pub yield_: ethers::core::types::U256,
+        pub platform_fees: ::ethers::core::types::U256,
+        pub performance_fees: ::ethers::core::types::U256,
+        pub yield_: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "AccrualPeriodChanged",
@@ -821,68 +4116,72 @@ mod aavev2stablecoincellar_mod {
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "Approval", abi = "Approval(address,address,uint256)")]
     pub struct ApprovalFilter {
         #[ethevent(indexed)]
-        pub owner: ethers::core::types::Address,
+        pub owner: ::ethers::core::types::Address,
         #[ethevent(indexed)]
-        pub spender: ethers::core::types::Address,
-        pub amount: ethers::core::types::U256,
+        pub spender: ::ethers::core::types::Address,
+        pub amount: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "ClaimAndUnstake", abi = "ClaimAndUnstake(uint256)")]
     pub struct ClaimAndUnstakeFilter {
-        pub rewards: ethers::core::types::U256,
+        pub rewards: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "Deposit", abi = "Deposit(address,address,uint256,uint256)")]
     pub struct DepositFilter {
         #[ethevent(indexed)]
-        pub caller: ethers::core::types::Address,
+        pub caller: ::ethers::core::types::Address,
         #[ethevent(indexed)]
-        pub owner: ethers::core::types::Address,
-        pub assets: ethers::core::types::U256,
-        pub shares: ethers::core::types::U256,
+        pub owner: ::ethers::core::types::Address,
+        pub assets: ::ethers::core::types::U256,
+        pub shares: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "DepositIntoPosition",
@@ -890,72 +4189,76 @@ mod aavev2stablecoincellar_mod {
     )]
     pub struct DepositIntoPositionFilter {
         #[ethevent(indexed)]
-        pub position: ethers::core::types::Address,
-        pub assets: ethers::core::types::U256,
+        pub position: ::ethers::core::types::Address,
+        pub assets: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "DepositLimitChanged",
         abi = "DepositLimitChanged(uint256,uint256)"
     )]
     pub struct DepositLimitChangedFilter {
-        pub old_limit: ethers::core::types::U256,
-        pub new_limit: ethers::core::types::U256,
+        pub old_limit: ::ethers::core::types::U256,
+        pub new_limit: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "EnterPosition", abi = "EnterPosition(address,uint256)")]
     pub struct EnterPositionFilter {
         #[ethevent(indexed)]
-        pub position: ethers::core::types::Address,
-        pub assets: ethers::core::types::U256,
+        pub position: ::ethers::core::types::Address,
+        pub assets: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "ExitPosition", abi = "ExitPosition(address,uint256)")]
     pub struct ExitPositionFilter {
         #[ethevent(indexed)]
-        pub position: ethers::core::types::Address,
-        pub assets: ethers::core::types::U256,
+        pub position: ::ethers::core::types::Address,
+        pub assets: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "FeesDistributorChanged",
@@ -967,33 +4270,35 @@ mod aavev2stablecoincellar_mod {
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "LiquidityLimitChanged",
         abi = "LiquidityLimitChanged(uint256,uint256)"
     )]
     pub struct LiquidityLimitChangedFilter {
-        pub old_limit: ethers::core::types::U256,
-        pub new_limit: ethers::core::types::U256,
+        pub old_limit: ::ethers::core::types::U256,
+        pub new_limit: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "OwnershipTransferred",
@@ -1001,20 +4306,21 @@ mod aavev2stablecoincellar_mod {
     )]
     pub struct OwnershipTransferredFilter {
         #[ethevent(indexed)]
-        pub previous_owner: ethers::core::types::Address,
+        pub previous_owner: ::ethers::core::types::Address,
         #[ethevent(indexed)]
-        pub new_owner: ethers::core::types::Address,
+        pub new_owner: ::ethers::core::types::Address,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "PerformanceFeeChanged",
@@ -1026,14 +4332,15 @@ mod aavev2stablecoincellar_mod {
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "PlatformFeeChanged", abi = "PlatformFeeChanged(uint64,uint64)")]
     pub struct PlatformFeeChangedFilter {
@@ -1042,67 +4349,71 @@ mod aavev2stablecoincellar_mod {
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "Rebalance", abi = "Rebalance(address,address,uint256)")]
     pub struct RebalanceFilter {
         #[ethevent(indexed)]
-        pub old_asset: ethers::core::types::Address,
+        pub old_asset: ::ethers::core::types::Address,
         #[ethevent(indexed)]
-        pub new_asset: ethers::core::types::Address,
-        pub assets: ethers::core::types::U256,
+        pub new_asset: ::ethers::core::types::Address,
+        pub assets: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "Reinvest", abi = "Reinvest(address,uint256,uint256)")]
     pub struct ReinvestFilter {
         #[ethevent(indexed)]
-        pub token: ethers::core::types::Address,
-        pub rewards: ethers::core::types::U256,
-        pub assets: ethers::core::types::U256,
+        pub token: ::ethers::core::types::Address,
+        pub rewards: ::ethers::core::types::U256,
+        pub assets: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "SendFees", abi = "SendFees(uint256,uint256)")]
     pub struct SendFeesFilter {
-        pub fees_in_shares_redeemed: ethers::core::types::U256,
-        pub fees_in_assets_sent: ethers::core::types::U256,
+        pub fees_in_shares_redeemed: ::ethers::core::types::U256,
+        pub fees_in_assets_sent: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "ShutdownInitiated", abi = "ShutdownInitiated(bool)")]
     pub struct ShutdownInitiatedFilter {
@@ -1110,82 +4421,87 @@ mod aavev2stablecoincellar_mod {
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "ShutdownLifted", abi = "ShutdownLifted()")]
-    pub struct ShutdownLiftedFilter();
+    pub struct ShutdownLiftedFilter;
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "Sweep", abi = "Sweep(address,address,uint256)")]
     pub struct SweepFilter {
         #[ethevent(indexed)]
-        pub token: ethers::core::types::Address,
+        pub token: ::ethers::core::types::Address,
         #[ethevent(indexed)]
-        pub to: ethers::core::types::Address,
-        pub amount: ethers::core::types::U256,
+        pub to: ::ethers::core::types::Address,
+        pub amount: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "Transfer", abi = "Transfer(address,address,uint256)")]
     pub struct TransferFilter {
         #[ethevent(indexed)]
-        pub from: ethers::core::types::Address,
+        pub from: ::ethers::core::types::Address,
         #[ethevent(indexed)]
-        pub to: ethers::core::types::Address,
-        pub amount: ethers::core::types::U256,
+        pub to: ::ethers::core::types::Address,
+        pub amount: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "TrustChanged", abi = "TrustChanged(address,bool)")]
     pub struct TrustChangedFilter {
         #[ethevent(indexed)]
-        pub position: ethers::core::types::Address,
+        pub position: ::ethers::core::types::Address,
         pub trusted: bool,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "Withdraw",
@@ -1193,24 +4509,25 @@ mod aavev2stablecoincellar_mod {
     )]
     pub struct WithdrawFilter {
         #[ethevent(indexed)]
-        pub caller: ethers::core::types::Address,
+        pub caller: ::ethers::core::types::Address,
         #[ethevent(indexed)]
-        pub receiver: ethers::core::types::Address,
+        pub receiver: ::ethers::core::types::Address,
         #[ethevent(indexed)]
-        pub owner: ethers::core::types::Address,
-        pub assets: ethers::core::types::U256,
-        pub shares: ethers::core::types::U256,
+        pub owner: ::ethers::core::types::Address,
+        pub assets: ::ethers::core::types::U256,
+        pub shares: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "WithdrawFromPosition",
@@ -1218,10 +4535,20 @@ mod aavev2stablecoincellar_mod {
     )]
     pub struct WithdrawFromPositionFilter {
         #[ethevent(indexed)]
-        pub position: ethers::core::types::Address,
-        pub assets: ethers::core::types::U256,
+        pub position: ::ethers::core::types::Address,
+        pub assets: ::ethers::core::types::U256,
     }
-    #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
+    ///Container type for all of the contract's events
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Deserialize,
+        serde::Serialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum AaveV2StablecoinCellarEvents {
         AccrualFilter(AccrualFilter),
         AccrualPeriodChangedFilter(AccrualPeriodChangedFilter),
@@ -1248,18 +4575,17 @@ mod aavev2stablecoincellar_mod {
         WithdrawFilter(WithdrawFilter),
         WithdrawFromPositionFilter(WithdrawFromPositionFilter),
     }
-    impl ethers::contract::EthLogDecode for AaveV2StablecoinCellarEvents {
-        fn decode_log(log: &ethers::core::abi::RawLog) -> Result<Self, ethers::core::abi::Error>
-        where
-            Self: Sized,
-        {
+    impl ::ethers::contract::EthLogDecode for AaveV2StablecoinCellarEvents {
+        fn decode_log(
+            log: &::ethers::core::abi::RawLog,
+        ) -> ::core::result::Result<Self, ::ethers::core::abi::Error> {
             if let Ok(decoded) = AccrualFilter::decode_log(log) {
                 return Ok(AaveV2StablecoinCellarEvents::AccrualFilter(decoded));
             }
             if let Ok(decoded) = AccrualPeriodChangedFilter::decode_log(log) {
-                return Ok(AaveV2StablecoinCellarEvents::AccrualPeriodChangedFilter(
-                    decoded,
-                ));
+                return Ok(
+                    AaveV2StablecoinCellarEvents::AccrualPeriodChangedFilter(decoded),
+                );
             }
             if let Ok(decoded) = ApprovalFilter::decode_log(log) {
                 return Ok(AaveV2StablecoinCellarEvents::ApprovalFilter(decoded));
@@ -1271,14 +4597,14 @@ mod aavev2stablecoincellar_mod {
                 return Ok(AaveV2StablecoinCellarEvents::DepositFilter(decoded));
             }
             if let Ok(decoded) = DepositIntoPositionFilter::decode_log(log) {
-                return Ok(AaveV2StablecoinCellarEvents::DepositIntoPositionFilter(
-                    decoded,
-                ));
+                return Ok(
+                    AaveV2StablecoinCellarEvents::DepositIntoPositionFilter(decoded),
+                );
             }
             if let Ok(decoded) = DepositLimitChangedFilter::decode_log(log) {
-                return Ok(AaveV2StablecoinCellarEvents::DepositLimitChangedFilter(
-                    decoded,
-                ));
+                return Ok(
+                    AaveV2StablecoinCellarEvents::DepositLimitChangedFilter(decoded),
+                );
             }
             if let Ok(decoded) = EnterPositionFilter::decode_log(log) {
                 return Ok(AaveV2StablecoinCellarEvents::EnterPositionFilter(decoded));
@@ -1287,29 +4613,29 @@ mod aavev2stablecoincellar_mod {
                 return Ok(AaveV2StablecoinCellarEvents::ExitPositionFilter(decoded));
             }
             if let Ok(decoded) = FeesDistributorChangedFilter::decode_log(log) {
-                return Ok(AaveV2StablecoinCellarEvents::FeesDistributorChangedFilter(
-                    decoded,
-                ));
+                return Ok(
+                    AaveV2StablecoinCellarEvents::FeesDistributorChangedFilter(decoded),
+                );
             }
             if let Ok(decoded) = LiquidityLimitChangedFilter::decode_log(log) {
-                return Ok(AaveV2StablecoinCellarEvents::LiquidityLimitChangedFilter(
-                    decoded,
-                ));
+                return Ok(
+                    AaveV2StablecoinCellarEvents::LiquidityLimitChangedFilter(decoded),
+                );
             }
             if let Ok(decoded) = OwnershipTransferredFilter::decode_log(log) {
-                return Ok(AaveV2StablecoinCellarEvents::OwnershipTransferredFilter(
-                    decoded,
-                ));
+                return Ok(
+                    AaveV2StablecoinCellarEvents::OwnershipTransferredFilter(decoded),
+                );
             }
             if let Ok(decoded) = PerformanceFeeChangedFilter::decode_log(log) {
-                return Ok(AaveV2StablecoinCellarEvents::PerformanceFeeChangedFilter(
-                    decoded,
-                ));
+                return Ok(
+                    AaveV2StablecoinCellarEvents::PerformanceFeeChangedFilter(decoded),
+                );
             }
             if let Ok(decoded) = PlatformFeeChangedFilter::decode_log(log) {
-                return Ok(AaveV2StablecoinCellarEvents::PlatformFeeChangedFilter(
-                    decoded,
-                ));
+                return Ok(
+                    AaveV2StablecoinCellarEvents::PlatformFeeChangedFilter(decoded),
+                );
             }
             if let Ok(decoded) = RebalanceFilter::decode_log(log) {
                 return Ok(AaveV2StablecoinCellarEvents::RebalanceFilter(decoded));
@@ -1321,9 +4647,9 @@ mod aavev2stablecoincellar_mod {
                 return Ok(AaveV2StablecoinCellarEvents::SendFeesFilter(decoded));
             }
             if let Ok(decoded) = ShutdownInitiatedFilter::decode_log(log) {
-                return Ok(AaveV2StablecoinCellarEvents::ShutdownInitiatedFilter(
-                    decoded,
-                ));
+                return Ok(
+                    AaveV2StablecoinCellarEvents::ShutdownInitiatedFilter(decoded),
+                );
             }
             if let Ok(decoded) = ShutdownLiftedFilter::decode_log(log) {
                 return Ok(AaveV2StablecoinCellarEvents::ShutdownLiftedFilter(decoded));
@@ -1341,1149 +4667,1382 @@ mod aavev2stablecoincellar_mod {
                 return Ok(AaveV2StablecoinCellarEvents::WithdrawFilter(decoded));
             }
             if let Ok(decoded) = WithdrawFromPositionFilter::decode_log(log) {
-                return Ok(AaveV2StablecoinCellarEvents::WithdrawFromPositionFilter(
-                    decoded,
-                ));
+                return Ok(
+                    AaveV2StablecoinCellarEvents::WithdrawFromPositionFilter(decoded),
+                );
             }
-            Err(ethers::core::abi::Error::InvalidData)
+            Err(::ethers::core::abi::Error::InvalidData)
         }
     }
-    impl ::std::fmt::Display for AaveV2StablecoinCellarEvents {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    impl ::core::fmt::Display for AaveV2StablecoinCellarEvents {
+        fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
             match self {
-                AaveV2StablecoinCellarEvents::AccrualFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::AccrualPeriodChangedFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::ApprovalFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::ClaimAndUnstakeFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::DepositFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::DepositIntoPositionFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::DepositLimitChangedFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::EnterPositionFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::ExitPositionFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::FeesDistributorChangedFilter(element) => {
-                    element.fmt(f)
+                Self::AccrualFilter(element) => ::core::fmt::Display::fmt(element, f),
+                Self::AccrualPeriodChangedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
                 }
-                AaveV2StablecoinCellarEvents::LiquidityLimitChangedFilter(element) => {
-                    element.fmt(f)
+                Self::ApprovalFilter(element) => ::core::fmt::Display::fmt(element, f),
+                Self::ClaimAndUnstakeFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
                 }
-                AaveV2StablecoinCellarEvents::OwnershipTransferredFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::PerformanceFeeChangedFilter(element) => {
-                    element.fmt(f)
+                Self::DepositFilter(element) => ::core::fmt::Display::fmt(element, f),
+                Self::DepositIntoPositionFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
                 }
-                AaveV2StablecoinCellarEvents::PlatformFeeChangedFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::RebalanceFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::ReinvestFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::SendFeesFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::ShutdownInitiatedFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::ShutdownLiftedFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::SweepFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::TransferFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::TrustChangedFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::WithdrawFilter(element) => element.fmt(f),
-                AaveV2StablecoinCellarEvents::WithdrawFromPositionFilter(element) => element.fmt(f),
+                Self::DepositLimitChangedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::EnterPositionFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::ExitPositionFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::FeesDistributorChangedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::LiquidityLimitChangedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::OwnershipTransferredFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::PerformanceFeeChangedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::PlatformFeeChangedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::RebalanceFilter(element) => ::core::fmt::Display::fmt(element, f),
+                Self::ReinvestFilter(element) => ::core::fmt::Display::fmt(element, f),
+                Self::SendFeesFilter(element) => ::core::fmt::Display::fmt(element, f),
+                Self::ShutdownInitiatedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::ShutdownLiftedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::SweepFilter(element) => ::core::fmt::Display::fmt(element, f),
+                Self::TransferFilter(element) => ::core::fmt::Display::fmt(element, f),
+                Self::TrustChangedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::WithdrawFilter(element) => ::core::fmt::Display::fmt(element, f),
+                Self::WithdrawFromPositionFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
             }
         }
     }
-    #[doc = "Container type for all input parameters for the `AAVE`function with signature `AAVE()` and selector `[72, 204, 218, 60]`"]
+    impl ::core::convert::From<AccrualFilter> for AaveV2StablecoinCellarEvents {
+        fn from(value: AccrualFilter) -> Self {
+            Self::AccrualFilter(value)
+        }
+    }
+    impl ::core::convert::From<AccrualPeriodChangedFilter>
+    for AaveV2StablecoinCellarEvents {
+        fn from(value: AccrualPeriodChangedFilter) -> Self {
+            Self::AccrualPeriodChangedFilter(value)
+        }
+    }
+    impl ::core::convert::From<ApprovalFilter> for AaveV2StablecoinCellarEvents {
+        fn from(value: ApprovalFilter) -> Self {
+            Self::ApprovalFilter(value)
+        }
+    }
+    impl ::core::convert::From<ClaimAndUnstakeFilter> for AaveV2StablecoinCellarEvents {
+        fn from(value: ClaimAndUnstakeFilter) -> Self {
+            Self::ClaimAndUnstakeFilter(value)
+        }
+    }
+    impl ::core::convert::From<DepositFilter> for AaveV2StablecoinCellarEvents {
+        fn from(value: DepositFilter) -> Self {
+            Self::DepositFilter(value)
+        }
+    }
+    impl ::core::convert::From<DepositIntoPositionFilter>
+    for AaveV2StablecoinCellarEvents {
+        fn from(value: DepositIntoPositionFilter) -> Self {
+            Self::DepositIntoPositionFilter(value)
+        }
+    }
+    impl ::core::convert::From<DepositLimitChangedFilter>
+    for AaveV2StablecoinCellarEvents {
+        fn from(value: DepositLimitChangedFilter) -> Self {
+            Self::DepositLimitChangedFilter(value)
+        }
+    }
+    impl ::core::convert::From<EnterPositionFilter> for AaveV2StablecoinCellarEvents {
+        fn from(value: EnterPositionFilter) -> Self {
+            Self::EnterPositionFilter(value)
+        }
+    }
+    impl ::core::convert::From<ExitPositionFilter> for AaveV2StablecoinCellarEvents {
+        fn from(value: ExitPositionFilter) -> Self {
+            Self::ExitPositionFilter(value)
+        }
+    }
+    impl ::core::convert::From<FeesDistributorChangedFilter>
+    for AaveV2StablecoinCellarEvents {
+        fn from(value: FeesDistributorChangedFilter) -> Self {
+            Self::FeesDistributorChangedFilter(value)
+        }
+    }
+    impl ::core::convert::From<LiquidityLimitChangedFilter>
+    for AaveV2StablecoinCellarEvents {
+        fn from(value: LiquidityLimitChangedFilter) -> Self {
+            Self::LiquidityLimitChangedFilter(value)
+        }
+    }
+    impl ::core::convert::From<OwnershipTransferredFilter>
+    for AaveV2StablecoinCellarEvents {
+        fn from(value: OwnershipTransferredFilter) -> Self {
+            Self::OwnershipTransferredFilter(value)
+        }
+    }
+    impl ::core::convert::From<PerformanceFeeChangedFilter>
+    for AaveV2StablecoinCellarEvents {
+        fn from(value: PerformanceFeeChangedFilter) -> Self {
+            Self::PerformanceFeeChangedFilter(value)
+        }
+    }
+    impl ::core::convert::From<PlatformFeeChangedFilter>
+    for AaveV2StablecoinCellarEvents {
+        fn from(value: PlatformFeeChangedFilter) -> Self {
+            Self::PlatformFeeChangedFilter(value)
+        }
+    }
+    impl ::core::convert::From<RebalanceFilter> for AaveV2StablecoinCellarEvents {
+        fn from(value: RebalanceFilter) -> Self {
+            Self::RebalanceFilter(value)
+        }
+    }
+    impl ::core::convert::From<ReinvestFilter> for AaveV2StablecoinCellarEvents {
+        fn from(value: ReinvestFilter) -> Self {
+            Self::ReinvestFilter(value)
+        }
+    }
+    impl ::core::convert::From<SendFeesFilter> for AaveV2StablecoinCellarEvents {
+        fn from(value: SendFeesFilter) -> Self {
+            Self::SendFeesFilter(value)
+        }
+    }
+    impl ::core::convert::From<ShutdownInitiatedFilter>
+    for AaveV2StablecoinCellarEvents {
+        fn from(value: ShutdownInitiatedFilter) -> Self {
+            Self::ShutdownInitiatedFilter(value)
+        }
+    }
+    impl ::core::convert::From<ShutdownLiftedFilter> for AaveV2StablecoinCellarEvents {
+        fn from(value: ShutdownLiftedFilter) -> Self {
+            Self::ShutdownLiftedFilter(value)
+        }
+    }
+    impl ::core::convert::From<SweepFilter> for AaveV2StablecoinCellarEvents {
+        fn from(value: SweepFilter) -> Self {
+            Self::SweepFilter(value)
+        }
+    }
+    impl ::core::convert::From<TransferFilter> for AaveV2StablecoinCellarEvents {
+        fn from(value: TransferFilter) -> Self {
+            Self::TransferFilter(value)
+        }
+    }
+    impl ::core::convert::From<TrustChangedFilter> for AaveV2StablecoinCellarEvents {
+        fn from(value: TrustChangedFilter) -> Self {
+            Self::TrustChangedFilter(value)
+        }
+    }
+    impl ::core::convert::From<WithdrawFilter> for AaveV2StablecoinCellarEvents {
+        fn from(value: WithdrawFilter) -> Self {
+            Self::WithdrawFilter(value)
+        }
+    }
+    impl ::core::convert::From<WithdrawFromPositionFilter>
+    for AaveV2StablecoinCellarEvents {
+        fn from(value: WithdrawFromPositionFilter) -> Self {
+            Self::WithdrawFromPositionFilter(value)
+        }
+    }
+    ///Container type for all input parameters for the `AAVE` function with signature `AAVE()` and selector `0x48ccda3c`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "AAVE", abi = "AAVE()")]
     pub struct AaveCall;
-    #[doc = "Container type for all input parameters for the `DOMAIN_SEPARATOR`function with signature `DOMAIN_SEPARATOR()` and selector `[54, 68, 229, 21]`"]
+    ///Container type for all input parameters for the `DOMAIN_SEPARATOR` function with signature `DOMAIN_SEPARATOR()` and selector `0x3644e515`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "DOMAIN_SEPARATOR", abi = "DOMAIN_SEPARATOR()")]
     pub struct DomainSeparatorCall;
-    #[doc = "Container type for all input parameters for the `WETH`function with signature `WETH()` and selector `[173, 92, 70, 72]`"]
+    ///Container type for all input parameters for the `WETH` function with signature `WETH()` and selector `0xad5c4648`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "WETH", abi = "WETH()")]
     pub struct WethCall;
-    #[doc = "Container type for all input parameters for the `accrualPeriod`function with signature `accrualPeriod()` and selector `[246, 102, 65, 85]`"]
+    ///Container type for all input parameters for the `accrualPeriod` function with signature `accrualPeriod()` and selector `0xf6664155`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "accrualPeriod", abi = "accrualPeriod()")]
     pub struct AccrualPeriodCall;
-    #[doc = "Container type for all input parameters for the `accrue`function with signature `accrue()` and selector `[248, 186, 76, 255]`"]
+    ///Container type for all input parameters for the `accrue` function with signature `accrue()` and selector `0xf8ba4cff`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "accrue", abi = "accrue()")]
     pub struct AccrueCall;
-    #[doc = "Container type for all input parameters for the `allowance`function with signature `allowance(address,address)` and selector `[221, 98, 237, 62]`"]
+    ///Container type for all input parameters for the `allowance` function with signature `allowance(address,address)` and selector `0xdd62ed3e`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "allowance", abi = "allowance(address,address)")]
     pub struct AllowanceCall(
-        pub ethers::core::types::Address,
-        pub ethers::core::types::Address,
+        pub ::ethers::core::types::Address,
+        pub ::ethers::core::types::Address,
     );
-    #[doc = "Container type for all input parameters for the `approve`function with signature `approve(address,uint256)` and selector `[9, 94, 167, 179]`"]
+    ///Container type for all input parameters for the `approve` function with signature `approve(address,uint256)` and selector `0x095ea7b3`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "approve", abi = "approve(address,uint256)")]
     pub struct ApproveCall {
-        pub spender: ethers::core::types::Address,
-        pub amount: ethers::core::types::U256,
+        pub spender: ::ethers::core::types::Address,
+        pub amount: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `asset`function with signature `asset()` and selector `[56, 213, 46, 15]`"]
+    ///Container type for all input parameters for the `asset` function with signature `asset()` and selector `0x38d52e0f`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "asset", abi = "asset()")]
     pub struct AssetCall;
-    #[doc = "Container type for all input parameters for the `assetAToken`function with signature `assetAToken()` and selector `[193, 127, 103, 64]`"]
+    ///Container type for all input parameters for the `assetAToken` function with signature `assetAToken()` and selector `0xc17f6740`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "assetAToken", abi = "assetAToken()")]
     pub struct AssetATokenCall;
-    #[doc = "Container type for all input parameters for the `assetDecimals`function with signature `assetDecimals()` and selector `[194, 212, 22, 1]`"]
+    ///Container type for all input parameters for the `assetDecimals` function with signature `assetDecimals()` and selector `0xc2d41601`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "assetDecimals", abi = "assetDecimals()")]
     pub struct AssetDecimalsCall;
-    #[doc = "Container type for all input parameters for the `balanceOf`function with signature `balanceOf(address)` and selector `[112, 160, 130, 49]`"]
+    ///Container type for all input parameters for the `balanceOf` function with signature `balanceOf(address)` and selector `0x70a08231`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "balanceOf", abi = "balanceOf(address)")]
-    pub struct BalanceOfCall(pub ethers::core::types::Address);
-    #[doc = "Container type for all input parameters for the `claimAndUnstake`function with signature `claimAndUnstake()` and selector `[173, 0, 78, 32]`"]
+    pub struct BalanceOfCall(pub ::ethers::core::types::Address);
+    ///Container type for all input parameters for the `claimAndUnstake` function with signature `claimAndUnstake()` and selector `0xad004e20`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "claimAndUnstake", abi = "claimAndUnstake()")]
     pub struct ClaimAndUnstakeCall;
-    #[doc = "Container type for all input parameters for the `convertToAssets`function with signature `convertToAssets(uint256)` and selector `[7, 162, 209, 58]`"]
+    ///Container type for all input parameters for the `convertToAssets` function with signature `convertToAssets(uint256)` and selector `0x07a2d13a`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "convertToAssets", abi = "convertToAssets(uint256)")]
     pub struct ConvertToAssetsCall {
-        pub shares: ethers::core::types::U256,
+        pub shares: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `convertToShares`function with signature `convertToShares(uint256)` and selector `[198, 230, 245, 146]`"]
+    ///Container type for all input parameters for the `convertToShares` function with signature `convertToShares(uint256)` and selector `0xc6e6f592`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "convertToShares", abi = "convertToShares(uint256)")]
     pub struct ConvertToSharesCall {
-        pub assets: ethers::core::types::U256,
+        pub assets: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `curveRegistryExchange`function with signature `curveRegistryExchange()` and selector `[172, 53, 53, 16]`"]
+    ///Container type for all input parameters for the `curveRegistryExchange` function with signature `curveRegistryExchange()` and selector `0xac353510`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "curveRegistryExchange", abi = "curveRegistryExchange()")]
     pub struct CurveRegistryExchangeCall;
-    #[doc = "Container type for all input parameters for the `decimals`function with signature `decimals()` and selector `[49, 60, 229, 103]`"]
+    ///Container type for all input parameters for the `decimals` function with signature `decimals()` and selector `0x313ce567`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "decimals", abi = "decimals()")]
     pub struct DecimalsCall;
-    #[doc = "Container type for all input parameters for the `deposit`function with signature `deposit(uint256,address)` and selector `[110, 85, 63, 101]`"]
+    ///Container type for all input parameters for the `deposit` function with signature `deposit(uint256,address)` and selector `0x6e553f65`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "deposit", abi = "deposit(uint256,address)")]
     pub struct DepositCall {
-        pub assets: ethers::core::types::U256,
-        pub receiver: ethers::core::types::Address,
+        pub assets: ::ethers::core::types::U256,
+        pub receiver: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `depositLimit`function with signature `depositLimit()` and selector `[236, 247, 8, 88]`"]
+    ///Container type for all input parameters for the `depositLimit` function with signature `depositLimit()` and selector `0xecf70858`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "depositLimit", abi = "depositLimit()")]
     pub struct DepositLimitCall;
-    #[doc = "Container type for all input parameters for the `enterPosition`function with signature `enterPosition()` and selector `[61, 198, 234, 191]`"]
+    ///Container type for all input parameters for the `enterPosition` function with signature `enterPosition()` and selector `0x3dc6eabf`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "enterPosition", abi = "enterPosition()")]
     pub struct EnterPositionCall;
-    #[doc = "Container type for all input parameters for the `enterPosition`function with signature `enterPosition(uint256)` and selector `[110, 8, 64, 107]`"]
+    ///Container type for all input parameters for the `enterPosition` function with signature `enterPosition(uint256)` and selector `0x6e08406b`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "enterPosition", abi = "enterPosition(uint256)")]
     pub struct EnterPositionWithAssetsCall {
-        pub assets: ethers::core::types::U256,
+        pub assets: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `exitPosition`function with signature `exitPosition(uint256)` and selector `[120, 220, 144, 89]`"]
+    ///Container type for all input parameters for the `exitPosition` function with signature `exitPosition(uint256)` and selector `0x78dc9059`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "exitPosition", abi = "exitPosition(uint256)")]
     pub struct ExitPositionWithAssetsCall {
-        pub assets: ethers::core::types::U256,
+        pub assets: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `exitPosition`function with signature `exitPosition()` and selector `[153, 114, 146, 22]`"]
+    ///Container type for all input parameters for the `exitPosition` function with signature `exitPosition()` and selector `0x99729216`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "exitPosition", abi = "exitPosition()")]
     pub struct ExitPositionCall;
-    #[doc = "Container type for all input parameters for the `feesDistributor`function with signature `feesDistributor()` and selector `[142, 11, 174, 127]`"]
+    ///Container type for all input parameters for the `feesDistributor` function with signature `feesDistributor()` and selector `0x8e0bae7f`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "feesDistributor", abi = "feesDistributor()")]
     pub struct FeesDistributorCall;
-    #[doc = "Container type for all input parameters for the `gravityBridge`function with signature `gravityBridge()` and selector `[164, 218, 45, 2]`"]
+    ///Container type for all input parameters for the `gravityBridge` function with signature `gravityBridge()` and selector `0xa4da2d02`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "gravityBridge", abi = "gravityBridge()")]
     pub struct GravityBridgeCall;
-    #[doc = "Container type for all input parameters for the `incentivesController`function with signature `incentivesController()` and selector `[175, 29, 242, 85]`"]
+    ///Container type for all input parameters for the `incentivesController` function with signature `incentivesController()` and selector `0xaf1df255`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "incentivesController", abi = "incentivesController()")]
     pub struct IncentivesControllerCall;
-    #[doc = "Container type for all input parameters for the `initiateShutdown`function with signature `initiateShutdown(bool)` and selector `[239, 70, 93, 146]`"]
+    ///Container type for all input parameters for the `initiateShutdown` function with signature `initiateShutdown(bool)` and selector `0xef465d92`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "initiateShutdown", abi = "initiateShutdown(bool)")]
     pub struct InitiateShutdownCall {
         pub empty_position: bool,
     }
-    #[doc = "Container type for all input parameters for the `isShutdown`function with signature `isShutdown()` and selector `[191, 134, 214, 144]`"]
+    ///Container type for all input parameters for the `isShutdown` function with signature `isShutdown()` and selector `0xbf86d690`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "isShutdown", abi = "isShutdown()")]
     pub struct IsShutdownCall;
-    #[doc = "Container type for all input parameters for the `isTrusted`function with signature `isTrusted(address)` and selector `[150, 214, 72, 121]`"]
+    ///Container type for all input parameters for the `isTrusted` function with signature `isTrusted(address)` and selector `0x96d64879`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "isTrusted", abi = "isTrusted(address)")]
-    pub struct IsTrustedCall(pub ethers::core::types::Address);
-    #[doc = "Container type for all input parameters for the `lastAccrual`function with signature `lastAccrual()` and selector `[123, 59, 170, 180]`"]
+    pub struct IsTrustedCall(pub ::ethers::core::types::Address);
+    ///Container type for all input parameters for the `lastAccrual` function with signature `lastAccrual()` and selector `0x7b3baab4`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "lastAccrual", abi = "lastAccrual()")]
     pub struct LastAccrualCall;
-    #[doc = "Container type for all input parameters for the `lendingPool`function with signature `lendingPool()` and selector `[165, 154, 153, 115]`"]
+    ///Container type for all input parameters for the `lendingPool` function with signature `lendingPool()` and selector `0xa59a9973`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "lendingPool", abi = "lendingPool()")]
     pub struct LendingPoolCall;
-    #[doc = "Container type for all input parameters for the `liftShutdown`function with signature `liftShutdown()` and selector `[94, 44, 87, 110]`"]
+    ///Container type for all input parameters for the `liftShutdown` function with signature `liftShutdown()` and selector `0x5e2c576e`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "liftShutdown", abi = "liftShutdown()")]
     pub struct LiftShutdownCall;
-    #[doc = "Container type for all input parameters for the `liquidityLimit`function with signature `liquidityLimit()` and selector `[114, 22, 55, 21]`"]
+    ///Container type for all input parameters for the `liquidityLimit` function with signature `liquidityLimit()` and selector `0x72163715`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "liquidityLimit", abi = "liquidityLimit()")]
     pub struct LiquidityLimitCall;
-    #[doc = "Container type for all input parameters for the `maxDeposit`function with signature `maxDeposit(address)` and selector `[64, 45, 38, 125]`"]
+    ///Container type for all input parameters for the `maxDeposit` function with signature `maxDeposit(address)` and selector `0x402d267d`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "maxDeposit", abi = "maxDeposit(address)")]
     pub struct MaxDepositCall {
-        pub receiver: ethers::core::types::Address,
+        pub receiver: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `maxLocked`function with signature `maxLocked()` and selector `[143, 220, 157, 250]`"]
+    ///Container type for all input parameters for the `maxLocked` function with signature `maxLocked()` and selector `0x8fdc9dfa`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "maxLocked", abi = "maxLocked()")]
     pub struct MaxLockedCall;
-    #[doc = "Container type for all input parameters for the `maxMint`function with signature `maxMint(address)` and selector `[198, 61, 117, 182]`"]
+    ///Container type for all input parameters for the `maxMint` function with signature `maxMint(address)` and selector `0xc63d75b6`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "maxMint", abi = "maxMint(address)")]
     pub struct MaxMintCall {
-        pub receiver: ethers::core::types::Address,
+        pub receiver: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `maxRedeem`function with signature `maxRedeem(address)` and selector `[217, 5, 119, 126]`"]
+    ///Container type for all input parameters for the `maxRedeem` function with signature `maxRedeem(address)` and selector `0xd905777e`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "maxRedeem", abi = "maxRedeem(address)")]
     pub struct MaxRedeemCall {
-        pub owner: ethers::core::types::Address,
+        pub owner: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `maxWithdraw`function with signature `maxWithdraw(address)` and selector `[206, 150, 203, 119]`"]
+    ///Container type for all input parameters for the `maxWithdraw` function with signature `maxWithdraw(address)` and selector `0xce96cb77`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "maxWithdraw", abi = "maxWithdraw(address)")]
     pub struct MaxWithdrawCall {
-        pub owner: ethers::core::types::Address,
+        pub owner: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `mint`function with signature `mint(uint256,address)` and selector `[148, 191, 128, 77]`"]
+    ///Container type for all input parameters for the `mint` function with signature `mint(uint256,address)` and selector `0x94bf804d`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "mint", abi = "mint(uint256,address)")]
     pub struct MintCall {
-        pub shares: ethers::core::types::U256,
-        pub receiver: ethers::core::types::Address,
+        pub shares: ::ethers::core::types::U256,
+        pub receiver: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `multicall`function with signature `multicall(bytes[])` and selector `[172, 150, 80, 216]`"]
+    ///Container type for all input parameters for the `multicall` function with signature `multicall(bytes[])` and selector `0xac9650d8`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "multicall", abi = "multicall(bytes[])")]
     pub struct MulticallCall {
-        pub data: ::std::vec::Vec<ethers::core::types::Bytes>,
+        pub data: ::std::vec::Vec<::ethers::core::types::Bytes>,
     }
-    #[doc = "Container type for all input parameters for the `name`function with signature `name()` and selector `[6, 253, 222, 3]`"]
+    ///Container type for all input parameters for the `name` function with signature `name()` and selector `0x06fdde03`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "name", abi = "name()")]
     pub struct NameCall;
-    #[doc = "Container type for all input parameters for the `nonces`function with signature `nonces(address)` and selector `[126, 206, 190, 0]`"]
+    ///Container type for all input parameters for the `nonces` function with signature `nonces(address)` and selector `0x7ecebe00`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "nonces", abi = "nonces(address)")]
-    pub struct NoncesCall(pub ethers::core::types::Address);
-    #[doc = "Container type for all input parameters for the `owner`function with signature `owner()` and selector `[141, 165, 203, 91]`"]
+    pub struct NoncesCall(pub ::ethers::core::types::Address);
+    ///Container type for all input parameters for the `owner` function with signature `owner()` and selector `0x8da5cb5b`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "owner", abi = "owner()")]
     pub struct OwnerCall;
-    #[doc = "Container type for all input parameters for the `performanceFee`function with signature `performanceFee()` and selector `[135, 120, 135, 130]`"]
+    ///Container type for all input parameters for the `performanceFee` function with signature `performanceFee()` and selector `0x87788782`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "performanceFee", abi = "performanceFee()")]
     pub struct PerformanceFeeCall;
-    #[doc = "Container type for all input parameters for the `permit`function with signature `permit(address,address,uint256,uint256,uint8,bytes32,bytes32)` and selector `[213, 5, 172, 207]`"]
+    ///Container type for all input parameters for the `permit` function with signature `permit(address,address,uint256,uint256,uint8,bytes32,bytes32)` and selector `0xd505accf`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(
         name = "permit",
         abi = "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)"
     )]
     pub struct PermitCall {
-        pub owner: ethers::core::types::Address,
-        pub spender: ethers::core::types::Address,
-        pub value: ethers::core::types::U256,
-        pub deadline: ethers::core::types::U256,
+        pub owner: ::ethers::core::types::Address,
+        pub spender: ::ethers::core::types::Address,
+        pub value: ::ethers::core::types::U256,
+        pub deadline: ::ethers::core::types::U256,
         pub v: u8,
         pub r: [u8; 32],
         pub s: [u8; 32],
     }
-    #[doc = "Container type for all input parameters for the `platformFee`function with signature `platformFee()` and selector `[38, 35, 42, 46]`"]
+    ///Container type for all input parameters for the `platformFee` function with signature `platformFee()` and selector `0x26232a2e`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "platformFee", abi = "platformFee()")]
     pub struct PlatformFeeCall;
-    #[doc = "Container type for all input parameters for the `previewDeposit`function with signature `previewDeposit(uint256)` and selector `[239, 139, 48, 247]`"]
+    ///Container type for all input parameters for the `previewDeposit` function with signature `previewDeposit(uint256)` and selector `0xef8b30f7`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "previewDeposit", abi = "previewDeposit(uint256)")]
     pub struct PreviewDepositCall {
-        pub assets: ethers::core::types::U256,
+        pub assets: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `previewMint`function with signature `previewMint(uint256)` and selector `[179, 215, 246, 185]`"]
+    ///Container type for all input parameters for the `previewMint` function with signature `previewMint(uint256)` and selector `0xb3d7f6b9`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "previewMint", abi = "previewMint(uint256)")]
     pub struct PreviewMintCall {
-        pub shares: ethers::core::types::U256,
+        pub shares: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `previewRedeem`function with signature `previewRedeem(uint256)` and selector `[76, 218, 213, 6]`"]
+    ///Container type for all input parameters for the `previewRedeem` function with signature `previewRedeem(uint256)` and selector `0x4cdad506`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "previewRedeem", abi = "previewRedeem(uint256)")]
     pub struct PreviewRedeemCall {
-        pub shares: ethers::core::types::U256,
+        pub shares: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `previewWithdraw`function with signature `previewWithdraw(uint256)` and selector `[10, 40, 164, 119]`"]
+    ///Container type for all input parameters for the `previewWithdraw` function with signature `previewWithdraw(uint256)` and selector `0x0a28a477`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "previewWithdraw", abi = "previewWithdraw(uint256)")]
     pub struct PreviewWithdrawCall {
-        pub assets: ethers::core::types::U256,
+        pub assets: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `rebalance`function with signature `rebalance(address[9],uint256[3][4],uint256)` and selector `[21, 244, 198, 17]`"]
+    ///Container type for all input parameters for the `rebalance` function with signature `rebalance(address[9],uint256[3][4],uint256)` and selector `0x15f4c611`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
-    #[ethcall(
-        name = "rebalance",
-        abi = "rebalance(address[9],uint256[3][4],uint256)"
-    )]
+    #[ethcall(name = "rebalance", abi = "rebalance(address[9],uint256[3][4],uint256)")]
     pub struct RebalanceCall {
-        pub route: [ethers::core::types::Address; 9usize],
-        pub swap_params: [[ethers::core::types::U256; 3usize]; 4usize],
-        pub min_assets_out: ethers::core::types::U256,
+        pub route: [::ethers::core::types::Address; 9],
+        pub swap_params: [[::ethers::core::types::U256; 3]; 4],
+        pub min_assets_out: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `redeem`function with signature `redeem(uint256,address,address)` and selector `[186, 8, 118, 82]`"]
+    ///Container type for all input parameters for the `redeem` function with signature `redeem(uint256,address,address)` and selector `0xba087652`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "redeem", abi = "redeem(uint256,address,address)")]
     pub struct RedeemCall {
-        pub shares: ethers::core::types::U256,
-        pub receiver: ethers::core::types::Address,
-        pub owner: ethers::core::types::Address,
+        pub shares: ::ethers::core::types::U256,
+        pub receiver: ::ethers::core::types::Address,
+        pub owner: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `reinvest`function with signature `reinvest(uint256)` and selector `[131, 180, 145, 139]`"]
+    ///Container type for all input parameters for the `reinvest` function with signature `reinvest(uint256)` and selector `0x83b4918b`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "reinvest", abi = "reinvest(uint256)")]
     pub struct ReinvestCall {
-        pub min_assets_out: ethers::core::types::U256,
+        pub min_assets_out: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `renounceOwnership`function with signature `renounceOwnership()` and selector `[113, 80, 24, 166]`"]
+    ///Container type for all input parameters for the `renounceOwnership` function with signature `renounceOwnership()` and selector `0x715018a6`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "renounceOwnership", abi = "renounceOwnership()")]
     pub struct RenounceOwnershipCall;
-    #[doc = "Container type for all input parameters for the `sendFees`function with signature `sendFees()` and selector `[223, 249, 11, 91]`"]
+    ///Container type for all input parameters for the `sendFees` function with signature `sendFees()` and selector `0xdff90b5b`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "sendFees", abi = "sendFees()")]
     pub struct SendFeesCall;
-    #[doc = "Container type for all input parameters for the `setAccrualPeriod`function with signature `setAccrualPeriod(uint32)` and selector `[239, 122, 200, 131]`"]
+    ///Container type for all input parameters for the `setAccrualPeriod` function with signature `setAccrualPeriod(uint32)` and selector `0xef7ac883`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "setAccrualPeriod", abi = "setAccrualPeriod(uint32)")]
     pub struct SetAccrualPeriodCall {
         pub new_accrual_period: u32,
     }
-    #[doc = "Container type for all input parameters for the `setDepositLimit`function with signature `setDepositLimit(uint256)` and selector `[189, 200, 20, 75]`"]
+    ///Container type for all input parameters for the `setDepositLimit` function with signature `setDepositLimit(uint256)` and selector `0xbdc8144b`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "setDepositLimit", abi = "setDepositLimit(uint256)")]
     pub struct SetDepositLimitCall {
-        pub new_limit: ethers::core::types::U256,
+        pub new_limit: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `setFeesDistributor`function with signature `setFeesDistributor(bytes32)` and selector `[110, 133, 241, 131]`"]
+    ///Container type for all input parameters for the `setFeesDistributor` function with signature `setFeesDistributor(bytes32)` and selector `0x6e85f183`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "setFeesDistributor", abi = "setFeesDistributor(bytes32)")]
     pub struct SetFeesDistributorCall {
         pub new_fees_distributor: [u8; 32],
     }
-    #[doc = "Container type for all input parameters for the `setLiquidityLimit`function with signature `setLiquidityLimit(uint256)` and selector `[223, 5, 165, 42]`"]
+    ///Container type for all input parameters for the `setLiquidityLimit` function with signature `setLiquidityLimit(uint256)` and selector `0xdf05a52a`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "setLiquidityLimit", abi = "setLiquidityLimit(uint256)")]
     pub struct SetLiquidityLimitCall {
-        pub new_limit: ethers::core::types::U256,
+        pub new_limit: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `setTrust`function with signature `setTrust(address,bool)` and selector `[202, 181, 146, 56]`"]
+    ///Container type for all input parameters for the `setTrust` function with signature `setTrust(address,bool)` and selector `0xcab59238`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "setTrust", abi = "setTrust(address,bool)")]
     pub struct SetTrustCall {
-        pub position: ethers::core::types::Address,
+        pub position: ::ethers::core::types::Address,
         pub trust: bool,
     }
-    #[doc = "Container type for all input parameters for the `stkAAVE`function with signature `stkAAVE()` and selector `[31, 194, 156, 1]`"]
+    ///Container type for all input parameters for the `stkAAVE` function with signature `stkAAVE()` and selector `0x1fc29c01`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "stkAAVE", abi = "stkAAVE()")]
     pub struct StkAAVECall;
-    #[doc = "Container type for all input parameters for the `sushiswapRouter`function with signature `sushiswapRouter()` and selector `[233, 36, 12, 45]`"]
+    ///Container type for all input parameters for the `sushiswapRouter` function with signature `sushiswapRouter()` and selector `0xe9240c2d`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "sushiswapRouter", abi = "sushiswapRouter()")]
     pub struct SushiswapRouterCall;
-    #[doc = "Container type for all input parameters for the `sweep`function with signature `sweep(address,address)` and selector `[184, 220, 73, 27]`"]
+    ///Container type for all input parameters for the `sweep` function with signature `sweep(address,address)` and selector `0xb8dc491b`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "sweep", abi = "sweep(address,address)")]
     pub struct SweepCall {
-        pub token: ethers::core::types::Address,
-        pub to: ethers::core::types::Address,
+        pub token: ::ethers::core::types::Address,
+        pub to: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `symbol`function with signature `symbol()` and selector `[149, 216, 155, 65]`"]
+    ///Container type for all input parameters for the `symbol` function with signature `symbol()` and selector `0x95d89b41`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "symbol", abi = "symbol()")]
     pub struct SymbolCall;
-    #[doc = "Container type for all input parameters for the `totalAssets`function with signature `totalAssets()` and selector `[1, 225, 209, 20]`"]
+    ///Container type for all input parameters for the `totalAssets` function with signature `totalAssets()` and selector `0x01e1d114`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "totalAssets", abi = "totalAssets()")]
     pub struct TotalAssetsCall;
-    #[doc = "Container type for all input parameters for the `totalBalance`function with signature `totalBalance()` and selector `[173, 122, 103, 47]`"]
+    ///Container type for all input parameters for the `totalBalance` function with signature `totalBalance()` and selector `0xad7a672f`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "totalBalance", abi = "totalBalance()")]
     pub struct TotalBalanceCall;
-    #[doc = "Container type for all input parameters for the `totalHoldings`function with signature `totalHoldings()` and selector `[233, 236, 46, 153]`"]
+    ///Container type for all input parameters for the `totalHoldings` function with signature `totalHoldings()` and selector `0xe9ec2e99`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "totalHoldings", abi = "totalHoldings()")]
     pub struct TotalHoldingsCall;
-    #[doc = "Container type for all input parameters for the `totalLocked`function with signature `totalLocked()` and selector `[86, 137, 20, 18]`"]
+    ///Container type for all input parameters for the `totalLocked` function with signature `totalLocked()` and selector `0x56891412`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "totalLocked", abi = "totalLocked()")]
     pub struct TotalLockedCall;
-    #[doc = "Container type for all input parameters for the `totalSupply`function with signature `totalSupply()` and selector `[24, 22, 13, 221]`"]
+    ///Container type for all input parameters for the `totalSupply` function with signature `totalSupply()` and selector `0x18160ddd`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "totalSupply", abi = "totalSupply()")]
     pub struct TotalSupplyCall;
-    #[doc = "Container type for all input parameters for the `transfer`function with signature `transfer(address,uint256)` and selector `[169, 5, 156, 187]`"]
+    ///Container type for all input parameters for the `transfer` function with signature `transfer(address,uint256)` and selector `0xa9059cbb`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "transfer", abi = "transfer(address,uint256)")]
     pub struct TransferCall {
-        pub to: ethers::core::types::Address,
-        pub amount: ethers::core::types::U256,
+        pub to: ::ethers::core::types::Address,
+        pub amount: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `transferFrom`function with signature `transferFrom(address,address,uint256)` and selector `[35, 184, 114, 221]`"]
+    ///Container type for all input parameters for the `transferFrom` function with signature `transferFrom(address,address,uint256)` and selector `0x23b872dd`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "transferFrom", abi = "transferFrom(address,address,uint256)")]
     pub struct TransferFromCall {
-        pub from: ethers::core::types::Address,
-        pub to: ethers::core::types::Address,
-        pub amount: ethers::core::types::U256,
+        pub from: ::ethers::core::types::Address,
+        pub to: ::ethers::core::types::Address,
+        pub amount: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `transferOwnership`function with signature `transferOwnership(address)` and selector `[242, 253, 227, 139]`"]
+    ///Container type for all input parameters for the `transferOwnership` function with signature `transferOwnership(address)` and selector `0xf2fde38b`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "transferOwnership", abi = "transferOwnership(address)")]
     pub struct TransferOwnershipCall {
-        pub new_owner: ethers::core::types::Address,
+        pub new_owner: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `withdraw`function with signature `withdraw(uint256,address,address)` and selector `[180, 96, 175, 148]`"]
+    ///Container type for all input parameters for the `withdraw` function with signature `withdraw(uint256,address,address)` and selector `0xb460af94`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "withdraw", abi = "withdraw(uint256,address,address)")]
     pub struct WithdrawCall {
-        pub assets: ethers::core::types::U256,
-        pub receiver: ethers::core::types::Address,
-        pub owner: ethers::core::types::Address,
+        pub assets: ::ethers::core::types::U256,
+        pub receiver: ::ethers::core::types::Address,
+        pub owner: ::ethers::core::types::Address,
     }
-    #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
+    ///Container type for all of the contract's call
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Deserialize,
+        serde::Serialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum AaveV2StablecoinCellarCalls {
         Aave(AaveCall),
         DomainSeparator(DomainSeparatorCall),
@@ -2558,871 +6117,1780 @@ mod aavev2stablecoincellar_mod {
         TransferOwnership(TransferOwnershipCall),
         Withdraw(WithdrawCall),
     }
-    impl ethers::core::abi::AbiDecode for AaveV2StablecoinCellarCalls {
-        fn decode(data: impl AsRef<[u8]>) -> Result<Self, ethers::core::abi::AbiError> {
-            if let Ok(decoded) = <AaveCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(AaveV2StablecoinCellarCalls::Aave(decoded));
-            }
-            if let Ok(decoded) =
-                <DomainSeparatorCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::DomainSeparator(decoded));
-            }
-            if let Ok(decoded) = <WethCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(AaveV2StablecoinCellarCalls::Weth(decoded));
-            }
-            if let Ok(decoded) =
-                <AccrualPeriodCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::AccrualPeriod(decoded));
-            }
-            if let Ok(decoded) = <AccrueCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Accrue(decoded));
-            }
-            if let Ok(decoded) =
-                <AllowanceCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Allowance(decoded));
-            }
-            if let Ok(decoded) =
-                <ApproveCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Approve(decoded));
-            }
-            if let Ok(decoded) = <AssetCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Asset(decoded));
-            }
-            if let Ok(decoded) =
-                <AssetATokenCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::AssetAToken(decoded));
-            }
-            if let Ok(decoded) =
-                <AssetDecimalsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::AssetDecimals(decoded));
-            }
-            if let Ok(decoded) =
-                <BalanceOfCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::BalanceOf(decoded));
-            }
-            if let Ok(decoded) =
-                <ClaimAndUnstakeCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::ClaimAndUnstake(decoded));
-            }
-            if let Ok(decoded) =
-                <ConvertToAssetsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::ConvertToAssets(decoded));
-            }
-            if let Ok(decoded) =
-                <ConvertToSharesCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::ConvertToShares(decoded));
-            }
-            if let Ok(decoded) =
-                <CurveRegistryExchangeCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::CurveRegistryExchange(decoded));
-            }
-            if let Ok(decoded) =
-                <DecimalsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Decimals(decoded));
-            }
-            if let Ok(decoded) =
-                <DepositCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Deposit(decoded));
-            }
-            if let Ok(decoded) =
-                <DepositLimitCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::DepositLimit(decoded));
-            }
-            if let Ok(decoded) =
-                <EnterPositionCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::EnterPosition(decoded));
-            }
-            if let Ok(decoded) =
-                <EnterPositionWithAssetsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::EnterPositionWithAssets(
-                    decoded,
-                ));
-            }
-            if let Ok(decoded) =
-                <ExitPositionWithAssetsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::ExitPositionWithAssets(decoded));
-            }
-            if let Ok(decoded) =
-                <ExitPositionCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::ExitPosition(decoded));
-            }
-            if let Ok(decoded) =
-                <FeesDistributorCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::FeesDistributor(decoded));
-            }
-            if let Ok(decoded) =
-                <GravityBridgeCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::GravityBridge(decoded));
-            }
-            if let Ok(decoded) =
-                <IncentivesControllerCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::IncentivesController(decoded));
-            }
-            if let Ok(decoded) =
-                <InitiateShutdownCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::InitiateShutdown(decoded));
-            }
-            if let Ok(decoded) =
-                <IsShutdownCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::IsShutdown(decoded));
-            }
-            if let Ok(decoded) =
-                <IsTrustedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::IsTrusted(decoded));
-            }
-            if let Ok(decoded) =
-                <LastAccrualCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::LastAccrual(decoded));
-            }
-            if let Ok(decoded) =
-                <LendingPoolCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::LendingPool(decoded));
-            }
-            if let Ok(decoded) =
-                <LiftShutdownCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::LiftShutdown(decoded));
-            }
-            if let Ok(decoded) =
-                <LiquidityLimitCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::LiquidityLimit(decoded));
-            }
-            if let Ok(decoded) =
-                <MaxDepositCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::MaxDeposit(decoded));
-            }
-            if let Ok(decoded) =
-                <MaxLockedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::MaxLocked(decoded));
-            }
-            if let Ok(decoded) =
-                <MaxMintCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::MaxMint(decoded));
-            }
-            if let Ok(decoded) =
-                <MaxRedeemCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::MaxRedeem(decoded));
-            }
-            if let Ok(decoded) =
-                <MaxWithdrawCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::MaxWithdraw(decoded));
-            }
-            if let Ok(decoded) = <MintCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(AaveV2StablecoinCellarCalls::Mint(decoded));
-            }
-            if let Ok(decoded) =
-                <MulticallCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Multicall(decoded));
-            }
-            if let Ok(decoded) = <NameCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(AaveV2StablecoinCellarCalls::Name(decoded));
-            }
-            if let Ok(decoded) = <NoncesCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Nonces(decoded));
-            }
-            if let Ok(decoded) = <OwnerCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Owner(decoded));
-            }
-            if let Ok(decoded) =
-                <PerformanceFeeCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::PerformanceFee(decoded));
-            }
-            if let Ok(decoded) = <PermitCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Permit(decoded));
-            }
-            if let Ok(decoded) =
-                <PlatformFeeCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::PlatformFee(decoded));
-            }
-            if let Ok(decoded) =
-                <PreviewDepositCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::PreviewDeposit(decoded));
-            }
-            if let Ok(decoded) =
-                <PreviewMintCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::PreviewMint(decoded));
-            }
-            if let Ok(decoded) =
-                <PreviewRedeemCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::PreviewRedeem(decoded));
-            }
-            if let Ok(decoded) =
-                <PreviewWithdrawCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::PreviewWithdraw(decoded));
-            }
-            if let Ok(decoded) =
-                <RebalanceCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Rebalance(decoded));
-            }
-            if let Ok(decoded) = <RedeemCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Redeem(decoded));
-            }
-            if let Ok(decoded) =
-                <ReinvestCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Reinvest(decoded));
-            }
-            if let Ok(decoded) =
-                <RenounceOwnershipCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::RenounceOwnership(decoded));
-            }
-            if let Ok(decoded) =
-                <SendFeesCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::SendFees(decoded));
-            }
-            if let Ok(decoded) =
-                <SetAccrualPeriodCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::SetAccrualPeriod(decoded));
-            }
-            if let Ok(decoded) =
-                <SetDepositLimitCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::SetDepositLimit(decoded));
-            }
-            if let Ok(decoded) =
-                <SetFeesDistributorCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::SetFeesDistributor(decoded));
-            }
-            if let Ok(decoded) =
-                <SetLiquidityLimitCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::SetLiquidityLimit(decoded));
-            }
-            if let Ok(decoded) =
-                <SetTrustCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::SetTrust(decoded));
-            }
-            if let Ok(decoded) =
-                <StkAAVECall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::StkAAVE(decoded));
-            }
-            if let Ok(decoded) =
-                <SushiswapRouterCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::SushiswapRouter(decoded));
-            }
-            if let Ok(decoded) = <SweepCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Sweep(decoded));
-            }
-            if let Ok(decoded) = <SymbolCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Symbol(decoded));
-            }
-            if let Ok(decoded) =
-                <TotalAssetsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::TotalAssets(decoded));
-            }
-            if let Ok(decoded) =
-                <TotalBalanceCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::TotalBalance(decoded));
-            }
-            if let Ok(decoded) =
-                <TotalHoldingsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::TotalHoldings(decoded));
-            }
-            if let Ok(decoded) =
-                <TotalLockedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::TotalLocked(decoded));
-            }
-            if let Ok(decoded) =
-                <TotalSupplyCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::TotalSupply(decoded));
-            }
-            if let Ok(decoded) =
-                <TransferCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Transfer(decoded));
-            }
-            if let Ok(decoded) =
-                <TransferFromCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::TransferFrom(decoded));
-            }
-            if let Ok(decoded) =
-                <TransferOwnershipCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::TransferOwnership(decoded));
-            }
-            if let Ok(decoded) =
-                <WithdrawCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(AaveV2StablecoinCellarCalls::Withdraw(decoded));
-            }
-            Err(ethers::core::abi::Error::InvalidData.into())
+    impl ::ethers::core::abi::AbiDecode for AaveV2StablecoinCellarCalls {
+        fn decode(
+            data: impl AsRef<[u8]>,
+        ) -> ::core::result::Result<Self, ::ethers::core::abi::AbiError> {
+            let data = data.as_ref();
+            if let Ok(decoded) = <AaveCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Aave(decoded));
+            }
+            if let Ok(decoded) = <DomainSeparatorCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::DomainSeparator(decoded));
+            }
+            if let Ok(decoded) = <WethCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Weth(decoded));
+            }
+            if let Ok(decoded) = <AccrualPeriodCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::AccrualPeriod(decoded));
+            }
+            if let Ok(decoded) = <AccrueCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Accrue(decoded));
+            }
+            if let Ok(decoded) = <AllowanceCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Allowance(decoded));
+            }
+            if let Ok(decoded) = <ApproveCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Approve(decoded));
+            }
+            if let Ok(decoded) = <AssetCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Asset(decoded));
+            }
+            if let Ok(decoded) = <AssetATokenCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::AssetAToken(decoded));
+            }
+            if let Ok(decoded) = <AssetDecimalsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::AssetDecimals(decoded));
+            }
+            if let Ok(decoded) = <BalanceOfCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::BalanceOf(decoded));
+            }
+            if let Ok(decoded) = <ClaimAndUnstakeCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::ClaimAndUnstake(decoded));
+            }
+            if let Ok(decoded) = <ConvertToAssetsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::ConvertToAssets(decoded));
+            }
+            if let Ok(decoded) = <ConvertToSharesCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::ConvertToShares(decoded));
+            }
+            if let Ok(decoded) = <CurveRegistryExchangeCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::CurveRegistryExchange(decoded));
+            }
+            if let Ok(decoded) = <DecimalsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Decimals(decoded));
+            }
+            if let Ok(decoded) = <DepositCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Deposit(decoded));
+            }
+            if let Ok(decoded) = <DepositLimitCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::DepositLimit(decoded));
+            }
+            if let Ok(decoded) = <EnterPositionCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::EnterPosition(decoded));
+            }
+            if let Ok(decoded) = <EnterPositionWithAssetsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::EnterPositionWithAssets(decoded));
+            }
+            if let Ok(decoded) = <ExitPositionWithAssetsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::ExitPositionWithAssets(decoded));
+            }
+            if let Ok(decoded) = <ExitPositionCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::ExitPosition(decoded));
+            }
+            if let Ok(decoded) = <FeesDistributorCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::FeesDistributor(decoded));
+            }
+            if let Ok(decoded) = <GravityBridgeCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::GravityBridge(decoded));
+            }
+            if let Ok(decoded) = <IncentivesControllerCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::IncentivesController(decoded));
+            }
+            if let Ok(decoded) = <InitiateShutdownCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::InitiateShutdown(decoded));
+            }
+            if let Ok(decoded) = <IsShutdownCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::IsShutdown(decoded));
+            }
+            if let Ok(decoded) = <IsTrustedCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::IsTrusted(decoded));
+            }
+            if let Ok(decoded) = <LastAccrualCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::LastAccrual(decoded));
+            }
+            if let Ok(decoded) = <LendingPoolCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::LendingPool(decoded));
+            }
+            if let Ok(decoded) = <LiftShutdownCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::LiftShutdown(decoded));
+            }
+            if let Ok(decoded) = <LiquidityLimitCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::LiquidityLimit(decoded));
+            }
+            if let Ok(decoded) = <MaxDepositCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::MaxDeposit(decoded));
+            }
+            if let Ok(decoded) = <MaxLockedCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::MaxLocked(decoded));
+            }
+            if let Ok(decoded) = <MaxMintCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::MaxMint(decoded));
+            }
+            if let Ok(decoded) = <MaxRedeemCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::MaxRedeem(decoded));
+            }
+            if let Ok(decoded) = <MaxWithdrawCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::MaxWithdraw(decoded));
+            }
+            if let Ok(decoded) = <MintCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Mint(decoded));
+            }
+            if let Ok(decoded) = <MulticallCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Multicall(decoded));
+            }
+            if let Ok(decoded) = <NameCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Name(decoded));
+            }
+            if let Ok(decoded) = <NoncesCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Nonces(decoded));
+            }
+            if let Ok(decoded) = <OwnerCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Owner(decoded));
+            }
+            if let Ok(decoded) = <PerformanceFeeCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::PerformanceFee(decoded));
+            }
+            if let Ok(decoded) = <PermitCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Permit(decoded));
+            }
+            if let Ok(decoded) = <PlatformFeeCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::PlatformFee(decoded));
+            }
+            if let Ok(decoded) = <PreviewDepositCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::PreviewDeposit(decoded));
+            }
+            if let Ok(decoded) = <PreviewMintCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::PreviewMint(decoded));
+            }
+            if let Ok(decoded) = <PreviewRedeemCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::PreviewRedeem(decoded));
+            }
+            if let Ok(decoded) = <PreviewWithdrawCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::PreviewWithdraw(decoded));
+            }
+            if let Ok(decoded) = <RebalanceCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Rebalance(decoded));
+            }
+            if let Ok(decoded) = <RedeemCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Redeem(decoded));
+            }
+            if let Ok(decoded) = <ReinvestCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Reinvest(decoded));
+            }
+            if let Ok(decoded) = <RenounceOwnershipCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::RenounceOwnership(decoded));
+            }
+            if let Ok(decoded) = <SendFeesCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::SendFees(decoded));
+            }
+            if let Ok(decoded) = <SetAccrualPeriodCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::SetAccrualPeriod(decoded));
+            }
+            if let Ok(decoded) = <SetDepositLimitCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::SetDepositLimit(decoded));
+            }
+            if let Ok(decoded) = <SetFeesDistributorCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::SetFeesDistributor(decoded));
+            }
+            if let Ok(decoded) = <SetLiquidityLimitCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::SetLiquidityLimit(decoded));
+            }
+            if let Ok(decoded) = <SetTrustCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::SetTrust(decoded));
+            }
+            if let Ok(decoded) = <StkAAVECall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::StkAAVE(decoded));
+            }
+            if let Ok(decoded) = <SushiswapRouterCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::SushiswapRouter(decoded));
+            }
+            if let Ok(decoded) = <SweepCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Sweep(decoded));
+            }
+            if let Ok(decoded) = <SymbolCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Symbol(decoded));
+            }
+            if let Ok(decoded) = <TotalAssetsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::TotalAssets(decoded));
+            }
+            if let Ok(decoded) = <TotalBalanceCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::TotalBalance(decoded));
+            }
+            if let Ok(decoded) = <TotalHoldingsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::TotalHoldings(decoded));
+            }
+            if let Ok(decoded) = <TotalLockedCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::TotalLocked(decoded));
+            }
+            if let Ok(decoded) = <TotalSupplyCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::TotalSupply(decoded));
+            }
+            if let Ok(decoded) = <TransferCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Transfer(decoded));
+            }
+            if let Ok(decoded) = <TransferFromCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::TransferFrom(decoded));
+            }
+            if let Ok(decoded) = <TransferOwnershipCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::TransferOwnership(decoded));
+            }
+            if let Ok(decoded) = <WithdrawCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Withdraw(decoded));
+            }
+            Err(::ethers::core::abi::Error::InvalidData.into())
         }
     }
-    impl ethers::core::abi::AbiEncode for AaveV2StablecoinCellarCalls {
+    impl ::ethers::core::abi::AbiEncode for AaveV2StablecoinCellarCalls {
         fn encode(self) -> Vec<u8> {
             match self {
-                AaveV2StablecoinCellarCalls::Aave(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::DomainSeparator(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Weth(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::AccrualPeriod(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Accrue(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Allowance(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Approve(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Asset(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::AssetAToken(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::AssetDecimals(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::BalanceOf(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::ClaimAndUnstake(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::ConvertToAssets(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::ConvertToShares(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::CurveRegistryExchange(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Decimals(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Deposit(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::DepositLimit(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::EnterPosition(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::EnterPositionWithAssets(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::ExitPositionWithAssets(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::ExitPosition(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::FeesDistributor(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::GravityBridge(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::IncentivesController(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::InitiateShutdown(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::IsShutdown(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::IsTrusted(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::LastAccrual(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::LendingPool(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::LiftShutdown(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::LiquidityLimit(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::MaxDeposit(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::MaxLocked(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::MaxMint(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::MaxRedeem(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::MaxWithdraw(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Mint(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Multicall(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Name(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Nonces(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Owner(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::PerformanceFee(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Permit(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::PlatformFee(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::PreviewDeposit(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::PreviewMint(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::PreviewRedeem(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::PreviewWithdraw(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Rebalance(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Redeem(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Reinvest(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::RenounceOwnership(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::SendFees(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::SetAccrualPeriod(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::SetDepositLimit(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::SetFeesDistributor(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::SetLiquidityLimit(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::SetTrust(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::StkAAVE(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::SushiswapRouter(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Sweep(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Symbol(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::TotalAssets(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::TotalBalance(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::TotalHoldings(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::TotalLocked(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::TotalSupply(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Transfer(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::TransferFrom(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::TransferOwnership(element) => element.encode(),
-                AaveV2StablecoinCellarCalls::Withdraw(element) => element.encode(),
+                Self::Aave(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::DomainSeparator(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Weth(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::AccrualPeriod(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Accrue(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::Allowance(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Approve(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::Asset(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::AssetAToken(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::AssetDecimals(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::BalanceOf(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::ClaimAndUnstake(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::ConvertToAssets(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::ConvertToShares(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::CurveRegistryExchange(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Decimals(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Deposit(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::DepositLimit(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::EnterPosition(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::EnterPositionWithAssets(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::ExitPositionWithAssets(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::ExitPosition(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::FeesDistributor(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::GravityBridge(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::IncentivesController(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::InitiateShutdown(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::IsShutdown(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::IsTrusted(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::LastAccrual(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::LendingPool(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::LiftShutdown(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::LiquidityLimit(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::MaxDeposit(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::MaxLocked(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::MaxMint(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::MaxRedeem(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::MaxWithdraw(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Mint(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::Multicall(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Name(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::Nonces(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::Owner(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::PerformanceFee(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Permit(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::PlatformFee(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::PreviewDeposit(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::PreviewMint(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::PreviewRedeem(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::PreviewWithdraw(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Rebalance(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Redeem(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::Reinvest(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::RenounceOwnership(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::SendFees(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::SetAccrualPeriod(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::SetDepositLimit(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::SetFeesDistributor(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::SetLiquidityLimit(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::SetTrust(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::StkAAVE(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::SushiswapRouter(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Sweep(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::Symbol(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::TotalAssets(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::TotalBalance(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::TotalHoldings(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::TotalLocked(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::TotalSupply(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Transfer(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::TransferFrom(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::TransferOwnership(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Withdraw(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
             }
         }
     }
-    impl ::std::fmt::Display for AaveV2StablecoinCellarCalls {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    impl ::core::fmt::Display for AaveV2StablecoinCellarCalls {
+        fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
             match self {
-                AaveV2StablecoinCellarCalls::Aave(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::DomainSeparator(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Weth(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::AccrualPeriod(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Accrue(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Allowance(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Approve(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Asset(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::AssetAToken(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::AssetDecimals(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::BalanceOf(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::ClaimAndUnstake(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::ConvertToAssets(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::ConvertToShares(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::CurveRegistryExchange(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Decimals(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Deposit(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::DepositLimit(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::EnterPosition(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::EnterPositionWithAssets(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::ExitPositionWithAssets(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::ExitPosition(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::FeesDistributor(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::GravityBridge(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::IncentivesController(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::InitiateShutdown(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::IsShutdown(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::IsTrusted(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::LastAccrual(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::LendingPool(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::LiftShutdown(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::LiquidityLimit(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::MaxDeposit(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::MaxLocked(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::MaxMint(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::MaxRedeem(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::MaxWithdraw(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Mint(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Multicall(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Name(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Nonces(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Owner(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::PerformanceFee(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Permit(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::PlatformFee(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::PreviewDeposit(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::PreviewMint(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::PreviewRedeem(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::PreviewWithdraw(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Rebalance(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Redeem(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Reinvest(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::RenounceOwnership(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::SendFees(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::SetAccrualPeriod(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::SetDepositLimit(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::SetFeesDistributor(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::SetLiquidityLimit(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::SetTrust(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::StkAAVE(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::SushiswapRouter(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Sweep(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Symbol(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::TotalAssets(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::TotalBalance(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::TotalHoldings(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::TotalLocked(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::TotalSupply(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Transfer(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::TransferFrom(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::TransferOwnership(element) => element.fmt(f),
-                AaveV2StablecoinCellarCalls::Withdraw(element) => element.fmt(f),
+                Self::Aave(element) => ::core::fmt::Display::fmt(element, f),
+                Self::DomainSeparator(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Weth(element) => ::core::fmt::Display::fmt(element, f),
+                Self::AccrualPeriod(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Accrue(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Allowance(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Approve(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Asset(element) => ::core::fmt::Display::fmt(element, f),
+                Self::AssetAToken(element) => ::core::fmt::Display::fmt(element, f),
+                Self::AssetDecimals(element) => ::core::fmt::Display::fmt(element, f),
+                Self::BalanceOf(element) => ::core::fmt::Display::fmt(element, f),
+                Self::ClaimAndUnstake(element) => ::core::fmt::Display::fmt(element, f),
+                Self::ConvertToAssets(element) => ::core::fmt::Display::fmt(element, f),
+                Self::ConvertToShares(element) => ::core::fmt::Display::fmt(element, f),
+                Self::CurveRegistryExchange(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Decimals(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Deposit(element) => ::core::fmt::Display::fmt(element, f),
+                Self::DepositLimit(element) => ::core::fmt::Display::fmt(element, f),
+                Self::EnterPosition(element) => ::core::fmt::Display::fmt(element, f),
+                Self::EnterPositionWithAssets(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::ExitPositionWithAssets(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::ExitPosition(element) => ::core::fmt::Display::fmt(element, f),
+                Self::FeesDistributor(element) => ::core::fmt::Display::fmt(element, f),
+                Self::GravityBridge(element) => ::core::fmt::Display::fmt(element, f),
+                Self::IncentivesController(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::InitiateShutdown(element) => ::core::fmt::Display::fmt(element, f),
+                Self::IsShutdown(element) => ::core::fmt::Display::fmt(element, f),
+                Self::IsTrusted(element) => ::core::fmt::Display::fmt(element, f),
+                Self::LastAccrual(element) => ::core::fmt::Display::fmt(element, f),
+                Self::LendingPool(element) => ::core::fmt::Display::fmt(element, f),
+                Self::LiftShutdown(element) => ::core::fmt::Display::fmt(element, f),
+                Self::LiquidityLimit(element) => ::core::fmt::Display::fmt(element, f),
+                Self::MaxDeposit(element) => ::core::fmt::Display::fmt(element, f),
+                Self::MaxLocked(element) => ::core::fmt::Display::fmt(element, f),
+                Self::MaxMint(element) => ::core::fmt::Display::fmt(element, f),
+                Self::MaxRedeem(element) => ::core::fmt::Display::fmt(element, f),
+                Self::MaxWithdraw(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Mint(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Multicall(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Name(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Nonces(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Owner(element) => ::core::fmt::Display::fmt(element, f),
+                Self::PerformanceFee(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Permit(element) => ::core::fmt::Display::fmt(element, f),
+                Self::PlatformFee(element) => ::core::fmt::Display::fmt(element, f),
+                Self::PreviewDeposit(element) => ::core::fmt::Display::fmt(element, f),
+                Self::PreviewMint(element) => ::core::fmt::Display::fmt(element, f),
+                Self::PreviewRedeem(element) => ::core::fmt::Display::fmt(element, f),
+                Self::PreviewWithdraw(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Rebalance(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Redeem(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Reinvest(element) => ::core::fmt::Display::fmt(element, f),
+                Self::RenounceOwnership(element) => ::core::fmt::Display::fmt(element, f),
+                Self::SendFees(element) => ::core::fmt::Display::fmt(element, f),
+                Self::SetAccrualPeriod(element) => ::core::fmt::Display::fmt(element, f),
+                Self::SetDepositLimit(element) => ::core::fmt::Display::fmt(element, f),
+                Self::SetFeesDistributor(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::SetLiquidityLimit(element) => ::core::fmt::Display::fmt(element, f),
+                Self::SetTrust(element) => ::core::fmt::Display::fmt(element, f),
+                Self::StkAAVE(element) => ::core::fmt::Display::fmt(element, f),
+                Self::SushiswapRouter(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Sweep(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Symbol(element) => ::core::fmt::Display::fmt(element, f),
+                Self::TotalAssets(element) => ::core::fmt::Display::fmt(element, f),
+                Self::TotalBalance(element) => ::core::fmt::Display::fmt(element, f),
+                Self::TotalHoldings(element) => ::core::fmt::Display::fmt(element, f),
+                Self::TotalLocked(element) => ::core::fmt::Display::fmt(element, f),
+                Self::TotalSupply(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Transfer(element) => ::core::fmt::Display::fmt(element, f),
+                Self::TransferFrom(element) => ::core::fmt::Display::fmt(element, f),
+                Self::TransferOwnership(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Withdraw(element) => ::core::fmt::Display::fmt(element, f),
             }
         }
     }
-    impl ::std::convert::From<AaveCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: AaveCall) -> Self {
-            AaveV2StablecoinCellarCalls::Aave(var)
+    impl ::core::convert::From<AaveCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: AaveCall) -> Self {
+            Self::Aave(value)
         }
     }
-    impl ::std::convert::From<DomainSeparatorCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: DomainSeparatorCall) -> Self {
-            AaveV2StablecoinCellarCalls::DomainSeparator(var)
+    impl ::core::convert::From<DomainSeparatorCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: DomainSeparatorCall) -> Self {
+            Self::DomainSeparator(value)
         }
     }
-    impl ::std::convert::From<WethCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: WethCall) -> Self {
-            AaveV2StablecoinCellarCalls::Weth(var)
+    impl ::core::convert::From<WethCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: WethCall) -> Self {
+            Self::Weth(value)
         }
     }
-    impl ::std::convert::From<AccrualPeriodCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: AccrualPeriodCall) -> Self {
-            AaveV2StablecoinCellarCalls::AccrualPeriod(var)
+    impl ::core::convert::From<AccrualPeriodCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: AccrualPeriodCall) -> Self {
+            Self::AccrualPeriod(value)
         }
     }
-    impl ::std::convert::From<AccrueCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: AccrueCall) -> Self {
-            AaveV2StablecoinCellarCalls::Accrue(var)
+    impl ::core::convert::From<AccrueCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: AccrueCall) -> Self {
+            Self::Accrue(value)
         }
     }
-    impl ::std::convert::From<AllowanceCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: AllowanceCall) -> Self {
-            AaveV2StablecoinCellarCalls::Allowance(var)
+    impl ::core::convert::From<AllowanceCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: AllowanceCall) -> Self {
+            Self::Allowance(value)
         }
     }
-    impl ::std::convert::From<ApproveCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: ApproveCall) -> Self {
-            AaveV2StablecoinCellarCalls::Approve(var)
+    impl ::core::convert::From<ApproveCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: ApproveCall) -> Self {
+            Self::Approve(value)
         }
     }
-    impl ::std::convert::From<AssetCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: AssetCall) -> Self {
-            AaveV2StablecoinCellarCalls::Asset(var)
+    impl ::core::convert::From<AssetCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: AssetCall) -> Self {
+            Self::Asset(value)
         }
     }
-    impl ::std::convert::From<AssetATokenCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: AssetATokenCall) -> Self {
-            AaveV2StablecoinCellarCalls::AssetAToken(var)
+    impl ::core::convert::From<AssetATokenCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: AssetATokenCall) -> Self {
+            Self::AssetAToken(value)
         }
     }
-    impl ::std::convert::From<AssetDecimalsCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: AssetDecimalsCall) -> Self {
-            AaveV2StablecoinCellarCalls::AssetDecimals(var)
+    impl ::core::convert::From<AssetDecimalsCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: AssetDecimalsCall) -> Self {
+            Self::AssetDecimals(value)
         }
     }
-    impl ::std::convert::From<BalanceOfCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: BalanceOfCall) -> Self {
-            AaveV2StablecoinCellarCalls::BalanceOf(var)
+    impl ::core::convert::From<BalanceOfCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: BalanceOfCall) -> Self {
+            Self::BalanceOf(value)
         }
     }
-    impl ::std::convert::From<ClaimAndUnstakeCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: ClaimAndUnstakeCall) -> Self {
-            AaveV2StablecoinCellarCalls::ClaimAndUnstake(var)
+    impl ::core::convert::From<ClaimAndUnstakeCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: ClaimAndUnstakeCall) -> Self {
+            Self::ClaimAndUnstake(value)
         }
     }
-    impl ::std::convert::From<ConvertToAssetsCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: ConvertToAssetsCall) -> Self {
-            AaveV2StablecoinCellarCalls::ConvertToAssets(var)
+    impl ::core::convert::From<ConvertToAssetsCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: ConvertToAssetsCall) -> Self {
+            Self::ConvertToAssets(value)
         }
     }
-    impl ::std::convert::From<ConvertToSharesCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: ConvertToSharesCall) -> Self {
-            AaveV2StablecoinCellarCalls::ConvertToShares(var)
+    impl ::core::convert::From<ConvertToSharesCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: ConvertToSharesCall) -> Self {
+            Self::ConvertToShares(value)
         }
     }
-    impl ::std::convert::From<CurveRegistryExchangeCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: CurveRegistryExchangeCall) -> Self {
-            AaveV2StablecoinCellarCalls::CurveRegistryExchange(var)
+    impl ::core::convert::From<CurveRegistryExchangeCall>
+    for AaveV2StablecoinCellarCalls {
+        fn from(value: CurveRegistryExchangeCall) -> Self {
+            Self::CurveRegistryExchange(value)
         }
     }
-    impl ::std::convert::From<DecimalsCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: DecimalsCall) -> Self {
-            AaveV2StablecoinCellarCalls::Decimals(var)
+    impl ::core::convert::From<DecimalsCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: DecimalsCall) -> Self {
+            Self::Decimals(value)
         }
     }
-    impl ::std::convert::From<DepositCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: DepositCall) -> Self {
-            AaveV2StablecoinCellarCalls::Deposit(var)
+    impl ::core::convert::From<DepositCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: DepositCall) -> Self {
+            Self::Deposit(value)
         }
     }
-    impl ::std::convert::From<DepositLimitCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: DepositLimitCall) -> Self {
-            AaveV2StablecoinCellarCalls::DepositLimit(var)
+    impl ::core::convert::From<DepositLimitCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: DepositLimitCall) -> Self {
+            Self::DepositLimit(value)
         }
     }
-    impl ::std::convert::From<EnterPositionCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: EnterPositionCall) -> Self {
-            AaveV2StablecoinCellarCalls::EnterPosition(var)
+    impl ::core::convert::From<EnterPositionCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: EnterPositionCall) -> Self {
+            Self::EnterPosition(value)
         }
     }
-    impl ::std::convert::From<EnterPositionWithAssetsCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: EnterPositionWithAssetsCall) -> Self {
-            AaveV2StablecoinCellarCalls::EnterPositionWithAssets(var)
+    impl ::core::convert::From<EnterPositionWithAssetsCall>
+    for AaveV2StablecoinCellarCalls {
+        fn from(value: EnterPositionWithAssetsCall) -> Self {
+            Self::EnterPositionWithAssets(value)
         }
     }
-    impl ::std::convert::From<ExitPositionWithAssetsCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: ExitPositionWithAssetsCall) -> Self {
-            AaveV2StablecoinCellarCalls::ExitPositionWithAssets(var)
+    impl ::core::convert::From<ExitPositionWithAssetsCall>
+    for AaveV2StablecoinCellarCalls {
+        fn from(value: ExitPositionWithAssetsCall) -> Self {
+            Self::ExitPositionWithAssets(value)
         }
     }
-    impl ::std::convert::From<ExitPositionCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: ExitPositionCall) -> Self {
-            AaveV2StablecoinCellarCalls::ExitPosition(var)
+    impl ::core::convert::From<ExitPositionCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: ExitPositionCall) -> Self {
+            Self::ExitPosition(value)
         }
     }
-    impl ::std::convert::From<FeesDistributorCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: FeesDistributorCall) -> Self {
-            AaveV2StablecoinCellarCalls::FeesDistributor(var)
+    impl ::core::convert::From<FeesDistributorCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: FeesDistributorCall) -> Self {
+            Self::FeesDistributor(value)
         }
     }
-    impl ::std::convert::From<GravityBridgeCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: GravityBridgeCall) -> Self {
-            AaveV2StablecoinCellarCalls::GravityBridge(var)
+    impl ::core::convert::From<GravityBridgeCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: GravityBridgeCall) -> Self {
+            Self::GravityBridge(value)
         }
     }
-    impl ::std::convert::From<IncentivesControllerCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: IncentivesControllerCall) -> Self {
-            AaveV2StablecoinCellarCalls::IncentivesController(var)
+    impl ::core::convert::From<IncentivesControllerCall>
+    for AaveV2StablecoinCellarCalls {
+        fn from(value: IncentivesControllerCall) -> Self {
+            Self::IncentivesController(value)
         }
     }
-    impl ::std::convert::From<InitiateShutdownCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: InitiateShutdownCall) -> Self {
-            AaveV2StablecoinCellarCalls::InitiateShutdown(var)
+    impl ::core::convert::From<InitiateShutdownCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: InitiateShutdownCall) -> Self {
+            Self::InitiateShutdown(value)
         }
     }
-    impl ::std::convert::From<IsShutdownCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: IsShutdownCall) -> Self {
-            AaveV2StablecoinCellarCalls::IsShutdown(var)
+    impl ::core::convert::From<IsShutdownCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: IsShutdownCall) -> Self {
+            Self::IsShutdown(value)
         }
     }
-    impl ::std::convert::From<IsTrustedCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: IsTrustedCall) -> Self {
-            AaveV2StablecoinCellarCalls::IsTrusted(var)
+    impl ::core::convert::From<IsTrustedCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: IsTrustedCall) -> Self {
+            Self::IsTrusted(value)
         }
     }
-    impl ::std::convert::From<LastAccrualCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: LastAccrualCall) -> Self {
-            AaveV2StablecoinCellarCalls::LastAccrual(var)
+    impl ::core::convert::From<LastAccrualCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: LastAccrualCall) -> Self {
+            Self::LastAccrual(value)
         }
     }
-    impl ::std::convert::From<LendingPoolCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: LendingPoolCall) -> Self {
-            AaveV2StablecoinCellarCalls::LendingPool(var)
+    impl ::core::convert::From<LendingPoolCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: LendingPoolCall) -> Self {
+            Self::LendingPool(value)
         }
     }
-    impl ::std::convert::From<LiftShutdownCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: LiftShutdownCall) -> Self {
-            AaveV2StablecoinCellarCalls::LiftShutdown(var)
+    impl ::core::convert::From<LiftShutdownCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: LiftShutdownCall) -> Self {
+            Self::LiftShutdown(value)
         }
     }
-    impl ::std::convert::From<LiquidityLimitCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: LiquidityLimitCall) -> Self {
-            AaveV2StablecoinCellarCalls::LiquidityLimit(var)
+    impl ::core::convert::From<LiquidityLimitCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: LiquidityLimitCall) -> Self {
+            Self::LiquidityLimit(value)
         }
     }
-    impl ::std::convert::From<MaxDepositCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: MaxDepositCall) -> Self {
-            AaveV2StablecoinCellarCalls::MaxDeposit(var)
+    impl ::core::convert::From<MaxDepositCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: MaxDepositCall) -> Self {
+            Self::MaxDeposit(value)
         }
     }
-    impl ::std::convert::From<MaxLockedCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: MaxLockedCall) -> Self {
-            AaveV2StablecoinCellarCalls::MaxLocked(var)
+    impl ::core::convert::From<MaxLockedCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: MaxLockedCall) -> Self {
+            Self::MaxLocked(value)
         }
     }
-    impl ::std::convert::From<MaxMintCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: MaxMintCall) -> Self {
-            AaveV2StablecoinCellarCalls::MaxMint(var)
+    impl ::core::convert::From<MaxMintCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: MaxMintCall) -> Self {
+            Self::MaxMint(value)
         }
     }
-    impl ::std::convert::From<MaxRedeemCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: MaxRedeemCall) -> Self {
-            AaveV2StablecoinCellarCalls::MaxRedeem(var)
+    impl ::core::convert::From<MaxRedeemCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: MaxRedeemCall) -> Self {
+            Self::MaxRedeem(value)
         }
     }
-    impl ::std::convert::From<MaxWithdrawCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: MaxWithdrawCall) -> Self {
-            AaveV2StablecoinCellarCalls::MaxWithdraw(var)
+    impl ::core::convert::From<MaxWithdrawCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: MaxWithdrawCall) -> Self {
+            Self::MaxWithdraw(value)
         }
     }
-    impl ::std::convert::From<MintCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: MintCall) -> Self {
-            AaveV2StablecoinCellarCalls::Mint(var)
+    impl ::core::convert::From<MintCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: MintCall) -> Self {
+            Self::Mint(value)
         }
     }
-    impl ::std::convert::From<MulticallCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: MulticallCall) -> Self {
-            AaveV2StablecoinCellarCalls::Multicall(var)
+    impl ::core::convert::From<MulticallCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: MulticallCall) -> Self {
+            Self::Multicall(value)
         }
     }
-    impl ::std::convert::From<NameCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: NameCall) -> Self {
-            AaveV2StablecoinCellarCalls::Name(var)
+    impl ::core::convert::From<NameCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: NameCall) -> Self {
+            Self::Name(value)
         }
     }
-    impl ::std::convert::From<NoncesCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: NoncesCall) -> Self {
-            AaveV2StablecoinCellarCalls::Nonces(var)
+    impl ::core::convert::From<NoncesCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: NoncesCall) -> Self {
+            Self::Nonces(value)
         }
     }
-    impl ::std::convert::From<OwnerCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: OwnerCall) -> Self {
-            AaveV2StablecoinCellarCalls::Owner(var)
+    impl ::core::convert::From<OwnerCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: OwnerCall) -> Self {
+            Self::Owner(value)
         }
     }
-    impl ::std::convert::From<PerformanceFeeCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: PerformanceFeeCall) -> Self {
-            AaveV2StablecoinCellarCalls::PerformanceFee(var)
+    impl ::core::convert::From<PerformanceFeeCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: PerformanceFeeCall) -> Self {
+            Self::PerformanceFee(value)
         }
     }
-    impl ::std::convert::From<PermitCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: PermitCall) -> Self {
-            AaveV2StablecoinCellarCalls::Permit(var)
+    impl ::core::convert::From<PermitCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: PermitCall) -> Self {
+            Self::Permit(value)
         }
     }
-    impl ::std::convert::From<PlatformFeeCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: PlatformFeeCall) -> Self {
-            AaveV2StablecoinCellarCalls::PlatformFee(var)
+    impl ::core::convert::From<PlatformFeeCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: PlatformFeeCall) -> Self {
+            Self::PlatformFee(value)
         }
     }
-    impl ::std::convert::From<PreviewDepositCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: PreviewDepositCall) -> Self {
-            AaveV2StablecoinCellarCalls::PreviewDeposit(var)
+    impl ::core::convert::From<PreviewDepositCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: PreviewDepositCall) -> Self {
+            Self::PreviewDeposit(value)
         }
     }
-    impl ::std::convert::From<PreviewMintCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: PreviewMintCall) -> Self {
-            AaveV2StablecoinCellarCalls::PreviewMint(var)
+    impl ::core::convert::From<PreviewMintCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: PreviewMintCall) -> Self {
+            Self::PreviewMint(value)
         }
     }
-    impl ::std::convert::From<PreviewRedeemCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: PreviewRedeemCall) -> Self {
-            AaveV2StablecoinCellarCalls::PreviewRedeem(var)
+    impl ::core::convert::From<PreviewRedeemCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: PreviewRedeemCall) -> Self {
+            Self::PreviewRedeem(value)
         }
     }
-    impl ::std::convert::From<PreviewWithdrawCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: PreviewWithdrawCall) -> Self {
-            AaveV2StablecoinCellarCalls::PreviewWithdraw(var)
+    impl ::core::convert::From<PreviewWithdrawCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: PreviewWithdrawCall) -> Self {
+            Self::PreviewWithdraw(value)
         }
     }
-    impl ::std::convert::From<RebalanceCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: RebalanceCall) -> Self {
-            AaveV2StablecoinCellarCalls::Rebalance(var)
+    impl ::core::convert::From<RebalanceCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: RebalanceCall) -> Self {
+            Self::Rebalance(value)
         }
     }
-    impl ::std::convert::From<RedeemCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: RedeemCall) -> Self {
-            AaveV2StablecoinCellarCalls::Redeem(var)
+    impl ::core::convert::From<RedeemCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: RedeemCall) -> Self {
+            Self::Redeem(value)
         }
     }
-    impl ::std::convert::From<ReinvestCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: ReinvestCall) -> Self {
-            AaveV2StablecoinCellarCalls::Reinvest(var)
+    impl ::core::convert::From<ReinvestCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: ReinvestCall) -> Self {
+            Self::Reinvest(value)
         }
     }
-    impl ::std::convert::From<RenounceOwnershipCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: RenounceOwnershipCall) -> Self {
-            AaveV2StablecoinCellarCalls::RenounceOwnership(var)
+    impl ::core::convert::From<RenounceOwnershipCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: RenounceOwnershipCall) -> Self {
+            Self::RenounceOwnership(value)
         }
     }
-    impl ::std::convert::From<SendFeesCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: SendFeesCall) -> Self {
-            AaveV2StablecoinCellarCalls::SendFees(var)
+    impl ::core::convert::From<SendFeesCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: SendFeesCall) -> Self {
+            Self::SendFees(value)
         }
     }
-    impl ::std::convert::From<SetAccrualPeriodCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: SetAccrualPeriodCall) -> Self {
-            AaveV2StablecoinCellarCalls::SetAccrualPeriod(var)
+    impl ::core::convert::From<SetAccrualPeriodCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: SetAccrualPeriodCall) -> Self {
+            Self::SetAccrualPeriod(value)
         }
     }
-    impl ::std::convert::From<SetDepositLimitCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: SetDepositLimitCall) -> Self {
-            AaveV2StablecoinCellarCalls::SetDepositLimit(var)
+    impl ::core::convert::From<SetDepositLimitCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: SetDepositLimitCall) -> Self {
+            Self::SetDepositLimit(value)
         }
     }
-    impl ::std::convert::From<SetFeesDistributorCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: SetFeesDistributorCall) -> Self {
-            AaveV2StablecoinCellarCalls::SetFeesDistributor(var)
+    impl ::core::convert::From<SetFeesDistributorCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: SetFeesDistributorCall) -> Self {
+            Self::SetFeesDistributor(value)
         }
     }
-    impl ::std::convert::From<SetLiquidityLimitCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: SetLiquidityLimitCall) -> Self {
-            AaveV2StablecoinCellarCalls::SetLiquidityLimit(var)
+    impl ::core::convert::From<SetLiquidityLimitCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: SetLiquidityLimitCall) -> Self {
+            Self::SetLiquidityLimit(value)
         }
     }
-    impl ::std::convert::From<SetTrustCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: SetTrustCall) -> Self {
-            AaveV2StablecoinCellarCalls::SetTrust(var)
+    impl ::core::convert::From<SetTrustCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: SetTrustCall) -> Self {
+            Self::SetTrust(value)
         }
     }
-    impl ::std::convert::From<StkAAVECall> for AaveV2StablecoinCellarCalls {
-        fn from(var: StkAAVECall) -> Self {
-            AaveV2StablecoinCellarCalls::StkAAVE(var)
+    impl ::core::convert::From<StkAAVECall> for AaveV2StablecoinCellarCalls {
+        fn from(value: StkAAVECall) -> Self {
+            Self::StkAAVE(value)
         }
     }
-    impl ::std::convert::From<SushiswapRouterCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: SushiswapRouterCall) -> Self {
-            AaveV2StablecoinCellarCalls::SushiswapRouter(var)
+    impl ::core::convert::From<SushiswapRouterCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: SushiswapRouterCall) -> Self {
+            Self::SushiswapRouter(value)
         }
     }
-    impl ::std::convert::From<SweepCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: SweepCall) -> Self {
-            AaveV2StablecoinCellarCalls::Sweep(var)
+    impl ::core::convert::From<SweepCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: SweepCall) -> Self {
+            Self::Sweep(value)
         }
     }
-    impl ::std::convert::From<SymbolCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: SymbolCall) -> Self {
-            AaveV2StablecoinCellarCalls::Symbol(var)
+    impl ::core::convert::From<SymbolCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: SymbolCall) -> Self {
+            Self::Symbol(value)
         }
     }
-    impl ::std::convert::From<TotalAssetsCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: TotalAssetsCall) -> Self {
-            AaveV2StablecoinCellarCalls::TotalAssets(var)
+    impl ::core::convert::From<TotalAssetsCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: TotalAssetsCall) -> Self {
+            Self::TotalAssets(value)
         }
     }
-    impl ::std::convert::From<TotalBalanceCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: TotalBalanceCall) -> Self {
-            AaveV2StablecoinCellarCalls::TotalBalance(var)
+    impl ::core::convert::From<TotalBalanceCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: TotalBalanceCall) -> Self {
+            Self::TotalBalance(value)
         }
     }
-    impl ::std::convert::From<TotalHoldingsCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: TotalHoldingsCall) -> Self {
-            AaveV2StablecoinCellarCalls::TotalHoldings(var)
+    impl ::core::convert::From<TotalHoldingsCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: TotalHoldingsCall) -> Self {
+            Self::TotalHoldings(value)
         }
     }
-    impl ::std::convert::From<TotalLockedCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: TotalLockedCall) -> Self {
-            AaveV2StablecoinCellarCalls::TotalLocked(var)
+    impl ::core::convert::From<TotalLockedCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: TotalLockedCall) -> Self {
+            Self::TotalLocked(value)
         }
     }
-    impl ::std::convert::From<TotalSupplyCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: TotalSupplyCall) -> Self {
-            AaveV2StablecoinCellarCalls::TotalSupply(var)
+    impl ::core::convert::From<TotalSupplyCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: TotalSupplyCall) -> Self {
+            Self::TotalSupply(value)
         }
     }
-    impl ::std::convert::From<TransferCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: TransferCall) -> Self {
-            AaveV2StablecoinCellarCalls::Transfer(var)
+    impl ::core::convert::From<TransferCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: TransferCall) -> Self {
+            Self::Transfer(value)
         }
     }
-    impl ::std::convert::From<TransferFromCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: TransferFromCall) -> Self {
-            AaveV2StablecoinCellarCalls::TransferFrom(var)
+    impl ::core::convert::From<TransferFromCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: TransferFromCall) -> Self {
+            Self::TransferFrom(value)
         }
     }
-    impl ::std::convert::From<TransferOwnershipCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: TransferOwnershipCall) -> Self {
-            AaveV2StablecoinCellarCalls::TransferOwnership(var)
+    impl ::core::convert::From<TransferOwnershipCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: TransferOwnershipCall) -> Self {
+            Self::TransferOwnership(value)
         }
     }
-    impl ::std::convert::From<WithdrawCall> for AaveV2StablecoinCellarCalls {
-        fn from(var: WithdrawCall) -> Self {
-            AaveV2StablecoinCellarCalls::Withdraw(var)
+    impl ::core::convert::From<WithdrawCall> for AaveV2StablecoinCellarCalls {
+        fn from(value: WithdrawCall) -> Self {
+            Self::Withdraw(value)
         }
+    }
+    ///Container type for all return fields from the `AAVE` function with signature `AAVE()` and selector `0x48ccda3c`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct AaveReturn(pub ::ethers::core::types::Address);
+    ///Container type for all return fields from the `DOMAIN_SEPARATOR` function with signature `DOMAIN_SEPARATOR()` and selector `0x3644e515`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct DomainSeparatorReturn(pub [u8; 32]);
+    ///Container type for all return fields from the `WETH` function with signature `WETH()` and selector `0xad5c4648`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct WethReturn(pub ::ethers::core::types::Address);
+    ///Container type for all return fields from the `accrualPeriod` function with signature `accrualPeriod()` and selector `0xf6664155`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct AccrualPeriodReturn(pub u32);
+    ///Container type for all return fields from the `allowance` function with signature `allowance(address,address)` and selector `0xdd62ed3e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct AllowanceReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `approve` function with signature `approve(address,uint256)` and selector `0x095ea7b3`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct ApproveReturn(pub bool);
+    ///Container type for all return fields from the `asset` function with signature `asset()` and selector `0x38d52e0f`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct AssetReturn(pub ::ethers::core::types::Address);
+    ///Container type for all return fields from the `assetAToken` function with signature `assetAToken()` and selector `0xc17f6740`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct AssetATokenReturn(pub ::ethers::core::types::Address);
+    ///Container type for all return fields from the `assetDecimals` function with signature `assetDecimals()` and selector `0xc2d41601`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct AssetDecimalsReturn(pub u8);
+    ///Container type for all return fields from the `balanceOf` function with signature `balanceOf(address)` and selector `0x70a08231`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct BalanceOfReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `claimAndUnstake` function with signature `claimAndUnstake()` and selector `0xad004e20`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct ClaimAndUnstakeReturn {
+        pub rewards: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `convertToAssets` function with signature `convertToAssets(uint256)` and selector `0x07a2d13a`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct ConvertToAssetsReturn {
+        pub assets: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `convertToShares` function with signature `convertToShares(uint256)` and selector `0xc6e6f592`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct ConvertToSharesReturn {
+        pub shares: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `curveRegistryExchange` function with signature `curveRegistryExchange()` and selector `0xac353510`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct CurveRegistryExchangeReturn(pub ::ethers::core::types::Address);
+    ///Container type for all return fields from the `decimals` function with signature `decimals()` and selector `0x313ce567`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct DecimalsReturn(pub u8);
+    ///Container type for all return fields from the `deposit` function with signature `deposit(uint256,address)` and selector `0x6e553f65`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct DepositReturn {
+        pub shares: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `depositLimit` function with signature `depositLimit()` and selector `0xecf70858`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct DepositLimitReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `feesDistributor` function with signature `feesDistributor()` and selector `0x8e0bae7f`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct FeesDistributorReturn(pub [u8; 32]);
+    ///Container type for all return fields from the `gravityBridge` function with signature `gravityBridge()` and selector `0xa4da2d02`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct GravityBridgeReturn(pub ::ethers::core::types::Address);
+    ///Container type for all return fields from the `incentivesController` function with signature `incentivesController()` and selector `0xaf1df255`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct IncentivesControllerReturn(pub ::ethers::core::types::Address);
+    ///Container type for all return fields from the `isShutdown` function with signature `isShutdown()` and selector `0xbf86d690`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct IsShutdownReturn(pub bool);
+    ///Container type for all return fields from the `isTrusted` function with signature `isTrusted(address)` and selector `0x96d64879`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct IsTrustedReturn(pub bool);
+    ///Container type for all return fields from the `lastAccrual` function with signature `lastAccrual()` and selector `0x7b3baab4`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct LastAccrualReturn(pub u64);
+    ///Container type for all return fields from the `lendingPool` function with signature `lendingPool()` and selector `0xa59a9973`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct LendingPoolReturn(pub ::ethers::core::types::Address);
+    ///Container type for all return fields from the `liquidityLimit` function with signature `liquidityLimit()` and selector `0x72163715`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct LiquidityLimitReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `maxDeposit` function with signature `maxDeposit(address)` and selector `0x402d267d`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MaxDepositReturn {
+        pub assets: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `maxLocked` function with signature `maxLocked()` and selector `0x8fdc9dfa`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MaxLockedReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `maxMint` function with signature `maxMint(address)` and selector `0xc63d75b6`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MaxMintReturn {
+        pub shares: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `maxRedeem` function with signature `maxRedeem(address)` and selector `0xd905777e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MaxRedeemReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `maxWithdraw` function with signature `maxWithdraw(address)` and selector `0xce96cb77`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MaxWithdrawReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `mint` function with signature `mint(uint256,address)` and selector `0x94bf804d`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MintReturn {
+        pub assets: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `multicall` function with signature `multicall(bytes[])` and selector `0xac9650d8`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MulticallReturn {
+        pub results: ::std::vec::Vec<::ethers::core::types::Bytes>,
+    }
+    ///Container type for all return fields from the `name` function with signature `name()` and selector `0x06fdde03`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct NameReturn(pub ::std::string::String);
+    ///Container type for all return fields from the `nonces` function with signature `nonces(address)` and selector `0x7ecebe00`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct NoncesReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `owner` function with signature `owner()` and selector `0x8da5cb5b`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct OwnerReturn(pub ::ethers::core::types::Address);
+    ///Container type for all return fields from the `performanceFee` function with signature `performanceFee()` and selector `0x87788782`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct PerformanceFeeReturn(pub u64);
+    ///Container type for all return fields from the `platformFee` function with signature `platformFee()` and selector `0x26232a2e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct PlatformFeeReturn(pub u64);
+    ///Container type for all return fields from the `previewDeposit` function with signature `previewDeposit(uint256)` and selector `0xef8b30f7`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct PreviewDepositReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `previewMint` function with signature `previewMint(uint256)` and selector `0xb3d7f6b9`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct PreviewMintReturn {
+        pub assets: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `previewRedeem` function with signature `previewRedeem(uint256)` and selector `0x4cdad506`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct PreviewRedeemReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `previewWithdraw` function with signature `previewWithdraw(uint256)` and selector `0x0a28a477`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct PreviewWithdrawReturn {
+        pub shares: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `redeem` function with signature `redeem(uint256,address,address)` and selector `0xba087652`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct RedeemReturn {
+        pub assets: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `stkAAVE` function with signature `stkAAVE()` and selector `0x1fc29c01`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct StkAAVEReturn(pub ::ethers::core::types::Address);
+    ///Container type for all return fields from the `sushiswapRouter` function with signature `sushiswapRouter()` and selector `0xe9240c2d`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct SushiswapRouterReturn(pub ::ethers::core::types::Address);
+    ///Container type for all return fields from the `symbol` function with signature `symbol()` and selector `0x95d89b41`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct SymbolReturn(pub ::std::string::String);
+    ///Container type for all return fields from the `totalAssets` function with signature `totalAssets()` and selector `0x01e1d114`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct TotalAssetsReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `totalBalance` function with signature `totalBalance()` and selector `0xad7a672f`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct TotalBalanceReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `totalHoldings` function with signature `totalHoldings()` and selector `0xe9ec2e99`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct TotalHoldingsReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `totalLocked` function with signature `totalLocked()` and selector `0x56891412`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct TotalLockedReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `totalSupply` function with signature `totalSupply()` and selector `0x18160ddd`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct TotalSupplyReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `transfer` function with signature `transfer(address,uint256)` and selector `0xa9059cbb`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct TransferReturn(pub bool);
+    ///Container type for all return fields from the `transferFrom` function with signature `transferFrom(address,address,uint256)` and selector `0x23b872dd`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct TransferFromReturn(pub bool);
+    ///Container type for all return fields from the `withdraw` function with signature `withdraw(uint256,address,address)` and selector `0xb460af94`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct WithdrawReturn {
+        pub shares: ::ethers::core::types::U256,
     }
 }

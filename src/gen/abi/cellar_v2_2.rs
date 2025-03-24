@@ -1,150 +1,3556 @@
-pub use cellarv2_2_mod::*;
-#[allow(clippy::too_many_arguments)]
-mod cellarv2_2_mod {
-    #![allow(clippy::enum_variant_names)]
-    #![allow(dead_code)]
-    #![allow(clippy::type_complexity)]
-    #![allow(unused_imports)]
-    use ethers::contract::{
-        builders::{ContractCall, Event},
-        Contract, Lazy,
-    };
-    use ethers::core::{
-        abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
-        types::*,
-    };
-    use ethers::providers::Middleware;
-    #[doc = "CellarV2_2 was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
-    use std::sync::Arc;
-    pub static CELLARV2_2_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
-        ethers::contract::Lazy::new(|| {
-            serde_json :: from_str ("[\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"contract Registry\",\n                \"name\": \"_registry\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"constructor\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"asset\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"expectedAsset\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"Cellar__AssetMismatch\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"Cellar__CallToAdaptorNotAllowed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__CallerNotAavePool\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ContractNotShutdown\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ContractShutdown\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"Cellar__DebtMismatch\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"maxDeposit\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__DepositRestricted\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ExternalInitiator\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"illiquidPosition\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"Cellar__IlliquidWithdraw\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assetsOwed\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__IncompleteWithdraw\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__InvalidFee\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__InvalidFeeCut\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"Cellar__InvalidHoldingPosition\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"requested\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"max\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__InvalidRebalanceDeviation\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__InvalidShareLockPeriod\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"depositor\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"Cellar__NotApprovedToDepositOnBehalf\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__Paused\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"Cellar__PositionAlreadyUsed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"maxPositions\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__PositionArrayFull\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"sharesRemaining\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__PositionNotEmpty\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"Cellar__PositionNotInCatalogue\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"Cellar__PositionNotUsed\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__RemovingHoldingPosition\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"timeSharesAreUnlocked\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"currentBlock\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__SharesAreLocked\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"min\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"max\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__TotalAssetDeviatedOutsideRange\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"current\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"expected\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Cellar__TotalSharesMustRemainConstant\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ZeroAssets\",\n        \"type\": \"error\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"Cellar__ZeroShares\",\n        \"type\": \"error\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"bytes\",\n                \"name\": \"data\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"AdaptorCalled\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"bool\",\n                \"name\": \"inCatalogue\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"AdaptorCatalogueAltered\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Approval\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"caller\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Deposit\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint8\",\n                \"name\": \"version\",\n                \"type\": \"uint8\"\n            }\n        ],\n        \"name\": \"Initialized\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"user\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"newOwner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"OwnershipTransferred\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint64\",\n                \"name\": \"oldPlatformFee\",\n                \"type\": \"uint64\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint64\",\n                \"name\": \"newPlatformFee\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"name\": \"PlatformFeeChanged\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"index\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"PositionAdded\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"bool\",\n                \"name\": \"inCatalogue\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"PositionCatalogueAltered\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint32\",\n                \"name\": \"position\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"index\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"PositionRemoved\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint32\",\n                \"name\": \"newPosition1\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint32\",\n                \"name\": \"newPosition2\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"index1\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"index2\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"PositionSwapped\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"oldDeviation\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"newDeviation\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"RebalanceDeviationChanged\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"oldPeriod\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"newPeriod\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"ShareLockingPeriodChanged\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"bool\",\n                \"name\": \"isShutdown\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"ShutdownChanged\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"address\",\n                \"name\": \"oldPayoutAddress\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"address\",\n                \"name\": \"newPayoutAddress\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"StrategistPayoutAddressChanged\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint64\",\n                \"name\": \"oldPlatformCut\",\n                \"type\": \"uint64\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint64\",\n                \"name\": \"newPlatformCut\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"name\": \"StrategistPlatformCutChanged\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"from\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"to\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Transfer\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"caller\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Withdraw\",\n        \"type\": \"event\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"DOMAIN_SEPARATOR\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"\",\n                \"type\": \"bytes32\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"GRAVITY_BRIDGE_REGISTRY_SLOT\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"MAXIMUM_SHARE_LOCK_PERIOD\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"MAX_FEE_CUT\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"MAX_PLATFORM_FEE\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"MAX_POSITIONS\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"MAX_REBALANCE_DEVIATION\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"MINIMUM_SHARE_LOCK_PERIOD\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"PRICE_ROUTER_REGISTRY_SLOT\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"aavePool\",\n        \"outputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"adaptorCatalogue\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"addAdaptorToCatalogue\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"index\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"configurationData\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"inDebtArray\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"addPosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"addPositionToCatalogue\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"allowance\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"allowedRebalanceDeviation\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"approve\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"asset\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"balanceOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"blockExternalReceiver\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"checkTotalAssets\",\n                \"type\": \"bool\"\n            },\n            {\n                \"internalType\": \"uint16\",\n                \"name\": \"allowableRange\",\n                \"type\": \"uint16\"\n            }\n        ],\n        \"name\": \"cachePriceRouter\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"components\": [\n                    {\n                        \"internalType\": \"address\",\n                        \"name\": \"adaptor\",\n                        \"type\": \"address\"\n                    },\n                    {\n                        \"internalType\": \"bytes[]\",\n                        \"name\": \"callData\",\n                        \"type\": \"bytes[]\"\n                    }\n                ],\n                \"internalType\": \"struct Cellar.AdaptorCall[]\",\n                \"name\": \"data\",\n                \"type\": \"tuple[]\"\n            }\n        ],\n        \"name\": \"callOnAdaptor\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"convertToAssets\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"convertToShares\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"creditPositions\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"debtPositions\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"decimals\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint8\",\n                \"name\": \"\",\n                \"type\": \"uint8\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"deposit\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address[]\",\n                \"name\": \"assets\",\n                \"type\": \"address[]\"\n            },\n            {\n                \"internalType\": \"uint256[]\",\n                \"name\": \"amounts\",\n                \"type\": \"uint256[]\"\n            },\n            {\n                \"internalType\": \"uint256[]\",\n                \"name\": \"premiums\",\n                \"type\": \"uint256[]\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"initiator\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"executeOperation\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"feeData\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"strategistPlatformCut\",\n                \"type\": \"uint64\"\n            },\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"platformFee\",\n                \"type\": \"uint64\"\n            },\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"lastAccrual\",\n                \"type\": \"uint64\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"strategistPayoutAddress\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"index\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"inDebtArray\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"forcePositionOut\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"getCreditPositions\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32[]\",\n                \"name\": \"\",\n                \"type\": \"uint32[]\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"getDebtPositions\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32[]\",\n                \"name\": \"\",\n                \"type\": \"uint32[]\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"getPositionAssets\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20[]\",\n                \"name\": \"assets\",\n                \"type\": \"address[]\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"getPositionData\",\n        \"outputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"isDebt\",\n                \"type\": \"bool\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"adaptorData\",\n                \"type\": \"bytes\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"configurationData\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"holdingPosition\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"ignorePause\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"params\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"initialize\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"initiateShutdown\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"isPaused\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"isPositionUsed\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"isShutdown\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"liftShutdown\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"locked\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"maxDeposit\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"maxMint\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"maxRedeem\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"maxWithdraw\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"mint\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bytes[]\",\n                \"name\": \"data\",\n                \"type\": \"bytes[]\"\n            }\n        ],\n        \"name\": \"multicall\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"name\",\n        \"outputs\": [\n            {\n                \"internalType\": \"string\",\n                \"name\": \"\",\n                \"type\": \"string\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"nonces\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"bytes\",\n                \"name\": \"\",\n                \"type\": \"bytes\"\n            }\n        ],\n        \"name\": \"onERC721Received\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bytes4\",\n                \"name\": \"\",\n                \"type\": \"bytes4\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"owner\",\n        \"outputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"value\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"deadline\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"uint8\",\n                \"name\": \"v\",\n                \"type\": \"uint8\"\n            },\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"r\",\n                \"type\": \"bytes32\"\n            },\n            {\n                \"internalType\": \"bytes32\",\n                \"name\": \"s\",\n                \"type\": \"bytes32\"\n            }\n        ],\n        \"name\": \"permit\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"positionCatalogue\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"previewDeposit\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"previewMint\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"previewRedeem\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"previewWithdraw\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"priceRouter\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract PriceRouter\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"redeem\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"registry\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract Registry\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"adaptor\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"removeAdaptorFromCatalogue\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"index\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"inDebtArray\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"removePosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"removePositionFromCatalogue\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"positionId\",\n                \"type\": \"uint32\"\n            }\n        ],\n        \"name\": \"setHoldingPosition\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"newDeviation\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"setRebalanceDeviation\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"newLock\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"setShareLockPeriod\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"payout\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"setStrategistPayoutAddress\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint64\",\n                \"name\": \"cut\",\n                \"type\": \"uint64\"\n            }\n        ],\n        \"name\": \"setStrategistPlatformCut\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"shareLockPeriod\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"index1\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"uint32\",\n                \"name\": \"index2\",\n                \"type\": \"uint32\"\n            },\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"inDebtArray\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"swapPositions\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"symbol\",\n        \"outputs\": [\n            {\n                \"internalType\": \"string\",\n                \"name\": \"\",\n                \"type\": \"string\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"toggle\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"name\": \"toggleIgnorePause\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"totalAssets\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"totalAssetsWithdrawable\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"totalSupply\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"to\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"transfer\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"from\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"to\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"transferFrom\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"newOwner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"transferOwnership\",\n        \"outputs\": [],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"userShareLockStartTime\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"viewPositionBalances\",\n        \"outputs\": [\n            {\n                \"internalType\": \"contract ERC20[]\",\n                \"name\": \"assets\",\n                \"type\": \"address[]\"\n            },\n            {\n                \"internalType\": \"uint256[]\",\n                \"name\": \"balances\",\n                \"type\": \"uint256[]\"\n            },\n            {\n                \"internalType\": \"bool[]\",\n                \"name\": \"isDebt\",\n                \"type\": \"bool[]\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"assets\",\n                \"type\": \"uint256\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"receiver\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"withdraw\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"shares\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    }\n]\n") . expect ("invalid abi")
-        });
-    #[derive(Clone)]
-    pub struct CellarV2_2<M>(ethers::contract::Contract<M>);
-    impl<M> std::ops::Deref for CellarV2_2<M> {
-        type Target = ethers::contract::Contract<M>;
+pub use cellar_v2_2::*;
+/// This module was auto-generated with ethers-rs Abigen.
+/// More information at: <https://github.com/gakonst/ethers-rs>
+#[allow(
+    clippy::enum_variant_names,
+    clippy::too_many_arguments,
+    clippy::upper_case_acronyms,
+    clippy::type_complexity,
+    dead_code,
+    non_camel_case_types,
+)]
+pub mod cellar_v2_2 {
+    #[allow(deprecated)]
+    fn __abi() -> ::ethers::core::abi::Abi {
+        ::ethers::core::abi::ethabi::Contract {
+            constructor: ::core::option::Option::Some(::ethers::core::abi::ethabi::Constructor {
+                inputs: ::std::vec![
+                    ::ethers::core::abi::ethabi::Param {
+                        name: ::std::borrow::ToOwned::to_owned("_registry"),
+                        kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                        internal_type: ::core::option::Option::Some(
+                            ::std::borrow::ToOwned::to_owned("contract Registry"),
+                        ),
+                    },
+                ],
+            }),
+            functions: ::core::convert::From::from([
+                (
+                    ::std::borrow::ToOwned::to_owned("DOMAIN_SEPARATOR"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("DOMAIN_SEPARATOR"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::FixedBytes(
+                                        32usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes32"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("GRAVITY_BRIDGE_REGISTRY_SLOT"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "GRAVITY_BRIDGE_REGISTRY_SLOT",
+                            ),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("MAXIMUM_SHARE_LOCK_PERIOD"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "MAXIMUM_SHARE_LOCK_PERIOD",
+                            ),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("MAX_FEE_CUT"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("MAX_FEE_CUT"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint64"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("MAX_PLATFORM_FEE"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("MAX_PLATFORM_FEE"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint64"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("MAX_POSITIONS"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("MAX_POSITIONS"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("MAX_REBALANCE_DEVIATION"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "MAX_REBALANCE_DEVIATION",
+                            ),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint64"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("MINIMUM_SHARE_LOCK_PERIOD"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "MINIMUM_SHARE_LOCK_PERIOD",
+                            ),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("PRICE_ROUTER_REGISTRY_SLOT"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "PRICE_ROUTER_REGISTRY_SLOT",
+                            ),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("aavePool"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("aavePool"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("adaptorCatalogue"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("adaptorCatalogue"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("addAdaptorToCatalogue"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "addAdaptorToCatalogue",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("adaptor"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("addPosition"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("addPosition"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("index"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("positionId"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("configurationData"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bytes,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("inDebtArray"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("addPositionToCatalogue"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "addPositionToCatalogue",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("positionId"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("allowance"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("allowance"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("allowedRebalanceDeviation"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "allowedRebalanceDeviation",
+                            ),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("approve"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("approve"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("spender"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("amount"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("asset"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("asset"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("contract ERC20"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("balanceOf"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("balanceOf"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("blockExternalReceiver"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "blockExternalReceiver",
+                            ),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("cachePriceRouter"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("cachePriceRouter"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("checkTotalAssets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("allowableRange"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(16usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint16"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("callOnAdaptor"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("callOnAdaptor"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("data"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::Tuple(
+                                                ::std::vec![
+                                                    ::ethers::core::abi::ethabi::ParamType::Address,
+                                                    ::ethers::core::abi::ethabi::ParamType::Array(
+                                                        ::std::boxed::Box::new(
+                                                            ::ethers::core::abi::ethabi::ParamType::Bytes,
+                                                        ),
+                                                    ),
+                                                ],
+                                            ),
+                                        ),
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned(
+                                            "struct Cellar.AdaptorCall[]",
+                                        ),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("convertToAssets"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("convertToAssets"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("convertToShares"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("convertToShares"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("creditPositions"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("creditPositions"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("debtPositions"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("debtPositions"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("decimals"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("decimals"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(8usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint8"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("deposit"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("deposit"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("receiver"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("executeOperation"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("executeOperation"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::Address,
+                                        ),
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address[]"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("amounts"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::Uint(256usize),
+                                        ),
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256[]"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("premiums"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::Uint(256usize),
+                                        ),
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256[]"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("initiator"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("params"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bytes,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("feeData"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("feeData"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned(
+                                        "strategistPlatformCut",
+                                    ),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint64"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("platformFee"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint64"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("lastAccrual"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint64"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned(
+                                        "strategistPayoutAddress",
+                                    ),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("forcePositionOut"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("forcePositionOut"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("index"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("positionId"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("inDebtArray"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("getCreditPositions"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("getCreditPositions"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                        ),
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32[]"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("getDebtPositions"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("getDebtPositions"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                        ),
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32[]"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("getPositionAssets"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("getPositionAssets"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::Address,
+                                        ),
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("contract ERC20[]"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("getPositionData"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("getPositionData"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("adaptor"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("isDebt"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("adaptorData"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bytes,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("configurationData"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bytes,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("holdingPosition"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("holdingPosition"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("ignorePause"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("ignorePause"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("initialize"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("initialize"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("params"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bytes,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("initiateShutdown"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("initiateShutdown"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("isPaused"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("isPaused"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("isPositionUsed"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("isPositionUsed"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("isShutdown"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("isShutdown"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("liftShutdown"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("liftShutdown"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("locked"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("locked"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("maxDeposit"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("maxDeposit"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("maxMint"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("maxMint"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("maxRedeem"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("maxRedeem"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("owner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("maxWithdraw"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("maxWithdraw"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("owner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("mint"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("mint"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("receiver"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("multicall"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("multicall"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("data"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::Bytes,
+                                        ),
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes[]"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("name"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("name"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::String,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("string"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("nonces"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("nonces"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("onERC721Received"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("onERC721Received"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bytes,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::FixedBytes(
+                                        4usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes4"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("owner"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("owner"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("permit"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("permit"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("owner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("spender"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("value"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("deadline"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("v"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(8usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint8"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("r"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::FixedBytes(
+                                        32usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes32"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("s"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::FixedBytes(
+                                        32usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes32"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("positionCatalogue"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("positionCatalogue"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("previewDeposit"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("previewDeposit"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("previewMint"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("previewMint"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("previewRedeem"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("previewRedeem"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("previewWithdraw"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("previewWithdraw"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("priceRouter"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("priceRouter"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("contract PriceRouter"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("redeem"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("redeem"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("receiver"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("owner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("registry"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("registry"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("contract Registry"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("removeAdaptorFromCatalogue"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "removeAdaptorFromCatalogue",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("adaptor"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("removePosition"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("removePosition"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("index"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("inDebtArray"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("removePositionFromCatalogue"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "removePositionFromCatalogue",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("positionId"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("setHoldingPosition"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("setHoldingPosition"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("positionId"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("setRebalanceDeviation"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "setRebalanceDeviation",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("newDeviation"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("setShareLockPeriod"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("setShareLockPeriod"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("newLock"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("setStrategistPayoutAddress"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "setStrategistPayoutAddress",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("payout"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("setStrategistPlatformCut"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "setStrategistPlatformCut",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("cut"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint64"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("shareLockPeriod"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("shareLockPeriod"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("swapPositions"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("swapPositions"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("index1"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("index2"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("inDebtArray"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("symbol"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("symbol"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::String,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("string"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("toggleIgnorePause"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("toggleIgnorePause"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("toggle"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("totalAssets"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("totalAssets"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("totalAssetsWithdrawable"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "totalAssetsWithdrawable",
+                            ),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("totalSupply"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("totalSupply"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("transfer"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("transfer"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("to"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("amount"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("transferFrom"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("transferFrom"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("from"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("to"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("amount"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("transferOwnership"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("transferOwnership"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("newOwner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("userShareLockStartTime"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "userShareLockStartTime",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("viewPositionBalances"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "viewPositionBalances",
+                            ),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::Address,
+                                        ),
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("contract ERC20[]"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("balances"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::Uint(256usize),
+                                        ),
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256[]"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("isDebt"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::Bool,
+                                        ),
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bool[]"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("withdraw"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("withdraw"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("receiver"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("owner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+            ]),
+            events: ::core::convert::From::from([
+                (
+                    ::std::borrow::ToOwned::to_owned("AdaptorCalled"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("AdaptorCalled"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("adaptor"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("data"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bytes,
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("AdaptorCatalogueAltered"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "AdaptorCatalogueAltered",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("adaptor"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("inCatalogue"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Approval"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("Approval"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("owner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("spender"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("amount"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Deposit"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("Deposit"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("caller"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("owner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Initialized"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("Initialized"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("version"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(8usize),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("OwnershipTransferred"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "OwnershipTransferred",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("user"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("newOwner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("PlatformFeeChanged"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("PlatformFeeChanged"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("oldPlatformFee"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("newPlatformFee"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("PositionAdded"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("PositionAdded"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("position"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("index"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("PositionCatalogueAltered"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "PositionCatalogueAltered",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("positionId"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("inCatalogue"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("PositionRemoved"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("PositionRemoved"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("position"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("index"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("PositionSwapped"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("PositionSwapped"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("newPosition1"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("newPosition2"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("index1"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("index2"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("RebalanceDeviationChanged"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "RebalanceDeviationChanged",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("oldDeviation"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("newDeviation"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("ShareLockingPeriodChanged"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "ShareLockingPeriodChanged",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("oldPeriod"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("newPeriod"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("ShutdownChanged"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("ShutdownChanged"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("isShutdown"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Bool,
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("StrategistPayoutAddressChanged"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "StrategistPayoutAddressChanged",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("oldPayoutAddress"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("newPayoutAddress"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("StrategistPlatformCutChanged"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "StrategistPlatformCutChanged",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("oldPlatformCut"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("newPlatformCut"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Transfer"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("Transfer"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("from"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("to"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("amount"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Withdraw"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Event {
+                            name: ::std::borrow::ToOwned::to_owned("Withdraw"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("caller"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("receiver"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("owner"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    indexed: true,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                                ::ethers::core::abi::ethabi::EventParam {
+                                    name: ::std::borrow::ToOwned::to_owned("shares"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    indexed: false,
+                                },
+                            ],
+                            anonymous: false,
+                        },
+                    ],
+                ),
+            ]),
+            errors: ::core::convert::From::from([
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__AssetMismatch"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__AssetMismatch",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("asset"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("expectedAsset"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__CallToAdaptorNotAllowed"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__CallToAdaptorNotAllowed",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("adaptor"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__CallerNotAavePool"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__CallerNotAavePool",
+                            ),
+                            inputs: ::std::vec![],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__ContractNotShutdown"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__ContractNotShutdown",
+                            ),
+                            inputs: ::std::vec![],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__ContractShutdown"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__ContractShutdown",
+                            ),
+                            inputs: ::std::vec![],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__DebtMismatch"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__DebtMismatch",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("position"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__DepositRestricted"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__DepositRestricted",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("maxDeposit"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__ExternalInitiator"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__ExternalInitiator",
+                            ),
+                            inputs: ::std::vec![],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__IlliquidWithdraw"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__IlliquidWithdraw",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("illiquidPosition"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__IncompleteWithdraw"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__IncompleteWithdraw",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assetsOwed"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__InvalidFee"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned("Cellar__InvalidFee"),
+                            inputs: ::std::vec![],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__InvalidFeeCut"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__InvalidFeeCut",
+                            ),
+                            inputs: ::std::vec![],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__InvalidHoldingPosition"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__InvalidHoldingPosition",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("positionId"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned(
+                        "Cellar__InvalidRebalanceDeviation",
+                    ),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__InvalidRebalanceDeviation",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("requested"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("max"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__InvalidShareLockPeriod"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__InvalidShareLockPeriod",
+                            ),
+                            inputs: ::std::vec![],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned(
+                        "Cellar__NotApprovedToDepositOnBehalf",
+                    ),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__NotApprovedToDepositOnBehalf",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("depositor"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("address"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__Paused"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned("Cellar__Paused"),
+                            inputs: ::std::vec![],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__PositionAlreadyUsed"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__PositionAlreadyUsed",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("position"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__PositionArrayFull"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__PositionArrayFull",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("maxPositions"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__PositionNotEmpty"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__PositionNotEmpty",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("position"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("sharesRemaining"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__PositionNotInCatalogue"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__PositionNotInCatalogue",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("position"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__PositionNotUsed"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__PositionNotUsed",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("position"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(32usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint32"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__RemovingHoldingPosition"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__RemovingHoldingPosition",
+                            ),
+                            inputs: ::std::vec![],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__SharesAreLocked"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__SharesAreLocked",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned(
+                                        "timeSharesAreUnlocked",
+                                    ),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("currentBlock"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned(
+                        "Cellar__TotalAssetDeviatedOutsideRange",
+                    ),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__TotalAssetDeviatedOutsideRange",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("assets"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("min"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("max"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned(
+                        "Cellar__TotalSharesMustRemainConstant",
+                    ),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "Cellar__TotalSharesMustRemainConstant",
+                            ),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("current"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("expected"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__ZeroAssets"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned("Cellar__ZeroAssets"),
+                            inputs: ::std::vec![],
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("Cellar__ZeroShares"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::AbiError {
+                            name: ::std::borrow::ToOwned::to_owned("Cellar__ZeroShares"),
+                            inputs: ::std::vec![],
+                        },
+                    ],
+                ),
+            ]),
+            receive: false,
+            fallback: false,
+        }
+    }
+    ///The parsed JSON ABI of the contract.
+    pub static CELLARV2_2_ABI: ::ethers::contract::Lazy<::ethers::core::abi::Abi> = ::ethers::contract::Lazy::new(
+        __abi,
+    );
+    pub struct CellarV2_2<M>(::ethers::contract::Contract<M>);
+    impl<M> ::core::clone::Clone for CellarV2_2<M> {
+        fn clone(&self) -> Self {
+            Self(::core::clone::Clone::clone(&self.0))
+        }
+    }
+    impl<M> ::core::ops::Deref for CellarV2_2<M> {
+        type Target = ::ethers::contract::Contract<M>;
         fn deref(&self) -> &Self::Target {
             &self.0
         }
     }
-    impl<M: ethers::providers::Middleware> std::fmt::Debug for CellarV2_2<M> {
-        fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-            f.debug_tuple(stringify!(CellarV2_2))
-                .field(&self.address())
-                .finish()
+    impl<M> ::core::ops::DerefMut for CellarV2_2<M> {
+        fn deref_mut(&mut self) -> &mut Self::Target {
+            &mut self.0
         }
     }
-    impl<'a, M: ethers::providers::Middleware> CellarV2_2<M> {
-        #[doc = r" Creates a new contract instance with the specified `ethers`"]
-        #[doc = r" client at the given `Address`. The contract derefs to a `ethers::Contract`"]
-        #[doc = r" object"]
-        pub fn new<T: Into<ethers::core::types::Address>>(
+    impl<M> ::core::fmt::Debug for CellarV2_2<M> {
+        fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+            f.debug_tuple(::core::stringify!(CellarV2_2)).field(&self.address()).finish()
+        }
+    }
+    impl<M: ::ethers::providers::Middleware> CellarV2_2<M> {
+        /// Creates a new contract instance with the specified `ethers` client at
+        /// `address`. The contract derefs to a `ethers::Contract` object.
+        pub fn new<T: Into<::ethers::core::types::Address>>(
             address: T,
             client: ::std::sync::Arc<M>,
         ) -> Self {
-            let contract =
-                ethers::contract::Contract::new(address.into(), CELLARV2_2_ABI.clone(), client);
-            Self(contract)
+            Self(
+                ::ethers::contract::Contract::new(
+                    address.into(),
+                    CELLARV2_2_ABI.clone(),
+                    client,
+                ),
+            )
         }
-        #[doc = "Calls the contract's `DOMAIN_SEPARATOR` (0x3644e515) function"]
-        pub fn domain_separator(&self) -> ethers::contract::builders::ContractCall<M, [u8; 32]> {
+        ///Calls the contract's `DOMAIN_SEPARATOR` (0x3644e515) function
+        pub fn domain_separator(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, [u8; 32]> {
             self.0
                 .method_hash([54, 68, 229, 21], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `GRAVITY_BRIDGE_REGISTRY_SLOT` (0xcd82f8b1) function"]
+        ///Calls the contract's `GRAVITY_BRIDGE_REGISTRY_SLOT` (0xcd82f8b1) function
         pub fn gravity_bridge_registry_slot(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([205, 130, 248, 177], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `MAXIMUM_SHARE_LOCK_PERIOD` (0x0402ab63) function"]
+        ///Calls the contract's `MAXIMUM_SHARE_LOCK_PERIOD` (0x0402ab63) function
         pub fn maximum_share_lock_period(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([4, 2, 171, 99], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `MAX_FEE_CUT` (0xeef33eca) function"]
-        pub fn max_fee_cut(&self) -> ethers::contract::builders::ContractCall<M, u64> {
+        ///Calls the contract's `MAX_FEE_CUT` (0xeef33eca) function
+        pub fn max_fee_cut(&self) -> ::ethers::contract::builders::ContractCall<M, u64> {
             self.0
                 .method_hash([238, 243, 62, 202], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `MAX_PLATFORM_FEE` (0x3998a681) function"]
-        pub fn max_platform_fee(&self) -> ethers::contract::builders::ContractCall<M, u64> {
+        ///Calls the contract's `MAX_PLATFORM_FEE` (0x3998a681) function
+        pub fn max_platform_fee(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, u64> {
             self.0
                 .method_hash([57, 152, 166, 129], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `MAX_POSITIONS` (0xf7b24e08) function"]
+        ///Calls the contract's `MAX_POSITIONS` (0xf7b24e08) function
         pub fn max_positions(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([247, 178, 78, 8], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `MAX_REBALANCE_DEVIATION` (0x6ff1c02a) function"]
-        pub fn max_rebalance_deviation(&self) -> ethers::contract::builders::ContractCall<M, u64> {
+        ///Calls the contract's `MAX_REBALANCE_DEVIATION` (0x6ff1c02a) function
+        pub fn max_rebalance_deviation(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, u64> {
             self.0
                 .method_hash([111, 241, 192, 42], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `MINIMUM_SHARE_LOCK_PERIOD` (0x0051a3b7) function"]
+        ///Calls the contract's `MINIMUM_SHARE_LOCK_PERIOD` (0x0051a3b7) function
         pub fn minimum_share_lock_period(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([0, 81, 163, 183], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `PRICE_ROUTER_REGISTRY_SLOT` (0x5a400d25) function"]
+        ///Calls the contract's `PRICE_ROUTER_REGISTRY_SLOT` (0x5a400d25) function
         pub fn price_router_registry_slot(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([90, 64, 13, 37], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `aavePool` (0xa03e4bc3) function"]
+        ///Calls the contract's `aavePool` (0xa03e4bc3) function
         pub fn aave_pool(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([160, 62, 75, 195], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `adaptorCatalogue` (0x18d4c143) function"]
+        ///Calls the contract's `adaptorCatalogue` (0x18d4c143) function
         pub fn adaptor_catalogue(
             &self,
-            p0: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+            p0: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([24, 212, 193, 67], p0)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `addAdaptorToCatalogue` (0x3d8ab1e5) function"]
+        ///Calls the contract's `addAdaptorToCatalogue` (0x3d8ab1e5) function
         pub fn add_adaptor_to_catalogue(
             &self,
-            adaptor: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            adaptor: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([61, 138, 177, 229], adaptor)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `addPosition` (0x9955a9d4) function"]
+        ///Calls the contract's `addPosition` (0x9955a9d4) function
         pub fn add_position(
             &self,
             index: u32,
             position_id: u32,
-            configuration_data: ethers::core::types::Bytes,
+            configuration_data: ::ethers::core::types::Bytes,
             in_debt_array: bool,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash(
                     [153, 85, 169, 212],
@@ -152,146 +3558,151 @@ mod cellarv2_2_mod {
                 )
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `addPositionToCatalogue` (0x501eb4fe) function"]
+        ///Calls the contract's `addPositionToCatalogue` (0x501eb4fe) function
         pub fn add_position_to_catalogue(
             &self,
             position_id: u32,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([80, 30, 180, 254], position_id)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `allowance` (0xdd62ed3e) function"]
+        ///Calls the contract's `allowance` (0xdd62ed3e) function
         pub fn allowance(
             &self,
-            p0: ethers::core::types::Address,
-            p1: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            p0: ::ethers::core::types::Address,
+            p1: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([221, 98, 237, 62], (p0, p1))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `allowedRebalanceDeviation` (0xc244245a) function"]
+        ///Calls the contract's `allowedRebalanceDeviation` (0xc244245a) function
         pub fn allowed_rebalance_deviation(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([194, 68, 36, 90], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `approve` (0x095ea7b3) function"]
+        ///Calls the contract's `approve` (0x095ea7b3) function
         pub fn approve(
             &self,
-            spender: ethers::core::types::Address,
-            amount: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+            spender: ::ethers::core::types::Address,
+            amount: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([9, 94, 167, 179], (spender, amount))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `asset` (0x38d52e0f) function"]
+        ///Calls the contract's `asset` (0x38d52e0f) function
         pub fn asset(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([56, 213, 46, 15], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `balanceOf` (0x70a08231) function"]
+        ///Calls the contract's `balanceOf` (0x70a08231) function
         pub fn balance_of(
             &self,
-            p0: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            p0: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([112, 160, 130, 49], p0)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `blockExternalReceiver` (0x4c4602da) function"]
-        pub fn block_external_receiver(&self) -> ethers::contract::builders::ContractCall<M, bool> {
+        ///Calls the contract's `blockExternalReceiver` (0x4c4602da) function
+        pub fn block_external_receiver(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([76, 70, 2, 218], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `cachePriceRouter` (0x58db626d) function"]
+        ///Calls the contract's `cachePriceRouter` (0x58db626d) function
         pub fn cache_price_router(
             &self,
             check_total_assets: bool,
             allowable_range: u16,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([88, 219, 98, 109], (check_total_assets, allowable_range))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `callOnAdaptor` (0x4e84befe) function"]
+        ///Calls the contract's `callOnAdaptor` (0x4e84befe) function
         pub fn call_on_adaptor(
             &self,
             data: ::std::vec::Vec<AdaptorCall>,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([78, 132, 190, 254], data)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `convertToAssets` (0x07a2d13a) function"]
+        ///Calls the contract's `convertToAssets` (0x07a2d13a) function
         pub fn convert_to_assets(
             &self,
-            shares: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            shares: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([7, 162, 209, 58], shares)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `convertToShares` (0xc6e6f592) function"]
+        ///Calls the contract's `convertToShares` (0xc6e6f592) function
         pub fn convert_to_shares(
             &self,
-            assets: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            assets: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([198, 230, 245, 146], assets)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `creditPositions` (0x59d20b4e) function"]
+        ///Calls the contract's `creditPositions` (0x59d20b4e) function
         pub fn credit_positions(
             &self,
-            p0: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, u32> {
+            p0: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, u32> {
             self.0
                 .method_hash([89, 210, 11, 78], p0)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `debtPositions` (0xe1b1acb7) function"]
+        ///Calls the contract's `debtPositions` (0xe1b1acb7) function
         pub fn debt_positions(
             &self,
-            p0: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, u32> {
+            p0: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, u32> {
             self.0
                 .method_hash([225, 177, 172, 183], p0)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `decimals` (0x313ce567) function"]
-        pub fn decimals(&self) -> ethers::contract::builders::ContractCall<M, u8> {
+        ///Calls the contract's `decimals` (0x313ce567) function
+        pub fn decimals(&self) -> ::ethers::contract::builders::ContractCall<M, u8> {
             self.0
                 .method_hash([49, 60, 229, 103], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `deposit` (0x6e553f65) function"]
+        ///Calls the contract's `deposit` (0x6e553f65) function
         pub fn deposit(
             &self,
-            assets: ethers::core::types::U256,
-            receiver: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            assets: ::ethers::core::types::U256,
+            receiver: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([110, 85, 63, 101], (assets, receiver))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `executeOperation` (0x920f5c84) function"]
+        ///Calls the contract's `executeOperation` (0x920f5c84) function
         pub fn execute_operation(
             &self,
-            assets: ::std::vec::Vec<ethers::core::types::Address>,
-            amounts: ::std::vec::Vec<ethers::core::types::U256>,
-            premiums: ::std::vec::Vec<ethers::core::types::U256>,
-            initiator: ethers::core::types::Address,
-            params: ethers::core::types::Bytes,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+            assets: ::std::vec::Vec<::ethers::core::types::Address>,
+            amounts: ::std::vec::Vec<::ethers::core::types::U256>,
+            premiums: ::std::vec::Vec<::ethers::core::types::U256>,
+            initiator: ::ethers::core::types::Address,
+            params: ::ethers::core::types::Bytes,
+        ) -> ::ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash(
                     [146, 15, 92, 132],
@@ -299,235 +3710,250 @@ mod cellarv2_2_mod {
                 )
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `feeData` (0xe753e600) function"]
+        ///Calls the contract's `feeData` (0xe753e600) function
         pub fn fee_data(
             &self,
-        ) -> ethers::contract::builders::ContractCall<
+        ) -> ::ethers::contract::builders::ContractCall<
             M,
-            (u64, u64, u64, ethers::core::types::Address),
+            (u64, u64, u64, ::ethers::core::types::Address),
         > {
             self.0
                 .method_hash([231, 83, 230, 0], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `forcePositionOut` (0xa07bee0b) function"]
+        ///Calls the contract's `forcePositionOut` (0xa07bee0b) function
         pub fn force_position_out(
             &self,
             index: u32,
             position_id: u32,
             in_debt_array: bool,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([160, 123, 238, 11], (index, position_id, in_debt_array))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `getCreditPositions` (0x71e99dc2) function"]
+        ///Calls the contract's `getCreditPositions` (0x71e99dc2) function
         pub fn get_credit_positions(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ::std::vec::Vec<u32>> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::std::vec::Vec<u32>> {
             self.0
                 .method_hash([113, 233, 157, 194], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `getDebtPositions` (0x3e3382ba) function"]
+        ///Calls the contract's `getDebtPositions` (0x3e3382ba) function
         pub fn get_debt_positions(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ::std::vec::Vec<u32>> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::std::vec::Vec<u32>> {
             self.0
                 .method_hash([62, 51, 130, 186], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `getPositionAssets` (0x087ed837) function"]
+        ///Calls the contract's `getPositionAssets` (0x087ed837) function
         pub fn get_position_assets(
             &self,
-        ) -> ethers::contract::builders::ContractCall<
+        ) -> ::ethers::contract::builders::ContractCall<
             M,
-            ::std::vec::Vec<ethers::core::types::Address>,
+            ::std::vec::Vec<::ethers::core::types::Address>,
         > {
             self.0
                 .method_hash([8, 126, 216, 55], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `getPositionData` (0x7384504f) function"]
+        ///Calls the contract's `getPositionData` (0x7384504f) function
         pub fn get_position_data(
             &self,
             p0: u32,
-        ) -> ethers::contract::builders::ContractCall<
+        ) -> ::ethers::contract::builders::ContractCall<
             M,
             (
-                ethers::core::types::Address,
+                ::ethers::core::types::Address,
                 bool,
-                ethers::core::types::Bytes,
-                ethers::core::types::Bytes,
+                ::ethers::core::types::Bytes,
+                ::ethers::core::types::Bytes,
             ),
         > {
             self.0
                 .method_hash([115, 132, 80, 79], p0)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `holdingPosition` (0x9c5f00c2) function"]
-        pub fn holding_position(&self) -> ethers::contract::builders::ContractCall<M, u32> {
+        ///Calls the contract's `holdingPosition` (0x9c5f00c2) function
+        pub fn holding_position(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, u32> {
             self.0
                 .method_hash([156, 95, 0, 194], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `ignorePause` (0x9959af94) function"]
-        pub fn ignore_pause(&self) -> ethers::contract::builders::ContractCall<M, bool> {
+        ///Calls the contract's `ignorePause` (0x9959af94) function
+        pub fn ignore_pause(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([153, 89, 175, 148], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `initialize` (0x439fab91) function"]
+        ///Calls the contract's `initialize` (0x439fab91) function
         pub fn initialize(
             &self,
-            params: ethers::core::types::Bytes,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            params: ::ethers::core::types::Bytes,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([67, 159, 171, 145], params)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `initiateShutdown` (0x0a680e18) function"]
-        pub fn initiate_shutdown(&self) -> ethers::contract::builders::ContractCall<M, ()> {
+        ///Calls the contract's `initiateShutdown` (0x0a680e18) function
+        pub fn initiate_shutdown(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([10, 104, 14, 24], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `isPaused` (0xb187bd26) function"]
-        pub fn is_paused(&self) -> ethers::contract::builders::ContractCall<M, bool> {
+        ///Calls the contract's `isPaused` (0xb187bd26) function
+        pub fn is_paused(&self) -> ::ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([177, 135, 189, 38], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `isPositionUsed` (0x93bbeac0) function"]
+        ///Calls the contract's `isPositionUsed` (0x93bbeac0) function
         pub fn is_position_used(
             &self,
-            p0: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+            p0: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([147, 187, 234, 192], p0)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `isShutdown` (0xbf86d690) function"]
-        pub fn is_shutdown(&self) -> ethers::contract::builders::ContractCall<M, bool> {
+        ///Calls the contract's `isShutdown` (0xbf86d690) function
+        pub fn is_shutdown(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([191, 134, 214, 144], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `liftShutdown` (0x5e2c576e) function"]
-        pub fn lift_shutdown(&self) -> ethers::contract::builders::ContractCall<M, ()> {
+        ///Calls the contract's `liftShutdown` (0x5e2c576e) function
+        pub fn lift_shutdown(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([94, 44, 87, 110], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `locked` (0xcf309012) function"]
+        ///Calls the contract's `locked` (0xcf309012) function
         pub fn locked(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([207, 48, 144, 18], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `maxDeposit` (0x402d267d) function"]
+        ///Calls the contract's `maxDeposit` (0x402d267d) function
         pub fn max_deposit(
             &self,
-            p0: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            p0: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([64, 45, 38, 125], p0)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `maxMint` (0xc63d75b6) function"]
+        ///Calls the contract's `maxMint` (0xc63d75b6) function
         pub fn max_mint(
             &self,
-            p0: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            p0: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([198, 61, 117, 182], p0)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `maxRedeem` (0xd905777e) function"]
+        ///Calls the contract's `maxRedeem` (0xd905777e) function
         pub fn max_redeem(
             &self,
-            owner: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            owner: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([217, 5, 119, 126], owner)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `maxWithdraw` (0xce96cb77) function"]
+        ///Calls the contract's `maxWithdraw` (0xce96cb77) function
         pub fn max_withdraw(
             &self,
-            owner: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            owner: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([206, 150, 203, 119], owner)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `mint` (0x94bf804d) function"]
+        ///Calls the contract's `mint` (0x94bf804d) function
         pub fn mint(
             &self,
-            shares: ethers::core::types::U256,
-            receiver: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            shares: ::ethers::core::types::U256,
+            receiver: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([148, 191, 128, 77], (shares, receiver))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `multicall` (0xac9650d8) function"]
+        ///Calls the contract's `multicall` (0xac9650d8) function
         pub fn multicall(
             &self,
-            data: ::std::vec::Vec<ethers::core::types::Bytes>,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            data: ::std::vec::Vec<::ethers::core::types::Bytes>,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([172, 150, 80, 216], data)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `name` (0x06fdde03) function"]
-        pub fn name(&self) -> ethers::contract::builders::ContractCall<M, String> {
+        ///Calls the contract's `name` (0x06fdde03) function
+        pub fn name(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::std::string::String> {
             self.0
                 .method_hash([6, 253, 222, 3], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `nonces` (0x7ecebe00) function"]
+        ///Calls the contract's `nonces` (0x7ecebe00) function
         pub fn nonces(
             &self,
-            p0: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            p0: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([126, 206, 190, 0], p0)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `onERC721Received` (0x150b7a02) function"]
+        ///Calls the contract's `onERC721Received` (0x150b7a02) function
         pub fn on_erc721_received(
             &self,
-            p0: ethers::core::types::Address,
-            p1: ethers::core::types::Address,
-            p2: ethers::core::types::U256,
-            p3: ethers::core::types::Bytes,
-        ) -> ethers::contract::builders::ContractCall<M, [u8; 4]> {
+            p0: ::ethers::core::types::Address,
+            p1: ::ethers::core::types::Address,
+            p2: ::ethers::core::types::U256,
+            p3: ::ethers::core::types::Bytes,
+        ) -> ::ethers::contract::builders::ContractCall<M, [u8; 4]> {
             self.0
                 .method_hash([21, 11, 122, 2], (p0, p1, p2, p3))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `owner` (0x8da5cb5b) function"]
+        ///Calls the contract's `owner` (0x8da5cb5b) function
         pub fn owner(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([141, 165, 203, 91], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `permit` (0xd505accf) function"]
+        ///Calls the contract's `permit` (0xd505accf) function
         pub fn permit(
             &self,
-            owner: ethers::core::types::Address,
-            spender: ethers::core::types::Address,
-            value: ethers::core::types::U256,
-            deadline: ethers::core::types::U256,
+            owner: ::ethers::core::types::Address,
+            spender: ::ethers::core::types::Address,
+            value: ::ethers::core::types::U256,
+            deadline: ::ethers::core::types::U256,
             v: u8,
             r: [u8; 32],
             s: [u8; 32],
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash(
                     [213, 5, 172, 207],
@@ -535,256 +3961,264 @@ mod cellarv2_2_mod {
                 )
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `positionCatalogue` (0xcbdf33d0) function"]
+        ///Calls the contract's `positionCatalogue` (0xcbdf33d0) function
         pub fn position_catalogue(
             &self,
             p0: u32,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+        ) -> ::ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([203, 223, 51, 208], p0)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `previewDeposit` (0xef8b30f7) function"]
+        ///Calls the contract's `previewDeposit` (0xef8b30f7) function
         pub fn preview_deposit(
             &self,
-            assets: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            assets: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([239, 139, 48, 247], assets)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `previewMint` (0xb3d7f6b9) function"]
+        ///Calls the contract's `previewMint` (0xb3d7f6b9) function
         pub fn preview_mint(
             &self,
-            shares: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            shares: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([179, 215, 246, 185], shares)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `previewRedeem` (0x4cdad506) function"]
+        ///Calls the contract's `previewRedeem` (0x4cdad506) function
         pub fn preview_redeem(
             &self,
-            shares: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            shares: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([76, 218, 213, 6], shares)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `previewWithdraw` (0x0a28a477) function"]
+        ///Calls the contract's `previewWithdraw` (0x0a28a477) function
         pub fn preview_withdraw(
             &self,
-            assets: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            assets: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([10, 40, 164, 119], assets)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `priceRouter` (0xd7d4bf45) function"]
+        ///Calls the contract's `priceRouter` (0xd7d4bf45) function
         pub fn price_router(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([215, 212, 191, 69], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `redeem` (0xba087652) function"]
+        ///Calls the contract's `redeem` (0xba087652) function
         pub fn redeem(
             &self,
-            shares: ethers::core::types::U256,
-            receiver: ethers::core::types::Address,
-            owner: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            shares: ::ethers::core::types::U256,
+            receiver: ::ethers::core::types::Address,
+            owner: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([186, 8, 118, 82], (shares, receiver, owner))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `registry` (0x7b103999) function"]
+        ///Calls the contract's `registry` (0x7b103999) function
         pub fn registry(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([123, 16, 57, 153], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `removeAdaptorFromCatalogue` (0x5f6b88a0) function"]
+        ///Calls the contract's `removeAdaptorFromCatalogue` (0x5f6b88a0) function
         pub fn remove_adaptor_from_catalogue(
             &self,
-            adaptor: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            adaptor: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([95, 107, 136, 160], adaptor)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `removePosition` (0x33e15be2) function"]
+        ///Calls the contract's `removePosition` (0x33e15be2) function
         pub fn remove_position(
             &self,
             index: u32,
             in_debt_array: bool,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([51, 225, 91, 226], (index, in_debt_array))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `removePositionFromCatalogue` (0xd1e88404) function"]
+        ///Calls the contract's `removePositionFromCatalogue` (0xd1e88404) function
         pub fn remove_position_from_catalogue(
             &self,
             position_id: u32,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([209, 232, 132, 4], position_id)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `setHoldingPosition` (0x0780fd3a) function"]
+        ///Calls the contract's `setHoldingPosition` (0x0780fd3a) function
         pub fn set_holding_position(
             &self,
             position_id: u32,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([7, 128, 253, 58], position_id)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `setRebalanceDeviation` (0x530a3714) function"]
+        ///Calls the contract's `setRebalanceDeviation` (0x530a3714) function
         pub fn set_rebalance_deviation(
             &self,
-            new_deviation: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            new_deviation: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([83, 10, 55, 20], new_deviation)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `setShareLockPeriod` (0x9c552ca8) function"]
+        ///Calls the contract's `setShareLockPeriod` (0x9c552ca8) function
         pub fn set_share_lock_period(
             &self,
-            new_lock: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            new_lock: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([156, 85, 44, 168], new_lock)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `setStrategistPayoutAddress` (0xb0a75d36) function"]
+        ///Calls the contract's `setStrategistPayoutAddress` (0xb0a75d36) function
         pub fn set_strategist_payout_address(
             &self,
-            payout: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            payout: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([176, 167, 93, 54], payout)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `setStrategistPlatformCut` (0xb5292a99) function"]
+        ///Calls the contract's `setStrategistPlatformCut` (0xb5292a99) function
         pub fn set_strategist_platform_cut(
             &self,
             cut: u64,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([181, 41, 42, 153], cut)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `shareLockPeriod` (0x9fdb11b6) function"]
+        ///Calls the contract's `shareLockPeriod` (0x9fdb11b6) function
         pub fn share_lock_period(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([159, 219, 17, 182], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `swapPositions` (0x379e0b13) function"]
+        ///Calls the contract's `swapPositions` (0x379e0b13) function
         pub fn swap_positions(
             &self,
             index_1: u32,
             index_2: u32,
             in_debt_array: bool,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([55, 158, 11, 19], (index_1, index_2, in_debt_array))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `symbol` (0x95d89b41) function"]
-        pub fn symbol(&self) -> ethers::contract::builders::ContractCall<M, String> {
+        ///Calls the contract's `symbol` (0x95d89b41) function
+        pub fn symbol(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::std::string::String> {
             self.0
                 .method_hash([149, 216, 155, 65], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `toggleIgnorePause` (0xebe3c328) function"]
+        ///Calls the contract's `toggleIgnorePause` (0xebe3c328) function
         pub fn toggle_ignore_pause(
             &self,
             toggle: bool,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([235, 227, 195, 40], toggle)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `totalAssets` (0x01e1d114) function"]
+        ///Calls the contract's `totalAssets` (0x01e1d114) function
         pub fn total_assets(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([1, 225, 209, 20], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `totalAssetsWithdrawable` (0xa8144e48) function"]
+        ///Calls the contract's `totalAssetsWithdrawable` (0xa8144e48) function
         pub fn total_assets_withdrawable(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([168, 20, 78, 72], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `totalSupply` (0x18160ddd) function"]
+        ///Calls the contract's `totalSupply` (0x18160ddd) function
         pub fn total_supply(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([24, 22, 13, 221], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `transfer` (0xa9059cbb) function"]
+        ///Calls the contract's `transfer` (0xa9059cbb) function
         pub fn transfer(
             &self,
-            to: ethers::core::types::Address,
-            amount: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+            to: ::ethers::core::types::Address,
+            amount: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([169, 5, 156, 187], (to, amount))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `transferFrom` (0x23b872dd) function"]
+        ///Calls the contract's `transferFrom` (0x23b872dd) function
         pub fn transfer_from(
             &self,
-            from: ethers::core::types::Address,
-            to: ethers::core::types::Address,
-            amount: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+            from: ::ethers::core::types::Address,
+            to: ::ethers::core::types::Address,
+            amount: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([35, 184, 114, 221], (from, to, amount))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `transferOwnership` (0xf2fde38b) function"]
+        ///Calls the contract's `transferOwnership` (0xf2fde38b) function
         pub fn transfer_ownership(
             &self,
-            new_owner: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            new_owner: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([242, 253, 227, 139], new_owner)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `userShareLockStartTime` (0x687c2b50) function"]
+        ///Calls the contract's `userShareLockStartTime` (0x687c2b50) function
         pub fn user_share_lock_start_time(
             &self,
-            p0: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            p0: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([104, 124, 43, 80], p0)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `viewPositionBalances` (0x78e0233e) function"]
+        ///Calls the contract's `viewPositionBalances` (0x78e0233e) function
         pub fn view_position_balances(
             &self,
-        ) -> ethers::contract::builders::ContractCall<
+        ) -> ::ethers::contract::builders::ContractCall<
             M,
             (
-                ::std::vec::Vec<ethers::core::types::Address>,
-                ::std::vec::Vec<ethers::core::types::U256>,
+                ::std::vec::Vec<::ethers::core::types::Address>,
+                ::std::vec::Vec<::ethers::core::types::U256>,
                 ::std::vec::Vec<bool>,
             ),
         > {
@@ -792,206 +4226,1463 @@ mod cellarv2_2_mod {
                 .method_hash([120, 224, 35, 62], ())
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `withdraw` (0xb460af94) function"]
+        ///Calls the contract's `withdraw` (0xb460af94) function
         pub fn withdraw(
             &self,
-            assets: ethers::core::types::U256,
-            receiver: ethers::core::types::Address,
-            owner: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            assets: ::ethers::core::types::U256,
+            receiver: ::ethers::core::types::Address,
+            owner: ::ethers::core::types::Address,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::ethers::core::types::U256> {
             self.0
                 .method_hash([180, 96, 175, 148], (assets, receiver, owner))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Gets the contract's `AdaptorCalled` event"]
+        ///Gets the contract's `AdaptorCalled` event
         pub fn adaptor_called_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, AdaptorCalledFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            AdaptorCalledFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `AdaptorCatalogueAltered` event"]
+        ///Gets the contract's `AdaptorCatalogueAltered` event
         pub fn adaptor_catalogue_altered_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, AdaptorCatalogueAlteredFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            AdaptorCatalogueAlteredFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `Approval` event"]
-        pub fn approval_filter(&self) -> ethers::contract::builders::Event<M, ApprovalFilter> {
+        ///Gets the contract's `Approval` event
+        pub fn approval_filter(
+            &self,
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            ApprovalFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `Deposit` event"]
-        pub fn deposit_filter(&self) -> ethers::contract::builders::Event<M, DepositFilter> {
+        ///Gets the contract's `Deposit` event
+        pub fn deposit_filter(
+            &self,
+        ) -> ::ethers::contract::builders::Event<::std::sync::Arc<M>, M, DepositFilter> {
             self.0.event()
         }
-        #[doc = "Gets the contract's `Initialized` event"]
+        ///Gets the contract's `Initialized` event
         pub fn initialized_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, InitializedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            InitializedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `OwnershipTransferred` event"]
+        ///Gets the contract's `OwnershipTransferred` event
         pub fn ownership_transferred_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, OwnershipTransferredFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            OwnershipTransferredFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `PlatformFeeChanged` event"]
+        ///Gets the contract's `PlatformFeeChanged` event
         pub fn platform_fee_changed_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, PlatformFeeChangedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            PlatformFeeChangedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `PositionAdded` event"]
+        ///Gets the contract's `PositionAdded` event
         pub fn position_added_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, PositionAddedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            PositionAddedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `PositionCatalogueAltered` event"]
+        ///Gets the contract's `PositionCatalogueAltered` event
         pub fn position_catalogue_altered_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, PositionCatalogueAlteredFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            PositionCatalogueAlteredFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `PositionRemoved` event"]
+        ///Gets the contract's `PositionRemoved` event
         pub fn position_removed_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, PositionRemovedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            PositionRemovedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `PositionSwapped` event"]
+        ///Gets the contract's `PositionSwapped` event
         pub fn position_swapped_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, PositionSwappedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            PositionSwappedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `RebalanceDeviationChanged` event"]
+        ///Gets the contract's `RebalanceDeviationChanged` event
         pub fn rebalance_deviation_changed_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, RebalanceDeviationChangedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            RebalanceDeviationChangedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `ShareLockingPeriodChanged` event"]
+        ///Gets the contract's `ShareLockingPeriodChanged` event
         pub fn share_locking_period_changed_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, ShareLockingPeriodChangedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            ShareLockingPeriodChangedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `ShutdownChanged` event"]
+        ///Gets the contract's `ShutdownChanged` event
         pub fn shutdown_changed_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, ShutdownChangedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            ShutdownChangedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `StrategistPayoutAddressChanged` event"]
+        ///Gets the contract's `StrategistPayoutAddressChanged` event
         pub fn strategist_payout_address_changed_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, StrategistPayoutAddressChangedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            StrategistPayoutAddressChangedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `StrategistPlatformCutChanged` event"]
+        ///Gets the contract's `StrategistPlatformCutChanged` event
         pub fn strategist_platform_cut_changed_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, StrategistPlatformCutChangedFilter> {
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            StrategistPlatformCutChangedFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `Transfer` event"]
-        pub fn transfer_filter(&self) -> ethers::contract::builders::Event<M, TransferFilter> {
+        ///Gets the contract's `Transfer` event
+        pub fn transfer_filter(
+            &self,
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            TransferFilter,
+        > {
             self.0.event()
         }
-        #[doc = "Gets the contract's `Withdraw` event"]
-        pub fn withdraw_filter(&self) -> ethers::contract::builders::Event<M, WithdrawFilter> {
+        ///Gets the contract's `Withdraw` event
+        pub fn withdraw_filter(
+            &self,
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            WithdrawFilter,
+        > {
             self.0.event()
         }
-        #[doc = r" Returns an [`Event`](#ethers_contract::builders::Event) builder for all events of this contract"]
-        pub fn events(&self) -> ethers::contract::builders::Event<M, CellarV2_2Events> {
-            self.0.event_with_filter(Default::default())
+        /// Returns an `Event` builder for all the events of this contract.
+        pub fn events(
+            &self,
+        ) -> ::ethers::contract::builders::Event<
+            ::std::sync::Arc<M>,
+            M,
+            CellarV2_2Events,
+        > {
+            self.0.event_with_filter(::core::default::Default::default())
+        }
+    }
+    impl<M: ::ethers::providers::Middleware> From<::ethers::contract::Contract<M>>
+    for CellarV2_2<M> {
+        fn from(contract: ::ethers::contract::Contract<M>) -> Self {
+            Self::new(contract.address(), contract.client())
+        }
+    }
+    ///Custom Error type `Cellar__AssetMismatch` with signature `Cellar__AssetMismatch(address,address)` and selector `0x5308e78e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__AssetMismatch",
+        abi = "Cellar__AssetMismatch(address,address)"
+    )]
+    pub struct Cellar__AssetMismatch {
+        pub asset: ::ethers::core::types::Address,
+        pub expected_asset: ::ethers::core::types::Address,
+    }
+    ///Custom Error type `Cellar__CallToAdaptorNotAllowed` with signature `Cellar__CallToAdaptorNotAllowed(address)` and selector `0xbbed6c2e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__CallToAdaptorNotAllowed",
+        abi = "Cellar__CallToAdaptorNotAllowed(address)"
+    )]
+    pub struct Cellar__CallToAdaptorNotAllowed {
+        pub adaptor: ::ethers::core::types::Address,
+    }
+    ///Custom Error type `Cellar__CallerNotAavePool` with signature `Cellar__CallerNotAavePool()` and selector `0x49456ad9`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(name = "Cellar__CallerNotAavePool", abi = "Cellar__CallerNotAavePool()")]
+    pub struct Cellar__CallerNotAavePool;
+    ///Custom Error type `Cellar__ContractNotShutdown` with signature `Cellar__ContractNotShutdown()` and selector `0xec7165bf`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__ContractNotShutdown",
+        abi = "Cellar__ContractNotShutdown()"
+    )]
+    pub struct Cellar__ContractNotShutdown;
+    ///Custom Error type `Cellar__ContractShutdown` with signature `Cellar__ContractShutdown()` and selector `0x6f4a665a`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(name = "Cellar__ContractShutdown", abi = "Cellar__ContractShutdown()")]
+    pub struct Cellar__ContractShutdown;
+    ///Custom Error type `Cellar__DebtMismatch` with signature `Cellar__DebtMismatch(uint32)` and selector `0x563a17a6`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(name = "Cellar__DebtMismatch", abi = "Cellar__DebtMismatch(uint32)")]
+    pub struct Cellar__DebtMismatch {
+        pub position: u32,
+    }
+    ///Custom Error type `Cellar__DepositRestricted` with signature `Cellar__DepositRestricted(uint256,uint256)` and selector `0xb487ae1c`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__DepositRestricted",
+        abi = "Cellar__DepositRestricted(uint256,uint256)"
+    )]
+    pub struct Cellar__DepositRestricted {
+        pub assets: ::ethers::core::types::U256,
+        pub max_deposit: ::ethers::core::types::U256,
+    }
+    ///Custom Error type `Cellar__ExternalInitiator` with signature `Cellar__ExternalInitiator()` and selector `0x9448dba0`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(name = "Cellar__ExternalInitiator", abi = "Cellar__ExternalInitiator()")]
+    pub struct Cellar__ExternalInitiator;
+    ///Custom Error type `Cellar__IlliquidWithdraw` with signature `Cellar__IlliquidWithdraw(address)` and selector `0xf2018f6f`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__IlliquidWithdraw",
+        abi = "Cellar__IlliquidWithdraw(address)"
+    )]
+    pub struct Cellar__IlliquidWithdraw {
+        pub illiquid_position: ::ethers::core::types::Address,
+    }
+    ///Custom Error type `Cellar__IncompleteWithdraw` with signature `Cellar__IncompleteWithdraw(uint256)` and selector `0xcc5ea39b`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__IncompleteWithdraw",
+        abi = "Cellar__IncompleteWithdraw(uint256)"
+    )]
+    pub struct Cellar__IncompleteWithdraw {
+        pub assets_owed: ::ethers::core::types::U256,
+    }
+    ///Custom Error type `Cellar__InvalidFee` with signature `Cellar__InvalidFee()` and selector `0x5c2a50da`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(name = "Cellar__InvalidFee", abi = "Cellar__InvalidFee()")]
+    pub struct Cellar__InvalidFee;
+    ///Custom Error type `Cellar__InvalidFeeCut` with signature `Cellar__InvalidFeeCut()` and selector `0x3d0203e5`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(name = "Cellar__InvalidFeeCut", abi = "Cellar__InvalidFeeCut()")]
+    pub struct Cellar__InvalidFeeCut;
+    ///Custom Error type `Cellar__InvalidHoldingPosition` with signature `Cellar__InvalidHoldingPosition(uint32)` and selector `0xa42c0f90`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__InvalidHoldingPosition",
+        abi = "Cellar__InvalidHoldingPosition(uint32)"
+    )]
+    pub struct Cellar__InvalidHoldingPosition {
+        pub position_id: u32,
+    }
+    ///Custom Error type `Cellar__InvalidRebalanceDeviation` with signature `Cellar__InvalidRebalanceDeviation(uint256,uint256)` and selector `0x5a5521e0`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__InvalidRebalanceDeviation",
+        abi = "Cellar__InvalidRebalanceDeviation(uint256,uint256)"
+    )]
+    pub struct Cellar__InvalidRebalanceDeviation {
+        pub requested: ::ethers::core::types::U256,
+        pub max: ::ethers::core::types::U256,
+    }
+    ///Custom Error type `Cellar__InvalidShareLockPeriod` with signature `Cellar__InvalidShareLockPeriod()` and selector `0xe9808cfc`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__InvalidShareLockPeriod",
+        abi = "Cellar__InvalidShareLockPeriod()"
+    )]
+    pub struct Cellar__InvalidShareLockPeriod;
+    ///Custom Error type `Cellar__NotApprovedToDepositOnBehalf` with signature `Cellar__NotApprovedToDepositOnBehalf(address)` and selector `0xd21c7c94`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__NotApprovedToDepositOnBehalf",
+        abi = "Cellar__NotApprovedToDepositOnBehalf(address)"
+    )]
+    pub struct Cellar__NotApprovedToDepositOnBehalf {
+        pub depositor: ::ethers::core::types::Address,
+    }
+    ///Custom Error type `Cellar__Paused` with signature `Cellar__Paused()` and selector `0xf301f8f0`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(name = "Cellar__Paused", abi = "Cellar__Paused()")]
+    pub struct Cellar__Paused;
+    ///Custom Error type `Cellar__PositionAlreadyUsed` with signature `Cellar__PositionAlreadyUsed(uint32)` and selector `0x66b129f6`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__PositionAlreadyUsed",
+        abi = "Cellar__PositionAlreadyUsed(uint32)"
+    )]
+    pub struct Cellar__PositionAlreadyUsed {
+        pub position: u32,
+    }
+    ///Custom Error type `Cellar__PositionArrayFull` with signature `Cellar__PositionArrayFull(uint256)` and selector `0xf025236d`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__PositionArrayFull",
+        abi = "Cellar__PositionArrayFull(uint256)"
+    )]
+    pub struct Cellar__PositionArrayFull {
+        pub max_positions: ::ethers::core::types::U256,
+    }
+    ///Custom Error type `Cellar__PositionNotEmpty` with signature `Cellar__PositionNotEmpty(uint32,uint256)` and selector `0xe3dca368`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__PositionNotEmpty",
+        abi = "Cellar__PositionNotEmpty(uint32,uint256)"
+    )]
+    pub struct Cellar__PositionNotEmpty {
+        pub position: u32,
+        pub shares_remaining: ::ethers::core::types::U256,
+    }
+    ///Custom Error type `Cellar__PositionNotInCatalogue` with signature `Cellar__PositionNotInCatalogue(uint32)` and selector `0xfced80e8`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__PositionNotInCatalogue",
+        abi = "Cellar__PositionNotInCatalogue(uint32)"
+    )]
+    pub struct Cellar__PositionNotInCatalogue {
+        pub position: u32,
+    }
+    ///Custom Error type `Cellar__PositionNotUsed` with signature `Cellar__PositionNotUsed(uint32)` and selector `0x70abe859`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__PositionNotUsed",
+        abi = "Cellar__PositionNotUsed(uint32)"
+    )]
+    pub struct Cellar__PositionNotUsed {
+        pub position: u32,
+    }
+    ///Custom Error type `Cellar__RemovingHoldingPosition` with signature `Cellar__RemovingHoldingPosition()` and selector `0x677b5cc4`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__RemovingHoldingPosition",
+        abi = "Cellar__RemovingHoldingPosition()"
+    )]
+    pub struct Cellar__RemovingHoldingPosition;
+    ///Custom Error type `Cellar__SharesAreLocked` with signature `Cellar__SharesAreLocked(uint256,uint256)` and selector `0x1be3b8fc`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__SharesAreLocked",
+        abi = "Cellar__SharesAreLocked(uint256,uint256)"
+    )]
+    pub struct Cellar__SharesAreLocked {
+        pub time_shares_are_unlocked: ::ethers::core::types::U256,
+        pub current_block: ::ethers::core::types::U256,
+    }
+    ///Custom Error type `Cellar__TotalAssetDeviatedOutsideRange` with signature `Cellar__TotalAssetDeviatedOutsideRange(uint256,uint256,uint256)` and selector `0xc51988ea`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__TotalAssetDeviatedOutsideRange",
+        abi = "Cellar__TotalAssetDeviatedOutsideRange(uint256,uint256,uint256)"
+    )]
+    pub struct Cellar__TotalAssetDeviatedOutsideRange {
+        pub assets: ::ethers::core::types::U256,
+        pub min: ::ethers::core::types::U256,
+        pub max: ::ethers::core::types::U256,
+    }
+    ///Custom Error type `Cellar__TotalSharesMustRemainConstant` with signature `Cellar__TotalSharesMustRemainConstant(uint256,uint256)` and selector `0xad005164`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(
+        name = "Cellar__TotalSharesMustRemainConstant",
+        abi = "Cellar__TotalSharesMustRemainConstant(uint256,uint256)"
+    )]
+    pub struct Cellar__TotalSharesMustRemainConstant {
+        pub current: ::ethers::core::types::U256,
+        pub expected: ::ethers::core::types::U256,
+    }
+    ///Custom Error type `Cellar__ZeroAssets` with signature `Cellar__ZeroAssets()` and selector `0x97683005`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(name = "Cellar__ZeroAssets", abi = "Cellar__ZeroAssets()")]
+    pub struct Cellar__ZeroAssets;
+    ///Custom Error type `Cellar__ZeroShares` with signature `Cellar__ZeroShares()` and selector `0x84de2a6e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthError,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[etherror(name = "Cellar__ZeroShares", abi = "Cellar__ZeroShares()")]
+    pub struct Cellar__ZeroShares;
+    ///Container type for all of the contract's custom errors
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Deserialize,
+        serde::Serialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub enum CellarV2_2Errors {
+        Cellar__AssetMismatch(Cellar__AssetMismatch),
+        Cellar__CallToAdaptorNotAllowed(Cellar__CallToAdaptorNotAllowed),
+        Cellar__CallerNotAavePool(Cellar__CallerNotAavePool),
+        Cellar__ContractNotShutdown(Cellar__ContractNotShutdown),
+        Cellar__ContractShutdown(Cellar__ContractShutdown),
+        Cellar__DebtMismatch(Cellar__DebtMismatch),
+        Cellar__DepositRestricted(Cellar__DepositRestricted),
+        Cellar__ExternalInitiator(Cellar__ExternalInitiator),
+        Cellar__IlliquidWithdraw(Cellar__IlliquidWithdraw),
+        Cellar__IncompleteWithdraw(Cellar__IncompleteWithdraw),
+        Cellar__InvalidFee(Cellar__InvalidFee),
+        Cellar__InvalidFeeCut(Cellar__InvalidFeeCut),
+        Cellar__InvalidHoldingPosition(Cellar__InvalidHoldingPosition),
+        Cellar__InvalidRebalanceDeviation(Cellar__InvalidRebalanceDeviation),
+        Cellar__InvalidShareLockPeriod(Cellar__InvalidShareLockPeriod),
+        Cellar__NotApprovedToDepositOnBehalf(Cellar__NotApprovedToDepositOnBehalf),
+        Cellar__Paused(Cellar__Paused),
+        Cellar__PositionAlreadyUsed(Cellar__PositionAlreadyUsed),
+        Cellar__PositionArrayFull(Cellar__PositionArrayFull),
+        Cellar__PositionNotEmpty(Cellar__PositionNotEmpty),
+        Cellar__PositionNotInCatalogue(Cellar__PositionNotInCatalogue),
+        Cellar__PositionNotUsed(Cellar__PositionNotUsed),
+        Cellar__RemovingHoldingPosition(Cellar__RemovingHoldingPosition),
+        Cellar__SharesAreLocked(Cellar__SharesAreLocked),
+        Cellar__TotalAssetDeviatedOutsideRange(Cellar__TotalAssetDeviatedOutsideRange),
+        Cellar__TotalSharesMustRemainConstant(Cellar__TotalSharesMustRemainConstant),
+        Cellar__ZeroAssets(Cellar__ZeroAssets),
+        Cellar__ZeroShares(Cellar__ZeroShares),
+        /// The standard solidity revert string, with selector
+        /// Error(string) -- 0x08c379a0
+        RevertString(::std::string::String),
+    }
+    impl ::ethers::core::abi::AbiDecode for CellarV2_2Errors {
+        fn decode(
+            data: impl AsRef<[u8]>,
+        ) -> ::core::result::Result<Self, ::ethers::core::abi::AbiError> {
+            let data = data.as_ref();
+            if let Ok(decoded) = <::std::string::String as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::RevertString(decoded));
+            }
+            if let Ok(decoded) = <Cellar__AssetMismatch as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__AssetMismatch(decoded));
+            }
+            if let Ok(decoded) = <Cellar__CallToAdaptorNotAllowed as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__CallToAdaptorNotAllowed(decoded));
+            }
+            if let Ok(decoded) = <Cellar__CallerNotAavePool as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__CallerNotAavePool(decoded));
+            }
+            if let Ok(decoded) = <Cellar__ContractNotShutdown as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__ContractNotShutdown(decoded));
+            }
+            if let Ok(decoded) = <Cellar__ContractShutdown as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__ContractShutdown(decoded));
+            }
+            if let Ok(decoded) = <Cellar__DebtMismatch as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__DebtMismatch(decoded));
+            }
+            if let Ok(decoded) = <Cellar__DepositRestricted as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__DepositRestricted(decoded));
+            }
+            if let Ok(decoded) = <Cellar__ExternalInitiator as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__ExternalInitiator(decoded));
+            }
+            if let Ok(decoded) = <Cellar__IlliquidWithdraw as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__IlliquidWithdraw(decoded));
+            }
+            if let Ok(decoded) = <Cellar__IncompleteWithdraw as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__IncompleteWithdraw(decoded));
+            }
+            if let Ok(decoded) = <Cellar__InvalidFee as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__InvalidFee(decoded));
+            }
+            if let Ok(decoded) = <Cellar__InvalidFeeCut as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__InvalidFeeCut(decoded));
+            }
+            if let Ok(decoded) = <Cellar__InvalidHoldingPosition as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__InvalidHoldingPosition(decoded));
+            }
+            if let Ok(decoded) = <Cellar__InvalidRebalanceDeviation as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__InvalidRebalanceDeviation(decoded));
+            }
+            if let Ok(decoded) = <Cellar__InvalidShareLockPeriod as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__InvalidShareLockPeriod(decoded));
+            }
+            if let Ok(decoded) = <Cellar__NotApprovedToDepositOnBehalf as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__NotApprovedToDepositOnBehalf(decoded));
+            }
+            if let Ok(decoded) = <Cellar__Paused as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__Paused(decoded));
+            }
+            if let Ok(decoded) = <Cellar__PositionAlreadyUsed as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__PositionAlreadyUsed(decoded));
+            }
+            if let Ok(decoded) = <Cellar__PositionArrayFull as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__PositionArrayFull(decoded));
+            }
+            if let Ok(decoded) = <Cellar__PositionNotEmpty as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__PositionNotEmpty(decoded));
+            }
+            if let Ok(decoded) = <Cellar__PositionNotInCatalogue as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__PositionNotInCatalogue(decoded));
+            }
+            if let Ok(decoded) = <Cellar__PositionNotUsed as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__PositionNotUsed(decoded));
+            }
+            if let Ok(decoded) = <Cellar__RemovingHoldingPosition as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__RemovingHoldingPosition(decoded));
+            }
+            if let Ok(decoded) = <Cellar__SharesAreLocked as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__SharesAreLocked(decoded));
+            }
+            if let Ok(decoded) = <Cellar__TotalAssetDeviatedOutsideRange as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__TotalAssetDeviatedOutsideRange(decoded));
+            }
+            if let Ok(decoded) = <Cellar__TotalSharesMustRemainConstant as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__TotalSharesMustRemainConstant(decoded));
+            }
+            if let Ok(decoded) = <Cellar__ZeroAssets as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__ZeroAssets(decoded));
+            }
+            if let Ok(decoded) = <Cellar__ZeroShares as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Cellar__ZeroShares(decoded));
+            }
+            Err(::ethers::core::abi::Error::InvalidData.into())
+        }
+    }
+    impl ::ethers::core::abi::AbiEncode for CellarV2_2Errors {
+        fn encode(self) -> ::std::vec::Vec<u8> {
+            match self {
+                Self::Cellar__AssetMismatch(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__CallToAdaptorNotAllowed(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__CallerNotAavePool(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__ContractNotShutdown(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__ContractShutdown(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__DebtMismatch(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__DepositRestricted(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__ExternalInitiator(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__IlliquidWithdraw(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__IncompleteWithdraw(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__InvalidFee(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__InvalidFeeCut(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__InvalidHoldingPosition(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__InvalidRebalanceDeviation(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__InvalidShareLockPeriod(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__NotApprovedToDepositOnBehalf(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__Paused(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__PositionAlreadyUsed(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__PositionArrayFull(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__PositionNotEmpty(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__PositionNotInCatalogue(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__PositionNotUsed(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__RemovingHoldingPosition(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__SharesAreLocked(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__TotalAssetDeviatedOutsideRange(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__TotalSharesMustRemainConstant(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__ZeroAssets(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Cellar__ZeroShares(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::RevertString(s) => ::ethers::core::abi::AbiEncode::encode(s),
+            }
+        }
+    }
+    impl ::ethers::contract::ContractRevert for CellarV2_2Errors {
+        fn valid_selector(selector: [u8; 4]) -> bool {
+            match selector {
+                [0x08, 0xc3, 0x79, 0xa0] => true,
+                _ if selector
+                    == <Cellar__AssetMismatch as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__CallToAdaptorNotAllowed as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__CallerNotAavePool as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__ContractNotShutdown as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__ContractShutdown as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__DebtMismatch as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__DepositRestricted as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__ExternalInitiator as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__IlliquidWithdraw as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__IncompleteWithdraw as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__InvalidFee as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__InvalidFeeCut as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__InvalidHoldingPosition as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__InvalidRebalanceDeviation as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__InvalidShareLockPeriod as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__NotApprovedToDepositOnBehalf as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__Paused as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__PositionAlreadyUsed as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__PositionArrayFull as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__PositionNotEmpty as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__PositionNotInCatalogue as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__PositionNotUsed as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__RemovingHoldingPosition as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__SharesAreLocked as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__TotalAssetDeviatedOutsideRange as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__TotalSharesMustRemainConstant as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__ZeroAssets as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ if selector
+                    == <Cellar__ZeroShares as ::ethers::contract::EthError>::selector() => {
+                    true
+                }
+                _ => false,
+            }
+        }
+    }
+    impl ::core::fmt::Display for CellarV2_2Errors {
+        fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+            match self {
+                Self::Cellar__AssetMismatch(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__CallToAdaptorNotAllowed(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__CallerNotAavePool(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__ContractNotShutdown(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__ContractShutdown(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__DebtMismatch(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__DepositRestricted(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__ExternalInitiator(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__IlliquidWithdraw(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__IncompleteWithdraw(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__InvalidFee(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__InvalidFeeCut(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__InvalidHoldingPosition(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__InvalidRebalanceDeviation(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__InvalidShareLockPeriod(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__NotApprovedToDepositOnBehalf(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__Paused(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Cellar__PositionAlreadyUsed(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__PositionArrayFull(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__PositionNotEmpty(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__PositionNotInCatalogue(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__PositionNotUsed(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__RemovingHoldingPosition(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__SharesAreLocked(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__TotalAssetDeviatedOutsideRange(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__TotalSharesMustRemainConstant(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__ZeroAssets(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Cellar__ZeroShares(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::RevertString(s) => ::core::fmt::Display::fmt(s, f),
+            }
+        }
+    }
+    impl ::core::convert::From<::std::string::String> for CellarV2_2Errors {
+        fn from(value: String) -> Self {
+            Self::RevertString(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__AssetMismatch> for CellarV2_2Errors {
+        fn from(value: Cellar__AssetMismatch) -> Self {
+            Self::Cellar__AssetMismatch(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__CallToAdaptorNotAllowed> for CellarV2_2Errors {
+        fn from(value: Cellar__CallToAdaptorNotAllowed) -> Self {
+            Self::Cellar__CallToAdaptorNotAllowed(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__CallerNotAavePool> for CellarV2_2Errors {
+        fn from(value: Cellar__CallerNotAavePool) -> Self {
+            Self::Cellar__CallerNotAavePool(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__ContractNotShutdown> for CellarV2_2Errors {
+        fn from(value: Cellar__ContractNotShutdown) -> Self {
+            Self::Cellar__ContractNotShutdown(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__ContractShutdown> for CellarV2_2Errors {
+        fn from(value: Cellar__ContractShutdown) -> Self {
+            Self::Cellar__ContractShutdown(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__DebtMismatch> for CellarV2_2Errors {
+        fn from(value: Cellar__DebtMismatch) -> Self {
+            Self::Cellar__DebtMismatch(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__DepositRestricted> for CellarV2_2Errors {
+        fn from(value: Cellar__DepositRestricted) -> Self {
+            Self::Cellar__DepositRestricted(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__ExternalInitiator> for CellarV2_2Errors {
+        fn from(value: Cellar__ExternalInitiator) -> Self {
+            Self::Cellar__ExternalInitiator(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__IlliquidWithdraw> for CellarV2_2Errors {
+        fn from(value: Cellar__IlliquidWithdraw) -> Self {
+            Self::Cellar__IlliquidWithdraw(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__IncompleteWithdraw> for CellarV2_2Errors {
+        fn from(value: Cellar__IncompleteWithdraw) -> Self {
+            Self::Cellar__IncompleteWithdraw(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__InvalidFee> for CellarV2_2Errors {
+        fn from(value: Cellar__InvalidFee) -> Self {
+            Self::Cellar__InvalidFee(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__InvalidFeeCut> for CellarV2_2Errors {
+        fn from(value: Cellar__InvalidFeeCut) -> Self {
+            Self::Cellar__InvalidFeeCut(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__InvalidHoldingPosition> for CellarV2_2Errors {
+        fn from(value: Cellar__InvalidHoldingPosition) -> Self {
+            Self::Cellar__InvalidHoldingPosition(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__InvalidRebalanceDeviation> for CellarV2_2Errors {
+        fn from(value: Cellar__InvalidRebalanceDeviation) -> Self {
+            Self::Cellar__InvalidRebalanceDeviation(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__InvalidShareLockPeriod> for CellarV2_2Errors {
+        fn from(value: Cellar__InvalidShareLockPeriod) -> Self {
+            Self::Cellar__InvalidShareLockPeriod(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__NotApprovedToDepositOnBehalf>
+    for CellarV2_2Errors {
+        fn from(value: Cellar__NotApprovedToDepositOnBehalf) -> Self {
+            Self::Cellar__NotApprovedToDepositOnBehalf(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__Paused> for CellarV2_2Errors {
+        fn from(value: Cellar__Paused) -> Self {
+            Self::Cellar__Paused(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__PositionAlreadyUsed> for CellarV2_2Errors {
+        fn from(value: Cellar__PositionAlreadyUsed) -> Self {
+            Self::Cellar__PositionAlreadyUsed(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__PositionArrayFull> for CellarV2_2Errors {
+        fn from(value: Cellar__PositionArrayFull) -> Self {
+            Self::Cellar__PositionArrayFull(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__PositionNotEmpty> for CellarV2_2Errors {
+        fn from(value: Cellar__PositionNotEmpty) -> Self {
+            Self::Cellar__PositionNotEmpty(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__PositionNotInCatalogue> for CellarV2_2Errors {
+        fn from(value: Cellar__PositionNotInCatalogue) -> Self {
+            Self::Cellar__PositionNotInCatalogue(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__PositionNotUsed> for CellarV2_2Errors {
+        fn from(value: Cellar__PositionNotUsed) -> Self {
+            Self::Cellar__PositionNotUsed(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__RemovingHoldingPosition> for CellarV2_2Errors {
+        fn from(value: Cellar__RemovingHoldingPosition) -> Self {
+            Self::Cellar__RemovingHoldingPosition(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__SharesAreLocked> for CellarV2_2Errors {
+        fn from(value: Cellar__SharesAreLocked) -> Self {
+            Self::Cellar__SharesAreLocked(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__TotalAssetDeviatedOutsideRange>
+    for CellarV2_2Errors {
+        fn from(value: Cellar__TotalAssetDeviatedOutsideRange) -> Self {
+            Self::Cellar__TotalAssetDeviatedOutsideRange(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__TotalSharesMustRemainConstant>
+    for CellarV2_2Errors {
+        fn from(value: Cellar__TotalSharesMustRemainConstant) -> Self {
+            Self::Cellar__TotalSharesMustRemainConstant(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__ZeroAssets> for CellarV2_2Errors {
+        fn from(value: Cellar__ZeroAssets) -> Self {
+            Self::Cellar__ZeroAssets(value)
+        }
+    }
+    impl ::core::convert::From<Cellar__ZeroShares> for CellarV2_2Errors {
+        fn from(value: Cellar__ZeroShares) -> Self {
+            Self::Cellar__ZeroShares(value)
         }
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "AdaptorCalled", abi = "AdaptorCalled(address,bytes)")]
     pub struct AdaptorCalledFilter {
-        pub adaptor: ethers::core::types::Address,
-        pub data: ethers::core::types::Bytes,
+        pub adaptor: ::ethers::core::types::Address,
+        pub data: ::ethers::core::types::Bytes,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "AdaptorCatalogueAltered",
         abi = "AdaptorCatalogueAltered(address,bool)"
     )]
     pub struct AdaptorCatalogueAlteredFilter {
-        pub adaptor: ethers::core::types::Address,
+        pub adaptor: ::ethers::core::types::Address,
         pub in_catalogue: bool,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "Approval", abi = "Approval(address,address,uint256)")]
     pub struct ApprovalFilter {
         #[ethevent(indexed)]
-        pub owner: ethers::core::types::Address,
+        pub owner: ::ethers::core::types::Address,
         #[ethevent(indexed)]
-        pub spender: ethers::core::types::Address,
-        pub amount: ethers::core::types::U256,
+        pub spender: ::ethers::core::types::Address,
+        pub amount: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "Deposit", abi = "Deposit(address,address,uint256,uint256)")]
     pub struct DepositFilter {
         #[ethevent(indexed)]
-        pub caller: ethers::core::types::Address,
+        pub caller: ::ethers::core::types::Address,
         #[ethevent(indexed)]
-        pub owner: ethers::core::types::Address,
-        pub assets: ethers::core::types::U256,
-        pub shares: ethers::core::types::U256,
+        pub owner: ::ethers::core::types::Address,
+        pub assets: ::ethers::core::types::U256,
+        pub shares: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "Initialized", abi = "Initialized(uint8)")]
     pub struct InitializedFilter {
@@ -999,14 +5690,15 @@ mod cellarv2_2_mod {
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "OwnershipTransferred",
@@ -1014,20 +5706,21 @@ mod cellarv2_2_mod {
     )]
     pub struct OwnershipTransferredFilter {
         #[ethevent(indexed)]
-        pub user: ethers::core::types::Address,
+        pub user: ::ethers::core::types::Address,
         #[ethevent(indexed)]
-        pub new_owner: ethers::core::types::Address,
+        pub new_owner: ::ethers::core::types::Address,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "PlatformFeeChanged", abi = "PlatformFeeChanged(uint64,uint64)")]
     pub struct PlatformFeeChangedFilter {
@@ -1036,30 +5729,32 @@ mod cellarv2_2_mod {
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "PositionAdded", abi = "PositionAdded(uint32,uint256)")]
     pub struct PositionAddedFilter {
         pub position: u32,
-        pub index: ethers::core::types::U256,
+        pub index: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "PositionCatalogueAltered",
@@ -1071,30 +5766,32 @@ mod cellarv2_2_mod {
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "PositionRemoved", abi = "PositionRemoved(uint32,uint256)")]
     pub struct PositionRemovedFilter {
         pub position: u32,
-        pub index: ethers::core::types::U256,
+        pub index: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "PositionSwapped",
@@ -1103,57 +5800,60 @@ mod cellarv2_2_mod {
     pub struct PositionSwappedFilter {
         pub new_position_1: u32,
         pub new_position_2: u32,
-        pub index_1: ethers::core::types::U256,
-        pub index_2: ethers::core::types::U256,
+        pub index_1: ::ethers::core::types::U256,
+        pub index_2: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "RebalanceDeviationChanged",
         abi = "RebalanceDeviationChanged(uint256,uint256)"
     )]
     pub struct RebalanceDeviationChangedFilter {
-        pub old_deviation: ethers::core::types::U256,
-        pub new_deviation: ethers::core::types::U256,
+        pub old_deviation: ::ethers::core::types::U256,
+        pub new_deviation: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "ShareLockingPeriodChanged",
         abi = "ShareLockingPeriodChanged(uint256,uint256)"
     )]
     pub struct ShareLockingPeriodChangedFilter {
-        pub old_period: ethers::core::types::U256,
-        pub new_period: ethers::core::types::U256,
+        pub old_period: ::ethers::core::types::U256,
+        pub new_period: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "ShutdownChanged", abi = "ShutdownChanged(bool)")]
     pub struct ShutdownChangedFilter {
@@ -1161,33 +5861,35 @@ mod cellarv2_2_mod {
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "StrategistPayoutAddressChanged",
         abi = "StrategistPayoutAddressChanged(address,address)"
     )]
     pub struct StrategistPayoutAddressChangedFilter {
-        pub old_payout_address: ethers::core::types::Address,
-        pub new_payout_address: ethers::core::types::Address,
+        pub old_payout_address: ::ethers::core::types::Address,
+        pub new_payout_address: ::ethers::core::types::Address,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "StrategistPlatformCutChanged",
@@ -1199,33 +5901,35 @@ mod cellarv2_2_mod {
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(name = "Transfer", abi = "Transfer(address,address,uint256)")]
     pub struct TransferFilter {
         #[ethevent(indexed)]
-        pub from: ethers::core::types::Address,
+        pub from: ::ethers::core::types::Address,
         #[ethevent(indexed)]
-        pub to: ethers::core::types::Address,
-        pub amount: ethers::core::types::U256,
+        pub to: ::ethers::core::types::Address,
+        pub amount: ::ethers::core::types::U256,
     }
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthEvent,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethevent(
         name = "Withdraw",
@@ -1233,15 +5937,25 @@ mod cellarv2_2_mod {
     )]
     pub struct WithdrawFilter {
         #[ethevent(indexed)]
-        pub caller: ethers::core::types::Address,
+        pub caller: ::ethers::core::types::Address,
         #[ethevent(indexed)]
-        pub receiver: ethers::core::types::Address,
+        pub receiver: ::ethers::core::types::Address,
         #[ethevent(indexed)]
-        pub owner: ethers::core::types::Address,
-        pub assets: ethers::core::types::U256,
-        pub shares: ethers::core::types::U256,
+        pub owner: ::ethers::core::types::Address,
+        pub assets: ::ethers::core::types::U256,
+        pub shares: ::ethers::core::types::U256,
     }
-    #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
+    ///Container type for all of the contract's events
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Deserialize,
+        serde::Serialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum CellarV2_2Events {
         AdaptorCalledFilter(AdaptorCalledFilter),
         AdaptorCatalogueAlteredFilter(AdaptorCatalogueAlteredFilter),
@@ -1262,11 +5976,10 @@ mod cellarv2_2_mod {
         TransferFilter(TransferFilter),
         WithdrawFilter(WithdrawFilter),
     }
-    impl ethers::contract::EthLogDecode for CellarV2_2Events {
-        fn decode_log(log: &ethers::core::abi::RawLog) -> Result<Self, ethers::core::abi::Error>
-        where
-            Self: Sized,
-        {
+    impl ::ethers::contract::EthLogDecode for CellarV2_2Events {
+        fn decode_log(
+            log: &::ethers::core::abi::RawLog,
+        ) -> ::core::result::Result<Self, ::ethers::core::abi::Error> {
             if let Ok(decoded) = AdaptorCalledFilter::decode_log(log) {
                 return Ok(CellarV2_2Events::AdaptorCalledFilter(decoded));
             }
@@ -1310,14 +6023,12 @@ mod cellarv2_2_mod {
                 return Ok(CellarV2_2Events::ShutdownChangedFilter(decoded));
             }
             if let Ok(decoded) = StrategistPayoutAddressChangedFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::StrategistPayoutAddressChangedFilter(
-                    decoded,
-                ));
+                return Ok(
+                    CellarV2_2Events::StrategistPayoutAddressChangedFilter(decoded),
+                );
             }
             if let Ok(decoded) = StrategistPlatformCutChangedFilter::decode_log(log) {
-                return Ok(CellarV2_2Events::StrategistPlatformCutChangedFilter(
-                    decoded,
-                ));
+                return Ok(CellarV2_2Events::StrategistPlatformCutChangedFilter(decoded));
             }
             if let Ok(decoded) = TransferFilter::decode_log(log) {
                 return Ok(CellarV2_2Events::TransferFilter(decoded));
@@ -1325,1065 +6036,1230 @@ mod cellarv2_2_mod {
             if let Ok(decoded) = WithdrawFilter::decode_log(log) {
                 return Ok(CellarV2_2Events::WithdrawFilter(decoded));
             }
-            Err(ethers::core::abi::Error::InvalidData)
+            Err(::ethers::core::abi::Error::InvalidData)
         }
     }
-    impl ::std::fmt::Display for CellarV2_2Events {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    impl ::core::fmt::Display for CellarV2_2Events {
+        fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
             match self {
-                CellarV2_2Events::AdaptorCalledFilter(element) => element.fmt(f),
-                CellarV2_2Events::AdaptorCatalogueAlteredFilter(element) => element.fmt(f),
-                CellarV2_2Events::ApprovalFilter(element) => element.fmt(f),
-                CellarV2_2Events::DepositFilter(element) => element.fmt(f),
-                CellarV2_2Events::InitializedFilter(element) => element.fmt(f),
-                CellarV2_2Events::OwnershipTransferredFilter(element) => element.fmt(f),
-                CellarV2_2Events::PlatformFeeChangedFilter(element) => element.fmt(f),
-                CellarV2_2Events::PositionAddedFilter(element) => element.fmt(f),
-                CellarV2_2Events::PositionCatalogueAlteredFilter(element) => element.fmt(f),
-                CellarV2_2Events::PositionRemovedFilter(element) => element.fmt(f),
-                CellarV2_2Events::PositionSwappedFilter(element) => element.fmt(f),
-                CellarV2_2Events::RebalanceDeviationChangedFilter(element) => element.fmt(f),
-                CellarV2_2Events::ShareLockingPeriodChangedFilter(element) => element.fmt(f),
-                CellarV2_2Events::ShutdownChangedFilter(element) => element.fmt(f),
-                CellarV2_2Events::StrategistPayoutAddressChangedFilter(element) => element.fmt(f),
-                CellarV2_2Events::StrategistPlatformCutChangedFilter(element) => element.fmt(f),
-                CellarV2_2Events::TransferFilter(element) => element.fmt(f),
-                CellarV2_2Events::WithdrawFilter(element) => element.fmt(f),
+                Self::AdaptorCalledFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::AdaptorCatalogueAlteredFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::ApprovalFilter(element) => ::core::fmt::Display::fmt(element, f),
+                Self::DepositFilter(element) => ::core::fmt::Display::fmt(element, f),
+                Self::InitializedFilter(element) => ::core::fmt::Display::fmt(element, f),
+                Self::OwnershipTransferredFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::PlatformFeeChangedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::PositionAddedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::PositionCatalogueAlteredFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::PositionRemovedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::PositionSwappedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::RebalanceDeviationChangedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::ShareLockingPeriodChangedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::ShutdownChangedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::StrategistPayoutAddressChangedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::StrategistPlatformCutChangedFilter(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::TransferFilter(element) => ::core::fmt::Display::fmt(element, f),
+                Self::WithdrawFilter(element) => ::core::fmt::Display::fmt(element, f),
             }
         }
     }
-    #[doc = "Container type for all input parameters for the `DOMAIN_SEPARATOR`function with signature `DOMAIN_SEPARATOR()` and selector `[54, 68, 229, 21]`"]
+    impl ::core::convert::From<AdaptorCalledFilter> for CellarV2_2Events {
+        fn from(value: AdaptorCalledFilter) -> Self {
+            Self::AdaptorCalledFilter(value)
+        }
+    }
+    impl ::core::convert::From<AdaptorCatalogueAlteredFilter> for CellarV2_2Events {
+        fn from(value: AdaptorCatalogueAlteredFilter) -> Self {
+            Self::AdaptorCatalogueAlteredFilter(value)
+        }
+    }
+    impl ::core::convert::From<ApprovalFilter> for CellarV2_2Events {
+        fn from(value: ApprovalFilter) -> Self {
+            Self::ApprovalFilter(value)
+        }
+    }
+    impl ::core::convert::From<DepositFilter> for CellarV2_2Events {
+        fn from(value: DepositFilter) -> Self {
+            Self::DepositFilter(value)
+        }
+    }
+    impl ::core::convert::From<InitializedFilter> for CellarV2_2Events {
+        fn from(value: InitializedFilter) -> Self {
+            Self::InitializedFilter(value)
+        }
+    }
+    impl ::core::convert::From<OwnershipTransferredFilter> for CellarV2_2Events {
+        fn from(value: OwnershipTransferredFilter) -> Self {
+            Self::OwnershipTransferredFilter(value)
+        }
+    }
+    impl ::core::convert::From<PlatformFeeChangedFilter> for CellarV2_2Events {
+        fn from(value: PlatformFeeChangedFilter) -> Self {
+            Self::PlatformFeeChangedFilter(value)
+        }
+    }
+    impl ::core::convert::From<PositionAddedFilter> for CellarV2_2Events {
+        fn from(value: PositionAddedFilter) -> Self {
+            Self::PositionAddedFilter(value)
+        }
+    }
+    impl ::core::convert::From<PositionCatalogueAlteredFilter> for CellarV2_2Events {
+        fn from(value: PositionCatalogueAlteredFilter) -> Self {
+            Self::PositionCatalogueAlteredFilter(value)
+        }
+    }
+    impl ::core::convert::From<PositionRemovedFilter> for CellarV2_2Events {
+        fn from(value: PositionRemovedFilter) -> Self {
+            Self::PositionRemovedFilter(value)
+        }
+    }
+    impl ::core::convert::From<PositionSwappedFilter> for CellarV2_2Events {
+        fn from(value: PositionSwappedFilter) -> Self {
+            Self::PositionSwappedFilter(value)
+        }
+    }
+    impl ::core::convert::From<RebalanceDeviationChangedFilter> for CellarV2_2Events {
+        fn from(value: RebalanceDeviationChangedFilter) -> Self {
+            Self::RebalanceDeviationChangedFilter(value)
+        }
+    }
+    impl ::core::convert::From<ShareLockingPeriodChangedFilter> for CellarV2_2Events {
+        fn from(value: ShareLockingPeriodChangedFilter) -> Self {
+            Self::ShareLockingPeriodChangedFilter(value)
+        }
+    }
+    impl ::core::convert::From<ShutdownChangedFilter> for CellarV2_2Events {
+        fn from(value: ShutdownChangedFilter) -> Self {
+            Self::ShutdownChangedFilter(value)
+        }
+    }
+    impl ::core::convert::From<StrategistPayoutAddressChangedFilter>
+    for CellarV2_2Events {
+        fn from(value: StrategistPayoutAddressChangedFilter) -> Self {
+            Self::StrategistPayoutAddressChangedFilter(value)
+        }
+    }
+    impl ::core::convert::From<StrategistPlatformCutChangedFilter> for CellarV2_2Events {
+        fn from(value: StrategistPlatformCutChangedFilter) -> Self {
+            Self::StrategistPlatformCutChangedFilter(value)
+        }
+    }
+    impl ::core::convert::From<TransferFilter> for CellarV2_2Events {
+        fn from(value: TransferFilter) -> Self {
+            Self::TransferFilter(value)
+        }
+    }
+    impl ::core::convert::From<WithdrawFilter> for CellarV2_2Events {
+        fn from(value: WithdrawFilter) -> Self {
+            Self::WithdrawFilter(value)
+        }
+    }
+    ///Container type for all input parameters for the `DOMAIN_SEPARATOR` function with signature `DOMAIN_SEPARATOR()` and selector `0x3644e515`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "DOMAIN_SEPARATOR", abi = "DOMAIN_SEPARATOR()")]
     pub struct DomainSeparatorCall;
-    #[doc = "Container type for all input parameters for the `GRAVITY_BRIDGE_REGISTRY_SLOT`function with signature `GRAVITY_BRIDGE_REGISTRY_SLOT()` and selector `[205, 130, 248, 177]`"]
+    ///Container type for all input parameters for the `GRAVITY_BRIDGE_REGISTRY_SLOT` function with signature `GRAVITY_BRIDGE_REGISTRY_SLOT()` and selector `0xcd82f8b1`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(
         name = "GRAVITY_BRIDGE_REGISTRY_SLOT",
         abi = "GRAVITY_BRIDGE_REGISTRY_SLOT()"
     )]
     pub struct GravityBridgeRegistrySlotCall;
-    #[doc = "Container type for all input parameters for the `MAXIMUM_SHARE_LOCK_PERIOD`function with signature `MAXIMUM_SHARE_LOCK_PERIOD()` and selector `[4, 2, 171, 99]`"]
+    ///Container type for all input parameters for the `MAXIMUM_SHARE_LOCK_PERIOD` function with signature `MAXIMUM_SHARE_LOCK_PERIOD()` and selector `0x0402ab63`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
-    #[ethcall(
-        name = "MAXIMUM_SHARE_LOCK_PERIOD",
-        abi = "MAXIMUM_SHARE_LOCK_PERIOD()"
-    )]
+    #[ethcall(name = "MAXIMUM_SHARE_LOCK_PERIOD", abi = "MAXIMUM_SHARE_LOCK_PERIOD()")]
     pub struct MaximumShareLockPeriodCall;
-    #[doc = "Container type for all input parameters for the `MAX_FEE_CUT`function with signature `MAX_FEE_CUT()` and selector `[238, 243, 62, 202]`"]
+    ///Container type for all input parameters for the `MAX_FEE_CUT` function with signature `MAX_FEE_CUT()` and selector `0xeef33eca`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "MAX_FEE_CUT", abi = "MAX_FEE_CUT()")]
     pub struct MaxFeeCutCall;
-    #[doc = "Container type for all input parameters for the `MAX_PLATFORM_FEE`function with signature `MAX_PLATFORM_FEE()` and selector `[57, 152, 166, 129]`"]
+    ///Container type for all input parameters for the `MAX_PLATFORM_FEE` function with signature `MAX_PLATFORM_FEE()` and selector `0x3998a681`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "MAX_PLATFORM_FEE", abi = "MAX_PLATFORM_FEE()")]
     pub struct MaxPlatformFeeCall;
-    #[doc = "Container type for all input parameters for the `MAX_POSITIONS`function with signature `MAX_POSITIONS()` and selector `[247, 178, 78, 8]`"]
+    ///Container type for all input parameters for the `MAX_POSITIONS` function with signature `MAX_POSITIONS()` and selector `0xf7b24e08`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "MAX_POSITIONS", abi = "MAX_POSITIONS()")]
     pub struct MaxPositionsCall;
-    #[doc = "Container type for all input parameters for the `MAX_REBALANCE_DEVIATION`function with signature `MAX_REBALANCE_DEVIATION()` and selector `[111, 241, 192, 42]`"]
+    ///Container type for all input parameters for the `MAX_REBALANCE_DEVIATION` function with signature `MAX_REBALANCE_DEVIATION()` and selector `0x6ff1c02a`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "MAX_REBALANCE_DEVIATION", abi = "MAX_REBALANCE_DEVIATION()")]
     pub struct MaxRebalanceDeviationCall;
-    #[doc = "Container type for all input parameters for the `MINIMUM_SHARE_LOCK_PERIOD`function with signature `MINIMUM_SHARE_LOCK_PERIOD()` and selector `[0, 81, 163, 183]`"]
+    ///Container type for all input parameters for the `MINIMUM_SHARE_LOCK_PERIOD` function with signature `MINIMUM_SHARE_LOCK_PERIOD()` and selector `0x0051a3b7`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
-    #[ethcall(
-        name = "MINIMUM_SHARE_LOCK_PERIOD",
-        abi = "MINIMUM_SHARE_LOCK_PERIOD()"
-    )]
+    #[ethcall(name = "MINIMUM_SHARE_LOCK_PERIOD", abi = "MINIMUM_SHARE_LOCK_PERIOD()")]
     pub struct MinimumShareLockPeriodCall;
-    #[doc = "Container type for all input parameters for the `PRICE_ROUTER_REGISTRY_SLOT`function with signature `PRICE_ROUTER_REGISTRY_SLOT()` and selector `[90, 64, 13, 37]`"]
+    ///Container type for all input parameters for the `PRICE_ROUTER_REGISTRY_SLOT` function with signature `PRICE_ROUTER_REGISTRY_SLOT()` and selector `0x5a400d25`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
-    #[ethcall(
-        name = "PRICE_ROUTER_REGISTRY_SLOT",
-        abi = "PRICE_ROUTER_REGISTRY_SLOT()"
-    )]
+    #[ethcall(name = "PRICE_ROUTER_REGISTRY_SLOT", abi = "PRICE_ROUTER_REGISTRY_SLOT()")]
     pub struct PriceRouterRegistrySlotCall;
-    #[doc = "Container type for all input parameters for the `aavePool`function with signature `aavePool()` and selector `[160, 62, 75, 195]`"]
+    ///Container type for all input parameters for the `aavePool` function with signature `aavePool()` and selector `0xa03e4bc3`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "aavePool", abi = "aavePool()")]
     pub struct AavePoolCall;
-    #[doc = "Container type for all input parameters for the `adaptorCatalogue`function with signature `adaptorCatalogue(address)` and selector `[24, 212, 193, 67]`"]
+    ///Container type for all input parameters for the `adaptorCatalogue` function with signature `adaptorCatalogue(address)` and selector `0x18d4c143`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "adaptorCatalogue", abi = "adaptorCatalogue(address)")]
-    pub struct AdaptorCatalogueCall(pub ethers::core::types::Address);
-    #[doc = "Container type for all input parameters for the `addAdaptorToCatalogue`function with signature `addAdaptorToCatalogue(address)` and selector `[61, 138, 177, 229]`"]
+    pub struct AdaptorCatalogueCall(pub ::ethers::core::types::Address);
+    ///Container type for all input parameters for the `addAdaptorToCatalogue` function with signature `addAdaptorToCatalogue(address)` and selector `0x3d8ab1e5`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "addAdaptorToCatalogue", abi = "addAdaptorToCatalogue(address)")]
     pub struct AddAdaptorToCatalogueCall {
-        pub adaptor: ethers::core::types::Address,
+        pub adaptor: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `addPosition`function with signature `addPosition(uint32,uint32,bytes,bool)` and selector `[153, 85, 169, 212]`"]
+    ///Container type for all input parameters for the `addPosition` function with signature `addPosition(uint32,uint32,bytes,bool)` and selector `0x9955a9d4`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "addPosition", abi = "addPosition(uint32,uint32,bytes,bool)")]
     pub struct AddPositionCall {
         pub index: u32,
         pub position_id: u32,
-        pub configuration_data: ethers::core::types::Bytes,
+        pub configuration_data: ::ethers::core::types::Bytes,
         pub in_debt_array: bool,
     }
-    #[doc = "Container type for all input parameters for the `addPositionToCatalogue`function with signature `addPositionToCatalogue(uint32)` and selector `[80, 30, 180, 254]`"]
+    ///Container type for all input parameters for the `addPositionToCatalogue` function with signature `addPositionToCatalogue(uint32)` and selector `0x501eb4fe`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
-    #[ethcall(
-        name = "addPositionToCatalogue",
-        abi = "addPositionToCatalogue(uint32)"
-    )]
+    #[ethcall(name = "addPositionToCatalogue", abi = "addPositionToCatalogue(uint32)")]
     pub struct AddPositionToCatalogueCall {
         pub position_id: u32,
     }
-    #[doc = "Container type for all input parameters for the `allowance`function with signature `allowance(address,address)` and selector `[221, 98, 237, 62]`"]
+    ///Container type for all input parameters for the `allowance` function with signature `allowance(address,address)` and selector `0xdd62ed3e`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "allowance", abi = "allowance(address,address)")]
     pub struct AllowanceCall(
-        pub ethers::core::types::Address,
-        pub ethers::core::types::Address,
+        pub ::ethers::core::types::Address,
+        pub ::ethers::core::types::Address,
     );
-    #[doc = "Container type for all input parameters for the `allowedRebalanceDeviation`function with signature `allowedRebalanceDeviation()` and selector `[194, 68, 36, 90]`"]
+    ///Container type for all input parameters for the `allowedRebalanceDeviation` function with signature `allowedRebalanceDeviation()` and selector `0xc244245a`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
-    #[ethcall(
-        name = "allowedRebalanceDeviation",
-        abi = "allowedRebalanceDeviation()"
-    )]
+    #[ethcall(name = "allowedRebalanceDeviation", abi = "allowedRebalanceDeviation()")]
     pub struct AllowedRebalanceDeviationCall;
-    #[doc = "Container type for all input parameters for the `approve`function with signature `approve(address,uint256)` and selector `[9, 94, 167, 179]`"]
+    ///Container type for all input parameters for the `approve` function with signature `approve(address,uint256)` and selector `0x095ea7b3`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "approve", abi = "approve(address,uint256)")]
     pub struct ApproveCall {
-        pub spender: ethers::core::types::Address,
-        pub amount: ethers::core::types::U256,
+        pub spender: ::ethers::core::types::Address,
+        pub amount: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `asset`function with signature `asset()` and selector `[56, 213, 46, 15]`"]
+    ///Container type for all input parameters for the `asset` function with signature `asset()` and selector `0x38d52e0f`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "asset", abi = "asset()")]
     pub struct AssetCall;
-    #[doc = "Container type for all input parameters for the `balanceOf`function with signature `balanceOf(address)` and selector `[112, 160, 130, 49]`"]
+    ///Container type for all input parameters for the `balanceOf` function with signature `balanceOf(address)` and selector `0x70a08231`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "balanceOf", abi = "balanceOf(address)")]
-    pub struct BalanceOfCall(pub ethers::core::types::Address);
-    #[doc = "Container type for all input parameters for the `blockExternalReceiver`function with signature `blockExternalReceiver()` and selector `[76, 70, 2, 218]`"]
+    pub struct BalanceOfCall(pub ::ethers::core::types::Address);
+    ///Container type for all input parameters for the `blockExternalReceiver` function with signature `blockExternalReceiver()` and selector `0x4c4602da`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "blockExternalReceiver", abi = "blockExternalReceiver()")]
     pub struct BlockExternalReceiverCall;
-    #[doc = "Container type for all input parameters for the `cachePriceRouter`function with signature `cachePriceRouter(bool,uint16)` and selector `[88, 219, 98, 109]`"]
+    ///Container type for all input parameters for the `cachePriceRouter` function with signature `cachePriceRouter(bool,uint16)` and selector `0x58db626d`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "cachePriceRouter", abi = "cachePriceRouter(bool,uint16)")]
     pub struct CachePriceRouterCall {
         pub check_total_assets: bool,
         pub allowable_range: u16,
     }
-    #[doc = "Container type for all input parameters for the `callOnAdaptor`function with signature `callOnAdaptor((address,bytes[])[])` and selector `[78, 132, 190, 254]`"]
+    ///Container type for all input parameters for the `callOnAdaptor` function with signature `callOnAdaptor((address,bytes[])[])` and selector `0x4e84befe`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "callOnAdaptor", abi = "callOnAdaptor((address,bytes[])[])")]
     pub struct CallOnAdaptorCall {
         pub data: ::std::vec::Vec<AdaptorCall>,
     }
-    #[doc = "Container type for all input parameters for the `convertToAssets`function with signature `convertToAssets(uint256)` and selector `[7, 162, 209, 58]`"]
+    ///Container type for all input parameters for the `convertToAssets` function with signature `convertToAssets(uint256)` and selector `0x07a2d13a`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "convertToAssets", abi = "convertToAssets(uint256)")]
     pub struct ConvertToAssetsCall {
-        pub shares: ethers::core::types::U256,
+        pub shares: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `convertToShares`function with signature `convertToShares(uint256)` and selector `[198, 230, 245, 146]`"]
+    ///Container type for all input parameters for the `convertToShares` function with signature `convertToShares(uint256)` and selector `0xc6e6f592`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "convertToShares", abi = "convertToShares(uint256)")]
     pub struct ConvertToSharesCall {
-        pub assets: ethers::core::types::U256,
+        pub assets: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `creditPositions`function with signature `creditPositions(uint256)` and selector `[89, 210, 11, 78]`"]
+    ///Container type for all input parameters for the `creditPositions` function with signature `creditPositions(uint256)` and selector `0x59d20b4e`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "creditPositions", abi = "creditPositions(uint256)")]
-    pub struct CreditPositionsCall(pub ethers::core::types::U256);
-    #[doc = "Container type for all input parameters for the `debtPositions`function with signature `debtPositions(uint256)` and selector `[225, 177, 172, 183]`"]
+    pub struct CreditPositionsCall(pub ::ethers::core::types::U256);
+    ///Container type for all input parameters for the `debtPositions` function with signature `debtPositions(uint256)` and selector `0xe1b1acb7`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "debtPositions", abi = "debtPositions(uint256)")]
-    pub struct DebtPositionsCall(pub ethers::core::types::U256);
-    #[doc = "Container type for all input parameters for the `decimals`function with signature `decimals()` and selector `[49, 60, 229, 103]`"]
+    pub struct DebtPositionsCall(pub ::ethers::core::types::U256);
+    ///Container type for all input parameters for the `decimals` function with signature `decimals()` and selector `0x313ce567`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "decimals", abi = "decimals()")]
     pub struct DecimalsCall;
-    #[doc = "Container type for all input parameters for the `deposit`function with signature `deposit(uint256,address)` and selector `[110, 85, 63, 101]`"]
+    ///Container type for all input parameters for the `deposit` function with signature `deposit(uint256,address)` and selector `0x6e553f65`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "deposit", abi = "deposit(uint256,address)")]
     pub struct DepositCall {
-        pub assets: ethers::core::types::U256,
-        pub receiver: ethers::core::types::Address,
+        pub assets: ::ethers::core::types::U256,
+        pub receiver: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `executeOperation`function with signature `executeOperation(address[],uint256[],uint256[],address,bytes)` and selector `[146, 15, 92, 132]`"]
+    ///Container type for all input parameters for the `executeOperation` function with signature `executeOperation(address[],uint256[],uint256[],address,bytes)` and selector `0x920f5c84`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(
         name = "executeOperation",
         abi = "executeOperation(address[],uint256[],uint256[],address,bytes)"
     )]
     pub struct ExecuteOperationCall {
-        pub assets: ::std::vec::Vec<ethers::core::types::Address>,
-        pub amounts: ::std::vec::Vec<ethers::core::types::U256>,
-        pub premiums: ::std::vec::Vec<ethers::core::types::U256>,
-        pub initiator: ethers::core::types::Address,
-        pub params: ethers::core::types::Bytes,
+        pub assets: ::std::vec::Vec<::ethers::core::types::Address>,
+        pub amounts: ::std::vec::Vec<::ethers::core::types::U256>,
+        pub premiums: ::std::vec::Vec<::ethers::core::types::U256>,
+        pub initiator: ::ethers::core::types::Address,
+        pub params: ::ethers::core::types::Bytes,
     }
-    #[doc = "Container type for all input parameters for the `feeData`function with signature `feeData()` and selector `[231, 83, 230, 0]`"]
+    ///Container type for all input parameters for the `feeData` function with signature `feeData()` and selector `0xe753e600`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "feeData", abi = "feeData()")]
     pub struct FeeDataCall;
-    #[doc = "Container type for all input parameters for the `forcePositionOut`function with signature `forcePositionOut(uint32,uint32,bool)` and selector `[160, 123, 238, 11]`"]
+    ///Container type for all input parameters for the `forcePositionOut` function with signature `forcePositionOut(uint32,uint32,bool)` and selector `0xa07bee0b`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
-    #[ethcall(
-        name = "forcePositionOut",
-        abi = "forcePositionOut(uint32,uint32,bool)"
-    )]
+    #[ethcall(name = "forcePositionOut", abi = "forcePositionOut(uint32,uint32,bool)")]
     pub struct ForcePositionOutCall {
         pub index: u32,
         pub position_id: u32,
         pub in_debt_array: bool,
     }
-    #[doc = "Container type for all input parameters for the `getCreditPositions`function with signature `getCreditPositions()` and selector `[113, 233, 157, 194]`"]
+    ///Container type for all input parameters for the `getCreditPositions` function with signature `getCreditPositions()` and selector `0x71e99dc2`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "getCreditPositions", abi = "getCreditPositions()")]
     pub struct GetCreditPositionsCall;
-    #[doc = "Container type for all input parameters for the `getDebtPositions`function with signature `getDebtPositions()` and selector `[62, 51, 130, 186]`"]
+    ///Container type for all input parameters for the `getDebtPositions` function with signature `getDebtPositions()` and selector `0x3e3382ba`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "getDebtPositions", abi = "getDebtPositions()")]
     pub struct GetDebtPositionsCall;
-    #[doc = "Container type for all input parameters for the `getPositionAssets`function with signature `getPositionAssets()` and selector `[8, 126, 216, 55]`"]
+    ///Container type for all input parameters for the `getPositionAssets` function with signature `getPositionAssets()` and selector `0x087ed837`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "getPositionAssets", abi = "getPositionAssets()")]
     pub struct GetPositionAssetsCall;
-    #[doc = "Container type for all input parameters for the `getPositionData`function with signature `getPositionData(uint32)` and selector `[115, 132, 80, 79]`"]
+    ///Container type for all input parameters for the `getPositionData` function with signature `getPositionData(uint32)` and selector `0x7384504f`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "getPositionData", abi = "getPositionData(uint32)")]
     pub struct GetPositionDataCall(pub u32);
-    #[doc = "Container type for all input parameters for the `holdingPosition`function with signature `holdingPosition()` and selector `[156, 95, 0, 194]`"]
+    ///Container type for all input parameters for the `holdingPosition` function with signature `holdingPosition()` and selector `0x9c5f00c2`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "holdingPosition", abi = "holdingPosition()")]
     pub struct HoldingPositionCall;
-    #[doc = "Container type for all input parameters for the `ignorePause`function with signature `ignorePause()` and selector `[153, 89, 175, 148]`"]
+    ///Container type for all input parameters for the `ignorePause` function with signature `ignorePause()` and selector `0x9959af94`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "ignorePause", abi = "ignorePause()")]
     pub struct IgnorePauseCall;
-    #[doc = "Container type for all input parameters for the `initialize`function with signature `initialize(bytes)` and selector `[67, 159, 171, 145]`"]
+    ///Container type for all input parameters for the `initialize` function with signature `initialize(bytes)` and selector `0x439fab91`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "initialize", abi = "initialize(bytes)")]
     pub struct InitializeCall {
-        pub params: ethers::core::types::Bytes,
+        pub params: ::ethers::core::types::Bytes,
     }
-    #[doc = "Container type for all input parameters for the `initiateShutdown`function with signature `initiateShutdown()` and selector `[10, 104, 14, 24]`"]
+    ///Container type for all input parameters for the `initiateShutdown` function with signature `initiateShutdown()` and selector `0x0a680e18`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "initiateShutdown", abi = "initiateShutdown()")]
     pub struct InitiateShutdownCall;
-    #[doc = "Container type for all input parameters for the `isPaused`function with signature `isPaused()` and selector `[177, 135, 189, 38]`"]
+    ///Container type for all input parameters for the `isPaused` function with signature `isPaused()` and selector `0xb187bd26`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "isPaused", abi = "isPaused()")]
     pub struct IsPausedCall;
-    #[doc = "Container type for all input parameters for the `isPositionUsed`function with signature `isPositionUsed(uint256)` and selector `[147, 187, 234, 192]`"]
+    ///Container type for all input parameters for the `isPositionUsed` function with signature `isPositionUsed(uint256)` and selector `0x93bbeac0`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "isPositionUsed", abi = "isPositionUsed(uint256)")]
-    pub struct IsPositionUsedCall(pub ethers::core::types::U256);
-    #[doc = "Container type for all input parameters for the `isShutdown`function with signature `isShutdown()` and selector `[191, 134, 214, 144]`"]
+    pub struct IsPositionUsedCall(pub ::ethers::core::types::U256);
+    ///Container type for all input parameters for the `isShutdown` function with signature `isShutdown()` and selector `0xbf86d690`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "isShutdown", abi = "isShutdown()")]
     pub struct IsShutdownCall;
-    #[doc = "Container type for all input parameters for the `liftShutdown`function with signature `liftShutdown()` and selector `[94, 44, 87, 110]`"]
+    ///Container type for all input parameters for the `liftShutdown` function with signature `liftShutdown()` and selector `0x5e2c576e`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "liftShutdown", abi = "liftShutdown()")]
     pub struct LiftShutdownCall;
-    #[doc = "Container type for all input parameters for the `locked`function with signature `locked()` and selector `[207, 48, 144, 18]`"]
+    ///Container type for all input parameters for the `locked` function with signature `locked()` and selector `0xcf309012`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "locked", abi = "locked()")]
     pub struct LockedCall;
-    #[doc = "Container type for all input parameters for the `maxDeposit`function with signature `maxDeposit(address)` and selector `[64, 45, 38, 125]`"]
+    ///Container type for all input parameters for the `maxDeposit` function with signature `maxDeposit(address)` and selector `0x402d267d`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "maxDeposit", abi = "maxDeposit(address)")]
-    pub struct MaxDepositCall(pub ethers::core::types::Address);
-    #[doc = "Container type for all input parameters for the `maxMint`function with signature `maxMint(address)` and selector `[198, 61, 117, 182]`"]
+    pub struct MaxDepositCall(pub ::ethers::core::types::Address);
+    ///Container type for all input parameters for the `maxMint` function with signature `maxMint(address)` and selector `0xc63d75b6`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "maxMint", abi = "maxMint(address)")]
-    pub struct MaxMintCall(pub ethers::core::types::Address);
-    #[doc = "Container type for all input parameters for the `maxRedeem`function with signature `maxRedeem(address)` and selector `[217, 5, 119, 126]`"]
+    pub struct MaxMintCall(pub ::ethers::core::types::Address);
+    ///Container type for all input parameters for the `maxRedeem` function with signature `maxRedeem(address)` and selector `0xd905777e`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "maxRedeem", abi = "maxRedeem(address)")]
     pub struct MaxRedeemCall {
-        pub owner: ethers::core::types::Address,
+        pub owner: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `maxWithdraw`function with signature `maxWithdraw(address)` and selector `[206, 150, 203, 119]`"]
+    ///Container type for all input parameters for the `maxWithdraw` function with signature `maxWithdraw(address)` and selector `0xce96cb77`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "maxWithdraw", abi = "maxWithdraw(address)")]
     pub struct MaxWithdrawCall {
-        pub owner: ethers::core::types::Address,
+        pub owner: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `mint`function with signature `mint(uint256,address)` and selector `[148, 191, 128, 77]`"]
+    ///Container type for all input parameters for the `mint` function with signature `mint(uint256,address)` and selector `0x94bf804d`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "mint", abi = "mint(uint256,address)")]
     pub struct MintCall {
-        pub shares: ethers::core::types::U256,
-        pub receiver: ethers::core::types::Address,
+        pub shares: ::ethers::core::types::U256,
+        pub receiver: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `multicall`function with signature `multicall(bytes[])` and selector `[172, 150, 80, 216]`"]
+    ///Container type for all input parameters for the `multicall` function with signature `multicall(bytes[])` and selector `0xac9650d8`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "multicall", abi = "multicall(bytes[])")]
     pub struct MulticallCall {
-        pub data: ::std::vec::Vec<ethers::core::types::Bytes>,
+        pub data: ::std::vec::Vec<::ethers::core::types::Bytes>,
     }
-    #[doc = "Container type for all input parameters for the `name`function with signature `name()` and selector `[6, 253, 222, 3]`"]
+    ///Container type for all input parameters for the `name` function with signature `name()` and selector `0x06fdde03`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "name", abi = "name()")]
     pub struct NameCall;
-    #[doc = "Container type for all input parameters for the `nonces`function with signature `nonces(address)` and selector `[126, 206, 190, 0]`"]
+    ///Container type for all input parameters for the `nonces` function with signature `nonces(address)` and selector `0x7ecebe00`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "nonces", abi = "nonces(address)")]
-    pub struct NoncesCall(pub ethers::core::types::Address);
-    #[doc = "Container type for all input parameters for the `onERC721Received`function with signature `onERC721Received(address,address,uint256,bytes)` and selector `[21, 11, 122, 2]`"]
+    pub struct NoncesCall(pub ::ethers::core::types::Address);
+    ///Container type for all input parameters for the `onERC721Received` function with signature `onERC721Received(address,address,uint256,bytes)` and selector `0x150b7a02`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(
         name = "onERC721Received",
         abi = "onERC721Received(address,address,uint256,bytes)"
     )]
     pub struct OnERC721ReceivedCall(
-        pub ethers::core::types::Address,
-        pub ethers::core::types::Address,
-        pub ethers::core::types::U256,
-        pub ethers::core::types::Bytes,
+        pub ::ethers::core::types::Address,
+        pub ::ethers::core::types::Address,
+        pub ::ethers::core::types::U256,
+        pub ::ethers::core::types::Bytes,
     );
-    #[doc = "Container type for all input parameters for the `owner`function with signature `owner()` and selector `[141, 165, 203, 91]`"]
+    ///Container type for all input parameters for the `owner` function with signature `owner()` and selector `0x8da5cb5b`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "owner", abi = "owner()")]
     pub struct OwnerCall;
-    #[doc = "Container type for all input parameters for the `permit`function with signature `permit(address,address,uint256,uint256,uint8,bytes32,bytes32)` and selector `[213, 5, 172, 207]`"]
+    ///Container type for all input parameters for the `permit` function with signature `permit(address,address,uint256,uint256,uint8,bytes32,bytes32)` and selector `0xd505accf`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(
         name = "permit",
         abi = "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)"
     )]
     pub struct PermitCall {
-        pub owner: ethers::core::types::Address,
-        pub spender: ethers::core::types::Address,
-        pub value: ethers::core::types::U256,
-        pub deadline: ethers::core::types::U256,
+        pub owner: ::ethers::core::types::Address,
+        pub spender: ::ethers::core::types::Address,
+        pub value: ::ethers::core::types::U256,
+        pub deadline: ::ethers::core::types::U256,
         pub v: u8,
         pub r: [u8; 32],
         pub s: [u8; 32],
     }
-    #[doc = "Container type for all input parameters for the `positionCatalogue`function with signature `positionCatalogue(uint32)` and selector `[203, 223, 51, 208]`"]
+    ///Container type for all input parameters for the `positionCatalogue` function with signature `positionCatalogue(uint32)` and selector `0xcbdf33d0`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "positionCatalogue", abi = "positionCatalogue(uint32)")]
     pub struct PositionCatalogueCall(pub u32);
-    #[doc = "Container type for all input parameters for the `previewDeposit`function with signature `previewDeposit(uint256)` and selector `[239, 139, 48, 247]`"]
+    ///Container type for all input parameters for the `previewDeposit` function with signature `previewDeposit(uint256)` and selector `0xef8b30f7`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "previewDeposit", abi = "previewDeposit(uint256)")]
     pub struct PreviewDepositCall {
-        pub assets: ethers::core::types::U256,
+        pub assets: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `previewMint`function with signature `previewMint(uint256)` and selector `[179, 215, 246, 185]`"]
+    ///Container type for all input parameters for the `previewMint` function with signature `previewMint(uint256)` and selector `0xb3d7f6b9`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "previewMint", abi = "previewMint(uint256)")]
     pub struct PreviewMintCall {
-        pub shares: ethers::core::types::U256,
+        pub shares: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `previewRedeem`function with signature `previewRedeem(uint256)` and selector `[76, 218, 213, 6]`"]
+    ///Container type for all input parameters for the `previewRedeem` function with signature `previewRedeem(uint256)` and selector `0x4cdad506`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "previewRedeem", abi = "previewRedeem(uint256)")]
     pub struct PreviewRedeemCall {
-        pub shares: ethers::core::types::U256,
+        pub shares: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `previewWithdraw`function with signature `previewWithdraw(uint256)` and selector `[10, 40, 164, 119]`"]
+    ///Container type for all input parameters for the `previewWithdraw` function with signature `previewWithdraw(uint256)` and selector `0x0a28a477`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "previewWithdraw", abi = "previewWithdraw(uint256)")]
     pub struct PreviewWithdrawCall {
-        pub assets: ethers::core::types::U256,
+        pub assets: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `priceRouter`function with signature `priceRouter()` and selector `[215, 212, 191, 69]`"]
+    ///Container type for all input parameters for the `priceRouter` function with signature `priceRouter()` and selector `0xd7d4bf45`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "priceRouter", abi = "priceRouter()")]
     pub struct PriceRouterCall;
-    #[doc = "Container type for all input parameters for the `redeem`function with signature `redeem(uint256,address,address)` and selector `[186, 8, 118, 82]`"]
+    ///Container type for all input parameters for the `redeem` function with signature `redeem(uint256,address,address)` and selector `0xba087652`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "redeem", abi = "redeem(uint256,address,address)")]
     pub struct RedeemCall {
-        pub shares: ethers::core::types::U256,
-        pub receiver: ethers::core::types::Address,
-        pub owner: ethers::core::types::Address,
+        pub shares: ::ethers::core::types::U256,
+        pub receiver: ::ethers::core::types::Address,
+        pub owner: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `registry`function with signature `registry()` and selector `[123, 16, 57, 153]`"]
+    ///Container type for all input parameters for the `registry` function with signature `registry()` and selector `0x7b103999`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "registry", abi = "registry()")]
     pub struct RegistryCall;
-    #[doc = "Container type for all input parameters for the `removeAdaptorFromCatalogue`function with signature `removeAdaptorFromCatalogue(address)` and selector `[95, 107, 136, 160]`"]
+    ///Container type for all input parameters for the `removeAdaptorFromCatalogue` function with signature `removeAdaptorFromCatalogue(address)` and selector `0x5f6b88a0`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(
         name = "removeAdaptorFromCatalogue",
         abi = "removeAdaptorFromCatalogue(address)"
     )]
     pub struct RemoveAdaptorFromCatalogueCall {
-        pub adaptor: ethers::core::types::Address,
+        pub adaptor: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `removePosition`function with signature `removePosition(uint32,bool)` and selector `[51, 225, 91, 226]`"]
+    ///Container type for all input parameters for the `removePosition` function with signature `removePosition(uint32,bool)` and selector `0x33e15be2`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "removePosition", abi = "removePosition(uint32,bool)")]
     pub struct RemovePositionCall {
         pub index: u32,
         pub in_debt_array: bool,
     }
-    #[doc = "Container type for all input parameters for the `removePositionFromCatalogue`function with signature `removePositionFromCatalogue(uint32)` and selector `[209, 232, 132, 4]`"]
+    ///Container type for all input parameters for the `removePositionFromCatalogue` function with signature `removePositionFromCatalogue(uint32)` and selector `0xd1e88404`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(
         name = "removePositionFromCatalogue",
@@ -2392,84 +7268,89 @@ mod cellarv2_2_mod {
     pub struct RemovePositionFromCatalogueCall {
         pub position_id: u32,
     }
-    #[doc = "Container type for all input parameters for the `setHoldingPosition`function with signature `setHoldingPosition(uint32)` and selector `[7, 128, 253, 58]`"]
+    ///Container type for all input parameters for the `setHoldingPosition` function with signature `setHoldingPosition(uint32)` and selector `0x0780fd3a`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "setHoldingPosition", abi = "setHoldingPosition(uint32)")]
     pub struct SetHoldingPositionCall {
         pub position_id: u32,
     }
-    #[doc = "Container type for all input parameters for the `setRebalanceDeviation`function with signature `setRebalanceDeviation(uint256)` and selector `[83, 10, 55, 20]`"]
+    ///Container type for all input parameters for the `setRebalanceDeviation` function with signature `setRebalanceDeviation(uint256)` and selector `0x530a3714`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "setRebalanceDeviation", abi = "setRebalanceDeviation(uint256)")]
     pub struct SetRebalanceDeviationCall {
-        pub new_deviation: ethers::core::types::U256,
+        pub new_deviation: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `setShareLockPeriod`function with signature `setShareLockPeriod(uint256)` and selector `[156, 85, 44, 168]`"]
+    ///Container type for all input parameters for the `setShareLockPeriod` function with signature `setShareLockPeriod(uint256)` and selector `0x9c552ca8`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "setShareLockPeriod", abi = "setShareLockPeriod(uint256)")]
     pub struct SetShareLockPeriodCall {
-        pub new_lock: ethers::core::types::U256,
+        pub new_lock: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `setStrategistPayoutAddress`function with signature `setStrategistPayoutAddress(address)` and selector `[176, 167, 93, 54]`"]
+    ///Container type for all input parameters for the `setStrategistPayoutAddress` function with signature `setStrategistPayoutAddress(address)` and selector `0xb0a75d36`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(
         name = "setStrategistPayoutAddress",
         abi = "setStrategistPayoutAddress(address)"
     )]
     pub struct SetStrategistPayoutAddressCall {
-        pub payout: ethers::core::types::Address,
+        pub payout: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `setStrategistPlatformCut`function with signature `setStrategistPlatformCut(uint64)` and selector `[181, 41, 42, 153]`"]
+    ///Container type for all input parameters for the `setStrategistPlatformCut` function with signature `setStrategistPlatformCut(uint64)` and selector `0xb5292a99`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(
         name = "setStrategistPlatformCut",
@@ -2478,31 +7359,33 @@ mod cellarv2_2_mod {
     pub struct SetStrategistPlatformCutCall {
         pub cut: u64,
     }
-    #[doc = "Container type for all input parameters for the `shareLockPeriod`function with signature `shareLockPeriod()` and selector `[159, 219, 17, 182]`"]
+    ///Container type for all input parameters for the `shareLockPeriod` function with signature `shareLockPeriod()` and selector `0x9fdb11b6`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "shareLockPeriod", abi = "shareLockPeriod()")]
     pub struct ShareLockPeriodCall;
-    #[doc = "Container type for all input parameters for the `swapPositions`function with signature `swapPositions(uint32,uint32,bool)` and selector `[55, 158, 11, 19]`"]
+    ///Container type for all input parameters for the `swapPositions` function with signature `swapPositions(uint32,uint32,bool)` and selector `0x379e0b13`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "swapPositions", abi = "swapPositions(uint32,uint32,bool)")]
     pub struct SwapPositionsCall {
@@ -2510,179 +7393,197 @@ mod cellarv2_2_mod {
         pub index_2: u32,
         pub in_debt_array: bool,
     }
-    #[doc = "Container type for all input parameters for the `symbol`function with signature `symbol()` and selector `[149, 216, 155, 65]`"]
+    ///Container type for all input parameters for the `symbol` function with signature `symbol()` and selector `0x95d89b41`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "symbol", abi = "symbol()")]
     pub struct SymbolCall;
-    #[doc = "Container type for all input parameters for the `toggleIgnorePause`function with signature `toggleIgnorePause(bool)` and selector `[235, 227, 195, 40]`"]
+    ///Container type for all input parameters for the `toggleIgnorePause` function with signature `toggleIgnorePause(bool)` and selector `0xebe3c328`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "toggleIgnorePause", abi = "toggleIgnorePause(bool)")]
     pub struct ToggleIgnorePauseCall {
         pub toggle: bool,
     }
-    #[doc = "Container type for all input parameters for the `totalAssets`function with signature `totalAssets()` and selector `[1, 225, 209, 20]`"]
+    ///Container type for all input parameters for the `totalAssets` function with signature `totalAssets()` and selector `0x01e1d114`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "totalAssets", abi = "totalAssets()")]
     pub struct TotalAssetsCall;
-    #[doc = "Container type for all input parameters for the `totalAssetsWithdrawable`function with signature `totalAssetsWithdrawable()` and selector `[168, 20, 78, 72]`"]
+    ///Container type for all input parameters for the `totalAssetsWithdrawable` function with signature `totalAssetsWithdrawable()` and selector `0xa8144e48`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "totalAssetsWithdrawable", abi = "totalAssetsWithdrawable()")]
     pub struct TotalAssetsWithdrawableCall;
-    #[doc = "Container type for all input parameters for the `totalSupply`function with signature `totalSupply()` and selector `[24, 22, 13, 221]`"]
+    ///Container type for all input parameters for the `totalSupply` function with signature `totalSupply()` and selector `0x18160ddd`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "totalSupply", abi = "totalSupply()")]
     pub struct TotalSupplyCall;
-    #[doc = "Container type for all input parameters for the `transfer`function with signature `transfer(address,uint256)` and selector `[169, 5, 156, 187]`"]
+    ///Container type for all input parameters for the `transfer` function with signature `transfer(address,uint256)` and selector `0xa9059cbb`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "transfer", abi = "transfer(address,uint256)")]
     pub struct TransferCall {
-        pub to: ethers::core::types::Address,
-        pub amount: ethers::core::types::U256,
+        pub to: ::ethers::core::types::Address,
+        pub amount: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `transferFrom`function with signature `transferFrom(address,address,uint256)` and selector `[35, 184, 114, 221]`"]
+    ///Container type for all input parameters for the `transferFrom` function with signature `transferFrom(address,address,uint256)` and selector `0x23b872dd`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "transferFrom", abi = "transferFrom(address,address,uint256)")]
     pub struct TransferFromCall {
-        pub from: ethers::core::types::Address,
-        pub to: ethers::core::types::Address,
-        pub amount: ethers::core::types::U256,
+        pub from: ::ethers::core::types::Address,
+        pub to: ::ethers::core::types::Address,
+        pub amount: ::ethers::core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `transferOwnership`function with signature `transferOwnership(address)` and selector `[242, 253, 227, 139]`"]
+    ///Container type for all input parameters for the `transferOwnership` function with signature `transferOwnership(address)` and selector `0xf2fde38b`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "transferOwnership", abi = "transferOwnership(address)")]
     pub struct TransferOwnershipCall {
-        pub new_owner: ethers::core::types::Address,
+        pub new_owner: ::ethers::core::types::Address,
     }
-    #[doc = "Container type for all input parameters for the `userShareLockStartTime`function with signature `userShareLockStartTime(address)` and selector `[104, 124, 43, 80]`"]
+    ///Container type for all input parameters for the `userShareLockStartTime` function with signature `userShareLockStartTime(address)` and selector `0x687c2b50`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
-    #[ethcall(
-        name = "userShareLockStartTime",
-        abi = "userShareLockStartTime(address)"
-    )]
-    pub struct UserShareLockStartTimeCall(pub ethers::core::types::Address);
-    #[doc = "Container type for all input parameters for the `viewPositionBalances`function with signature `viewPositionBalances()` and selector `[120, 224, 35, 62]`"]
+    #[ethcall(name = "userShareLockStartTime", abi = "userShareLockStartTime(address)")]
+    pub struct UserShareLockStartTimeCall(pub ::ethers::core::types::Address);
+    ///Container type for all input parameters for the `viewPositionBalances` function with signature `viewPositionBalances()` and selector `0x78e0233e`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "viewPositionBalances", abi = "viewPositionBalances()")]
     pub struct ViewPositionBalancesCall;
-    #[doc = "Container type for all input parameters for the `withdraw`function with signature `withdraw(uint256,address,address)` and selector `[180, 96, 175, 148]`"]
+    ///Container type for all input parameters for the `withdraw` function with signature `withdraw(uint256,address,address)` and selector `0xb460af94`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "withdraw", abi = "withdraw(uint256,address,address)")]
     pub struct WithdrawCall {
-        pub assets: ethers::core::types::U256,
-        pub receiver: ethers::core::types::Address,
-        pub owner: ethers::core::types::Address,
+        pub assets: ::ethers::core::types::U256,
+        pub receiver: ::ethers::core::types::Address,
+        pub owner: ::ethers::core::types::Address,
     }
-    #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
+    ///Container type for all of the contract's call
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Deserialize,
+        serde::Serialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum CellarV2_2Calls {
         DomainSeparator(DomainSeparatorCall),
         GravityBridgeRegistrySlot(GravityBridgeRegistrySlotCall),
@@ -2769,1045 +7670,2139 @@ mod cellarv2_2_mod {
         ViewPositionBalances(ViewPositionBalancesCall),
         Withdraw(WithdrawCall),
     }
-    impl ethers::core::abi::AbiDecode for CellarV2_2Calls {
-        fn decode(data: impl AsRef<[u8]>) -> Result<Self, ethers::core::abi::AbiError> {
-            if let Ok(decoded) =
-                <DomainSeparatorCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::DomainSeparator(decoded));
-            }
-            if let Ok(decoded) =
-                <GravityBridgeRegistrySlotCall as ethers::core::abi::AbiDecode>::decode(
-                    data.as_ref(),
-                )
-            {
-                return Ok(CellarV2_2Calls::GravityBridgeRegistrySlot(decoded));
-            }
-            if let Ok(decoded) =
-                <MaximumShareLockPeriodCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::MaximumShareLockPeriod(decoded));
-            }
-            if let Ok(decoded) =
-                <MaxFeeCutCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::MaxFeeCut(decoded));
-            }
-            if let Ok(decoded) =
-                <MaxPlatformFeeCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::MaxPlatformFee(decoded));
-            }
-            if let Ok(decoded) =
-                <MaxPositionsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::MaxPositions(decoded));
-            }
-            if let Ok(decoded) =
-                <MaxRebalanceDeviationCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::MaxRebalanceDeviation(decoded));
-            }
-            if let Ok(decoded) =
-                <MinimumShareLockPeriodCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::MinimumShareLockPeriod(decoded));
-            }
-            if let Ok(decoded) =
-                <PriceRouterRegistrySlotCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::PriceRouterRegistrySlot(decoded));
-            }
-            if let Ok(decoded) =
-                <AavePoolCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::AavePool(decoded));
-            }
-            if let Ok(decoded) =
-                <AdaptorCatalogueCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::AdaptorCatalogue(decoded));
-            }
-            if let Ok(decoded) =
-                <AddAdaptorToCatalogueCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::AddAdaptorToCatalogue(decoded));
-            }
-            if let Ok(decoded) =
-                <AddPositionCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::AddPosition(decoded));
-            }
-            if let Ok(decoded) =
-                <AddPositionToCatalogueCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::AddPositionToCatalogue(decoded));
-            }
-            if let Ok(decoded) =
-                <AllowanceCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::Allowance(decoded));
-            }
-            if let Ok(decoded) =
-                <AllowedRebalanceDeviationCall as ethers::core::abi::AbiDecode>::decode(
-                    data.as_ref(),
-                )
-            {
-                return Ok(CellarV2_2Calls::AllowedRebalanceDeviation(decoded));
-            }
-            if let Ok(decoded) =
-                <ApproveCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::Approve(decoded));
-            }
-            if let Ok(decoded) = <AssetCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::Asset(decoded));
-            }
-            if let Ok(decoded) =
-                <BalanceOfCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::BalanceOf(decoded));
-            }
-            if let Ok(decoded) =
-                <BlockExternalReceiverCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::BlockExternalReceiver(decoded));
-            }
-            if let Ok(decoded) =
-                <CachePriceRouterCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::CachePriceRouter(decoded));
-            }
-            if let Ok(decoded) =
-                <CallOnAdaptorCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::CallOnAdaptor(decoded));
-            }
-            if let Ok(decoded) =
-                <ConvertToAssetsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::ConvertToAssets(decoded));
-            }
-            if let Ok(decoded) =
-                <ConvertToSharesCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::ConvertToShares(decoded));
-            }
-            if let Ok(decoded) =
-                <CreditPositionsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::CreditPositions(decoded));
-            }
-            if let Ok(decoded) =
-                <DebtPositionsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::DebtPositions(decoded));
-            }
-            if let Ok(decoded) =
-                <DecimalsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::Decimals(decoded));
-            }
-            if let Ok(decoded) =
-                <DepositCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::Deposit(decoded));
-            }
-            if let Ok(decoded) =
-                <ExecuteOperationCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::ExecuteOperation(decoded));
-            }
-            if let Ok(decoded) =
-                <FeeDataCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::FeeData(decoded));
-            }
-            if let Ok(decoded) =
-                <ForcePositionOutCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::ForcePositionOut(decoded));
-            }
-            if let Ok(decoded) =
-                <GetCreditPositionsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::GetCreditPositions(decoded));
-            }
-            if let Ok(decoded) =
-                <GetDebtPositionsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::GetDebtPositions(decoded));
-            }
-            if let Ok(decoded) =
-                <GetPositionAssetsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::GetPositionAssets(decoded));
-            }
-            if let Ok(decoded) =
-                <GetPositionDataCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::GetPositionData(decoded));
-            }
-            if let Ok(decoded) =
-                <HoldingPositionCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::HoldingPosition(decoded));
-            }
-            if let Ok(decoded) =
-                <IgnorePauseCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::IgnorePause(decoded));
-            }
-            if let Ok(decoded) =
-                <InitializeCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::Initialize(decoded));
-            }
-            if let Ok(decoded) =
-                <InitiateShutdownCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::InitiateShutdown(decoded));
-            }
-            if let Ok(decoded) =
-                <IsPausedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::IsPaused(decoded));
-            }
-            if let Ok(decoded) =
-                <IsPositionUsedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::IsPositionUsed(decoded));
-            }
-            if let Ok(decoded) =
-                <IsShutdownCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::IsShutdown(decoded));
-            }
-            if let Ok(decoded) =
-                <LiftShutdownCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::LiftShutdown(decoded));
-            }
-            if let Ok(decoded) = <LockedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::Locked(decoded));
-            }
-            if let Ok(decoded) =
-                <MaxDepositCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::MaxDeposit(decoded));
-            }
-            if let Ok(decoded) =
-                <MaxMintCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::MaxMint(decoded));
-            }
-            if let Ok(decoded) =
-                <MaxRedeemCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::MaxRedeem(decoded));
-            }
-            if let Ok(decoded) =
-                <MaxWithdrawCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::MaxWithdraw(decoded));
-            }
-            if let Ok(decoded) = <MintCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(CellarV2_2Calls::Mint(decoded));
-            }
-            if let Ok(decoded) =
-                <MulticallCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::Multicall(decoded));
-            }
-            if let Ok(decoded) = <NameCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(CellarV2_2Calls::Name(decoded));
-            }
-            if let Ok(decoded) = <NoncesCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::Nonces(decoded));
-            }
-            if let Ok(decoded) =
-                <OnERC721ReceivedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::OnERC721Received(decoded));
-            }
-            if let Ok(decoded) = <OwnerCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::Owner(decoded));
-            }
-            if let Ok(decoded) = <PermitCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::Permit(decoded));
-            }
-            if let Ok(decoded) =
-                <PositionCatalogueCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::PositionCatalogue(decoded));
-            }
-            if let Ok(decoded) =
-                <PreviewDepositCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::PreviewDeposit(decoded));
-            }
-            if let Ok(decoded) =
-                <PreviewMintCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::PreviewMint(decoded));
-            }
-            if let Ok(decoded) =
-                <PreviewRedeemCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::PreviewRedeem(decoded));
-            }
-            if let Ok(decoded) =
-                <PreviewWithdrawCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::PreviewWithdraw(decoded));
-            }
-            if let Ok(decoded) =
-                <PriceRouterCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::PriceRouter(decoded));
-            }
-            if let Ok(decoded) = <RedeemCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::Redeem(decoded));
-            }
-            if let Ok(decoded) =
-                <RegistryCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::Registry(decoded));
-            }
-            if let Ok(decoded) =
-                <RemoveAdaptorFromCatalogueCall as ethers::core::abi::AbiDecode>::decode(
-                    data.as_ref(),
-                )
-            {
-                return Ok(CellarV2_2Calls::RemoveAdaptorFromCatalogue(decoded));
-            }
-            if let Ok(decoded) =
-                <RemovePositionCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::RemovePosition(decoded));
-            }
-            if let Ok(decoded) =
-                <RemovePositionFromCatalogueCall as ethers::core::abi::AbiDecode>::decode(
-                    data.as_ref(),
-                )
-            {
-                return Ok(CellarV2_2Calls::RemovePositionFromCatalogue(decoded));
-            }
-            if let Ok(decoded) =
-                <SetHoldingPositionCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::SetHoldingPosition(decoded));
-            }
-            if let Ok(decoded) =
-                <SetRebalanceDeviationCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::SetRebalanceDeviation(decoded));
-            }
-            if let Ok(decoded) =
-                <SetShareLockPeriodCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::SetShareLockPeriod(decoded));
-            }
-            if let Ok(decoded) =
-                <SetStrategistPayoutAddressCall as ethers::core::abi::AbiDecode>::decode(
-                    data.as_ref(),
-                )
-            {
-                return Ok(CellarV2_2Calls::SetStrategistPayoutAddress(decoded));
-            }
-            if let Ok(decoded) =
-                <SetStrategistPlatformCutCall as ethers::core::abi::AbiDecode>::decode(
-                    data.as_ref(),
-                )
-            {
-                return Ok(CellarV2_2Calls::SetStrategistPlatformCut(decoded));
-            }
-            if let Ok(decoded) =
-                <ShareLockPeriodCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::ShareLockPeriod(decoded));
-            }
-            if let Ok(decoded) =
-                <SwapPositionsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::SwapPositions(decoded));
-            }
-            if let Ok(decoded) = <SymbolCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::Symbol(decoded));
-            }
-            if let Ok(decoded) =
-                <ToggleIgnorePauseCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::ToggleIgnorePause(decoded));
-            }
-            if let Ok(decoded) =
-                <TotalAssetsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::TotalAssets(decoded));
-            }
-            if let Ok(decoded) =
-                <TotalAssetsWithdrawableCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::TotalAssetsWithdrawable(decoded));
-            }
-            if let Ok(decoded) =
-                <TotalSupplyCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::TotalSupply(decoded));
-            }
-            if let Ok(decoded) =
-                <TransferCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::Transfer(decoded));
-            }
-            if let Ok(decoded) =
-                <TransferFromCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::TransferFrom(decoded));
-            }
-            if let Ok(decoded) =
-                <TransferOwnershipCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::TransferOwnership(decoded));
-            }
-            if let Ok(decoded) =
-                <UserShareLockStartTimeCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::UserShareLockStartTime(decoded));
-            }
-            if let Ok(decoded) =
-                <ViewPositionBalancesCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::ViewPositionBalances(decoded));
-            }
-            if let Ok(decoded) =
-                <WithdrawCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(CellarV2_2Calls::Withdraw(decoded));
-            }
-            Err(ethers::core::abi::Error::InvalidData.into())
+    impl ::ethers::core::abi::AbiDecode for CellarV2_2Calls {
+        fn decode(
+            data: impl AsRef<[u8]>,
+        ) -> ::core::result::Result<Self, ::ethers::core::abi::AbiError> {
+            let data = data.as_ref();
+            if let Ok(decoded) = <DomainSeparatorCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::DomainSeparator(decoded));
+            }
+            if let Ok(decoded) = <GravityBridgeRegistrySlotCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::GravityBridgeRegistrySlot(decoded));
+            }
+            if let Ok(decoded) = <MaximumShareLockPeriodCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::MaximumShareLockPeriod(decoded));
+            }
+            if let Ok(decoded) = <MaxFeeCutCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::MaxFeeCut(decoded));
+            }
+            if let Ok(decoded) = <MaxPlatformFeeCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::MaxPlatformFee(decoded));
+            }
+            if let Ok(decoded) = <MaxPositionsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::MaxPositions(decoded));
+            }
+            if let Ok(decoded) = <MaxRebalanceDeviationCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::MaxRebalanceDeviation(decoded));
+            }
+            if let Ok(decoded) = <MinimumShareLockPeriodCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::MinimumShareLockPeriod(decoded));
+            }
+            if let Ok(decoded) = <PriceRouterRegistrySlotCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::PriceRouterRegistrySlot(decoded));
+            }
+            if let Ok(decoded) = <AavePoolCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::AavePool(decoded));
+            }
+            if let Ok(decoded) = <AdaptorCatalogueCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::AdaptorCatalogue(decoded));
+            }
+            if let Ok(decoded) = <AddAdaptorToCatalogueCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::AddAdaptorToCatalogue(decoded));
+            }
+            if let Ok(decoded) = <AddPositionCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::AddPosition(decoded));
+            }
+            if let Ok(decoded) = <AddPositionToCatalogueCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::AddPositionToCatalogue(decoded));
+            }
+            if let Ok(decoded) = <AllowanceCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Allowance(decoded));
+            }
+            if let Ok(decoded) = <AllowedRebalanceDeviationCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::AllowedRebalanceDeviation(decoded));
+            }
+            if let Ok(decoded) = <ApproveCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Approve(decoded));
+            }
+            if let Ok(decoded) = <AssetCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Asset(decoded));
+            }
+            if let Ok(decoded) = <BalanceOfCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::BalanceOf(decoded));
+            }
+            if let Ok(decoded) = <BlockExternalReceiverCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::BlockExternalReceiver(decoded));
+            }
+            if let Ok(decoded) = <CachePriceRouterCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::CachePriceRouter(decoded));
+            }
+            if let Ok(decoded) = <CallOnAdaptorCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::CallOnAdaptor(decoded));
+            }
+            if let Ok(decoded) = <ConvertToAssetsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::ConvertToAssets(decoded));
+            }
+            if let Ok(decoded) = <ConvertToSharesCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::ConvertToShares(decoded));
+            }
+            if let Ok(decoded) = <CreditPositionsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::CreditPositions(decoded));
+            }
+            if let Ok(decoded) = <DebtPositionsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::DebtPositions(decoded));
+            }
+            if let Ok(decoded) = <DecimalsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Decimals(decoded));
+            }
+            if let Ok(decoded) = <DepositCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Deposit(decoded));
+            }
+            if let Ok(decoded) = <ExecuteOperationCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::ExecuteOperation(decoded));
+            }
+            if let Ok(decoded) = <FeeDataCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::FeeData(decoded));
+            }
+            if let Ok(decoded) = <ForcePositionOutCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::ForcePositionOut(decoded));
+            }
+            if let Ok(decoded) = <GetCreditPositionsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::GetCreditPositions(decoded));
+            }
+            if let Ok(decoded) = <GetDebtPositionsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::GetDebtPositions(decoded));
+            }
+            if let Ok(decoded) = <GetPositionAssetsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::GetPositionAssets(decoded));
+            }
+            if let Ok(decoded) = <GetPositionDataCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::GetPositionData(decoded));
+            }
+            if let Ok(decoded) = <HoldingPositionCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::HoldingPosition(decoded));
+            }
+            if let Ok(decoded) = <IgnorePauseCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::IgnorePause(decoded));
+            }
+            if let Ok(decoded) = <InitializeCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Initialize(decoded));
+            }
+            if let Ok(decoded) = <InitiateShutdownCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::InitiateShutdown(decoded));
+            }
+            if let Ok(decoded) = <IsPausedCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::IsPaused(decoded));
+            }
+            if let Ok(decoded) = <IsPositionUsedCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::IsPositionUsed(decoded));
+            }
+            if let Ok(decoded) = <IsShutdownCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::IsShutdown(decoded));
+            }
+            if let Ok(decoded) = <LiftShutdownCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::LiftShutdown(decoded));
+            }
+            if let Ok(decoded) = <LockedCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Locked(decoded));
+            }
+            if let Ok(decoded) = <MaxDepositCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::MaxDeposit(decoded));
+            }
+            if let Ok(decoded) = <MaxMintCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::MaxMint(decoded));
+            }
+            if let Ok(decoded) = <MaxRedeemCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::MaxRedeem(decoded));
+            }
+            if let Ok(decoded) = <MaxWithdrawCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::MaxWithdraw(decoded));
+            }
+            if let Ok(decoded) = <MintCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Mint(decoded));
+            }
+            if let Ok(decoded) = <MulticallCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Multicall(decoded));
+            }
+            if let Ok(decoded) = <NameCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Name(decoded));
+            }
+            if let Ok(decoded) = <NoncesCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Nonces(decoded));
+            }
+            if let Ok(decoded) = <OnERC721ReceivedCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::OnERC721Received(decoded));
+            }
+            if let Ok(decoded) = <OwnerCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Owner(decoded));
+            }
+            if let Ok(decoded) = <PermitCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Permit(decoded));
+            }
+            if let Ok(decoded) = <PositionCatalogueCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::PositionCatalogue(decoded));
+            }
+            if let Ok(decoded) = <PreviewDepositCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::PreviewDeposit(decoded));
+            }
+            if let Ok(decoded) = <PreviewMintCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::PreviewMint(decoded));
+            }
+            if let Ok(decoded) = <PreviewRedeemCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::PreviewRedeem(decoded));
+            }
+            if let Ok(decoded) = <PreviewWithdrawCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::PreviewWithdraw(decoded));
+            }
+            if let Ok(decoded) = <PriceRouterCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::PriceRouter(decoded));
+            }
+            if let Ok(decoded) = <RedeemCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Redeem(decoded));
+            }
+            if let Ok(decoded) = <RegistryCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Registry(decoded));
+            }
+            if let Ok(decoded) = <RemoveAdaptorFromCatalogueCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::RemoveAdaptorFromCatalogue(decoded));
+            }
+            if let Ok(decoded) = <RemovePositionCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::RemovePosition(decoded));
+            }
+            if let Ok(decoded) = <RemovePositionFromCatalogueCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::RemovePositionFromCatalogue(decoded));
+            }
+            if let Ok(decoded) = <SetHoldingPositionCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::SetHoldingPosition(decoded));
+            }
+            if let Ok(decoded) = <SetRebalanceDeviationCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::SetRebalanceDeviation(decoded));
+            }
+            if let Ok(decoded) = <SetShareLockPeriodCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::SetShareLockPeriod(decoded));
+            }
+            if let Ok(decoded) = <SetStrategistPayoutAddressCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::SetStrategistPayoutAddress(decoded));
+            }
+            if let Ok(decoded) = <SetStrategistPlatformCutCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::SetStrategistPlatformCut(decoded));
+            }
+            if let Ok(decoded) = <ShareLockPeriodCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::ShareLockPeriod(decoded));
+            }
+            if let Ok(decoded) = <SwapPositionsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::SwapPositions(decoded));
+            }
+            if let Ok(decoded) = <SymbolCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Symbol(decoded));
+            }
+            if let Ok(decoded) = <ToggleIgnorePauseCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::ToggleIgnorePause(decoded));
+            }
+            if let Ok(decoded) = <TotalAssetsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::TotalAssets(decoded));
+            }
+            if let Ok(decoded) = <TotalAssetsWithdrawableCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::TotalAssetsWithdrawable(decoded));
+            }
+            if let Ok(decoded) = <TotalSupplyCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::TotalSupply(decoded));
+            }
+            if let Ok(decoded) = <TransferCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Transfer(decoded));
+            }
+            if let Ok(decoded) = <TransferFromCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::TransferFrom(decoded));
+            }
+            if let Ok(decoded) = <TransferOwnershipCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::TransferOwnership(decoded));
+            }
+            if let Ok(decoded) = <UserShareLockStartTimeCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::UserShareLockStartTime(decoded));
+            }
+            if let Ok(decoded) = <ViewPositionBalancesCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::ViewPositionBalances(decoded));
+            }
+            if let Ok(decoded) = <WithdrawCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Withdraw(decoded));
+            }
+            Err(::ethers::core::abi::Error::InvalidData.into())
         }
     }
-    impl ethers::core::abi::AbiEncode for CellarV2_2Calls {
+    impl ::ethers::core::abi::AbiEncode for CellarV2_2Calls {
         fn encode(self) -> Vec<u8> {
             match self {
-                CellarV2_2Calls::DomainSeparator(element) => element.encode(),
-                CellarV2_2Calls::GravityBridgeRegistrySlot(element) => element.encode(),
-                CellarV2_2Calls::MaximumShareLockPeriod(element) => element.encode(),
-                CellarV2_2Calls::MaxFeeCut(element) => element.encode(),
-                CellarV2_2Calls::MaxPlatformFee(element) => element.encode(),
-                CellarV2_2Calls::MaxPositions(element) => element.encode(),
-                CellarV2_2Calls::MaxRebalanceDeviation(element) => element.encode(),
-                CellarV2_2Calls::MinimumShareLockPeriod(element) => element.encode(),
-                CellarV2_2Calls::PriceRouterRegistrySlot(element) => element.encode(),
-                CellarV2_2Calls::AavePool(element) => element.encode(),
-                CellarV2_2Calls::AdaptorCatalogue(element) => element.encode(),
-                CellarV2_2Calls::AddAdaptorToCatalogue(element) => element.encode(),
-                CellarV2_2Calls::AddPosition(element) => element.encode(),
-                CellarV2_2Calls::AddPositionToCatalogue(element) => element.encode(),
-                CellarV2_2Calls::Allowance(element) => element.encode(),
-                CellarV2_2Calls::AllowedRebalanceDeviation(element) => element.encode(),
-                CellarV2_2Calls::Approve(element) => element.encode(),
-                CellarV2_2Calls::Asset(element) => element.encode(),
-                CellarV2_2Calls::BalanceOf(element) => element.encode(),
-                CellarV2_2Calls::BlockExternalReceiver(element) => element.encode(),
-                CellarV2_2Calls::CachePriceRouter(element) => element.encode(),
-                CellarV2_2Calls::CallOnAdaptor(element) => element.encode(),
-                CellarV2_2Calls::ConvertToAssets(element) => element.encode(),
-                CellarV2_2Calls::ConvertToShares(element) => element.encode(),
-                CellarV2_2Calls::CreditPositions(element) => element.encode(),
-                CellarV2_2Calls::DebtPositions(element) => element.encode(),
-                CellarV2_2Calls::Decimals(element) => element.encode(),
-                CellarV2_2Calls::Deposit(element) => element.encode(),
-                CellarV2_2Calls::ExecuteOperation(element) => element.encode(),
-                CellarV2_2Calls::FeeData(element) => element.encode(),
-                CellarV2_2Calls::ForcePositionOut(element) => element.encode(),
-                CellarV2_2Calls::GetCreditPositions(element) => element.encode(),
-                CellarV2_2Calls::GetDebtPositions(element) => element.encode(),
-                CellarV2_2Calls::GetPositionAssets(element) => element.encode(),
-                CellarV2_2Calls::GetPositionData(element) => element.encode(),
-                CellarV2_2Calls::HoldingPosition(element) => element.encode(),
-                CellarV2_2Calls::IgnorePause(element) => element.encode(),
-                CellarV2_2Calls::Initialize(element) => element.encode(),
-                CellarV2_2Calls::InitiateShutdown(element) => element.encode(),
-                CellarV2_2Calls::IsPaused(element) => element.encode(),
-                CellarV2_2Calls::IsPositionUsed(element) => element.encode(),
-                CellarV2_2Calls::IsShutdown(element) => element.encode(),
-                CellarV2_2Calls::LiftShutdown(element) => element.encode(),
-                CellarV2_2Calls::Locked(element) => element.encode(),
-                CellarV2_2Calls::MaxDeposit(element) => element.encode(),
-                CellarV2_2Calls::MaxMint(element) => element.encode(),
-                CellarV2_2Calls::MaxRedeem(element) => element.encode(),
-                CellarV2_2Calls::MaxWithdraw(element) => element.encode(),
-                CellarV2_2Calls::Mint(element) => element.encode(),
-                CellarV2_2Calls::Multicall(element) => element.encode(),
-                CellarV2_2Calls::Name(element) => element.encode(),
-                CellarV2_2Calls::Nonces(element) => element.encode(),
-                CellarV2_2Calls::OnERC721Received(element) => element.encode(),
-                CellarV2_2Calls::Owner(element) => element.encode(),
-                CellarV2_2Calls::Permit(element) => element.encode(),
-                CellarV2_2Calls::PositionCatalogue(element) => element.encode(),
-                CellarV2_2Calls::PreviewDeposit(element) => element.encode(),
-                CellarV2_2Calls::PreviewMint(element) => element.encode(),
-                CellarV2_2Calls::PreviewRedeem(element) => element.encode(),
-                CellarV2_2Calls::PreviewWithdraw(element) => element.encode(),
-                CellarV2_2Calls::PriceRouter(element) => element.encode(),
-                CellarV2_2Calls::Redeem(element) => element.encode(),
-                CellarV2_2Calls::Registry(element) => element.encode(),
-                CellarV2_2Calls::RemoveAdaptorFromCatalogue(element) => element.encode(),
-                CellarV2_2Calls::RemovePosition(element) => element.encode(),
-                CellarV2_2Calls::RemovePositionFromCatalogue(element) => element.encode(),
-                CellarV2_2Calls::SetHoldingPosition(element) => element.encode(),
-                CellarV2_2Calls::SetRebalanceDeviation(element) => element.encode(),
-                CellarV2_2Calls::SetShareLockPeriod(element) => element.encode(),
-                CellarV2_2Calls::SetStrategistPayoutAddress(element) => element.encode(),
-                CellarV2_2Calls::SetStrategistPlatformCut(element) => element.encode(),
-                CellarV2_2Calls::ShareLockPeriod(element) => element.encode(),
-                CellarV2_2Calls::SwapPositions(element) => element.encode(),
-                CellarV2_2Calls::Symbol(element) => element.encode(),
-                CellarV2_2Calls::ToggleIgnorePause(element) => element.encode(),
-                CellarV2_2Calls::TotalAssets(element) => element.encode(),
-                CellarV2_2Calls::TotalAssetsWithdrawable(element) => element.encode(),
-                CellarV2_2Calls::TotalSupply(element) => element.encode(),
-                CellarV2_2Calls::Transfer(element) => element.encode(),
-                CellarV2_2Calls::TransferFrom(element) => element.encode(),
-                CellarV2_2Calls::TransferOwnership(element) => element.encode(),
-                CellarV2_2Calls::UserShareLockStartTime(element) => element.encode(),
-                CellarV2_2Calls::ViewPositionBalances(element) => element.encode(),
-                CellarV2_2Calls::Withdraw(element) => element.encode(),
+                Self::DomainSeparator(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::GravityBridgeRegistrySlot(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::MaximumShareLockPeriod(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::MaxFeeCut(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::MaxPlatformFee(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::MaxPositions(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::MaxRebalanceDeviation(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::MinimumShareLockPeriod(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::PriceRouterRegistrySlot(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::AavePool(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::AdaptorCatalogue(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::AddAdaptorToCatalogue(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::AddPosition(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::AddPositionToCatalogue(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Allowance(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::AllowedRebalanceDeviation(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Approve(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::Asset(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::BalanceOf(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::BlockExternalReceiver(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::CachePriceRouter(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::CallOnAdaptor(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::ConvertToAssets(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::ConvertToShares(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::CreditPositions(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::DebtPositions(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Decimals(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Deposit(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::ExecuteOperation(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::FeeData(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::ForcePositionOut(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::GetCreditPositions(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::GetDebtPositions(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::GetPositionAssets(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::GetPositionData(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::HoldingPosition(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::IgnorePause(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Initialize(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::InitiateShutdown(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::IsPaused(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::IsPositionUsed(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::IsShutdown(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::LiftShutdown(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Locked(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::MaxDeposit(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::MaxMint(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::MaxRedeem(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::MaxWithdraw(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Mint(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::Multicall(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Name(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::Nonces(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::OnERC721Received(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Owner(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::Permit(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::PositionCatalogue(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::PreviewDeposit(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::PreviewMint(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::PreviewRedeem(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::PreviewWithdraw(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::PriceRouter(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Redeem(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::Registry(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::RemoveAdaptorFromCatalogue(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::RemovePosition(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::RemovePositionFromCatalogue(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::SetHoldingPosition(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::SetRebalanceDeviation(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::SetShareLockPeriod(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::SetStrategistPayoutAddress(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::SetStrategistPlatformCut(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::ShareLockPeriod(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::SwapPositions(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Symbol(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::ToggleIgnorePause(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::TotalAssets(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::TotalAssetsWithdrawable(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::TotalSupply(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Transfer(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::TransferFrom(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::TransferOwnership(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::UserShareLockStartTime(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::ViewPositionBalances(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::Withdraw(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
             }
         }
     }
-    impl ::std::fmt::Display for CellarV2_2Calls {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    impl ::core::fmt::Display for CellarV2_2Calls {
+        fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
             match self {
-                CellarV2_2Calls::DomainSeparator(element) => element.fmt(f),
-                CellarV2_2Calls::GravityBridgeRegistrySlot(element) => element.fmt(f),
-                CellarV2_2Calls::MaximumShareLockPeriod(element) => element.fmt(f),
-                CellarV2_2Calls::MaxFeeCut(element) => element.fmt(f),
-                CellarV2_2Calls::MaxPlatformFee(element) => element.fmt(f),
-                CellarV2_2Calls::MaxPositions(element) => element.fmt(f),
-                CellarV2_2Calls::MaxRebalanceDeviation(element) => element.fmt(f),
-                CellarV2_2Calls::MinimumShareLockPeriod(element) => element.fmt(f),
-                CellarV2_2Calls::PriceRouterRegistrySlot(element) => element.fmt(f),
-                CellarV2_2Calls::AavePool(element) => element.fmt(f),
-                CellarV2_2Calls::AdaptorCatalogue(element) => element.fmt(f),
-                CellarV2_2Calls::AddAdaptorToCatalogue(element) => element.fmt(f),
-                CellarV2_2Calls::AddPosition(element) => element.fmt(f),
-                CellarV2_2Calls::AddPositionToCatalogue(element) => element.fmt(f),
-                CellarV2_2Calls::Allowance(element) => element.fmt(f),
-                CellarV2_2Calls::AllowedRebalanceDeviation(element) => element.fmt(f),
-                CellarV2_2Calls::Approve(element) => element.fmt(f),
-                CellarV2_2Calls::Asset(element) => element.fmt(f),
-                CellarV2_2Calls::BalanceOf(element) => element.fmt(f),
-                CellarV2_2Calls::BlockExternalReceiver(element) => element.fmt(f),
-                CellarV2_2Calls::CachePriceRouter(element) => element.fmt(f),
-                CellarV2_2Calls::CallOnAdaptor(element) => element.fmt(f),
-                CellarV2_2Calls::ConvertToAssets(element) => element.fmt(f),
-                CellarV2_2Calls::ConvertToShares(element) => element.fmt(f),
-                CellarV2_2Calls::CreditPositions(element) => element.fmt(f),
-                CellarV2_2Calls::DebtPositions(element) => element.fmt(f),
-                CellarV2_2Calls::Decimals(element) => element.fmt(f),
-                CellarV2_2Calls::Deposit(element) => element.fmt(f),
-                CellarV2_2Calls::ExecuteOperation(element) => element.fmt(f),
-                CellarV2_2Calls::FeeData(element) => element.fmt(f),
-                CellarV2_2Calls::ForcePositionOut(element) => element.fmt(f),
-                CellarV2_2Calls::GetCreditPositions(element) => element.fmt(f),
-                CellarV2_2Calls::GetDebtPositions(element) => element.fmt(f),
-                CellarV2_2Calls::GetPositionAssets(element) => element.fmt(f),
-                CellarV2_2Calls::GetPositionData(element) => element.fmt(f),
-                CellarV2_2Calls::HoldingPosition(element) => element.fmt(f),
-                CellarV2_2Calls::IgnorePause(element) => element.fmt(f),
-                CellarV2_2Calls::Initialize(element) => element.fmt(f),
-                CellarV2_2Calls::InitiateShutdown(element) => element.fmt(f),
-                CellarV2_2Calls::IsPaused(element) => element.fmt(f),
-                CellarV2_2Calls::IsPositionUsed(element) => element.fmt(f),
-                CellarV2_2Calls::IsShutdown(element) => element.fmt(f),
-                CellarV2_2Calls::LiftShutdown(element) => element.fmt(f),
-                CellarV2_2Calls::Locked(element) => element.fmt(f),
-                CellarV2_2Calls::MaxDeposit(element) => element.fmt(f),
-                CellarV2_2Calls::MaxMint(element) => element.fmt(f),
-                CellarV2_2Calls::MaxRedeem(element) => element.fmt(f),
-                CellarV2_2Calls::MaxWithdraw(element) => element.fmt(f),
-                CellarV2_2Calls::Mint(element) => element.fmt(f),
-                CellarV2_2Calls::Multicall(element) => element.fmt(f),
-                CellarV2_2Calls::Name(element) => element.fmt(f),
-                CellarV2_2Calls::Nonces(element) => element.fmt(f),
-                CellarV2_2Calls::OnERC721Received(element) => element.fmt(f),
-                CellarV2_2Calls::Owner(element) => element.fmt(f),
-                CellarV2_2Calls::Permit(element) => element.fmt(f),
-                CellarV2_2Calls::PositionCatalogue(element) => element.fmt(f),
-                CellarV2_2Calls::PreviewDeposit(element) => element.fmt(f),
-                CellarV2_2Calls::PreviewMint(element) => element.fmt(f),
-                CellarV2_2Calls::PreviewRedeem(element) => element.fmt(f),
-                CellarV2_2Calls::PreviewWithdraw(element) => element.fmt(f),
-                CellarV2_2Calls::PriceRouter(element) => element.fmt(f),
-                CellarV2_2Calls::Redeem(element) => element.fmt(f),
-                CellarV2_2Calls::Registry(element) => element.fmt(f),
-                CellarV2_2Calls::RemoveAdaptorFromCatalogue(element) => element.fmt(f),
-                CellarV2_2Calls::RemovePosition(element) => element.fmt(f),
-                CellarV2_2Calls::RemovePositionFromCatalogue(element) => element.fmt(f),
-                CellarV2_2Calls::SetHoldingPosition(element) => element.fmt(f),
-                CellarV2_2Calls::SetRebalanceDeviation(element) => element.fmt(f),
-                CellarV2_2Calls::SetShareLockPeriod(element) => element.fmt(f),
-                CellarV2_2Calls::SetStrategistPayoutAddress(element) => element.fmt(f),
-                CellarV2_2Calls::SetStrategistPlatformCut(element) => element.fmt(f),
-                CellarV2_2Calls::ShareLockPeriod(element) => element.fmt(f),
-                CellarV2_2Calls::SwapPositions(element) => element.fmt(f),
-                CellarV2_2Calls::Symbol(element) => element.fmt(f),
-                CellarV2_2Calls::ToggleIgnorePause(element) => element.fmt(f),
-                CellarV2_2Calls::TotalAssets(element) => element.fmt(f),
-                CellarV2_2Calls::TotalAssetsWithdrawable(element) => element.fmt(f),
-                CellarV2_2Calls::TotalSupply(element) => element.fmt(f),
-                CellarV2_2Calls::Transfer(element) => element.fmt(f),
-                CellarV2_2Calls::TransferFrom(element) => element.fmt(f),
-                CellarV2_2Calls::TransferOwnership(element) => element.fmt(f),
-                CellarV2_2Calls::UserShareLockStartTime(element) => element.fmt(f),
-                CellarV2_2Calls::ViewPositionBalances(element) => element.fmt(f),
-                CellarV2_2Calls::Withdraw(element) => element.fmt(f),
+                Self::DomainSeparator(element) => ::core::fmt::Display::fmt(element, f),
+                Self::GravityBridgeRegistrySlot(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::MaximumShareLockPeriod(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::MaxFeeCut(element) => ::core::fmt::Display::fmt(element, f),
+                Self::MaxPlatformFee(element) => ::core::fmt::Display::fmt(element, f),
+                Self::MaxPositions(element) => ::core::fmt::Display::fmt(element, f),
+                Self::MaxRebalanceDeviation(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::MinimumShareLockPeriod(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::PriceRouterRegistrySlot(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::AavePool(element) => ::core::fmt::Display::fmt(element, f),
+                Self::AdaptorCatalogue(element) => ::core::fmt::Display::fmt(element, f),
+                Self::AddAdaptorToCatalogue(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::AddPosition(element) => ::core::fmt::Display::fmt(element, f),
+                Self::AddPositionToCatalogue(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Allowance(element) => ::core::fmt::Display::fmt(element, f),
+                Self::AllowedRebalanceDeviation(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Approve(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Asset(element) => ::core::fmt::Display::fmt(element, f),
+                Self::BalanceOf(element) => ::core::fmt::Display::fmt(element, f),
+                Self::BlockExternalReceiver(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::CachePriceRouter(element) => ::core::fmt::Display::fmt(element, f),
+                Self::CallOnAdaptor(element) => ::core::fmt::Display::fmt(element, f),
+                Self::ConvertToAssets(element) => ::core::fmt::Display::fmt(element, f),
+                Self::ConvertToShares(element) => ::core::fmt::Display::fmt(element, f),
+                Self::CreditPositions(element) => ::core::fmt::Display::fmt(element, f),
+                Self::DebtPositions(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Decimals(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Deposit(element) => ::core::fmt::Display::fmt(element, f),
+                Self::ExecuteOperation(element) => ::core::fmt::Display::fmt(element, f),
+                Self::FeeData(element) => ::core::fmt::Display::fmt(element, f),
+                Self::ForcePositionOut(element) => ::core::fmt::Display::fmt(element, f),
+                Self::GetCreditPositions(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::GetDebtPositions(element) => ::core::fmt::Display::fmt(element, f),
+                Self::GetPositionAssets(element) => ::core::fmt::Display::fmt(element, f),
+                Self::GetPositionData(element) => ::core::fmt::Display::fmt(element, f),
+                Self::HoldingPosition(element) => ::core::fmt::Display::fmt(element, f),
+                Self::IgnorePause(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Initialize(element) => ::core::fmt::Display::fmt(element, f),
+                Self::InitiateShutdown(element) => ::core::fmt::Display::fmt(element, f),
+                Self::IsPaused(element) => ::core::fmt::Display::fmt(element, f),
+                Self::IsPositionUsed(element) => ::core::fmt::Display::fmt(element, f),
+                Self::IsShutdown(element) => ::core::fmt::Display::fmt(element, f),
+                Self::LiftShutdown(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Locked(element) => ::core::fmt::Display::fmt(element, f),
+                Self::MaxDeposit(element) => ::core::fmt::Display::fmt(element, f),
+                Self::MaxMint(element) => ::core::fmt::Display::fmt(element, f),
+                Self::MaxRedeem(element) => ::core::fmt::Display::fmt(element, f),
+                Self::MaxWithdraw(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Mint(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Multicall(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Name(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Nonces(element) => ::core::fmt::Display::fmt(element, f),
+                Self::OnERC721Received(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Owner(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Permit(element) => ::core::fmt::Display::fmt(element, f),
+                Self::PositionCatalogue(element) => ::core::fmt::Display::fmt(element, f),
+                Self::PreviewDeposit(element) => ::core::fmt::Display::fmt(element, f),
+                Self::PreviewMint(element) => ::core::fmt::Display::fmt(element, f),
+                Self::PreviewRedeem(element) => ::core::fmt::Display::fmt(element, f),
+                Self::PreviewWithdraw(element) => ::core::fmt::Display::fmt(element, f),
+                Self::PriceRouter(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Redeem(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Registry(element) => ::core::fmt::Display::fmt(element, f),
+                Self::RemoveAdaptorFromCatalogue(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::RemovePosition(element) => ::core::fmt::Display::fmt(element, f),
+                Self::RemovePositionFromCatalogue(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::SetHoldingPosition(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::SetRebalanceDeviation(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::SetShareLockPeriod(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::SetStrategistPayoutAddress(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::SetStrategistPlatformCut(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::ShareLockPeriod(element) => ::core::fmt::Display::fmt(element, f),
+                Self::SwapPositions(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Symbol(element) => ::core::fmt::Display::fmt(element, f),
+                Self::ToggleIgnorePause(element) => ::core::fmt::Display::fmt(element, f),
+                Self::TotalAssets(element) => ::core::fmt::Display::fmt(element, f),
+                Self::TotalAssetsWithdrawable(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::TotalSupply(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Transfer(element) => ::core::fmt::Display::fmt(element, f),
+                Self::TransferFrom(element) => ::core::fmt::Display::fmt(element, f),
+                Self::TransferOwnership(element) => ::core::fmt::Display::fmt(element, f),
+                Self::UserShareLockStartTime(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::ViewPositionBalances(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
+                Self::Withdraw(element) => ::core::fmt::Display::fmt(element, f),
             }
         }
     }
-    impl ::std::convert::From<DomainSeparatorCall> for CellarV2_2Calls {
-        fn from(var: DomainSeparatorCall) -> Self {
-            CellarV2_2Calls::DomainSeparator(var)
+    impl ::core::convert::From<DomainSeparatorCall> for CellarV2_2Calls {
+        fn from(value: DomainSeparatorCall) -> Self {
+            Self::DomainSeparator(value)
         }
     }
-    impl ::std::convert::From<GravityBridgeRegistrySlotCall> for CellarV2_2Calls {
-        fn from(var: GravityBridgeRegistrySlotCall) -> Self {
-            CellarV2_2Calls::GravityBridgeRegistrySlot(var)
+    impl ::core::convert::From<GravityBridgeRegistrySlotCall> for CellarV2_2Calls {
+        fn from(value: GravityBridgeRegistrySlotCall) -> Self {
+            Self::GravityBridgeRegistrySlot(value)
         }
     }
-    impl ::std::convert::From<MaximumShareLockPeriodCall> for CellarV2_2Calls {
-        fn from(var: MaximumShareLockPeriodCall) -> Self {
-            CellarV2_2Calls::MaximumShareLockPeriod(var)
+    impl ::core::convert::From<MaximumShareLockPeriodCall> for CellarV2_2Calls {
+        fn from(value: MaximumShareLockPeriodCall) -> Self {
+            Self::MaximumShareLockPeriod(value)
         }
     }
-    impl ::std::convert::From<MaxFeeCutCall> for CellarV2_2Calls {
-        fn from(var: MaxFeeCutCall) -> Self {
-            CellarV2_2Calls::MaxFeeCut(var)
+    impl ::core::convert::From<MaxFeeCutCall> for CellarV2_2Calls {
+        fn from(value: MaxFeeCutCall) -> Self {
+            Self::MaxFeeCut(value)
         }
     }
-    impl ::std::convert::From<MaxPlatformFeeCall> for CellarV2_2Calls {
-        fn from(var: MaxPlatformFeeCall) -> Self {
-            CellarV2_2Calls::MaxPlatformFee(var)
+    impl ::core::convert::From<MaxPlatformFeeCall> for CellarV2_2Calls {
+        fn from(value: MaxPlatformFeeCall) -> Self {
+            Self::MaxPlatformFee(value)
         }
     }
-    impl ::std::convert::From<MaxPositionsCall> for CellarV2_2Calls {
-        fn from(var: MaxPositionsCall) -> Self {
-            CellarV2_2Calls::MaxPositions(var)
+    impl ::core::convert::From<MaxPositionsCall> for CellarV2_2Calls {
+        fn from(value: MaxPositionsCall) -> Self {
+            Self::MaxPositions(value)
         }
     }
-    impl ::std::convert::From<MaxRebalanceDeviationCall> for CellarV2_2Calls {
-        fn from(var: MaxRebalanceDeviationCall) -> Self {
-            CellarV2_2Calls::MaxRebalanceDeviation(var)
+    impl ::core::convert::From<MaxRebalanceDeviationCall> for CellarV2_2Calls {
+        fn from(value: MaxRebalanceDeviationCall) -> Self {
+            Self::MaxRebalanceDeviation(value)
         }
     }
-    impl ::std::convert::From<MinimumShareLockPeriodCall> for CellarV2_2Calls {
-        fn from(var: MinimumShareLockPeriodCall) -> Self {
-            CellarV2_2Calls::MinimumShareLockPeriod(var)
+    impl ::core::convert::From<MinimumShareLockPeriodCall> for CellarV2_2Calls {
+        fn from(value: MinimumShareLockPeriodCall) -> Self {
+            Self::MinimumShareLockPeriod(value)
         }
     }
-    impl ::std::convert::From<PriceRouterRegistrySlotCall> for CellarV2_2Calls {
-        fn from(var: PriceRouterRegistrySlotCall) -> Self {
-            CellarV2_2Calls::PriceRouterRegistrySlot(var)
+    impl ::core::convert::From<PriceRouterRegistrySlotCall> for CellarV2_2Calls {
+        fn from(value: PriceRouterRegistrySlotCall) -> Self {
+            Self::PriceRouterRegistrySlot(value)
         }
     }
-    impl ::std::convert::From<AavePoolCall> for CellarV2_2Calls {
-        fn from(var: AavePoolCall) -> Self {
-            CellarV2_2Calls::AavePool(var)
+    impl ::core::convert::From<AavePoolCall> for CellarV2_2Calls {
+        fn from(value: AavePoolCall) -> Self {
+            Self::AavePool(value)
         }
     }
-    impl ::std::convert::From<AdaptorCatalogueCall> for CellarV2_2Calls {
-        fn from(var: AdaptorCatalogueCall) -> Self {
-            CellarV2_2Calls::AdaptorCatalogue(var)
+    impl ::core::convert::From<AdaptorCatalogueCall> for CellarV2_2Calls {
+        fn from(value: AdaptorCatalogueCall) -> Self {
+            Self::AdaptorCatalogue(value)
         }
     }
-    impl ::std::convert::From<AddAdaptorToCatalogueCall> for CellarV2_2Calls {
-        fn from(var: AddAdaptorToCatalogueCall) -> Self {
-            CellarV2_2Calls::AddAdaptorToCatalogue(var)
+    impl ::core::convert::From<AddAdaptorToCatalogueCall> for CellarV2_2Calls {
+        fn from(value: AddAdaptorToCatalogueCall) -> Self {
+            Self::AddAdaptorToCatalogue(value)
         }
     }
-    impl ::std::convert::From<AddPositionCall> for CellarV2_2Calls {
-        fn from(var: AddPositionCall) -> Self {
-            CellarV2_2Calls::AddPosition(var)
+    impl ::core::convert::From<AddPositionCall> for CellarV2_2Calls {
+        fn from(value: AddPositionCall) -> Self {
+            Self::AddPosition(value)
         }
     }
-    impl ::std::convert::From<AddPositionToCatalogueCall> for CellarV2_2Calls {
-        fn from(var: AddPositionToCatalogueCall) -> Self {
-            CellarV2_2Calls::AddPositionToCatalogue(var)
+    impl ::core::convert::From<AddPositionToCatalogueCall> for CellarV2_2Calls {
+        fn from(value: AddPositionToCatalogueCall) -> Self {
+            Self::AddPositionToCatalogue(value)
         }
     }
-    impl ::std::convert::From<AllowanceCall> for CellarV2_2Calls {
-        fn from(var: AllowanceCall) -> Self {
-            CellarV2_2Calls::Allowance(var)
+    impl ::core::convert::From<AllowanceCall> for CellarV2_2Calls {
+        fn from(value: AllowanceCall) -> Self {
+            Self::Allowance(value)
         }
     }
-    impl ::std::convert::From<AllowedRebalanceDeviationCall> for CellarV2_2Calls {
-        fn from(var: AllowedRebalanceDeviationCall) -> Self {
-            CellarV2_2Calls::AllowedRebalanceDeviation(var)
+    impl ::core::convert::From<AllowedRebalanceDeviationCall> for CellarV2_2Calls {
+        fn from(value: AllowedRebalanceDeviationCall) -> Self {
+            Self::AllowedRebalanceDeviation(value)
         }
     }
-    impl ::std::convert::From<ApproveCall> for CellarV2_2Calls {
-        fn from(var: ApproveCall) -> Self {
-            CellarV2_2Calls::Approve(var)
+    impl ::core::convert::From<ApproveCall> for CellarV2_2Calls {
+        fn from(value: ApproveCall) -> Self {
+            Self::Approve(value)
         }
     }
-    impl ::std::convert::From<AssetCall> for CellarV2_2Calls {
-        fn from(var: AssetCall) -> Self {
-            CellarV2_2Calls::Asset(var)
+    impl ::core::convert::From<AssetCall> for CellarV2_2Calls {
+        fn from(value: AssetCall) -> Self {
+            Self::Asset(value)
         }
     }
-    impl ::std::convert::From<BalanceOfCall> for CellarV2_2Calls {
-        fn from(var: BalanceOfCall) -> Self {
-            CellarV2_2Calls::BalanceOf(var)
+    impl ::core::convert::From<BalanceOfCall> for CellarV2_2Calls {
+        fn from(value: BalanceOfCall) -> Self {
+            Self::BalanceOf(value)
         }
     }
-    impl ::std::convert::From<BlockExternalReceiverCall> for CellarV2_2Calls {
-        fn from(var: BlockExternalReceiverCall) -> Self {
-            CellarV2_2Calls::BlockExternalReceiver(var)
+    impl ::core::convert::From<BlockExternalReceiverCall> for CellarV2_2Calls {
+        fn from(value: BlockExternalReceiverCall) -> Self {
+            Self::BlockExternalReceiver(value)
         }
     }
-    impl ::std::convert::From<CachePriceRouterCall> for CellarV2_2Calls {
-        fn from(var: CachePriceRouterCall) -> Self {
-            CellarV2_2Calls::CachePriceRouter(var)
+    impl ::core::convert::From<CachePriceRouterCall> for CellarV2_2Calls {
+        fn from(value: CachePriceRouterCall) -> Self {
+            Self::CachePriceRouter(value)
         }
     }
-    impl ::std::convert::From<CallOnAdaptorCall> for CellarV2_2Calls {
-        fn from(var: CallOnAdaptorCall) -> Self {
-            CellarV2_2Calls::CallOnAdaptor(var)
+    impl ::core::convert::From<CallOnAdaptorCall> for CellarV2_2Calls {
+        fn from(value: CallOnAdaptorCall) -> Self {
+            Self::CallOnAdaptor(value)
         }
     }
-    impl ::std::convert::From<ConvertToAssetsCall> for CellarV2_2Calls {
-        fn from(var: ConvertToAssetsCall) -> Self {
-            CellarV2_2Calls::ConvertToAssets(var)
+    impl ::core::convert::From<ConvertToAssetsCall> for CellarV2_2Calls {
+        fn from(value: ConvertToAssetsCall) -> Self {
+            Self::ConvertToAssets(value)
         }
     }
-    impl ::std::convert::From<ConvertToSharesCall> for CellarV2_2Calls {
-        fn from(var: ConvertToSharesCall) -> Self {
-            CellarV2_2Calls::ConvertToShares(var)
+    impl ::core::convert::From<ConvertToSharesCall> for CellarV2_2Calls {
+        fn from(value: ConvertToSharesCall) -> Self {
+            Self::ConvertToShares(value)
         }
     }
-    impl ::std::convert::From<CreditPositionsCall> for CellarV2_2Calls {
-        fn from(var: CreditPositionsCall) -> Self {
-            CellarV2_2Calls::CreditPositions(var)
+    impl ::core::convert::From<CreditPositionsCall> for CellarV2_2Calls {
+        fn from(value: CreditPositionsCall) -> Self {
+            Self::CreditPositions(value)
         }
     }
-    impl ::std::convert::From<DebtPositionsCall> for CellarV2_2Calls {
-        fn from(var: DebtPositionsCall) -> Self {
-            CellarV2_2Calls::DebtPositions(var)
+    impl ::core::convert::From<DebtPositionsCall> for CellarV2_2Calls {
+        fn from(value: DebtPositionsCall) -> Self {
+            Self::DebtPositions(value)
         }
     }
-    impl ::std::convert::From<DecimalsCall> for CellarV2_2Calls {
-        fn from(var: DecimalsCall) -> Self {
-            CellarV2_2Calls::Decimals(var)
+    impl ::core::convert::From<DecimalsCall> for CellarV2_2Calls {
+        fn from(value: DecimalsCall) -> Self {
+            Self::Decimals(value)
         }
     }
-    impl ::std::convert::From<DepositCall> for CellarV2_2Calls {
-        fn from(var: DepositCall) -> Self {
-            CellarV2_2Calls::Deposit(var)
+    impl ::core::convert::From<DepositCall> for CellarV2_2Calls {
+        fn from(value: DepositCall) -> Self {
+            Self::Deposit(value)
         }
     }
-    impl ::std::convert::From<ExecuteOperationCall> for CellarV2_2Calls {
-        fn from(var: ExecuteOperationCall) -> Self {
-            CellarV2_2Calls::ExecuteOperation(var)
+    impl ::core::convert::From<ExecuteOperationCall> for CellarV2_2Calls {
+        fn from(value: ExecuteOperationCall) -> Self {
+            Self::ExecuteOperation(value)
         }
     }
-    impl ::std::convert::From<FeeDataCall> for CellarV2_2Calls {
-        fn from(var: FeeDataCall) -> Self {
-            CellarV2_2Calls::FeeData(var)
+    impl ::core::convert::From<FeeDataCall> for CellarV2_2Calls {
+        fn from(value: FeeDataCall) -> Self {
+            Self::FeeData(value)
         }
     }
-    impl ::std::convert::From<ForcePositionOutCall> for CellarV2_2Calls {
-        fn from(var: ForcePositionOutCall) -> Self {
-            CellarV2_2Calls::ForcePositionOut(var)
+    impl ::core::convert::From<ForcePositionOutCall> for CellarV2_2Calls {
+        fn from(value: ForcePositionOutCall) -> Self {
+            Self::ForcePositionOut(value)
         }
     }
-    impl ::std::convert::From<GetCreditPositionsCall> for CellarV2_2Calls {
-        fn from(var: GetCreditPositionsCall) -> Self {
-            CellarV2_2Calls::GetCreditPositions(var)
+    impl ::core::convert::From<GetCreditPositionsCall> for CellarV2_2Calls {
+        fn from(value: GetCreditPositionsCall) -> Self {
+            Self::GetCreditPositions(value)
         }
     }
-    impl ::std::convert::From<GetDebtPositionsCall> for CellarV2_2Calls {
-        fn from(var: GetDebtPositionsCall) -> Self {
-            CellarV2_2Calls::GetDebtPositions(var)
+    impl ::core::convert::From<GetDebtPositionsCall> for CellarV2_2Calls {
+        fn from(value: GetDebtPositionsCall) -> Self {
+            Self::GetDebtPositions(value)
         }
     }
-    impl ::std::convert::From<GetPositionAssetsCall> for CellarV2_2Calls {
-        fn from(var: GetPositionAssetsCall) -> Self {
-            CellarV2_2Calls::GetPositionAssets(var)
+    impl ::core::convert::From<GetPositionAssetsCall> for CellarV2_2Calls {
+        fn from(value: GetPositionAssetsCall) -> Self {
+            Self::GetPositionAssets(value)
         }
     }
-    impl ::std::convert::From<GetPositionDataCall> for CellarV2_2Calls {
-        fn from(var: GetPositionDataCall) -> Self {
-            CellarV2_2Calls::GetPositionData(var)
+    impl ::core::convert::From<GetPositionDataCall> for CellarV2_2Calls {
+        fn from(value: GetPositionDataCall) -> Self {
+            Self::GetPositionData(value)
         }
     }
-    impl ::std::convert::From<HoldingPositionCall> for CellarV2_2Calls {
-        fn from(var: HoldingPositionCall) -> Self {
-            CellarV2_2Calls::HoldingPosition(var)
+    impl ::core::convert::From<HoldingPositionCall> for CellarV2_2Calls {
+        fn from(value: HoldingPositionCall) -> Self {
+            Self::HoldingPosition(value)
         }
     }
-    impl ::std::convert::From<IgnorePauseCall> for CellarV2_2Calls {
-        fn from(var: IgnorePauseCall) -> Self {
-            CellarV2_2Calls::IgnorePause(var)
+    impl ::core::convert::From<IgnorePauseCall> for CellarV2_2Calls {
+        fn from(value: IgnorePauseCall) -> Self {
+            Self::IgnorePause(value)
         }
     }
-    impl ::std::convert::From<InitializeCall> for CellarV2_2Calls {
-        fn from(var: InitializeCall) -> Self {
-            CellarV2_2Calls::Initialize(var)
+    impl ::core::convert::From<InitializeCall> for CellarV2_2Calls {
+        fn from(value: InitializeCall) -> Self {
+            Self::Initialize(value)
         }
     }
-    impl ::std::convert::From<InitiateShutdownCall> for CellarV2_2Calls {
-        fn from(var: InitiateShutdownCall) -> Self {
-            CellarV2_2Calls::InitiateShutdown(var)
+    impl ::core::convert::From<InitiateShutdownCall> for CellarV2_2Calls {
+        fn from(value: InitiateShutdownCall) -> Self {
+            Self::InitiateShutdown(value)
         }
     }
-    impl ::std::convert::From<IsPausedCall> for CellarV2_2Calls {
-        fn from(var: IsPausedCall) -> Self {
-            CellarV2_2Calls::IsPaused(var)
+    impl ::core::convert::From<IsPausedCall> for CellarV2_2Calls {
+        fn from(value: IsPausedCall) -> Self {
+            Self::IsPaused(value)
         }
     }
-    impl ::std::convert::From<IsPositionUsedCall> for CellarV2_2Calls {
-        fn from(var: IsPositionUsedCall) -> Self {
-            CellarV2_2Calls::IsPositionUsed(var)
+    impl ::core::convert::From<IsPositionUsedCall> for CellarV2_2Calls {
+        fn from(value: IsPositionUsedCall) -> Self {
+            Self::IsPositionUsed(value)
         }
     }
-    impl ::std::convert::From<IsShutdownCall> for CellarV2_2Calls {
-        fn from(var: IsShutdownCall) -> Self {
-            CellarV2_2Calls::IsShutdown(var)
+    impl ::core::convert::From<IsShutdownCall> for CellarV2_2Calls {
+        fn from(value: IsShutdownCall) -> Self {
+            Self::IsShutdown(value)
         }
     }
-    impl ::std::convert::From<LiftShutdownCall> for CellarV2_2Calls {
-        fn from(var: LiftShutdownCall) -> Self {
-            CellarV2_2Calls::LiftShutdown(var)
+    impl ::core::convert::From<LiftShutdownCall> for CellarV2_2Calls {
+        fn from(value: LiftShutdownCall) -> Self {
+            Self::LiftShutdown(value)
         }
     }
-    impl ::std::convert::From<LockedCall> for CellarV2_2Calls {
-        fn from(var: LockedCall) -> Self {
-            CellarV2_2Calls::Locked(var)
+    impl ::core::convert::From<LockedCall> for CellarV2_2Calls {
+        fn from(value: LockedCall) -> Self {
+            Self::Locked(value)
         }
     }
-    impl ::std::convert::From<MaxDepositCall> for CellarV2_2Calls {
-        fn from(var: MaxDepositCall) -> Self {
-            CellarV2_2Calls::MaxDeposit(var)
+    impl ::core::convert::From<MaxDepositCall> for CellarV2_2Calls {
+        fn from(value: MaxDepositCall) -> Self {
+            Self::MaxDeposit(value)
         }
     }
-    impl ::std::convert::From<MaxMintCall> for CellarV2_2Calls {
-        fn from(var: MaxMintCall) -> Self {
-            CellarV2_2Calls::MaxMint(var)
+    impl ::core::convert::From<MaxMintCall> for CellarV2_2Calls {
+        fn from(value: MaxMintCall) -> Self {
+            Self::MaxMint(value)
         }
     }
-    impl ::std::convert::From<MaxRedeemCall> for CellarV2_2Calls {
-        fn from(var: MaxRedeemCall) -> Self {
-            CellarV2_2Calls::MaxRedeem(var)
+    impl ::core::convert::From<MaxRedeemCall> for CellarV2_2Calls {
+        fn from(value: MaxRedeemCall) -> Self {
+            Self::MaxRedeem(value)
         }
     }
-    impl ::std::convert::From<MaxWithdrawCall> for CellarV2_2Calls {
-        fn from(var: MaxWithdrawCall) -> Self {
-            CellarV2_2Calls::MaxWithdraw(var)
+    impl ::core::convert::From<MaxWithdrawCall> for CellarV2_2Calls {
+        fn from(value: MaxWithdrawCall) -> Self {
+            Self::MaxWithdraw(value)
         }
     }
-    impl ::std::convert::From<MintCall> for CellarV2_2Calls {
-        fn from(var: MintCall) -> Self {
-            CellarV2_2Calls::Mint(var)
+    impl ::core::convert::From<MintCall> for CellarV2_2Calls {
+        fn from(value: MintCall) -> Self {
+            Self::Mint(value)
         }
     }
-    impl ::std::convert::From<MulticallCall> for CellarV2_2Calls {
-        fn from(var: MulticallCall) -> Self {
-            CellarV2_2Calls::Multicall(var)
+    impl ::core::convert::From<MulticallCall> for CellarV2_2Calls {
+        fn from(value: MulticallCall) -> Self {
+            Self::Multicall(value)
         }
     }
-    impl ::std::convert::From<NameCall> for CellarV2_2Calls {
-        fn from(var: NameCall) -> Self {
-            CellarV2_2Calls::Name(var)
+    impl ::core::convert::From<NameCall> for CellarV2_2Calls {
+        fn from(value: NameCall) -> Self {
+            Self::Name(value)
         }
     }
-    impl ::std::convert::From<NoncesCall> for CellarV2_2Calls {
-        fn from(var: NoncesCall) -> Self {
-            CellarV2_2Calls::Nonces(var)
+    impl ::core::convert::From<NoncesCall> for CellarV2_2Calls {
+        fn from(value: NoncesCall) -> Self {
+            Self::Nonces(value)
         }
     }
-    impl ::std::convert::From<OnERC721ReceivedCall> for CellarV2_2Calls {
-        fn from(var: OnERC721ReceivedCall) -> Self {
-            CellarV2_2Calls::OnERC721Received(var)
+    impl ::core::convert::From<OnERC721ReceivedCall> for CellarV2_2Calls {
+        fn from(value: OnERC721ReceivedCall) -> Self {
+            Self::OnERC721Received(value)
         }
     }
-    impl ::std::convert::From<OwnerCall> for CellarV2_2Calls {
-        fn from(var: OwnerCall) -> Self {
-            CellarV2_2Calls::Owner(var)
+    impl ::core::convert::From<OwnerCall> for CellarV2_2Calls {
+        fn from(value: OwnerCall) -> Self {
+            Self::Owner(value)
         }
     }
-    impl ::std::convert::From<PermitCall> for CellarV2_2Calls {
-        fn from(var: PermitCall) -> Self {
-            CellarV2_2Calls::Permit(var)
+    impl ::core::convert::From<PermitCall> for CellarV2_2Calls {
+        fn from(value: PermitCall) -> Self {
+            Self::Permit(value)
         }
     }
-    impl ::std::convert::From<PositionCatalogueCall> for CellarV2_2Calls {
-        fn from(var: PositionCatalogueCall) -> Self {
-            CellarV2_2Calls::PositionCatalogue(var)
+    impl ::core::convert::From<PositionCatalogueCall> for CellarV2_2Calls {
+        fn from(value: PositionCatalogueCall) -> Self {
+            Self::PositionCatalogue(value)
         }
     }
-    impl ::std::convert::From<PreviewDepositCall> for CellarV2_2Calls {
-        fn from(var: PreviewDepositCall) -> Self {
-            CellarV2_2Calls::PreviewDeposit(var)
+    impl ::core::convert::From<PreviewDepositCall> for CellarV2_2Calls {
+        fn from(value: PreviewDepositCall) -> Self {
+            Self::PreviewDeposit(value)
         }
     }
-    impl ::std::convert::From<PreviewMintCall> for CellarV2_2Calls {
-        fn from(var: PreviewMintCall) -> Self {
-            CellarV2_2Calls::PreviewMint(var)
+    impl ::core::convert::From<PreviewMintCall> for CellarV2_2Calls {
+        fn from(value: PreviewMintCall) -> Self {
+            Self::PreviewMint(value)
         }
     }
-    impl ::std::convert::From<PreviewRedeemCall> for CellarV2_2Calls {
-        fn from(var: PreviewRedeemCall) -> Self {
-            CellarV2_2Calls::PreviewRedeem(var)
+    impl ::core::convert::From<PreviewRedeemCall> for CellarV2_2Calls {
+        fn from(value: PreviewRedeemCall) -> Self {
+            Self::PreviewRedeem(value)
         }
     }
-    impl ::std::convert::From<PreviewWithdrawCall> for CellarV2_2Calls {
-        fn from(var: PreviewWithdrawCall) -> Self {
-            CellarV2_2Calls::PreviewWithdraw(var)
+    impl ::core::convert::From<PreviewWithdrawCall> for CellarV2_2Calls {
+        fn from(value: PreviewWithdrawCall) -> Self {
+            Self::PreviewWithdraw(value)
         }
     }
-    impl ::std::convert::From<PriceRouterCall> for CellarV2_2Calls {
-        fn from(var: PriceRouterCall) -> Self {
-            CellarV2_2Calls::PriceRouter(var)
+    impl ::core::convert::From<PriceRouterCall> for CellarV2_2Calls {
+        fn from(value: PriceRouterCall) -> Self {
+            Self::PriceRouter(value)
         }
     }
-    impl ::std::convert::From<RedeemCall> for CellarV2_2Calls {
-        fn from(var: RedeemCall) -> Self {
-            CellarV2_2Calls::Redeem(var)
+    impl ::core::convert::From<RedeemCall> for CellarV2_2Calls {
+        fn from(value: RedeemCall) -> Self {
+            Self::Redeem(value)
         }
     }
-    impl ::std::convert::From<RegistryCall> for CellarV2_2Calls {
-        fn from(var: RegistryCall) -> Self {
-            CellarV2_2Calls::Registry(var)
+    impl ::core::convert::From<RegistryCall> for CellarV2_2Calls {
+        fn from(value: RegistryCall) -> Self {
+            Self::Registry(value)
         }
     }
-    impl ::std::convert::From<RemoveAdaptorFromCatalogueCall> for CellarV2_2Calls {
-        fn from(var: RemoveAdaptorFromCatalogueCall) -> Self {
-            CellarV2_2Calls::RemoveAdaptorFromCatalogue(var)
+    impl ::core::convert::From<RemoveAdaptorFromCatalogueCall> for CellarV2_2Calls {
+        fn from(value: RemoveAdaptorFromCatalogueCall) -> Self {
+            Self::RemoveAdaptorFromCatalogue(value)
         }
     }
-    impl ::std::convert::From<RemovePositionCall> for CellarV2_2Calls {
-        fn from(var: RemovePositionCall) -> Self {
-            CellarV2_2Calls::RemovePosition(var)
+    impl ::core::convert::From<RemovePositionCall> for CellarV2_2Calls {
+        fn from(value: RemovePositionCall) -> Self {
+            Self::RemovePosition(value)
         }
     }
-    impl ::std::convert::From<RemovePositionFromCatalogueCall> for CellarV2_2Calls {
-        fn from(var: RemovePositionFromCatalogueCall) -> Self {
-            CellarV2_2Calls::RemovePositionFromCatalogue(var)
+    impl ::core::convert::From<RemovePositionFromCatalogueCall> for CellarV2_2Calls {
+        fn from(value: RemovePositionFromCatalogueCall) -> Self {
+            Self::RemovePositionFromCatalogue(value)
         }
     }
-    impl ::std::convert::From<SetHoldingPositionCall> for CellarV2_2Calls {
-        fn from(var: SetHoldingPositionCall) -> Self {
-            CellarV2_2Calls::SetHoldingPosition(var)
+    impl ::core::convert::From<SetHoldingPositionCall> for CellarV2_2Calls {
+        fn from(value: SetHoldingPositionCall) -> Self {
+            Self::SetHoldingPosition(value)
         }
     }
-    impl ::std::convert::From<SetRebalanceDeviationCall> for CellarV2_2Calls {
-        fn from(var: SetRebalanceDeviationCall) -> Self {
-            CellarV2_2Calls::SetRebalanceDeviation(var)
+    impl ::core::convert::From<SetRebalanceDeviationCall> for CellarV2_2Calls {
+        fn from(value: SetRebalanceDeviationCall) -> Self {
+            Self::SetRebalanceDeviation(value)
         }
     }
-    impl ::std::convert::From<SetShareLockPeriodCall> for CellarV2_2Calls {
-        fn from(var: SetShareLockPeriodCall) -> Self {
-            CellarV2_2Calls::SetShareLockPeriod(var)
+    impl ::core::convert::From<SetShareLockPeriodCall> for CellarV2_2Calls {
+        fn from(value: SetShareLockPeriodCall) -> Self {
+            Self::SetShareLockPeriod(value)
         }
     }
-    impl ::std::convert::From<SetStrategistPayoutAddressCall> for CellarV2_2Calls {
-        fn from(var: SetStrategistPayoutAddressCall) -> Self {
-            CellarV2_2Calls::SetStrategistPayoutAddress(var)
+    impl ::core::convert::From<SetStrategistPayoutAddressCall> for CellarV2_2Calls {
+        fn from(value: SetStrategistPayoutAddressCall) -> Self {
+            Self::SetStrategistPayoutAddress(value)
         }
     }
-    impl ::std::convert::From<SetStrategistPlatformCutCall> for CellarV2_2Calls {
-        fn from(var: SetStrategistPlatformCutCall) -> Self {
-            CellarV2_2Calls::SetStrategistPlatformCut(var)
+    impl ::core::convert::From<SetStrategistPlatformCutCall> for CellarV2_2Calls {
+        fn from(value: SetStrategistPlatformCutCall) -> Self {
+            Self::SetStrategistPlatformCut(value)
         }
     }
-    impl ::std::convert::From<ShareLockPeriodCall> for CellarV2_2Calls {
-        fn from(var: ShareLockPeriodCall) -> Self {
-            CellarV2_2Calls::ShareLockPeriod(var)
+    impl ::core::convert::From<ShareLockPeriodCall> for CellarV2_2Calls {
+        fn from(value: ShareLockPeriodCall) -> Self {
+            Self::ShareLockPeriod(value)
         }
     }
-    impl ::std::convert::From<SwapPositionsCall> for CellarV2_2Calls {
-        fn from(var: SwapPositionsCall) -> Self {
-            CellarV2_2Calls::SwapPositions(var)
+    impl ::core::convert::From<SwapPositionsCall> for CellarV2_2Calls {
+        fn from(value: SwapPositionsCall) -> Self {
+            Self::SwapPositions(value)
         }
     }
-    impl ::std::convert::From<SymbolCall> for CellarV2_2Calls {
-        fn from(var: SymbolCall) -> Self {
-            CellarV2_2Calls::Symbol(var)
+    impl ::core::convert::From<SymbolCall> for CellarV2_2Calls {
+        fn from(value: SymbolCall) -> Self {
+            Self::Symbol(value)
         }
     }
-    impl ::std::convert::From<ToggleIgnorePauseCall> for CellarV2_2Calls {
-        fn from(var: ToggleIgnorePauseCall) -> Self {
-            CellarV2_2Calls::ToggleIgnorePause(var)
+    impl ::core::convert::From<ToggleIgnorePauseCall> for CellarV2_2Calls {
+        fn from(value: ToggleIgnorePauseCall) -> Self {
+            Self::ToggleIgnorePause(value)
         }
     }
-    impl ::std::convert::From<TotalAssetsCall> for CellarV2_2Calls {
-        fn from(var: TotalAssetsCall) -> Self {
-            CellarV2_2Calls::TotalAssets(var)
+    impl ::core::convert::From<TotalAssetsCall> for CellarV2_2Calls {
+        fn from(value: TotalAssetsCall) -> Self {
+            Self::TotalAssets(value)
         }
     }
-    impl ::std::convert::From<TotalAssetsWithdrawableCall> for CellarV2_2Calls {
-        fn from(var: TotalAssetsWithdrawableCall) -> Self {
-            CellarV2_2Calls::TotalAssetsWithdrawable(var)
+    impl ::core::convert::From<TotalAssetsWithdrawableCall> for CellarV2_2Calls {
+        fn from(value: TotalAssetsWithdrawableCall) -> Self {
+            Self::TotalAssetsWithdrawable(value)
         }
     }
-    impl ::std::convert::From<TotalSupplyCall> for CellarV2_2Calls {
-        fn from(var: TotalSupplyCall) -> Self {
-            CellarV2_2Calls::TotalSupply(var)
+    impl ::core::convert::From<TotalSupplyCall> for CellarV2_2Calls {
+        fn from(value: TotalSupplyCall) -> Self {
+            Self::TotalSupply(value)
         }
     }
-    impl ::std::convert::From<TransferCall> for CellarV2_2Calls {
-        fn from(var: TransferCall) -> Self {
-            CellarV2_2Calls::Transfer(var)
+    impl ::core::convert::From<TransferCall> for CellarV2_2Calls {
+        fn from(value: TransferCall) -> Self {
+            Self::Transfer(value)
         }
     }
-    impl ::std::convert::From<TransferFromCall> for CellarV2_2Calls {
-        fn from(var: TransferFromCall) -> Self {
-            CellarV2_2Calls::TransferFrom(var)
+    impl ::core::convert::From<TransferFromCall> for CellarV2_2Calls {
+        fn from(value: TransferFromCall) -> Self {
+            Self::TransferFrom(value)
         }
     }
-    impl ::std::convert::From<TransferOwnershipCall> for CellarV2_2Calls {
-        fn from(var: TransferOwnershipCall) -> Self {
-            CellarV2_2Calls::TransferOwnership(var)
+    impl ::core::convert::From<TransferOwnershipCall> for CellarV2_2Calls {
+        fn from(value: TransferOwnershipCall) -> Self {
+            Self::TransferOwnership(value)
         }
     }
-    impl ::std::convert::From<UserShareLockStartTimeCall> for CellarV2_2Calls {
-        fn from(var: UserShareLockStartTimeCall) -> Self {
-            CellarV2_2Calls::UserShareLockStartTime(var)
+    impl ::core::convert::From<UserShareLockStartTimeCall> for CellarV2_2Calls {
+        fn from(value: UserShareLockStartTimeCall) -> Self {
+            Self::UserShareLockStartTime(value)
         }
     }
-    impl ::std::convert::From<ViewPositionBalancesCall> for CellarV2_2Calls {
-        fn from(var: ViewPositionBalancesCall) -> Self {
-            CellarV2_2Calls::ViewPositionBalances(var)
+    impl ::core::convert::From<ViewPositionBalancesCall> for CellarV2_2Calls {
+        fn from(value: ViewPositionBalancesCall) -> Self {
+            Self::ViewPositionBalances(value)
         }
     }
-    impl ::std::convert::From<WithdrawCall> for CellarV2_2Calls {
-        fn from(var: WithdrawCall) -> Self {
-            CellarV2_2Calls::Withdraw(var)
+    impl ::core::convert::From<WithdrawCall> for CellarV2_2Calls {
+        fn from(value: WithdrawCall) -> Self {
+            Self::Withdraw(value)
         }
     }
-    #[doc = "`AdaptorCall(address,bytes[])`"]
+    ///Container type for all return fields from the `DOMAIN_SEPARATOR` function with signature `DOMAIN_SEPARATOR()` and selector `0x3644e515`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
+    )]
+    pub struct DomainSeparatorReturn(pub [u8; 32]);
+    ///Container type for all return fields from the `GRAVITY_BRIDGE_REGISTRY_SLOT` function with signature `GRAVITY_BRIDGE_REGISTRY_SLOT()` and selector `0xcd82f8b1`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct GravityBridgeRegistrySlotReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `MAXIMUM_SHARE_LOCK_PERIOD` function with signature `MAXIMUM_SHARE_LOCK_PERIOD()` and selector `0x0402ab63`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MaximumShareLockPeriodReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `MAX_FEE_CUT` function with signature `MAX_FEE_CUT()` and selector `0xeef33eca`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MaxFeeCutReturn(pub u64);
+    ///Container type for all return fields from the `MAX_PLATFORM_FEE` function with signature `MAX_PLATFORM_FEE()` and selector `0x3998a681`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MaxPlatformFeeReturn(pub u64);
+    ///Container type for all return fields from the `MAX_POSITIONS` function with signature `MAX_POSITIONS()` and selector `0xf7b24e08`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MaxPositionsReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `MAX_REBALANCE_DEVIATION` function with signature `MAX_REBALANCE_DEVIATION()` and selector `0x6ff1c02a`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MaxRebalanceDeviationReturn(pub u64);
+    ///Container type for all return fields from the `MINIMUM_SHARE_LOCK_PERIOD` function with signature `MINIMUM_SHARE_LOCK_PERIOD()` and selector `0x0051a3b7`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MinimumShareLockPeriodReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `PRICE_ROUTER_REGISTRY_SLOT` function with signature `PRICE_ROUTER_REGISTRY_SLOT()` and selector `0x5a400d25`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct PriceRouterRegistrySlotReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `aavePool` function with signature `aavePool()` and selector `0xa03e4bc3`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct AavePoolReturn(pub ::ethers::core::types::Address);
+    ///Container type for all return fields from the `adaptorCatalogue` function with signature `adaptorCatalogue(address)` and selector `0x18d4c143`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct AdaptorCatalogueReturn(pub bool);
+    ///Container type for all return fields from the `allowance` function with signature `allowance(address,address)` and selector `0xdd62ed3e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct AllowanceReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `allowedRebalanceDeviation` function with signature `allowedRebalanceDeviation()` and selector `0xc244245a`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct AllowedRebalanceDeviationReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `approve` function with signature `approve(address,uint256)` and selector `0x095ea7b3`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct ApproveReturn(pub bool);
+    ///Container type for all return fields from the `asset` function with signature `asset()` and selector `0x38d52e0f`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct AssetReturn(pub ::ethers::core::types::Address);
+    ///Container type for all return fields from the `balanceOf` function with signature `balanceOf(address)` and selector `0x70a08231`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct BalanceOfReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `blockExternalReceiver` function with signature `blockExternalReceiver()` and selector `0x4c4602da`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct BlockExternalReceiverReturn(pub bool);
+    ///Container type for all return fields from the `convertToAssets` function with signature `convertToAssets(uint256)` and selector `0x07a2d13a`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct ConvertToAssetsReturn {
+        pub assets: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `convertToShares` function with signature `convertToShares(uint256)` and selector `0xc6e6f592`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct ConvertToSharesReturn {
+        pub shares: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `creditPositions` function with signature `creditPositions(uint256)` and selector `0x59d20b4e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct CreditPositionsReturn(pub u32);
+    ///Container type for all return fields from the `debtPositions` function with signature `debtPositions(uint256)` and selector `0xe1b1acb7`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct DebtPositionsReturn(pub u32);
+    ///Container type for all return fields from the `decimals` function with signature `decimals()` and selector `0x313ce567`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct DecimalsReturn(pub u8);
+    ///Container type for all return fields from the `deposit` function with signature `deposit(uint256,address)` and selector `0x6e553f65`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct DepositReturn {
+        pub shares: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `executeOperation` function with signature `executeOperation(address[],uint256[],uint256[],address,bytes)` and selector `0x920f5c84`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct ExecuteOperationReturn(pub bool);
+    ///Container type for all return fields from the `feeData` function with signature `feeData()` and selector `0xe753e600`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct FeeDataReturn {
+        pub strategist_platform_cut: u64,
+        pub platform_fee: u64,
+        pub last_accrual: u64,
+        pub strategist_payout_address: ::ethers::core::types::Address,
+    }
+    ///Container type for all return fields from the `getCreditPositions` function with signature `getCreditPositions()` and selector `0x71e99dc2`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct GetCreditPositionsReturn(pub ::std::vec::Vec<u32>);
+    ///Container type for all return fields from the `getDebtPositions` function with signature `getDebtPositions()` and selector `0x3e3382ba`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct GetDebtPositionsReturn(pub ::std::vec::Vec<u32>);
+    ///Container type for all return fields from the `getPositionAssets` function with signature `getPositionAssets()` and selector `0x087ed837`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct GetPositionAssetsReturn {
+        pub assets: ::std::vec::Vec<::ethers::core::types::Address>,
+    }
+    ///Container type for all return fields from the `getPositionData` function with signature `getPositionData(uint32)` and selector `0x7384504f`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct GetPositionDataReturn {
+        pub adaptor: ::ethers::core::types::Address,
+        pub is_debt: bool,
+        pub adaptor_data: ::ethers::core::types::Bytes,
+        pub configuration_data: ::ethers::core::types::Bytes,
+    }
+    ///Container type for all return fields from the `holdingPosition` function with signature `holdingPosition()` and selector `0x9c5f00c2`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct HoldingPositionReturn(pub u32);
+    ///Container type for all return fields from the `ignorePause` function with signature `ignorePause()` and selector `0x9959af94`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct IgnorePauseReturn(pub bool);
+    ///Container type for all return fields from the `isPaused` function with signature `isPaused()` and selector `0xb187bd26`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct IsPausedReturn(pub bool);
+    ///Container type for all return fields from the `isPositionUsed` function with signature `isPositionUsed(uint256)` and selector `0x93bbeac0`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct IsPositionUsedReturn(pub bool);
+    ///Container type for all return fields from the `isShutdown` function with signature `isShutdown()` and selector `0xbf86d690`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct IsShutdownReturn(pub bool);
+    ///Container type for all return fields from the `locked` function with signature `locked()` and selector `0xcf309012`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct LockedReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `maxDeposit` function with signature `maxDeposit(address)` and selector `0x402d267d`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MaxDepositReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `maxMint` function with signature `maxMint(address)` and selector `0xc63d75b6`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MaxMintReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `maxRedeem` function with signature `maxRedeem(address)` and selector `0xd905777e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MaxRedeemReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `maxWithdraw` function with signature `maxWithdraw(address)` and selector `0xce96cb77`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MaxWithdrawReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `mint` function with signature `mint(uint256,address)` and selector `0x94bf804d`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MintReturn {
+        pub assets: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `name` function with signature `name()` and selector `0x06fdde03`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct NameReturn(pub ::std::string::String);
+    ///Container type for all return fields from the `nonces` function with signature `nonces(address)` and selector `0x7ecebe00`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct NoncesReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `onERC721Received` function with signature `onERC721Received(address,address,uint256,bytes)` and selector `0x150b7a02`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct OnERC721ReceivedReturn(pub [u8; 4]);
+    ///Container type for all return fields from the `owner` function with signature `owner()` and selector `0x8da5cb5b`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct OwnerReturn(pub ::ethers::core::types::Address);
+    ///Container type for all return fields from the `positionCatalogue` function with signature `positionCatalogue(uint32)` and selector `0xcbdf33d0`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct PositionCatalogueReturn(pub bool);
+    ///Container type for all return fields from the `previewDeposit` function with signature `previewDeposit(uint256)` and selector `0xef8b30f7`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct PreviewDepositReturn {
+        pub shares: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `previewMint` function with signature `previewMint(uint256)` and selector `0xb3d7f6b9`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct PreviewMintReturn {
+        pub assets: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `previewRedeem` function with signature `previewRedeem(uint256)` and selector `0x4cdad506`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct PreviewRedeemReturn {
+        pub assets: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `previewWithdraw` function with signature `previewWithdraw(uint256)` and selector `0x0a28a477`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct PreviewWithdrawReturn {
+        pub shares: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `priceRouter` function with signature `priceRouter()` and selector `0xd7d4bf45`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct PriceRouterReturn(pub ::ethers::core::types::Address);
+    ///Container type for all return fields from the `redeem` function with signature `redeem(uint256,address,address)` and selector `0xba087652`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct RedeemReturn {
+        pub assets: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `registry` function with signature `registry()` and selector `0x7b103999`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct RegistryReturn(pub ::ethers::core::types::Address);
+    ///Container type for all return fields from the `shareLockPeriod` function with signature `shareLockPeriod()` and selector `0x9fdb11b6`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct ShareLockPeriodReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `symbol` function with signature `symbol()` and selector `0x95d89b41`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct SymbolReturn(pub ::std::string::String);
+    ///Container type for all return fields from the `totalAssets` function with signature `totalAssets()` and selector `0x01e1d114`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct TotalAssetsReturn {
+        pub assets: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `totalAssetsWithdrawable` function with signature `totalAssetsWithdrawable()` and selector `0xa8144e48`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct TotalAssetsWithdrawableReturn {
+        pub assets: ::ethers::core::types::U256,
+    }
+    ///Container type for all return fields from the `totalSupply` function with signature `totalSupply()` and selector `0x18160ddd`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct TotalSupplyReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `transfer` function with signature `transfer(address,uint256)` and selector `0xa9059cbb`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct TransferReturn(pub bool);
+    ///Container type for all return fields from the `transferFrom` function with signature `transferFrom(address,address,uint256)` and selector `0x23b872dd`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct TransferFromReturn(pub bool);
+    ///Container type for all return fields from the `userShareLockStartTime` function with signature `userShareLockStartTime(address)` and selector `0x687c2b50`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct UserShareLockStartTimeReturn(pub ::ethers::core::types::U256);
+    ///Container type for all return fields from the `viewPositionBalances` function with signature `viewPositionBalances()` and selector `0x78e0233e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct ViewPositionBalancesReturn {
+        pub assets: ::std::vec::Vec<::ethers::core::types::Address>,
+        pub balances: ::std::vec::Vec<::ethers::core::types::U256>,
+        pub is_debt: ::std::vec::Vec<bool>,
+    }
+    ///Container type for all return fields from the `withdraw` function with signature `withdraw(uint256,address,address)` and selector `0xb460af94`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct WithdrawReturn {
+        pub shares: ::ethers::core::types::U256,
+    }
+    ///`AdaptorCall(address,bytes[])`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
     )]
     pub struct AdaptorCall {
-        pub adaptor: ethers::core::types::Address,
-        pub call_data: Vec<ethers::core::types::Bytes>,
+        pub adaptor: ::ethers::core::types::Address,
+        pub call_data: ::std::vec::Vec<::ethers::core::types::Bytes>,
     }
 }

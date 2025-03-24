@@ -1,12 +1,12 @@
 use abscissa_core::{tracing::debug, Application};
+use cosmos_sdk_proto_althea::cosmos::base::abci::v1beta1::TxResponse;
+use cosmos_sdk_proto_althea::cosmos::tx::v1beta1::BroadcastMode;
 use deep_space::coin::Coin;
 use deep_space::error::CosmosGrpcError;
 use deep_space::Contact;
 use deep_space::Fee;
 use deep_space::Msg;
-use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::{
-    base::abci::v1beta1::TxResponse, tx::v1beta1::BroadcastMode,
-};
+use deep_space::PrivateKey;
 use somm_proto::axelar_cork::AxelarCork;
 use somm_proto::axelar_cork::MsgScheduleAxelarCorkRequest;
 use somm_proto::cork::Cork;
@@ -117,7 +117,8 @@ async fn send_messages(messages: Vec<Msg>) -> Result<TxResponse, CosmosGrpcError
 
     debug!("transaction response: {response:?}");
     debug!("waiting for tx to be included");
-    contact.wait_for_tx(response, TIMEOUT).await
+
+    contact.wait_for_tx(response, TIMEOUT).await.map(Into::into)
 }
 
 fn get_cosmos_client() -> Result<Contact, CosmosGrpcError> {
@@ -131,7 +132,9 @@ async fn get_signed_messages(
 ) -> Result<Vec<u8>, CosmosGrpcError> {
     let delegate_address = get_delegate_address();
     let fee = get_fee(&messages);
-    let args = contact.get_message_args(*delegate_address, fee).await?;
+    let args = contact
+        .get_message_args(*delegate_address, fee, None)
+        .await?;
     let msg_bytes = get_delegate_key().sign_std_msg(&messages, args, MEMO)?;
 
     Ok(msg_bytes)

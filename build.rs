@@ -1,4 +1,4 @@
-#![allow(clippy::all)]
+// #![allow(clippy::all)]
 use ethers::contract::Abigen;
 use std::process;
 
@@ -139,8 +139,10 @@ fn generate_contract_abis() {
         };
 
         let abi = match abigen
-            .add_event_derive("serde::Deserialize")
-            .add_event_derive("serde::Serialize")
+            .add_derive("serde::Deserialize")
+            .expect("Failed to add event derive")
+            .add_derive("serde::Serialize")
+            .expect("Failed to add event derive")
             .generate()
         {
             Ok(abi) => abi,
@@ -199,9 +201,8 @@ fn generate_rust_protos() {
         .build_client(true)
         .build_server(true)
         .file_descriptor_set_path(tmp_dir.join("descriptor.bin"))
-        .format(true)
         .out_dir(tmp_dir)
-        .compile_with_config(config, &protos, &steward_proto_dir)
+        .compile_protos_with_config(config, &protos, &steward_proto_dir)
         .unwrap();
 
     copy_generated_files(tmp_dir, out_dir);

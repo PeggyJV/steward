@@ -9,7 +9,6 @@ use ethers::{
     middleware::gas_oracle::{Etherscan, GasCategory, GasOracle},
     prelude::*,
 };
-use gravity_bridge::gravity_utils;
 use std::result::Result;
 
 pub struct CellarGas {
@@ -20,7 +19,7 @@ pub struct CellarGas {
 impl CellarGas {
     pub fn apply_gas_multiplier(price: U256) -> Result<U256, Error> {
         let config = APP.config();
-        let price = match gravity_utils::ethereum::downcast_to_f32(price) {
+        let price = match gravity_bridge::gravity::utils::ethereum::downcast_to_f32(price) {
             Some(p) => p,
             None => {
                 return Err(ErrorKind::GasOracle
