@@ -4,7 +4,6 @@ use abscissa_core::{
     tracing::{debug, error, info, log::warn},
     Application,
 };
-use deep_space::Msg;
 use gravity_bridge::gravity_proto::{
     cosmos_sdk_proto::cosmos::base::tendermint::v1beta1::GetLatestBlockRequest,
     gravity::DelegateKeysByOrchestratorRequest,

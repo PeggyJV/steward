@@ -15,13 +15,13 @@ mod config_cmd;
 mod cork_proposal;
 mod cosmos_to_eth;
 mod deploy;
-mod encode;
+// mod encode;
 mod eth_to_cosmos;
 mod keys;
 mod orchestrator;
 mod pubsub;
 mod sign_delegate_keys;
-mod simulate;
+// mod simulate;
 mod start;
 
 use self::{config_cmd::ConfigCmd, keys::KeysCmd, start::StartCmd};
@@ -51,10 +51,10 @@ pub enum StewardCmd {
     #[clap(subcommand)]
     Pubsub(pubsub::PubsubCmd),
     SignDelegateKeys(sign_delegate_keys::SignDelegateKeysCmd),
-    Simulate(simulate::SimulateCmd),
+    // Simulate(simulate::SimulateCmd),
     Start(StartCmd),
-    #[clap(subcommand)]
-    Encode(encode::EncodeCmd),
+    // #[clap(subcommand)]
+    // Encode(encode::EncodeCmd),
     #[clap(subcommand)]
     CorkProposal(cork_proposal::CorkProposalCmd),
 }

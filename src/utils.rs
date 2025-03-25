@@ -245,42 +245,51 @@ pub fn parse_selector(selector: String) -> Result<[u8; 4], Error> {
 }
 
 // deep_space just haaaas to have it's own cosmos-sdk-proto fork
-pub fn convert_tx_response(tx_response: somm_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse) -> cosmos_sdk_proto_althea::cosmos::base::abci::v1beta1::TxResponse {
-    use cosmos_sdk_proto_althea::cosmos::base::abci::v1beta1::{AbciMessageLog, StringEvent, Attribute};
-    use cosmos_sdk_proto_althea::cosmos::base::tendermint::v1beta1::{Event, EventAttribute};
+pub fn convert_tx_response(
+    tx_response: somm_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse,
+) -> cosmos_sdk_proto_althea::cosmos::base::abci::v1beta1::TxResponse {
+    use cosmos_sdk_proto_althea::cosmos::base::abci::v1beta1::{
+        AbciMessageLog, Attribute, StringEvent,
+    };
 
-    let tx_response = cosmos_sdk_proto_althea::cosmos::base::abci::v1beta1::TxResponse {
+    cosmos_sdk_proto_althea::cosmos::base::abci::v1beta1::TxResponse {
         txhash: tx_response.txhash,
         codespace: tx_response.codespace,
         data: tx_response.data,
         raw_log: tx_response.raw_log,
-        logs: tx_response.logs.iter().map(|log| AbciMessageLog {
-            log: log.log,
-            events: log.events.iter().map(|event| StringEvent {
-                r#type: event.r#type,
-                attributes: event.attributes.iter().map(|attr| Attribute {
-                    key: attr.key,
-                    value: attr.value,
-                }).collect(),
-            }).collect(),
-            msg_index: log.msg_index,
-        }).collect(),
+        logs: tx_response
+            .logs
+            .iter()
+            .map(|log| AbciMessageLog {
+                log: log.log.clone(),
+                events: log
+                    .events
+                    .iter()
+                    .map(|event| StringEvent {
+                        r#type: event.r#type.clone(),
+                        attributes: event
+                            .attributes
+                            .iter()
+                            .map(|attr| Attribute {
+                                key: attr.key.clone(),
+                                value: attr.value.clone(),
+                            })
+                            .collect(),
+                    })
+                    .collect(),
+                msg_index: log.msg_index,
+            })
+            .collect(),
         info: tx_response.info,
         gas_wanted: tx_response.gas_wanted,
         gas_used: tx_response.gas_used,
         tx: tx_response.tx.map(|tx| convert_any(tx)),
         timestamp: tx_response.timestamp,
-        events: tx_response.events.into_iter().map(|event| Event {
-            type_: event.r#type,
-            attributes: event.attributes.into_iter().map(|attr| EventAttribute {
-                key: attr.key,
-                value: attr.value,
-            }).collect(),
-            filter: todo!(),
-        }).collect(),
+        // Fields in the Event type are private but we don't use them so we can just ignore.
+        events: Default::default(),
         height: tx_response.height,
         code: tx_response.code,
-    };
+    }
 }
 
 pub fn convert_any(any: somm_proto::cosmos_sdk_proto::Any) -> prost_types::Any {
@@ -289,4 +298,3 @@ pub fn convert_any(any: somm_proto::cosmos_sdk_proto::Any) -> prost_types::Any {
         value: any.value,
     }
 }
-

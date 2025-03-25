@@ -7,7 +7,6 @@ use crate::{prelude::APP, somm_send::MAX_GAS_PER_BLOCK};
 use abscissa_core::Application;
 use deep_space::{Address as CosmosAddress, CosmosPrivateKey, PrivateKey};
 use ethers::signers::LocalWallet;
-use gravity_bridge::gravity;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use signatory::FsKeyStore;
