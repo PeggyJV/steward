@@ -172,11 +172,11 @@ impl From<io::Error> for Error {
     }
 }
 
-impl From<iqhttp::Error> for Error {
-    fn from(err: iqhttp::Error) -> Self {
-        ErrorKind::Http.context(err).into()
-    }
-}
+// impl From<iqhttp::Error> for Error {
+//     fn from(err: iqhttp::Error) -> Self {
+//         ErrorKind::Http.context(err).into()
+//     }
+// }
 
 impl From<GasOracleError> for Error {
     fn from(err: GasOracleError) -> Self {

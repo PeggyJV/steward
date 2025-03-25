@@ -49,7 +49,10 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
         }
 
         let connection_info = connection_info.unwrap();
-        debug!("received schedule request from {:?}: {:?}", connection_info.address, request);
+        debug!(
+            "received schedule request from {:?}: {:?}",
+            connection_info.address, request
+        );
         let certs = connection_info.certificates.clone();
 
         if certs.is_empty() {

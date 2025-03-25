@@ -15,7 +15,10 @@ use crate::{
 };
 use abscissa_core::{
     status_err,
-    tracing::{debug, log::{error, info}},
+    tracing::{
+        debug,
+        log::{error, info},
+    },
     Application,
 };
 use hyper::server::conn::http2::Builder;
@@ -25,7 +28,7 @@ use hyper_util::{
 };
 use rustls::{
     pki_types::{pem::PemObject, PrivateKeyDer},
-    server::{WebPkiClientVerifier, ProducesTickets},
+    server::WebPkiClientVerifier,
 };
 use tokio::{net::TcpListener, sync::mpsc::Receiver};
 use tokio_rustls::{rustls::pki_types::CertificateDer, TlsAcceptor};
@@ -105,18 +108,18 @@ pub(crate) async fn start_server(cancellation_token: CancellationToken) {
         tokio::spawn(async move {
             let mut certificates = Vec::new();
 
-            let conn = tls_acceptor
-                .accept_with(connection, |info| {
-                    debug!("server connection info: {:?}", info);
-                    if let Some(certs) = info.peer_certificates() {
-                        debug!("found {} peer certificates", certs.len());
-                        for cert in certs {
-                            certificates.push(cert.clone());
-                        }
-                    }
-                })
-                .await
-                .unwrap();
+            let conn = tls_acceptor.accept(connection).await.unwrap();
+
+            let (_, info) = conn.get_ref();
+
+            if let Some(certs) = info.peer_certificates() {
+                debug!("found {} peer certificates", certs.len());
+                for cert in certs {
+                    certificates.push(cert.clone());
+                }
+            } else {
+                debug!("no peer certificates found");
+            }
 
             let connection_info = Arc::new(ConnectionInfo {
                 address,
@@ -210,9 +213,7 @@ pub(crate) async fn auth_config(
     // Client verifier
     let trust_store = get_client_root_store().await?;
     let roots = Arc::new(trust_store);
-    let client_verifier = WebPkiClientVerifier::builder(roots)
-        .build()
-        .unwrap();
+    let client_verifier = WebPkiClientVerifier::builder(roots).build().unwrap();
 
     // Server config
     let mut server_config = rustls::ServerConfig::builder()
@@ -220,8 +221,8 @@ pub(crate) async fn auth_config(
         .with_single_cert(vec![cert], key)
         .expect("failed to build rustls server config");
     server_config.alpn_protocols = vec![b"h2".to_vec()];
-    server_config.ignore_client_order = true;  // Be more flexible with client preferences
-    server_config.max_early_data_size = 0;     // Disable early data to ensure proper handshake
+    server_config.ignore_client_order = true; // Be more flexible with client preferences
+    server_config.max_early_data_size = 0; // Disable early data to ensure proper handshake
 
     Ok(server_config)
 }
