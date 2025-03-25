@@ -283,7 +283,7 @@ pub fn convert_tx_response(
         info: tx_response.info,
         gas_wanted: tx_response.gas_wanted,
         gas_used: tx_response.gas_used,
-        tx: tx_response.tx.map(|tx| convert_any(tx)),
+        tx: tx_response.tx.map(convert_any),
         timestamp: tx_response.timestamp,
         // Fields in the Event type are private but we don't use them so we can just ignore.
         events: Default::default(),

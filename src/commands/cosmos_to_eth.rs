@@ -65,7 +65,7 @@ impl Runnable for CosmosToEthCmd {
     fn run(&self) {
         let config = APP.config();
         let denom = self.denom.to_string();
-        let is_cosmos_originated = !denom.starts_with("gravity");
+        let _is_cosmos_originated = !denom.starts_with("gravity");
 
         let amount = NumUint256::from_str(&self.amount).expect("cannot convert amount");
         let cosmos_key = config.load_deep_space_key(self.cosmos_key.to_string());
@@ -75,101 +75,100 @@ impl Runnable for CosmosToEthCmd {
         let cosmos_grpc = config.cosmos.grpc.trim();
         println!("Sending from Cosmos address {}", cosmos_address);
         abscissa_tokio::run_with_actix(&APP, async {
-        let connections = create_rpc_connections(
-            cosmos_prefix.to_string(),
-            Some(cosmos_grpc.to_string()),
-            None,
-            TIMEOUT,
-        )
-        .await;
-        let contact = connections.contact.unwrap();
-        let mut grpc = connections.grpc.unwrap();
-        let res = grpc
-            .denom_to_erc20(DenomToErc20Request {
-                denom: denom.clone(),
-            })
+            let connections = create_rpc_connections(
+                cosmos_prefix.to_string(),
+                Some(cosmos_grpc.to_string()),
+                None,
+                TIMEOUT,
+            )
             .await;
-        match res {
-            Ok(val) => println!(
-                "Asset {} has ERC20 representation {}",
-                denom,
-                val.into_inner().erc20
-            ), Err(_e) => {
-                println!(
+            let contact = connections.contact.unwrap();
+            let mut grpc = connections.grpc.unwrap();
+            let res = grpc
+                .denom_to_erc20(DenomToErc20Request {
+                    denom: denom.clone(),
+                })
+                .await;
+            match res {
+                Ok(val) => println!(
+                    "Asset {} has ERC20 representation {}",
+                    denom,
+                    val.into_inner().erc20
+                ),
+                Err(_e) => {
+                    println!(
                     "Asset {} has no ERC20 representation, you may need to deploy an ERC20 for it!",
                     denom
                 );
-                exit(1);
+                    exit(1);
+                }
             }
-        }
 
-        let amount = Coin {
-            amount: amount.clone(),
-            denom: denom.clone(),
-        };
-        let bridge_fee = Coin {
-            amount: NumUint256::from(1u64),
-            denom: denom.clone(),
-        };
+            let amount = Coin {
+                amount,
+                denom: denom.clone(),
+            };
+            let bridge_fee = Coin {
+                amount: NumUint256::from(1u64),
+                denom: denom.clone(),
+            };
 
-        let eth_dest: EthAddress = self.eth_dest.parse().expect("cannot parse ethereum address");
-        check_for_fee_denom(&denom, cosmos_address, &contact).await;
+            let eth_dest: EthAddress = self
+                .eth_dest
+                .parse()
+                .expect("cannot parse ethereum address");
+            check_for_fee_denom(&denom, cosmos_address, &contact).await;
 
-        let balances = contact
-            .get_balances(cosmos_address)
-            .await
-            .expect("Failed to get balances!");
-        let mut found = None;
-        for coin in balances.iter() {
-            if coin.denom == denom {
-                found = Some(coin);
+            let balances = contact
+                .get_balances(cosmos_address)
+                .await
+                .expect("Failed to get balances!");
+            let mut found = None;
+            for coin in balances.iter() {
+                if coin.denom == denom {
+                    found = Some(coin);
+                }
             }
-        }
 
-        println!("Cosmos balances {:?}", balances);
-        let times = self.times.parse::<usize>().expect("cannot parse times");
+            println!("Cosmos balances {:?}", balances);
+            let times = self.times.parse::<usize>().expect("cannot parse times");
 
-        match found {
-            None => panic!("You don't have any {} tokens!", denom),
-            Some(found) => {
-                if amount.amount.clone() * times.into() >= found.amount && times == 1 {
-                    if is_cosmos_originated {
-                        panic!("Your transfer of {} {} tokens is greater than your balance of {} tokens. Remember you need some to pay for fees!", print_atom(amount.amount), denom, print_atom(found.amount.clone()));
-                    } else {
-                        panic!("Your transfer of {} {} tokens is greater than your balance of {} tokens. Remember you need some to pay for fees!", print_eth(amount.amount), denom, print_eth(found.amount.clone()));
-                    }
-                } else if amount.amount.clone() * times.into() >= found.amount {
-                    if is_cosmos_originated {
-                        panic!("Your transfer of {} * {} {} tokens is greater than your balance of {} tokens. Try to reduce the amount or the --times parameter", print_atom(amount.amount), times, denom, print_atom(found.amount.clone()));
-                    } else {
-                        panic!("Your transfer of {} * {} {} tokens is greater than your balance of {} tokens. Try to reduce the amount or the --times parameter", print_eth(amount.amount), times, denom, print_eth(found.amount.clone()));
+            match found {
+                None => panic!("You don't have any {} tokens!", denom),
+                Some(found) => {
+                    if amount.amount.clone() * times.into() >= found.amount && times == 1 {
+                        if is_cosmos_originated {
+                            panic!("Your transfer of {} {} tokens is greater than your balance of {} tokens. Remember you need some to pay for fees!", print_atom(amount.amount), denom, print_atom(found.amount.clone()));
+                        } else {
+                            panic!("Your transfer of {} {} tokens is greater than your balance of {} tokens. Remember you need some to pay for fees!", print_eth(amount.amount), denom, print_eth(found.amount.clone()));
+                        }
+                    } else if amount.amount.clone() * times.into() >= found.amount {
+                        if is_cosmos_originated {
+                            panic!("Your transfer of {} * {} {} tokens is greater than your balance of {} tokens. Try to reduce the amount or the --times parameter", print_atom(amount.amount), times, denom, print_atom(found.amount.clone()));
+                        } else {
+                            panic!("Your transfer of {} * {} {} tokens is greater than your balance of {} tokens. Try to reduce the amount or the --times parameter", print_eth(amount.amount), times, denom, print_eth(found.amount.clone()));
+                        }
                     }
                 }
             }
-        }
 
-        for _ in 0..times {
-            println!(
-                "Locking {} / {} into the batch pool",
-                amount.clone(),
-                denom
-            );
-            let res = send_to_eth(
-                cosmos_key,
-                eth_dest,
-                amount.clone(),
-                bridge_fee.clone(),
-                config.cosmos.gas_price.as_tuple(),
-                &contact,
-                1.0
-            )
-            .await;
-            match res {
-                Ok(tx_id) => println!("Send to Eth txid {}", tx_id.txhash),
-                Err(e) => println!("Failed to send tokens! {:?}", e),
+            for _ in 0..times {
+                println!("Locking {} / {} into the batch pool", amount.clone(), denom);
+                let res = send_to_eth(
+                    cosmos_key,
+                    eth_dest,
+                    amount.clone(),
+                    bridge_fee.clone(),
+                    config.cosmos.gas_price.as_tuple(),
+                    &contact,
+                    1.0,
+                )
+                .await;
+                match res {
+                    Ok(tx_id) => println!("Send to Eth txid {}", tx_id.txhash),
+                    Err(e) => println!("Failed to send tokens! {:?}", e),
+                }
             }
-        }
-
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);
