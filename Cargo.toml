@@ -5,7 +5,7 @@ exclude = ["server-test"]
 resolver = "2"
 
 [workspace.package]
-version = "4.2.7"
+version = "4.3.0-pre"
 edition = "2021"
 
 [workspace.dependencies]
@@ -35,7 +35,7 @@ cosmos-sdk-proto-althea = "0.18.0"
 deep_space = "2.27.4"
 ethers = "2.0.14"
 futures = "0.3"
-gravity_bridge = { git = "https://github.com/PeggyJV/gravity-bridge", branch = "collin/refactor-orchestrator" }
+gravity_bridge = { git = "https://github.com/PeggyJV/gravity-bridge", rev = "d49bfb08b9619f2ac25364112a4a38b289446f0e" }
 hex = "0.4"
 http = "1"
 http-body-util = "0.1"
@@ -58,7 +58,7 @@ serde_json = "1.0.64"
 sha2 = "0.9"
 sha3 = "0.10.6"
 signatory = "0.23.0-pre"
-somm_proto = { git = "https://github.com/PeggyJV/sommelier", branch = "collin/bump-rust-dependencies" }
+somm_proto = { git = "https://github.com/PeggyJV/sommelier", rev = "0a72dcd66d96c2b24145f60a8e474f7e998efff3" }
 steward-proto = { path = "crates/steward-proto" }
 thiserror = "1"
 tokio = { version = "1", features = ["macros", "fs"] }
