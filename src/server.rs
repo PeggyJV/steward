@@ -93,54 +93,64 @@ pub(crate) async fn start_server(cancellation_token: CancellationToken) {
     // Start accepting connections
     info!("listening on {}", address);
     loop {
-        let (connection, address) = match listener.accept().await {
-            Ok(incoming) => incoming,
-            Err(e) => {
-                eprintln!("Error accepting connection: {}", e);
-                continue;
+        tokio::select! {
+            // Handle incoming connections
+            incoming = listener.accept() => {
+                let (connection, address) = match incoming {
+                    Ok(incoming) => incoming,
+                    Err(e) => {
+                        eprintln!("Error accepting connection: {}", e);
+                        continue;
+                    }
+                };
+
+                let http = http.clone();
+                let tls_acceptor = tls_acceptor.clone();
+                let svc = svc.clone();
+
+                tokio::spawn(async move {
+                    let mut certificates = Vec::new();
+
+                    let conn = tls_acceptor.accept(connection).await.unwrap();
+
+                    let (_, info) = conn.get_ref();
+
+                    if let Some(certs) = info.peer_certificates() {
+                        debug!("found {} peer certificates", certs.len());
+                        for cert in certs {
+                            certificates.push(cert.clone());
+                        }
+                    } else {
+                        debug!("no peer certificates found");
+                    }
+
+                    let connection_info = Arc::new(ConnectionInfo {
+                        address,
+                        certificates,
+                    });
+
+                    let svc = tower::ServiceBuilder::new()
+                        .add_extension(connection_info.clone())
+                        .service(svc);
+
+                    http.serve_connection(
+                        TokioIo::new(conn),
+                        TowerToHyperService::new(svc.map_request(move |req: http::Request<_>| {
+                            let mut req = req.map(boxed);
+                            req.extensions_mut().insert(connection_info.clone());
+                            req
+                        })),
+                    )
+                    .await
+                    .unwrap();
+                });
+            },
+            // Handle cancellation
+            _ = cancellation_token.cancelled() => {
+                info!("server cancelled");
+                break;
             }
-        };
-
-        let http = http.clone();
-        let tls_acceptor = tls_acceptor.clone();
-        let svc = svc.clone();
-
-        tokio::spawn(async move {
-            let mut certificates = Vec::new();
-
-            let conn = tls_acceptor.accept(connection).await.unwrap();
-
-            let (_, info) = conn.get_ref();
-
-            if let Some(certs) = info.peer_certificates() {
-                debug!("found {} peer certificates", certs.len());
-                for cert in certs {
-                    certificates.push(cert.clone());
-                }
-            } else {
-                debug!("no peer certificates found");
-            }
-
-            let connection_info = Arc::new(ConnectionInfo {
-                address,
-                certificates,
-            });
-
-            let svc = tower::ServiceBuilder::new()
-                .add_extension(connection_info.clone())
-                .service(svc);
-
-            http.serve_connection(
-                TokioIo::new(conn),
-                TowerToHyperService::new(svc.map_request(move |req: http::Request<_>| {
-                    let mut req = req.map(boxed);
-                    req.extensions_mut().insert(connection_info.clone());
-                    req
-                })),
-            )
-            .await
-            .unwrap();
-        });
+        }
     }
 }
 
