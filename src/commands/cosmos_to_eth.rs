@@ -65,7 +65,7 @@ impl Runnable for CosmosToEthCmd {
     fn run(&self) {
         let config = APP.config();
         let denom = self.denom.to_string();
-        let _is_cosmos_originated = !denom.starts_with("gravity");
+        let is_cosmos_originated = !denom.starts_with("gravity");
 
         let amount = NumUint256::from_str(&self.amount).expect("cannot convert amount");
         let cosmos_key = config.load_deep_space_key(self.cosmos_key.to_string());
