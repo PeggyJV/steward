@@ -136,17 +136,17 @@ impl Runnable for CosmosToEthCmd {
             match found {
                 None => panic!("You don't have any {} tokens!", denom),
                 Some(found) => {
-                    if amount.amount.clone() * times.into() >= found.amount && times == 1 {
+                    if amount.amount * times.into() >= found.amount && times == 1 {
                         if is_cosmos_originated {
-                            panic!("Your transfer of {} {} tokens is greater than your balance of {} tokens. Remember you need some to pay for fees!", print_atom(amount.amount), denom, print_atom(found.amount.clone()));
+                            panic!("Your transfer of {} {} tokens is greater than your balance of {} tokens. Remember you need some to pay for fees!", print_atom(amount.amount), denom, print_atom(found.amount));
                         } else {
-                            panic!("Your transfer of {} {} tokens is greater than your balance of {} tokens. Remember you need some to pay for fees!", print_eth(amount.amount), denom, print_eth(found.amount.clone()));
+                            panic!("Your transfer of {} {} tokens is greater than your balance of {} tokens. Remember you need some to pay for fees!", print_eth(amount.amount), denom, print_eth(found.amount));
                         }
-                    } else if amount.amount.clone() * times.into() >= found.amount {
+                    } else if amount.amount * times.into() >= found.amount {
                         if is_cosmos_originated {
-                            panic!("Your transfer of {} * {} {} tokens is greater than your balance of {} tokens. Try to reduce the amount or the --times parameter", print_atom(amount.amount), times, denom, print_atom(found.amount.clone()));
+                            panic!("Your transfer of {} * {} {} tokens is greater than your balance of {} tokens. Try to reduce the amount or the --times parameter", print_atom(amount.amount), times, denom, print_atom(found.amount));
                         } else {
-                            panic!("Your transfer of {} * {} {} tokens is greater than your balance of {} tokens. Try to reduce the amount or the --times parameter", print_eth(amount.amount), times, denom, print_eth(found.amount.clone()));
+                            panic!("Your transfer of {} * {} {} tokens is greater than your balance of {} tokens. Try to reduce the amount or the --times parameter", print_eth(amount.amount), times, denom, print_eth(found.amount));
                         }
                     }
                 }
