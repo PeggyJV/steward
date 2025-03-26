@@ -5,9 +5,8 @@
 //! for specifying it.
 use crate::{prelude::APP, somm_send::MAX_GAS_PER_BLOCK};
 use abscissa_core::Application;
-use deep_space::{Address as CosmosAddress, PrivateKey as CosmosPrivateKey};
-use ethers::signers::LocalWallet as EthWallet;
-use gravity_bridge::cosmos_gravity;
+use deep_space::{Address as CosmosAddress, CosmosPrivateKey, PrivateKey};
+use ethers::signers::LocalWallet;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use signatory::FsKeyStore;
@@ -73,14 +72,12 @@ impl StewardConfig {
         key.parse().expect("Could not parse private key")
     }
 
-    pub fn load_gravity_deep_space_key(&self, name: String) -> cosmos_gravity::crypto::PrivateKey {
-        let key = self.load_secret_key(name).to_bytes();
-        let key = deep_space::utils::bytes_to_hex_str(key.as_slice());
-        key.parse().expect("Could not parse private key")
-    }
-
-    pub fn load_ethers_wallet(&self, name: String) -> EthWallet {
-        EthWallet::from(self.load_secret_key(name))
+    pub fn load_ethers_wallet(&self, name: String) -> LocalWallet {
+        let secret_key = self.load_secret_key(name);
+        let bytes = secret_key.to_bytes();
+        let ethers_secret = ethers::core::k256::SecretKey::from_bytes(&bytes).unwrap();
+        let signing_key = ethers::core::k256::ecdsa::SigningKey::from(ethers_secret);
+        LocalWallet::from(signing_key)
     }
 }
 

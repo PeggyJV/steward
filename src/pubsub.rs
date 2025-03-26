@@ -4,14 +4,12 @@ use abscissa_core::{
     tracing::log::{debug, error},
     Application,
 };
-use somm_proto::{
-    cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse,
-    pubsub::{
-        query_client::QueryClient, QueryDefaultSubscriptionsRequest,
-        QueryDefaultSubscriptionsResponse, QueryPublisherRequest, QueryPublisherResponse,
-        QuerySubscriberIntentsBySubscriberAddressRequest,
-        QuerySubscriberIntentsBySubscriberAddressResponse, Subscriber,
-    },
+use cosmos_sdk_proto_althea::cosmos::base::abci::v1beta1::TxResponse;
+use somm_proto::pubsub::{
+    query_client::QueryClient, QueryDefaultSubscriptionsRequest, QueryDefaultSubscriptionsResponse,
+    QueryPublisherRequest, QueryPublisherResponse,
+    QuerySubscriberIntentsBySubscriberAddressRequest,
+    QuerySubscriberIntentsBySubscriberAddressResponse, Subscriber,
 };
 use url::Url;
 use x509_parser::prelude::parse_x509_pem;
@@ -77,7 +75,7 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
                 return None;
             }
 
-            // normalizing here means even if the casing is different on chain, we'll still be 
+            // normalizing here means even if the casing is different on chain, we'll still be
             // able to match it, and if we can't normalize it then it's invalid and we ignore it.
             let (chain_id, cellar_id) = match subscription_id_parts(&sid) {
                 Ok((chain_id, cellar_id)) => (chain_id, cellar_id),
@@ -219,9 +217,11 @@ pub(crate) async fn add_subscriber(push_url: String, ca_cert: String) -> Result<
 }
 
 pub(crate) async fn remove_subscriber() -> Result<TxResponse, Error> {
-    somm_send::remove_subscriber()
+    let tx_response = somm_send::remove_subscriber()
         .await
-        .map_err(|e| ErrorKind::GrpcError.context(e).into())
+        .map_err(|e| ErrorKind::GrpcError.context(e))?;
+
+    Ok(tx_response)
 }
 
 pub(crate) async fn subscribe(

@@ -15,7 +15,7 @@ use ethers::{
     abi::Token,
     prelude::{types::Address as EthAddress, *},
 };
-use gravity_bridge::gravity_utils::ethereum::downcast_to_u64;
+use gravity_bridge::gravity::utils::ethereum::downcast_to_u64;
 use std::{convert::TryFrom, time::Duration};
 
 pub const TIMEOUT: Duration = Duration::from_secs(60);
@@ -112,7 +112,7 @@ pub fn governance_call_error(message: String) -> Error {
 /// bytes, we copy it into a zeroed-out 32 byte array starting at index 12.
 pub fn encode_fees_distributor_address(address: CosmosAddress) -> [u8; 32] {
     let mut address_bytes_slice: [u8; 32] = Default::default();
-    address_bytes_slice[12..].copy_from_slice(address.as_bytes());
+    address_bytes_slice[12..].copy_from_slice(address.get_bytes());
 
     address_bytes_slice
 }
@@ -242,4 +242,59 @@ pub fn parse_selector(selector: String) -> Result<[u8; 4], Error> {
     array.copy_from_slice(&bytes);
 
     Ok(array)
+}
+
+// deep_space just haaaas to have it's own cosmos-sdk-proto fork
+pub fn convert_tx_response(
+    tx_response: somm_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse,
+) -> cosmos_sdk_proto_althea::cosmos::base::abci::v1beta1::TxResponse {
+    use cosmos_sdk_proto_althea::cosmos::base::abci::v1beta1::{
+        AbciMessageLog, Attribute, StringEvent,
+    };
+
+    cosmos_sdk_proto_althea::cosmos::base::abci::v1beta1::TxResponse {
+        txhash: tx_response.txhash,
+        codespace: tx_response.codespace,
+        data: tx_response.data,
+        raw_log: tx_response.raw_log,
+        logs: tx_response
+            .logs
+            .iter()
+            .map(|log| AbciMessageLog {
+                log: log.log.clone(),
+                events: log
+                    .events
+                    .iter()
+                    .map(|event| StringEvent {
+                        r#type: event.r#type.clone(),
+                        attributes: event
+                            .attributes
+                            .iter()
+                            .map(|attr| Attribute {
+                                key: attr.key.clone(),
+                                value: attr.value.clone(),
+                            })
+                            .collect(),
+                    })
+                    .collect(),
+                msg_index: log.msg_index,
+            })
+            .collect(),
+        info: tx_response.info,
+        gas_wanted: tx_response.gas_wanted,
+        gas_used: tx_response.gas_used,
+        tx: tx_response.tx.map(convert_any),
+        timestamp: tx_response.timestamp,
+        // Fields in the Event type are private but we don't use them so we can just ignore.
+        events: Default::default(),
+        height: tx_response.height,
+        code: tx_response.code,
+    }
+}
+
+pub fn convert_any(any: somm_proto::cosmos_sdk_proto::Any) -> prost_types::Any {
+    prost_types::Any {
+        type_url: any.type_url,
+        value: any.value,
+    }
 }

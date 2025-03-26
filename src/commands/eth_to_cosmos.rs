@@ -3,10 +3,10 @@ use abscissa_core::{clap::Parser, status_err, Application, Command, Runnable};
 use deep_space::address::Address as CosmosAddress;
 use ethers::prelude::*;
 use ethers::types::Address as EthAddress;
-use gravity_bridge::ethereum_gravity::erc20_utils::get_erc20_balance;
-use gravity_bridge::ethereum_gravity::send_to_cosmos::send_to_cosmos;
-use gravity_bridge::gravity_utils::connection_prep::{check_for_eth, create_rpc_connections};
-use gravity_bridge::gravity_utils::ethereum::downcast_to_u64;
+use gravity_bridge::gravity::ethereum::erc20_utils::get_erc20_balance;
+use gravity_bridge::gravity::ethereum::send_to_cosmos::send_to_cosmos;
+use gravity_bridge::gravity::utils::connection_prep::{check_for_eth, create_rpc_connections};
+use gravity_bridge::gravity::utils::ethereum::downcast_to_u64;
 use std::sync::Arc;
 use std::time::Duration;
 

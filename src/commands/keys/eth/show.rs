@@ -1,8 +1,11 @@
-use crate::application::APP;
+use std::{fs, path};
+
 use abscissa_core::{clap::Parser, Application, Command, Runnable};
-use ethers::prelude::*;
-use signatory::FsKeyStore;
-use std::path;
+use ethers::signers::{LocalWallet, Signer};
+use k256::pkcs8::FromPrivateKey;
+use k256::SecretKey;
+
+use crate::application::APP;
 
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
@@ -17,21 +20,14 @@ pub struct ShowKeyCmd {
 impl Runnable for ShowKeyCmd {
     fn run(&self) {
         let config = APP.config();
-        let keystore = path::Path::new(&config.keystore);
-        let keystore = FsKeyStore::create_or_open(keystore).expect("Could not open keystore");
-        let name = self.name.parse().expect("Could not parse name");
-
-        let key = keystore.load(&name).expect("Could not load key");
-
-        let key = key
-            .to_pem()
-            .parse::<k256::elliptic_curve::SecretKey<k256::Secp256k1>>()
-            .expect("Could not parse key");
-
-        let wallet: LocalWallet = Wallet::from(key);
-
+        let key_file_name = format!("{}.pem", self.name);
+        let key_path = path::Path::new(&config.keystore).join(&key_file_name);
+        let pem = fs::read_to_string(&key_path).unwrap();
+        let secret_key = SecretKey::from_pkcs8_pem(&pem).expect("Could not parse PEM");
+        let wallet: LocalWallet =
+            LocalWallet::from_bytes(&secret_key.to_bytes()).expect("Could not create wallet");
         let address = wallet.address();
 
-        println!("{}\t{:#x}", name, address);
+        println!("{}\t{:#x}", self.name, address);
     }
 }

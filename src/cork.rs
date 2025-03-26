@@ -1,13 +1,15 @@
+use std::sync::Arc;
+
 use abscissa_core::tracing::log::{debug, error, info, warn};
+use cosmos_sdk_proto_althea::cosmos::base::abci::v1beta1::TxResponse;
 use ethers::types::H160;
-use gravity_bridge::gravity_proto::cosmos_sdk_proto::cosmos::base::abci::v1beta1::TxResponse;
 use lazy_static::lazy_static;
 use sha3::{Digest, Keccak256};
 use somm_proto::{axelar_cork::AxelarCork, cork::Cork};
 use tonic::{self, async_trait, Code, Request, Response, Status};
 
 use crate::cellars::to_checksum_address;
-use crate::server::handle_authorization;
+use crate::server::{handle_authorization, ConnectionInfo};
 use crate::{
     cellars::{self, aave_v2_stablecoin, cellar_v1, cellar_v2, cellar_v2_2, cellar_v2_5},
     error::{
@@ -36,10 +38,33 @@ impl proto::contract_call_service_server::ContractCallService for CorkHandler {
         &self,
         request: Request<ScheduleRequest>,
     ) -> Result<Response<ScheduleResponse>, Status> {
-        let certs = request.peer_certs().unwrap();
-        let request = request.get_ref().to_owned();
+        let connection_info = request.extensions().get::<Arc<ConnectionInfo>>();
+        debug!("connection info: {:?}", connection_info);
 
+        if connection_info.is_none() {
+            return Err(Status::new(
+                Code::Unauthenticated,
+                "no connection info provided".to_string(),
+            ));
+        }
+
+        let connection_info = connection_info.unwrap();
+        debug!(
+            "received schedule request from {:?}: {:?}",
+            connection_info.address, request
+        );
+        let certs = connection_info.certificates.clone();
+
+        if certs.is_empty() {
+            return Err(Status::new(
+                Code::Unauthenticated,
+                "no certificates provided".to_string(),
+            ));
+        }
+
+        let request = request.into_inner();
         let chain_id = request.chain_id;
+
         if chain_id == 0 {
             return Err(Status::new(
                 Code::InvalidArgument,

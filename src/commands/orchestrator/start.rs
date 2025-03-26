@@ -1,8 +1,9 @@
 use crate::{application::APP, prelude::*};
 use abscissa_core::{clap::Parser, Command, Runnable};
+use deep_space::PrivateKey;
 use ethers::prelude::{Middleware, Signer, SignerMiddleware};
 use ethers::types::Address as EthAddress;
-use gravity_bridge::gravity_utils::{
+use gravity_bridge::gravity::utils::{
     connection_prep::{
         check_delegate_addresses, check_for_eth, check_for_fee_denom, create_rpc_connections,
         wait_for_cosmos_node_ready,
@@ -43,7 +44,7 @@ impl Runnable for StartCommand {
         let config = APP.config();
         let cosmos_prefix = config.cosmos.prefix.clone();
 
-        let cosmos_key = config.load_gravity_deep_space_key(self.cosmos_key.clone());
+        let cosmos_key = config.load_deep_space_key(self.cosmos_key.clone());
         let cosmos_address = cosmos_key.to_address(&cosmos_prefix).unwrap();
 
         let ethereum_wallet = config.load_ethers_wallet(self.ethereum_key.clone());

@@ -1,150 +1,327 @@
-pub use morphorewardhandler_mod::*;
-#[allow(clippy::too_many_arguments)]
-mod morphorewardhandler_mod {
-    #![allow(clippy::enum_variant_names)]
-    #![allow(dead_code)]
-    #![allow(clippy::type_complexity)]
-    #![allow(unused_imports)]
-    use ethers::contract::{
-        builders::{ContractCall, Event},
-        Contract, Lazy,
-    };
-    use ethers::core::{
-        abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
-        types::*,
-    };
-    use ethers::providers::Middleware;
-    #[doc = "MorphoRewardHandler was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
-    use std::sync::Arc;
-    pub static MORPHOREWARDHANDLER_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
-        ethers::contract::Lazy::new(|| {
-            serde_json :: from_str ("{\n  \"abi\": [\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"address\",\n          \"name\": \"_morphoRewardsDistributor\",\n          \"type\": \"address\"\n        }\n      ],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"constructor\"\n    },\n    {\n      \"inputs\": [\n        {\n          \"internalType\": \"uint256\",\n          \"name\": \"claimable\",\n          \"type\": \"uint256\"\n        },\n        {\n          \"internalType\": \"bytes32[]\",\n          \"name\": \"proof\",\n          \"type\": \"bytes32[]\"\n        }\n      ],\n      \"name\": \"claim\",\n      \"outputs\": [],\n      \"stateMutability\": \"nonpayable\",\n      \"type\": \"function\"\n    },\n    {\n      \"inputs\": [],\n      \"name\": \"morphoRewardsDistributor\",\n      \"outputs\": [\n        {\n          \"internalType\": \"contract RewardsDistributor\",\n          \"name\": \"\",\n          \"type\": \"address\"\n        }\n      ],\n      \"stateMutability\": \"view\",\n      \"type\": \"function\"\n    }\n  ],\n  \"bytecode\": {\n    \"object\": \"0x60a060405234801561001057600080fd5b5060405161031c38038061031c83398101604081905261002f91610040565b6001600160a01b0316608052610070565b60006020828403121561005257600080fd5b81516001600160a01b038116811461006957600080fd5b9392505050565b60805161028c610090600039600081816055015260aa015261028c6000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80632f52ebb71461003b5780635b5d4d7814610050575b600080fd5b61004e61004936600461012f565b610093565b005b6100777f000000000000000000000000000000000000000000000000000000000000000081565b6040516001600160a01b03909116815260200160405180910390f35b604051630f44fe1d60e21b81526001600160a01b037f00000000000000000000000000000000000000000000000000000000000000001690633d13f874906100e3903090869086906004016101f9565b600060405180830381600087803b1580156100fd57600080fd5b505af1158015610111573d6000803e3d6000fd5b505050505050565b634e487b7160e01b600052604160045260246000fd5b6000806040838503121561014257600080fd5b8235915060208084013567ffffffffffffffff8082111561016257600080fd5b818601915086601f83011261017657600080fd5b81358181111561018857610188610119565b8060051b604051601f19603f830116810181811085821117156101ad576101ad610119565b6040529182528482019250838101850191898311156101cb57600080fd5b938501935b828510156101e9578435845293850193928501926101d0565b8096505050505050509250929050565b6001600160a01b038416815260208082018490526060604083018190528351908301819052600091848101916080850190845b818110156102485784518352938301939183019160010161022c565b50909897505050505050505056fea264697066735822122095172c1f437abb49f54a9016e5132ff730f3ce61eaae519403598179b116c36f64736f6c63430008100033\",\n    \"sourceMap\": \"300:749:203:-:0;;;572:136;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;-1:-1:-1;;;;;629:72:203;;;300:749;;14:290:258;84:6;137:2;125:9;116:7;112:23;108:32;105:52;;;153:1;150;143:12;105:52;179:16;;-1:-1:-1;;;;;224:31:258;;214:42;;204:70;;270:1;267;260:12;204:70;293:5;14:290;-1:-1:-1;;;14:290:258:o;:::-;300:749:203;;;;;;;;;;;;;;;;;\",\n    \"linkReferences\": {}\n  },\n  \"deployedBytecode\": {\n    \"object\": \"0x608060405234801561001057600080fd5b50600436106100365760003560e01c80632f52ebb71461003b5780635b5d4d7814610050575b600080fd5b61004e61004936600461012f565b610093565b005b6100777f000000000000000000000000000000000000000000000000000000000000000081565b6040516001600160a01b03909116815260200160405180910390f35b604051630f44fe1d60e21b81526001600160a01b037f00000000000000000000000000000000000000000000000000000000000000001690633d13f874906100e3903090869086906004016101f9565b600060405180830381600087803b1580156100fd57600080fd5b505af1158015610111573d6000803e3d6000fd5b505050505050565b634e487b7160e01b600052604160045260246000fd5b6000806040838503121561014257600080fd5b8235915060208084013567ffffffffffffffff8082111561016257600080fd5b818601915086601f83011261017657600080fd5b81358181111561018857610188610119565b8060051b604051601f19603f830116810181811085821117156101ad576101ad610119565b6040529182528482019250838101850191898311156101cb57600080fd5b938501935b828510156101e9578435845293850193928501926101d0565b8096505050505050509250929050565b6001600160a01b038416815260208082018490526060604083018190528351908301819052600091848101916080850190845b818110156102485784518352938301939183019160010161022c565b50909897505050505050505056fea264697066735822122095172c1f437abb49f54a9016e5132ff730f3ce61eaae519403598179b116c36f64736f6c63430008100033\",\n    \"sourceMap\": \"300:749:203:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;902:145;;;;;;:::i;:::-;;:::i;:::-;;505:60;;;;;;;;-1:-1:-1;;;;;1526:32:258;;;1508:51;;1496:2;1481:18;505:60:203;;;;;;;902:145;977:63;;-1:-1:-1;;;977:63:203;;-1:-1:-1;;;;;977:24:203;:30;;;;:63;;1016:4;;1023:9;;1034:5;;977:63;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;902:145;;:::o;14:127:258:-;75:10;70:3;66:20;63:1;56:31;106:4;103:1;96:15;130:4;127:1;120:15;146:1183;239:6;247;300:2;288:9;279:7;275:23;271:32;268:52;;;316:1;313;306:12;268:52;352:9;339:23;329:33;;381:2;434;423:9;419:18;406:32;457:18;498:2;490:6;487:14;484:34;;;514:1;511;504:12;484:34;552:6;541:9;537:22;527:32;;597:7;590:4;586:2;582:13;578:27;568:55;;619:1;616;609:12;568:55;655:2;642:16;677:2;673;670:10;667:36;;;683:18;;:::i;:::-;729:2;726:1;722:10;761:2;755:9;824:2;820:7;815:2;811;807:11;803:25;795:6;791:38;879:6;867:10;864:22;859:2;847:10;844:18;841:46;838:72;;;890:18;;:::i;:::-;926:2;919:22;976:18;;;1010:15;;;;-1:-1:-1;1052:11:258;;;1048:20;;;1080:19;;;1077:39;;;1112:1;1109;1102:12;1077:39;1136:11;;;;1156:142;1172:6;1167:3;1164:15;1156:142;;;1238:17;;1226:30;;1189:12;;;;1276;;;;1156:142;;;1317:6;1307:16;;;;;;;;146:1183;;;;;:::o;1570:801::-;-1:-1:-1;;;;;1846:32:258;;1828:51;;1898:2;1916:18;;;1909:34;;;1816:2;1974;1959:18;;1952:30;;;2031:13;;1801:18;;;2053:22;;;1768:4;;2133:15;;;;2106:3;2091:19;;;1768:4;2176:169;2190:6;2187:1;2184:13;2176:169;;;2251:13;;2239:26;;2320:15;;;;2285:12;;;;2212:1;2205:9;2176:169;;;-1:-1:-1;2362:3:258;;1570:801;-1:-1:-1;;;;;;;;1570:801:258:o\",\n    \"linkReferences\": {},\n    \"immutableReferences\": {\n      \"66662\": [\n        {\n          \"start\": 85,\n          \"length\": 32\n        },\n        {\n          \"start\": 170,\n          \"length\": 32\n        }\n      ]\n    }\n  },\n  \"methodIdentifiers\": {\n    \"claim(uint256,bytes32[])\": \"2f52ebb7\",\n    \"morphoRewardsDistributor()\": \"5b5d4d78\"\n  },\n  \"rawMetadata\": \"{\\\"compiler\\\":{\\\"version\\\":\\\"0.8.16+commit.07a7930e\\\"},\\\"language\\\":\\\"Solidity\\\",\\\"output\\\":{\\\"abi\\\":[{\\\"inputs\\\":[{\\\"internalType\\\":\\\"address\\\",\\\"name\\\":\\\"_morphoRewardsDistributor\\\",\\\"type\\\":\\\"address\\\"}],\\\"stateMutability\\\":\\\"nonpayable\\\",\\\"type\\\":\\\"constructor\\\"},{\\\"inputs\\\":[{\\\"internalType\\\":\\\"uint256\\\",\\\"name\\\":\\\"claimable\\\",\\\"type\\\":\\\"uint256\\\"},{\\\"internalType\\\":\\\"bytes32[]\\\",\\\"name\\\":\\\"proof\\\",\\\"type\\\":\\\"bytes32[]\\\"}],\\\"name\\\":\\\"claim\\\",\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\",\\\"type\\\":\\\"function\\\"},{\\\"inputs\\\":[],\\\"name\\\":\\\"morphoRewardsDistributor\\\",\\\"outputs\\\":[{\\\"internalType\\\":\\\"contract RewardsDistributor\\\",\\\"name\\\":\\\"\\\",\\\"type\\\":\\\"address\\\"}],\\\"stateMutability\\\":\\\"view\\\",\\\"type\\\":\\\"function\\\"}],\\\"devdoc\\\":{\\\"author\\\":\\\"crispymangoes\\\",\\\"kind\\\":\\\"dev\\\",\\\"methods\\\":{},\\\"title\\\":\\\"Morpho Reward Handler\\\",\\\"version\\\":1},\\\"userdoc\\\":{\\\"kind\\\":\\\"user\\\",\\\"methods\\\":{\\\"claim(uint256,bytes32[])\\\":{\\\"notice\\\":\\\"Allows cellars to claim Morpho Rewards.\\\"},\\\"morphoRewardsDistributor()\\\":{\\\"notice\\\":\\\"The Morpho Aave V3 rewards handler contract on current network.For mainnet use 0x3B14E5C73e0A56D607A8688098326fD4b4292135.\\\"}},\\\"notice\\\":\\\"Allows Cellars to claim MORPHO rewards.\\\",\\\"version\\\":1}},\\\"settings\\\":{\\\"compilationTarget\\\":{\\\"src/modules/adaptors/Morpho/MorphoRewardHandler.sol\\\":\\\"MorphoRewardHandler\\\"},\\\"evmVersion\\\":\\\"london\\\",\\\"libraries\\\":{},\\\"metadata\\\":{\\\"bytecodeHash\\\":\\\"ipfs\\\"},\\\"optimizer\\\":{\\\"enabled\\\":true,\\\"runs\\\":200},\\\"remappings\\\":[\\\":@balancer-labs/=lib/balancer-v2-monorepo/../../node_modules/@balancer-labs/\\\",\\\":@balancer/=lib/balancer-v2-monorepo/pkg/\\\",\\\":@chainlink/=lib/chainlink/\\\",\\\":@ds-test/=lib/forge-std/lib/ds-test/src/\\\",\\\":@ensdomains/=node_modules/@ensdomains/\\\",\\\":@forge-std/=lib/forge-std/src/\\\",\\\":@openzeppelin/=lib/openzeppelin-contracts/\\\",\\\":@solmate/=lib/solmate/src/\\\",\\\":@uniswap/v3-core/=lib/v3-core/\\\",\\\":@uniswap/v3-periphery/=lib/v3-periphery/\\\",\\\":@uniswapV3C/=lib/v3-core/contracts/\\\",\\\":@uniswapV3P/=lib/v3-periphery/contracts/\\\",\\\":axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity/contracts/\\\",\\\":balancer-v2-monorepo/=lib/balancer-v2-monorepo/\\\",\\\":chainlink/=lib/chainlink/integration-tests/contracts/ethereum/src/\\\",\\\":compound-protocol/=lib/compound-protocol/\\\",\\\":ds-test/=lib/forge-std/lib/ds-test/src/\\\",\\\":eth-gas-reporter/=node_modules/eth-gas-reporter/\\\",\\\":forge-std/=lib/forge-std/src/\\\",\\\":hardhat/=node_modules/hardhat/\\\",\\\":openzeppelin-contracts/=lib/openzeppelin-contracts/\\\",\\\":solmate/=lib/solmate/src/\\\",\\\":v3-core.git/=lib/v3-core.git/contracts/\\\",\\\":v3-core/=lib/v3-core/contracts/\\\",\\\":v3-periphery.git/=lib/v3-periphery.git/contracts/\\\",\\\":v3-periphery/=lib/v3-periphery/contracts/\\\"]},\\\"sources\\\":{\\\"src/modules/adaptors/Morpho/MorphoRewardHandler.sol\\\":{\\\"keccak256\\\":\\\"0xc1461e49dacbb75fe03a4aa08a58bec9639416d57fed6c6595ade2f343520480\\\",\\\"license\\\":\\\"Apache-2.0\\\",\\\"urls\\\":[\\\"bzz-raw://b2cc897411f203e04233ee37d60e70bed92f310df63beb5adede89009c8cfc54\\\",\\\"dweb:/ipfs/QmSgJ6xXXqRLTcmyDf5uPtd5FqLvEmuK4QQ5LBXuk5dbhp\\\"]}},\\\"version\\\":1}\",\n  \"metadata\": {\n    \"compiler\": {\n      \"version\": \"0.8.16+commit.07a7930e\"\n    },\n    \"language\": \"Solidity\",\n    \"output\": {\n      \"abi\": [\n        {\n          \"inputs\": [\n            {\n              \"internalType\": \"address\",\n              \"name\": \"_morphoRewardsDistributor\",\n              \"type\": \"address\"\n            }\n          ],\n          \"stateMutability\": \"nonpayable\",\n          \"type\": \"constructor\"\n        },\n        {\n          \"inputs\": [\n            {\n              \"internalType\": \"uint256\",\n              \"name\": \"claimable\",\n              \"type\": \"uint256\"\n            },\n            {\n              \"internalType\": \"bytes32[]\",\n              \"name\": \"proof\",\n              \"type\": \"bytes32[]\"\n            }\n          ],\n          \"stateMutability\": \"nonpayable\",\n          \"type\": \"function\",\n          \"name\": \"claim\"\n        },\n        {\n          \"inputs\": [],\n          \"stateMutability\": \"view\",\n          \"type\": \"function\",\n          \"name\": \"morphoRewardsDistributor\",\n          \"outputs\": [\n            {\n              \"internalType\": \"contract RewardsDistributor\",\n              \"name\": \"\",\n              \"type\": \"address\"\n            }\n          ]\n        }\n      ],\n      \"devdoc\": {\n        \"kind\": \"dev\",\n        \"methods\": {},\n        \"version\": 1\n      },\n      \"userdoc\": {\n        \"kind\": \"user\",\n        \"methods\": {\n          \"claim(uint256,bytes32[])\": {\n            \"notice\": \"Allows cellars to claim Morpho Rewards.\"\n          },\n          \"morphoRewardsDistributor()\": {\n            \"notice\": \"The Morpho Aave V3 rewards handler contract on current network.For mainnet use 0x3B14E5C73e0A56D607A8688098326fD4b4292135.\"\n          }\n        },\n        \"version\": 1\n      }\n    },\n    \"settings\": {\n      \"remappings\": [\n        \":@balancer-labs/=lib/balancer-v2-monorepo/../../node_modules/@balancer-labs/\",\n        \":@balancer/=lib/balancer-v2-monorepo/pkg/\",\n        \":@chainlink/=lib/chainlink/\",\n        \":@ds-test/=lib/forge-std/lib/ds-test/src/\",\n        \":@ensdomains/=node_modules/@ensdomains/\",\n        \":@forge-std/=lib/forge-std/src/\",\n        \":@openzeppelin/=lib/openzeppelin-contracts/\",\n        \":@solmate/=lib/solmate/src/\",\n        \":@uniswap/v3-core/=lib/v3-core/\",\n        \":@uniswap/v3-periphery/=lib/v3-periphery/\",\n        \":@uniswapV3C/=lib/v3-core/contracts/\",\n        \":@uniswapV3P/=lib/v3-periphery/contracts/\",\n        \":axelar-gmp-sdk-solidity/=lib/axelar-gmp-sdk-solidity/contracts/\",\n        \":balancer-v2-monorepo/=lib/balancer-v2-monorepo/\",\n        \":chainlink/=lib/chainlink/integration-tests/contracts/ethereum/src/\",\n        \":compound-protocol/=lib/compound-protocol/\",\n        \":ds-test/=lib/forge-std/lib/ds-test/src/\",\n        \":eth-gas-reporter/=node_modules/eth-gas-reporter/\",\n        \":forge-std/=lib/forge-std/src/\",\n        \":hardhat/=node_modules/hardhat/\",\n        \":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\n        \":solmate/=lib/solmate/src/\",\n        \":v3-core.git/=lib/v3-core.git/contracts/\",\n        \":v3-core/=lib/v3-core/contracts/\",\n        \":v3-periphery.git/=lib/v3-periphery.git/contracts/\",\n        \":v3-periphery/=lib/v3-periphery/contracts/\"\n      ],\n      \"optimizer\": {\n        \"enabled\": true,\n        \"runs\": 200\n      },\n      \"metadata\": {\n        \"bytecodeHash\": \"ipfs\"\n      },\n      \"compilationTarget\": {\n        \"src/modules/adaptors/Morpho/MorphoRewardHandler.sol\": \"MorphoRewardHandler\"\n      },\n      \"libraries\": {}\n    },\n    \"sources\": {\n      \"src/modules/adaptors/Morpho/MorphoRewardHandler.sol\": {\n        \"keccak256\": \"0xc1461e49dacbb75fe03a4aa08a58bec9639416d57fed6c6595ade2f343520480\",\n        \"urls\": [\n          \"bzz-raw://b2cc897411f203e04233ee37d60e70bed92f310df63beb5adede89009c8cfc54\",\n          \"dweb:/ipfs/QmSgJ6xXXqRLTcmyDf5uPtd5FqLvEmuK4QQ5LBXuk5dbhp\"\n        ],\n        \"license\": \"Apache-2.0\"\n      }\n    },\n    \"version\": 1\n  },\n  \"ast\": {\n    \"absolutePath\": \"src/modules/adaptors/Morpho/MorphoRewardHandler.sol\",\n    \"id\": 66697,\n    \"exportedSymbols\": {\n      \"MorphoRewardHandler\": [\n        66696\n      ],\n      \"RewardsDistributor\": [\n        66657\n      ]\n    },\n    \"nodeType\": \"SourceUnit\",\n    \"src\": \"39:1011:203\",\n    \"nodes\": [\n      {\n        \"id\": 66646,\n        \"nodeType\": \"PragmaDirective\",\n        \"src\": \"39:23:203\",\n        \"nodes\": [],\n        \"literals\": [\n          \"solidity\",\n          \"0.8\",\n          \".16\"\n        ]\n      },\n      {\n        \"id\": 66657,\n        \"nodeType\": \"ContractDefinition\",\n        \"src\": \"64:118:203\",\n        \"nodes\": [\n          {\n            \"id\": 66656,\n            \"nodeType\": \"FunctionDefinition\",\n            \"src\": \"99:81:203\",\n            \"nodes\": [],\n            \"functionSelector\": \"3d13f874\",\n            \"implemented\": false,\n            \"kind\": \"function\",\n            \"modifiers\": [],\n            \"name\": \"claim\",\n            \"nameLocation\": \"108:5:203\",\n            \"parameters\": {\n              \"id\": 66654,\n              \"nodeType\": \"ParameterList\",\n              \"parameters\": [\n                {\n                  \"constant\": false,\n                  \"id\": 66648,\n                  \"mutability\": \"mutable\",\n                  \"name\": \"user\",\n                  \"nameLocation\": \"122:4:203\",\n                  \"nodeType\": \"VariableDeclaration\",\n                  \"scope\": 66656,\n                  \"src\": \"114:12:203\",\n                  \"stateVariable\": false,\n                  \"storageLocation\": \"default\",\n                  \"typeDescriptions\": {\n                    \"typeIdentifier\": \"t_address\",\n                    \"typeString\": \"address\"\n                  },\n                  \"typeName\": {\n                    \"id\": 66647,\n                    \"name\": \"address\",\n                    \"nodeType\": \"ElementaryTypeName\",\n                    \"src\": \"114:7:203\",\n                    \"stateMutability\": \"nonpayable\",\n                    \"typeDescriptions\": {\n                      \"typeIdentifier\": \"t_address\",\n                      \"typeString\": \"address\"\n                    }\n                  },\n                  \"visibility\": \"internal\"\n                },\n                {\n                  \"constant\": false,\n                  \"id\": 66650,\n                  \"mutability\": \"mutable\",\n                  \"name\": \"claimable\",\n                  \"nameLocation\": \"136:9:203\",\n                  \"nodeType\": \"VariableDeclaration\",\n                  \"scope\": 66656,\n                  \"src\": \"128:17:203\",\n                  \"stateVariable\": false,\n                  \"storageLocation\": \"default\",\n                  \"typeDescriptions\": {\n                    \"typeIdentifier\": \"t_uint256\",\n                    \"typeString\": \"uint256\"\n                  },\n                  \"typeName\": {\n                    \"id\": 66649,\n                    \"name\": \"uint256\",\n                    \"nodeType\": \"ElementaryTypeName\",\n                    \"src\": \"128:7:203\",\n                    \"typeDescriptions\": {\n                      \"typeIdentifier\": \"t_uint256\",\n                      \"typeString\": \"uint256\"\n                    }\n                  },\n                  \"visibility\": \"internal\"\n                },\n                {\n                  \"constant\": false,\n                  \"id\": 66653,\n                  \"mutability\": \"mutable\",\n                  \"name\": \"proof\",\n                  \"nameLocation\": \"164:5:203\",\n                  \"nodeType\": \"VariableDeclaration\",\n                  \"scope\": 66656,\n                  \"src\": \"147:22:203\",\n                  \"stateVariable\": false,\n                  \"storageLocation\": \"memory\",\n                  \"typeDescriptions\": {\n                    \"typeIdentifier\": \"t_array$_t_bytes32_$dyn_memory_ptr\",\n                    \"typeString\": \"bytes32[]\"\n                  },\n                  \"typeName\": {\n                    \"baseType\": {\n                      \"id\": 66651,\n                      \"name\": \"bytes32\",\n                      \"nodeType\": \"ElementaryTypeName\",\n                      \"src\": \"147:7:203\",\n                      \"typeDescriptions\": {\n                        \"typeIdentifier\": \"t_bytes32\",\n                        \"typeString\": \"bytes32\"\n                      }\n                    },\n                    \"id\": 66652,\n                    \"nodeType\": \"ArrayTypeName\",\n                    \"src\": \"147:9:203\",\n                    \"typeDescriptions\": {\n                      \"typeIdentifier\": \"t_array$_t_bytes32_$dyn_storage_ptr\",\n                      \"typeString\": \"bytes32[]\"\n                    }\n                  },\n                  \"visibility\": \"internal\"\n                }\n              ],\n              \"src\": \"113:57:203\"\n            },\n            \"returnParameters\": {\n              \"id\": 66655,\n              \"nodeType\": \"ParameterList\",\n              \"parameters\": [],\n              \"src\": \"179:0:203\"\n            },\n            \"scope\": 66657,\n            \"stateMutability\": \"nonpayable\",\n            \"virtual\": false,\n            \"visibility\": \"external\"\n          }\n        ],\n        \"abstract\": false,\n        \"baseContracts\": [],\n        \"canonicalName\": \"RewardsDistributor\",\n        \"contractDependencies\": [],\n        \"contractKind\": \"interface\",\n        \"fullyImplemented\": false,\n        \"linearizedBaseContracts\": [\n          66657\n        ],\n        \"name\": \"RewardsDistributor\",\n        \"nameLocation\": \"74:18:203\",\n        \"scope\": 66697,\n        \"usedErrors\": []\n      },\n      {\n        \"id\": 66696,\n        \"nodeType\": \"ContractDefinition\",\n        \"src\": \"300:749:203\",\n        \"nodes\": [\n          {\n            \"id\": 66662,\n            \"nodeType\": \"VariableDeclaration\",\n            \"src\": \"505:60:203\",\n            \"nodes\": [],\n            \"constant\": false,\n            \"documentation\": {\n              \"id\": 66659,\n              \"nodeType\": \"StructuredDocumentation\",\n              \"src\": \"335:165:203\",\n              \"text\": \" @notice The Morpho Aave V3 rewards handler contract on current network.\\n @notice For mainnet use 0x3B14E5C73e0A56D607A8688098326fD4b4292135.\"\n            },\n            \"functionSelector\": \"5b5d4d78\",\n            \"mutability\": \"immutable\",\n            \"name\": \"morphoRewardsDistributor\",\n            \"nameLocation\": \"541:24:203\",\n            \"scope\": 66696,\n            \"stateVariable\": true,\n            \"storageLocation\": \"default\",\n            \"typeDescriptions\": {\n              \"typeIdentifier\": \"t_contract$_RewardsDistributor_$66657\",\n              \"typeString\": \"contract RewardsDistributor\"\n            },\n            \"typeName\": {\n              \"id\": 66661,\n              \"nodeType\": \"UserDefinedTypeName\",\n              \"pathNode\": {\n                \"id\": 66660,\n                \"name\": \"RewardsDistributor\",\n                \"nameLocations\": [\n                  \"505:18:203\"\n                ],\n                \"nodeType\": \"IdentifierPath\",\n                \"referencedDeclaration\": 66657,\n                \"src\": \"505:18:203\"\n              },\n              \"referencedDeclaration\": 66657,\n              \"src\": \"505:18:203\",\n              \"typeDescriptions\": {\n                \"typeIdentifier\": \"t_contract$_RewardsDistributor_$66657\",\n                \"typeString\": \"contract RewardsDistributor\"\n              }\n            },\n            \"visibility\": \"public\"\n          },\n          {\n            \"id\": 66674,\n            \"nodeType\": \"FunctionDefinition\",\n            \"src\": \"572:136:203\",\n            \"nodes\": [],\n            \"body\": {\n              \"id\": 66673,\n              \"nodeType\": \"Block\",\n              \"src\": \"619:89:203\",\n              \"nodes\": [],\n              \"statements\": [\n                {\n                  \"expression\": {\n                    \"id\": 66671,\n                    \"isConstant\": false,\n                    \"isLValue\": false,\n                    \"isPure\": false,\n                    \"lValueRequested\": false,\n                    \"leftHandSide\": {\n                      \"id\": 66667,\n                      \"name\": \"morphoRewardsDistributor\",\n                      \"nodeType\": \"Identifier\",\n                      \"overloadedDeclarations\": [],\n                      \"referencedDeclaration\": 66662,\n                      \"src\": \"629:24:203\",\n                      \"typeDescriptions\": {\n                        \"typeIdentifier\": \"t_contract$_RewardsDistributor_$66657\",\n                        \"typeString\": \"contract RewardsDistributor\"\n                      }\n                    },\n                    \"nodeType\": \"Assignment\",\n                    \"operator\": \"=\",\n                    \"rightHandSide\": {\n                      \"arguments\": [\n                        {\n                          \"id\": 66669,\n                          \"name\": \"_morphoRewardsDistributor\",\n                          \"nodeType\": \"Identifier\",\n                          \"overloadedDeclarations\": [],\n                          \"referencedDeclaration\": 66664,\n                          \"src\": \"675:25:203\",\n                          \"typeDescriptions\": {\n                            \"typeIdentifier\": \"t_address\",\n                            \"typeString\": \"address\"\n                          }\n                        }\n                      ],\n                      \"expression\": {\n                        \"argumentTypes\": [\n                          {\n                            \"typeIdentifier\": \"t_address\",\n                            \"typeString\": \"address\"\n                          }\n                        ],\n                        \"id\": 66668,\n                        \"name\": \"RewardsDistributor\",\n                        \"nodeType\": \"Identifier\",\n                        \"overloadedDeclarations\": [],\n                        \"referencedDeclaration\": 66657,\n                        \"src\": \"656:18:203\",\n                        \"typeDescriptions\": {\n                          \"typeIdentifier\": \"t_type$_t_contract$_RewardsDistributor_$66657_$\",\n                          \"typeString\": \"type(contract RewardsDistributor)\"\n                        }\n                      },\n                      \"id\": 66670,\n                      \"isConstant\": false,\n                      \"isLValue\": false,\n                      \"isPure\": false,\n                      \"kind\": \"typeConversion\",\n                      \"lValueRequested\": false,\n                      \"nameLocations\": [],\n                      \"names\": [],\n                      \"nodeType\": \"FunctionCall\",\n                      \"src\": \"656:45:203\",\n                      \"tryCall\": false,\n                      \"typeDescriptions\": {\n                        \"typeIdentifier\": \"t_contract$_RewardsDistributor_$66657\",\n                        \"typeString\": \"contract RewardsDistributor\"\n                      }\n                    },\n                    \"src\": \"629:72:203\",\n                    \"typeDescriptions\": {\n                      \"typeIdentifier\": \"t_contract$_RewardsDistributor_$66657\",\n                      \"typeString\": \"contract RewardsDistributor\"\n                    }\n                  },\n                  \"id\": 66672,\n                  \"nodeType\": \"ExpressionStatement\",\n                  \"src\": \"629:72:203\"\n                }\n              ]\n            },\n            \"implemented\": true,\n            \"kind\": \"constructor\",\n            \"modifiers\": [],\n            \"name\": \"\",\n            \"nameLocation\": \"-1:-1:-1\",\n            \"parameters\": {\n              \"id\": 66665,\n              \"nodeType\": \"ParameterList\",\n              \"parameters\": [\n                {\n                  \"constant\": false,\n                  \"id\": 66664,\n                  \"mutability\": \"mutable\",\n                  \"name\": \"_morphoRewardsDistributor\",\n                  \"nameLocation\": \"592:25:203\",\n                  \"nodeType\": \"VariableDeclaration\",\n                  \"scope\": 66674,\n                  \"src\": \"584:33:203\",\n                  \"stateVariable\": false,\n                  \"storageLocation\": \"default\",\n                  \"typeDescriptions\": {\n                    \"typeIdentifier\": \"t_address\",\n                    \"typeString\": \"address\"\n                  },\n                  \"typeName\": {\n                    \"id\": 66663,\n                    \"name\": \"address\",\n                    \"nodeType\": \"ElementaryTypeName\",\n                    \"src\": \"584:7:203\",\n                    \"stateMutability\": \"nonpayable\",\n                    \"typeDescriptions\": {\n                      \"typeIdentifier\": \"t_address\",\n                      \"typeString\": \"address\"\n                    }\n                  },\n                  \"visibility\": \"internal\"\n                }\n              ],\n              \"src\": \"583:35:203\"\n            },\n            \"returnParameters\": {\n              \"id\": 66666,\n              \"nodeType\": \"ParameterList\",\n              \"parameters\": [],\n              \"src\": \"619:0:203\"\n            },\n            \"scope\": 66696,\n            \"stateMutability\": \"nonpayable\",\n            \"virtual\": false,\n            \"visibility\": \"public\"\n          },\n          {\n            \"id\": 66695,\n            \"nodeType\": \"FunctionDefinition\",\n            \"src\": \"902:145:203\",\n            \"nodes\": [],\n            \"body\": {\n              \"id\": 66694,\n              \"nodeType\": \"Block\",\n              \"src\": \"967:80:203\",\n              \"nodes\": [],\n              \"statements\": [\n                {\n                  \"expression\": {\n                    \"arguments\": [\n                      {\n                        \"arguments\": [\n                          {\n                            \"id\": 66688,\n                            \"name\": \"this\",\n                            \"nodeType\": \"Identifier\",\n                            \"overloadedDeclarations\": [],\n                            \"referencedDeclaration\": -28,\n                            \"src\": \"1016:4:203\",\n                            \"typeDescriptions\": {\n                              \"typeIdentifier\": \"t_contract$_MorphoRewardHandler_$66696\",\n                              \"typeString\": \"contract MorphoRewardHandler\"\n                            }\n                          }\n                        ],\n                        \"expression\": {\n                          \"argumentTypes\": [\n                            {\n                              \"typeIdentifier\": \"t_contract$_MorphoRewardHandler_$66696\",\n                              \"typeString\": \"contract MorphoRewardHandler\"\n                            }\n                          ],\n                          \"id\": 66687,\n                          \"isConstant\": false,\n                          \"isLValue\": false,\n                          \"isPure\": true,\n                          \"lValueRequested\": false,\n                          \"nodeType\": \"ElementaryTypeNameExpression\",\n                          \"src\": \"1008:7:203\",\n                          \"typeDescriptions\": {\n                            \"typeIdentifier\": \"t_type$_t_address_$\",\n                            \"typeString\": \"type(address)\"\n                          },\n                          \"typeName\": {\n                            \"id\": 66686,\n                            \"name\": \"address\",\n                            \"nodeType\": \"ElementaryTypeName\",\n                            \"src\": \"1008:7:203\",\n                            \"typeDescriptions\": {}\n                          }\n                        },\n                        \"id\": 66689,\n                        \"isConstant\": false,\n                        \"isLValue\": false,\n                        \"isPure\": false,\n                        \"kind\": \"typeConversion\",\n                        \"lValueRequested\": false,\n                        \"nameLocations\": [],\n                        \"names\": [],\n                        \"nodeType\": \"FunctionCall\",\n                        \"src\": \"1008:13:203\",\n                        \"tryCall\": false,\n                        \"typeDescriptions\": {\n                          \"typeIdentifier\": \"t_address\",\n                          \"typeString\": \"address\"\n                        }\n                      },\n                      {\n                        \"id\": 66690,\n                        \"name\": \"claimable\",\n                        \"nodeType\": \"Identifier\",\n                        \"overloadedDeclarations\": [],\n                        \"referencedDeclaration\": 66677,\n                        \"src\": \"1023:9:203\",\n                        \"typeDescriptions\": {\n                          \"typeIdentifier\": \"t_uint256\",\n                          \"typeString\": \"uint256\"\n                        }\n                      },\n                      {\n                        \"id\": 66691,\n                        \"name\": \"proof\",\n                        \"nodeType\": \"Identifier\",\n                        \"overloadedDeclarations\": [],\n                        \"referencedDeclaration\": 66680,\n                        \"src\": \"1034:5:203\",\n                        \"typeDescriptions\": {\n                          \"typeIdentifier\": \"t_array$_t_bytes32_$dyn_memory_ptr\",\n                          \"typeString\": \"bytes32[] memory\"\n                        }\n                      }\n                    ],\n                    \"expression\": {\n                      \"argumentTypes\": [\n                        {\n                          \"typeIdentifier\": \"t_address\",\n                          \"typeString\": \"address\"\n                        },\n                        {\n                          \"typeIdentifier\": \"t_uint256\",\n                          \"typeString\": \"uint256\"\n                        },\n                        {\n                          \"typeIdentifier\": \"t_array$_t_bytes32_$dyn_memory_ptr\",\n                          \"typeString\": \"bytes32[] memory\"\n                        }\n                      ],\n                      \"expression\": {\n                        \"id\": 66683,\n                        \"name\": \"morphoRewardsDistributor\",\n                        \"nodeType\": \"Identifier\",\n                        \"overloadedDeclarations\": [],\n                        \"referencedDeclaration\": 66662,\n                        \"src\": \"977:24:203\",\n                        \"typeDescriptions\": {\n                          \"typeIdentifier\": \"t_contract$_RewardsDistributor_$66657\",\n                          \"typeString\": \"contract RewardsDistributor\"\n                        }\n                      },\n                      \"id\": 66685,\n                      \"isConstant\": false,\n                      \"isLValue\": false,\n                      \"isPure\": false,\n                      \"lValueRequested\": false,\n                      \"memberLocation\": \"1002:5:203\",\n                      \"memberName\": \"claim\",\n                      \"nodeType\": \"MemberAccess\",\n                      \"referencedDeclaration\": 66656,\n                      \"src\": \"977:30:203\",\n                      \"typeDescriptions\": {\n                        \"typeIdentifier\": \"t_function_external_nonpayable$_t_address_$_t_uint256_$_t_array$_t_bytes32_$dyn_memory_ptr_$returns$__$\",\n                        \"typeString\": \"function (address,uint256,bytes32[] memory) external\"\n                      }\n                    },\n                    \"id\": 66692,\n                    \"isConstant\": false,\n                    \"isLValue\": false,\n                    \"isPure\": false,\n                    \"kind\": \"functionCall\",\n                    \"lValueRequested\": false,\n                    \"nameLocations\": [],\n                    \"names\": [],\n                    \"nodeType\": \"FunctionCall\",\n                    \"src\": \"977:63:203\",\n                    \"tryCall\": false,\n                    \"typeDescriptions\": {\n                      \"typeIdentifier\": \"t_tuple$__$\",\n                      \"typeString\": \"tuple()\"\n                    }\n                  },\n                  \"id\": 66693,\n                  \"nodeType\": \"ExpressionStatement\",\n                  \"src\": \"977:63:203\"\n                }\n              ]\n            },\n            \"documentation\": {\n              \"id\": 66675,\n              \"nodeType\": \"StructuredDocumentation\",\n              \"src\": \"831:66:203\",\n              \"text\": \" @notice Allows cellars to claim Morpho Rewards.\"\n            },\n            \"functionSelector\": \"2f52ebb7\",\n            \"implemented\": true,\n            \"kind\": \"function\",\n            \"modifiers\": [],\n            \"name\": \"claim\",\n            \"nameLocation\": \"911:5:203\",\n            \"parameters\": {\n              \"id\": 66681,\n              \"nodeType\": \"ParameterList\",\n              \"parameters\": [\n                {\n                  \"constant\": false,\n                  \"id\": 66677,\n                  \"mutability\": \"mutable\",\n                  \"name\": \"claimable\",\n                  \"nameLocation\": \"925:9:203\",\n                  \"nodeType\": \"VariableDeclaration\",\n                  \"scope\": 66695,\n                  \"src\": \"917:17:203\",\n                  \"stateVariable\": false,\n                  \"storageLocation\": \"default\",\n                  \"typeDescriptions\": {\n                    \"typeIdentifier\": \"t_uint256\",\n                    \"typeString\": \"uint256\"\n                  },\n                  \"typeName\": {\n                    \"id\": 66676,\n                    \"name\": \"uint256\",\n                    \"nodeType\": \"ElementaryTypeName\",\n                    \"src\": \"917:7:203\",\n                    \"typeDescriptions\": {\n                      \"typeIdentifier\": \"t_uint256\",\n                      \"typeString\": \"uint256\"\n                    }\n                  },\n                  \"visibility\": \"internal\"\n                },\n                {\n                  \"constant\": false,\n                  \"id\": 66680,\n                  \"mutability\": \"mutable\",\n                  \"name\": \"proof\",\n                  \"nameLocation\": \"953:5:203\",\n                  \"nodeType\": \"VariableDeclaration\",\n                  \"scope\": 66695,\n                  \"src\": \"936:22:203\",\n                  \"stateVariable\": false,\n                  \"storageLocation\": \"memory\",\n                  \"typeDescriptions\": {\n                    \"typeIdentifier\": \"t_array$_t_bytes32_$dyn_memory_ptr\",\n                    \"typeString\": \"bytes32[]\"\n                  },\n                  \"typeName\": {\n                    \"baseType\": {\n                      \"id\": 66678,\n                      \"name\": \"bytes32\",\n                      \"nodeType\": \"ElementaryTypeName\",\n                      \"src\": \"936:7:203\",\n                      \"typeDescriptions\": {\n                        \"typeIdentifier\": \"t_bytes32\",\n                        \"typeString\": \"bytes32\"\n                      }\n                    },\n                    \"id\": 66679,\n                    \"nodeType\": \"ArrayTypeName\",\n                    \"src\": \"936:9:203\",\n                    \"typeDescriptions\": {\n                      \"typeIdentifier\": \"t_array$_t_bytes32_$dyn_storage_ptr\",\n                      \"typeString\": \"bytes32[]\"\n                    }\n                  },\n                  \"visibility\": \"internal\"\n                }\n              ],\n              \"src\": \"916:43:203\"\n            },\n            \"returnParameters\": {\n              \"id\": 66682,\n              \"nodeType\": \"ParameterList\",\n              \"parameters\": [],\n              \"src\": \"967:0:203\"\n            },\n            \"scope\": 66696,\n            \"stateMutability\": \"nonpayable\",\n            \"virtual\": false,\n            \"visibility\": \"public\"\n          }\n        ],\n        \"abstract\": false,\n        \"baseContracts\": [],\n        \"canonicalName\": \"MorphoRewardHandler\",\n        \"contractDependencies\": [],\n        \"contractKind\": \"contract\",\n        \"documentation\": {\n          \"id\": 66658,\n          \"nodeType\": \"StructuredDocumentation\",\n          \"src\": \"184:115:203\",\n          \"text\": \" @title Morpho Reward Handler\\n @notice Allows Cellars to claim MORPHO rewards.\\n @author crispymangoes\"\n        },\n        \"fullyImplemented\": true,\n        \"linearizedBaseContracts\": [\n          66696\n        ],\n        \"name\": \"MorphoRewardHandler\",\n        \"nameLocation\": \"309:19:203\",\n        \"scope\": 66697,\n        \"usedErrors\": []\n      }\n    ],\n    \"license\": \"Apache-2.0\"\n  },\n  \"id\": 203\n}") . expect ("invalid abi")
-        });
-    #[derive(Clone)]
-    pub struct MorphoRewardHandler<M>(ethers::contract::Contract<M>);
-    impl<M> std::ops::Deref for MorphoRewardHandler<M> {
-        type Target = ethers::contract::Contract<M>;
+pub use morpho_reward_handler::*;
+/// This module was auto-generated with ethers-rs Abigen.
+/// More information at: <https://github.com/gakonst/ethers-rs>
+#[allow(
+    clippy::enum_variant_names,
+    clippy::too_many_arguments,
+    clippy::upper_case_acronyms,
+    clippy::type_complexity,
+    dead_code,
+    non_camel_case_types,
+)]
+pub mod morpho_reward_handler {
+    #[allow(deprecated)]
+    fn __abi() -> ::ethers::core::abi::Abi {
+        ::ethers::core::abi::ethabi::Contract {
+            constructor: ::core::option::Option::Some(::ethers::core::abi::ethabi::Constructor {
+                inputs: ::std::vec![
+                    ::ethers::core::abi::ethabi::Param {
+                        name: ::std::borrow::ToOwned::to_owned(
+                            "_morphoRewardsDistributor",
+                        ),
+                        kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                        internal_type: ::core::option::Option::Some(
+                            ::std::borrow::ToOwned::to_owned("address"),
+                        ),
+                    },
+                ],
+            }),
+            functions: ::core::convert::From::from([
+                (
+                    ::std::borrow::ToOwned::to_owned("claim"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("claim"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("claimable"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("proof"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::FixedBytes(32usize),
+                                        ),
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("bytes32[]"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::NonPayable,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("morphoRewardsDistributor"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned(
+                                "morphoRewardsDistributor",
+                            ),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Address,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned(
+                                            "contract RewardsDistributor",
+                                        ),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+            ]),
+            events: ::std::collections::BTreeMap::new(),
+            errors: ::std::collections::BTreeMap::new(),
+            receive: false,
+            fallback: false,
+        }
+    }
+    ///The parsed JSON ABI of the contract.
+    pub static MORPHOREWARDHANDLER_ABI: ::ethers::contract::Lazy<
+        ::ethers::core::abi::Abi,
+    > = ::ethers::contract::Lazy::new(__abi);
+    #[rustfmt::skip]
+    const __BYTECODE: &[u8] = b"`\xA0`@R4\x80\x15a\0\x10W`\0\x80\xFD[P`@Qa\x03\x1C8\x03\x80a\x03\x1C\x839\x81\x01`@\x81\x90Ra\0/\x91a\0@V[`\x01`\x01`\xA0\x1B\x03\x16`\x80Ra\0pV[`\0` \x82\x84\x03\x12\x15a\0RW`\0\x80\xFD[\x81Q`\x01`\x01`\xA0\x1B\x03\x81\x16\x81\x14a\0iW`\0\x80\xFD[\x93\x92PPPV[`\x80Qa\x02\x8Ca\0\x90`\09`\0\x81\x81`U\x01R`\xAA\x01Ra\x02\x8C`\0\xF3\xFE`\x80`@R4\x80\x15a\0\x10W`\0\x80\xFD[P`\x046\x10a\x006W`\x005`\xE0\x1C\x80c/R\xEB\xB7\x14a\0;W\x80c[]Mx\x14a\0PW[`\0\x80\xFD[a\0Na\0I6`\x04a\x01/V[a\0\x93V[\0[a\0w\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[`@Q`\x01`\x01`\xA0\x1B\x03\x90\x91\x16\x81R` \x01`@Q\x80\x91\x03\x90\xF3[`@Qc\x0FD\xFE\x1D`\xE2\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x16\x90c=\x13\xF8t\x90a\0\xE3\x900\x90\x86\x90\x86\x90`\x04\x01a\x01\xF9V[`\0`@Q\x80\x83\x03\x81`\0\x87\x80;\x15\x80\x15a\0\xFDW`\0\x80\xFD[PZ\xF1\x15\x80\x15a\x01\x11W=`\0\x80>=`\0\xFD[PPPPPPV[cNH{q`\xE0\x1B`\0R`A`\x04R`$`\0\xFD[`\0\x80`@\x83\x85\x03\x12\x15a\x01BW`\0\x80\xFD[\x825\x91P` \x80\x84\x015g\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x80\x82\x11\x15a\x01bW`\0\x80\xFD[\x81\x86\x01\x91P\x86`\x1F\x83\x01\x12a\x01vW`\0\x80\xFD[\x815\x81\x81\x11\x15a\x01\x88Wa\x01\x88a\x01\x19V[\x80`\x05\x1B`@Q`\x1F\x19`?\x83\x01\x16\x81\x01\x81\x81\x10\x85\x82\x11\x17\x15a\x01\xADWa\x01\xADa\x01\x19V[`@R\x91\x82R\x84\x82\x01\x92P\x83\x81\x01\x85\x01\x91\x89\x83\x11\x15a\x01\xCBW`\0\x80\xFD[\x93\x85\x01\x93[\x82\x85\x10\x15a\x01\xE9W\x845\x84R\x93\x85\x01\x93\x92\x85\x01\x92a\x01\xD0V[\x80\x96PPPPPPP\x92P\x92\x90PV[`\x01`\x01`\xA0\x1B\x03\x84\x16\x81R` \x80\x82\x01\x84\x90R```@\x83\x01\x81\x90R\x83Q\x90\x83\x01\x81\x90R`\0\x91\x84\x81\x01\x91`\x80\x85\x01\x90\x84[\x81\x81\x10\x15a\x02HW\x84Q\x83R\x93\x83\x01\x93\x91\x83\x01\x91`\x01\x01a\x02,V[P\x90\x98\x97PPPPPPPPV\xFE\xA2dipfsX\"\x12 \x95\x17,\x1FCz\xBBI\xF5J\x90\x16\xE5\x13/\xF70\xF3\xCEa\xEA\xAEQ\x94\x03Y\x81y\xB1\x16\xC3odsolcC\0\x08\x10\x003";
+    /// The bytecode of the contract.
+    pub static MORPHOREWARDHANDLER_BYTECODE: ::ethers::core::types::Bytes = ::ethers::core::types::Bytes::from_static(
+        __BYTECODE,
+    );
+    #[rustfmt::skip]
+    const __DEPLOYED_BYTECODE: &[u8] = b"`\x80`@R4\x80\x15a\0\x10W`\0\x80\xFD[P`\x046\x10a\x006W`\x005`\xE0\x1C\x80c/R\xEB\xB7\x14a\0;W\x80c[]Mx\x14a\0PW[`\0\x80\xFD[a\0Na\0I6`\x04a\x01/V[a\0\x93V[\0[a\0w\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x81V[`@Q`\x01`\x01`\xA0\x1B\x03\x90\x91\x16\x81R` \x01`@Q\x80\x91\x03\x90\xF3[`@Qc\x0FD\xFE\x1D`\xE2\x1B\x81R`\x01`\x01`\xA0\x1B\x03\x7F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x16\x90c=\x13\xF8t\x90a\0\xE3\x900\x90\x86\x90\x86\x90`\x04\x01a\x01\xF9V[`\0`@Q\x80\x83\x03\x81`\0\x87\x80;\x15\x80\x15a\0\xFDW`\0\x80\xFD[PZ\xF1\x15\x80\x15a\x01\x11W=`\0\x80>=`\0\xFD[PPPPPPV[cNH{q`\xE0\x1B`\0R`A`\x04R`$`\0\xFD[`\0\x80`@\x83\x85\x03\x12\x15a\x01BW`\0\x80\xFD[\x825\x91P` \x80\x84\x015g\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x80\x82\x11\x15a\x01bW`\0\x80\xFD[\x81\x86\x01\x91P\x86`\x1F\x83\x01\x12a\x01vW`\0\x80\xFD[\x815\x81\x81\x11\x15a\x01\x88Wa\x01\x88a\x01\x19V[\x80`\x05\x1B`@Q`\x1F\x19`?\x83\x01\x16\x81\x01\x81\x81\x10\x85\x82\x11\x17\x15a\x01\xADWa\x01\xADa\x01\x19V[`@R\x91\x82R\x84\x82\x01\x92P\x83\x81\x01\x85\x01\x91\x89\x83\x11\x15a\x01\xCBW`\0\x80\xFD[\x93\x85\x01\x93[\x82\x85\x10\x15a\x01\xE9W\x845\x84R\x93\x85\x01\x93\x92\x85\x01\x92a\x01\xD0V[\x80\x96PPPPPPP\x92P\x92\x90PV[`\x01`\x01`\xA0\x1B\x03\x84\x16\x81R` \x80\x82\x01\x84\x90R```@\x83\x01\x81\x90R\x83Q\x90\x83\x01\x81\x90R`\0\x91\x84\x81\x01\x91`\x80\x85\x01\x90\x84[\x81\x81\x10\x15a\x02HW\x84Q\x83R\x93\x83\x01\x93\x91\x83\x01\x91`\x01\x01a\x02,V[P\x90\x98\x97PPPPPPPPV\xFE\xA2dipfsX\"\x12 \x95\x17,\x1FCz\xBBI\xF5J\x90\x16\xE5\x13/\xF70\xF3\xCEa\xEA\xAEQ\x94\x03Y\x81y\xB1\x16\xC3odsolcC\0\x08\x10\x003";
+    /// The deployed bytecode of the contract.
+    pub static MORPHOREWARDHANDLER_DEPLOYED_BYTECODE: ::ethers::core::types::Bytes = ::ethers::core::types::Bytes::from_static(
+        __DEPLOYED_BYTECODE,
+    );
+    pub struct MorphoRewardHandler<M>(::ethers::contract::Contract<M>);
+    impl<M> ::core::clone::Clone for MorphoRewardHandler<M> {
+        fn clone(&self) -> Self {
+            Self(::core::clone::Clone::clone(&self.0))
+        }
+    }
+    impl<M> ::core::ops::Deref for MorphoRewardHandler<M> {
+        type Target = ::ethers::contract::Contract<M>;
         fn deref(&self) -> &Self::Target {
             &self.0
         }
     }
-    impl<M: ethers::providers::Middleware> std::fmt::Debug for MorphoRewardHandler<M> {
-        fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-            f.debug_tuple(stringify!(MorphoRewardHandler))
+    impl<M> ::core::ops::DerefMut for MorphoRewardHandler<M> {
+        fn deref_mut(&mut self) -> &mut Self::Target {
+            &mut self.0
+        }
+    }
+    impl<M> ::core::fmt::Debug for MorphoRewardHandler<M> {
+        fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+            f.debug_tuple(::core::stringify!(MorphoRewardHandler))
                 .field(&self.address())
                 .finish()
         }
     }
-    impl<'a, M: ethers::providers::Middleware> MorphoRewardHandler<M> {
-        #[doc = r" Creates a new contract instance with the specified `ethers`"]
-        #[doc = r" client at the given `Address`. The contract derefs to a `ethers::Contract`"]
-        #[doc = r" object"]
-        pub fn new<T: Into<ethers::core::types::Address>>(
+    impl<M: ::ethers::providers::Middleware> MorphoRewardHandler<M> {
+        /// Creates a new contract instance with the specified `ethers` client at
+        /// `address`. The contract derefs to a `ethers::Contract` object.
+        pub fn new<T: Into<::ethers::core::types::Address>>(
             address: T,
             client: ::std::sync::Arc<M>,
         ) -> Self {
-            let contract = ethers::contract::Contract::new(
-                address.into(),
+            Self(
+                ::ethers::contract::Contract::new(
+                    address.into(),
+                    MORPHOREWARDHANDLER_ABI.clone(),
+                    client,
+                ),
+            )
+        }
+        /// Constructs the general purpose `Deployer` instance based on the provided constructor arguments and sends it.
+        /// Returns a new instance of a deployer that returns an instance of this contract after sending the transaction
+        ///
+        /// Notes:
+        /// - If there are no constructor arguments, you should pass `()` as the argument.
+        /// - The default poll duration is 7 seconds.
+        /// - The default number of confirmations is 1 block.
+        ///
+        ///
+        /// # Example
+        ///
+        /// Generate contract bindings with `abigen!` and deploy a new contract instance.
+        ///
+        /// *Note*: this requires a `bytecode` and `abi` object in the `greeter.json` artifact.
+        ///
+        /// ```ignore
+        /// # async fn deploy<M: ethers::providers::Middleware>(client: ::std::sync::Arc<M>) {
+        ///     abigen!(Greeter, "../greeter.json");
+        ///
+        ///    let greeter_contract = Greeter::deploy(client, "Hello world!".to_string()).unwrap().send().await.unwrap();
+        ///    let msg = greeter_contract.greet().call().await.unwrap();
+        /// # }
+        /// ```
+        pub fn deploy<T: ::ethers::core::abi::Tokenize>(
+            client: ::std::sync::Arc<M>,
+            constructor_args: T,
+        ) -> ::core::result::Result<
+            ::ethers::contract::builders::ContractDeployer<M, Self>,
+            ::ethers::contract::ContractError<M>,
+        > {
+            let factory = ::ethers::contract::ContractFactory::new(
                 MORPHOREWARDHANDLER_ABI.clone(),
+                MORPHOREWARDHANDLER_BYTECODE.clone().into(),
                 client,
             );
-            Self(contract)
+            let deployer = factory.deploy(constructor_args)?;
+            let deployer = ::ethers::contract::ContractDeployer::new(deployer);
+            Ok(deployer)
         }
-        #[doc = "Calls the contract's `claim` (0x2f52ebb7) function"]
+        ///Calls the contract's `claim` (0x2f52ebb7) function
         pub fn claim(
             &self,
-            claimable: ethers::core::types::U256,
+            claimable: ::ethers::core::types::U256,
             proof: ::std::vec::Vec<[u8; 32]>,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([47, 82, 235, 183], (claimable, proof))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `morphoRewardsDistributor` (0x5b5d4d78) function"]
+        ///Calls the contract's `morphoRewardsDistributor` (0x5b5d4d78) function
         pub fn morpho_rewards_distributor(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::ethers::core::types::Address,
+        > {
             self.0
                 .method_hash([91, 93, 77, 120], ())
                 .expect("method not found (this should never happen)")
         }
     }
-    #[doc = "Container type for all input parameters for the `claim`function with signature `claim(uint256,bytes32[])` and selector `[47, 82, 235, 183]`"]
+    impl<M: ::ethers::providers::Middleware> From<::ethers::contract::Contract<M>>
+    for MorphoRewardHandler<M> {
+        fn from(contract: ::ethers::contract::Contract<M>) -> Self {
+            Self::new(contract.address(), contract.client())
+        }
+    }
+    ///Container type for all input parameters for the `claim` function with signature `claim(uint256,bytes32[])` and selector `0x2f52ebb7`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "claim", abi = "claim(uint256,bytes32[])")]
     pub struct ClaimCall {
-        pub claimable: ethers::core::types::U256,
+        pub claimable: ::ethers::core::types::U256,
         pub proof: ::std::vec::Vec<[u8; 32]>,
     }
-    #[doc = "Container type for all input parameters for the `morphoRewardsDistributor`function with signature `morphoRewardsDistributor()` and selector `[91, 93, 77, 120]`"]
+    ///Container type for all input parameters for the `morphoRewardsDistributor` function with signature `morphoRewardsDistributor()` and selector `0x5b5d4d78`
     #[derive(
         Clone,
-        Debug,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        serde::Deserialize,
+        serde::Serialize,
         Default,
-        Eq,
+        Debug,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
-        serde :: Deserialize,
-        serde :: Serialize,
+        Eq,
+        Hash
     )]
     #[ethcall(name = "morphoRewardsDistributor", abi = "morphoRewardsDistributor()")]
     pub struct MorphoRewardsDistributorCall;
-    #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
+    ///Container type for all of the contract's call
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Deserialize,
+        serde::Serialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum MorphoRewardHandlerCalls {
         Claim(ClaimCall),
         MorphoRewardsDistributor(MorphoRewardsDistributorCall),
     }
-    impl ethers::core::abi::AbiDecode for MorphoRewardHandlerCalls {
-        fn decode(data: impl AsRef<[u8]>) -> Result<Self, ethers::core::abi::AbiError> {
-            if let Ok(decoded) = <ClaimCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
-                return Ok(MorphoRewardHandlerCalls::Claim(decoded));
+    impl ::ethers::core::abi::AbiDecode for MorphoRewardHandlerCalls {
+        fn decode(
+            data: impl AsRef<[u8]>,
+        ) -> ::core::result::Result<Self, ::ethers::core::abi::AbiError> {
+            let data = data.as_ref();
+            if let Ok(decoded) = <ClaimCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Claim(decoded));
             }
-            if let Ok(decoded) =
-                <MorphoRewardsDistributorCall as ethers::core::abi::AbiDecode>::decode(
-                    data.as_ref(),
-                )
-            {
-                return Ok(MorphoRewardHandlerCalls::MorphoRewardsDistributor(decoded));
+            if let Ok(decoded) = <MorphoRewardsDistributorCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::MorphoRewardsDistributor(decoded));
             }
-            Err(ethers::core::abi::Error::InvalidData.into())
+            Err(::ethers::core::abi::Error::InvalidData.into())
         }
     }
-    impl ethers::core::abi::AbiEncode for MorphoRewardHandlerCalls {
+    impl ::ethers::core::abi::AbiEncode for MorphoRewardHandlerCalls {
         fn encode(self) -> Vec<u8> {
             match self {
-                MorphoRewardHandlerCalls::Claim(element) => element.encode(),
-                MorphoRewardHandlerCalls::MorphoRewardsDistributor(element) => element.encode(),
+                Self::Claim(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::MorphoRewardsDistributor(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
             }
         }
     }
-    impl ::std::fmt::Display for MorphoRewardHandlerCalls {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    impl ::core::fmt::Display for MorphoRewardHandlerCalls {
+        fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
             match self {
-                MorphoRewardHandlerCalls::Claim(element) => element.fmt(f),
-                MorphoRewardHandlerCalls::MorphoRewardsDistributor(element) => element.fmt(f),
+                Self::Claim(element) => ::core::fmt::Display::fmt(element, f),
+                Self::MorphoRewardsDistributor(element) => {
+                    ::core::fmt::Display::fmt(element, f)
+                }
             }
         }
     }
-    impl ::std::convert::From<ClaimCall> for MorphoRewardHandlerCalls {
-        fn from(var: ClaimCall) -> Self {
-            MorphoRewardHandlerCalls::Claim(var)
+    impl ::core::convert::From<ClaimCall> for MorphoRewardHandlerCalls {
+        fn from(value: ClaimCall) -> Self {
+            Self::Claim(value)
         }
     }
-    impl ::std::convert::From<MorphoRewardsDistributorCall> for MorphoRewardHandlerCalls {
-        fn from(var: MorphoRewardsDistributorCall) -> Self {
-            MorphoRewardHandlerCalls::MorphoRewardsDistributor(var)
+    impl ::core::convert::From<MorphoRewardsDistributorCall>
+    for MorphoRewardHandlerCalls {
+        fn from(value: MorphoRewardsDistributorCall) -> Self {
+            Self::MorphoRewardsDistributor(value)
         }
     }
+    ///Container type for all return fields from the `morphoRewardsDistributor` function with signature `morphoRewardsDistributor()` and selector `0x5b5d4d78`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        serde::Deserialize,
+        serde::Serialize,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct MorphoRewardsDistributorReturn(pub ::ethers::core::types::Address);
 }

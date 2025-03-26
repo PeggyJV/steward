@@ -1,5 +1,6 @@
 use crate::application::APP;
 use abscissa_core::{clap::Parser, Application, Command, Runnable};
+use deep_space::PrivateKey;
 
 #[derive(Command, Debug, Default, Parser)]
 #[clap(
