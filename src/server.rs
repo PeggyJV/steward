@@ -3,7 +3,7 @@ use std::{net::SocketAddr, sync::Arc};
 use crate::{
     config::StewardConfig,
     cork::CorkHandler,
-    // encode::EncodingHandler,
+    encode::EncodingHandler,
     error::{Error, ErrorKind},
     prelude::APP,
     proto::{
@@ -30,6 +30,7 @@ use rustls::{
     pki_types::{pem::PemObject, PrivateKeyDer},
     server::WebPkiClientVerifier,
 };
+use steward_proto::proto::encoding_service_server::EncodingServiceServer;
 use tokio::{net::TcpListener, sync::mpsc::Receiver};
 use tokio_rustls::{rustls::pki_types::CertificateDer, TlsAcceptor};
 use tokio_util::sync::CancellationToken;
@@ -154,35 +155,30 @@ pub(crate) async fn start_server(cancellation_token: CancellationToken) {
     }
 }
 
-// pub(crate) async fn start_encode_server() {
-//     // Reflection required for certain clients to function... such as grpcurl
-//     let contents = FILE_DESCRIPTOR_SET.to_vec();
-//     let proto_descriptor_service = tonic_reflection::server::Builder::configure()
-//         .register_encoded_file_descriptor_set(contents.as_slice())
-//         .build_v1()
-//         .unwrap_or_else(|err| {
-//             status_err!("failed to build descriptor service: {}", err);
-//             std::process::exit(1)
-//         });
-//     let config = APP.config();
-//     let server_config = load_encoding_server_config(&config)
-//         .await
-//         .unwrap_or_else(|err| {
-//             status_err!("failed to load server config: {}", err);
-//             std::process::exit(1)
-//         });
+pub(crate) async fn start_encode_server() {
+    // Reflection required for certain clients to function... such as grpcurl
+    let contents = FILE_DESCRIPTOR_SET.to_vec();
+    let proto_descriptor_service = tonic_reflection::server::Builder::configure()
+        .register_encoded_file_descriptor_set(contents.as_slice())
+        .build_v1()
+        .unwrap_or_else(|err| {
+            status_err!("failed to build descriptor service: {}", err);
+            std::process::exit(1)
+        });
+    let config = APP.config();
+    let address = socket_addr(&config).expect("failed to get socket address");
 
-//     info!("test server listening on {}", server_config.address);
-//     if let Err(err) = tonic::transport::Server::builder()
-//         .add_service(EncodingServiceServer::new(EncodingHandler))
-//         .add_service(proto_descriptor_service)
-//         .serve(server_config.address)
-//         .await
-//     {
-//         status_err!("server error: {}", err);
-//         std::process::exit(1)
-//     }
-// }
+    info!("test server listening on {}", address);
+    if let Err(err) = tonic::transport::Server::builder()
+        .add_service(EncodingServiceServer::new(EncodingHandler))
+        .add_service(proto_descriptor_service)
+        .serve(address)
+        .await
+    {
+        status_err!("server error: {}", err);
+        std::process::exit(1)
+    }
+}
 
 pub(crate) async fn get_client_root_store() -> Result<rustls::RootCertStore, Error> {
     let mut trust_store = rustls::RootCertStore::empty();
@@ -244,17 +240,6 @@ pub(crate) fn socket_addr(config: &Arc<StewardConfig>) -> Result<SocketAddr, Err
 
     Ok(address)
 }
-
-// pub async fn load_encoding_server_config(
-//     config: &Arc<StewardConfig>,
-// ) -> Result<ServerConfig, Error> {
-//     let address = socket_addr(config)?;
-
-//     Ok(ServerConfig {
-//         tls_config: None,
-//         address,
-//     })
-// }
 
 /// A client is authorized to publish to a subscription if the following criteria are met:
 /// 1. The client certificate has an authority key identifier extension whose value is the key of an entry
