@@ -7,6 +7,8 @@ use crate::{prelude::APP, somm_send::MAX_GAS_PER_BLOCK};
 use abscissa_core::Application;
 use deep_space::{Address as CosmosAddress, CosmosPrivateKey, PrivateKey};
 use ethers::signers::LocalWallet;
+use ethers_gcp_kms_signer::{GcpKeyRingRef, GcpKmsProvider, GcpKmsSigner};
+use gravity_bridge::gravity::ethereum::types::SignerType;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use signatory::FsKeyStore;
@@ -78,6 +80,40 @@ impl StewardConfig {
         let ethers_secret = ethers::core::k256::SecretKey::from_bytes(&bytes).unwrap();
         let signing_key = ethers::core::k256::ecdsa::SigningKey::from(ethers_secret);
         LocalWallet::from(signing_key)
+    }
+
+    /// Loads an Ethereum signer either from a local keystore or via GCP KMS
+    pub async fn load_ethers_signer(
+        &self,
+        name: String,
+    ) -> Result<SignerType, Box<dyn std::error::Error>> {
+        if let Some(eth_remote) = &self.ethereum.remote_signer {
+            if eth_remote.use_remote {
+                // Create the GCP key ring reference
+                let keyring = GcpKeyRingRef::new(
+                    &eth_remote.project_id,
+                    &eth_remote.location,
+                    &eth_remote.key_ring,
+                );
+
+                // Create the GCP KMS provider
+                let provider = GcpKmsProvider::new(keyring).await?;
+
+                // Create the remote signer with the key name and version
+                let gcp_kms_signer = GcpKmsSigner::new(
+                    provider,
+                    eth_remote.key_name.clone(),
+                    1, // Default to version 1
+                    1, // Default to 1 signature attempt
+                )
+                .await?;
+
+                return Ok(SignerType::GcpKms(gcp_kms_signer));
+            }
+        }
+        // Fallback: load from local keystore
+        let local_wallet = self.load_ethers_wallet(name);
+        Ok(SignerType::Local(local_wallet))
     }
 }
 
@@ -177,13 +213,15 @@ impl Default for PubsubConfig {
 
 /// EthereumSection for ethereum rpc and derivation path
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(default)]
+#[serde(default, deny_unknown_fields)]
 pub struct EthereumSection {
     pub blocks_to_search: u64,
     pub gas_price_multiplier: f32,
     pub gas_multiplier: f32,
     pub key_derivation_path: String,
     pub rpc: String,
+    /// Optional remote signer configuration
+    pub remote_signer: Option<EthereumRemoteSignerConfig>,
 }
 
 impl Default for EthereumSection {
@@ -194,6 +232,38 @@ impl Default for EthereumSection {
             gas_multiplier: 1.0f32,
             key_derivation_path: "m/44'/60'/0'/0/0".to_owned(),
             rpc: "http://localhost:8545".to_owned(),
+            remote_signer: None,
+        }
+    }
+}
+
+/// Configuration for GCP KMS remote signing
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct EthereumRemoteSignerConfig {
+    /// Whether to use the remote signer
+    pub use_remote: bool,
+    /// The GCP project ID
+    pub project_id: String,
+    /// The GCP location (e.g., "global" or "us-central1")
+    pub location: String,
+    /// The key ring in GCP KMS
+    pub key_ring: String,
+    /// The name of the key
+    pub key_name: String,
+    /// Optional version of the key
+    pub key_version: Option<String>,
+}
+
+impl Default for EthereumRemoteSignerConfig {
+    fn default() -> Self {
+        Self {
+            use_remote: false,
+            project_id: String::new(),
+            location: String::new(),
+            key_ring: String::new(),
+            key_name: String::new(),
+            key_version: None,
         }
     }
 }

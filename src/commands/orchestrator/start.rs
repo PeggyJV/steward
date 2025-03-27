@@ -46,10 +46,6 @@ impl Runnable for StartCommand {
 
         let cosmos_key = config.load_deep_space_key(self.cosmos_key.clone());
         let cosmos_address = cosmos_key.to_address(&cosmos_prefix).unwrap();
-
-        let ethereum_wallet = config.load_ethers_wallet(self.ethereum_key.clone());
-        let ethereum_address = ethereum_wallet.address();
-
         let contract_address: EthAddress = config
             .gravity
             .contract
@@ -74,6 +70,11 @@ impl Runnable for StartCommand {
 
             let mut grpc = connections.grpc.clone().unwrap();
             let contact = connections.contact.clone().unwrap();
+            let ethers_signer = config
+                .load_ethers_signer(self.ethereum_key.clone())
+                .await
+                .expect("Could not load Ethereum signer");
+            let ethereum_address = ethers_signer.address();
             let provider = connections.eth_provider.clone().unwrap();
             let chain_id = provider
                 .get_chainid()
@@ -82,7 +83,7 @@ impl Runnable for StartCommand {
             let chain_id =
                 downcast_to_u64(chain_id).expect("Chain ID overflowed when downcasting to u64");
             let eth_client =
-                SignerMiddleware::new(provider, ethereum_wallet.clone().with_chain_id(chain_id));
+                SignerMiddleware::new(provider, ethers_signer.clone().with_chain_id(chain_id));
             let eth_client = Arc::new(eth_client);
 
             info!("Starting Relayer + Oracle + Ethereum Signer");
