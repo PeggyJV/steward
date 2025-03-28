@@ -35,8 +35,7 @@ cosmos-sdk-proto-althea = "0.18.0"
 deep_space = "2.27.4"
 ethers = "2.0.14"
 futures = "0.3"
-# gravity_bridge = { git = "https://github.com/PeggyJV/gravity-bridge", rev = "d49bfb08b9619f2ac25364112a4a38b289446f0e" }
-gravity_bridge = { path = "../gravity-bridge/orchestrator" }
+gravity_bridge = { git = "https://github.com/PeggyJV/gravity-bridge", rev = "86a3d5760a566225fca493a6c40aec8a9e069c4f" }
 hex = "0.4"
 http = "1"
 http-body-util = "0.1"
