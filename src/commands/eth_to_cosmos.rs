@@ -1,8 +1,10 @@
 use crate::application::APP;
 use abscissa_core::{clap::Parser, status_err, Application, Command, Runnable};
 use deep_space::address::Address as CosmosAddress;
-use ethers::prelude::*;
-use ethers::types::Address as EthAddress;
+use ethers::middleware::SignerMiddleware;
+use ethers::providers::Middleware;
+use ethers::signers::Signer;
+use ethers::types::{Address as EthAddress, U256};
 use gravity_bridge::gravity::ethereum::erc20_utils::get_erc20_balance;
 use gravity_bridge::gravity::ethereum::send_to_cosmos::send_to_cosmos;
 use gravity_bridge::gravity::utils::connection_prep::{check_for_eth, create_rpc_connections};
@@ -46,8 +48,6 @@ impl Runnable for EthToCosmosCmd {
             .parse()
             .expect("Invalid ERC20 contract address!");
 
-        let ethereum_wallet = config.load_ethers_wallet(self.ethereum_key.clone());
-
         let gravity_address: EthAddress = self
             .gravity_address
             .parse()
@@ -65,6 +65,10 @@ impl Runnable for EthToCosmosCmd {
             )
             .await;
 
+            let ethers_signer = config
+                .load_ethers_signer(self.ethereum_key.clone())
+                .await
+                .expect("Could not load Ethereum signer");
             let provider = connections.eth_provider.clone().unwrap();
             let chain_id = provider
                 .get_chainid()
@@ -73,7 +77,7 @@ impl Runnable for EthToCosmosCmd {
             let chain_id =
                 downcast_to_u64(chain_id).expect("Chain ID overflowed when downcasting to u64");
             let eth_client =
-                SignerMiddleware::new(provider, ethereum_wallet.clone().with_chain_id(chain_id));
+                SignerMiddleware::new(provider, ethers_signer.clone().with_chain_id(chain_id));
             let eth_client = Arc::new(eth_client);
             let cosmos_dest: CosmosAddress = self.cosmos_dest.parse().unwrap();
             let ethereum_address = eth_client.address();
