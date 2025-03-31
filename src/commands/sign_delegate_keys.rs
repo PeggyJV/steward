@@ -1,6 +1,8 @@
 use crate::{application::APP, prelude::*};
 use abscissa_core::{clap::Parser, Application, Command, Runnable};
+use ethers::signers::Signer;
 use gravity_bridge::gravity_proto::gravity as proto;
+use rustls::crypto::CryptoProvider;
 use std::time::Duration;
 
 /// Sign delegate keys
@@ -19,26 +21,31 @@ pub struct SignDelegateKeysCmd {
 impl Runnable for SignDelegateKeysCmd {
     fn run(&self) {
         let config = APP.config();
+        rustls::crypto::ring::default_provider().install_default();
         abscissa_tokio::run_with_actix(&APP, async {
-            let key = config.load_clarity_key(self.ethereum_key.clone());
-            let address = self.val_address.parse().expect("Could not parse address");
+            let signer = config
+                .load_ethers_signer(self.ethereum_key.clone())
+                .await
+                .expect("Failed to load signer");
+            // let address = self.val_address.parse().expect("Could not parse address");
 
-            let nonce: u64 = match self.nonce {
-                Some(nonce) => nonce,
-                None => {
-                    let timeout = Duration::from_secs(10);
-                    let contact = deep_space::Contact::new(
-                        &config.cosmos.grpc,
-                        timeout,
-                        &config.cosmos.prefix,
-                    )
-                    .expect("Could not create contact");
+            // let nonce: u64 = match self.nonce {
+            //     Some(nonce) => nonce,
+            //     None => {
+            //         let timeout = Duration::from_secs(10);
+            //         let contact = deep_space::Contact::new(
+            //             &config.cosmos.grpc,
+            //             timeout,
+            //             &config.cosmos.prefix,
+            //         )
+            //         .expect("Could not create contact");
 
-                    let account_info = contact.get_account_info(address).await;
-                    let account_info = account_info.expect("Did not receive account info");
-                    account_info.sequence
-                }
-            };
+            //         let account_info = contact.get_account_info(address).await;
+            //         let account_info = account_info.expect("Did not receive account info");
+            //         account_info.sequence
+            //     }
+            // };
+            let nonce = 1;
 
             let msg = proto::DelegateKeysSignMsg {
                 validator_address: self.val_address.clone(),
@@ -49,7 +56,10 @@ impl Runnable for SignDelegateKeysCmd {
             let mut buf = bytes::BytesMut::with_capacity(size);
             prost::Message::encode(&msg, &mut buf).expect("Failed to encode DelegateKeysSignMsg!");
 
-            let signature = key.sign_ethereum_msg(&buf);
+            let signature = signer
+                .sign_message(&buf)
+                .await
+                .expect("Failed to sign message");
 
             println!("{}", signature);
         })
