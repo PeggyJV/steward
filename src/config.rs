@@ -111,6 +111,7 @@ impl StewardConfig {
                 return Ok(SignerType::GcpKms(gcp_kms_signer));
             }
         }
+
         // Fallback: load from local keystore
         let local_wallet = self.load_ethers_wallet(name);
         Ok(SignerType::Local(local_wallet))

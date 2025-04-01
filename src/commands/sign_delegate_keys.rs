@@ -27,25 +27,27 @@ impl Runnable for SignDelegateKeysCmd {
                 .load_ethers_signer(self.ethereum_key.clone())
                 .await
                 .expect("Failed to load signer");
-            // let address = self.val_address.parse().expect("Could not parse address");
+            println!("signer: {:#x}", signer.address());
+            let address = self.val_address.parse().expect("Could not parse address");
 
-            // let nonce: u64 = match self.nonce {
-            //     Some(nonce) => nonce,
-            //     None => {
-            //         let timeout = Duration::from_secs(10);
-            //         let contact = deep_space::Contact::new(
-            //             &config.cosmos.grpc,
-            //             timeout,
-            //             &config.cosmos.prefix,
-            //         )
-            //         .expect("Could not create contact");
+            let nonce: u64 = match self.nonce {
+                Some(nonce) => nonce,
+                None => {
+                    let timeout = Duration::from_secs(10);
+                    let contact = deep_space::Contact::new(
+                        &config.cosmos.grpc,
+                        timeout,
+                        &config.cosmos.prefix,
+                    )
+                    .expect("Could not create contact");
 
-            //         let account_info = contact.get_account_info(address).await;
-            //         let account_info = account_info.expect("Did not receive account info");
-            //         account_info.sequence
-            //     }
-            // };
-            let nonce = 1;
+                    let account_info = contact.get_account_info(address).await;
+                    let account_info = account_info.expect("Did not receive account info");
+                    account_info.sequence
+                }
+            };
+
+            println!("nonce: {}", nonce);
 
             let msg = proto::DelegateKeysSignMsg {
                 validator_address: self.val_address.clone(),
