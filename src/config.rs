@@ -103,7 +103,7 @@ impl StewardConfig {
                 let gcp_kms_signer = GcpKmsSigner::new(
                     provider,
                     eth_remote.key_name.clone(),
-                    1, // Default to version 1
+                    1,
                     1, // Default to 1 signature attempt
                 )
                 .await?;
@@ -111,7 +111,9 @@ impl StewardConfig {
                 return Ok(SignerType::GcpKms(gcp_kms_signer));
             }
         }
+
         // Fallback: load from local keystore
+        panic!("SHouldnt be using local");
         let local_wallet = self.load_ethers_wallet(name);
         Ok(SignerType::Local(local_wallet))
     }
