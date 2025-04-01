@@ -1,6 +1,6 @@
 use crate::{application::APP, prelude::*};
 use abscissa_core::{clap::Parser, Application, Command, Runnable};
-use ethers::signers::Signer;
+use ethers::{signers::Signer, utils::keccak256};
 use gravity_bridge::gravity_proto::gravity as proto;
 use rustls::crypto::CryptoProvider;
 use std::time::Duration;
@@ -30,8 +30,9 @@ impl Runnable for SignDelegateKeysCmd {
 
             println!("signer: {:#x}", signer.address());
 
-            let clarity_signer = config.load_clarity_key(self.ethereum_key.clone());
-            let local_wallet = config.load_ethers_wallet(self.ethereum_key.clone());
+            println!("signer: {:#x}", signer.address());
+            println!("signer: {:#x}", signer.address());
+
             // let address = self.val_address.parse().expect("Could not parse address");
 
             // let nonce: u64 = match self.nonce {
@@ -51,7 +52,7 @@ impl Runnable for SignDelegateKeysCmd {
             //     }
             // };
 
-            let nonce = 1;
+            let nonce = 2;
 
             println!("nonce: {}", nonce);
 
@@ -65,17 +66,16 @@ impl Runnable for SignDelegateKeysCmd {
             prost::Message::encode(&msg, &mut buf).expect("Failed to encode DelegateKeysSignMsg!");
 
 
+            let hashed_buf = keccak256(&buf);
             let signature = signer
-                .sign_message(&buf)
+                .sign_message(&hashed_buf)
                 .await
                 .expect("Failed to sign message");
 
-            let local_signature = local_wallet.sign_message(&buf).await.expect("Failed to sign message");
-            let clarity_signature = clarity_signer.sign_ethereum_msg(&buf);
-
             println!("SignerType (ethers) signature: {}", signature);
-            println!("LocalWallet (ethers) signature: {}", local_signature);
-            println!("clarity::PrivateKey signature: {}", clarity_signature);
+
+            let recovered_address = signature.recover(hashed_buf).expect("Failed to verify signature");
+            println!("Recovered address: {:#x}", recovered_address);
         })
         .unwrap_or_else(|e| {
             status_err!("executor exited with error: {}", e);

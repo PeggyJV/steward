@@ -89,7 +89,6 @@ impl StewardConfig {
     ) -> Result<SignerType, Box<dyn std::error::Error>> {
         if let Some(eth_remote) = &self.ethereum.remote_signer {
             if eth_remote.use_remote {
-                panic!("SHouldnt be using remote");
                 // Create the GCP key ring reference
                 let keyring = GcpKeyRingRef::new(
                     &eth_remote.project_id,
@@ -114,6 +113,7 @@ impl StewardConfig {
         }
 
         // Fallback: load from local keystore
+        panic!("SHouldnt be using local");
         let local_wallet = self.load_ethers_wallet(name);
         Ok(SignerType::Local(local_wallet))
     }
