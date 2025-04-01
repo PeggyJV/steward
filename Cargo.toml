@@ -5,7 +5,7 @@ exclude = ["server-test"]
 resolver = "2"
 
 [workspace.package]
-version = "4.3.0-pre"
+version = "4.3.1-pre"
 edition = "2021"
 
 [workspace.dependencies]
@@ -35,7 +35,7 @@ cosmos-sdk-proto-althea = "0.18.0"
 deep_space = "2.27.4"
 ethers = "2.0.14"
 futures = "0.3"
-gravity_bridge = { git = "https://github.com/PeggyJV/gravity-bridge", rev = "86a3d5760a566225fca493a6c40aec8a9e069c4f" }
+gravity_bridge = { git = "https://github.com/PeggyJV/gravity-bridge", rev = "b63f7ca10b0dcc4e7a2cfbf6aea64e1b36d14212" }
 hex = "0.4"
 http = "1"
 http-body-util = "0.1"
