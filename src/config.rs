@@ -89,6 +89,7 @@ impl StewardConfig {
     ) -> Result<SignerType, Box<dyn std::error::Error>> {
         if let Some(eth_remote) = &self.ethereum.remote_signer {
             if eth_remote.use_remote {
+                panic!("SHouldnt be using remote");
                 // Create the GCP key ring reference
                 let keyring = GcpKeyRingRef::new(
                     &eth_remote.project_id,
@@ -103,7 +104,7 @@ impl StewardConfig {
                 let gcp_kms_signer = GcpKmsSigner::new(
                     provider,
                     eth_remote.key_name.clone(),
-                    1, // Default to version 1
+                    1,
                     1, // Default to 1 signature attempt
                 )
                 .await?;
