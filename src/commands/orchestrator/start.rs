@@ -41,6 +41,9 @@ impl Runnable for StartCommand {
         #[allow(deprecated)]
         openssl_probe::init_ssl_cert_env_vars();
 
+        // Set crypto provider
+        let _ = rustls::crypto::ring::default_provider().install_default();
+
         let config = APP.config();
         let cosmos_prefix = config.cosmos.prefix.clone();
 
