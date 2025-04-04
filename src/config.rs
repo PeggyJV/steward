@@ -103,8 +103,8 @@ impl StewardConfig {
                 let gcp_kms_signer = GcpKmsSigner::new(
                     provider,
                     eth_remote.key_name.clone(),
-                    1, // Default to version 1
-                    1, // Default to 1 signature attempt
+                    eth_remote.key_version,
+                    3, // Default to 3 signature attempts
                 )
                 .await?;
 
@@ -251,8 +251,8 @@ pub struct EthereumRemoteSignerConfig {
     pub key_ring: String,
     /// The name of the key
     pub key_name: String,
-    /// Optional version of the key
-    pub key_version: Option<String>,
+    /// Version of the key
+    pub key_version: u64,
 }
 
 impl Default for EthereumRemoteSignerConfig {
@@ -263,7 +263,7 @@ impl Default for EthereumRemoteSignerConfig {
             location: String::new(),
             key_ring: String::new(),
             key_name: String::new(),
-            key_version: None,
+            key_version: 1,
         }
     }
 }
