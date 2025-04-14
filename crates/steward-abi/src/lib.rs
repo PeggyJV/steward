@@ -1,5 +1,6 @@
 // Generated ABI definitions. This has to be manually updated when new contracts are added.
-#[allow(clippy::all)]
+#![allow(clippy::all)]
+
 pub mod aave_v2_stablecoin {
     include!("aave_v2_stablecoin.rs");
 }
