@@ -1,29 +1,8 @@
-// #![allow(clippy::all)]
 use ethers::contract::Abigen;
-use merkle_hash::{Algorithm, MerkleTree};
 use std::process;
-use std::fs;
-
-
-const HASH_ABI_FILE: &str = "hash_abi";
 
 fn main() {
-    // only generate bindings if changes have occurred
-    let previous_abi_hash = fs::read_to_string(HASH_ABI_FILE).unwrap_or_default();
-    let current_abi_hash = MerkleTree::builder("abi")
-        .algorithm(Algorithm::Blake3)
-        .hash_names(false)
-        .build()
-        .expect("abi dir merkle tree build failed")
-        .root
-        .item
-        .hash;
-    let current_abi_hash = hex::encode(current_abi_hash);
-
-    if current_abi_hash != previous_abi_hash {
-        generate_contract_abis();
-        fs::write(HASH_ABI_FILE, current_abi_hash).expect("failed to write abi hash");
-    }
+    generate_contract_abis();
 }
 
 fn generate_contract_abis() {
@@ -104,7 +83,7 @@ fn generate_contract_abis() {
     contracts.iter().for_each(|n| {
         let name = n.0;
         let file_name = n.1;
-        let abigen = match Abigen::new(name, format!("abi/{}.json", name)) {
+        let abigen = match Abigen::new(name, format!("../../abi/{}.json", name)) {
             Ok(abigen) => abigen,
             Err(e) => {
                 println!("Could not open {}.json: {}", name, e);

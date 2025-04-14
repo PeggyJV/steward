@@ -11,6 +11,9 @@ go_protos:
 rust_protos:
 	@cargo run -p steward-proto-build
 
+abi_build:
+	@cargo run -p steward-abi-build
+
 api_docs:
 	@scripts/build_api_docs.sh
 

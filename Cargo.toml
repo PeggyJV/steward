@@ -1,5 +1,5 @@
 [workspace]
-members = [".", "crates/steward-proto", "crates/steward_proto_build"]
+members = [".", "crates/steward-abi-build", "crates/steward-proto", "crates/steward_proto_build"]
 default-members = ["."]
 exclude = ["server-test"]
 resolver = "2"
@@ -105,12 +105,3 @@ hex = "0.4.3"
 once_cell = "1.2"
 tempdir = "0.3"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
-
-[build-dependencies]
-ethers = "2.0.14"
-hex = "0.4"
-merkle_hash = "3.6"
-prost-build = "0.13"
-tonic = { version = "0.12", features = ["codegen", "tls", "transport"] }
-tonic-build = "0.12"
-walkdir = "2.3.2"

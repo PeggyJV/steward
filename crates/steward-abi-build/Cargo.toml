@@ -1,0 +1,7 @@
+[package]
+name = "steward-abi-build"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+ethers = "2.0.14"
