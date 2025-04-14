@@ -22,6 +22,7 @@ use crate::{
         ETHEREUM_CHAIN_ID,
     },
     error::{Error, ErrorKind},
+    metrics::{GRPC_CONNECTION_ERRORS, GRPC_REQUESTS, SCHEDULING_FAILURES, SCHEDULING_RETRIES},
     prelude::APP,
     pubsub::cache::refresh_publisher_trust_state_cache,
 };
@@ -123,8 +124,14 @@ async fn poll_approved_proposals(
     publisher_cache_tx: Sender<()>,
 ) -> Result<(), Error> {
     let config = APP.config();
-    let mut gov_client = GovQueryClient::connect(config.cosmos.grpc.clone()).await?;
+    let mut client = GovQueryClient::connect(config.cosmos.grpc.clone())
+        .await
+        .map_err(|e| {
+            GRPC_CONNECTION_ERRORS.inc();
+            ErrorKind::GrpcError.context(e)
+        })?;
 
+    GRPC_REQUESTS.inc();
     // Tracks which pending proposals have been submitted already for skipping
     let mut pending_finalized = HashSet::<u64>::default();
 
@@ -143,7 +150,7 @@ async fn poll_approved_proposals(
         }
 
         debug!("querying proposal {}", proposal_id);
-        let proposal = match gov_client
+        let proposal = match client
             .proposal(tonic::Request::new(QueryProposalRequest { proposal_id }))
             .await
         {
@@ -155,7 +162,7 @@ async fn poll_approved_proposals(
                     let mut found_proposal = false;
 
                     for i in 1..=10 {
-                        if let Err(err) = gov_client
+                        if let Err(err) = client
                             .proposal(tonic::Request::new(QueryProposalRequest {
                                 proposal_id: proposal_id + i,
                             }))
@@ -368,22 +375,30 @@ pub async fn confirm_scheduling(
 
     if chain_id == ETHEREUM_CHAIN_ID {
         debug!("confirming gravity scheduling");
-        return Ok(client
+        let confirmed = client
             .get_scheduled_corks_by_id(&id)
             .await?
             .into_inner()
             .corks
             .iter()
-            .any(|c| c.validator == state.validator_address));
+            .any(|c| c.validator == state.validator_address);
+        if !confirmed {
+            SCHEDULING_RETRIES.inc();
+        }
+        Ok(confirmed)
     } else {
         debug!("confirming axelar scheduling");
-        return Ok(client
+        let confirmed = client
             .get_axelar_scheduled_corks_by_id(chain_id, &id)
             .await?
             .into_inner()
             .corks
             .iter()
-            .any(|c| c.validator == state.validator_address));
+            .any(|c| c.validator == state.validator_address);
+        if !confirmed {
+            SCHEDULING_RETRIES.inc();
+        }
+        Ok(confirmed)
     }
 }
 
@@ -396,6 +411,7 @@ pub async fn log_schedule_failure(
     schedule_err: Error,
     confirm_err: Option<Error>,
 ) {
+    SCHEDULING_FAILURES.inc();
     error!(
         "failed to schedule cork for proposal {}. reason: {}",
         proposal_id, schedule_err

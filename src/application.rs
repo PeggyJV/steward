@@ -75,6 +75,14 @@ impl Application for StewardApp {
         let mut components = self.state.components_mut();
         components.after_config(&config)?;
         self.config.set_once(config);
+
+        // Start metrics server
+        tokio::spawn(async move {
+            if let Err(e) = crate::start_metrics_server().await.await {
+                abscissa_core::tracing::error!("Failed to start metrics server: {}", e);
+            }
+        });
+
         Ok(())
     }
 
