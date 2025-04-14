@@ -1,9 +1,9 @@
 use ethers::{abi::AbiEncode, types::Bytes};
+use steward_abi::adaptors::convex_curve_adaptor_v1::{
+    self, ConvexCurveAdaptorV1Calls as AbiConvexCurveAdaptorV1Calls,
+};
 
 use crate::{
-    abi::adaptors::convex_curve_adaptor_v1::{
-        self, ConvexCurveAdaptorV1Calls as AbiConvexCurveAdaptorV1Calls,
-    },
     error::Error,
     proto::{convex_curve_adaptor_v1::Function, ConvexCurveAdaptorV1Calls},
     utils::{parse_selector, sp_call_error, sp_call_parse_address, string_to_u256},

@@ -5498,6 +5498,7 @@ dependencies = [
  "sha3 0.10.8",
  "signatory",
  "somm_proto",
+ "steward-abi",
  "steward-proto",
  "tempdir",
  "thiserror 1.0.69",
@@ -5514,10 +5515,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "steward-abi"
+version = "4.3.2-pre"
+dependencies = [
+ "ethers",
+ "serde",
+]
+
+[[package]]
 name = "steward-abi-build"
 version = "4.3.2-pre"
 dependencies = [
  "ethers",
+ "serde",
 ]
 
 [[package]]

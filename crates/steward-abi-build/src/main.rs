@@ -83,7 +83,7 @@ fn generate_contract_abis() {
     contracts.iter().for_each(|n| {
         let name = n.0;
         let file_name = n.1;
-        let abigen = match Abigen::new(name, format!("../../abi/{}.json", name)) {
+        let abigen = match Abigen::new(name, format!("../steward-abi/abi/{}.json", name)) {
             Ok(abigen) => abigen,
             Err(e) => {
                 println!("Could not open {}.json: {}", name, e);
@@ -105,7 +105,7 @@ fn generate_contract_abis() {
             }
         };
 
-        match abi.write_to_file(format!("src/gen/abi/{}.rs", file_name)) {
+        match abi.write_to_file(format!("../../crates/steward-abi/src/{}.rs", file_name)) {
             Ok(_) => (),
             Err(e) => println!("Error writing {}.rs: {}", file_name, e),
         }

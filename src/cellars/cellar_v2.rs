@@ -1,15 +1,7 @@
 //! Handlers for V2 of the Cellar.sol contract functions
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
-use abscissa_core::tracing::{debug, info};
-use ethers::{
-    abi::AbiEncode,
-    contract::EthCall,
-    types::{Bytes, U256},
-};
-
 use crate::{
-    abi::cellar_v2::{AdaptorCall as AbiAdaptorCall, *},
     cellars::adaptors,
     error::{Error, ErrorKind},
     proto::{
@@ -18,6 +10,13 @@ use crate::{
     },
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
 };
+use abscissa_core::tracing::{debug, info};
+use ethers::{
+    abi::AbiEncode,
+    contract::EthCall,
+    types::{Bytes, U256},
+};
+use steward_abi::cellar_v2::{AdaptorCall as AbiAdaptorCall, *};
 
 use super::{
     check_blocked_adaptor, log_cellar_call, log_governance_cellar_call, validate_new_adaptor,

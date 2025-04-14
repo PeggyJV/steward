@@ -1,7 +1,7 @@
 use ethers::{abi::AbiEncode, types::Bytes};
+use steward_abi::adaptors::zero_x_adaptor_v1::ZeroXAdaptorV1Calls as AbiZeroXAdaptorV1Calls;
 
 use crate::{
-    abi::adaptors::zero_x_adaptor_v1::ZeroXAdaptorV1Calls as AbiZeroXAdaptorV1Calls,
     error::Error,
     proto::zero_x_adaptor_v1,
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
@@ -18,14 +18,14 @@ pub(crate) fn zero_x_adaptor_v1_calls(
 
         match function {
             zero_x_adaptor_v1::Function::RevokeApproval(p) => {
-                let call = crate::abi::adaptors::zero_x_adaptor_v1::RevokeApprovalCall {
+                let call = steward_abi::adaptors::zero_x_adaptor_v1::RevokeApprovalCall {
                     asset: sp_call_parse_address(p.asset)?,
                     spender: sp_call_parse_address(p.spender)?,
                 };
                 calls.push(AbiZeroXAdaptorV1Calls::RevokeApproval(call).encode().into())
             }
             zero_x_adaptor_v1::Function::SwapWith0x(p) => {
-                let call = crate::abi::adaptors::zero_x_adaptor_v1::SwapWith0XCall {
+                let call = steward_abi::adaptors::zero_x_adaptor_v1::SwapWith0XCall {
                     amount: string_to_u256(p.amount)?,
                     swap_call_data: p.swap_call_data.into(),
                     token_in: sp_call_parse_address(p.token_in)?,

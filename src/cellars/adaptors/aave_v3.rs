@@ -1,17 +1,17 @@
 use abscissa_core::tracing::log::debug;
 use ethers::{abi::AbiEncode, types::Bytes};
+use steward_abi::{
+    adaptors::{
+        aave_v3_a_token_adaptor_v1::AaveV3ATokenAdaptorV1Calls as AbiAaveV3ATokenAdaptorV1Calls,
+        aave_v3_debt_token_adaptor_v1::{
+            AaveV3DebtTokenAdaptorV1Calls as AbiAaveV3DebtTokenAdaptorV1Calls, FlashLoanCall,
+            RepayWithATokensCall,
+        },
+    },
+    cellar_v2_2::AdaptorCall as AbiAdaptorCall,
+};
 
 use crate::{
-    abi::{
-        adaptors::{
-            aave_v3_a_token_adaptor_v1::AaveV3ATokenAdaptorV1Calls as AbiAaveV3ATokenAdaptorV1Calls,
-            aave_v3_debt_token_adaptor_v1::{
-                AaveV3DebtTokenAdaptorV1Calls as AbiAaveV3DebtTokenAdaptorV1Calls, FlashLoanCall,
-                RepayWithATokensCall,
-            },
-        },
-        cellar_v2_2::AdaptorCall as AbiAdaptorCall,
-    },
     cellars::adaptors,
     error::Error,
     proto::{
@@ -36,7 +36,7 @@ pub(crate) fn aave_v3_a_token_adaptor_v1_calls(
 
         match function {
             aave_v3a_token_adaptor_v1::Function::RevokeApproval(p) => {
-                let call = crate::abi::adaptors::aave_v3_a_token_adaptor_v1::RevokeApprovalCall {
+                let call = steward_abi::adaptors::aave_v3_a_token_adaptor_v1::RevokeApprovalCall {
                     asset: sp_call_parse_address(p.asset)?,
                     spender: sp_call_parse_address(p.spender)?,
                 };
@@ -47,7 +47,7 @@ pub(crate) fn aave_v3_a_token_adaptor_v1_calls(
                 )
             }
             aave_v3a_token_adaptor_v1::Function::DepositToAave(p) => {
-                let call = crate::abi::adaptors::aave_v3_a_token_adaptor_v1::DepositToAaveCall {
+                let call = steward_abi::adaptors::aave_v3_a_token_adaptor_v1::DepositToAaveCall {
                     token_to_deposit: sp_call_parse_address(p.token)?,
                     amount_to_deposit: string_to_u256(p.amount)?,
                 };
@@ -58,10 +58,11 @@ pub(crate) fn aave_v3_a_token_adaptor_v1_calls(
                 )
             }
             aave_v3a_token_adaptor_v1::Function::WithdrawFromAave(p) => {
-                let call = crate::abi::adaptors::aave_v3_a_token_adaptor_v1::WithdrawFromAaveCall {
-                    token_to_withdraw: sp_call_parse_address(p.token)?,
-                    amount_to_withdraw: string_to_u256(p.amount)?,
-                };
+                let call =
+                    steward_abi::adaptors::aave_v3_a_token_adaptor_v1::WithdrawFromAaveCall {
+                        token_to_withdraw: sp_call_parse_address(p.token)?,
+                        amount_to_withdraw: string_to_u256(p.amount)?,
+                    };
                 calls.push(
                     AbiAaveV3ATokenAdaptorV1Calls::WithdrawFromAave(call)
                         .encode()
@@ -69,7 +70,7 @@ pub(crate) fn aave_v3_a_token_adaptor_v1_calls(
                 )
             }
             aave_v3a_token_adaptor_v1::Function::AdjustIsolationModeAssetAsCollateral(p) => {
-                let call = crate::abi::adaptors::aave_v3_a_token_adaptor_v1::AdjustIsolationModeAssetAsCollateralCall {
+                let call = steward_abi::adaptors::aave_v3_a_token_adaptor_v1::AdjustIsolationModeAssetAsCollateralCall {
                     asset: sp_call_parse_address(p.asset)?,
                     use_as_collateral: p.use_as_collateral,
                 };
@@ -80,7 +81,7 @@ pub(crate) fn aave_v3_a_token_adaptor_v1_calls(
                 )
             }
             aave_v3a_token_adaptor_v1::Function::ChangeEmode(p) => {
-                let call = crate::abi::adaptors::aave_v3_a_token_adaptor_v1::ChangeEModeCall {
+                let call = steward_abi::adaptors::aave_v3_a_token_adaptor_v1::ChangeEModeCall {
                     category_id: p.category_id as u8,
                 };
                 calls.push(
@@ -107,7 +108,7 @@ pub(crate) fn aave_v3_debt_token_adaptor_v1_calls(
         match function {
             aave_v3_debt_token_adaptor_v1::Function::RevokeApproval(p) => {
                 let call =
-                    crate::abi::adaptors::aave_v3_debt_token_adaptor_v1::RevokeApprovalCall {
+                    steward_abi::adaptors::aave_v3_debt_token_adaptor_v1::RevokeApprovalCall {
                         asset: sp_call_parse_address(p.asset)?,
                         spender: sp_call_parse_address(p.spender)?,
                     };
@@ -119,7 +120,7 @@ pub(crate) fn aave_v3_debt_token_adaptor_v1_calls(
             }
             aave_v3_debt_token_adaptor_v1::Function::BorrowFromAave(p) => {
                 let call =
-                    crate::abi::adaptors::aave_v3_debt_token_adaptor_v1::BorrowFromAaveCall {
+                    steward_abi::adaptors::aave_v3_debt_token_adaptor_v1::BorrowFromAaveCall {
                         debt_token_to_borrow: sp_call_parse_address(p.token)?,
                         amount_to_borrow: string_to_u256(p.amount)?,
                     };
@@ -130,10 +131,11 @@ pub(crate) fn aave_v3_debt_token_adaptor_v1_calls(
                 )
             }
             aave_v3_debt_token_adaptor_v1::Function::RepayAaveDebt(p) => {
-                let call = crate::abi::adaptors::aave_v3_debt_token_adaptor_v1::RepayAaveDebtCall {
-                    token_to_repay: sp_call_parse_address(p.token)?,
-                    amount_to_repay: string_to_u256(p.amount)?,
-                };
+                let call =
+                    steward_abi::adaptors::aave_v3_debt_token_adaptor_v1::RepayAaveDebtCall {
+                        token_to_repay: sp_call_parse_address(p.token)?,
+                        amount_to_repay: string_to_u256(p.amount)?,
+                    };
                 calls.push(
                     AbiAaveV3DebtTokenAdaptorV1Calls::RepayAaveDebt(call)
                         .encode()
