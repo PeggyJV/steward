@@ -1,18 +1,18 @@
 use std::convert::TryInto;
 
 use ethers::{abi::AbiEncode, types::Bytes};
+use steward_abi::adaptors::{
+    morpho_aave_v2_a_token_adaptor_v1::MorphoAaveV2ATokenAdaptorV1Calls,
+    morpho_aave_v2_debt_token_adaptor_v1::MorphoAaveV2DebtTokenAdaptorV1Calls,
+    morpho_aave_v3_a_token_collateral_adaptor_v1::MorphoAaveV3ATokenCollateralAdaptorV1Calls,
+    morpho_aave_v3_a_token_p2p_adaptor_v1::MorphoAaveV3ATokenP2PAdaptorV1Calls,
+    morpho_aave_v3_debt_token_adaptor_v1::MorphoAaveV3DebtTokenAdaptorV1Calls,
+    morpho_blue_collateral_adaptor_v1::MorphoBlueCollateralAdaptorV1Calls,
+    morpho_blue_debt_adaptor_v1::MorphoBlueDebtAdaptorV1Calls,
+    morpho_blue_supply_adaptor_v1::MorphoBlueSupplyAdaptorV1Calls,
+};
 
 use crate::{
-    abi::adaptors::{
-        morpho_aave_v2_a_token_adaptor_v1::MorphoAaveV2ATokenAdaptorV1Calls,
-        morpho_aave_v2_debt_token_adaptor_v1::MorphoAaveV2DebtTokenAdaptorV1Calls,
-        morpho_aave_v3_a_token_collateral_adaptor_v1::MorphoAaveV3ATokenCollateralAdaptorV1Calls,
-        morpho_aave_v3_a_token_p2p_adaptor_v1::MorphoAaveV3ATokenP2PAdaptorV1Calls,
-        morpho_aave_v3_debt_token_adaptor_v1::MorphoAaveV3DebtTokenAdaptorV1Calls,
-        morpho_blue_collateral_adaptor_v1::MorphoBlueCollateralAdaptorV1Calls,
-        morpho_blue_debt_adaptor_v1::MorphoBlueDebtAdaptorV1Calls,
-        morpho_blue_supply_adaptor_v1::MorphoBlueSupplyAdaptorV1Calls,
-    },
     error::Error,
     proto::{
         morpho_aave_v2_debt_token_adaptor_v1, morpho_aave_v2a_token_adaptor_v1,
@@ -35,7 +35,7 @@ pub(crate) fn morpho_aave_v2_a_token_adaptor_v1_calls(
         match function {
             morpho_aave_v2a_token_adaptor_v1::Function::RevokeApproval(p) => {
                 let call =
-                    crate::abi::adaptors::morpho_aave_v2_a_token_adaptor_v1::RevokeApprovalCall {
+                    steward_abi::adaptors::morpho_aave_v2_a_token_adaptor_v1::RevokeApprovalCall {
                         asset: sp_call_parse_address(p.asset)?,
                         spender: sp_call_parse_address(p.spender)?,
                     };
@@ -47,7 +47,7 @@ pub(crate) fn morpho_aave_v2_a_token_adaptor_v1_calls(
             }
             morpho_aave_v2a_token_adaptor_v1::Function::DepositToAaveV2Morpho(p) => {
                 let call =
-                    crate::abi::adaptors::morpho_aave_v2_a_token_adaptor_v1::DepositToAaveV2MorphoCall {
+                    steward_abi::adaptors::morpho_aave_v2_a_token_adaptor_v1::DepositToAaveV2MorphoCall {
                         a_token: sp_call_parse_address(p.a_token)?,
                         amount_to_deposit: string_to_u256(p.amount_to_deposit)?,
                     };
@@ -59,7 +59,7 @@ pub(crate) fn morpho_aave_v2_a_token_adaptor_v1_calls(
             }
             morpho_aave_v2a_token_adaptor_v1::Function::WithdrawFromAaveV2Morpho(p) => {
                 let call =
-                    crate::abi::adaptors::morpho_aave_v2_a_token_adaptor_v1::WithdrawFromAaveV2MorphoCall {
+                    steward_abi::adaptors::morpho_aave_v2_a_token_adaptor_v1::WithdrawFromAaveV2MorphoCall {
                         a_token: sp_call_parse_address(p.a_token)?,
                         amount_to_withdraw: string_to_u256(p.amount_to_withdraw)?,
                     };
@@ -70,7 +70,7 @@ pub(crate) fn morpho_aave_v2_a_token_adaptor_v1_calls(
                 )
             }
             morpho_aave_v2a_token_adaptor_v1::Function::Claim(p) => {
-                let call = crate::abi::adaptors::morpho_aave_v2_a_token_adaptor_v1::ClaimCall {
+                let call = steward_abi::adaptors::morpho_aave_v2_a_token_adaptor_v1::ClaimCall {
                     claimable: string_to_u256(p.claimable)?,
                     proof: parse_proof_bytes(p.proof)?,
                 };
@@ -97,7 +97,7 @@ pub(crate) fn morpho_aave_v2_debt_token_adaptor_v1_calls(
 
         match function {
             morpho_aave_v2_debt_token_adaptor_v1::Function::RevokeApproval(p) => {
-                let call = crate::abi::adaptors::morpho_aave_v2_debt_token_adaptor_v1::RevokeApprovalCall {
+                let call = steward_abi::adaptors::morpho_aave_v2_debt_token_adaptor_v1::RevokeApprovalCall {
                     asset: sp_call_parse_address(p.asset)?,
                     spender: sp_call_parse_address(p.spender)?,
                 };
@@ -109,7 +109,7 @@ pub(crate) fn morpho_aave_v2_debt_token_adaptor_v1_calls(
             }
             morpho_aave_v2_debt_token_adaptor_v1::Function::BorrowFromAaveV2Morpho(p) => {
                 let call =
-                    crate::abi::adaptors::morpho_aave_v2_debt_token_adaptor_v1::BorrowFromAaveV2MorphoCall {
+                    steward_abi::adaptors::morpho_aave_v2_debt_token_adaptor_v1::BorrowFromAaveV2MorphoCall {
                         a_token: sp_call_parse_address(p.a_token)?,
                         amount_to_borrow: string_to_u256(p.amount_to_borrow)?,
                     };
@@ -121,7 +121,7 @@ pub(crate) fn morpho_aave_v2_debt_token_adaptor_v1_calls(
             }
             morpho_aave_v2_debt_token_adaptor_v1::Function::RepayAaveV2MorphoDebt(p) => {
                 let call =
-                    crate::abi::adaptors::morpho_aave_v2_debt_token_adaptor_v1::RepayAaveV2MorphoDebtCall {
+                    steward_abi::adaptors::morpho_aave_v2_debt_token_adaptor_v1::RepayAaveV2MorphoDebtCall {
                         a_token: sp_call_parse_address(p.a_token)?,
                         amount_to_repay: string_to_u256(p.amount_to_repay)?,
                     };
@@ -149,7 +149,7 @@ pub(crate) fn morpho_aave_v3_a_token_collateral_adaptor_v1_calls(
         match function {
             morpho_aave_v3a_token_collateral_adaptor_v1::Function::RevokeApproval(p) => {
                 let call =
-                    crate::abi::adaptors::morpho_aave_v3_a_token_collateral_adaptor_v1::RevokeApprovalCall {
+                    steward_abi::adaptors::morpho_aave_v3_a_token_collateral_adaptor_v1::RevokeApprovalCall {
                         asset: sp_call_parse_address(p.asset)?,
                         spender: sp_call_parse_address(p.spender)?,
                     };
@@ -160,7 +160,7 @@ pub(crate) fn morpho_aave_v3_a_token_collateral_adaptor_v1_calls(
                 )
             }
             morpho_aave_v3a_token_collateral_adaptor_v1::Function::DepositToAaveV3Morpho(p) => {
-                let call = crate::abi::adaptors::morpho_aave_v3_a_token_collateral_adaptor_v1::DepositToAaveV3MorphoCall {
+                let call = steward_abi::adaptors::morpho_aave_v3_a_token_collateral_adaptor_v1::DepositToAaveV3MorphoCall {
                     token_to_deposit: sp_call_parse_address(p.token_to_deposit)?,
                     amount_to_deposit: string_to_u256(p.amount_to_deposit)?,
                 };
@@ -171,7 +171,7 @@ pub(crate) fn morpho_aave_v3_a_token_collateral_adaptor_v1_calls(
                 )
             }
             morpho_aave_v3a_token_collateral_adaptor_v1::Function::WithdrawFromAaveV3Morpho(p) => {
-                let call = crate::abi::adaptors::morpho_aave_v3_a_token_collateral_adaptor_v1::WithdrawFromAaveV3MorphoCall {
+                let call = steward_abi::adaptors::morpho_aave_v3_a_token_collateral_adaptor_v1::WithdrawFromAaveV3MorphoCall {
                     token_to_withdraw: sp_call_parse_address(p.token_to_withdraw)?,
                     amount_to_withdraw: string_to_u256(p.amount_to_withdraw)?,
                 };
@@ -183,7 +183,7 @@ pub(crate) fn morpho_aave_v3_a_token_collateral_adaptor_v1_calls(
             }
             morpho_aave_v3a_token_collateral_adaptor_v1::Function::Claim(p) => {
                 let call =
-                    crate::abi::adaptors::morpho_aave_v3_a_token_collateral_adaptor_v1::ClaimCall {
+                    steward_abi::adaptors::morpho_aave_v3_a_token_collateral_adaptor_v1::ClaimCall {
                         claimable: string_to_u256(p.claimable)?,
                         proof: parse_proof_bytes(p.proof)?,
                     };
@@ -210,7 +210,7 @@ pub(crate) fn morpho_aave_v3_a_token_p2p_adaptor_v1_calls(
 
         match function {
             morpho_aave_v3a_token_p2p_adaptor_v1::Function::RevokeApproval(p) => {
-                let call = crate::abi::adaptors::morpho_aave_v3_a_token_p2p_adaptor_v1::RevokeApprovalCall {
+                let call = steward_abi::adaptors::morpho_aave_v3_a_token_p2p_adaptor_v1::RevokeApprovalCall {
                     asset: sp_call_parse_address(p.asset)?,
                     spender: sp_call_parse_address(p.spender)?,
                 };
@@ -222,7 +222,7 @@ pub(crate) fn morpho_aave_v3_a_token_p2p_adaptor_v1_calls(
             }
             morpho_aave_v3a_token_p2p_adaptor_v1::Function::DepositToAaveV3Morpho(p) => {
                 let call =
-                    crate::abi::adaptors::morpho_aave_v3_a_token_p2p_adaptor_v1::DepositToAaveV3MorphoCall {
+                    steward_abi::adaptors::morpho_aave_v3_a_token_p2p_adaptor_v1::DepositToAaveV3MorphoCall {
                         token_to_deposit: sp_call_parse_address(p.token_to_deposit)?,
                         amount_to_deposit: string_to_u256(p.amount_to_deposit)?,
                         max_iterations: string_to_u256(p.max_iterations)?,
@@ -234,7 +234,7 @@ pub(crate) fn morpho_aave_v3_a_token_p2p_adaptor_v1_calls(
                 )
             }
             morpho_aave_v3a_token_p2p_adaptor_v1::Function::WithdrawFromAaveV3Morpho(p) => {
-                let call = crate::abi::adaptors::morpho_aave_v3_a_token_p2p_adaptor_v1::WithdrawFromAaveV3MorphoCall {
+                let call = steward_abi::adaptors::morpho_aave_v3_a_token_p2p_adaptor_v1::WithdrawFromAaveV3MorphoCall {
                     token_to_withdraw: sp_call_parse_address(p.token_to_withdraw)?,
                     amount_to_withdraw: string_to_u256(p.amount_to_withdraw)?,
                     max_iterations: string_to_u256(p.max_iterations)?,
@@ -246,10 +246,11 @@ pub(crate) fn morpho_aave_v3_a_token_p2p_adaptor_v1_calls(
                 )
             }
             morpho_aave_v3a_token_p2p_adaptor_v1::Function::Claim(p) => {
-                let call = crate::abi::adaptors::morpho_aave_v3_a_token_p2p_adaptor_v1::ClaimCall {
-                    claimable: string_to_u256(p.claimable)?,
-                    proof: parse_proof_bytes(p.proof)?,
-                };
+                let call =
+                    steward_abi::adaptors::morpho_aave_v3_a_token_p2p_adaptor_v1::ClaimCall {
+                        claimable: string_to_u256(p.claimable)?,
+                        proof: parse_proof_bytes(p.proof)?,
+                    };
                 calls.push(
                     MorphoAaveV3ATokenP2PAdaptorV1Calls::Claim(call)
                         .encode()
@@ -273,7 +274,7 @@ pub(crate) fn morpho_aave_v3_debt_token_adaptor_v1_calls(
 
         match function {
             morpho_aave_v3_debt_token_adaptor_v1::Function::RevokeApproval(p) => {
-                let call = crate::abi::adaptors::morpho_aave_v3_debt_token_adaptor_v1::RevokeApprovalCall {
+                let call = steward_abi::adaptors::morpho_aave_v3_debt_token_adaptor_v1::RevokeApprovalCall {
                     asset: sp_call_parse_address(p.asset)?,
                     spender: sp_call_parse_address(p.spender)?,
                 };
@@ -285,7 +286,7 @@ pub(crate) fn morpho_aave_v3_debt_token_adaptor_v1_calls(
             }
             morpho_aave_v3_debt_token_adaptor_v1::Function::BorrowFromAaveV3Morpho(p) => {
                 let call =
-                    crate::abi::adaptors::morpho_aave_v3_debt_token_adaptor_v1::BorrowFromAaveV3MorphoCall {
+                    steward_abi::adaptors::morpho_aave_v3_debt_token_adaptor_v1::BorrowFromAaveV3MorphoCall {
                         underlying: sp_call_parse_address(p.underlying)?,
                         amount_to_borrow: string_to_u256(p.amount_to_borrow)?,
                         max_iterations: string_to_u256(p.max_iterations)?,
@@ -298,7 +299,7 @@ pub(crate) fn morpho_aave_v3_debt_token_adaptor_v1_calls(
             }
             morpho_aave_v3_debt_token_adaptor_v1::Function::RepayAaveV3MorphoDebt(p) => {
                 let call =
-                    crate::abi::adaptors::morpho_aave_v3_debt_token_adaptor_v1::RepayAaveV3MorphoDebtCall {
+                    steward_abi::adaptors::morpho_aave_v3_debt_token_adaptor_v1::RepayAaveV3MorphoDebtCall {
                         token_to_repay: sp_call_parse_address(p.token_to_repay)?,
                         amount_to_repay: string_to_u256(p.amount_to_repay)?,
                     };
@@ -326,7 +327,7 @@ pub(crate) fn morpho_blue_collateral_adaptor_v1_calls(
         match function {
             morpho_blue_collateral_adaptor_v1::Function::RevokeApproval(p) => {
                 let call =
-                    crate::abi::adaptors::morpho_blue_collateral_adaptor_v1::RevokeApprovalCall {
+                    steward_abi::adaptors::morpho_blue_collateral_adaptor_v1::RevokeApprovalCall {
                         asset: sp_call_parse_address(p.asset)?,
                         spender: sp_call_parse_address(p.spender)?,
                     };
@@ -341,7 +342,7 @@ pub(crate) fn morpho_blue_collateral_adaptor_v1_calls(
                     .market
                     .ok_or_else(|| sp_call_error("market cannot be empty".to_string()))?;
                 let market =
-                    crate::abi::adaptors::morpho_blue_collateral_adaptor_v1::MarketParams {
+                    steward_abi::adaptors::morpho_blue_collateral_adaptor_v1::MarketParams {
                         loan_token: sp_call_parse_address(market.loan_token)?,
                         collateral_token: sp_call_parse_address(market.collateral_token)?,
                         oracle: sp_call_parse_address(market.oracle)?,
@@ -349,7 +350,7 @@ pub(crate) fn morpho_blue_collateral_adaptor_v1_calls(
                         lltv: string_to_u256(market.lltv)?,
                     };
                 let call =
-                    crate::abi::adaptors::morpho_blue_collateral_adaptor_v1::AddCollateralCall {
+                    steward_abi::adaptors::morpho_blue_collateral_adaptor_v1::AddCollateralCall {
                         market,
                         collateral_to_deposit: string_to_u256(p.collateral_to_deposit)?,
                     };
@@ -364,7 +365,7 @@ pub(crate) fn morpho_blue_collateral_adaptor_v1_calls(
                     .market
                     .ok_or_else(|| sp_call_error("market cannot be empty".to_string()))?;
                 let market =
-                    crate::abi::adaptors::morpho_blue_collateral_adaptor_v1::MarketParams {
+                    steward_abi::adaptors::morpho_blue_collateral_adaptor_v1::MarketParams {
                         loan_token: sp_call_parse_address(market.loan_token)?,
                         collateral_token: sp_call_parse_address(market.collateral_token)?,
                         oracle: sp_call_parse_address(market.oracle)?,
@@ -372,7 +373,7 @@ pub(crate) fn morpho_blue_collateral_adaptor_v1_calls(
                         lltv: string_to_u256(market.lltv)?,
                     };
                 let call =
-                    crate::abi::adaptors::morpho_blue_collateral_adaptor_v1::RemoveCollateralCall {
+                    steward_abi::adaptors::morpho_blue_collateral_adaptor_v1::RemoveCollateralCall {
                         market,
                         collateral_amount: string_to_u256(p.collateral_amount)?,
                     };
@@ -399,7 +400,7 @@ pub(crate) fn morpho_blue_debt_adaptor_v1_calls(
 
         match function {
             morpho_blue_debt_adaptor_v1::Function::RevokeApproval(p) => {
-                let call = crate::abi::adaptors::morpho_blue_debt_adaptor_v1::RevokeApprovalCall {
+                let call = steward_abi::adaptors::morpho_blue_debt_adaptor_v1::RevokeApprovalCall {
                     asset: sp_call_parse_address(p.asset)?,
                     spender: sp_call_parse_address(p.spender)?,
                 };
@@ -413,7 +414,7 @@ pub(crate) fn morpho_blue_debt_adaptor_v1_calls(
                 let market = p
                     .market
                     .ok_or_else(|| sp_call_error("market cannot be empty".to_string()))?;
-                let market = crate::abi::adaptors::morpho_blue_debt_adaptor_v1::MarketParams {
+                let market = steward_abi::adaptors::morpho_blue_debt_adaptor_v1::MarketParams {
                     loan_token: sp_call_parse_address(market.loan_token)?,
                     collateral_token: sp_call_parse_address(market.collateral_token)?,
                     oracle: sp_call_parse_address(market.oracle)?,
@@ -421,7 +422,7 @@ pub(crate) fn morpho_blue_debt_adaptor_v1_calls(
                     lltv: string_to_u256(market.lltv)?,
                 };
                 let call =
-                    crate::abi::adaptors::morpho_blue_debt_adaptor_v1::BorrowFromMorphoBlueCall {
+                    steward_abi::adaptors::morpho_blue_debt_adaptor_v1::BorrowFromMorphoBlueCall {
                         market,
                         amount_to_borrow: string_to_u256(p.amount_to_borrow)?,
                     };
@@ -435,7 +436,7 @@ pub(crate) fn morpho_blue_debt_adaptor_v1_calls(
                 let market = p
                     .market
                     .ok_or_else(|| sp_call_error("market cannot be empty".to_string()))?;
-                let market = crate::abi::adaptors::morpho_blue_debt_adaptor_v1::MarketParams {
+                let market = steward_abi::adaptors::morpho_blue_debt_adaptor_v1::MarketParams {
                     loan_token: sp_call_parse_address(market.loan_token)?,
                     collateral_token: sp_call_parse_address(market.collateral_token)?,
                     oracle: sp_call_parse_address(market.oracle)?,
@@ -444,7 +445,7 @@ pub(crate) fn morpho_blue_debt_adaptor_v1_calls(
                 };
 
                 let call =
-                    crate::abi::adaptors::morpho_blue_debt_adaptor_v1::RepayMorphoBlueDebtCall {
+                    steward_abi::adaptors::morpho_blue_debt_adaptor_v1::RepayMorphoBlueDebtCall {
                         market,
                         debt_token_repay_amount: string_to_u256(p.debt_token_repay_amount)?,
                     };
@@ -472,7 +473,7 @@ pub(crate) fn morpho_blue_supply_adaptor_v1_calls(
         match function {
             morpho_blue_supply_adaptor_v1::Function::RevokeApproval(p) => {
                 let call =
-                    crate::abi::adaptors::morpho_blue_supply_adaptor_v1::RevokeApprovalCall {
+                    steward_abi::adaptors::morpho_blue_supply_adaptor_v1::RevokeApprovalCall {
                         asset: sp_call_parse_address(p.asset)?,
                         spender: sp_call_parse_address(p.spender)?,
                     };
@@ -486,7 +487,7 @@ pub(crate) fn morpho_blue_supply_adaptor_v1_calls(
                 let market = p
                     .market
                     .ok_or_else(|| sp_call_error("market cannot be empty".to_string()))?;
-                let market = crate::abi::adaptors::morpho_blue_supply_adaptor_v1::MarketParams {
+                let market = steward_abi::adaptors::morpho_blue_supply_adaptor_v1::MarketParams {
                     loan_token: sp_call_parse_address(market.loan_token)?,
                     collateral_token: sp_call_parse_address(market.collateral_token)?,
                     oracle: sp_call_parse_address(market.oracle)?,
@@ -495,7 +496,7 @@ pub(crate) fn morpho_blue_supply_adaptor_v1_calls(
                 };
 
                 let call =
-                    crate::abi::adaptors::morpho_blue_supply_adaptor_v1::LendToMorphoBlueCall {
+                    steward_abi::adaptors::morpho_blue_supply_adaptor_v1::LendToMorphoBlueCall {
                         market,
                         assets: string_to_u256(p.assets)?,
                     };
@@ -509,14 +510,14 @@ pub(crate) fn morpho_blue_supply_adaptor_v1_calls(
                 let market = p
                     .market
                     .ok_or_else(|| sp_call_error("market cannot be empty".to_string()))?;
-                let market = crate::abi::adaptors::morpho_blue_supply_adaptor_v1::MarketParams {
+                let market = steward_abi::adaptors::morpho_blue_supply_adaptor_v1::MarketParams {
                     loan_token: sp_call_parse_address(market.loan_token)?,
                     collateral_token: sp_call_parse_address(market.collateral_token)?,
                     oracle: sp_call_parse_address(market.oracle)?,
                     irm: sp_call_parse_address(market.irm)?,
                     lltv: string_to_u256(market.lltv)?,
                 };
-                let call = crate::abi::adaptors::morpho_blue_supply_adaptor_v1::WithdrawFromMorphoBlueCall {
+                let call = steward_abi::adaptors::morpho_blue_supply_adaptor_v1::WithdrawFromMorphoBlueCall {
                     market,
                     assets: string_to_u256(p.assets)?,
                 };

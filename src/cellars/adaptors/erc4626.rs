@@ -1,7 +1,9 @@
 use ethers::{abi::AbiEncode, types::Bytes};
+use steward_abi::adaptors::erc4626_adaptor_v1::{
+    self, ERC4626AdaptorV1Calls as AbiERC4626AdaptorV1Calls,
+};
 
 use crate::{
-    abi::adaptors::erc4626_adaptor_v1::{self, ERC4626AdaptorV1Calls as AbiERC4626AdaptorV1Calls},
     error::Error,
     proto::{erc4626_adaptor_v1::Function, Erc4626AdaptorV1Calls},
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},

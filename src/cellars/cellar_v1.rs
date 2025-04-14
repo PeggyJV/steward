@@ -7,7 +7,6 @@ use GovernanceFunction::*;
 use StrategyFunction::*;
 
 use crate::{
-    abi::cellar_v1::*,
     error::Error,
     proto::{
         cellar_v1::Function as StrategyFunction,
@@ -18,6 +17,7 @@ use crate::{
         governance_call_error, sp_call_error, sp_call_parse_address, string_to_u256,
     },
 };
+use steward_abi::cellar_v1::*;
 
 use super::{log_cellar_call, log_governance_cellar_call};
 

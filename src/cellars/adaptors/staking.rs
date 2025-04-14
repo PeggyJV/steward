@@ -1,7 +1,9 @@
 use ethers::{abi::AbiEncode, types::Bytes};
+use steward_abi::adaptors::staking_adaptor_v1::{
+    self, StakingAdaptorV1Calls as AbiStakingAdaptorV1Calls,
+};
 
 use crate::{
-    abi::adaptors::staking_adaptor_v1::{self, StakingAdaptorV1Calls as AbiStakingAdaptorV1Calls},
     error::Error,
     proto::{staking_adaptor_v1::Function, StakingAdaptorV1Calls},
     utils::{hex_to_bytes, sp_call_error, sp_call_parse_address, string_to_u256},

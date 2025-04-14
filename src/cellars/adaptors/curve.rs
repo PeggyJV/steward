@@ -1,7 +1,9 @@
 use ethers::{abi::AbiEncode, types::Bytes};
+use steward_abi::adaptors::curve_adaptor_v1::{
+    self, CurveAdaptorV1Calls as AbiCurveAdaptorV1Calls,
+};
 
 use crate::{
-    abi::adaptors::curve_adaptor_v1::{self, CurveAdaptorV1Calls as AbiCurveAdaptorV1Calls},
     error::Error,
     proto::{curve_adaptor_v1::Function, CurveAdaptorV1Calls},
     utils::{parse_selector, sp_call_error, sp_call_parse_address, string_to_u256},
