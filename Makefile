@@ -1,4 +1,5 @@
 .DEFAULT_GOAL := e2e_cork_test
+.PHONY: rust_protos
 
 SOMMELIER_VERSION := "v7.0.1"
 VALIDATOR_IMAGE := "ghcr.io/peggyjv/sommelier-sommelier:$(SOMMELIER_VERSION)"
@@ -6,6 +7,9 @@ ORCHESTRATOR_IMAGE := "ghcr.io/peggyjv/gravity-bridge-orchestrator:main"
 
 go_protos:
 	@scripts/build_go_protos.sh
+
+rust_protos:
+	@cargo run -p steward-proto-build
 
 api_docs:
 	@scripts/build_api_docs.sh

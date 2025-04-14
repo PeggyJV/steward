@@ -1,0 +1,10 @@
+[package]
+name = "steward-proto-build"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+prost-build = "0.13"
+tonic = { version = "0.12", features = ["codegen", "tls", "transport"] }
+tonic-build = "0.12"
+walkdir = "2.3.2"

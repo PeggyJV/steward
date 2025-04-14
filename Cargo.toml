@@ -1,5 +1,5 @@
 [workspace]
-members = [".", "crates/steward-proto"]
+members = [".", "crates/steward-proto", "crates/steward_proto_build"]
 default-members = ["."]
 exclude = ["server-test"]
 resolver = "2"

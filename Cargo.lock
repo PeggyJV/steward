@@ -5563,6 +5563,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "steward-proto-build"
+version = "4.3.2-pre"
+dependencies = [
+ "prost-build",
+ "tonic 0.12.3",
+ "tonic-build",
+ "walkdir",
+]
+
+[[package]]
 name = "string_cache"
 version = "0.8.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
