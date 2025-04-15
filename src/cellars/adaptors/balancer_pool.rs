@@ -2,15 +2,15 @@ use std::convert::TryInto;
 
 use abscissa_core::prelude::debug;
 use ethers::{abi::AbiEncode, types::Bytes};
+use steward_abi::{
+    adaptors::balancer_pool_adaptor_v1::{
+        BalancerPoolAdaptorV1Calls, ExitPoolRequest, SingleSwap as AbiSingleSwap,
+        SwapData as AbiSwapData,
+    },
+    cellar_v2_2::AdaptorCall as AbiAdaptorCall,
+};
 
 use crate::{
-    abi::{
-        adaptors::balancer_pool_adaptor_v1::{
-            BalancerPoolAdaptorV1Calls, ExitPoolRequest, SingleSwap as AbiSingleSwap,
-            SwapData as AbiSwapData,
-        },
-        cellar_v2_2::AdaptorCall as AbiAdaptorCall,
-    },
     cellars::adaptors,
     error::{Error, ErrorKind},
     proto::{
@@ -34,7 +34,7 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
 
         match function {
             balancer_pool_adaptor_v1::Function::RevokeApproval(p) => {
-                let call = crate::abi::adaptors::balancer_pool_adaptor_v1::RevokeApprovalCall {
+                let call = steward_abi::adaptors::balancer_pool_adaptor_v1::RevokeApprovalCall {
                     asset: sp_call_parse_address(p.asset)?,
                     spender: sp_call_parse_address(p.spender)?,
                 };
@@ -59,7 +59,7 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
 
                 let swap_data = convert_swap_data(p.swap_data.unwrap())?;
 
-                let call = crate::abi::adaptors::balancer_pool_adaptor_v1::JoinPoolCall {
+                let call = steward_abi::adaptors::balancer_pool_adaptor_v1::JoinPoolCall {
                     target_bpt: sp_call_parse_address(p.target_bpt)?,
                     swaps_before_join,
                     swap_data,
@@ -100,7 +100,7 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
                     None => return Err(sp_call_error("exit pool request must be set".to_string())),
                 };
 
-                let call = crate::abi::adaptors::balancer_pool_adaptor_v1::ExitPoolCall {
+                let call = steward_abi::adaptors::balancer_pool_adaptor_v1::ExitPoolCall {
                     target_bpt: sp_call_parse_address(p.target_bpt)?,
                     swaps_after_exit,
                     swap_data,
@@ -110,7 +110,7 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
                 calls.push(BalancerPoolAdaptorV1Calls::ExitPool(call).encode().into())
             }
             balancer_pool_adaptor_v1::Function::StakeBpt(p) => {
-                let call = crate::abi::adaptors::balancer_pool_adaptor_v1::StakeBPTCall {
+                let call = steward_abi::adaptors::balancer_pool_adaptor_v1::StakeBPTCall {
                     bpt: sp_call_parse_address(p.bpt)?,
                     liquidity_gauge: sp_call_parse_address(p.liquidity_gauge)?,
                     amount_in: string_to_u256(p.amount_in)?,
@@ -118,7 +118,7 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
                 calls.push(BalancerPoolAdaptorV1Calls::StakeBPT(call).encode().into())
             }
             balancer_pool_adaptor_v1::Function::UnstakeBpt(p) => {
-                let call = crate::abi::adaptors::balancer_pool_adaptor_v1::UnstakeBPTCall {
+                let call = steward_abi::adaptors::balancer_pool_adaptor_v1::UnstakeBPTCall {
                     bpt: sp_call_parse_address(p.bpt)?,
                     liquidity_gauge: sp_call_parse_address(p.liquidity_gauge)?,
                     amount_out: string_to_u256(p.amount_out)?,
@@ -126,7 +126,7 @@ pub(crate) fn balancer_pool_adaptor_v1_calls(
                 calls.push(BalancerPoolAdaptorV1Calls::UnstakeBPT(call).encode().into())
             }
             balancer_pool_adaptor_v1::Function::ClaimRewards(p) => {
-                let call = crate::abi::adaptors::balancer_pool_adaptor_v1::ClaimRewardsCall {
+                let call = steward_abi::adaptors::balancer_pool_adaptor_v1::ClaimRewardsCall {
                     gauge: sp_call_parse_address(p.gauge)?,
                 };
                 calls.push(
@@ -151,7 +151,7 @@ pub(crate) fn balancer_pool_adaptor_v1_flash_loan_calls(
                 "make flash loan function call cannot be empty".to_string(),
             ));
         };
-        let call = crate::abi::adaptors::balancer_pool_adaptor_v1::MakeFlashLoanCall {
+        let call = steward_abi::adaptors::balancer_pool_adaptor_v1::MakeFlashLoanCall {
             tokens: p
                 .tokens
                 .iter()

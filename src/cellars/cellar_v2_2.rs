@@ -1,7 +1,6 @@
 //! Handlers for V2.2 of the Cellar.sol contract functions
 //!
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
-use crate::abi::cellar_v2_2::{AdaptorCall as AbiAdaptorCall, *};
 use crate::proto::{
     adaptor_call::CallData::*,
     cellar_v2_2::{function_call::Function, CallType, FunctionCall},
@@ -17,6 +16,7 @@ use ethers::{
     contract::EthCall,
     types::{Bytes, U256},
 };
+use steward_abi::cellar_v2_2::{AdaptorCall as AbiAdaptorCall, *};
 
 use crate::cellars::adaptors;
 use crate::{

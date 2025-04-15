@@ -223,12 +223,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "69f7f8c3906b62b754cd5326047894316021dcfe5a194c8ea52bdd94934a3457"
 
 [[package]]
-name = "arrayref"
-version = "0.3.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "76a2e8124351fda1ef8aaaa3bbd7ebbcb486bbcd4225aca0aa0d84bb2db8fecb"
-
-[[package]]
 name = "arrayvec"
 version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -677,19 +671,6 @@ dependencies = [
  "radium",
  "tap",
  "wyz",
-]
-
-[[package]]
-name = "blake3"
-version = "1.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b17679a8d69b6d7fd9cd9801a536cec9fa5e5970b69f9d4747f70b39b031f5e7"
-dependencies = [
- "arrayref",
- "arrayvec",
- "cc",
- "cfg-if",
- "constant_time_eq 0.3.1",
 ]
 
 [[package]]
@@ -1144,12 +1125,6 @@ name = "constant_time_eq"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "245097e9a4535ee1e3e3931fcfcd55a796a44c643e8596ff6566d68f09b87bbc"
-
-[[package]]
-name = "constant_time_eq"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7c74b8349d32d297c9134b8c88677813a227df8f779daa29bfc29c183fe3dca6"
 
 [[package]]
 name = "core-foundation"
@@ -3323,17 +3298,6 @@ name = "memchr"
 version = "2.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
-
-[[package]]
-name = "merkle_hash"
-version = "3.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3edd3572d1a7b4e1b7ce5bb3af05405a8aeab2ec04b29d9779e72ad576ce4f38"
-dependencies = [
- "blake3",
- "camino",
- "rayon",
-]
 
 [[package]]
 name = "mime"
@@ -5510,7 +5474,6 @@ dependencies = [
  "iqhttp",
  "k256 0.9.5",
  "lazy_static",
- "merkle_hash",
  "num-bigint 0.4.6",
  "num-rational 0.4.2",
  "num-traits",
@@ -5521,7 +5484,6 @@ dependencies = [
  "openssl-sys",
  "pkcs8 0.7.6",
  "prost 0.13.5",
- "prost-build",
  "prost-types 0.13.5",
  "rand 0.8.5",
  "rand_core 0.6.4",
@@ -5536,6 +5498,7 @@ dependencies = [
  "sha3 0.10.8",
  "signatory",
  "somm_proto",
+ "steward-abi",
  "steward-proto",
  "tempdir",
  "thiserror 1.0.69",
@@ -5544,13 +5507,27 @@ dependencies = [
  "tokio-util 0.7.14",
  "toml 0.5.11",
  "tonic 0.12.3",
- "tonic-build",
  "tonic-reflection",
  "tower 0.5.2",
  "tower-http 0.6.2",
  "url",
- "walkdir",
  "x509-parser",
+]
+
+[[package]]
+name = "steward-abi"
+version = "4.3.2-pre"
+dependencies = [
+ "ethers",
+ "serde",
+]
+
+[[package]]
+name = "steward-abi-build"
+version = "4.3.2-pre"
+dependencies = [
+ "ethers",
+ "serde",
 ]
 
 [[package]]
@@ -5560,6 +5537,16 @@ dependencies = [
  "prost 0.13.5",
  "serde",
  "tonic 0.12.3",
+]
+
+[[package]]
+name = "steward-proto-build"
+version = "4.3.2-pre"
+dependencies = [
+ "prost-build",
+ "tonic 0.12.3",
+ "tonic-build",
+ "walkdir",
 ]
 
 [[package]]
@@ -7074,7 +7061,7 @@ dependencies = [
  "aes",
  "byteorder",
  "bzip2",
- "constant_time_eq 0.1.5",
+ "constant_time_eq",
  "crc32fast",
  "crossbeam-utils",
  "flate2",

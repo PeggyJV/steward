@@ -1,8 +1,10 @@
 use ethers::{abi::AbiEncode, types::Bytes};
+use steward_abi::adaptors::{
+    cellar_adaptor_v1::CellarAdaptorV1Calls as AbiCellarAdaptorV1Calls,
+    legacy_cellar_adaptor_v1::LegacyCellarAdaptorV1Calls as AbiLegacyCellarAdaptorV1Calls,
+};
 
 use crate::{
-    abi::adaptors::cellar_adaptor_v1::CellarAdaptorV1Calls as AbiCellarAdaptorV1Calls,
-    abi::adaptors::legacy_cellar_adaptor_v1::LegacyCellarAdaptorV1Calls as AbiLegacyCellarAdaptorV1Calls,
     error::Error,
     proto::{cellar_adaptor_v1, legacy_cellar_adaptor_v1},
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
@@ -19,7 +21,7 @@ pub(crate) fn cellar_adaptor_v1_calls(
 
         match function {
             cellar_adaptor_v1::Function::DepositToCellar(p) => {
-                let call = crate::abi::adaptors::cellar_adaptor_v1::DepositToCellarCall {
+                let call = steward_abi::adaptors::cellar_adaptor_v1::DepositToCellarCall {
                     cellar: sp_call_parse_address(p.cellar)?,
                     assets: string_to_u256(p.assets)?,
                 };
@@ -30,7 +32,7 @@ pub(crate) fn cellar_adaptor_v1_calls(
                 )
             }
             cellar_adaptor_v1::Function::WithdrawFromCellar(p) => {
-                let call = crate::abi::adaptors::cellar_adaptor_v1::WithdrawFromCellarCall {
+                let call = steward_abi::adaptors::cellar_adaptor_v1::WithdrawFromCellarCall {
                     cellar: sp_call_parse_address(p.cellar)?,
                     assets: string_to_u256(p.assets)?,
                 };
@@ -41,7 +43,7 @@ pub(crate) fn cellar_adaptor_v1_calls(
                 )
             }
             cellar_adaptor_v1::Function::RevokeApproval(p) => {
-                let call = crate::abi::adaptors::cellar_adaptor_v1::RevokeApprovalCall {
+                let call = steward_abi::adaptors::cellar_adaptor_v1::RevokeApprovalCall {
                     asset: sp_call_parse_address(p.asset)?,
                     spender: sp_call_parse_address(p.spender)?,
                 };
@@ -68,7 +70,7 @@ pub(crate) fn legacy_cellar_adaptor_v1_calls(
 
         match function {
             legacy_cellar_adaptor_v1::Function::DepositToCellar(p) => {
-                let call = crate::abi::adaptors::legacy_cellar_adaptor_v1::DepositToCellarCall {
+                let call = steward_abi::adaptors::legacy_cellar_adaptor_v1::DepositToCellarCall {
                     cellar: sp_call_parse_address(p.cellar)?,
                     assets: string_to_u256(p.assets)?,
                     oracle: sp_call_parse_address(p.oracle)?,
@@ -80,11 +82,12 @@ pub(crate) fn legacy_cellar_adaptor_v1_calls(
                 )
             }
             legacy_cellar_adaptor_v1::Function::WithdrawFromCellar(p) => {
-                let call = crate::abi::adaptors::legacy_cellar_adaptor_v1::WithdrawFromCellarCall {
-                    cellar: sp_call_parse_address(p.cellar)?,
-                    assets: string_to_u256(p.assets)?,
-                    oracle: sp_call_parse_address(p.oracle)?,
-                };
+                let call =
+                    steward_abi::adaptors::legacy_cellar_adaptor_v1::WithdrawFromCellarCall {
+                        cellar: sp_call_parse_address(p.cellar)?,
+                        assets: string_to_u256(p.assets)?,
+                        oracle: sp_call_parse_address(p.oracle)?,
+                    };
                 calls.push(
                     AbiLegacyCellarAdaptorV1Calls::WithdrawFromCellar(call)
                         .encode()
@@ -92,7 +95,7 @@ pub(crate) fn legacy_cellar_adaptor_v1_calls(
                 )
             }
             legacy_cellar_adaptor_v1::Function::RevokeApproval(p) => {
-                let call = crate::abi::adaptors::legacy_cellar_adaptor_v1::RevokeApprovalCall {
+                let call = steward_abi::adaptors::legacy_cellar_adaptor_v1::RevokeApprovalCall {
                     asset: sp_call_parse_address(p.asset)?,
                     spender: sp_call_parse_address(p.spender)?,
                 };

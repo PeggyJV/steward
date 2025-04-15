@@ -1,7 +1,7 @@
 use ethers::{abi::AbiEncode, types::Bytes};
+use steward_abi::adaptors::compound_c_token_adaptor_v2::CompoundCTokenAdaptorV2Calls;
 
 use crate::{
-    abi::adaptors::compound_c_token_adaptor_v2::CompoundCTokenAdaptorV2Calls,
     error::Error,
     proto::compound_c_token_adaptor_v2,
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
@@ -18,7 +18,7 @@ pub(crate) fn compound_c_token_v2_calls(
 
         match function {
             compound_c_token_adaptor_v2::Function::RevokeApproval(p) => {
-                let call = crate::abi::adaptors::compound_c_token_adaptor_v2::RevokeApprovalCall {
+                let call = steward_abi::adaptors::compound_c_token_adaptor_v2::RevokeApprovalCall {
                     asset: sp_call_parse_address(p.asset)?,
                     spender: sp_call_parse_address(p.spender)?,
                 };
@@ -30,7 +30,7 @@ pub(crate) fn compound_c_token_v2_calls(
             }
             compound_c_token_adaptor_v2::Function::DepositToCompound(p) => {
                 let call =
-                    crate::abi::adaptors::compound_c_token_adaptor_v2::DepositToCompoundCall {
+                    steward_abi::adaptors::compound_c_token_adaptor_v2::DepositToCompoundCall {
                         market: sp_call_parse_address(p.market)?,
                         amount_to_deposit: string_to_u256(p.amount_to_deposit)?,
                     };
@@ -42,7 +42,7 @@ pub(crate) fn compound_c_token_v2_calls(
             }
             compound_c_token_adaptor_v2::Function::WithdrawFromCompound(p) => {
                 let call =
-                    crate::abi::adaptors::compound_c_token_adaptor_v2::WithdrawFromCompoundCall {
+                    steward_abi::adaptors::compound_c_token_adaptor_v2::WithdrawFromCompoundCall {
                         market: sp_call_parse_address(p.market)?,
                         amount_to_withdraw: string_to_u256(p.amount_to_withdraw)?,
                     };
@@ -53,7 +53,7 @@ pub(crate) fn compound_c_token_v2_calls(
                 )
             }
             compound_c_token_adaptor_v2::Function::ClaimComp(_) => {
-                let call = crate::abi::adaptors::compound_c_token_adaptor_v2::ClaimCompCall {};
+                let call = steward_abi::adaptors::compound_c_token_adaptor_v2::ClaimCompCall {};
                 calls.push(
                     CompoundCTokenAdaptorV2Calls::ClaimComp(call)
                         .encode()

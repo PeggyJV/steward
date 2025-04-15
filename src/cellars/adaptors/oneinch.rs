@@ -1,9 +1,9 @@
 use ethers::{abi::AbiEncode, types::Bytes};
+use steward_abi::adaptors::oneinch_adaptor_v1::{
+    OneInchAdaptorV1Calls as AbiOneInchAdaptorV1Calls, SwapWithOneInchCall,
+};
 
 use crate::{
-    abi::adaptors::oneinch_adaptor_v1::{
-        OneInchAdaptorV1Calls as AbiOneInchAdaptorV1Calls, SwapWithOneInchCall,
-    },
     error::Error,
     proto::one_inch_adaptor_v1,
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
@@ -33,7 +33,7 @@ pub(crate) fn one_inch_adaptor_v1_calls(
                 )
             }
             one_inch_adaptor_v1::Function::RevokeApproval(p) => {
-                let call = crate::abi::adaptors::oneinch_adaptor_v1::RevokeApprovalCall {
+                let call = steward_abi::adaptors::oneinch_adaptor_v1::RevokeApprovalCall {
                     asset: sp_call_parse_address(p.asset)?,
                     spender: sp_call_parse_address(p.spender)?,
                 };
