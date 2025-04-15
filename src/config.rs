@@ -335,13 +335,15 @@ impl GasPrice {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields)]
 pub struct MetricsSection {
-    pub listen_addr: SocketAddr,
+    pub orchestrator_endpoint: SocketAddr,
+    pub steward_endpoint: SocketAddr,
 }
 
 impl Default for MetricsSection {
     fn default() -> Self {
         Self {
-            listen_addr: "127.0.0.1:3000".parse().unwrap(),
+            orchestrator_endpoint: "127.0.0.1:3000".parse().unwrap(),
+            steward_endpoint: "127.0.0.1:3001".parse().unwrap(),
         }
     }
 }

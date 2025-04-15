@@ -17,7 +17,11 @@ use tokio::{
 use x509_parser::prelude::X509Certificate;
 
 use crate::{
-    error::Error, prelude::APP, pubsub::get_trust_state, server::extract_subject_key_identifier,
+    error::Error,
+    metrics::{CACHE_REFRESH_ERRORS, CACHE_REFRESH_SUCCESS},
+    prelude::APP,
+    pubsub::get_trust_state,
+    server::extract_subject_key_identifier,
 };
 
 pub(crate) type PublisherTrustStateCache<'a> = RwLock<HashMap<Vec<u8>, PublisherTrustData<'a>>>;
@@ -45,11 +49,24 @@ pub(crate) async fn lookup_trust_data_by_subject_key_identifier(
 pub async fn refresh_publisher_trust_state_cache() -> Result<bool, Error> {
     debug!("refreshing publisher trust state cache");
     let mut cache = PUBLISHER_TRUST_STATE_CACHE.write().await;
-    let entries = get_trust_state().await?.into_iter().map(|td| {
+
+    let entries = match get_trust_state().await {
+        Ok(entries) => {
+            CACHE_REFRESH_SUCCESS.inc();
+            entries
+        }
+        Err(e) => {
+            CACHE_REFRESH_ERRORS.inc();
+            return Err(e);
+        }
+    }
+    .into_iter()
+    .map(|td| {
         let subject_key_identifier = extract_subject_key_identifier(&td.publisher_ca_cert).unwrap();
 
         (subject_key_identifier.0.to_vec(), td)
     });
+
     let map = HashMap::from_iter(entries);
     debug!("cache map: {map:?}");
 

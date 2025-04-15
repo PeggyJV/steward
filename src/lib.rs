@@ -18,6 +18,7 @@ pub mod cork;
 pub mod encode;
 pub mod error;
 pub mod gas;
+pub mod metrics;
 pub mod prelude;
 pub mod proposals;
 pub mod pubsub;
@@ -30,3 +31,10 @@ pub mod utils;
 
 #[allow(clippy::all)]
 pub use steward_proto::proto;
+
+pub async fn start_metrics_server() -> tokio::task::JoinHandle<()> {
+    use abscissa_core::Application;
+
+    let config = crate::prelude::APP.config();
+    metrics::start_metrics_server(config.metrics.steward_endpoint).await
+}

@@ -18,6 +18,7 @@ use crate::{
     cellars::to_checksum_address,
     config::get_delegate_address,
     error::{Error, ErrorKind},
+    metrics::{TRUST_STATE_LOAD_ERRORS, TRUST_STATE_LOAD_SUCCESS},
     prelude::APP,
     somm_send,
 };
@@ -57,6 +58,7 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
         });
 
     if subscription_mappings.is_empty() {
+        TRUST_STATE_LOAD_ERRORS.inc();
         return Err(ErrorKind::NoSubscriptions
             .context("did not find any subscriptions. clients will be unable to authenticate.")
             .into());
@@ -148,6 +150,7 @@ pub(crate) async fn get_trust_state() -> Result<Vec<PublisherTrustData<'static>>
         );
     }
 
+    TRUST_STATE_LOAD_SUCCESS.inc();
     Ok(states.values().cloned().collect())
 }
 
