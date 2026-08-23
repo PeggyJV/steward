@@ -158,11 +158,23 @@ async fn handle_cork(cellar_id: &str, encoded_call: Vec<u8>, height: u64) -> Res
                     "failed to schedule cork for cellar {}. code {}, raw log: {}",
                     cellar_id, res.code, res.raw_log
                 );
-                return Err(Status::new(
-                    Code::Internal,
+                // Sommelier v10 retired the validator-delegate cork path: the
+                // chain requires signer == params.cork_authority. A rejection
+                // here is far more likely to be that than a local misconfig,
+                // and the generic message sent operators looking in the wrong
+                // place, so name the likely cause explicitly.
+                let hint = if res.raw_log.contains("not the cork authority")
+                    || res.raw_log.contains("unauthorized")
+                {
+                    "this steward's delegate key is not the chain's cork_authority. \
+                     Since Sommelier v10 only that address may schedule corks; steward \
+                     cannot sign for an authority held on a hardware wallet. Schedule it \
+                     with: sommelier tx cork schedule-cork <cellar> <height> <hex-call> \
+                     --from <authority>"
+                } else {
                     "cork submission failed. this may be a steward configuration problem."
-                        .to_string(),
-                ));
+                };
+                return Err(Status::new(Code::Internal, hint.to_string()));
             }
 
             debug!("cork response: {:?}", res);

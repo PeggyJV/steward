@@ -80,6 +80,19 @@ pub async fn unsubscribe(cellar_id: String) -> Result<TxResponse, CosmosGrpcErro
     send_messages(vec![msg]).await
 }
 
+/// Schedule a cork against an Ethereum cellar.
+///
+/// NOTE (Sommelier v10): the chain no longer accepts corks from a validator's
+/// delegate key. x/cork's msg server requires
+/// `signer == params.cork_authority`, with no fallback to the retired
+/// validator-supermajority path, so this call fails with ErrUnauthorized unless
+/// steward's delegate key IS the cork authority.
+///
+/// Steward loads its signing key from an on-disk FsKeyStore, so it cannot act
+/// as an authority held on a hardware wallet. Where that is the case, schedule
+/// corks with the CLI instead:
+///
+///     sommelier tx cork schedule-cork <cellar> <height> <hex-call> --from <authority>
 pub async fn schedule_cork(cork: Cork, block_height: u64) -> Result<TxResponse, CosmosGrpcError> {
     let msg = MsgScheduleCorkRequest {
         cork: Some(cork),
