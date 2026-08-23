@@ -92,7 +92,9 @@ pub async fn unsubscribe(cellar_id: String) -> Result<TxResponse, CosmosGrpcErro
 /// as an authority held on a hardware wallet. Where that is the case, schedule
 /// corks with the CLI instead:
 ///
-///     sommelier tx cork schedule-cork <cellar> <height> <hex-call> --from <authority>
+/// ```text
+/// sommelier tx cork schedule-cork <cellar> <height> <hex-call> --from <authority>
+/// ```
 pub async fn schedule_cork(cork: Cork, block_height: u64) -> Result<TxResponse, CosmosGrpcError> {
     let msg = MsgScheduleCorkRequest {
         cork: Some(cork),
