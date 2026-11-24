@@ -217,6 +217,32 @@ pub const V2_5_PERMISSIONS: CellarArchPermissions = CellarArchPermissions {
     blocked_positions: &BLOCKED_V2_5_POSITIONS,
 };
 
+const MAX_STRATEGIST_REBALANCE_DEVIATION: u64 = 5_000_000_000_000_000;
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum CellarArchitecture {
+    V2_0,
+    V2_2,
+    V2_5,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+struct CellarArchitecturePolicy {
+    chain_id: u64,
+    cellar_id: &'static str,
+    architecture: CellarArchitecture,
+}
+
+impl CellarArchitecturePolicy {
+    const fn new(chain_id: u64, cellar_id: &'static str, architecture: CellarArchitecture) -> Self {
+        Self {
+            chain_id,
+            cellar_id,
+            architecture,
+        }
+    }
+}
+
 // cellars
 
 pub const CELLAR_MORPHO_ETH_MAXIMIZER: &str = "cf4b531b4cde95bd35d71926e09b2b54c564f5b6";
@@ -236,6 +262,14 @@ pub const CELLAR_TURBO_EETH_DEPLOYMENT_1: &str = "9a7b4980c6f0fcaa50cd5f288ad703
 pub const CELLAR_TURBO_EETH_DEPLOYMENT_2: &str = "dadc82e26b3739750e036dfd9defd3ed459b877a";
 pub const CELLAR_ETH_GROWTH: &str = "6c51041a91c91c86f3f08a72cb4d3f67f1208897";
 pub const CELLAR_TEST_RYUSD: &str = "01a4a3e1e730d245f210eebc6aee54f2381cac63";
+
+const CELLAR_ARCHITECTURE_POLICIES: &[CellarArchitecturePolicy] = &[
+    CellarArchitecturePolicy::new(1, CELLAR_RYUSD, CellarArchitecture::V2_0),
+    CellarArchitecturePolicy::new(1, CELLAR_RYETH, CellarArchitecture::V2_2),
+    CellarArchitecturePolicy::new(1, CELLAR_RYBTC, CellarArchitecture::V2_2),
+    CellarArchitecturePolicy::new(1, CELLAR_TURBO_STETH, CellarArchitecture::V2_5),
+    CellarArchitecturePolicy::new(1, CELLAR_ETH_GROWTH, CellarArchitecture::V2_5),
+];
 
 // deprecated adaptors
 
@@ -344,6 +378,55 @@ pub fn validate_new_position(
     }
 
     Ok(())
+}
+
+fn resolve_cellar_architecture(
+    policies: &[CellarArchitecturePolicy],
+    chain_id: u64,
+    cellar_id: &str,
+) -> Result<CellarArchitecture, Error> {
+    let cellar_id = normalize_address(cellar_id.to_string());
+    let matches = policies
+        .iter()
+        .filter(|policy| policy.chain_id == chain_id && policy.cellar_id == cellar_id)
+        .map(|policy| policy.architecture)
+        .collect::<Vec<_>>();
+
+    match matches.as_slice() {
+        [architecture] => Ok(*architecture),
+        [] => Err(sp_call_error(format!(
+            "no cellar architecture policy is configured for chain {chain_id} cellar {cellar_id}"
+        ))),
+        _ => Err(sp_call_error(format!(
+            "multiple cellar architecture policies are configured for chain {chain_id} cellar {cellar_id}"
+        ))),
+    }
+}
+
+/// Validates `addPosition` using the policy bound to the target cellar rather than the caller's
+/// protobuf variant. V2.0 has no separate catalogue gate and therefore requires an explicit
+/// allowlist; later architectures only apply their architecture-specific blocklist here.
+pub fn validate_add_position(chain_id: u64, cellar_id: &str, position: u32) -> Result<(), Error> {
+    match resolve_cellar_architecture(CELLAR_ARCHITECTURE_POLICIES, chain_id, cellar_id)? {
+        CellarArchitecture::V2_0 => validate_new_position(cellar_id, position, &V2_0_PERMISSIONS),
+        CellarArchitecture::V2_2 => check_blocked_position(&position, &V2_2_PERMISSIONS),
+        CellarArchitecture::V2_5 => check_blocked_position(&position, &V2_5_PERMISSIONS),
+    }
+}
+
+pub fn validate_strategist_rebalance_deviation(new_deviation: String) -> Result<U256, Error> {
+    let new_deviation = string_to_u256(new_deviation)?;
+    if new_deviation > U256::from(MAX_STRATEGIST_REBALANCE_DEVIATION) {
+        return Err(sp_call_error("deviation must be 0.5% or less".to_string()));
+    }
+
+    Ok(new_deviation)
+}
+
+pub fn strategist_governance_only_call(function_name: &str) -> Error {
+    sp_call_error(format!(
+        "{function_name} is governance-only and cannot be scheduled by a strategist"
+    ))
 }
 
 pub fn validate_oracle(
@@ -635,6 +718,159 @@ mod tests {
             );
         assert!(res.is_err());
         assert_eq!(expected_err, res.unwrap_err().to_string());
+    }
+
+    #[test]
+    fn add_position_uses_the_chain_scoped_target_policy() {
+        let blocked = validate_add_position(1, CELLAR_RYUSD, 4).unwrap_err();
+        assert_eq!(blocked.to_string(), "SP call error: position 4 is blocked");
+
+        assert!(validate_add_position(1, CELLAR_RYETH, 4).is_ok());
+
+        let wrong_chain = validate_add_position(42161, CELLAR_RYUSD, 4).unwrap_err();
+        assert_eq!(
+            wrong_chain.to_string(),
+            format!(
+                "SP call error: no cellar architecture policy is configured for chain 42161 cellar {CELLAR_RYUSD}"
+            )
+        );
+    }
+
+    #[test]
+    fn same_address_can_have_different_architectures_on_different_chains() {
+        let address = "0000000000000000000000000000000000000001";
+        let policies = [
+            CellarArchitecturePolicy::new(1, address, CellarArchitecture::V2_0),
+            CellarArchitecturePolicy::new(42161, address, CellarArchitecture::V2_5),
+        ];
+
+        assert_eq!(
+            resolve_cellar_architecture(&policies, 1, address).unwrap(),
+            CellarArchitecture::V2_0
+        );
+        assert_eq!(
+            resolve_cellar_architecture(&policies, 42161, address).unwrap(),
+            CellarArchitecture::V2_5
+        );
+    }
+
+    #[test]
+    fn architecture_policy_fails_closed_when_ambiguous() {
+        let address = "0000000000000000000000000000000000000001";
+        let policies = [
+            CellarArchitecturePolicy::new(1, address, CellarArchitecture::V2_0),
+            CellarArchitecturePolicy::new(1, address, CellarArchitecture::V2_5),
+        ];
+        let err = resolve_cellar_architecture(&policies, 1, address).unwrap_err();
+
+        assert_eq!(
+            err.to_string(),
+            format!(
+                "SP call error: multiple cellar architecture policies are configured for chain 1 cellar {address}"
+            )
+        );
+    }
+
+    #[test]
+    fn add_position_fails_closed_without_a_chain_scoped_policy() {
+        let unconfigured_cellar = "0000000000000000000000000000000000000000";
+        let err = validate_add_position(1, unconfigured_cellar, 1).unwrap_err();
+
+        assert_eq!(
+            err.to_string(),
+            format!(
+                "SP call error: no cellar architecture policy is configured for chain 1 cellar {unconfigured_cellar}"
+            )
+        );
+    }
+
+    #[test]
+    fn repository_cellar_policy_coverage_is_reconciled() {
+        let version_tables = [
+            (CellarArchitecture::V2_0, &V2_0_PERMISSIONS),
+            (CellarArchitecture::V2_2, &V2_2_PERMISSIONS),
+            (CellarArchitecture::V2_5, &V2_5_PERMISSIONS),
+        ];
+
+        for (architecture, permissions) in version_tables {
+            let addresses = permissions
+                .allowed_adaptors
+                .iter()
+                .map(|(address, _)| *address)
+                .chain(
+                    permissions
+                        .allowed_positions
+                        .iter()
+                        .map(|(address, _)| *address),
+                )
+                .collect::<std::collections::BTreeSet<_>>();
+
+            for address in addresses {
+                assert_eq!(
+                    resolve_cellar_architecture(CELLAR_ARCHITECTURE_POLICIES, 1, address).unwrap(),
+                    architecture,
+                    "version table entry lacks one matching chain-scoped architecture policy: {address}"
+                );
+            }
+        }
+
+        let repository_cellars = [
+            CELLAR_MORPHO_ETH_MAXIMIZER,
+            CELLAR_RY1INCH,
+            CELLAR_RYBTC,
+            CELLAR_RYENS,
+            CELLAR_RYETH,
+            CELLAR_RYLINK,
+            CELLAR_RYSNX,
+            CELLAR_RYUNI,
+            CELLAR_RYUSD,
+            CELLAR_TURBO_SWETH,
+            CELLAR_TURBO_GHO,
+            CELLAR_TURBO_STETH,
+            CELLAR_TURBO_SOMM,
+            CELLAR_TURBO_EETH_DEPLOYMENT_1,
+            CELLAR_TURBO_EETH_DEPLOYMENT_2,
+            CELLAR_ETH_GROWTH,
+            CELLAR_TEST_RYUSD,
+        ];
+        let unmapped = repository_cellars
+            .into_iter()
+            .filter(|address| {
+                !CELLAR_ARCHITECTURE_POLICIES
+                    .iter()
+                    .any(|policy| policy.cellar_id == *address)
+            })
+            .collect::<std::collections::BTreeSet<_>>();
+        let expected_unmapped = [
+            CELLAR_MORPHO_ETH_MAXIMIZER,
+            CELLAR_RY1INCH,
+            CELLAR_RYENS,
+            CELLAR_RYLINK,
+            CELLAR_RYSNX,
+            CELLAR_RYUNI,
+            CELLAR_TURBO_SWETH,
+            CELLAR_TURBO_GHO,
+            CELLAR_TURBO_SOMM,
+            CELLAR_TURBO_EETH_DEPLOYMENT_1,
+            CELLAR_TURBO_EETH_DEPLOYMENT_2,
+            CELLAR_TEST_RYUSD,
+        ]
+        .into_iter()
+        .collect::<std::collections::BTreeSet<_>>();
+
+        assert_eq!(unmapped, expected_unmapped);
+    }
+
+    #[test]
+    fn strategist_rebalance_deviation_accepts_the_exact_policy_limit() {
+        assert!(validate_strategist_rebalance_deviation(
+            MAX_STRATEGIST_REBALANCE_DEVIATION.to_string()
+        )
+        .is_ok());
+        assert!(validate_strategist_rebalance_deviation(
+            (MAX_STRATEGIST_REBALANCE_DEVIATION + 1).to_string()
+        )
+        .is_err());
     }
 
     #[test]

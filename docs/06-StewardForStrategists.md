@@ -55,13 +55,13 @@ The server can be called with any gRPC client, such as `grpcurl`:
 # Get the ABI endcoded call data for a simple contract call
 grpcurl \
     --plaintext \
-    -d '{"request": {"cellar_id": "0x0000000000000000000000000000000000000000", "cellar_v2_5": {"function_call": {"lift_shutdown": {}}}}, "encode_only": true}' \
+    -d '{"request": {"chain_id": "1", "cellar_id": "0x0000000000000000000000000000000000000000", "cellar_v2_5": {"function_call": {"set_strategist_payout_address": {"payout": "0x0000000000000000000000000000000000000001"}}}}, "encode_only": true}' \
     localhost:5734 \
     steward.v4.SimulateContractCallService/Simulate
 
 # Output:
 # {
-#   "encodedCall": "5e2c576e"
+#   "encodedCall": "b0a75d360000000000000000000000000000000000000000000000000000000000000001"
 # }
 #
 ```
@@ -73,6 +73,14 @@ In production, all requests to Steward instances must be authenticated via TLS a
 Though there are no-code options progress, it is currently required for strategists to write code for building and submitting Steward requests. The Steward API is defined in a number of protobuf files which can be used to generate client code in the Strategist's language of choice.
 
 Endpoints for each Steward instance can be queried from the chain using the Sommelier protos via the `pubsub.v1.Query/QuerySubscribers` method.
+
+### Cellar architecture policy
+
+Strategist `addPosition` requests are checked against the policy configured for the target Cellar, not the request's protobuf variant. Policies are keyed by `(chain_id, cellar address)`. The current on-chain approved-Cellar query does not return architecture metadata, so Steward maintains an explicit `CELLAR_ARCHITECTURE_POLICIES` table and reconciles each entry with the matching architecture's permissions. A target missing from that table, or present more than once for the same chain, fails closed for `addPosition`.
+
+When governance approves a new managed Cellar that strategists must be able to update, the Steward release must therefore add its chain-and-address identity to the explicit policy table and its permitted operations to the matching architecture table. Release readiness must reconcile all approved Cellars against this policy; unmapped Cellars cannot use strategist `addPosition`. A future approval-schema migration should carry explicit architecture/version metadata and verify it when decoding a request, removing this static configuration requirement without reintroducing caller-selected policy.
+
+The protobuf retains shutdown and fee-administration fields for wire compatibility, but Steward rejects `initiateShutdown`, `liftShutdown`, `setPlatformFee`, and `setStrategistPlatformCut` from strategist requests. Submit those operations through the governance proposal path.
 
 A package for constructing requests using the Builder Pattern is provided for the Go language and can be found [here](https://github.com/peggyjv/steward/main/go/builder).
 

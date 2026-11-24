@@ -36,7 +36,7 @@ pub(crate) struct PublisherTrustData<'a> {
 
 pub(crate) async fn lookup_trust_data_by_subject_key_identifier(
     subject_key_identifier: &Vec<u8>,
-) -> Option<PublisherTrustData> {
+) -> Option<PublisherTrustData<'_>> {
     let cache = PUBLISHER_TRUST_STATE_CACHE.read().await;
     cache.get(subject_key_identifier).cloned()
 }

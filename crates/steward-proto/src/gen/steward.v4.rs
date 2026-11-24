@@ -4379,15 +4379,19 @@ pub mod cellar_v2 {
         /// Represents function `setupAdaptor(address adaptor)`
         #[prost(message, tag = "8")]
         SetupAdaptor(SetupAdaptor),
+        /// Governance-only. Retained for wire compatibility; strategist requests are rejected.
         /// Represents function `initiateShutdown()`
         #[prost(message, tag = "9")]
         InitiateShutdown(InitiateShutdown),
+        /// Governance-only. Retained for wire compatibility; strategist requests are rejected.
         /// Represents function `liftShutdown()`
         #[prost(message, tag = "10")]
         LiftShutdown(LiftShutdown),
+        /// Governance-only. Retained for wire compatibility; strategist requests are rejected.
         /// Represents function `setPlatformFee(uint256)`
         #[prost(message, tag = "11")]
         SetPlatformFee(SetPlatformFee),
+        /// Governance-only. Retained for wire compatibility; strategist requests are rejected.
         /// Represents function `setStrategistPlatformCut(address)`
         #[prost(message, tag = "12")]
         SetStrategistPlatformCut(SetStrategistPlatformCut),
@@ -4536,12 +4540,15 @@ pub mod cellar_v2_2 {
             /// Represents function `setShareLockPeriod(uint256 newLock)`
             #[prost(message, tag = "12")]
             SetShareLockPeriod(super::SetShareLockPeriod),
+            /// Governance-only. Retained for wire compatibility; strategist requests are rejected.
             /// Represents function `setStrategistPlatformCut(uint64 cut)`
             #[prost(message, tag = "13")]
             SetStrategistPlatformCut(super::SetStrategistPlatformCut),
+            /// Governance-only. Retained for wire compatibility; strategist requests are rejected.
             /// Represents function `initiateShutdown()`
             #[prost(message, tag = "14")]
             InitiateShutdown(super::InitiateShutdown),
+            /// Governance-only. Retained for wire compatibility; strategist requests are rejected.
             /// Represents function `liftShutdown()`
             #[prost(message, tag = "15")]
             LiftShutdown(super::LiftShutdown),
@@ -4796,9 +4803,11 @@ pub mod cellar_v2_2governance {
             /// Represents function `setStrategistPlatformCut(uint64 cut)`
             #[prost(message, tag = "5")]
             SetStrategistPlatformCut(super::SetStrategistPlatformCut),
+            /// Governance-only. Retained for wire compatibility; strategist requests are rejected.
             /// Represents function `initiateShutdown()`
             #[prost(message, tag = "6")]
             InitiateShutdown(super::InitiateShutdown),
+            /// Governance-only. Retained for wire compatibility; strategist requests are rejected.
             /// Represents function `liftShutdown()`
             #[prost(message, tag = "7")]
             LiftShutdown(super::LiftShutdown),
@@ -5128,6 +5137,7 @@ pub mod cellar_v2_5 {
             /// Represents function `setRebalanceDeviation(uint256)`
             #[prost(message, tag = "19")]
             SetRebalanceDeviation(super::SetRebalanceDeviation),
+            /// Governance-only. Retained for wire compatibility; strategist requests are rejected.
             /// Represents function `setStrategistPlatformCut(uint64 cut)`
             #[prost(message, tag = "20")]
             SetStrategistPlatformCut(super::SetStrategistPlatformCut),
@@ -5955,6 +5965,9 @@ pub struct ScheduleResponse {
 pub struct EncodeRequest {
     #[prost(string, tag = "1")]
     pub cellar_id: ::prost::alloc::string::String,
+    /// EVM chain ID used to select the target Cellar's chain-scoped policy.
+    #[prost(uint64, tag = "7")]
+    pub chain_id: u64,
     /// The data from which the desired contract function will be encoded
     #[prost(oneof = "encode_request::CallData", tags = "2, 3, 4, 5, 6")]
     pub call_data: ::core::option::Option<encode_request::CallData>,

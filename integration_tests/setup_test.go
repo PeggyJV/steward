@@ -983,17 +983,24 @@ func noRestart(config *docker.HostConfig) {
 }
 
 func (s *IntegrationTestSuite) logsByContainerID(id string) string {
+	logs, err := s.tryLogsByContainerID(id)
+	s.Require().NoError(err)
+
+	return logs
+}
+
+func (s *IntegrationTestSuite) tryLogsByContainerID(id string) (string, error) {
 	var containerLogsBuf bytes.Buffer
-	s.Require().NoError(s.dockerPool.Client.Logs(
+	err := s.dockerPool.Client.Logs(
 		docker.LogsOptions{
 			Container:    id,
 			OutputStream: &containerLogsBuf,
 			Stdout:       true,
 			Stderr:       true,
 		},
-	))
+	)
 
-	return containerLogsBuf.String()
+	return containerLogsBuf.String(), err
 }
 
 func (s *IntegrationTestSuite) GetLatestBlockHeight(clientCtx *client.Context) (int64, error) {

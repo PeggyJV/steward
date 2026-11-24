@@ -849,21 +849,36 @@ func (s *IntegrationTestSuite) executeStewardCalls(request *steward_proto.Schedu
 		// make it rain
 		for i := range s.chain.stewards {
 			addr := fmt.Sprintf("localhost:%v", STEWARD_PORT+i)
-			conn, err := grpc.Dial(
+			dialCtx, cancelDial := context.WithTimeout(context.Background(), 10*time.Second)
+			conn, err := grpc.DialContext(
+				dialCtx,
 				addr,
 				grpc.WithBlock(),
 				grpc.WithTransportCredentials(creds),
 			)
-			s.Require().NoError(err)
-			defer conn.Close()
+			cancelDial()
+			if err != nil {
+				s.T().Logf("failed to connect to steward %s at %s: %v", s.chain.validators[i].address(), addr, err)
+				logs, logsErr := s.tryLogsByContainerID(s.stewResources[i].Container.ID)
+				if logsErr != nil {
+					s.T().Logf("failed to collect steward container logs: %v", logsErr)
+				} else {
+					s.T().Logf("steward container logs:\n%s", logs)
+				}
+				return false
+			}
 
-			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-			defer cancel()
+			ctx, cancelSchedule := context.WithTimeout(context.Background(), 10*time.Second)
 
 			c := steward_proto.NewContractCallServiceClient(conn)
 			s.T().Logf("sending request to %s", s.chain.validators[i].address())
 			_, err = c.Schedule(ctx, request)
-			s.Require().NoError(err)
+			cancelSchedule()
+			conn.Close()
+			if err != nil {
+				s.T().Logf("steward %s rejected schedule request: %v", s.chain.validators[i].address(), err)
+				return false
+			}
 		}
 
 		return true
