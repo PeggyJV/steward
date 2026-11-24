@@ -854,7 +854,10 @@ func (s *IntegrationTestSuite) executeStewardCalls(request *steward_proto.Schedu
 				grpc.WithBlock(),
 				grpc.WithTransportCredentials(creds),
 			)
-			s.Require().NoError(err)
+			if err != nil {
+				s.T().Logf("failed to connect to steward %s at %s: %v", s.chain.validators[i].address(), addr, err)
+				return false
+			}
 			defer conn.Close()
 
 			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -863,7 +866,10 @@ func (s *IntegrationTestSuite) executeStewardCalls(request *steward_proto.Schedu
 			c := steward_proto.NewContractCallServiceClient(conn)
 			s.T().Logf("sending request to %s", s.chain.validators[i].address())
 			_, err = c.Schedule(ctx, request)
-			s.Require().NoError(err)
+			if err != nil {
+				s.T().Logf("steward %s rejected schedule request: %v", s.chain.validators[i].address(), err)
+				return false
+			}
 		}
 
 		return true
