@@ -859,7 +859,12 @@ func (s *IntegrationTestSuite) executeStewardCalls(request *steward_proto.Schedu
 			cancelDial()
 			if err != nil {
 				s.T().Logf("failed to connect to steward %s at %s: %v", s.chain.validators[i].address(), addr, err)
-				s.T().Logf("steward container logs:\n%s", s.logsByContainerID(s.stewResources[i].Container.ID))
+				logs, logsErr := s.tryLogsByContainerID(s.stewResources[i].Container.ID)
+				if logsErr != nil {
+					s.T().Logf("failed to collect steward container logs: %v", logsErr)
+				} else {
+					s.T().Logf("steward container logs:\n%s", logs)
+				}
 				return false
 			}
 
