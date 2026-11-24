@@ -217,6 +217,15 @@ pub const V2_5_PERMISSIONS: CellarArchPermissions = CellarArchPermissions {
     blocked_positions: &BLOCKED_V2_5_POSITIONS,
 };
 
+const MAX_STRATEGIST_REBALANCE_DEVIATION: u64 = 5_000_000_000_000_000;
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum CellarArchitecture {
+    V2_0,
+    V2_2,
+    V2_5,
+}
+
 // cellars
 
 pub const CELLAR_MORPHO_ETH_MAXIMIZER: &str = "cf4b531b4cde95bd35d71926e09b2b54c564f5b6";
@@ -344,6 +353,66 @@ pub fn validate_new_position(
     }
 
     Ok(())
+}
+
+fn permissions_include_cellar(cellar_id: &str, permissions: &CellarArchPermissions) -> bool {
+    permissions
+        .allowed_adaptors
+        .iter()
+        .any(|(allowed_cellar, _)| *allowed_cellar == cellar_id)
+        || permissions
+            .allowed_positions
+            .iter()
+            .any(|(allowed_cellar, _)| *allowed_cellar == cellar_id)
+}
+
+fn configured_cellar_architecture(cellar_id: &str) -> Result<CellarArchitecture, Error> {
+    let cellar_id = normalize_address(cellar_id.to_string());
+    let matches = [
+        (CellarArchitecture::V2_0, &V2_0_PERMISSIONS),
+        (CellarArchitecture::V2_2, &V2_2_PERMISSIONS),
+        (CellarArchitecture::V2_5, &V2_5_PERMISSIONS),
+    ]
+    .into_iter()
+    .filter(|(_, permissions)| permissions_include_cellar(&cellar_id, permissions))
+    .map(|(architecture, _)| architecture)
+    .collect::<Vec<_>>();
+
+    match matches.as_slice() {
+        [architecture] => Ok(*architecture),
+        [] => Err(sp_call_error(format!(
+            "no cellar architecture policy is configured for {cellar_id}"
+        ))),
+        _ => Err(sp_call_error(format!(
+            "multiple cellar architecture policies are configured for {cellar_id}"
+        ))),
+    }
+}
+
+/// Validates `addPosition` using the policy bound to the target cellar rather than the caller's
+/// protobuf variant. V2.0 has no separate catalogue gate and therefore requires an explicit
+/// allowlist; later architectures only apply their architecture-specific blocklist here.
+pub fn validate_add_position(cellar_id: &str, position: u32) -> Result<(), Error> {
+    match configured_cellar_architecture(cellar_id)? {
+        CellarArchitecture::V2_0 => validate_new_position(cellar_id, position, &V2_0_PERMISSIONS),
+        CellarArchitecture::V2_2 => check_blocked_position(&position, &V2_2_PERMISSIONS),
+        CellarArchitecture::V2_5 => check_blocked_position(&position, &V2_5_PERMISSIONS),
+    }
+}
+
+pub fn validate_strategist_rebalance_deviation(new_deviation: String) -> Result<U256, Error> {
+    let new_deviation = string_to_u256(new_deviation)?;
+    if new_deviation > U256::from(MAX_STRATEGIST_REBALANCE_DEVIATION) {
+        return Err(sp_call_error("deviation must be 0.5% or less".to_string()));
+    }
+
+    Ok(new_deviation)
+}
+
+pub fn strategist_governance_only_call(function_name: &str) -> Error {
+    sp_call_error(format!(
+        "{function_name} is governance-only and cannot be scheduled by a strategist"
+    ))
 }
 
 pub fn validate_oracle(
@@ -635,6 +704,37 @@ mod tests {
             );
         assert!(res.is_err());
         assert_eq!(expected_err, res.unwrap_err().to_string());
+    }
+
+    #[test]
+    fn add_position_uses_the_target_cellars_architecture_policy() {
+        assert!(validate_add_position(CELLAR_RYUSD, 4).is_err());
+        assert!(validate_add_position(CELLAR_RYETH, 4).is_ok());
+    }
+
+    #[test]
+    fn add_position_fails_closed_without_a_unique_architecture_policy() {
+        let unconfigured_cellar = "0000000000000000000000000000000000000000";
+        let err = validate_add_position(unconfigured_cellar, 1).unwrap_err();
+
+        assert_eq!(
+            err.to_string(),
+            format!(
+                "SP call error: no cellar architecture policy is configured for {unconfigured_cellar}"
+            )
+        );
+    }
+
+    #[test]
+    fn strategist_rebalance_deviation_accepts_the_exact_policy_limit() {
+        assert!(validate_strategist_rebalance_deviation(
+            MAX_STRATEGIST_REBALANCE_DEVIATION.to_string()
+        )
+        .is_ok());
+        assert!(validate_strategist_rebalance_deviation(
+            (MAX_STRATEGIST_REBALANCE_DEVIATION + 1).to_string()
+        )
+        .is_err());
     }
 
     #[test]

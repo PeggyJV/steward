@@ -19,7 +19,7 @@ use crate::{
 };
 use steward_abi::cellar_v1::*;
 
-use super::{log_cellar_call, log_governance_cellar_call};
+use super::{log_cellar_call, log_governance_cellar_call, validate_strategist_rebalance_deviation};
 
 const CELLAR_NAME: &str = "CellarV1";
 const LOG_PREFIX: &str = CELLAR_NAME;
@@ -167,7 +167,7 @@ pub fn get_call(function: StrategyFunction, cellar_id: String) -> Result<CellarV
                 &cellar_id,
             );
             let call = SetRebalanceDeviationCall {
-                new_deviation: string_to_u256(params.new_deviation)?,
+                new_deviation: validate_strategist_rebalance_deviation(params.new_deviation)?,
             };
 
             Ok(CellarV1Calls::SetRebalanceDeviation(call))
@@ -313,5 +313,24 @@ pub fn get_encoded_governance_call(
             };
             Ok(CellarV1Calls::TrustPosition(call).encode())
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn strategist_rebalance_deviation_above_policy_floor_is_rejected() {
+        let result = get_encoded_call(
+            StrategyFunction::SetRebalanceDeviation(
+                crate::proto::cellar_v1::SetRebalanceDeviation {
+                    new_deviation: "5000000000000001".to_string(),
+                },
+            ),
+            "0x0000000000000000000000000000000000000001".to_string(),
+        );
+
+        assert!(result.is_err());
     }
 }

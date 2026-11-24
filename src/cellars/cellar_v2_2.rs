@@ -26,7 +26,9 @@ use crate::{
 
 use super::{
     check_blocked_adaptor, check_blocked_position, log_cellar_call, log_governance_cellar_call,
-    validate_cache_price_router, validate_new_adaptor, validate_new_position, V2_2_PERMISSIONS,
+    strategist_governance_only_call, validate_add_position, validate_cache_price_router,
+    validate_new_adaptor, validate_new_position, validate_strategist_rebalance_deviation,
+    V2_2_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2.2";
@@ -55,7 +57,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
         .ok_or_else(|| sp_call_error("call data is empty".to_string()))?;
     match function {
         Function::AddPosition(params) => {
-            check_blocked_position(&params.position_id, &V2_2_PERMISSIONS)?;
+            validate_add_position(&cellar_id, params.position_id)?;
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
 
             let call = AddPositionCall {
@@ -202,12 +204,7 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
                 &cellar_id,
             );
 
-            let new_deviation = string_to_u256(params.new_deviation)?;
-            if new_deviation > U256::from(5000000000000000u64) {
-                return Err(ErrorKind::SPCallError
-                    .context("deviation must be 0.5% or less".to_string())
-                    .into());
-            }
+            let new_deviation = validate_strategist_rebalance_deviation(params.new_deviation)?;
 
             let call = SetRebalanceDeviationCall { new_deviation };
 
@@ -219,28 +216,26 @@ pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec
                 &InitiateShutdownCall::function_name(),
                 &cellar_id,
             );
-            let call = InitiateShutdownCall {};
-
-            Ok(CellarV2_2Calls::InitiateShutdown(call).encode())
+            Err(strategist_governance_only_call(
+                &InitiateShutdownCall::function_name(),
+            ))
         }
-        Function::SetStrategistPlatformCut(params) => {
+        Function::SetStrategistPlatformCut(_) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetStrategistPlatformCutCall::function_name(),
                 &cellar_id,
             );
 
-            let call = SetStrategistPlatformCutCall {
-                cut: params.new_cut,
-            };
-
-            Ok(CellarV2_2Calls::SetStrategistPlatformCut(call).encode())
+            Err(strategist_governance_only_call(
+                &SetStrategistPlatformCutCall::function_name(),
+            ))
         }
         Function::LiftShutdown(_) => {
             log_cellar_call(CELLAR_NAME, &LiftShutdownCall::function_name(), &cellar_id);
-            let call = LiftShutdownCall {};
-
-            Ok(CellarV2_2Calls::LiftShutdown(call).encode())
+            Err(strategist_governance_only_call(
+                &LiftShutdownCall::function_name(),
+            ))
         }
         Function::SetShareLockPeriod(params) => {
             log_cellar_call(
@@ -548,6 +543,50 @@ pub fn get_encoded_governance_function(
             };
 
             Ok(CellarV2_2Calls::SwapPositions(call).encode())
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn function_call(function: Function) -> FunctionCall {
+        FunctionCall {
+            function: Some(function),
+        }
+    }
+
+    #[test]
+    fn v2_2_variant_cannot_weaken_v2_0_position_policy() {
+        let call = function_call(Function::AddPosition(
+            crate::proto::cellar_v2_2::AddPosition {
+                index: 0,
+                position_id: 4,
+                configuration_data: Vec::new(),
+                in_debt_array: false,
+            },
+        ));
+
+        assert!(get_encoded_function(call, super::super::CELLAR_RYUSD.to_string()).is_err());
+    }
+
+    #[test]
+    fn governance_only_selectors_are_rejected_for_strategists() {
+        let functions = [
+            Function::InitiateShutdown(crate::proto::cellar_v2_2::InitiateShutdown {}),
+            Function::LiftShutdown(crate::proto::cellar_v2_2::LiftShutdown {}),
+            Function::SetStrategistPlatformCut(
+                crate::proto::cellar_v2_2::SetStrategistPlatformCut { new_cut: 1 },
+            ),
+        ];
+
+        for function in functions {
+            assert!(get_encoded_function(
+                function_call(function),
+                super::super::CELLAR_RYETH.to_string(),
+            )
+            .is_err());
         }
     }
 }

@@ -74,6 +74,12 @@ Though there are no-code options progress, it is currently required for strategi
 
 Endpoints for each Steward instance can be queried from the chain using the Sommelier protos via the `pubsub.v1.Query/QuerySubscribers` method.
 
+### Cellar architecture policy
+
+Strategist `addPosition` requests are checked against the policy configured for the target Cellar, not the request's protobuf variant. The current on-chain approved-Cellar query identifies a Cellar by chain and address but does not return architecture metadata. Until that protocol is extended, Steward derives the architecture from the Cellar entries in exactly one of the `V2_*_PERMISSIONS` tables. A Cellar missing from those tables, or present in more than one architecture's tables, fails closed for `addPosition`.
+
+When governance approves a new managed Cellar that strategists must be able to update, the Steward release must therefore add the Cellar to exactly one architecture permission table. A future approval-schema migration should carry explicit architecture/version metadata and verify it when decoding a request, removing this static configuration requirement without reintroducing caller-selected policy.
+
 A package for constructing requests using the Builder Pattern is provided for the Go language and can be found [here](https://github.com/peggyjv/steward/main/go/builder).
 
 ### Prerequisites

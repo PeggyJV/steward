@@ -3,7 +3,7 @@
 //! To learn more see https://github.com/PeggyJV/cellar-contracts/blob/main/src/base/Cellar.sol
 use crate::{
     cellars::adaptors,
-    error::{Error, ErrorKind},
+    error::Error,
     proto::{
         adaptor_call::CallData::*, cellar_v2::Function,
         cellar_v2_governance::Function as GovernanceFunction, AdaptorCall,
@@ -11,16 +11,13 @@ use crate::{
     utils::{sp_call_error, sp_call_parse_address, string_to_u256},
 };
 use abscissa_core::tracing::{debug, info};
-use ethers::{
-    abi::AbiEncode,
-    contract::EthCall,
-    types::{Bytes, U256},
-};
+use ethers::{abi::AbiEncode, contract::EthCall, types::Bytes};
 use steward_abi::cellar_v2::{AdaptorCall as AbiAdaptorCall, *};
 
 use super::{
-    check_blocked_adaptor, log_cellar_call, log_governance_cellar_call, validate_new_adaptor,
-    validate_new_position, V2_0_PERMISSIONS,
+    check_blocked_adaptor, log_cellar_call, log_governance_cellar_call,
+    strategist_governance_only_call, validate_add_position, validate_new_adaptor,
+    validate_strategist_rebalance_deviation, V2_0_PERMISSIONS,
 };
 
 const CELLAR_NAME: &str = "CellarV2";
@@ -32,7 +29,7 @@ pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>
 pub fn get_call(function: Function, cellar_id: String) -> Result<CellarV2Calls, Error> {
     match function {
         Function::AddPosition(params) => {
-            validate_new_position(&cellar_id, params.position_id, &V2_0_PERMISSIONS)?;
+            validate_add_position(&cellar_id, params.position_id)?;
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
 
             let call = AddPositionCall {
@@ -131,33 +128,35 @@ pub fn get_call(function: Function, cellar_id: String) -> Result<CellarV2Calls, 
                 &InitiateShutdownCall::function_name(),
                 &cellar_id,
             );
-            let call = InitiateShutdownCall {};
-            Ok(CellarV2Calls::InitiateShutdown(call))
+            Err(strategist_governance_only_call(
+                &InitiateShutdownCall::function_name(),
+            ))
         }
         Function::LiftShutdown(_) => {
             log_cellar_call(CELLAR_NAME, &LiftShutdownCall::function_name(), &cellar_id);
-            let call = LiftShutdownCall {};
-            Ok(CellarV2Calls::LiftShutdown(call))
+            Err(strategist_governance_only_call(
+                &LiftShutdownCall::function_name(),
+            ))
         }
-        Function::SetPlatformFee(params) => {
+        Function::SetPlatformFee(_) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetPlatformFeeCall::function_name(),
                 &cellar_id,
             );
-            let call = SetPlatformFeeCall {
-                new_platform_fee: params.amount,
-            };
-            Ok(CellarV2Calls::SetPlatformFee(call))
+            Err(strategist_governance_only_call(
+                &SetPlatformFeeCall::function_name(),
+            ))
         }
-        Function::SetStrategistPlatformCut(params) => {
+        Function::SetStrategistPlatformCut(_) => {
             log_cellar_call(
                 CELLAR_NAME,
                 &SetStrategistPlatformCutCall::function_name(),
                 &cellar_id,
             );
-            let call = SetStrategistPlatformCutCall { cut: params.amount };
-            Ok(CellarV2Calls::SetStrategistPlatformCut(call))
+            Err(strategist_governance_only_call(
+                &SetStrategistPlatformCutCall::function_name(),
+            ))
         }
         Function::SetRebalanceDeviation(params) => {
             log_cellar_call(
@@ -165,12 +164,7 @@ pub fn get_call(function: Function, cellar_id: String) -> Result<CellarV2Calls, 
                 &SetRebalanceDeviationCall::function_name(),
                 &cellar_id,
             );
-            let new_deviation = string_to_u256(params.new_deviation)?;
-            if new_deviation > U256::from(5000000000000000u64) {
-                return Err(ErrorKind::SPCallError
-                    .context("deviation must be 0.5% or less".to_string())
-                    .into());
-            }
+            let new_deviation = validate_strategist_rebalance_deviation(params.new_deviation)?;
 
             let call = SetRebalanceDeviationCall { new_deviation };
 
@@ -389,4 +383,29 @@ fn get_encoded_adaptor_calls(data: Vec<AdaptorCall>) -> Result<Vec<AbiAdaptorCal
     }
 
     Ok(result)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn governance_only_selectors_are_rejected_for_strategists() {
+        let functions = [
+            Function::InitiateShutdown(crate::proto::cellar_v2::InitiateShutdown {}),
+            Function::LiftShutdown(crate::proto::cellar_v2::LiftShutdown {}),
+            Function::SetPlatformFee(crate::proto::cellar_v2::SetPlatformFee { amount: 1 }),
+            Function::SetStrategistPlatformCut(crate::proto::cellar_v2::SetStrategistPlatformCut {
+                amount: 1,
+            }),
+        ];
+
+        for function in functions {
+            assert!(get_encoded_call(
+                function,
+                "0x0000000000000000000000000000000000000001".to_string(),
+            )
+            .is_err());
+        }
+    }
 }

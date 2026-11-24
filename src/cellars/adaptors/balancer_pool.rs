@@ -11,7 +11,7 @@ use steward_abi::{
 };
 
 use crate::{
-    cellars::adaptors,
+    cellars::{adaptors, check_blocked_adaptor},
     error::{Error, ErrorKind},
     proto::{
         balancer_pool_adaptor_v1::{self, SingleSwap, SwapData},
@@ -221,6 +221,7 @@ fn get_encoded_adaptor_calls(
     let mut result: Vec<AbiAdaptorCall> = Vec::new();
     for d in data {
         debug!("adaptor call to {}", d.adaptor);
+        check_blocked_adaptor(&d.adaptor)?;
         let mut calls: Vec<Bytes> = Vec::new();
         let call_data = d
             .call_data
@@ -333,4 +334,21 @@ fn get_encoded_adaptor_calls(
     }
 
     Ok(result)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn flash_loan_callback_rejects_blocked_adaptor() {
+        let call = AdaptorCallForBalancerPoolFlashLoan {
+            adaptor: format!("0x{}", crate::cellars::ADAPTOR_UNIV3_V1),
+            call_data: Some(FeesAndReservesV1Calls(
+                crate::proto::FeesAndReservesAdaptorV1Calls::default(),
+            )),
+        };
+
+        assert!(get_encoded_adaptor_calls(vec![call]).is_err());
+    }
 }

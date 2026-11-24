@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use ethers::core::types::{Signature, H256};
+    use ethers::core::types::Signature;
     use ethers::signers::{LocalWallet, Signer};
     use ethers_gcp_kms_signer::{GcpKeyRingRef, GcpKmsProvider, GcpKmsSigner};
 
