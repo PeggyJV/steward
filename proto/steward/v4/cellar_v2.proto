@@ -71,12 +71,16 @@ message CellarV2 {
         AddPosition add_position = 7;
         // Represents function `setupAdaptor(address adaptor)`
         SetupAdaptor setup_adaptor = 8;
+        // Governance-only. Retained for wire compatibility; strategist requests are rejected.
         // Represents function `initiateShutdown()`
         InitiateShutdown initiate_shutdown = 9;
+        // Governance-only. Retained for wire compatibility; strategist requests are rejected.
         // Represents function `liftShutdown()`
         LiftShutdown lift_shutdown = 10;
+        // Governance-only. Retained for wire compatibility; strategist requests are rejected.
         // Represents function `setPlatformFee(uint256)`
         SetPlatformFee set_platform_fee = 11;
+        // Governance-only. Retained for wire compatibility; strategist requests are rejected.
         // Represents function `setStrategistPlatformCut(address)`
         SetStrategistPlatformCut set_strategist_platform_cut = 12;
         // Represents function `setRebalanceDeviation(uint256)`
@@ -305,10 +309,13 @@ message CellarV2_2 {
             SetRebalanceDeviation set_rebalance_deviation = 11;
             // Represents function `setShareLockPeriod(uint256 newLock)`
             SetShareLockPeriod set_share_lock_period = 12;
+            // Governance-only. Retained for wire compatibility; strategist requests are rejected.
             // Represents function `setStrategistPlatformCut(uint64 cut)`
             SetStrategistPlatformCut set_strategist_platform_cut = 13;
+            // Governance-only. Retained for wire compatibility; strategist requests are rejected.
             // Represents function `initiateShutdown()`
             InitiateShutdown initiate_shutdown = 14;
+            // Governance-only. Retained for wire compatibility; strategist requests are rejected.
             // Represents function `liftShutdown()`
             LiftShutdown lift_shutdown = 15; 
             // Represents function `cachePriceRouter(bool checkTotalAssets, uint16 allowableRange, address expectedPriceRouter)`
@@ -514,8 +521,10 @@ message CellarV2_2Governance {
             SetShareLockPeriod set_share_lock_period = 4;
             // Represents function `setStrategistPlatformCut(uint64 cut)`
             SetStrategistPlatformCut set_strategist_platform_cut = 5;
+            // Governance-only. Retained for wire compatibility; strategist requests are rejected.
             // Represents function `initiateShutdown()`
             InitiateShutdown initiate_shutdown = 6;
+            // Governance-only. Retained for wire compatibility; strategist requests are rejected.
             // Represents function `liftShutdown()`
             LiftShutdown lift_shutdown = 7;
             // Represents function `forcePositionOut(uint32 index, uint32 positionId, bool inDebtArray)`
@@ -775,6 +784,7 @@ message CellarV2_5 {
             AddPositionToCatalogue add_position_to_catalogue = 18;
             // Represents function `setRebalanceDeviation(uint256)`
             SetRebalanceDeviation set_rebalance_deviation = 19;
+            // Governance-only. Retained for wire compatibility; strategist requests are rejected.
             // Represents function `setStrategistPlatformCut(uint64 cut)`
             SetStrategistPlatformCut set_strategist_platform_cut = 20;
             // Represents function `setSharePriceOracle(uint256 _registryId, ERC4626SharePriceOracle _sharePriceOracle)`

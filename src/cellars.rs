@@ -226,6 +226,23 @@ enum CellarArchitecture {
     V2_5,
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+struct CellarArchitecturePolicy {
+    chain_id: u64,
+    cellar_id: &'static str,
+    architecture: CellarArchitecture,
+}
+
+impl CellarArchitecturePolicy {
+    const fn new(chain_id: u64, cellar_id: &'static str, architecture: CellarArchitecture) -> Self {
+        Self {
+            chain_id,
+            cellar_id,
+            architecture,
+        }
+    }
+}
+
 // cellars
 
 pub const CELLAR_MORPHO_ETH_MAXIMIZER: &str = "cf4b531b4cde95bd35d71926e09b2b54c564f5b6";
@@ -245,6 +262,14 @@ pub const CELLAR_TURBO_EETH_DEPLOYMENT_1: &str = "9a7b4980c6f0fcaa50cd5f288ad703
 pub const CELLAR_TURBO_EETH_DEPLOYMENT_2: &str = "dadc82e26b3739750e036dfd9defd3ed459b877a";
 pub const CELLAR_ETH_GROWTH: &str = "6c51041a91c91c86f3f08a72cb4d3f67f1208897";
 pub const CELLAR_TEST_RYUSD: &str = "01a4a3e1e730d245f210eebc6aee54f2381cac63";
+
+const CELLAR_ARCHITECTURE_POLICIES: &[CellarArchitecturePolicy] = &[
+    CellarArchitecturePolicy::new(1, CELLAR_RYUSD, CellarArchitecture::V2_0),
+    CellarArchitecturePolicy::new(1, CELLAR_RYETH, CellarArchitecture::V2_2),
+    CellarArchitecturePolicy::new(1, CELLAR_RYBTC, CellarArchitecture::V2_2),
+    CellarArchitecturePolicy::new(1, CELLAR_TURBO_STETH, CellarArchitecture::V2_5),
+    CellarArchitecturePolicy::new(1, CELLAR_ETH_GROWTH, CellarArchitecture::V2_5),
+];
 
 // deprecated adaptors
 
@@ -355,36 +380,25 @@ pub fn validate_new_position(
     Ok(())
 }
 
-fn permissions_include_cellar(cellar_id: &str, permissions: &CellarArchPermissions) -> bool {
-    permissions
-        .allowed_adaptors
-        .iter()
-        .any(|(allowed_cellar, _)| *allowed_cellar == cellar_id)
-        || permissions
-            .allowed_positions
-            .iter()
-            .any(|(allowed_cellar, _)| *allowed_cellar == cellar_id)
-}
-
-fn configured_cellar_architecture(cellar_id: &str) -> Result<CellarArchitecture, Error> {
+fn resolve_cellar_architecture(
+    policies: &[CellarArchitecturePolicy],
+    chain_id: u64,
+    cellar_id: &str,
+) -> Result<CellarArchitecture, Error> {
     let cellar_id = normalize_address(cellar_id.to_string());
-    let matches = [
-        (CellarArchitecture::V2_0, &V2_0_PERMISSIONS),
-        (CellarArchitecture::V2_2, &V2_2_PERMISSIONS),
-        (CellarArchitecture::V2_5, &V2_5_PERMISSIONS),
-    ]
-    .into_iter()
-    .filter(|(_, permissions)| permissions_include_cellar(&cellar_id, permissions))
-    .map(|(architecture, _)| architecture)
-    .collect::<Vec<_>>();
+    let matches = policies
+        .iter()
+        .filter(|policy| policy.chain_id == chain_id && policy.cellar_id == cellar_id)
+        .map(|policy| policy.architecture)
+        .collect::<Vec<_>>();
 
     match matches.as_slice() {
         [architecture] => Ok(*architecture),
         [] => Err(sp_call_error(format!(
-            "no cellar architecture policy is configured for {cellar_id}"
+            "no cellar architecture policy is configured for chain {chain_id} cellar {cellar_id}"
         ))),
         _ => Err(sp_call_error(format!(
-            "multiple cellar architecture policies are configured for {cellar_id}"
+            "multiple cellar architecture policies are configured for chain {chain_id} cellar {cellar_id}"
         ))),
     }
 }
@@ -392,8 +406,8 @@ fn configured_cellar_architecture(cellar_id: &str) -> Result<CellarArchitecture,
 /// Validates `addPosition` using the policy bound to the target cellar rather than the caller's
 /// protobuf variant. V2.0 has no separate catalogue gate and therefore requires an explicit
 /// allowlist; later architectures only apply their architecture-specific blocklist here.
-pub fn validate_add_position(cellar_id: &str, position: u32) -> Result<(), Error> {
-    match configured_cellar_architecture(cellar_id)? {
+pub fn validate_add_position(chain_id: u64, cellar_id: &str, position: u32) -> Result<(), Error> {
+    match resolve_cellar_architecture(CELLAR_ARCHITECTURE_POLICIES, chain_id, cellar_id)? {
         CellarArchitecture::V2_0 => validate_new_position(cellar_id, position, &V2_0_PERMISSIONS),
         CellarArchitecture::V2_2 => check_blocked_position(&position, &V2_2_PERMISSIONS),
         CellarArchitecture::V2_5 => check_blocked_position(&position, &V2_5_PERMISSIONS),
@@ -707,22 +721,144 @@ mod tests {
     }
 
     #[test]
-    fn add_position_uses_the_target_cellars_architecture_policy() {
-        assert!(validate_add_position(CELLAR_RYUSD, 4).is_err());
-        assert!(validate_add_position(CELLAR_RYETH, 4).is_ok());
+    fn add_position_uses_the_chain_scoped_target_policy() {
+        let blocked = validate_add_position(1, CELLAR_RYUSD, 4).unwrap_err();
+        assert_eq!(blocked.to_string(), "SP call error: position 4 is blocked");
+
+        assert!(validate_add_position(1, CELLAR_RYETH, 4).is_ok());
+
+        let wrong_chain = validate_add_position(42161, CELLAR_RYUSD, 4).unwrap_err();
+        assert_eq!(
+            wrong_chain.to_string(),
+            format!(
+                "SP call error: no cellar architecture policy is configured for chain 42161 cellar {CELLAR_RYUSD}"
+            )
+        );
     }
 
     #[test]
-    fn add_position_fails_closed_without_a_unique_architecture_policy() {
-        let unconfigured_cellar = "0000000000000000000000000000000000000000";
-        let err = validate_add_position(unconfigured_cellar, 1).unwrap_err();
+    fn same_address_can_have_different_architectures_on_different_chains() {
+        let address = "0000000000000000000000000000000000000001";
+        let policies = [
+            CellarArchitecturePolicy::new(1, address, CellarArchitecture::V2_0),
+            CellarArchitecturePolicy::new(42161, address, CellarArchitecture::V2_5),
+        ];
+
+        assert_eq!(
+            resolve_cellar_architecture(&policies, 1, address).unwrap(),
+            CellarArchitecture::V2_0
+        );
+        assert_eq!(
+            resolve_cellar_architecture(&policies, 42161, address).unwrap(),
+            CellarArchitecture::V2_5
+        );
+    }
+
+    #[test]
+    fn architecture_policy_fails_closed_when_ambiguous() {
+        let address = "0000000000000000000000000000000000000001";
+        let policies = [
+            CellarArchitecturePolicy::new(1, address, CellarArchitecture::V2_0),
+            CellarArchitecturePolicy::new(1, address, CellarArchitecture::V2_5),
+        ];
+        let err = resolve_cellar_architecture(&policies, 1, address).unwrap_err();
 
         assert_eq!(
             err.to_string(),
             format!(
-                "SP call error: no cellar architecture policy is configured for {unconfigured_cellar}"
+                "SP call error: multiple cellar architecture policies are configured for chain 1 cellar {address}"
             )
         );
+    }
+
+    #[test]
+    fn add_position_fails_closed_without_a_chain_scoped_policy() {
+        let unconfigured_cellar = "0000000000000000000000000000000000000000";
+        let err = validate_add_position(1, unconfigured_cellar, 1).unwrap_err();
+
+        assert_eq!(
+            err.to_string(),
+            format!(
+                "SP call error: no cellar architecture policy is configured for chain 1 cellar {unconfigured_cellar}"
+            )
+        );
+    }
+
+    #[test]
+    fn repository_cellar_policy_coverage_is_reconciled() {
+        let version_tables = [
+            (CellarArchitecture::V2_0, &V2_0_PERMISSIONS),
+            (CellarArchitecture::V2_2, &V2_2_PERMISSIONS),
+            (CellarArchitecture::V2_5, &V2_5_PERMISSIONS),
+        ];
+
+        for (architecture, permissions) in version_tables {
+            let addresses = permissions
+                .allowed_adaptors
+                .iter()
+                .map(|(address, _)| *address)
+                .chain(
+                    permissions
+                        .allowed_positions
+                        .iter()
+                        .map(|(address, _)| *address),
+                )
+                .collect::<std::collections::BTreeSet<_>>();
+
+            for address in addresses {
+                assert_eq!(
+                    resolve_cellar_architecture(CELLAR_ARCHITECTURE_POLICIES, 1, address).unwrap(),
+                    architecture,
+                    "version table entry lacks one matching chain-scoped architecture policy: {address}"
+                );
+            }
+        }
+
+        let repository_cellars = [
+            CELLAR_MORPHO_ETH_MAXIMIZER,
+            CELLAR_RY1INCH,
+            CELLAR_RYBTC,
+            CELLAR_RYENS,
+            CELLAR_RYETH,
+            CELLAR_RYLINK,
+            CELLAR_RYSNX,
+            CELLAR_RYUNI,
+            CELLAR_RYUSD,
+            CELLAR_TURBO_SWETH,
+            CELLAR_TURBO_GHO,
+            CELLAR_TURBO_STETH,
+            CELLAR_TURBO_SOMM,
+            CELLAR_TURBO_EETH_DEPLOYMENT_1,
+            CELLAR_TURBO_EETH_DEPLOYMENT_2,
+            CELLAR_ETH_GROWTH,
+            CELLAR_TEST_RYUSD,
+        ];
+        let unmapped = repository_cellars
+            .into_iter()
+            .filter(|address| {
+                !CELLAR_ARCHITECTURE_POLICIES
+                    .iter()
+                    .any(|policy| policy.cellar_id == *address)
+            })
+            .collect::<std::collections::BTreeSet<_>>();
+        let expected_unmapped = [
+            CELLAR_MORPHO_ETH_MAXIMIZER,
+            CELLAR_RY1INCH,
+            CELLAR_RYENS,
+            CELLAR_RYLINK,
+            CELLAR_RYSNX,
+            CELLAR_RYUNI,
+            CELLAR_TURBO_SWETH,
+            CELLAR_TURBO_GHO,
+            CELLAR_TURBO_SOMM,
+            CELLAR_TURBO_EETH_DEPLOYMENT_1,
+            CELLAR_TURBO_EETH_DEPLOYMENT_2,
+            CELLAR_TEST_RYUSD,
+        ]
+        .into_iter()
+        .collect::<std::collections::BTreeSet<_>>();
+
+        assert_eq!(unmapped, expected_unmapped);
     }
 
     #[test]

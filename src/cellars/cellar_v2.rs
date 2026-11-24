@@ -22,14 +22,22 @@ use super::{
 
 const CELLAR_NAME: &str = "CellarV2";
 
-pub fn get_encoded_call(function: Function, cellar_id: String) -> Result<Vec<u8>, Error> {
-    get_call(function, cellar_id).map(|call| call.encode())
+pub fn get_encoded_call(
+    function: Function,
+    chain_id: u64,
+    cellar_id: String,
+) -> Result<Vec<u8>, Error> {
+    get_call(function, chain_id, cellar_id).map(|call| call.encode())
 }
 
-pub fn get_call(function: Function, cellar_id: String) -> Result<CellarV2Calls, Error> {
+pub fn get_call(
+    function: Function,
+    chain_id: u64,
+    cellar_id: String,
+) -> Result<CellarV2Calls, Error> {
     match function {
         Function::AddPosition(params) => {
-            validate_add_position(&cellar_id, params.position_id)?;
+            validate_add_position(chain_id, &cellar_id, params.position_id)?;
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
 
             let call = AddPositionCall {
@@ -403,6 +411,7 @@ mod tests {
         for function in functions {
             assert!(get_encoded_call(
                 function,
+                1,
                 "0x0000000000000000000000000000000000000001".to_string(),
             )
             .is_err());

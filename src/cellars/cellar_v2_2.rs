@@ -34,14 +34,18 @@ use super::{
 const CELLAR_NAME: &str = "CellarV2.2";
 
 /// Encodes a call to a CellarV2.2 contract
-pub fn get_encoded_call(call_type: CallType, cellar_id: String) -> Result<Vec<u8>, Error> {
+pub fn get_encoded_call(
+    call_type: CallType,
+    chain_id: u64,
+    cellar_id: String,
+) -> Result<Vec<u8>, Error> {
     match call_type {
-        CallType::FunctionCall(f) => get_encoded_function(f, cellar_id),
+        CallType::FunctionCall(f) => get_encoded_function(f, chain_id, cellar_id),
         CallType::Multicall(m) => {
             let mut multicall = MulticallCall::default();
             m.function_calls
                 .iter()
-                .map(|f| get_encoded_function(f.clone(), cellar_id.clone()))
+                .map(|f| get_encoded_function(f.clone(), chain_id, cellar_id.clone()))
                 .collect::<Result<Vec<Vec<u8>>, Error>>()?
                 .iter()
                 .for_each(|f| multicall.data.push(Bytes::from(f.clone())));
@@ -51,13 +55,17 @@ pub fn get_encoded_call(call_type: CallType, cellar_id: String) -> Result<Vec<u8
     }
 }
 
-pub fn get_encoded_function(call: FunctionCall, cellar_id: String) -> Result<Vec<u8>, Error> {
+pub fn get_encoded_function(
+    call: FunctionCall,
+    chain_id: u64,
+    cellar_id: String,
+) -> Result<Vec<u8>, Error> {
     let function = call
         .function
         .ok_or_else(|| sp_call_error("call data is empty".to_string()))?;
     match function {
         Function::AddPosition(params) => {
-            validate_add_position(&cellar_id, params.position_id)?;
+            validate_add_position(chain_id, &cellar_id, params.position_id)?;
             log_cellar_call(CELLAR_NAME, &AddPositionCall::function_name(), &cellar_id);
 
             let call = AddPositionCall {
@@ -568,7 +576,7 @@ mod tests {
             },
         ));
 
-        assert!(get_encoded_function(call, super::super::CELLAR_RYUSD.to_string()).is_err());
+        assert!(get_encoded_function(call, 1, super::super::CELLAR_RYUSD.to_string()).is_err());
     }
 
     #[test]
@@ -584,6 +592,7 @@ mod tests {
         for function in functions {
             assert!(get_encoded_function(
                 function_call(function),
+                1,
                 super::super::CELLAR_RYETH.to_string(),
             )
             .is_err());

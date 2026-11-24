@@ -156,21 +156,29 @@ pub fn get_encoded_call(request: ScheduleRequest) -> Result<Vec<u8>, Error> {
                 return Err(ErrorKind::Http.context("empty function data").into());
             }
 
-            cellar_v2::get_encoded_call(call.function.unwrap(), request.cellar_id)
+            cellar_v2::get_encoded_call(call.function.unwrap(), request.chain_id, request.cellar_id)
         }
         CellarV22(call) => {
             if call.call_type.is_none() {
                 return Err(ErrorKind::Http.context("empty function data").into());
             }
 
-            cellar_v2_2::get_encoded_call(call.call_type.unwrap(), request.cellar_id)
+            cellar_v2_2::get_encoded_call(
+                call.call_type.unwrap(),
+                request.chain_id,
+                request.cellar_id,
+            )
         }
         CellarV25(call) => {
             if call.call_type.is_none() {
                 return Err(ErrorKind::Http.context("empty function data").into());
             }
 
-            cellar_v2_5::get_encoded_call(call.call_type.unwrap(), request.cellar_id)
+            cellar_v2_5::get_encoded_call(
+                call.call_type.unwrap(),
+                request.chain_id,
+                request.cellar_id,
+            )
         }
     }
 }

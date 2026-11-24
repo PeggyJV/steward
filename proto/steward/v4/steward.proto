@@ -74,6 +74,8 @@ message ScheduleResponse {
 
 message EncodeRequest {
     string cellar_id = 1;
+    // EVM chain ID used to select the target Cellar's chain-scoped policy.
+    uint64 chain_id = 7;
     // The data from which the desired contract function will be encoded
     oneof call_data {
         AaveV2Stablecoin aave_v2_stablecoin = 2;

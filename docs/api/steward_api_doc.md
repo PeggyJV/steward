@@ -2424,6 +2424,10 @@ Represents the withdraw type to use for the cellar
 
 ## cellar_v2.proto
 
+> **Strategist policy:** `initiateShutdown`, `liftShutdown`, `setPlatformFee`, and
+> `setStrategistPlatformCut` fields remain in strategist messages for wire compatibility, but
+> Steward rejects them at runtime. Use the corresponding governance proposal messages.
+
 
 
 <a name="steward-v4-AdaptorCall"></a>
@@ -6945,6 +6949,7 @@ Represents the function `wrap(uint256 amount, uint256 minAmountOut, bytes callda
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | cellar_id | [string](#string) |  |  |
+| chain_id | [uint64](#uint64) |  | EVM chain ID used to select the target Cellar&#39;s chain-scoped policy. |
 | aave_v2_stablecoin | [AaveV2Stablecoin](#steward-v4-AaveV2Stablecoin) |  |  |
 | cellar_v1 | [CellarV1](#steward-v4-CellarV1) |  |  |
 | cellar_v2 | [CellarV2](#steward-v4-CellarV2) |  |  |
